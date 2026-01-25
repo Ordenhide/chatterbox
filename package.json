@@ -9,7 +9,9 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "clean:cache": "rm -rf node_modules/.cache && cd android && ./gradlew clean && cd ..",
+    "optimize:ios": "bash scripts/optimize-ios-build.sh"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
@@ -42,7 +44,8 @@
     "react-native-screens": "^4.7.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-video": "^6.2.0",
-    "react-native-webrtc": "^111.0.6"
+    "react-native-webrtc": "^111.0.6",
+    "react-native-fast-image": "^8.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",

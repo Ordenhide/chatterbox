@@ -38,6 +38,7 @@ function AppContent() {
   useEffect(() => {
     if (!user) return;
 
+    let isMounted = true;
     const cleanupCallListeners = (keepIds: Set<string>) => {
       callListenersRef.current.forEach((unsub, chatId) => {
         if (!keepIds.has(chatId)) {
@@ -48,16 +49,19 @@ function AppContent() {
     };
 
     const unsubscribeChats = listenChatsForUser(user.uid, chats => {
+      if (!isMounted) return;
+      
       const currentChatIds = new Set(chats.map(chat => chat.id));
       cleanupCallListeners(currentChatIds);
 
       chats.forEach(chat => {
         if (callListenersRef.current.has(chat.id)) return;
         const unsubscribeCall = listenLatestCall(chat.id, call => {
-          if (!call) return;
+          if (!isMounted || !call) return;
           if (call.status !== 'ringing') return;
           if (call.createdBy === user.uid) return;
           if (handledCallIdsRef.current.has(call.id)) return;
+          
           const createdAt = (call.createdAt as any)?.toDate
             ? (call.createdAt as any).toDate().getTime()
             : new Date(call.createdAt as any).getTime();
@@ -65,6 +69,7 @@ function AppContent() {
             updateCall(chat.id, call.id, {status: 'ended'});
             return;
           }
+          
           handledCallIdsRef.current.add(call.id);
           Alert.alert('Incoming call', call.type === 'video' ? 'Video call' : 'Voice call', [
             {
@@ -75,7 +80,7 @@ function AppContent() {
             {
               text: 'Accept',
               onPress: () => {
-                if (navigationRef.isReady()) {
+                if (isMounted && navigationRef.isReady()) {
                   navigationRef.navigate('Call' as never, {
                     chatId: chat.id,
                     callId: call.id,
@@ -92,6 +97,7 @@ function AppContent() {
     });
 
     return () => {
+      isMounted = false;
       unsubscribeChats();
       callListenersRef.current.forEach(unsub => unsub());
       callListenersRef.current.clear();
