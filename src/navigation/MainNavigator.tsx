@@ -2,15 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import ChatListScreen from '../screens/chat/ChatListScreen';
-import ChatScreen from '../screens/chat/ChatScreen';
-import NewChatScreen from '../screens/chat/NewChatScreen';
-import ChatMediaScreen from '../screens/chat/ChatMediaScreen';
-import ChatSettingsScreen from '../screens/chat/ChatSettingsScreen';
-import CallScreen from '../screens/chat/CallScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import MomentsScreen from '../screens/moments/MomentsScreen';
-import FriendsScreen from '../screens/moments/FriendsScreen';
+import {lazyLoad} from '../utils/lazyLoading';
 import {useAuth} from '../contexts/AuthContext';
 import {listenFriends, listenFriendRequests} from '../services/friends';
 import {listenMomentsForAuthors} from '../services/moments';
@@ -19,6 +11,17 @@ import {getMomentsLastSeen, onMomentsLastSeen} from '../services/notifications';
 import {Friend, Moment} from '../types';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
+
+// Lazy load screens
+const ChatListScreen = lazyLoad(() => import('../screens/chat/ChatListScreen'));
+const ChatScreen = lazyLoad(() => import('../screens/chat/ChatScreen'));
+const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
+const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
+const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
+const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
+const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
+const MomentsScreen = lazyLoad(() => import('../screens/moments/MomentsScreen'));
+const FriendsScreen = lazyLoad(() => import('../screens/moments/FriendsScreen'));
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
