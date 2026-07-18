@@ -1,0 +1,210 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/ProjectUtils.kt</file>
+  <line>94</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.ProjectUtils boolean hasPropertySetToFalse$react_native_gradle_plugin(org.gradle.api.Project $this$hasPropertySetToFalse, java.lang.String property)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>this.hasProperty(property) &amp;&amp; this.property(property).toString().toBoolean() == false</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>85</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/ProjectUtils.kt</file>
+  <line>94</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.ProjectUtils boolean hasPropertySetToFalse$react_native_gradle_plugin(org.gradle.api.Project $this$hasPropertySetToFalse, java.lang.String property)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>this.property(property).toString().toBoolean() == false</highlighted_element>
+  <language>kotlin</language>
+  <offset>36</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/Screen.kt</file>
+  <line>363</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.Screen void requestTriggeringPostponedEnterTransition$react_native_screens_debug()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED &amp;&amp; !sheetShouldOverflowTopInset</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>71</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/Screen.kt</file>
+  <line>635</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.Screen void onSheetDetentChanged$react_native_screens_debug(int detentIndex, boolean isStable)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED &amp;&amp; isStable</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>51</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>217</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>newTop != null</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>217</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>newTop != null &amp;&amp; newTopAlreadyInStack</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>217</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>newTop != null &amp;&amp; newTopAlreadyInStack &amp;&amp; topScreenWrapper?.isTranslucent() ...</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>107</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>217</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>newTop != null &amp;&amp; newTopAlreadyInStack &amp;&amp; topScreenWrapper?.isTranslucent() ...</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>154</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>219</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>topScreenWrapper?.isTranslucent() == true</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStack.kt</file>
+  <line>220</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStack void onUpdate()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>newTop.isTranslucent() == false</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackHeaderSubview.kt</file>
+  <line>53</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStackHeaderSubview void onLayout(boolean changed, int l, int t, int r, int b)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>changed &amp;&amp; BuildConfig.IS_NEW_ARCHITECTURE_ENABLED</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetUtils.kt</file>
+  <line>153</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.SheetUtilsKt boolean requiresEnterTransitionPostponing(com.swmansion.rnscreens.Screen $this$requiresEnterTransitionPostponing)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED &amp;&amp; !this.sheetShouldOverflowTopInset</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>76</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetUtils.kt</file>
+  <line>153</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.SheetUtilsKt boolean requiresEnterTransitionPostponing(com.swmansion.rnscreens.Screen $this$requiresEnterTransitionPostponing)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED &amp;&amp; !this.sheetShouldOverflowTopInset &amp;&amp; this.usesFormSheetPr...</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>112</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetUtils.kt</file>
+  <line>157</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.SheetUtilsKt boolean requiresEnterTransitionPostponing(com.swmansion.rnscreens.Screen $this$requiresEnterTransitionPostponing)" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED || !this.usesFormSheetPresentation()</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>76</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/safearea/SafeAreaView.kt</file>
+  <line>176</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.safearea</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.safearea.SafeAreaView void updateInsets()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>BuildConfig.IS_NEW_ARCHITECTURE_ENABLED &amp;&amp; stateWrapper != null</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>63</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/safearea/SafeAreaView.kt</file>
+  <line>176</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.safearea</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.safearea.SafeAreaView void updateInsets()" />
+  <problem_class id="SimplifyBooleanWithConstants" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Boolean expression can be simplified</problem_class>
+  <description>Boolean expression can be simplified</description>
+  <highlighted_element>stateWrapper != null</highlighted_element>
+  <language>kotlin</language>
+  <offset>55</offset>
+  <length>20</length>
+</problem>
+</problems>

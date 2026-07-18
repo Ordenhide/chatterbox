@@ -1,0 +1,145 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>2352</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule com.facebook.react.bridge.WritableMap getJSError(java.lang.Exception exception)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'multiFactorException' can be replaced with pattern variable</description>
+  <highlighted_element>multiFactorException</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreSerialize.java</file>
+  <line>301</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreSerialize com.facebook.react.bridge.WritableArray buildTypeMap(java.lang.Object value)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'boolValue' can be replaced with pattern variable</description>
+  <highlighted_element>boolValue</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreSerialize.java</file>
+  <line>317</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreSerialize com.facebook.react.bridge.WritableArray buildTypeMap(java.lang.Object value)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'doubleValue' can be replaced with pattern variable</description>
+  <highlighted_element>doubleValue</highlighted_element>
+  <language>JAVA</language>
+  <offset>13</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/src/reactnative/java/io/invertase/firebase/functions/ReactNativeFirebaseFunctionsModule.java</file>
+  <line>76</line>
+  <module>ChatterboxTemp.react-native-firebase_functions.main</module>
+  <package>io.invertase.firebase.functions</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.functions.ReactNativeFirebaseFunctionsModule void httpsCallable(java.lang.String appName, java.lang.String region, java.lang.String host, java.lang.Integer port, java.lang.String name, com.facebook.react.bridge.ReadableMap wrapper, com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'functionsException' can be replaced with pattern variable</description>
+  <highlighted_element>functionsException</highlighted_element>
+  <language>JAVA</language>
+  <offset>39</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/src/reactnative/java/io/invertase/firebase/functions/ReactNativeFirebaseFunctionsModule.java</file>
+  <line>127</line>
+  <module>ChatterboxTemp.react-native-firebase_functions.main</module>
+  <package>io.invertase.firebase.functions</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.functions.ReactNativeFirebaseFunctionsModule void httpsCallableFromUrl(java.lang.String appName, java.lang.String region, java.lang.String host, java.lang.Integer port, java.lang.String url, com.facebook.react.bridge.ReadableMap wrapper, com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'functionsException' can be replaced with pattern variable</description>
+  <highlighted_element>functionsException</highlighted_element>
+  <language>JAVA</language>
+  <offset>39</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageCommon.java</file>
+  <line>253</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageCommon java.lang.String[] getExceptionCodeAndMessage(java.lang.Exception exception)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'storageException' can be replaced with pattern variable</description>
+  <highlighted_element>storageException</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>1994</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void onMetadata(androidx.media3.common.Metadata metadata)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'txxxFrame' can be replaced with pattern variable</description>
+  <highlighted_element>txxxFrame</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>2000</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void onMetadata(androidx.media3.common.Metadata metadata)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'eventMessage' can be replaced with pattern variable</description>
+  <highlighted_element>eventMessage</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/CameraCaptureController.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.CameraCaptureController void switchCamera()" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'capturer' can be replaced with pattern variable</description>
+  <highlighted_element>capturer</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/GetUserMediaImpl.java</file>
+  <line>239</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.GetUserMediaImpl void switchCamera(java.lang.String trackId)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'cameraCaptureController' can be replaced with pattern variable</description>
+  <highlighted_element>cameraCaptureController</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/StringUtils.java</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.StringUtils void appendValue(java.lang.StringBuilder builder, java.lang.Object value)" />
+  <problem_class id="PatternVariableCanBeUsed" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Pattern variable can be used</problem_class>
+  <description>Variable 'arrayValue' can be replaced with pattern variable</description>
+  <highlighted_element>arrayValue</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>10</length>
+</problem>
+</problems>

@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java</file>
+  <line>113</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerModule void createResizedImageWithExceptions(java.lang.String imagePath, int newWidth, int newHeight, java.lang.String compressFormatString, int quality, int rotation, java.lang.String outputPath, boolean keepMeta, com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Callback successCb, com.facebook.react.bridge.Callback failureCb)" />
+  <problem_class id="UnnecessarySemicolon" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary semicolon</problem_class>
+  <description>Unnecessary semicolon &lt;code&gt;;&lt;/code&gt; #loc</description>
+  <highlighted_element>;</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>494</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void showPlaybackSpeedOptions()" />
+  <problem_class id="UnnecessarySemicolon" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary semicolon</problem_class>
+  <description>Unnecessary semicolon &lt;code&gt;;&lt;/code&gt; #loc</description>
+  <highlighted_element>;</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>495</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void showPlaybackSpeedOptions()" />
+  <problem_class id="UnnecessarySemicolon" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary semicolon</problem_class>
+  <description>Unnecessary semicolon &lt;code&gt;;&lt;/code&gt; #loc</description>
+  <highlighted_element>;</highlighted_element>
+  <language>JAVA</language>
+  <offset>13</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/PeerConnectionObserver.java</file>
+  <line>596</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="class" FQNAME="com.oney.WebRTCModule.PeerConnectionObserver" />
+  <problem_class id="UnnecessarySemicolon" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary semicolon</problem_class>
+  <description>Unnecessary semicolon &lt;code&gt;;&lt;/code&gt; #loc</description>
+  <highlighted_element>;</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+</problems>

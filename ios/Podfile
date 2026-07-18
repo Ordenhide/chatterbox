@@ -32,10 +32,9 @@ target 'ChatterboxTemp' do
 
   use_react_native!(
     :path => config[:reactNativePath],
+    :hermes_enabled => true,
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/..",
-    # Enable Hermes for iOS performance
-    :hermes_enabled => true
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   target 'ChatterboxTempTests' do
@@ -61,7 +60,7 @@ target 'ChatterboxTemp' do
     # Align pods to a supported iOS deployment target to silence warnings
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |build_config|
-        build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
         build_config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++20'
         build_config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
         other_ldflags = build_config.build_settings['OTHER_LDFLAGS']

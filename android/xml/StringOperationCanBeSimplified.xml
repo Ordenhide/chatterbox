@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Options Options(com.facebook.react.bridge.ReadableMap options)" />
+  <problem_class id="StringOperationCanBeSimplified" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant 'String' operation</problem_class>
+  <description>&lt;code&gt;toLowerCase()&lt;/code&gt; call can be replaced with 'equalsIgnoreCase()'</description>
+  <highlighted_element>toLowerCase</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>11</length>
+</problem>
+</problems>

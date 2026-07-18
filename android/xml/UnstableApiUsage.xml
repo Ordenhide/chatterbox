@@ -1,0 +1,106 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>26</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="field" FQNAME="com.facebook.react.ReactSettingsExtension outputFile" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getLayout()' is marked unstable with @Incubating</description>
+  <highlighted_element>layout</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>26</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="field" FQNAME="com.facebook.react.ReactSettingsExtension outputFile" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getRootDirectory()' is declared in unstable interface 'org.gradle.api.file.BuildLayout' marked with @Incubating</description>
+  <highlighted_element>rootDirectory</highlighted_element>
+  <language>kotlin</language>
+  <offset>22</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>28</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="field" FQNAME="com.facebook.react.ReactSettingsExtension outputFolder" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getLayout()' is marked unstable with @Incubating</description>
+  <highlighted_element>layout</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>28</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="field" FQNAME="com.facebook.react.ReactSettingsExtension outputFolder" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getRootDirectory()' is declared in unstable interface 'org.gradle.api.file.BuildLayout' marked with @Incubating</description>
+  <highlighted_element>rootDirectory</highlighted_element>
+  <language>kotlin</language>
+  <offset>22</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>50</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromCommand(java.util.List&lt;java.lang.String&gt; command, java.io.File workingDirectory, org.gradle.api.file.FileCollection lockFiles)" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getLayout()' is marked unstable with @Incubating</description>
+  <highlighted_element>layout</highlighted_element>
+  <language>kotlin</language>
+  <offset>41</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>50</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromCommand(java.util.List&lt;java.lang.String&gt; command, java.io.File workingDirectory, org.gradle.api.file.FileCollection lockFiles)" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getRootDirectory()' is declared in unstable interface 'org.gradle.api.file.BuildLayout' marked with @Incubating</description>
+  <highlighted_element>rootDirectory</highlighted_element>
+  <language>kotlin</language>
+  <offset>48</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>52</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromCommand(java.util.List&lt;java.lang.String&gt; command, java.io.File workingDirectory, org.gradle.api.file.FileCollection lockFiles)" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getLayout()' is marked unstable with @Incubating</description>
+  <highlighted_element>layout</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>52</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromCommand(java.util.List&lt;java.lang.String&gt; command, java.io.File workingDirectory, org.gradle.api.file.FileCollection lockFiles)" />
+  <problem_class id="UnstableApiUsage" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unstable API Usage</problem_class>
+  <description>'getRootDirectory()' is declared in unstable interface 'org.gradle.api.file.BuildLayout' marked with @Incubating</description>
+  <highlighted_element>rootDirectory</highlighted_element>
+  <language>kotlin</language>
+  <offset>26</offset>
+  <length>13</length>
+</problem>
+</problems>

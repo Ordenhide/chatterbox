@@ -1,0 +1,324 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java</file>
+  <line>74</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.ReactDatabaseSupplier boolean ensureDatabase()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;ensureDatabase()&lt;/code&gt; always returns &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>ensureDatabase</highlighted_element>
+  <language>JAVA</language>
+  <offset>37</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseJSON.java</file>
+  <line>88</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseJSON java.lang.String getRawJSON()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;getRawJSON()&lt;/code&gt; always returns &lt;code&gt;io.invertase.firebase.BuildConfig.FIREBASE_JSON_RAW&lt;/code&gt;</description>
+  <highlighted_element>getRawJSON</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/nosvg/src/main/java/com/swmansion/gesturehandler/RNSVGHitTester.kt</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.RNSVGHitTester.Companion boolean isSvgElement(java.lang.Object view)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;isSvgElement()&lt;/code&gt; always returns &lt;code&gt;false&lt;/code&gt;</description>
+  <highlighted_element>isSvgElement</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/nosvg/src/main/java/com/swmansion/gesturehandler/RNSVGHitTester.kt</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.RNSVGHitTester.Companion boolean hitTest(android.view.View view, float posX, float posY)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;hitTest()&lt;/code&gt; always returns &lt;code&gt;false&lt;/code&gt;</description>
+  <highlighted_element>hitTest</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/swmansion/gesturehandler/NativeRNGestureHandlerModuleSpec.java</file>
+  <line>62</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.NativeRNGestureHandlerModuleSpec boolean install()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>All implementations of method &lt;code&gt;install()&lt;/code&gt; always return &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>install</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandlerOrchestrator.kt</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandlerOrchestrator boolean onTouchEvent(android.view.MotionEvent event)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;onTouchEvent()&lt;/code&gt; always returns &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onTouchEvent</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/RotationGestureDetector.kt</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.RotationGestureDetector.OnRotationGestureListener boolean onRotation(com.swmansion.gesturehandler.core.RotationGestureDetector detector)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>All implementations of method &lt;code&gt;onRotation()&lt;/code&gt; always return &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onRotation</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/RotationGestureDetector.kt</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.RotationGestureDetector.OnRotationGestureListener boolean onRotationBegin(com.swmansion.gesturehandler.core.RotationGestureDetector detector)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>All implementations of method &lt;code&gt;onRotationBegin()&lt;/code&gt; always return &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onRotationBegin</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/RotationGestureDetector.kt</file>
+  <line>129</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.RotationGestureDetector boolean onTouchEvent(android.view.MotionEvent event)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;onTouchEvent()&lt;/code&gt; always returns &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onTouchEvent</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>78</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector.OnScaleGestureListener boolean onScaleBegin(com.swmansion.gesturehandler.core.ScaleGestureDetector detector)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>All implementations of method &lt;code&gt;onScaleBegin()&lt;/code&gt; always return &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onScaleBegin</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>214</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector boolean onTouchEvent(android.view.MotionEvent event)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;onTouchEvent()&lt;/code&gt; always returns &lt;code&gt;true&lt;/code&gt;</description>
+  <highlighted_element>onTouchEvent</highlighted_element>
+  <language>JAVA</language>
+  <offset>19</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt</file>
+  <line>116</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <package>com.zoontek.rnlocalize</package>
+  <entry_point TYPE="method" FQNAME="com.zoontek.rnlocalize.RNLocalizeModuleImpl java.lang.String getCalendar()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;getCalendar()&lt;/code&gt; always returns &lt;code&gt;gregorian&lt;/code&gt;</description>
+  <highlighted_element>getCalendar</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/HybridObject.kt</file>
+  <line>32</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.HybridObject long getMemorySize()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;get()&lt;/code&gt; always returns &lt;code&gt;0&lt;/code&gt;</description>
+  <highlighted_element>get</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashUtil.java</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashUtil androidx.media3.exoplayer.dash.manifest.DashManifest loadManifest(androidx.media3.datasource.DataSource ds, android.net.Uri uri)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;loadManifest()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>loadManifest</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/manifest/DashManifest.java</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash.manifest</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.manifest.DashManifest int getPeriodCount()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;getPeriodCount()&lt;/code&gt; always returns &lt;code&gt;0&lt;/code&gt;</description>
+  <highlighted_element>getPeriodCount</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/manifest/DashManifest.java</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash.manifest</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.manifest.DashManifest androidx.media3.exoplayer.dash.manifest.Period getPeriod(int index)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;getPeriod()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>getPeriod</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/ima/ImaAdsLoader.java</file>
+  <line>73</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.ima</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.ima.ImaAdsLoader.Builder androidx.media3.exoplayer.ima.ImaAdsLoader build()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;build()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>build</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin com.brentvatne.exoplayer.DRMManagerSpec getDRMManager()" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;getDRMManager()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>getDRMManager</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin androidx.media3.exoplayer.drm.DrmSessionManager overrideDrmSessionManager(com.brentvatne.common.api.Source source, androidx.media3.exoplayer.drm.DrmSessionManager drmSessionManager)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;overrideDrmSessionManager()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>overrideDrmSessionManager</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin androidx.media3.datasource.DataSource.Factory overrideMediaDataSourceFactory(com.brentvatne.common.api.Source source, androidx.media3.datasource.DataSource.Factory mediaDataSourceFactory)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;overrideMediaDataSourceFactory()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>overrideMediaDataSourceFactory</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>49</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin androidx.media3.exoplayer.source.MediaSource.Factory overrideMediaSourceFactory(com.brentvatne.common.api.Source source, androidx.media3.exoplayer.source.MediaSource.Factory mediaSourceFactory, androidx.media3.datasource.DataSource.Factory mediaDataSourceFactory)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;overrideMediaSourceFactory()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>overrideMediaSourceFactory</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>59</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin androidx.media3.common.MediaItem.Builder overrideMediaItemBuilder(com.brentvatne.common.api.Source source, androidx.media3.common.MediaItem.Builder mediaItemBuilder)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;overrideMediaItemBuilder()&lt;/code&gt; always returns &lt;code&gt;null&lt;/code&gt;</description>
+  <highlighted_element>overrideMediaItemBuilder</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/RNVExoplayerPlugin.kt</file>
+  <line>67</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.RNVExoplayerPlugin boolean shouldDisableCache(com.brentvatne.common.api.Source source)" />
+  <problem_class id="SameReturnValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method always returns the same value</problem_class>
+  <hints />
+  <description>Method &lt;code&gt;shouldDisableCache()&lt;/code&gt; always returns &lt;code&gt;false&lt;/code&gt;</description>
+  <highlighted_element>shouldDisableCache</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>18</length>
+</problem>
+</problems>

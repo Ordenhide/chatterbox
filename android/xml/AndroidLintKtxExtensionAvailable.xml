@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>69</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="AndroidLintKtxExtensionAvailable" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">KTX Extension Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;Add suffix &lt;code&gt;-ktx&lt;/code&gt; to enable the Kotlin extensions for this library&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.core:core:1.3.1&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>26</length>
+</problem>
+</problems>

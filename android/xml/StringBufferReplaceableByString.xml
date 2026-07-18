@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCProximitySensor.java</file>
+  <line>129</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCProximitySensor void logProximitySensorInfo()" />
+  <problem_class id="StringBufferReplaceableByString" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'StringBuilder' can be replaced with 'String'</problem_class>
+  <description>&lt;code&gt;StringBuilder info&lt;/code&gt; can be replaced with 'String' #loc</description>
+  <highlighted_element>info</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>4</length>
+</problem>
+</problems>

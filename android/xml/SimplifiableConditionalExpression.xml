@@ -1,0 +1,665 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java</file>
+  <line>171</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.ConnectivityReceiver com.facebook.react.bridge.WritableMap createConnectivityEventMap(java.lang.String requestedInterface)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;getConnectivityManager() == null ? true : getConnectivityManager().isActiveNetworkMetered()&lt;/code&gt; can be simplified to 'getConnectivityManager() == null || getConnectivityManager().isActiveNetworkMetered()' #loc</description>
+  <highlighted_element>getConnectivityManager() == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>38</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>49</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerDelegate.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerRootViewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>286</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule$3 void onReceive(android.content.Context context, android.content.Intent intent)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;(intent.getIntExtra(&quot;state&quot;, 0) == 1) ? true : false&lt;/code&gt; can be simplified to 'intent.getIntExtra(&quot;state&quot;, 0) == 1' #loc</description>
+  <highlighted_element>(intent.getIntExtra(&quot;state&quot;, 0) == 1)</highlighted_element>
+  <language>JAVA</language>
+  <offset>53</offset>
+  <length>37</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>287</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule$3 void onReceive(android.content.Context context, android.content.Intent intent)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;(intent.getIntExtra(&quot;microphone&quot;, 0) == 1) ? true : false&lt;/code&gt; can be simplified to 'intent.getIntExtra(&quot;microphone&quot;, 0) == 1' #loc</description>
+  <highlighted_element>(intent.getIntExtra(&quot;microphone&quot;, 0) == 1)</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java</file>
+  <line>131</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallProximityManager boolean getProximityIsNear()" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;(proximitySupported) ? proximitySensor.sensorReportsNearState() : false&lt;/code&gt; can be simplified to 'proximitySupported &amp;&amp; proximitySensor.sensorReportsNearState()' #loc</description>
+  <highlighted_element>(proximitySupported)</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>43</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java</file>
+  <line>67</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java</file>
+  <line>85</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>57</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>47</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java</file>
+  <line>93</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>79</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>61</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>54</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>58</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>57</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>65</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>53</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>66</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>59</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>69</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>72</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>75</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>81</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>46</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>93</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>114</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>123</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>126</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>129</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>144</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>67</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>147</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>47</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>50</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>37</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>53</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>56</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>71</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>42</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>95</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>52</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>101</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>104</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>53</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>110</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>46</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>119</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>67</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerDelegate.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderSubviewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>52</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerDelegate.java</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderSubviewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>67</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>48</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>54</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>62</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>65</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? false : (boolean) value&lt;/code&gt; can be simplified to 'value!=null &amp;&amp; (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>56</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SimplifiableConditionalExpression" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Simplifiable conditional expression</problem_class>
+  <description>&lt;code&gt;value == null ? true : (boolean) value&lt;/code&gt; can be simplified to 'value == null || (boolean) value' #loc</description>
+  <highlighted_element>value == null</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>13</length>
+</problem>
+</problems>

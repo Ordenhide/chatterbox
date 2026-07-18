@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyValue.kt</file>
+  <line>192</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.AnyValue java.lang.Object toAny()" />
+  <problem_class id="UnusedVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused variable</problem_class>
+  <description>Unused variable</description>
+  <highlighted_element>key</highlighted_element>
+  <language>kotlin</language>
+  <offset>46</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>137</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.image.ResourceIdHelper android.net.Uri getResourceUri(android.content.Context context, java.lang.String name)" />
+  <problem_class id="UnusedVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused variable</problem_class>
+  <description>Unused variable</description>
+  <highlighted_element>normalizedName</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>14</length>
+</problem>
+</problems>

@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>407</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule boolean onRequestPermissionsResult(int requestCode, java.lang.String[] permissions, int[] grantResults)" />
+  <problem_class id="RedundantExplicitType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obvious explicit type</problem_class>
+  <description>Explicitly given type is redundant here</description>
+  <highlighted_element>Int</highlighted_element>
+  <language>kotlin</language>
+  <offset>42</offset>
+  <length>3</length>
+</problem>
+</problems>

@@ -1,0 +1,16 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackFragment.kt</file>
+  <line>446</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackFragment.kt" />
+  <problem_class id="AndroidLintAlwaysShowAction" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Usage of showAsAction=always</problem_class>
+  <hints />
+  <description>&lt;html&gt;Prefer &quot;&lt;code&gt;SHOW_AS_ACTION_IF_ROOM&lt;/code&gt;&quot; instead of &quot;&lt;code&gt;SHOW_AS_ACTION_ALWAYS&lt;/code&gt;&quot;&lt;/html&gt;</description>
+  <highlighted_element>SHOW_AS_ACTION_ALWAYS</highlighted_element>
+  <language>kotlin</language>
+  <offset>41</offset>
+  <length>21</length>
+</problem>
+</problems>

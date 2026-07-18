@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreSerialize.java</file>
+  <line>372</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreSerialize com.facebook.react.bridge.WritableArray buildTypeMap(java.lang.Object value)" />
+  <problem_class id="ToArrayCallWithZeroLengthArrayArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'Collection.toArray()' call style</problem_class>
+  <description>Call to &lt;code&gt;toArray()&lt;/code&gt; with pre-sized array argument 'new Object[list.size()]' #loc</description>
+  <highlighted_element>toArray</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/webrtcutils/H264AndSoftwareVideoDecoderFactory.java</file>
+  <line>71</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.webrtcutils</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.webrtcutils.H264AndSoftwareVideoDecoderFactory org.webrtc.VideoCodecInfo[] getSupportedCodecs()" />
+  <problem_class id="ToArrayCallWithZeroLengthArrayArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'Collection.toArray()' call style</problem_class>
+  <description>Call to &lt;code&gt;toArray()&lt;/code&gt; with pre-sized array argument 'new VideoCodecInfo[codecs.size()]' #loc</description>
+  <highlighted_element>toArray</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/webrtcutils/H264AndSoftwareVideoEncoderFactory.java</file>
+  <line>71</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.webrtcutils</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.webrtcutils.H264AndSoftwareVideoEncoderFactory org.webrtc.VideoCodecInfo[] getSupportedCodecs()" />
+  <problem_class id="ToArrayCallWithZeroLengthArrayArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'Collection.toArray()' call style</problem_class>
+  <description>Call to &lt;code&gt;toArray()&lt;/code&gt; with pre-sized array argument 'new VideoCodecInfo[codecs.size()]' #loc</description>
+  <highlighted_element>toArray</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>7</length>
+</problem>
+</problems>

@@ -1,0 +1,67 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.diffplug.spotless:spotless-plugin-gradle than 7.0.4 is available: 8.2.1&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.diffplug.spotless:spotless-plugin-gradle:7.0.4&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/build.gradle</file>
+  <line>142</line>
+  <module>ChatterboxTemp.react-native-mmkv</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/build.gradle" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of io.github.zhongwuzw:mmkv than 2.2.4 is available: 2.2.4.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;io.github.zhongwuzw:mmkv:2.2.4&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>17</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-safe-area-context</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.diffplug.spotless:spotless-plugin-gradle than 6.11.0 is available: 8.2.1&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.diffplug.spotless:spotless-plugin-gradle:6.11.0&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.diffplug.spotless:spotless-plugin-gradle than 6.25.0 is available: 8.2.1&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.diffplug.spotless:spotless-plugin-gradle:6.25.0&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/build.gradle</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-webrtc</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/build.gradle" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of org.jitsi:webrtc than 111.+ is available: 124.0.0&lt;/html&gt;</description>
+  <highlighted_element>'org.jitsi:webrtc:111.+'</highlighted_element>
+  <language>Groovy</language>
+  <offset>8</offset>
+  <length>24</length>
+</problem>
+</problems>

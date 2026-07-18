@@ -1,0 +1,602 @@
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  Alert,
+  useColorScheme,
+} from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import {useAuth} from '../../contexts/AuthContext';
+import {getColors} from '../../theme/colors';
+import GlassView from '../../components/GlassView';
+import GlassScreen from '../../components/GlassScreen';
+import {reportError} from '../../services/telemetry';
+import {
+  acceptFriendRequest,
+  declineFriendRequest,
+  listenFriendRequests,
+  listenOutgoingFriendRequests,
+  listenFriends,
+  removeFriend,
+  sendFriendRequest,
+} from '../../services/friends';
+import {blockUser, listenBlockedByMe, listenBlockedMe, unblockUser} from '../../services/blocks';
+import {BlockRecord, Friend, FriendRequest, User} from '../../types';
+import {
+  createChat,
+  getChatsForUser,
+  getUserByEmail,
+  getUserById,
+  getUsersByIds,
+  searchUsersByEmailOrName,
+} from '../../services/firebaseChat';
+
+type UserMap = Record<string, User | null>;
+
+export default function FriendsScreen() {
+  const {user} = useAuth();
+  const navigation = useNavigation<any>();
+  const colors = getColors(useColorScheme());
+  const {t} = useTranslation();
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
+  const [blockedByMe, setBlockedByMe] = useState<BlockRecord[]>([]);
+  const [blockedMe, setBlockedMe] = useState<BlockRecord[]>([]);
+  const [userMap, setUserMap] = useState<UserMap>({});
+  const [targetUid, setTargetUid] = useState('');
+  const [targetEmail, setTargetEmail] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!user?.uid) return;
+      const unsubFriends = listenFriends(user.uid, setFriends);
+      const unsubRequests = listenFriendRequests(user.uid, setRequests);
+      const unsubOutgoing = listenOutgoingFriendRequests(user.uid, setOutgoingRequests);
+      const unsubBlockedByMe = listenBlockedByMe(user.uid, setBlockedByMe);
+      const unsubBlockedMe = listenBlockedMe(user.uid, setBlockedMe);
+      return () => {
+        unsubFriends();
+        unsubRequests();
+        unsubOutgoing();
+        unsubBlockedByMe();
+        unsubBlockedMe();
+      };
+    }, [user?.uid]),
+  );
+
+  useEffect(() => {
+    let active = true;
+    const loadUsers = async () => {
+      const ids = new Set<string>();
+      friends.forEach(friend => {
+        friend.userIds.forEach(id => ids.add(id));
+      });
+      requests.forEach(request => {
+        ids.add(request.fromId);
+        ids.add(request.toId);
+      });
+      outgoingRequests.forEach(request => {
+        ids.add(request.fromId);
+        ids.add(request.toId);
+      });
+      blockedByMe.forEach(record => ids.add(record.blockedId));
+      blockedMe.forEach(record => ids.add(record.blockerId));
+      ids.delete(user?.uid || '');
+      const missing = Array.from(ids).filter(id => id && !userMap[id]);
+      if (!missing.length) return;
+      const fetched = await getUsersByIds(missing);
+      if (!active) return;
+      if (Object.keys(fetched).length) {
+        setUserMap(prev => ({...prev, ...fetched}));
+      }
+    };
+    loadUsers();
+    return () => {
+      active = false;
+    };
+  }, [friends, requests, outgoingRequests, blockedByMe, blockedMe]);
+
+  const friendIds = useMemo(() => {
+    const ids = new Set<string>();
+    friends.forEach(friend => {
+      friend.userIds.forEach(id => ids.add(id));
+    });
+    return ids;
+  }, [friends]);
+
+  const blockedByMeIds = useMemo(() => new Set(blockedByMe.map(item => item.blockedId)), [blockedByMe]);
+  const blockedMeIds = useMemo(() => new Set(blockedMe.map(item => item.blockerId)), [blockedMe]);
+
+  const incomingIds = useMemo(() => new Set(requests.map(req => req.fromId)), [requests]);
+  const outgoingIds = useMemo(() => new Set(outgoingRequests.map(req => req.toId)), [outgoingRequests]);
+
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
+      setSearchResults([]);
+      setSearching(false);
+      return;
+    }
+
+    let active = true;
+    const timer = setTimeout(async () => {
+      try {
+        setSearching(true);
+        const results = await searchUsersByEmailOrName(trimmed, 5);
+        if (!active) return;
+        const filtered = results.filter(result => result.uid && result.uid !== user?.uid);
+        setSearchResults(filtered);
+      } catch (error) {
+        reportError(error, 'searchUsersByEmailOrName');
+        if (__DEV__) {
+          console.error('searchUsersByEmailOrName error:', error);
+        }
+        if (active) setSearchResults([]);
+      } finally {
+        if (active) setSearching(false);
+      }
+    }, 350);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [searchQuery, user?.uid]);
+
+  const formatTimestamp = (value: any) => {
+    const date = value?.toDate ? value.toDate() : typeof value === 'number' ? new Date(value) : null;
+    return date ? date.toLocaleString() : '';
+  };
+
+  const handleSendRequestByUid = async () => {
+    if (!user?.uid) return;
+    const trimmed = targetUid.trim();
+    if (!trimmed) return;
+    if (blockedByMeIds.has(trimmed) || blockedMeIds.has(trimmed)) {
+      Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedSend'));
+      return;
+    }
+    try {
+      await sendFriendRequest(user.uid, trimmed);
+      setTargetUid('');
+      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.requestSentBody'));
+    } catch (error) {
+      reportError(error, 'sendFriendRequest');
+      if (__DEV__) {
+        console.error('sendFriendRequest error:', error);
+      }
+      Alert.alert(t('friends.alerts.sendFailedTitle'), t('friends.alerts.sendFailedBody'));
+    }
+  };
+
+  const handleSendRequestByEmail = async () => {
+    if (!user?.uid) return;
+    const trimmedEmail = targetEmail.trim().toLowerCase();
+    if (!trimmedEmail) return;
+    try {
+      const target = await getUserByEmail(trimmedEmail);
+      if (!target) {
+        Alert.alert(t('friends.alerts.userNotFoundTitle'), t('friends.alerts.userNotFoundBody'));
+        return;
+      }
+      if (blockedByMeIds.has(target.uid) || blockedMeIds.has(target.uid)) {
+        Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedSend'));
+        return;
+      }
+      await sendFriendRequest(user.uid, target.uid);
+      setTargetEmail('');
+      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.requestSentBody'));
+    } catch (error) {
+      reportError(error, 'sendFriendRequestByEmail');
+      if (__DEV__) {
+        console.error('sendFriendRequestByEmail error:', error);
+      }
+      Alert.alert(t('friends.alerts.sendFailedTitle'), t('friends.alerts.sendFailedBody'));
+    }
+  };
+
+  const handleStartChat = async (otherId: string) => {
+    if (!user?.uid || !otherId) return;
+    if (blockedByMeIds.has(otherId) || blockedMeIds.has(otherId)) {
+      Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedChat'));
+      return;
+    }
+    try {
+      const existingChats = await getChatsForUser(user.uid);
+      const existing = existingChats.find(chat => {
+        const participants = chat.participants || [];
+        return participants.includes(user.uid) && participants.includes(otherId) && participants.length === 2;
+      });
+      if (existing) {
+        navigation.navigate('Chat', {
+          chatId: existing.id,
+          chatName: existing.name,
+        });
+        return;
+      }
+      const otherUser = userMap[otherId] || (await getUserById(otherId));
+      const displayName = otherUser?.displayName || otherUser?.email || t('headers.chat');
+      const chatId = await createChat([user.uid, otherId], displayName);
+      navigation.navigate('Chat', {
+        chatId,
+        chatName: displayName,
+      });
+    } catch (error) {
+      reportError(error, 'handleStartChat');
+      if (__DEV__) {
+        console.error('handleStartChat error:', error);
+      }
+      Alert.alert(t('friends.alerts.chatFailedTitle'), t('friends.alerts.chatFailedBody'));
+    }
+  };
+
+  const renderRequest = ({item}: {item: FriendRequest}) => {
+    const fromUser = userMap[item.fromId];
+    const name = fromUser?.displayName || fromUser?.email || item.fromId;
+    return (
+      <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+        <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
+        <Text style={[styles.cardMeta, {color: colors.textSecondary}]}>
+          {formatTimestamp(item.createdAt)}
+        </Text>
+        <View style={styles.cardActions}>
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.primary}]}
+            onPress={() => acceptFriendRequest(item.id, user?.uid || '')}>
+            <Text style={[styles.actionTextPrimary, {color: colors.textOnPrimary}]}>{t('friends.buttons.accept')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.surface}]}
+            onPress={() => declineFriendRequest(item.id, user?.uid || '')}>
+            <Text style={[styles.actionText, {color: colors.text}]}>
+              {t('friends.buttons.decline')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </GlassView>
+    );
+  };
+
+  const renderFriend = ({item}: {item: Friend}) => {
+    const otherId = item.userIds.find(id => id !== user?.uid) || '';
+    const otherUser = userMap[otherId];
+    const name = otherUser?.displayName || otherUser?.email || otherId;
+    return (
+      <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+        <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
+        <View style={styles.cardActions}>
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.primary}]}
+            onPress={() => handleStartChat(otherId)}>
+            <Text style={[styles.actionTextPrimary, {color: colors.textOnPrimary}]}>{t('friends.buttons.chat')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.surface}]}
+            onPress={() =>
+              Alert.alert(t('friends.alerts.removeTitle'), t('friends.alerts.removeBody'), [
+                {text: t('common.cancel'), style: 'cancel'},
+                {
+                  text: t('friends.buttons.remove'),
+                  style: 'destructive',
+                  onPress: () => removeFriend(user?.uid || '', otherId),
+                },
+              ])
+            }>
+            <Text style={[styles.actionText, {color: colors.text}]}>
+              {t('friends.buttons.remove')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.surface}]}
+            onPress={() =>
+              Alert.alert(t('friends.alerts.blockTitle'), t('friends.alerts.blockBody'), [
+                {text: t('common.cancel'), style: 'cancel'},
+                {
+                  text: t('friends.buttons.block'),
+                  style: 'destructive',
+                  onPress: async () => {
+                    await blockUser(user?.uid || '', otherId);
+                    await removeFriend(user?.uid || '', otherId);
+                  },
+                },
+              ])
+            }>
+            <Text style={[styles.actionText, {color: colors.text}]}>
+              {t('friends.buttons.block')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </GlassView>
+    );
+  };
+
+  const renderBlocked = ({item}: {item: BlockRecord}) => {
+    const blockedUser = userMap[item.blockedId];
+    const name = blockedUser?.displayName || blockedUser?.email || item.blockedId;
+    return (
+      <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+        <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
+        <TouchableOpacity
+          style={[styles.actionButton, {backgroundColor: colors.surface}]}
+          onPress={() => unblockUser(user?.uid || '', item.blockedId)}>
+          <Text style={[styles.actionText, {color: colors.text}]}>
+            {t('friends.buttons.unblock')}
+          </Text>
+        </TouchableOpacity>
+      </GlassView>
+    );
+  };
+
+  const renderOutgoing = ({item}: {item: FriendRequest}) => {
+    const toUser = userMap[item.toId];
+    const name = toUser?.displayName || toUser?.email || item.toId;
+    return (
+      <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+        <Text style={[styles.cardTitle, {color: colors.text}]}>
+          {t('friends.labels.pending', {name})}
+        </Text>
+        <Text style={[styles.cardMeta, {color: colors.textSecondary}]}>
+          {formatTimestamp(item.createdAt)}
+        </Text>
+        <TouchableOpacity
+          style={[styles.actionButton, {backgroundColor: colors.surface}]}
+          onPress={() => declineFriendRequest(item.id, user?.uid || '')}>
+          <Text style={[styles.actionText, {color: colors.text}]}>
+            {t('friends.buttons.cancel')}
+          </Text>
+        </TouchableOpacity>
+      </GlassView>
+    );
+  };
+
+  const renderSearchResult = ({item}: {item: User}) => {
+    const status = friendIds.has(item.uid)
+      ? 'friend'
+      : incomingIds.has(item.uid)
+      ? 'incoming'
+      : outgoingIds.has(item.uid)
+      ? 'pending'
+      : 'none';
+    return (
+      <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+        <Text style={[styles.cardTitle, {color: colors.text}]}>
+          {item.displayName || item.email || item.uid}
+        </Text>
+        {item.email ? (
+          <Text style={[styles.cardMeta, {color: colors.textSecondary}]}>{item.email}</Text>
+        ) : null}
+        {status === 'none' ? (
+          <TouchableOpacity
+            style={[styles.actionButton, {backgroundColor: colors.primary}]}
+            onPress={() => sendFriendRequest(user?.uid || '', item.uid)}>
+            <Text style={[styles.actionTextPrimary, {color: colors.textOnPrimary}]}>{t('friends.buttons.add')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={[styles.cardMeta, {color: colors.textSecondary}]}>
+            {status === 'friend'
+              ? t('friends.status.friend')
+              : status === 'incoming'
+              ? t('friends.status.incoming')
+              : t('friends.status.pending')}
+          </Text>
+        )}
+      </GlassView>
+    );
+  };
+
+  return (
+    <GlassScreen style={styles.container}>
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.addFriend')}</Text>
+      <View style={styles.row}>
+        <TextInput
+          style={[styles.input, {borderColor: colors.glassBorder, color: colors.text}]}
+          placeholder={t('friends.uidPlaceholder')}
+          placeholderTextColor={colors.textSecondary}
+          value={targetUid}
+          onChangeText={setTargetUid}
+          autoCapitalize="none"
+        />
+        <TouchableOpacity
+          style={[styles.sendButton, {backgroundColor: colors.primary}]}
+          onPress={handleSendRequestByUid}>
+          <Text style={[styles.sendText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.row}>
+        <TextInput
+          style={[styles.input, {borderColor: colors.glassBorder, color: colors.text}]}
+          placeholder={t('friends.emailPlaceholder')}
+          placeholderTextColor={colors.textSecondary}
+          value={targetEmail}
+          onChangeText={setTargetEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <TouchableOpacity
+          style={[styles.sendButton, {backgroundColor: colors.primary}]}
+          onPress={handleSendRequestByEmail}>
+          <Text style={[styles.sendText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.searchTitle')}</Text>
+      <TextInput
+        style={[styles.input, {borderColor: colors.glassBorder, color: colors.text}]}
+        placeholder={t('friends.searchPlaceholder')}
+        placeholderTextColor={colors.textSecondary}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        autoCapitalize="none"
+      />
+      <FlatList
+        data={searchResults}
+        keyExtractor={item => item.uid}
+        renderItem={renderSearchResult}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          searchQuery.trim().length ? (
+            searching ? (
+              <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+                {t('friends.search.searching')}
+              </Text>
+            ) : (
+              <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+                {t('friends.search.noMatches')}
+              </Text>
+            )
+          ) : (
+            <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+              {t('friends.search.prompt')}
+            </Text>
+          )
+        }
+      />
+
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.sections.requests')}</Text>
+      <FlatList
+        data={requests}
+        keyExtractor={item => item.id}
+        renderItem={renderRequest}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+            {t('friends.empty.requests')}
+          </Text>
+        }
+      />
+
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.sections.outgoing')}</Text>
+      <FlatList
+        data={outgoingRequests}
+        keyExtractor={item => item.id}
+        renderItem={renderOutgoing}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+            {t('friends.empty.outgoing')}
+          </Text>
+        }
+      />
+
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.sections.friends')}</Text>
+      <FlatList
+        data={friends}
+        keyExtractor={item => item.id}
+        renderItem={renderFriend}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+            {t('friends.empty.friends')}
+          </Text>
+        }
+      />
+
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.sections.blocked')}</Text>
+      <FlatList
+        data={blockedByMe}
+        keyExtractor={item => item.id}
+        renderItem={renderBlocked}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+            {t('friends.empty.blocked')}
+          </Text>
+        }
+      />
+    </GlassScreen>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    paddingBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  listContent: {
+    paddingBottom: 8,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  sendButton: {
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    justifyContent: 'center',
+  },
+  sendText: {
+    fontWeight: '600',
+  },
+  card: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  cardMeta: {
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  actionText: {
+    fontWeight: '600',
+  },
+  actionTextPrimary: {
+    fontWeight: '600',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+});
+

@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1857</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule com.facebook.react.bridge.WritableMap getAudioDeviceStatusMap()" />
+  <problem_class id="StringConcatenationInLoops" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">String concatenation in loop</problem_class>
+  <description>String concatenation &lt;code&gt;+=&lt;/code&gt; in loop #loc</description>
+  <highlighted_element>+=</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>2</length>
+</problem>
+</problems>

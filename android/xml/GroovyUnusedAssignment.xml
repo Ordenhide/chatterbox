@@ -1,0 +1,38 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-firebase_auth</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle" />
+  <problem_class id="GroovyUnusedAssignment" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused assignment</problem_class>
+  <description>Assignment is not used</description>
+  <highlighted_element>jsonMinSdk</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>91</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="GroovyUnusedAssignment" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused assignment</problem_class>
+  <description>Assignment is not used</description>
+  <highlighted_element>patch</highlighted_element>
+  <language>Groovy</language>
+  <offset>23</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>111</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="GroovyUnusedAssignment" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused assignment</problem_class>
+  <description>Assignment is not used</description>
+  <highlighted_element>REACT_NATIVE_MINOR_VERSION</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>26</length>
+</problem>
+</problems>

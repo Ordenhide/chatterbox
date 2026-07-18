@@ -1,0 +1,359 @@
+{
+  "app": {
+    "name": "Chatterbox"
+  },
+  "common": {
+    "continue": "Weiter",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "error": "Fehler",
+    "ok": "OK",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "post": "Veröffentlichen",
+    "refresh": "Aktualisieren",
+    "send": "Senden",
+    "copy": "Kopieren",
+    "import": "Importieren",
+    "export": "Exportieren",
+    "new": "Neu",
+    "update": "Aktualisieren",
+    "remove": "Entfernen",
+    "accept": "Akzeptieren",
+    "decline": "Ablehnen",
+    "justNow": "Gerade eben",
+    "tapToRetry": "Tippen zum erneuten Versuch."
+  },
+  "tabs": {
+    "chats": "Chats",
+    "moments": "Momente",
+    "profile": "Profil"
+  },
+  "headers": {
+    "chats": "Chats",
+    "newChat": "Neuer Chat",
+    "chat": "Chat",
+    "media": "Medien",
+    "chatSettings": "Chat-Einstellungen",
+    "call": "Anruf",
+    "moments": "Momente",
+    "friends": "Freunde"
+  },
+  "auth": {
+    "login": {
+      "subtitleVariant": "Willkommen zurück — lass uns chatten",
+      "subtitleDefault": "Anmelden, um fortzufahren",
+      "emailPlaceholder": "E-Mail",
+      "passwordPlaceholder": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "reset": "Zurücksetzen",
+      "noAccount": "Noch kein Konto?"
+    },
+    "signup": {
+      "title": "Konto erstellen",
+      "subtitle": "Registrieren Sie sich, um zu beginnen",
+      "displayNamePlaceholder": "Anzeigename (optional)",
+      "passwordPlaceholder": "Passwort (min. 6 Zeichen)",
+      "hasAccount": "Bereits ein Konto?"
+    },
+    "errors": {
+      "missingFields": "Bitte füllen Sie alle Felder aus",
+      "missingEmailPassword": "Bitte geben Sie E-Mail und Passwort ein",
+      "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "loginFailed": "Anmeldung fehlgeschlagen",
+      "signUpFailed": "Registrierung fehlgeschlagen",
+      "generic": "Ein Fehler ist aufgetreten",
+      "userNotFound": "Kein Konto mit dieser E-Mail gefunden",
+      "wrongPassword": "Falsches Passwort",
+      "invalidEmail": "Ungültige E-Mail-Adresse",
+      "userDisabled": "Dieses Konto wurde deaktiviert",
+      "emailInUse": "Ein Konto mit dieser E-Mail existiert bereits",
+      "weakPassword": "Das Passwort ist zu schwach",
+      "networkError": "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung",
+      "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut"
+    },
+    "reset": {
+      "title": "Passwort zurücksetzen",
+      "enterEmail": "Bitte geben Sie zuerst Ihre E-Mail oben ein.",
+      "emailSentTitle": "E-Mail gesendet",
+      "emailSentBody": "Prüfen Sie Ihr Postfach auf Anweisungen zum Zurücksetzen des Passworts.",
+      "failedTitle": "Zurücksetzen fehlgeschlagen",
+      "failedBody": "E-Mail zum Zurücksetzen konnte nicht gesendet werden."
+    },
+    "session": {
+      "title": "Abgemeldet",
+      "message": "Dieses Konto wurde auf einem anderen Gerät angemeldet."
+    }
+  },
+  "chatList": {
+    "title": "Chats",
+    "searchPlaceholder": "Chats suchen",
+    "empty": "Noch keine Chats.",
+    "offlineEmpty": "Offline — zeige gecachte Chats.",
+    "actionsTitle": "Chat-Aktionen",
+    "pin": "Anheften",
+    "unpin": "Loslösen"
+  },
+  "newChat": {
+    "heading": "Unterhaltung starten",
+    "subheading": "Geben Sie die E-Mail der Person ein, mit der Sie chatten möchten.",
+    "recipientEmail": "E-Mail des Empfängers",
+    "emailPlaceholder": "freund@beispiel.com",
+    "chatNameLabel": "Chat-Name (optional)",
+    "chatNamePlaceholder": "Chat-Name",
+    "helpText": "Der Empfänger muss ein bestehendes Konto haben.",
+    "creating": "Wird erstellt...",
+    "startChat": "Chat starten",
+    "errors": {
+      "enterEmail": "Bitte geben Sie eine E-Mail-Adresse ein",
+      "userNotFoundTitle": "Benutzer nicht gefunden",
+      "userNotFoundBody": "Diese E-Mail existiert nicht auf diesem Gerät. Erstellen Sie zuerst ein anderes Konto und versuchen Sie es dann erneut.",
+      "selfChat": "Sie können keinen Chat mit sich selbst starten",
+      "createFailed": "Chat konnte nicht erstellt werden"
+    }
+  },
+  "moments": {
+    "title": "Momente",
+    "friends": "Freunde",
+    "post": "Veröffentlichen",
+    "refresh": "Aktualisieren",
+    "empty": "Noch keine Momente.",
+    "sharedMoment": "Einen Moment geteilt",
+    "visibilityLabel": "Sichtbarkeit: {{visibility}}",
+    "actions": {
+      "like": "Gefällt mir",
+      "liked": "Gefällt mir",
+      "comment": "Kommentieren",
+      "share": "Teilen"
+    },
+    "visibility": {
+      "public": "Öffentlich",
+      "friends": "Freunde",
+      "private": "Privat"
+    },
+    "modal": {
+      "newTitle": "Neuer Moment",
+      "editTitle": "Moment bearbeiten",
+      "placeholder": "Woran denkst du?",
+      "addMedia": "Foto/Video hinzufügen",
+      "changeMedia": "Medien ändern",
+      "uploading": "Hochladen {{percent}}%"
+    },
+    "alerts": {
+      "deleteTitle": "Moment löschen",
+      "deleteConfirm": "Diesen Moment löschen?",
+      "postFailed": "Moment konnte nicht veröffentlicht werden.",
+      "deleteFailed": "Moment konnte nicht gelöscht werden.",
+      "commentFailed": "Kommentar konnte nicht hinzugefügt werden.",
+      "shareSuccessTitle": "Geteilt",
+      "shareSuccessBody": "Moment an Chat gesendet.",
+      "shareFailedTitle": "Fehler",
+      "shareFailedBody": "Moment konnte nicht geteilt werden.",
+      "refreshFailed": "Momente konnten nicht aktualisiert werden."
+    },
+    "comments": {
+      "title": "Kommentare",
+      "placeholder": "Kommentar hinzufügen...",
+      "empty": "Noch keine Kommentare.",
+      "post": "Veröffentlichen",
+      "close": "Schließen"
+    },
+    "share": {
+      "title": "Im Chat teilen",
+      "close": "Schließen"
+    }
+  },
+  "friends": {
+    "addFriend": "Freund hinzufügen",
+    "uidPlaceholder": "Benutzer-UID eingeben",
+    "emailPlaceholder": "Benutzer-E-Mail eingeben",
+    "searchTitle": "Suchen (E-Mail oder Name)",
+    "searchPlaceholder": "Nach E-Mail oder Anzeigename suchen",
+    "sections": {
+      "requests": "Anfragen",
+      "outgoing": "Ausstehend",
+      "friends": "Freunde",
+      "blocked": "Blockiert"
+    },
+    "empty": {
+      "requests": "Keine Anfragen.",
+      "outgoing": "Keine ausstehenden Anfragen.",
+      "friends": "Noch keine Freunde.",
+      "blocked": "Keine blockierten Benutzer."
+    },
+    "search": {
+      "searching": "Suche…",
+      "noMatches": "Keine Treffer.",
+      "prompt": "Tippen zum Suchen."
+    },
+    "buttons": {
+      "accept": "Akzeptieren",
+      "decline": "Ablehnen",
+      "chat": "Chat",
+      "remove": "Entfernen",
+      "block": "Blockieren",
+      "unblock": "Entsperren",
+      "add": "Hinzufügen",
+      "cancel": "Abbrechen"
+    },
+    "status": {
+      "friend": "Bereits Freunde",
+      "incoming": "Eingehende Anfrage",
+      "pending": "Anfrage ausstehend"
+    },
+    "labels": {
+      "pending": "Ausstehend: {{name}}"
+    },
+    "alerts": {
+      "blockedTitle": "Blockiert",
+      "blockedSend": "Sie können keine Freundschaftsanfrage an diesen Benutzer senden.",
+      "blockedChat": "Sie können keinen Chat mit diesem Benutzer starten.",
+      "requestSentTitle": "Anfrage gesendet",
+      "requestSentBody": "Freundschaftsanfrage wurde gesendet.",
+      "userNotFoundTitle": "Benutzer nicht gefunden",
+      "userNotFoundBody": "Kein Konto stimmt mit dieser E-Mail überein.",
+      "sendFailedTitle": "Fehler",
+      "sendFailedBody": "Freundschaftsanfrage konnte nicht gesendet werden.",
+      "chatFailedTitle": "Fehler",
+      "chatFailedBody": "Chat konnte nicht gestartet werden.",
+      "removeTitle": "Freund entfernen",
+      "removeBody": "Diesen Freund entfernen?",
+      "blockTitle": "Benutzer blockieren",
+      "blockBody": "Diesen Benutzer blockieren? Dies entfernt ihn aus Ihren Freunden."
+    }
+  },
+  "profile": {
+    "defaultName": "Benutzer",
+    "memberBadge": "Mitglied",
+    "visibilityTitle": "Profil-Sichtbarkeit",
+    "visibilityDescription": "Steuern Sie, wer Ihre Profildetails sehen kann.",
+    "defaultVisibilityTitle": "Standard-Moment-Sichtbarkeit",
+    "defaultVisibilityDescription": "Legt die Standard-Zielgruppe fest, wenn Sie einen neuen Moment erstellen.",
+    "languageTitle": "Sprache",
+    "languageDescription": "Wählen Sie Ihre bevorzugte Sprache.",
+    "buttons": {
+      "feedback": "Feedback senden",
+      "export": "Backup exportieren",
+      "import": "Backup importieren",
+      "signOut": "Abmelden"
+    },
+    "modals": {
+      "exportTitle": "Backup exportieren",
+      "importTitle": "Backup importieren",
+      "feedbackTitle": "Feedback",
+      "importPlaceholder": "Backup-JSON hier einfügen",
+      "feedbackPlaceholder": "Teilen Sie uns mit, was funktioniert und was nicht..."
+    },
+    "alerts": {
+      "copiedTitle": "Kopiert",
+      "copiedBody": "Backup-JSON in Zwischenablage kopiert",
+      "importSuccessTitle": "Erfolg",
+      "importSuccessBody": "Backup importiert",
+      "importFailedTitle": "Fehler",
+      "importFailedBody": "Ungültiges oder inkompatibles Backup-JSON.",
+      "exportFailedTitle": "Fehler",
+      "exportFailedBody": "Backup konnte nicht exportiert werden.",
+      "feedbackSuccessTitle": "Danke!",
+      "feedbackSuccessBody": "Ihr Feedback wurde übermittelt.",
+      "feedbackFailedTitle": "Fehler",
+      "feedbackFailedBody": "Feedback konnte nicht gesendet werden.",
+      "signOutTitle": "Abmelden",
+      "signOutBody": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+      "signOutFailed": "Abmeldung fehlgeschlagen",
+      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden.",
+      "momentVisibilityUpdateFailed": "Standard-Moment-Sichtbarkeit konnte nicht aktualisiert werden."
+    }
+  },
+  "notifications": {
+    "newMessageTitle": "Neue Nachricht",
+    "newMessageBody": "Sie haben eine neue Nachricht."
+  },
+  "calls": {
+    "incomingTitle": "Eingehender Anruf",
+    "voice": "Sprachanruf",
+    "video": "Videoanruf"
+  },
+  "call": {
+    "connecting": "Verbinden...",
+    "active": "Im Anruf",
+    "ended": "Anruf beendet",
+    "audioOnly": "Nur Audio",
+    "waitingRemote": "Warte auf Remote...",
+    "unmute": "Stummschaltung aufheben",
+    "mute": "Stumm",
+    "speakerOn": "Lautsprecher an",
+    "speakerOff": "Lautsprecher aus",
+    "videoOff": "Video aus",
+    "videoOn": "Video an",
+    "end": "Beenden",
+    "errors": {
+      "startFailed": "Anruf konnte nicht gestartet werden",
+      "videoFailed": "Video konnte nicht aktiviert werden"
+    }
+  },
+  "chatMedia": {
+    "seconds": "{{count}}s"
+  },
+  "chatSettings": {
+    "notifications": "Benachrichtigungen",
+    "theme": "Design",
+    "muteChat": "Chat stummschalten",
+    "unmuteChat": "Chat-Ton aktivieren",
+    "recipientName": "Name des Empfängers",
+    "setCustomName": "Benutzerdefinierten Namen festlegen",
+    "nameWithValue": "Name: {{name}}",
+    "exportChat": "Chat exportieren (JSON)",
+    "importChat": "Chat importieren (JSON)",
+    "cleanupMedia": "Medien aufräumen (30 Tage)",
+    "deleteChat": "Chat löschen",
+    "data": "Daten",
+    "exportModalTitle": "Chat exportieren",
+    "copy": "Kopieren",
+    "close": "Schließen",
+    "importModalTitle": "Chat importieren",
+    "pasteJsonPlaceholder": "Chat-JSON hier einfügen",
+    "import": "Importieren",
+    "cancel": "Abbrechen",
+    "editRecipientName": "Namen des Empfängers bearbeiten",
+    "enterCustomNamePlaceholder": "Benutzerdefinierten Namen eingeben",
+    "save": "Speichern",
+    "clearName": "Namen löschen",
+    "alerts": {
+      "importSuccessTitle": "Erfolg",
+      "importSuccessBody": "Chat importiert",
+      "invalidJsonTitle": "Fehler",
+      "invalidJsonBody": "Ungültiges JSON",
+      "cleanupTitle": "Aufräumen",
+      "cleanupBody": "Medien älter als 30 Tage entfernen?",
+      "cleanupCancel": "Abbrechen",
+      "cleanupRemove": "Entfernen",
+      "cleanupNotSupportedTitle": "Info",
+      "cleanupNotSupportedBody": "Medien-Aufräumen wird auf Firebase noch nicht unterstützt.",
+      "deleteTitle": "Chat löschen",
+      "deleteBody": "Dies löscht permanent den gesamten Chat-Verlauf für alle Teilnehmer.",
+      "deleteCancel": "Abbrechen",
+      "deleteConfirm": "Löschen",
+      "deleteFailedTitle": "Fehler",
+      "deleteFailedBody": "Chat konnte nicht gelöscht werden",
+      "copiedTitle": "Kopiert",
+      "copiedBody": "Chat-JSON in Zwischenablage kopiert"
+    }
+  },
+  "burn": {
+    "tapToReveal": "Tippen zum Anzeigen",
+    "messageBurned": "Nachricht zerstört",
+    "burnsIn": "Zerstört sich in {{duration}}",
+    "burnAfterReading": "Nach Lesen zerstören ({{duration}})",
+    "burnTimerTitle": "Zerstörungs-Timer",
+    "burnTimerDescription": "Die Nachricht wird nach dem Lesen zerstört",
+    "durations": {
+      "5s": "5s",
+      "10s": "10s",
+      "30s": "30s",
+      "1m": "1m",
+      "5m": "5m"
+    }
+  }
+}

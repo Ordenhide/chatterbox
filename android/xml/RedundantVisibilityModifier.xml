@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>48</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromCommand(java.util.List&lt;java.lang.String&gt; command, java.io.File workingDirectory, org.gradle.api.file.FileCollection lockFiles)" />
+  <problem_class id="RedundantVisibilityModifier" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant visibility modifier</problem_class>
+  <description>Redundant 'public' modifier</description>
+  <highlighted_element>public</highlighted_element>
+  <language>kotlin</language>
+  <offset>2</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/settings-plugin/src/main/kotlin/com/facebook/react/ReactSettingsExtension.kt</file>
+  <line>86</line>
+  <module>gradle-plugin-root.settings-plugin.main</module>
+  <package>com.facebook.react</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.ReactSettingsExtension void autolinkLibrariesFromConfigFile(java.io.File autolinkConfigFile)" />
+  <problem_class id="RedundantVisibilityModifier" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant visibility modifier</problem_class>
+  <description>Redundant 'public' modifier</description>
+  <highlighted_element>public</highlighted_element>
+  <language>kotlin</language>
+  <offset>2</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/SubtitleStyle.kt</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.api.SubtitleStyle SubtitleStyle()" />
+  <problem_class id="RedundantVisibilityModifier" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant visibility modifier</problem_class>
+  <description>Redundant 'public' modifier</description>
+  <highlighted_element>public</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>6</length>
+</problem>
+</problems>

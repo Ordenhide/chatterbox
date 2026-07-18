@@ -1,0 +1,30 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>398</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java" />
+  <problem_class id="AndroidLintMissingPermission" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Missing Permissions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with &lt;code&gt;checkPermission&lt;/code&gt;) or explicitly handle a potential &lt;code&gt;SecurityException&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>bluetoothHeadset.getConnectedDevices()</highlighted_element>
+  <language>JAVA</language>
+  <offset>47</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>402</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java" />
+  <problem_class id="AndroidLintMissingPermission" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Missing Permissions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with &lt;code&gt;checkPermission&lt;/code&gt;) or explicitly handle a potential &lt;code&gt;SecurityException&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>device.getBluetoothClass()</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>26</length>
+</problem>
+</problems>

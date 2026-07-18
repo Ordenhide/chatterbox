@@ -1,0 +1,67 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="ArraysAsListWithZeroOrOneArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'Arrays.asList()' with too few arguments</problem_class>
+  <description>Call to &lt;code&gt;asList()&lt;/code&gt; with only one argument #loc</description>
+  <highlighted_element>asList</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/paper/java/com/th3rdwave/safeareacontext/NativeSafeAreaContextSpec.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.th3rdwave.safeareacontext</package>
+  <entry_point TYPE="method" FQNAME="com.th3rdwave.safeareacontext.NativeSafeAreaContextSpec java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="ArraysAsListWithZeroOrOneArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'Arrays.asList()' with too few arguments</problem_class>
+  <description>Call to &lt;code&gt;asList()&lt;/code&gt; with only one argument #loc</description>
+  <highlighted_element>asList</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>2146</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void selectTextTrackInternal(java.lang.String type, java.lang.String value)" />
+  <problem_class id="ArraysAsListWithZeroOrOneArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'Arrays.asList()' with too few arguments</problem_class>
+  <description>Call to &lt;code&gt;asList()&lt;/code&gt; with only one argument #loc</description>
+  <highlighted_element>asList</highlighted_element>
+  <language>JAVA</language>
+  <offset>53</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>14</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="ArraysAsListWithZeroOrOneArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'Arrays.asList()' with too few arguments</problem_class>
+  <description>Call to &lt;code&gt;asList()&lt;/code&gt; with only one argument #loc</description>
+  <highlighted_element>asList</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="ArraysAsListWithZeroOrOneArgument" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'Arrays.asList()' with too few arguments</problem_class>
+  <description>Call to &lt;code&gt;asList()&lt;/code&gt; with only one argument #loc</description>
+  <highlighted_element>asList</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>6</length>
+</problem>
+</problems>

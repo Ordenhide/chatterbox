@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/test/java/com/reactnativecommunity/asyncstorage/next/StorageTest.kt</file>
+  <line>94</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.unitTest</module>
+  <package>com.reactnativecommunity.asyncstorage.next</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.next.AsyncStorageAccessTest VALUE_INITIAL" />
+  <problem_class id="PrivatePropertyName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Private property naming convention</problem_class>
+  <description>Private property name &lt;code&gt;VALUE_INITIAL&lt;/code&gt; should not contain underscores in the middle or the end #loc</description>
+  <highlighted_element>VALUE_INITIAL</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/test/java/com/reactnativecommunity/asyncstorage/next/StorageTest.kt</file>
+  <line>110</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.unitTest</module>
+  <package>com.reactnativecommunity.asyncstorage.next</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.next.AsyncStorageAccessTest VALUE_OVERRIDES" />
+  <problem_class id="PrivatePropertyName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Private property naming convention</problem_class>
+  <description>Private property name &lt;code&gt;VALUE_OVERRIDES&lt;/code&gt; should not contain underscores in the middle or the end #loc</description>
+  <highlighted_element>VALUE_OVERRIDES</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/test/java/com/reactnativecommunity/asyncstorage/next/StorageTest.kt</file>
+  <line>125</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.unitTest</module>
+  <package>com.reactnativecommunity.asyncstorage.next</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.next.AsyncStorageAccessTest VALUE_MERGED" />
+  <problem_class id="PrivatePropertyName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Private property naming convention</problem_class>
+  <description>Private property name &lt;code&gt;VALUE_MERGED&lt;/code&gt; should not contain underscores in the middle or the end #loc</description>
+  <highlighted_element>VALUE_MERGED</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>12</length>
+</problem>
+</problems>

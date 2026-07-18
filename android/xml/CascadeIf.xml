@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>477</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler void updatePointerData(android.view.MotionEvent event, android.view.MotionEvent sourceEvent)" />
+  <problem_class id="CascadeIf" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Cascade 'if' can be replaced with 'when'</problem_class>
+  <description>Cascade 'if' should be replaced with 'when'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaViewShadowNode.kt</file>
+  <line>86</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.th3rdwave.safeareacontext</package>
+  <entry_point TYPE="method" FQNAME="com.th3rdwave.safeareacontext.SafeAreaViewShadowNode float getEdgeValue(com.th3rdwave.safeareacontext.SafeAreaViewEdgeModes edgeMode, float insetValue, float edgeValue)" />
+  <problem_class id="CascadeIf" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Cascade 'if' can be replaced with 'when'</problem_class>
+  <description>Cascade 'if' should be replaced with 'when'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenContainer.kt</file>
+  <line>186</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenContainer void setupFragmentManager()" />
+  <problem_class id="CascadeIf" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Cascade 'if' can be replaced with 'when'</problem_class>
+  <description>Cascade 'if' should be replaced with 'when'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenFragment.kt</file>
+  <line>342</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenFragment.Companion short getCoalescingKey(float progress)" />
+  <problem_class id="CascadeIf" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Cascade 'if' can be replaced with 'when'</problem_class>
+  <description>Cascade 'if' should be replaced with 'when'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>2</length>
+</problem>
+</problems>

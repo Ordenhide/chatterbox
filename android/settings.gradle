@@ -1,0 +1,28 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+  includeBuild("../node_modules/@react-native/gradle-plugin")
+}
+
+plugins {
+  id("com.facebook.react.settings")
+}
+
+// Resolve npx path so Gradle (e.g. from Android Studio) can find it when PATH is minimal.
+def nodeDirs = ["/usr/local/bin", "/opt/homebrew/bin"]
+def npxPath = null
+for (d in nodeDirs) {
+  def f = new File("${d}/npx")
+  if (f.exists()) { npxPath = f.absolutePath; break }
+}
+if (npxPath == null) npxPath = "npx"
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  ex.autolinkLibrariesFromCommand([npxPath, "@react-native-community/cli", "config"])
+}
+
+rootProject.name = 'ChatterboxTemp'
+include ':app'

@@ -1,0 +1,30 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>483</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java" />
+  <problem_class id="AndroidLintUnspecifiedRegisterReceiverFlag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Missing registerReceiver() exported flag</problem_class>
+  <hints />
+  <description>&lt;html&gt;&lt;code&gt;receiver&lt;/code&gt; is missing &lt;code&gt;RECEIVER_EXPORTED&lt;/code&gt; or &lt;code&gt;RECEIVER_NOT_EXPORTED&lt;/code&gt; flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint&lt;/html&gt;</description>
+  <highlighted_element>apprtcContext.registerReceiver(receiver, filter)</highlighted_element>
+  <language>JAVA</language>
+  <offset>6</offset>
+  <length>48</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1663</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintUnspecifiedRegisterReceiverFlag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Missing registerReceiver() exported flag</problem_class>
+  <hints />
+  <description>&lt;html&gt;&lt;code&gt;receiver&lt;/code&gt; is missing &lt;code&gt;RECEIVER_EXPORTED&lt;/code&gt; or &lt;code&gt;RECEIVER_NOT_EXPORTED&lt;/code&gt; flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint&lt;/html&gt;</description>
+  <highlighted_element>reactContext.registerReceiver(receiver, filter)</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>47</length>
+</problem>
+</problems>

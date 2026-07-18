@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/TimedMetadata.kt</file>
+  <line>7</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.api.TimedMetadata TimedMetadata(java.lang.String _identifier, java.lang.String _value)" />
+  <problem_class id="LocalVariableName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Local variable naming convention</problem_class>
+  <description>Local variable name &lt;code&gt;_identifier&lt;/code&gt; should start with a lowercase letter #loc</description>
+  <highlighted_element>_identifier</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/TimedMetadata.kt</file>
+  <line>7</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.api.TimedMetadata TimedMetadata(java.lang.String _identifier, java.lang.String _value)" />
+  <problem_class id="LocalVariableName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Local variable naming convention</problem_class>
+  <description>Local variable name &lt;code&gt;_value&lt;/code&gt; should start with a lowercase letter #loc</description>
+  <highlighted_element>_value</highlighted_element>
+  <language>kotlin</language>
+  <offset>49</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/toolbox/DebugLog.kt</file>
+  <line>23</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.toolbox</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.toolbox.DebugLog void setConfig(int _level, boolean _displayThread)" />
+  <problem_class id="LocalVariableName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Local variable naming convention</problem_class>
+  <description>Local variable name &lt;code&gt;_level&lt;/code&gt; should start with a lowercase letter #loc</description>
+  <highlighted_element>_level</highlighted_element>
+  <language>kotlin</language>
+  <offset>18</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/toolbox/DebugLog.kt</file>
+  <line>23</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.toolbox</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.toolbox.DebugLog void setConfig(int _level, boolean _displayThread)" />
+  <problem_class id="LocalVariableName" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Local variable naming convention</problem_class>
+  <description>Local variable name &lt;code&gt;_displayThread&lt;/code&gt; should start with a lowercase letter #loc</description>
+  <highlighted_element>_displayThread</highlighted_element>
+  <language>kotlin</language>
+  <offset>31</offset>
+  <length>14</length>
+</problem>
+</problems>

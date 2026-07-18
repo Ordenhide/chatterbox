@@ -1,0 +1,38 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle" />
+  <problem_class id="DifferentStdlibGradleVersion" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Kotlin library and Gradle plugin versions are different</problem_class>
+  <description>Plugin version (1.9.0) is not the same as library version (2.1.20)</description>
+  <highlighted_element>implementation &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7:${safeExtGet('kotlinVersion', project.ext.ko...</highlighted_element>
+  <language>Groovy</language>
+  <offset>2</offset>
+  <length>114</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>251</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="DifferentStdlibGradleVersion" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Kotlin library and Gradle plugin versions are different</problem_class>
+  <description>Plugin version (1.9.0) is not the same as library version (2.1.20)</description>
+  <highlighted_element>implementation &quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>67</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle</file>
+  <line>123</line>
+  <module>ChatterboxTemp.react-native-safe-area-context</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle" />
+  <problem_class id="DifferentStdlibGradleVersion" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Kotlin library and Gradle plugin versions are different</problem_class>
+  <description>Plugin version (1.9.0) is not the same as library version (2.1.20)</description>
+  <highlighted_element>implementation &quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>67</length>
+</problem>
+</problems>

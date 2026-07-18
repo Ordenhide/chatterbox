@@ -1,0 +1,547 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java</file>
+  <line>251</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &gt;= android.os.Build.VERSION_CODES.LOLLIPOP</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>75</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoModule.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>@TargetApi(Build.VERSION_CODES.N)</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/main/AndroidManifest.xml</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/main/AndroidManifest.xml" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>tools:targetApi=&quot;n&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>6</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java</file>
+  <line>139</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java</file>
+  <line>143</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/utils/ReactNativeFirebaseUtilsModule.java</file>
+  <line>154</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.utils</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/utils/ReactNativeFirebaseUtilsModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>51</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>748</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>768</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>17</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>54</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 23&lt;/html&gt;</description>
+  <highlighted_element>@TargetApi(Build.VERSION_CODES.M)</highlighted_element>
+  <language>kotlin</language>
+  <offset>2</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>346</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>10</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>360</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>37</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>415</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>10</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>147</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP_MR1</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>57</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>93</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &gt;= 21</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>784</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &gt;= 23</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>788</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &gt;= 21</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>791</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &gt;= 20</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1720</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java</file>
+  <line>76</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>android.os.Build.VERSION.SDK_INT &lt; 17</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>37</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt</file>
+  <line>84</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <package>com.zoontek.rnlocalize</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt</file>
+  <line>92</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <package>com.zoontek.rnlocalize</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaUtils.kt</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.th3rdwave.safeareacontext</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaUtils.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 23&lt;/html&gt;</description>
+  <highlighted_element>@RequiresApi(Build.VERSION_CODES.M)</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaUtils.kt</file>
+  <line>57</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.th3rdwave.safeareacontext</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaUtils.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M&lt;/code&gt; is always true here (&lt;code&gt;SDK_INT&lt;/code&gt; ≥ 24 and &amp;lt; 30)&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenWindowTraits.kt</file>
+  <line>87</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenWindowTraits.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>51</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/toolbox/DebugLog.kt</file>
+  <line>66</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.toolbox</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/toolbox/DebugLog.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.FROYO</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>82</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>177</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>47</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>179</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>@RequiresApi(Build.VERSION_CODES.N)</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>210</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;Build.VERSION.SDK_INT &amp;lt; Build.VERSION_CODES.O&lt;/code&gt; is always true here (&lt;code&gt;SDK_INT&lt;/code&gt; ≥ 24 and &amp;lt; 26)&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.O</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>210</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N&lt;/code&gt; is always true here (&lt;code&gt;SDK_INT&lt;/code&gt; ≥ 24 and &amp;lt; 26)&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>kotlin</language>
+  <offset>61</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>2443</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>JAVA</language>
+  <offset>44</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>2519</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/react/VideoDecoderInfoModule.kt</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/react/VideoDecoderInfoModule.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.JELLY_BEAN_MR2</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/react/VideoDecoderInfoModule.kt</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/react/VideoDecoderInfoModule.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is never &amp;lt; 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.LOLLIPOP</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/receiver/PictureInPictureReceiver.kt</file>
+  <line>58</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.receiver</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/receiver/PictureInPictureReceiver.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>62</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/EglUtils.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/EglUtils.java" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;SDK_INT&lt;/code&gt; is always &gt;= 24&lt;/html&gt;</description>
+  <highlighted_element>VERSION.SDK_INT &gt;= 18</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>21</length>
+</problem>
+</problems>

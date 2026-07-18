@@ -1,0 +1,48 @@
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        // NDK 25. For nitro-modules C++20 errors, install NDK 27 via Android Studio (see android/ANDROID_NDK.md)
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
+        // Tell react-native-gesture-handler (and similar libs) where React Native
+        // lives, so they skip the `node` CLI call that fails in IDE-launched daemons.
+        REACT_NATIVE_NODE_MODULES_DIR = "$rootDir/../node_modules/react-native"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.9.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.gms:google-services:4.4.2")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.3")
+    }
+}
+
+plugins {
+    id("com.facebook.react.rootproject")
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "$rootDir/../node_modules/react-native/android" }
+        maven { url 'https://www.jitpack.io' }
+
+    }
+}
+
+subprojects {
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+            gradlePluginPortal()
+        }
+    }
+}

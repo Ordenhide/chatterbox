@@ -1,0 +1,26 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>71</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="GrMethodMayBeStatic" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method can be made 'static'</problem_class>
+  <description>Method may be static</description>
+  <highlighted_element>getExternalLibVersion</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>21</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-video</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle" />
+  <problem_class id="GrMethodMayBeStatic" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method can be made 'static'</problem_class>
+  <description>Method may be static</description>
+  <highlighted_element>supportsNamespace</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>17</length>
+</problem>
+</problems>

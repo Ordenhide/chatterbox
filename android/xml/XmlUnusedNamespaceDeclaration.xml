@@ -1,0 +1,220 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/test/kotlin/com/facebook/react/utils/AgpConfiguratorUtilsTest.kt</file>
+  <line>37</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.test</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.AgpConfiguratorUtilsTest void getPackageNameFromManifest_withMissingPackage_returnsNull()" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>20</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/test/kotlin/com/facebook/react/utils/AgpConfiguratorUtilsTest.kt</file>
+  <line>55</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.test</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.AgpConfiguratorUtilsTest void getPackageNameFromManifest_withPackage_returnsPackage()" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>20</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/AndroidManifest.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/AndroidManifest.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/AndroidManifest.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/AndroidManifest.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/AndroidManifestNew.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/AndroidManifestNew.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/AndroidManifest.xml</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>1</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/AndroidManifest.xml</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/AndroidManifestNew.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/AndroidManifestNew.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/AndroidManifest.xml</file>
+  <line>1</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/AndroidManifest.xml" />
+  <problem_class id="XmlUnusedNamespaceDeclaration" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Unused schema declaration</problem_class>
+  <description>Namespace declaration is never used</description>
+  <highlighted_element>xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>10</offset>
+  <length>58</length>
+</problem>
+</problems>

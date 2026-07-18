@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>6</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintOverdraw" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Overdraw: Painting regions more than once</problem_class>
+  <hints />
+  <description>&lt;html&gt;Possible overdraw: Root element paints background &lt;code&gt;@color/player_overlay_color&lt;/code&gt; with a theme that also paints a background (inferred theme is &lt;code&gt;@style/AppTheme&lt;/code&gt;)&lt;/html&gt;</description>
+  <highlighted_element>android:background=&quot;@color/player_overlay_color&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>4</offset>
+  <length>48</length>
+</problem>
+</problems>

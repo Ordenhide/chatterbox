@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="rn_edit_text_inset_horizontal">4dp</dimen>
+    <dimen name="rn_edit_text_inset_top">6dp</dimen>
+    <dimen name="rn_edit_text_inset_bottom">6dp</dimen>
+</resources>

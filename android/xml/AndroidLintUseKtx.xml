@@ -1,0 +1,226 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>255</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(path)</highlighted_element>
+  <language>kotlin</language>
+  <offset>86</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandlerOrchestrator.kt</file>
+  <line>684</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandlerOrchestrator.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension property &lt;code&gt;View.isVisible&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>view.visibility == View.VISIBLE</highlighted_element>
+  <language>kotlin</language>
+  <offset>45</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt</file>
+  <line>167</line>
+  <module>ChatterboxTemp.react-native-localize.main</module>
+  <package>com.zoontek.rnlocalize</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/src/main/java/com/zoontek/rnlocalize/RNLocalizeModuleImpl.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension property &lt;code&gt;Locale.layoutDirection&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>TextUtils.getLayoutDirectionFromLocale(systemLocale)</highlighted_element>
+  <language>kotlin</language>
+  <offset>18</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>83</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse( uri!!.toString().replace(&quot;res:/&quot;, &quot;android.resource://${context.packageNa...</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>121</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>94</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(stringUri)</highlighted_element>
+  <language>kotlin</language>
+  <offset>22</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>141</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(&quot;res:/$drawableResId&quot;)</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>146</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(&quot;res:/$rawResId&quot;)</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>150</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(&quot;file:///android_asset/&quot; + name.removePrefix(&quot;asset:/&quot;))</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>66</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt</file>
+  <line>152</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.image</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/image/TabsImageLoader.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(&quot;file:///android_asset/$name&quot;)</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/AdsProps.kt</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/AdsProps.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(uriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/AdsProps.kt</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/AdsProps.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(uriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/SideLoadedTextTrack.kt</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/SideLoadedTextTrack.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(ReactBridgeUtils.safeGetString(src, SIDELOAD_TEXT_TRACK_URI, &quot;&quot;))</highlighted_element>
+  <language>kotlin</language>
+  <offset>38</offset>
+  <length>75</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt</file>
+  <line>154</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(imageUriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt</file>
+  <line>154</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(imageUriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt</file>
+  <line>221</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(uriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>26</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt</file>
+  <line>221</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.api</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/api/Source.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(uriString)</highlighted_element>
+  <language>kotlin</language>
+  <offset>26</offset>
+  <length>20</length>
+</problem>
+</problems>

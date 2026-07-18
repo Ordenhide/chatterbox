@@ -1,0 +1,106 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/oldarch/java/com/reactnativecommunity/asyncstorage/NativeAsyncStorageModuleSpec.java</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/oldarch/java/com/reactnativecommunity/asyncstorage/NativeAsyncStorageModuleSpec.java" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/paper/java/com/reactnativecommunity/clipboard/NativeClipboardModuleSpec.java</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/paper/java/com/reactnativecommunity/clipboard/NativeClipboardModuleSpec.java" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/paper/java/com/reactnativedocumentpicker/NativeDocumentPickerSpec.java</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/paper/java/com/reactnativedocumentpicker/NativeDocumentPickerSpec.java" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/swmansion/gesturehandler/NativeRNGestureHandlerModuleSpec.java</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/swmansion/gesturehandler/NativeRNGestureHandlerModuleSpec.java" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>117</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager.BluetoothServiceListener void onServiceDisconnected(int profile)" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1684</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="class" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1695</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="class" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/swmansion/rnscreens/NativeScreensModuleSpec.java</file>
+  <line>2</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/swmansion/rnscreens/NativeScreensModuleSpec.java" />
+  <problem_class id="DanglingJavadoc" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Dangling Javadoc comment</problem_class>
+  <description>Dangling Javadoc comment #loc</description>
+  <highlighted_element>/**</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>3</length>
+</problem>
+</problems>

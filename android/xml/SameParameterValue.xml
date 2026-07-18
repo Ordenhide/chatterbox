@@ -1,0 +1,142 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageErrorUtil.java</file>
+  <line>32</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageErrorUtil com.facebook.react.bridge.WritableMap getInvalidKeyError(java.lang.String key)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="key null" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;key&lt;/code&gt; is always 'null'</description>
+  <highlighted_element>key</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageErrorUtil.java</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageErrorUtil com.facebook.react.bridge.WritableMap getInvalidValueError(java.lang.String key)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="key null" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;key&lt;/code&gt; is always 'null'</description>
+  <highlighted_element>key</highlighted_element>
+  <language>JAVA</language>
+  <offset>73</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageErrorUtil.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageErrorUtil com.facebook.react.bridge.WritableMap getDBError(java.lang.String key)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="key null" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;key&lt;/code&gt; is always 'null'</description>
+  <highlighted_element>key</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>498</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager boolean getBluetoothProfileProxy(android.content.Context context, android.bluetooth.BluetoothProfile.ServiceListener listener, int profile)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="profile android.bluetooth.BluetoothProfile.HEADSET" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;profile&lt;/code&gt; is always 'BluetoothProfile.HEADSET'</description>
+  <highlighted_element>profile</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1270</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule android.net.Uri getAudioUri(java.lang.String _type, java.lang.String fileBundle, java.lang.String fileBundleExt, java.lang.String fileSysWithExt, java.lang.String fileSysPath, java.lang.String uriBundle, java.lang.String uriDefault)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="fileBundleExt &quot;mp3&quot;" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;fileBundleExt&lt;/code&gt; is always '&quot;mp3&quot;'</description>
+  <highlighted_element>fileBundleExt</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1270</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule android.net.Uri getAudioUri(java.lang.String _type, java.lang.String fileBundle, java.lang.String fileBundleExt, java.lang.String fileSysWithExt, java.lang.String fileSysPath, java.lang.String uriBundle, java.lang.String uriDefault)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="fileSysPath &quot;/system/media/audio/ui&quot;" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;fileSysPath&lt;/code&gt; is always '&quot;/system/media/audio/ui&quot;'</description>
+  <highlighted_element>fileSysPath</highlighted_element>
+  <language>JAVA</language>
+  <offset>143</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackFragment.kt</file>
+  <line>542</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenStackFragment com.swmansion.rnscreens.bottomsheet.DimmingViewManager requireDimmingDelegate(boolean forceCreation)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints />
+  <description>Value of parameter &lt;code&gt;forceCreation&lt;/code&gt; is always 'true'</description>
+  <highlighted_element>forceCreation</highlighted_element>
+  <language>kotlin</language>
+  <offset>39</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/DimmingViewManager.kt</file>
+  <line>173</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.DimmingViewManager com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback requireBottomSheetCallback(com.swmansion.rnscreens.Screen screen, boolean forceCreation)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints />
+  <description>Value of parameter &lt;code&gt;forceCreation&lt;/code&gt; is always 'true'</description>
+  <highlighted_element>forceCreation</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>1363</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView androidx.media3.datasource.DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter)" />
+  <problem_class id="SameParameterValue" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Method parameter always has the same value</problem_class>
+  <hints>
+    <hint value="useBandwidthMeter false" />
+  </hints>
+  <description>Value of parameter &lt;code&gt;useBandwidthMeter&lt;/code&gt; is always 'false'</description>
+  <highlighted_element>useBandwidthMeter</highlighted_element>
+  <language>JAVA</language>
+  <offset>62</offset>
+  <length>17</length>
+</problem>
+</problems>

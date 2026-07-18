@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>253</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule void startPlayer(java.lang.String path, com.facebook.react.bridge.ReadableMap httpHeaders, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="ReplacePutWithAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">'map.put()' can be converted to assignment</problem_class>
+  <description>map.put() should be converted to assignment</description>
+  <highlighted_element>headers.put(key, httpHeaders.getString(key))</highlighted_element>
+  <language>kotlin</language>
+  <offset>24</offset>
+  <length>44</length>
+</problem>
+</problems>

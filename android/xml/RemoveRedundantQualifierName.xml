@@ -1,0 +1,366 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>894</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>895</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>899</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>900</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>901</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>22</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>902</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>23</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>903</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>22</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/GestureHandler.kt</file>
+  <line>904</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.GestureHandler.Factory.Companion void handleHitSlopProperty(com.swmansion.gesturehandler.core.GestureHandler handler, com.facebook.react.bridge.ReadableMap config)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>GestureHandler</highlighted_element>
+  <language>kotlin</language>
+  <offset>23</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyValue.kt</file>
+  <line>231</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.AnyValue.Companion com.margelo.nitro.core.AnyValue fromAny(java.lang.Object value)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>AnyValue</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyValue.kt</file>
+  <line>236</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.AnyValue.Companion com.margelo.nitro.core.AnyValue fromAny(java.lang.Object value)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>AnyValue</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyValue.kt</file>
+  <line>241</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.AnyValue.Companion com.margelo.nitro.core.AnyValue fromAny(java.lang.Object value)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>AnyValue</highlighted_element>
+  <language>kotlin</language>
+  <offset>61</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt</file>
+  <line>124</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.ArrayBuffer com.margelo.nitro.core.ArrayBuffer asOwning()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>ArrayBuffer</highlighted_element>
+  <language>kotlin</language>
+  <offset>13</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/ArrayBuffer.kt</file>
+  <line>232</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.core.ArrayBuffer.Companion com.margelo.nitro.core.ArrayBuffer copy(byte[] byteArray)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>ArrayBuffer</highlighted_element>
+  <language>kotlin</language>
+  <offset>13</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackFragment.kt</file>
+  <line>267</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="class" FQNAME="com.swmansion.rnscreens.ScreenStackFragment$-1" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>WindowInsetsAnimationCompat.Callback</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetUtils.kt</file>
+  <line>123</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.SheetUtils boolean isStateLessEqualThan(int state, int otherState)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>BottomSheetBehavior</highlighted_element>
+  <language>kotlin</language>
+  <offset>33</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="field" FQNAME="com.brentvatne.exoplayer.ExoPlayerView liveBadge" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>View</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>52</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="field" FQNAME="com.brentvatne.exoplayer.ExoPlayerView playerView" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>androidx.media3.ui</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>130</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ExoPlayerView void setSubtitleStyle(com.brentvatne.common.api.SubtitleStyle style)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>android.view.View</highlighted_element>
+  <language>kotlin</language>
+  <offset>42</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>132</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ExoPlayerView void setSubtitleStyle(com.brentvatne.common.api.SubtitleStyle style)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>android.view.View</highlighted_element>
+  <language>kotlin</language>
+  <offset>42</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>204</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ExoPlayerView void addOnLayoutChangeListener(android.view.View.OnLayoutChangeListener listener)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>View</highlighted_element>
+  <language>kotlin</language>
+  <offset>53</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>218</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ExoPlayerView void updateLiveUi()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>View</highlighted_element>
+  <language>kotlin</language>
+  <offset>43</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>218</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ExoPlayerView void updateLiveUi()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>View</highlighted_element>
+  <language>kotlin</language>
+  <offset>61</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/PictureInPictureUtil.kt</file>
+  <line>188</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.PictureInPictureUtil boolean checkIsSystemSupportPIP(com.facebook.react.uimanager.ThemedReactContext context)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>kotlin</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/VideoPlaybackService.kt</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.VideoPlaybackService void onDestroy()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>Context</highlighted_element>
+  <language>kotlin</language>
+  <offset>72</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/VideoPlaybackService.kt</file>
+  <line>110</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.VideoPlaybackService void createSessionNotification(androidx.media3.session.MediaSession session)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>Context</highlighted_element>
+  <language>kotlin</language>
+  <offset>72</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/VideoPlaybackService.kt</file>
+  <line>213</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.VideoPlaybackService void hidePlayerNotification(androidx.media3.exoplayer.ExoPlayer player)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>Context</highlighted_element>
+  <language>kotlin</language>
+  <offset>72</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/VideoPlaybackService.kt</file>
+  <line>218</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.VideoPlaybackService void hideAllNotifications()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>Context</highlighted_element>
+  <language>kotlin</language>
+  <offset>72</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/VideoPlaybackService.kt</file>
+  <line>231</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.VideoPlaybackService android.app.Notification createPlaceholderNotification()" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>Context</highlighted_element>
+  <language>kotlin</language>
+  <offset>51</offset>
+  <length>7</length>
+</problem>
+</problems>

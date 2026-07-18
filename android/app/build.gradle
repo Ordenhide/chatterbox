@@ -1,64 +1,20 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
-apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
 apply plugin: "com.google.firebase.crashlytics"
+apply plugin: "com.facebook.react"
 
-/**
- * This is the configuration block to customize your React Native Android app.
- * By default you don't need to apply any configuration, just uncomment the lines you need.
- */
+// Use first existing node path so codegen works from IDE (PATH often missing /opt/homebrew/bin or /usr/local/bin).
+def nodePath = "node"
+["/opt/homebrew/bin/node", "/usr/local/bin/node"].each { p ->
+    if (new File(p).exists()) { nodePath = p }
+}
 react {
-    /* Folders */
-    //   The root of your project, i.e. where "package.json" lives. Default is '..'
-    // root = file("../")
-    //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
-    // reactNativeDir = file("../node_modules/react-native")
-    //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
-    // codegenDir = file("../node_modules/@react-native/codegen")
-    //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
-    // cliFile = file("../node_modules/react-native/cli.js")
-
-    /* Variants */
-    //   The list of variants to that are debuggable. For those we're going to
-    //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
-    //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
-    // debuggableVariants = ["liteDebug", "prodDebug"]
-
-    /* Bundling */
-    //   A list containing the node command and its flags. Default is just 'node'.
-    // nodeExecutableAndArgs = ["node"]
-    //
-    //   The command to run when bundling. By default is 'bundle'
-    // bundleCommand = "ram-bundle"
-    //
-    //   The path to the CLI configuration file. Default is empty.
-    // bundleConfig = file(../rn-cli.config.js)
-    //
-    //   The name of the generated asset file containing your JS bundle
-    // bundleAssetName = "MyApplication.android.bundle"
-    //
-    //   The entry file for bundle generation. Default is 'index.android.js' or 'index.js'
-    // entryFile = file("../js/MyApplication.android.js")
-    //
-    //   A list of extra flags to pass to the 'bundle' commands.
-    //   See https://github.com/react-native-community/cli/blob/main/docs/commands.md#bundle
-    // extraPackagerArgs = []
-
-    /* Hermes Commands */
-    //   The hermes compiler command to run. By default it is 'hermesc'
-    // hermesCommand = "$rootDir/my-custom-hermesc/bin/hermesc"
-    //
-    //   The list of flags to pass to the Hermes compiler. By default is "-O", "-output-source-map"
-    // hermesFlags = ["-O", "-output-source-map"]
-    
-    /* Enable Hermes */
-    enableHermes = true
+    nodeExecutableAndArgs.set([nodePath])
+    // Required so the app gets implementation project() for each native module (fixes "package does not exist").
+    autolinkLibrariesWithApp()
 }
 
-/**
- * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
- */
 def enableProguardInReleaseBuilds = true
 
 /**
@@ -79,9 +35,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.chatterboxtemp"
+    namespace "com.chatterbox.app"
     defaultConfig {
-        applicationId "com.chatterboxtemp"
+        applicationId "com.chatterbox.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -94,43 +50,62 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            // Read from environment variables or gradle.properties — never hardcode secrets.
+            // Set these in ~/.gradle/gradle.properties or your CI environment:
+            //   CHATTERBOX_STORE_FILE=/path/to/release.keystore
+            //   CHATTERBOX_STORE_PASSWORD=...
+            //   CHATTERBOX_KEY_ALIAS=...
+            //   CHATTERBOX_KEY_PASSWORD=...
+            storeFile file(System.getenv("CHATTERBOX_STORE_FILE") ?: project.findProperty("CHATTERBOX_STORE_FILE") ?: "debug.keystore")
+            storePassword System.getenv("CHATTERBOX_STORE_PASSWORD") ?: project.findProperty("CHATTERBOX_STORE_PASSWORD") ?: "android"
+            keyAlias System.getenv("CHATTERBOX_KEY_ALIAS") ?: project.findProperty("CHATTERBOX_KEY_ALIAS") ?: "androiddebugkey"
+            keyPassword System.getenv("CHATTERBOX_KEY_PASSWORD") ?: project.findProperty("CHATTERBOX_KEY_PASSWORD") ?: "android"
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
-            shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-    
-    // Enable split APKs by ABI to reduce APK size
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            universalApk false
+    sourceSets {
+        main {
+            java {
+                // Avoid duplicate PackageList from legacy rncli generator.
+                exclude "**/generated/rncli/**"
+            }
         }
+    }
+}
+
+afterEvaluate {
+    // Use the new autolinking task; disable legacy generator to avoid duplicates.
+    tasks.matching { it.name == "generatePackageList" }.configureEach {
+        enabled = false
     }
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
-    implementation 'com.google.firebase:firebase-database:22.0.1'
 
-    // Enable Hermes for better performance
-    implementation("com.facebook.react:hermes-android")
+    // Firebase BoM for consistent SDK versions (aligned with @react-native-firebase 21.7.x)
+    implementation platform('com.google.firebase:firebase-bom:33.12.0')
+    implementation 'com.google.firebase:firebase-database'
+
+    // Fresco animated GIF/WebP — must match RN 0.80's Fresco 3.6.0
+    implementation 'com.facebook.fresco:animated-gif:3.6.0'
+    implementation 'com.facebook.fresco:animated-webp:3.6.0'
+    implementation 'com.facebook.fresco:webpsupport:3.6.0'
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
 }
-
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

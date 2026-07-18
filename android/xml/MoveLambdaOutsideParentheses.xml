@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt</file>
+  <line>462</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.bottomsheet</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.bottomsheet.SheetDelegate android.animation.ValueAnimator createSheetSlideInAnimator()" />
+  <problem_class id="MoveLambdaOutsideParentheses" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Lambda argument inside parentheses</problem_class>
+  <description>Lambda argument should be moved out of parentheses</description>
+  <highlighted_element>{</highlighted_element>
+  <language>kotlin</language>
+  <offset>76</offset>
+  <length>1</length>
+</problem>
+</problems>

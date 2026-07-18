@@ -1,0 +1,392 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageExpoMigration.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageExpoMigration void migrate(android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageExpoMigration.java</file>
+  <line>58</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageExpoMigration void migrate(android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageExpoMigration.java</file>
+  <line>84</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageExpoMigration java.util.ArrayList&lt;java.io.File&gt; getExpoDatabases(android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageExpoMigration.java</file>
+  <line>121</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageExpoMigration long getLastModifiedTimeInMillis(java.io.File file)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>110</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule void setString(java.lang.String text)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>196</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule void getImage(com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>219</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule void setListener()" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>230</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule void removeListener()" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java</file>
+  <line>210</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.ConnectivityReceiver com.facebook.react.bridge.WritableMap createDetailsMap(java.lang.String detailsInterface)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingStoreImpl.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingStoreImpl void storeFirebaseMessage(com.google.firebase.messaging.RemoteMessage remoteMessage)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingStoreImpl.java</file>
+  <line>70</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingStoreImpl com.facebook.react.bridge.WritableMap getFirebaseMessageMap(java.lang.String remoteMessageId)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageModule.java</file>
+  <line>230</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageModule void updateMetadata(java.lang.String appName, java.lang.String url, com.facebook.react.bridge.ReadableMap metadataMap, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>56</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/java/com/reactnativedocumentpicker/RNDocumentPickerModule.java</file>
+  <line>154</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativedocumentpicker.RNDocumentPickerModule void pick(com.facebook.react.bridge.ReadableMap args, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/java/com/reactnativedocumentpicker/RNDocumentPickerModule.java</file>
+  <line>313</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativedocumentpicker.RNDocumentPickerModule void copyFileToLocalStorage(android.content.Context context, com.facebook.react.bridge.WritableMap map, android.net.Uri uri, java.lang.String copyTo)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>70</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils java.io.File createFile(android.content.Context reactContext, java.lang.String fileType)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>109</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils void copyUri(android.net.Uri fromUri, android.net.Uri toUri, android.content.ContentResolver resolver)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>172</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils int[] getImageDimensions(android.net.Uri uri, android.content.Context reactContext)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>195</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils java.lang.String getBase64String(android.net.Uri uri, android.content.Context reactContext)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>242</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils android.net.Uri resizeImage(android.net.Uri uri, android.content.Context context, com.imagepicker.Options options)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>287</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils double getFileSize(android.net.Uri uri, android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>366</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils boolean isCameraPermissionFulfilled(android.content.Context context, android.app.Activity activity)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/VideoMetadata.java</file>
+  <line>65</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.VideoMetadata VideoMetadata(android.net.Uri uri, android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>386</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap loadBitmap(android.content.Context context, android.net.Uri imageUri, android.graphics.BitmapFactory.Options options)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>469</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap loadBitmapFromURL(android.net.Uri imageUri, int newWidth, int newHeight)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>479</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap loadBitmapFromURL(android.net.Uri imageUri, int newWidth, int newHeight)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/java/com/oblador/vectoricons/VectorIconsModuleImpl.java</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <package>com.oblador.vectoricons</package>
+  <entry_point TYPE="method" FQNAME="com.oblador.vectoricons.VectorIconsModuleImpl java.lang.String getImageForFont(java.lang.String fontFamily, java.lang.String glyph, java.lang.Integer fontSize, java.lang.Integer color, android.content.Context context)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>682</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void initializePlayer()" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>694</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void initializePlayer()" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>19</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>2367</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView void setSelectedTrack(int trackType, java.lang.String type, java.lang.String value)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>397</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule boolean peerConnectionInit(com.facebook.react.bridge.ReadableMap configuration, int id)" />
+  <problem_class id="ThrowablePrintStackTrace" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Call to 'printStackTrace()'</problem_class>
+  <description>Call to &lt;code&gt;printStackTrace()&lt;/code&gt; should probably be replaced with more robust logging #loc</description>
+  <highlighted_element>printStackTrace</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>15</length>
+</problem>
+</problems>

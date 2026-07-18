@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>2327</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule com.facebook.react.bridge.WritableMap getJSError(java.lang.Exception exception)" />
+  <problem_class id="UnnecessaryStringEscape" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessarily escaped character</problem_class>
+  <description>&lt;code&gt;\'&lt;/code&gt; is unnecessarily escaped</description>
+  <highlighted_element>\'</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>2335</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule com.facebook.react.bridge.WritableMap getJSError(java.lang.Exception exception)" />
+  <problem_class id="UnnecessaryStringEscape" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessarily escaped character</problem_class>
+  <description>&lt;code&gt;\'&lt;/code&gt; is unnecessarily escaped</description>
+  <highlighted_element>\'</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>2</length>
+</problem>
+</problems>

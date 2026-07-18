@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="SwitchStatementWithTooFewBranches" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Minimum 'switch' branches</problem_class>
+  <description>'switch' statement has too few case labels (1), and should probably be replaced with an 'if' statement #loc</description>
+  <highlighted_element>switch</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>51</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="SwitchStatementWithTooFewBranches" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Minimum 'switch' branches</problem_class>
+  <description>'switch' statement has too few case labels (1), and should probably be replaced with an 'if' statement #loc</description>
+  <highlighted_element>switch</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerDelegate.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerRootViewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="SwitchStatementWithTooFewBranches" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Minimum 'switch' branches</problem_class>
+  <description>'switch' statement has too few case labels (1), and should probably be replaced with an 'if' statement #loc</description>
+  <highlighted_element>switch</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>6</length>
+</problem>
+</problems>

@@ -1,0 +1,548 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>44</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage com.facebook.react.uimanager.ViewManager createViewManager(com.facebook.react.bridge.ReactApplicationContext reactContext, java.lang.String viewManagerName)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>19</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsModule.java</file>
+  <line>200</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsModule android.os.Bundle toBundle(com.facebook.react.bridge.ReadableMap readableMap)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsModule.java</file>
+  <line>200</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsModule android.os.Bundle toBundle(com.facebook.react.bridge.ReadableMap readableMap)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsModule.java</file>
+  <line>201</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsModule android.os.Bundle toBundle(com.facebook.react.bridge.ReadableMap readableMap)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>61</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/app/ReactNativeFirebaseAppPackage.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.app</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.app.ReactNativeFirebaseAppPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>130</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Iterator&lt;/code&gt; #loc</description>
+  <highlighted_element>Iterator</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>133</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map.Entry&lt;/code&gt; #loc</description>
+  <highlighted_element>Map.Entry</highlighted_element>
+  <language>JAVA</language>
+  <offset>6</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>133</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map.Entry&lt;/code&gt; #loc</description>
+  <highlighted_element>Map.Entry</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>143</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Iterator&lt;/code&gt; #loc</description>
+  <highlighted_element>Iterator</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>146</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map.Entry&lt;/code&gt; #loc</description>
+  <highlighted_element>Map.Entry</highlighted_element>
+  <language>JAVA</language>
+  <offset>6</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>146</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule void invalidate()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map.Entry&lt;/code&gt; #loc</description>
+  <highlighted_element>Map.Entry</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>2411</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule com.facebook.react.bridge.WritableArray convertProviderData(java.util.List&lt;? extends com.google.firebase.auth.UserInfo&gt; providerData, com.google.firebase.auth.FirebaseUser user)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>57</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreDocumentModule.java</file>
+  <line>236</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreDocumentModule void documentBatch(java.lang.String appName, java.lang.String databaseId, com.facebook.react.bridge.ReadableArray writes, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreDocumentModule.java</file>
+  <line>239</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreDocumentModule void documentBatch(java.lang.String appName, java.lang.String databaseId, com.facebook.react.bridge.ReadableArray writes, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>44</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreDocumentModule.java</file>
+  <line>252</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreDocumentModule void documentBatch(java.lang.String appName, java.lang.String databaseId, com.facebook.react.bridge.ReadableArray writes, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreDocumentModule.java</file>
+  <line>263</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreDocumentModule void documentBatch(java.lang.String appName, java.lang.String databaseId, com.facebook.react.bridge.ReadableArray writes, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;List&lt;/code&gt; #loc</description>
+  <highlighted_element>List</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestorePackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>210</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery void applyOrders(com.facebook.react.bridge.ReadableArray orders)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>213</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery void applyOrders(com.facebook.react.bridge.ReadableArray orders)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>213</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery void applyOrders(com.facebook.react.bridge.ReadableArray orders)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ArrayList&lt;/code&gt; #loc</description>
+  <highlighted_element>ArrayList</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/src/reactnative/java/io/invertase/firebase/functions/ReactNativeFirebaseFunctionsPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_functions.main</module>
+  <package>io.invertase.firebase.functions</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.functions.ReactNativeFirebaseFunctionsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/JsonConvert.java</file>
+  <line>85</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.JsonConvert com.facebook.react.bridge.WritableMap jsonToReact(org.json.JSONObject jsonObject)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Iterator&lt;/code&gt; #loc</description>
+  <highlighted_element>Iterator</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/src/reactnative/java/io/invertase/firebase/config/ReactNativeFirebaseConfigPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_remote-config.main</module>
+  <package>io.invertase.firebase.config</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.config.ReactNativeFirebaseConfigPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStoragePackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageTask.java</file>
+  <line>48</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageTask storageTask" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;StorageTask&lt;/code&gt; #loc</description>
+  <highlighted_element>StorageTask</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageTask.java</file>
+  <line>148</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageTask void setStorageTask(com.google.firebase.storage.StorageTask storageTask)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;StorageTask&lt;/code&gt; #loc</description>
+  <highlighted_element>StorageTask</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>929</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule void startRingback(java.lang.String ringbackUriType)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>997</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule boolean startBusytone(java.lang.String busytoneUriType)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1081</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule$8 void run()" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1363</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule.myToneGenerator void startPlay(java.util.Map data)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1485</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule.myMediaPlayer void startPlay(java.util.Map data)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>1604</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="class" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView$3" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Callable&lt;/code&gt; #loc</description>
+  <highlighted_element>Callable</highlighted_element>
+  <language>JAVA</language>
+  <offset>61</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/StringUtils.java</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.StringUtils void appendValue(java.lang.StringBuilder builder, java.lang.Object value)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;Map&lt;/code&gt; #loc</description>
+  <highlighted_element>Map</highlighted_element>
+  <language>JAVA</language>
+  <offset>48</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="RawUseOfParameterizedType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Raw use of parameterized class</problem_class>
+  <description>Raw use of parameterized class &lt;code&gt;ViewManager&lt;/code&gt; #loc</description>
+  <highlighted_element>ViewManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>11</length>
+</problem>
+</problems>

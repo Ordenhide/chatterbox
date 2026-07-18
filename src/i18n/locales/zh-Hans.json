@@ -1,0 +1,360 @@
+{
+  "app": {
+    "name": "Chatterbox"
+  },
+  "common": {
+    "continue": "继续",
+    "signIn": "登录",
+    "signUp": "注册",
+    "cancel": "取消",
+    "close": "关闭",
+    "error": "错误",
+    "ok": "确定",
+    "delete": "删除",
+    "edit": "编辑",
+    "post": "发布",
+    "refresh": "刷新",
+    "send": "发送",
+    "copy": "复制",
+    "import": "导入",
+    "export": "导出",
+    "new": "新建",
+    "update": "更新",
+    "remove": "移除",
+    "accept": "接受",
+    "decline": "拒绝",
+    "justNow": "刚刚",
+    "tapToRetry": "点击重试。"
+  },
+  "tabs": {
+    "chats": "聊天",
+    "moments": "动态",
+    "profile": "我的"
+  },
+  "headers": {
+    "chats": "聊天",
+    "newChat": "新建聊天",
+    "chat": "聊天",
+    "media": "媒体",
+    "chatSettings": "聊天设置",
+    "call": "通话",
+    "moments": "动态",
+    "friends": "好友"
+  },
+  "auth": {
+    "login": {
+      "subtitleVariant": "欢迎回来，一起聊天吧",
+      "subtitleDefault": "登录以继续",
+      "emailPlaceholder": "邮箱",
+      "passwordPlaceholder": "密码",
+      "forgotPassword": "忘记密码？",
+      "reset": "重置",
+      "noAccount": "还没有账号？"
+    },
+    "signup": {
+      "title": "创建账号",
+      "subtitle": "注册后开始使用",
+      "displayNamePlaceholder": "昵称（可选）",
+      "passwordPlaceholder": "密码（至少6位）",
+      "hasAccount": "已有账号？"
+    },
+    "errors": {
+      "missingFields": "请填写所有字段",
+      "missingEmailPassword": "请填写邮箱和密码",
+      "passwordMin": "密码至少 6 位",
+      "loginFailed": "登录失败",
+      "signUpFailed": "注册失败",
+      "generic": "发生错误",
+      "userNotFound": "未找到此邮箱的账户",
+      "wrongPassword": "密码错误",
+      "invalidEmail": "邮箱地址无效",
+      "userDisabled": "此账户已被禁用",
+      "emailInUse": "此邮箱已被注册",
+      "weakPassword": "密码强度不够",
+      "networkError": "网络错误，请检查网络连接",
+      "tooManyRequests": "尝试次数过多，请稍后再试"
+    },
+    "reset": {
+      "title": "重置密码",
+      "enterEmail": "请先在上方输入邮箱。",
+      "emailSentTitle": "邮件已发送",
+      "emailSentBody": "请查收邮件中的重置指引。",
+      "failedTitle": "重置失败",
+      "failedBody": "无法发送重置邮件。"
+    },
+    "session": {
+      "title": "已退出登录",
+      "message": "该账号已在其他设备登录。"
+    }
+  },
+  "chatList": {
+    "title": "聊天",
+    "searchPlaceholder": "搜索聊天",
+    "empty": "暂无聊天",
+    "offlineEmpty": "离线中 — 显示缓存聊天",
+    "actionsTitle": "聊天操作",
+    "pin": "置顶",
+    "unpin": "取消置顶"
+  },
+  "newChat": {
+    "heading": "开始对话",
+    "subheading": "输入你想与之聊天的人的邮箱。",
+    "recipientEmail": "收件人邮箱",
+    "emailPlaceholder": "friend@example.com",
+    "chatNameLabel": "聊天名称（可选）",
+    "chatNamePlaceholder": "聊天名称",
+    "helpText": "收件人必须已有账号。",
+    "creating": "创建中...",
+    "startChat": "开始聊天",
+    "errors": {
+      "enterEmail": "请输入邮箱地址",
+      "userNotFoundTitle": "未找到用户",
+      "userNotFoundBody": "该邮箱在此设备上不存在。请先创建账号后再试。",
+      "selfChat": "不能与自己聊天",
+      "createFailed": "创建聊天失败"
+    }
+  },
+  "moments": {
+    "title": "动态",
+    "friends": "好友",
+    "post": "发布",
+    "refresh": "刷新",
+    "empty": "暂无动态",
+    "sharedMoment": "分享了一条动态",
+    "visibilityLabel": "可见范围：{{visibility}}",
+    "actions": {
+      "like": "点赞",
+      "liked": "已赞",
+      "comment": "评论",
+      "share": "分享"
+    },
+    "visibility": {
+      "public": "公开",
+      "friends": "好友",
+      "private": "私密"
+    },
+    "modal": {
+      "newTitle": "发布动态",
+      "editTitle": "编辑动态",
+      "placeholder": "此刻想说点什么？",
+      "addMedia": "添加图片/视频",
+      "changeMedia": "更换图片/视频",
+      "uploading": "上传中 {{percent}}%"
+    },
+    "alerts": {
+      "deleteTitle": "删除动态",
+      "deleteConfirm": "确定删除这条动态？",
+      "postFailed": "发布失败。",
+      "deleteFailed": "删除失败。",
+      "commentFailed": "评论失败。",
+      "shareSuccessTitle": "已分享",
+      "shareSuccessBody": "已分享到聊天。",
+      "shareFailedTitle": "错误",
+      "shareFailedBody": "分享失败。",
+      "refreshFailed": "无法刷新动态。"
+    },
+    "comments": {
+      "title": "评论",
+      "placeholder": "添加评论...",
+      "empty": "暂无评论",
+      "post": "发布",
+      "close": "关闭"
+    },
+    "share": {
+      "title": "分享至聊天",
+      "close": "关闭"
+    }
+  },
+  "friends": {
+    "addFriend": "添加好友",
+    "uidPlaceholder": "输入用户 UID",
+    "emailPlaceholder": "输入用户邮箱",
+    "searchTitle": "搜索（邮箱或昵称）",
+    "searchPlaceholder": "按邮箱或昵称搜索",
+    "sections": {
+      "requests": "好友请求",
+      "outgoing": "已发送",
+      "friends": "好友",
+      "blocked": "已拉黑"
+    },
+    "empty": {
+      "requests": "暂无请求。",
+      "outgoing": "暂无已发送请求。",
+      "friends": "暂无好友。",
+      "blocked": "暂无拉黑用户。"
+    },
+    "search": {
+      "searching": "搜索中…",
+      "noMatches": "没有匹配结果。",
+      "prompt": "输入关键词开始搜索。"
+    },
+    "buttons": {
+      "accept": "接受",
+      "decline": "拒绝",
+      "chat": "聊天",
+      "remove": "删除",
+      "block": "拉黑",
+      "unblock": "取消拉黑",
+      "add": "添加",
+      "cancel": "取消"
+    },
+    "status": {
+      "friend": "已是好友",
+      "incoming": "收到请求",
+      "pending": "请求待处理"
+    },
+    "labels": {
+      "pending": "等待中：{{name}}"
+    },
+    "alerts": {
+      "blockedTitle": "已拉黑",
+      "blockedSend": "你无法向此用户发送好友请求。",
+      "blockedChat": "你无法与此用户开始聊天。",
+      "requestSentTitle": "请求已发送",
+      "requestSentBody": "好友请求已发送。",
+      "userNotFoundTitle": "未找到用户",
+      "userNotFoundBody": "没有匹配该邮箱的账号。",
+      "sendFailedTitle": "错误",
+      "sendFailedBody": "发送好友请求失败。",
+      "chatFailedTitle": "错误",
+      "chatFailedBody": "创建聊天失败。",
+      "removeTitle": "删除好友",
+      "removeBody": "确定删除该好友？",
+      "blockTitle": "拉黑用户",
+      "blockBody": "确定拉黑该用户？将同时解除好友关系。"
+    }
+  },
+  "profile": {
+    "defaultName": "用户",
+    "memberBadge": "会员",
+    "visibilityTitle": "资料可见性",
+    "visibilityDescription": "控制谁可以查看你的资料。",
+    "defaultVisibilityTitle": "动态默认可见性",
+    "defaultVisibilityDescription": "创建动态时默认的可见范围。",
+    "languageTitle": "语言",
+    "languageDescription": "选择你偏好的语言。",
+    "buttons": {
+      "feedback": "发送反馈",
+      "export": "导出备份",
+      "import": "导入备份",
+      "signOut": "退出登录"
+    },
+    "modals": {
+      "exportTitle": "导出备份",
+      "importTitle": "导入备份",
+      "feedbackTitle": "反馈",
+      "importPlaceholder": "在此粘贴备份 JSON",
+      "feedbackPlaceholder": "告诉我们哪些地方好用，哪些需要改进..."
+    },
+    "alerts": {
+      "copiedTitle": "已复制",
+      "copiedBody": "备份 JSON 已复制到剪贴板",
+      "importSuccessTitle": "成功",
+      "importSuccessBody": "备份已导入",
+      "importFailedTitle": "错误",
+      "importFailedBody": "备份 JSON 无效或不兼容。",
+      "exportFailedTitle": "错误",
+      "exportFailedBody": "导出备份失败。",
+      "feedbackSuccessTitle": "感谢！",
+      "feedbackSuccessBody": "你的反馈已提交。",
+      "feedbackFailedTitle": "错误",
+      "feedbackFailedBody": "无法发送反馈。",
+      "signOutTitle": "退出登录",
+      "signOutBody": "确定要退出登录吗？",
+      "signOutFailed": "退出登录失败",
+      "visibilityUpdateFailed": "无法更新个人资料可见性。",
+      "momentVisibilityUpdateFailed": "无法更新默认动态可见性。"
+    }
+  },
+  "notifications": {
+    "newMessageTitle": "新消息",
+    "newMessageBody": "你有一条新消息。"
+  },
+  "calls": {
+    "incomingTitle": "来电",
+    "voice": "语音通话",
+    "video": "视频通话"
+  },
+  "call": {
+    "connecting": "连接中...",
+    "active": "通话中",
+    "ended": "通话已结束",
+    "audioOnly": "仅音频",
+    "waitingRemote": "等待对方...",
+    "unmute": "取消静音",
+    "mute": "静音",
+    "speakerOn": "扬声器开",
+    "speakerOff": "扬声器关",
+    "videoOff": "关闭视频",
+    "videoOn": "开启视频",
+    "end": "结束",
+    "errors": {
+      "startFailed": "无法发起通话",
+      "videoFailed": "无法开启视频"
+    }
+  },
+  "chatMedia": {
+    "seconds": "{{count}}秒"
+  },
+  "chatSettings": {
+    "notifications": "通知",
+    "theme": "主题",
+    "muteChat": "静音聊天",
+    "unmuteChat": "取消静音",
+    "recipientName": "收件人名称",
+    "setCustomName": "设置自定义名称",
+    "nameWithValue": "名称：{{name}}",
+    "exportChat": "导出聊天 (JSON)",
+    "importChat": "导入聊天 (JSON)",
+    "cleanupMedia": "清理媒体 (30 天)",
+    "deleteChat": "删除聊天",
+    "data": "数据",
+    "exportModalTitle": "导出聊天",
+    "copy": "复制",
+    "close": "关闭",
+    "importModalTitle": "导入聊天",
+    "pasteJsonPlaceholder": "在此粘贴聊天 JSON",
+    "import": "导入",
+    "cancel": "取消",
+    "editRecipientName": "编辑收件人名称",
+    "enterCustomNamePlaceholder": "输入自定义名称",
+    "save": "保存",
+    "clearName": "清除名称",
+    "alerts": {
+      "importSuccessTitle": "成功",
+      "importSuccessBody": "聊天已导入",
+      "invalidJsonTitle": "错误",
+      "invalidJsonBody": "JSON 格式无效",
+      "cleanupTitle": "清理",
+      "cleanupBody": "删除 30 天前的媒体？",
+      "cleanupCancel": "取消",
+      "cleanupRemove": "删除",
+      "cleanupNotSupportedTitle": "提示",
+      "cleanupNotSupportedBody": "Firebase 暂不支持媒体清理。",
+      "deleteTitle": "删除聊天",
+      "deleteBody": "这将永久删除所有参与者的完整聊天记录。",
+      "deleteCancel": "取消",
+      "deleteConfirm": "删除",
+      "deleteFailedTitle": "错误",
+      "deleteFailedBody": "删除聊天失败",
+      "copiedTitle": "已复制",
+      "copiedBody": "聊天 JSON 已复制到剪贴板"
+    }
+  },
+  "burn": {
+    "tapToReveal": "点击查看",
+    "messageBurned": "消息已焚毁",
+    "burnsIn": "{{duration}} 后焚毁",
+    "burnAfterReading": "阅后即焚（{{duration}}）",
+    "burnTimerTitle": "焚毁计时",
+    "burnTimerDescription": "消息将在阅读后自动销毁",
+    "durations": {
+      "5s": "5秒",
+      "10s": "10秒",
+      "30s": "30秒",
+      "1m": "1分钟",
+      "5m": "5分钟"
+    }
+  }
+}
+

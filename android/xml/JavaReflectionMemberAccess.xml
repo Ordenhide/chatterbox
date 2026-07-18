@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallProximityManager void checkProximitySupport(android.content.Context context)" />
+  <problem_class id="JavaReflectionMemberAccess" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Reflective access to non-existent or not visible class member</problem_class>
+  <description>Cannot resolve method 'getSupportedWakeLockFlags'</description>
+  <highlighted_element>&quot;getSupportedWakeLockFlags&quot;</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java</file>
+  <line>97</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallProximityManager void checkProximitySupport(android.content.Context context)" />
+  <problem_class id="JavaReflectionMemberAccess" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Reflective access to non-existent or not visible class member</problem_class>
+  <description>Cannot resolve method 'release' with specified argument types</description>
+  <highlighted_element>&quot;release&quot;</highlighted_element>
+  <language>JAVA</language>
+  <offset>83</offset>
+  <length>9</length>
+</problem>
+</problems>

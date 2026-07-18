@@ -1,0 +1,2186 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage java.util.List&lt;com.facebook.react.bridge.ModuleSpec&gt; getViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage java.util.List&lt;com.facebook.react.bridge.ModuleSpec&gt; getViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>50</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage$1 java.util.Map&lt;java.lang.String,com.facebook.react.module.model.ReactModuleInfo&gt; getReactModuleInfos()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfos</highlighted_element>
+  <language>JAVA</language>
+  <offset>52</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>95</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>95</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStoragePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>73</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>59</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;java.lang.String&gt; getViewManagerNames(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getViewManagerNames</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;java.lang.String&gt; getViewManagerNames(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>66</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.bridge.ModuleSpec&gt; getViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.bridge.ModuleSpec&gt; getViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>69</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage com.facebook.react.uimanager.ViewManager createViewManager(com.facebook.react.bridge.ReactApplicationContext reactContext, java.lang.String viewManagerName)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>34</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage com.facebook.react.uimanager.ViewManager createViewManager(com.facebook.react.bridge.ReactApplicationContext reactContext, java.lang.String viewManagerName)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>viewManagerName</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>70</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage$1 java.util.Map&lt;java.lang.String,com.facebook.react.module.model.ReactModuleInfo&gt; getReactModuleInfos()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfos</highlighted_element>
+  <language>JAVA</language>
+  <offset>44</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>107</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardPackage.java</file>
+  <line>107</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.clipboard.ClipboardPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoModule.java</file>
+  <line>61</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetInfoPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>168</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onAvailable(android.net.Network network)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>network</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>174</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onLosing(android.net.Network network, int maxMsToLive)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>network</highlighted_element>
+  <language>JAVA</language>
+  <offset>37</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>180</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onLost(android.net.Network network)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>network</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>195</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onCapabilitiesChanged(android.net.Network network, android.net.NetworkCapabilities networkCapabilities)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>network</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>195</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onCapabilitiesChanged(android.net.Network network, android.net.NetworkCapabilities networkCapabilities)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>networkCapabilities</highlighted_element>
+  <language>JAVA</language>
+  <offset>53</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>202</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onLinkPropertiesChanged(android.net.Network network, android.net.LinkProperties linkProperties)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>network</highlighted_element>
+  <language>JAVA</language>
+  <offset>52</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>202</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.NetworkCallbackConnectivityReceiver.ConnectivityNetworkCallback void onLinkPropertiesChanged(android.net.Network network, android.net.LinkProperties linkProperties)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>linkProperties</highlighted_element>
+  <language>JAVA</language>
+  <offset>76</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/src/reactnative/java/io/invertase/firebase/analytics/ReactNativeFirebaseAnalyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics.main</module>
+  <package>io.invertase.firebase.analytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/app/ReactNativeFirebaseAppModule.java</file>
+  <line>171</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.app</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.app.ReactNativeFirebaseAppModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseInitProvider.java</file>
+  <line>53</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseInitProvider android.database.Cursor query(android.net.Uri uri, java.lang.String[] projection, java.lang.String selection, java.lang.String[] selectionArgs, java.lang.String sortOrder)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseInitProvider.java</file>
+  <line>59</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseInitProvider java.lang.String getType(android.net.Uri uri)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseInitProvider.java</file>
+  <line>65</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseInitProvider android.net.Uri insert(android.net.Uri uri, android.content.ContentValues values)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseInitProvider.java</file>
+  <line>70</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseInitProvider int delete(android.net.Uri uri, java.lang.String selection, java.lang.String[] selectionArgs)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseInitProvider.java</file>
+  <line>75</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseInitProvider int update(android.net.Uri uri, android.content.ContentValues values, java.lang.String selection, java.lang.String[] selectionArgs)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseModule.java</file>
+  <line>141</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Overriding methods are not annotated</description>
+  <highlighted_element>@NonNull</highlighted_element>
+  <language>JAVA</language>
+  <offset>2</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/utils/ReactNativeFirebaseUtilsModule.java</file>
+  <line>141</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.utils</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.utils.ReactNativeFirebaseUtilsModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1004</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$1 void onVerificationCompleted(com.google.firebase.auth.PhoneAuthCredential phoneAuthCredential)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>phoneAuthCredential</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1051</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$1 void onVerificationFailed(com.google.firebase.FirebaseException e)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>e</highlighted_element>
+  <language>JAVA</language>
+  <offset>61</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1061</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$1 void onCodeSent(java.lang.String verificationId, com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken forceResendingToken)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>verificationId</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1061</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$1 void onCodeSent(java.lang.String verificationId, com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken forceResendingToken)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>forceResendingToken</highlighted_element>
+  <language>JAVA</language>
+  <offset>75</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1073</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$1 void onCodeAutoRetrievalTimeOut(java.lang.String verificationId)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>verificationId</highlighted_element>
+  <language>JAVA</language>
+  <offset>56</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1411</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$4 void onVerificationFailed(com.google.firebase.FirebaseException e)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>e</highlighted_element>
+  <language>JAVA</language>
+  <offset>61</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1423</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$4 void onCodeSent(java.lang.String verificationId, com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken forceResendingToken)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>verificationId</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1423</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$4 void onCodeSent(java.lang.String verificationId, com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken forceResendingToken)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>forceResendingToken</highlighted_element>
+  <language>JAVA</language>
+  <offset>75</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>1446</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule$4 void onCodeAutoRetrievalTimeOut(java.lang.String verificationId)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>verificationId</highlighted_element>
+  <language>JAVA</language>
+  <offset>56</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>2630</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsModule.java</file>
+  <line>209</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/src/main/java/io/invertase/firebase/crashlytics/ReactNativeFirebaseCrashlyticsPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics.main</module>
+  <package>io.invertase.firebase.crashlytics</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.crashlytics.ReactNativeFirebaseCrashlyticsPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestorePackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestorePackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestorePackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestorePackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingModule.java</file>
+  <line>280</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingModule.java</file>
+  <line>293</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingModule void onActivityResult(android.app.Activity activity, int requestCode, int resultCode, android.content.Intent data)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>activity</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingModule.java</file>
+  <line>298</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingModule void onNewIntent(android.content.Intent intent)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>intent</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingPackage.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingService.java</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService void onSendError(java.lang.String messageId, java.lang.Exception sendError)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>messageId</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingService.java</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService void onSendError(java.lang.String messageId, java.lang.Exception sendError)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>sendError</highlighted_element>
+  <language>JAVA</language>
+  <offset>54</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingService.java</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService void onMessageSent(java.lang.String messageId)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>messageId</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingService.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService void onNewToken(java.lang.String token)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>token</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingService.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService void onMessageReceived(com.google.firebase.messaging.RemoteMessage remoteMessage)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>remoteMessage</highlighted_element>
+  <language>JAVA</language>
+  <offset>46</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/src/reactnative/java/io/invertase/firebase/config/ReactNativeFirebaseConfigModule.java</file>
+  <line>304</line>
+  <module>ChatterboxTemp.react-native-firebase_remote-config.main</module>
+  <package>io.invertase.firebase.config</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.config.ReactNativeFirebaseConfigModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageModule.java</file>
+  <line>398</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageModule java.util.Map&lt;java.lang.String,java.lang.Object&gt; getConstants()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getConstants</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/java/com/reactnativedocumentpicker/RNDocumentPickerModule.java</file>
+  <line>75</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativedocumentpicker.RNDocumentPickerModule$1 void onActivityResult(android.app.Activity activity, int requestCode, int resultCode, android.content.Intent data)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>activity</highlighted_element>
+  <language>JAVA</language>
+  <offset>42</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/java/com/reactnativedocumentpicker/RNDocumentPickerPackage.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativedocumentpicker.RNDocumentPickerPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>69</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/main/java/com/reactnativedocumentpicker/RNDocumentPickerPackage.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativedocumentpicker.RNDocumentPickerPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerButtonManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNGestureHandlerRootViewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/RNReactNativeHapticFeedbackPackage.java</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.RNReactNativeHapticFeedbackPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/RNReactNativeHapticFeedbackPackage.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.RNReactNativeHapticFeedbackPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/oldarch/com/mkuczera/RNReactNativeHapticFeedbackModule.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.RNReactNativeHapticFeedbackModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>183</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModuleImpl void onActivityResult(android.app.Activity activity, int requestCode, int resultCode, android.content.Intent data)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>activity</highlighted_element>
+  <language>JAVA</language>
+  <offset>42</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>228</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModuleImpl void onNewIntent(android.content.Intent intent)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>intent</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerPackage.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerPackage.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/oldarch/java/com/imagepicker/ImagePickerModule.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>175</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerPackage.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerPackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerPackage.java</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/java/com/margelo/nitro/mmkv/NitroMmkvPackage.java</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <package>com.margelo.nitro.mmkv</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.mmkv.NitroMmkvPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>name</highlighted_element>
+  <language>JAVA</language>
+  <offset>39</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/java/com/margelo/nitro/mmkv/NitroMmkvPackage.java</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <package>com.margelo.nitro.mmkv</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.mmkv.NitroMmkvPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>69</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/java/com/margelo/nitro/mmkv/NitroMmkvPackage.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <package>com.margelo.nitro.mmkv</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.mmkv.NitroMmkvPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/paper/java/com/facebook/react/viewmanagers/RNCSafeAreaProviderManagerDelegate.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNCSafeAreaProviderManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/paper/java/com/facebook/react/viewmanagers/RNCSafeAreaProviderManagerDelegate.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNCSafeAreaProviderManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>propName</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/paper/java/com/facebook/react/viewmanagers/RNCSafeAreaViewManagerDelegate.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNCSafeAreaViewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSBottomTabsScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSafeAreaViewManagerDelegate.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSafeAreaViewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenContainerManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenContainerManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>propName</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenContentWrapperManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenContentWrapperManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>propName</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenFooterManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenFooterManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>propName</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderConfigManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackHeaderSubviewManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerDelegate.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSScreenStackManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>propName</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void setProperty(T view, java.lang.String propName, java.lang.Object value)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>85</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.viewmanagers.RNSSearchBarManagerDelegate void receiveCommand(T view, java.lang.String commandName, com.facebook.react.bridge.ReadableArray args)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>view</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/java/com/oblador/vectoricons/VectorIconsPackage.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <package>com.oblador.vectoricons</package>
+  <entry_point TYPE="method" FQNAME="com.oblador.vectoricons.VectorIconsPackage com.facebook.react.bridge.NativeModule getModule(java.lang.String name, com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/java/com/oblador/vectoricons/VectorIconsPackage.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <package>com.oblador.vectoricons</package>
+  <entry_point TYPE="method" FQNAME="com.oblador.vectoricons.VectorIconsPackage com.facebook.react.module.model.ReactModuleInfoProvider getReactModuleInfoProvider()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>getReactModuleInfoProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/oldarch/java/com/oblador/vectoricons/VectorIconsModule.java</file>
+  <line>23</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <package>com.oblador.vectoricons</package>
+  <entry_point TYPE="method" FQNAME="com.oblador.vectoricons.VectorIconsModule java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @Nonnull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setDrmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>drmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>90</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setLoadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>loadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory int[] getSupportedTypes()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>getSupportedTypes</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>createMediaSource</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/DashMediaSource.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.dash.DashMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>mediaItem</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setDrmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>drmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>90</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setLoadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>loadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory int[] getSupportedTypes()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>getSupportedTypes</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>createMediaSource</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/hls/HlsMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.hls</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.hls.HlsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>mediaItem</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setDrmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>drmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>90</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setLoadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>loadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory int[] getSupportedTypes()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>getSupportedTypes</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>createMediaSource</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/rtsp/RtspMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.rtsp</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.rtsp.RtspMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>mediaItem</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setDrmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>drmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>90</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setLoadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>loadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory int[] getSupportedTypes()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>getSupportedTypes</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>createMediaSource</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/DefaultSsChunkSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>mediaItem</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setDrmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setDrmSessionManagerProvider(androidx.media3.exoplayer.drm.DrmSessionManagerProvider drmSessionManagerProvider)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>drmSessionManagerProvider</highlighted_element>
+  <language>JAVA</language>
+  <offset>90</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>setLoadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource.Factory setLoadErrorHandlingPolicy(androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy loadErrorHandlingPolicy)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>loadErrorHandlingPolicy</highlighted_element>
+  <language>JAVA</language>
+  <offset>86</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory int[] getSupportedTypes()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>getSupportedTypes</highlighted_element>
+  <language>JAVA</language>
+  <offset>21</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNullApi</description>
+  <highlighted_element>createMediaSource</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/smoothstreaming/SsMediaSource.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.smoothstreaming</package>
+  <entry_point TYPE="method" FQNAME="androidx.media3.exoplayer.smoothstreaming.SsMediaSource.Factory androidx.media3.exoplayer.source.MediaSource createMediaSource(androidx.media3.common.MediaItem mediaItem)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNullApi parameter</description>
+  <highlighted_element>mediaItem</highlighted_element>
+  <language>JAVA</language>
+  <offset>55</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/GetUserMediaImpl.java</file>
+  <line>82</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.GetUserMediaImpl$1 void onActivityResult(android.app.Activity activity, int requestCode, int resultCode, android.content.Intent data)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>activity</highlighted_element>
+  <language>JAVA</language>
+  <offset>50</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/RTCVideoViewManager.java</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.RTCVideoViewManager java.lang.String getName()" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>getName</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/RTCVideoViewManager.java</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.RTCVideoViewManager com.oney.WebRTCModule.WebRTCView createViewInstance(com.facebook.react.uimanager.ThemedReactContext context)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NonNull</description>
+  <highlighted_element>createViewInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/RTCVideoViewManager.java</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.RTCVideoViewManager com.oney.WebRTCModule.WebRTCView createViewInstance(com.facebook.react.uimanager.ThemedReactContext context)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NonNull parameter</description>
+  <highlighted_element>context</highlighted_element>
+  <language>JAVA</language>
+  <offset>60</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createNativeModules</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.bridge.NativeModule&gt; createNativeModules(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated method overrides method annotated with @NotNull</description>
+  <highlighted_element>createViewManagers</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModulePackage.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModulePackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="NullableProblems" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">@NotNull/@Nullable problems</problem_class>
+  <description>Not annotated parameter overrides @NotNull parameter</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>12</length>
+</problem>
+</problems>

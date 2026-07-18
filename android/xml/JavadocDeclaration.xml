@@ -1,0 +1,93 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/AmazonFireDeviceConnectivityPoller.java</file>
+  <line>50</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.netinfo.AmazonFireDeviceConnectivityPoller.ConnectivityChangedCallback void onAmazonFireDeviceConnectivityChanged(boolean isConnected)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param isConnected&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>isConnected</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerPackage.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerPackage java.util.List&lt;com.facebook.react.uimanager.ViewManager&gt; createViewManagers(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param reactContext&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/GetUserMediaImpl.java</file>
+  <line>449</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.GetUserMediaImpl.TrackPrivate TrackPrivate(org.webrtc.MediaStreamTrack track, org.webrtc.MediaSource mediaSource, com.oney.WebRTCModule.AbstractVideoCaptureController videoCaptureController, org.webrtc.SurfaceTextureHelper surfaceTextureHelper)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param track&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>track</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/ThreadUtils.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.ThreadUtils void runOnExecutor(java.lang.Runnable runnable)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param runnable&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>runnable</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/ThreadUtils.java</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.ThreadUtils java.util.concurrent.Future&lt;T&gt; submitToExecutor(java.util.concurrent.Callable&lt;T&gt; callable)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param callable&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>callable</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/ThreadUtils.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.ThreadUtils java.util.concurrent.Future&lt;?&gt; submitToExecutor(java.lang.Runnable runnable)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param runnable&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>runnable</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/videoEffects/VideoFrameProcessor.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.videoEffects</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.videoEffects.VideoFrameProcessor org.webrtc.VideoFrame process(org.webrtc.VideoFrame frame, org.webrtc.SurfaceTextureHelper textureHelper)" />
+  <problem_class id="JavadocDeclaration" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Javadoc declaration problems</problem_class>
+  <description>&lt;code&gt;@param textureHelper&lt;/code&gt; tag description is missing</description>
+  <highlighted_element>textureHelper</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>13</length>
+</problem>
+</problems>

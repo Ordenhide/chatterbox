@@ -1,0 +1,1304 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageModule mReactDatabaseSupplier" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mReactDatabaseSupplier</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>22</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.ReactDatabaseSupplier mContext" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.clipboard.ClipboardModule reactContext" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>34</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/main/java/io/invertase/firebase/common/UniversalFirebasePreferences.java</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.UniversalFirebasePreferences sharedInstance" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>sharedInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>46</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/app/ReactNativeFirebaseAppModule.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.app</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.app.ReactNativeFirebaseAppModule authDomains" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>authDomains</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/app/ReactNativeFirebaseVersion.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.app</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.app.ReactNativeFirebaseVersion VERSION" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>VERSION</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/RCTConvertFirebase.java</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.RCTConvertFirebase TAG" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>TAG</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseEvent.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseEvent eventName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>eventName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseEvent.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseEvent eventBody" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>eventBody</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseEventEmitter.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseEventEmitter sharedInstance" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>sharedInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>49</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseJSON.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseJSON sharedInstance" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>sharedInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseMeta.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseMeta sharedInstance" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>sharedInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseModule.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseModule moduleName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>moduleName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebasePreferences.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.common.ReactNativeFirebasePreferences sharedInstance" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>sharedInstance</highlighted_element>
+  <language>JAVA</language>
+  <offset>48</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>100</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule mAuthListeners" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mAuthListeners</highlighted_element>
+  <language>JAVA</language>
+  <offset>65</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>101</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule mIdTokenListeners" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mIdTokenListeners</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule emulatorConfigs" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>emulatorConfigs</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/src/main/java/io/invertase/firebase/auth/ReactNativeFirebaseAuthModule.java</file>
+  <line>113</line>
+  <module>ChatterboxTemp.react-native-firebase_auth.main</module>
+  <package>io.invertase.firebase.auth</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.auth.ReactNativeFirebaseAuthModule credentials" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>credentials</highlighted_element>
+  <language>JAVA</language>
+  <offset>42</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreCommon.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreCommon instanceCache" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>instanceCache</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreModule.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreModule emulatorConfigs" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>emulatorConfigs</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreStatics.java</file>
+  <line>21</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreStatics FIRESTORE_CACHE_SIZE" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>FIRESTORE_CACHE_SIZE</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreStatics.java</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreStatics FIRESTORE_HOST" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>FIRESTORE_HOST</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreStatics.java</file>
+  <line>23</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreStatics FIRESTORE_PERSISTENCE" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>FIRESTORE_PERSISTENCE</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>21</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreStatics.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreStatics FIRESTORE_SSL" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>FIRESTORE_SSL</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreStatics.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreStatics FIRESTORE_SERVER_TIMESTAMP_BEHAVIOR" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>FIRESTORE_SERVER_TIMESTAMP_BEHAVIOR</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreCollectionModule.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreCollectionModule collectionSnapshotListeners" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>collectionSnapshotListeners</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreDocumentModule.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreDocumentModule documentSnapshotListeners" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>documentSnapshotListeners</highlighted_element>
+  <language>JAVA</language>
+  <offset>51</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreEvent.java</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreEvent eventName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>eventName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreEvent.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreEvent eventBody" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>eventBody</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreEvent.java</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreEvent appName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>appName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreEvent.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreEvent databaseId" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>databaseId</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreEvent.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreEvent listenerId" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>listenerId</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery appName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>appName</highlighted_element>
+  <language>JAVA</language>
+  <offset>9</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreTransactionHandler.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreTransactionHandler appName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>appName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreTransactionHandler.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreTransactionHandler transactionId" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>transactionId</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreTransactionModule.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreTransactionModule transactionHandlers" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>transactionHandlers</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingModule.java</file>
+  <line>44</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingModule initialNotificationMap" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>initialNotificationMap</highlighted_element>
+  <language>JAVA</language>
+  <offset>35</offset>
+  <length>22</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingReceiver.java</file>
+  <line>17</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingReceiver notifications" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>notifications</highlighted_element>
+  <language>JAVA</language>
+  <offset>40</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingStoreHelper.java</file>
+  <line>5</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging.main</module>
+  <package>io.invertase.firebase.messaging</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingStoreHelper messagingStore" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>messagingStore</highlighted_element>
+  <language>JAVA</language>
+  <offset>44</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/src/reactnative/java/io/invertase/firebase/config/ReactNativeFirebaseConfigModule.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-firebase_remote-config.main</module>
+  <package>io.invertase.firebase.config</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.config.ReactNativeFirebaseConfigModule mConfigUpdateRegistrations" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mConfigUpdateRegistrations</highlighted_element>
+  <language>JAVA</language>
+  <offset>67</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageEvent.java</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageEvent taskId" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>taskId</highlighted_element>
+  <language>JAVA</language>
+  <offset>14</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageEvent.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageEvent appName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>appName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageEvent.java</file>
+  <line>38</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageEvent eventBody" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>eventBody</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageEvent.java</file>
+  <line>39</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageEvent internalEventName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>internalEventName</highlighted_element>
+  <language>JAVA</language>
+  <offset>17</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageModule.java</file>
+  <line>47</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageModule emulatorConfigs" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>emulatorConfigs</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageTask.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageTask taskId" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>taskId</highlighted_element>
+  <language>JAVA</language>
+  <offset>6</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageTask.java</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageTask appName" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>appName</highlighted_element>
+  <language>JAVA</language>
+  <offset>9</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/src/main/java/io/invertase/firebase/storage/ReactNativeFirebaseStorageTask.java</file>
+  <line>47</line>
+  <module>ChatterboxTemp.react-native-firebase_storage.main</module>
+  <package>io.invertase.firebase.storage</package>
+  <entry_point TYPE="field" FQNAME="io.invertase.firebase.storage.ReactNativeFirebaseStorageTask storageReference" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>storageReference</highlighted_element>
+  <language>JAVA</language>
+  <offset>19</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>138</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector mSpanSlop" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mSpanSlop</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>139</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector mMinSpan" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mMinSpan</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="field" FQNAME="com.mkuczera.vibrateFactory.VibrateFactory vibrateMap" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>vibrateMap</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/oldarch/com/mkuczera/RNReactNativeHapticFeedbackModule.java</file>
+  <line>10</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera</package>
+  <entry_point TYPE="field" FQNAME="com.mkuczera.RNReactNativeHapticFeedbackModule reactContext" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.ImagePickerModuleImpl reactContext" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>reactContext</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options selectionLimit" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>selectionLimit</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options includeBase64" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>includeBase64</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>10</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options includeExtra" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>includeExtra</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options quality" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>quality</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options maxWidth" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>maxWidth</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>14</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options maxHeight" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>maxHeight</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options saveToPhotos" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>saveToPhotos</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options durationLimit" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>durationLimit</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Options.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Options mediaType" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mediaType</highlighted_element>
+  <language>JAVA</language>
+  <offset>11</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>47</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils fileNamePrefix" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>fileNamePrefix</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>49</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils errCameraUnavailable" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>errCameraUnavailable</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>50</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils errPermission" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>errPermission</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>51</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils errOthers" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>errOthers</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>53</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils mediaTypePhoto" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mediaTypePhoto</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>54</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils mediaTypeVideo" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mediaTypeVideo</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>56</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="field" FQNAME="com.imagepicker.Utils cameraPermissionDescription" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>cameraPermissionDescription</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="field" FQNAME="fr.bamlab.rnimageresizer.ImageResizerModule context" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>context</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>74</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule mPowerManager" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mPowerManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>76</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule mWindowManager" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mWindowManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>79</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule audioManager" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>audioManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>88</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule defaultAudioMode" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>defaultAudioMode</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>101</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule defaultRingtoneUri" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>defaultRingtoneUri</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>102</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule defaultRingbackUri" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>defaultRingbackUri</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>103</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule defaultBusytoneUri" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>defaultBusytoneUri</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>108</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule audioUriMap" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>audioUriMap</highlighted_element>
+  <language>JAVA</language>
+  <offset>29</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1338</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule.myToneGenerator toneCategory" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>toneCategory</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="field" FQNAME="com.zxcpoiu.incallmanager.InCallWakeLockUtils mPowerManager" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mPowerManager</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/manifest/AdaptationSet.java</file>
+  <line>7</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash.manifest</package>
+  <entry_point TYPE="field" FQNAME="androidx.media3.exoplayer.dash.manifest.AdaptationSet type" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>type</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/manifest/AdaptationSet.java</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash.manifest</package>
+  <entry_point TYPE="field" FQNAME="androidx.media3.exoplayer.dash.manifest.AdaptationSet representations" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>representations</highlighted_element>
+  <language>JAVA</language>
+  <offset>41</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/androidx/media3/exoplayer/dash/manifest/Representation.java</file>
+  <line>6</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>androidx.media3.exoplayer.dash.manifest</package>
+  <entry_point TYPE="field" FQNAME="androidx.media3.exoplayer.dash.manifest.Representation format" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>format</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>222</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="field" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView rootViewChildrenOriginalVisibility" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>rootViewChildrenOriginalVisibility</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/LibraryLoader.java</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.LibraryLoader TAG" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>TAG</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/VideoTrackAdapter.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.VideoTrackAdapter muteImplMap" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>muteImplMap</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/VideoTrackAdapter.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.VideoTrackAdapter timer" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>timer</highlighted_element>
+  <language>JAVA</language>
+  <offset>18</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/VideoTrackAdapter.java</file>
+  <line>72</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.VideoTrackAdapter.TrackMuteUnmuteImpl frameCounter" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>frameCounter</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCModule mFactory" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mFactory</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>43</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCModule mVideoEncoderFactory" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mVideoEncoderFactory</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>44</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCModule mVideoDecoderFactory" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mVideoDecoderFactory</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCModule mAudioDeviceModule" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>mAudioDeviceModule</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/videoEffects/ProcessorProvider.java</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.videoEffects</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.videoEffects.ProcessorProvider methodMap" />
+  <problem_class id="CanBeFinal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Declaration can have 'final' modifier</problem_class>
+  <hints />
+  <description>Declaration can have final modifier</description>
+  <highlighted_element>methodMap</highlighted_element>
+  <language>JAVA</language>
+  <offset>68</offset>
+  <length>9</length>
+</problem>
+</problems>

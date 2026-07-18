@@ -1,8 +1,29 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {StyleSheet, useColorScheme} from 'react-native';
+import {Platform, StyleSheet, Text, useColorScheme} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {lazyLoad} from '../utils/lazyLoading';
+import ChatListScreen from '../screens/chat/ChatListScreen';
+import ChatScreen from '../screens/chat/ChatScreen';
+import NewChatScreen from '../screens/chat/NewChatScreen';
+import ChatMediaScreen from '../screens/chat/ChatMediaScreen';
+import ChatSettingsScreen from '../screens/chat/ChatSettingsScreen';
+import CallScreen from '../screens/chat/CallScreen';
+import WhiteboardScreen from '../screens/chat/WhiteboardScreen';
+import QuoteWallScreen from '../screens/chat/QuoteWallScreen';
+import ChatWrappedScreen from '../screens/chat/ChatWrappedScreen';
+import RitualsScreen from '../screens/chat/RitualsScreen';
+import PlaylistScreen from '../screens/chat/PlaylistScreen';
+import CountdownScreen from '../screens/chat/CountdownScreen';
+import ChatTimelineScreen from '../screens/chat/ChatTimelineScreen';
+import BookmarksScreen from '../screens/BookmarksScreen';
+import MemoriesScreen from '../screens/MemoriesScreen';
+import PrivacyDashboardScreen from '../screens/PrivacyDashboardScreen';
+import SecureVaultScreen from '../screens/SecureVaultScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import MomentsScreen from '../screens/moments/MomentsScreen';
+import FriendsScreen from '../screens/moments/FriendsScreen';
 import {useAuth} from '../contexts/AuthContext';
 import {listenFriends, listenFriendRequests} from '../services/friends';
 import {listenMomentsForAuthors} from '../services/moments';
@@ -11,24 +32,16 @@ import {getMomentsLastSeen, onMomentsLastSeen} from '../services/notifications';
 import {Friend, Moment} from '../types';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
-
-// Lazy load screens
-const ChatListScreen = lazyLoad(() => import('../screens/chat/ChatListScreen'));
-const ChatScreen = lazyLoad(() => import('../screens/chat/ChatScreen'));
-const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
-const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
-const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
-const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
-const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
-const MomentsScreen = lazyLoad(() => import('../screens/moments/MomentsScreen'));
-const FriendsScreen = lazyLoad(() => import('../screens/moments/FriendsScreen'));
+import {useTranslation} from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigator() {
   const colors = getColors(useColorScheme());
+  const insets = useSafeAreaInsets();
   const {user} = useAuth();
+  const {t} = useTranslation();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [momentsLastSeen, setMomentsLastSeen] = useState(0);
   const [momentsReady, setMomentsReady] = useState(false);
@@ -104,6 +117,8 @@ export default function MainNavigator() {
       .filter(Boolean) as string[];
   }, [friends, user?.uid]);
 
+  const friendIdsKey = useMemo(() => friendIds.join(','), [friendIds]);
+
   useEffect(() => {
     if (!user?.uid || !momentsReady) return;
     const getMomentTime = (moment: Moment) => {
@@ -119,68 +134,166 @@ export default function MainNavigator() {
       setHasNewMoments(latest > momentsLastSeen);
     });
     return () => unsubscribe();
-  }, [user?.uid, friendIds.join(','), momentsLastSeen, momentsReady]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid, friendIdsKey, momentsLastSeen, momentsReady]);
 
   const showChatsBadge = hasUnreadChats;
   const showMomentsBadge = hasNewMoments || hasFriendRequests;
 
-  const stackScreenOptions = {
-    headerTransparent: false,
-    headerTitleStyle: {color: colors.text},
-    headerTintColor: colors.text,
-    headerShadowVisible: false,
-    headerStyle: {backgroundColor: 'transparent'},
-    headerBackground: () => <GlassView pointerEvents="none" blur={false} style={styles.headerGlass} />,
-    contentStyle: {backgroundColor: 'transparent'},
-  };
+  const headerTitleStyle = useMemo(
+    () => ({color: colors.text, fontSize: 17, fontWeight: '700' as const, letterSpacing: -0.2}),
+    [colors.text],
+  );
+  const headerBg = React.useCallback(
+    () => <GlassView pointerEvents="none" blur={false} style={styles.headerGlass} />,
+    [],
+  );
+  const stackScreenOptions = useMemo(
+    () => ({
+      headerTransparent: false,
+      headerTitleStyle,
+      headerTintColor: colors.primary,
+      headerShadowVisible: false,
+      headerStyle: styles.transparentBg,
+      headerBackground: headerBg,
+      contentStyle: styles.transparentBg,
+    }),
+    [headerTitleStyle, colors.primary, headerBg],
+  );
 
-  function ChatStack() {
-    return (
-      <Stack.Navigator screenOptions={stackScreenOptions}>
-        <Stack.Screen
-          name="ChatList"
-          component={ChatListScreen}
-          options={{title: 'Chats', headerShown: false}}
-        />
-        <Stack.Screen
-          name="NewChat"
-          component={NewChatScreen}
-          options={{title: 'New Chat'}}
-        />
-        <Stack.Screen
-          name="Chat"
-          component={ChatScreen}
-          options={({route}: any) => ({
-            title: route.params?.chatName || 'Chat',
-          })}
-        />
-        <Stack.Screen
-          name="ChatMedia"
-          component={ChatMediaScreen}
-          options={{title: 'Media'}}
-        />
-        <Stack.Screen
-          name="ChatSettings"
-          component={ChatSettingsScreen}
-          options={{title: 'Chat Settings'}}
-        />
-        <Stack.Screen
-          name="Call"
-          component={CallScreen}
-          options={{title: 'Call'}}
-        />
-      </Stack.Navigator>
-    );
-  }
+  const tabBarBg = React.useCallback(
+    () => <GlassView pointerEvents="none" blur={false} style={styles.tabBarGlass} />,
+    [],
+  );
+  const tabBarStyle = useMemo(
+    () => [
+      styles.tabBar,
+      {
+        backgroundColor: 'transparent' as const,
+        borderTopColor: colors.glassBorder,
+        height: Platform.OS === 'ios' ? 88 + insets.bottom : 88,
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 28,
+      },
+    ],
+    [colors.glassBorder, insets.bottom],
+  );
+  const chatIcon = React.useCallback(() => <Text style={styles.tabIcon}>{'💬'}</Text>, []);
+  const momentsIcon = React.useCallback(() => <Text style={styles.tabIcon}>{'✨'}</Text>, []);
+  const profileIcon = React.useCallback(() => <Text style={styles.tabIcon}>👤</Text>, []);
 
-  function MomentsStack() {
-    return (
-      <Stack.Navigator screenOptions={stackScreenOptions}>
-        <Stack.Screen name="Moments" component={MomentsScreen} options={{title: 'Moments', headerShown: false}} />
-        <Stack.Screen name="Friends" component={FriendsScreen} options={{title: 'Friends'}} />
-      </Stack.Navigator>
-    );
-  }
+  const ChatStack = useMemo(() => {
+    function _ChatStack() {
+      return (
+        <Stack.Navigator screenOptions={stackScreenOptions}>
+          <Stack.Screen
+            name="ChatList"
+            component={ChatListScreen}
+            options={{title: t('headers.chats'), headerShown: false}}
+          />
+          <Stack.Screen
+            name="NewChat"
+            component={NewChatScreen}
+            options={{title: t('headers.newChat')}}
+          />
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={({route}: any) => ({
+              title: route.params?.chatName || t('headers.chat'),
+            })}
+          />
+          <Stack.Screen
+            name="ChatMedia"
+            component={ChatMediaScreen}
+            options={{title: t('headers.media')}}
+          />
+          <Stack.Screen
+            name="ChatSettings"
+            component={ChatSettingsScreen}
+            options={{title: t('headers.chatSettings')}}
+          />
+          <Stack.Screen
+            name="Call"
+            component={CallScreen}
+            options={{title: t('headers.call')}}
+          />
+          <Stack.Screen
+            name="Whiteboard"
+            component={WhiteboardScreen}
+            options={{title: 'Whiteboard'}}
+          />
+          <Stack.Screen
+            name="QuoteWall"
+            component={QuoteWallScreen}
+            options={{title: 'Quote Wall'}}
+          />
+          <Stack.Screen
+            name="Bookmarks"
+            component={BookmarksScreen}
+            options={{title: 'Saved Messages'}}
+          />
+          <Stack.Screen
+            name="Memories"
+            component={MemoriesScreen}
+            options={{title: 'Memories'}}
+          />
+          <Stack.Screen
+            name="ChatWrapped"
+            component={ChatWrappedScreen}
+            options={{title: 'Year in Review'}}
+          />
+          <Stack.Screen
+            name="Rituals"
+            component={RitualsScreen}
+            options={{title: 'Chat Rituals'}}
+          />
+          <Stack.Screen
+            name="Playlist"
+            component={PlaylistScreen}
+            options={{title: 'Playlist'}}
+          />
+          <Stack.Screen
+            name="Countdown"
+            component={CountdownScreen}
+            options={{title: 'Countdowns'}}
+          />
+          <Stack.Screen
+            name="ChatTimeline"
+            component={ChatTimelineScreen}
+            options={{title: 'Timeline'}}
+          />
+          <Stack.Screen
+            name="PrivacyDashboard"
+            component={PrivacyDashboardScreen}
+            options={{title: 'Privacy & Security'}}
+          />
+          <Stack.Screen
+            name="SecureVault"
+            component={SecureVaultScreen}
+            options={{title: 'Secure Vault'}}
+          />
+          <Stack.Screen
+            name="PrivacyPolicy"
+            component={PrivacyPolicyScreen}
+            options={{title: 'Privacy Policy'}}
+          />
+        </Stack.Navigator>
+      );
+    }
+    return _ChatStack;
+  }, [stackScreenOptions, t]);
+
+  const MomentsStack = useMemo(() => {
+    function _MomentsStack() {
+      return (
+        <Stack.Navigator screenOptions={stackScreenOptions}>
+          <Stack.Screen name="Moments" component={MomentsScreen} options={{title: t('headers.moments'), headerShown: false}} />
+          <Stack.Screen name="Friends" component={FriendsScreen} options={{title: t('headers.friends')}} />
+        </Stack.Navigator>
+      );
+    }
+    return _MomentsStack;
+  }, [stackScreenOptions, t]);
 
   return (
     <Tab.Navigator
@@ -188,47 +301,36 @@ export default function MainNavigator() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
-        tabBarStyle: [
-          styles.tabBar,
-          {backgroundColor: 'transparent', borderTopColor: colors.glassBorder},
-        ],
-        tabBarBackground: () => <GlassView pointerEvents="none" blur={false} style={styles.tabBarGlass} />,
+        tabBarLabelStyle: styles.tabLabel,
+        tabBarStyle,
+        tabBarBackground: tabBarBg,
       }}>
       <Tab.Screen
         name="Chats"
         component={ChatStack}
         options={{
-          tabBarLabel: 'Chats',
+          tabBarLabel: t('tabs.chats'),
+          tabBarIcon: chatIcon,
           tabBarBadge: showChatsBadge ? ' ' : undefined,
-          tabBarBadgeStyle: {
-            backgroundColor: '#FF3B30',
-            color: 'transparent',
-            minWidth: 8,
-            height: 8,
-            borderRadius: 4,
-          },
+          tabBarBadgeStyle: styles.tabBadge,
         }}
       />
       <Tab.Screen
         name="MomentsTab"
         component={MomentsStack}
         options={{
-          tabBarLabel: 'Moments',
+          tabBarLabel: t('tabs.moments'),
+          tabBarIcon: momentsIcon,
           tabBarBadge: showMomentsBadge ? ' ' : undefined,
-          tabBarBadgeStyle: {
-            backgroundColor: '#FF3B30',
-            color: 'transparent',
-            minWidth: 8,
-            height: 8,
-            borderRadius: 4,
-          },
+          tabBarBadgeStyle: styles.tabBadge,
         }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: t('tabs.profile'),
+          tabBarIcon: profileIcon,
         }}
       />
     </Tab.Navigator>
@@ -236,10 +338,34 @@ export default function MainNavigator() {
 }
 
 const styles = StyleSheet.create({
+  transparentBg: {
+    backgroundColor: 'transparent',
+  },
   tabBar: {
-    borderTopWidth: 0,
+    borderTopWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'transparent',
     overflow: 'hidden',
+    height: 88,
+    paddingBottom: 28,
+    paddingTop: 8,
+  },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    marginTop: 2,
+  },
+  tabIcon: {
+    fontSize: 22,
+  },
+  tabBadge: {
+    backgroundColor: '#FF453A',
+    color: 'transparent',
+    minWidth: 9,
+    height: 9,
+    borderRadius: 4.5,
+    top: 2,
+    right: -4,
   },
   tabBarGlass: {
     ...StyleSheet.absoluteFillObject,

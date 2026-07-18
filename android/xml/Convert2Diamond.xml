@@ -1,0 +1,106 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/SerialExecutor.java</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="field" FQNAME="com.reactnativecommunity.asyncstorage.SerialExecutor mTasks" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument Runnable can be replaced with &lt;&gt;</description>
+  <highlighted_element>Runnable</highlighted_element>
+  <language>JAVA</language>
+  <offset>63</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/ReactNativeFirebaseJSON.java</file>
+  <line>71</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.ReactNativeFirebaseJSON java.util.ArrayList&lt;java.lang.String&gt; getArrayValue(java.lang.String key)" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument String can be replaced with &lt;&gt;</description>
+  <highlighted_element>String</highlighted_element>
+  <language>JAVA</language>
+  <offset>45</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreCommon.java</file>
+  <line>50</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreCommon com.google.firebase.firestore.FirebaseFirestore getFirestoreForApp(java.lang.String appName, java.lang.String databaseId)" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument FirebaseFirestore can be replaced with &lt;&gt;</description>
+  <highlighted_element>FirebaseFirestore</highlighted_element>
+  <language>JAVA</language>
+  <offset>49</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>399</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager java.util.List&lt;android.bluetooth.BluetoothDevice&gt; getFinalConnectedDevices()" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument BluetoothDevice can be replaced with &lt;&gt;</description>
+  <highlighted_element>BluetoothDevice</highlighted_element>
+  <language>JAVA</language>
+  <offset>57</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>186</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule InCallManagerModule(com.facebook.react.bridge.ReactApplicationContext reactContext)" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument String, Uri can be replaced with &lt;&gt;</description>
+  <highlighted_element>String, Uri</highlighted_element>
+  <language>JAVA</language>
+  <offset>34</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/src/main/java/com/oblador/vectoricons/VectorIconsModuleImpl.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-vector-icons.main</module>
+  <package>com.oblador.vectoricons</package>
+  <entry_point TYPE="field" FQNAME="com.oblador.vectoricons.VectorIconsModuleImpl sTypefaceCache" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument String, Typeface can be replaced with &lt;&gt;</description>
+  <highlighted_element>String, Typeface</highlighted_element>
+  <language>JAVA</language>
+  <offset>76</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>222</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="field" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView rootViewChildrenOriginalVisibility" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument Integer can be replaced with &lt;&gt;</description>
+  <highlighted_element>Integer</highlighted_element>
+  <language>JAVA</language>
+  <offset>82</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/videoEffects/ProcessorProvider.java</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.videoEffects</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.videoEffects.ProcessorProvider methodMap" />
+  <problem_class id="Convert2Diamond" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Explicit type can be replaced with '&lt;&gt;'</problem_class>
+  <description>Explicit type argument String, VideoFrameProcessorFactoryInterface can be replaced with &lt;&gt;</description>
+  <highlighted_element>String, VideoFrameProcessorFactoryInterface</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>43</length>
+</problem>
+</problems>

@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>184</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager.BluetoothHeadsetBroadcastReceiver void onReceive(android.content.Context context, android.content.Intent intent)" />
+  <problem_class id="EmptyStatementBody" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Statement with empty body</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement has empty body #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/AppRTC/AppRTCBluetoothManager.java</file>
+  <line>186</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager.AppRTC</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager.BluetoothHeadsetBroadcastReceiver void onReceive(android.content.Context context, android.content.Intent intent)" />
+  <problem_class id="EmptyStatementBody" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Statement with empty body</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement has empty body #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>2</length>
+</problem>
+</problems>

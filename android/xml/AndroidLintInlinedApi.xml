@@ -1,0 +1,114 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>23</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 27 (current min is 24): &lt;code&gt;android.view.HapticFeedbackConstants#KEYBOARD_PRESS&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>HapticFeedbackConstants.KEYBOARD_PRESS</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 27 (current min is 24): &lt;code&gt;android.view.HapticFeedbackConstants#KEYBOARD_RELEASE&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>HapticFeedbackConstants.KEYBOARD_RELEASE</highlighted_element>
+  <language>JAVA</language>
+  <offset>72</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 27 (current min is 24): &lt;code&gt;android.view.HapticFeedbackConstants#TEXT_HANDLE_MOVE&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>HapticFeedbackConstants.TEXT_HANDLE_MOVE</highlighted_element>
+  <language>JAVA</language>
+  <offset>71</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>29</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 27 (current min is 24): &lt;code&gt;android.view.HapticFeedbackConstants#VIRTUAL_KEY_RELEASE&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>HapticFeedbackConstants.VIRTUAL_KEY_RELEASE</highlighted_element>
+  <language>JAVA</language>
+  <offset>74</offset>
+  <length>43</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>30</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 29 (current min is 24): &lt;code&gt;android.os.VibrationEffect#EFFECT_CLICK&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>VibrationEffect.EFFECT_CLICK</highlighted_element>
+  <language>JAVA</language>
+  <offset>70</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 29 (current min is 24): &lt;code&gt;android.os.VibrationEffect#EFFECT_DOUBLE_CLICK&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>VibrationEffect.EFFECT_DOUBLE_CLICK</highlighted_element>
+  <language>JAVA</language>
+  <offset>76</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>32</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 29 (current min is 24): &lt;code&gt;android.os.VibrationEffect#EFFECT_HEAVY_CLICK&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>VibrationEffect.EFFECT_HEAVY_CLICK</highlighted_element>
+  <language>JAVA</language>
+  <offset>75</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java</file>
+  <line>33</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateFactory.java" />
+  <problem_class id="AndroidLintInlinedApi" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Using inlined constants on older versions</problem_class>
+  <hints />
+  <description>&lt;html&gt;Field requires API level 29 (current min is 24): &lt;code&gt;android.os.VibrationEffect#EFFECT_TICK&lt;/code&gt;&lt;/html&gt;</description>
+  <highlighted_element>VibrationEffect.EFFECT_TICK</highlighted_element>
+  <language>JAVA</language>
+  <offset>69</offset>
+  <length>27</length>
+</problem>
+</problems>

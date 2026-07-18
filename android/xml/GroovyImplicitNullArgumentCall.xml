@@ -1,0 +1,74 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/build.gradle</file>
+  <line>90</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>40</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>43</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>38</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-localize/android/build.gradle</file>
+  <line>52</line>
+  <module>ChatterboxTemp.react-native-localize</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-localize/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>40</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/build.gradle</file>
+  <line>116</line>
+  <module>ChatterboxTemp.react-native-mmkv</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>34</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/build.gradle</file>
+  <line>126</line>
+  <module>ChatterboxTemp.react-native-nitro-modules</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>34</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/build.gradle</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-vector-icons</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-vector-icons/android/build.gradle" />
+  <problem_class id="GroovyImplicitNullArgumentCall" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Implicit null argument</problem_class>
+  <description>Method is called with implicit null argument</description>
+  <highlighted_element>()</highlighted_element>
+  <language>Groovy</language>
+  <offset>40</offset>
+  <length>2</length>
+</problem>
+</problems>

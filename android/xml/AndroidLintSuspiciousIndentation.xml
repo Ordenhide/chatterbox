@@ -1,0 +1,86 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt</file>
+  <line>45</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;Suspicious indentation: This is indented but is not continuing the previous expression (&lt;code&gt;handler.onTouchEvent&lt;/code&gt;...) (Previous statement here)&lt;/html&gt;</description>
+  <highlighted_element>handler.onTouchEventListener = eventDispatcher</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;Suspicious indentation: This is indented but is not continuing the previous expression (&lt;code&gt;handler.onTouchEvent&lt;/code&gt;...)&lt;/html&gt;</description>
+  <highlighted_element>registry.registerHandler(handler)</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt</file>
+  <line>74</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;Suspicious indentation: This is indented but is not continuing the previous expression (&lt;code&gt;val factory = RNGest&lt;/code&gt;...) (Previous statement here)&lt;/html&gt;</description>
+  <highlighted_element>val factory = RNGestureHandlerFactoryUtil.findFactoryForHandler&lt;GestureHandler&gt;(handler) ?: return</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>98</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt</file>
+  <line>75</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerModule.kt" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;Suspicious indentation: This is indented but is not continuing the previous expression (&lt;code&gt;val factory = RNGest&lt;/code&gt;...)&lt;/html&gt;</description>
+  <highlighted_element>interactionManager.dropRelationsForHandlerWithTag(handlerTag)</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>61</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>864</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;The indentation string here is different from on the previous line (&lt;code&gt;&quot; &quot;&lt;/code&gt; vs &lt;code&gt;\t&lt;/code&gt;) (Previous line indentation here)&lt;/html&gt;</description>
+  <highlighted_element />
+  <language>JAVA</language>
+  <offset>57</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>865</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java" />
+  <problem_class id="AndroidLintSuspiciousIndentation" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Suspicious indentation</problem_class>
+  <hints />
+  <description>&lt;html&gt;The indentation string here is different from on the previous line (&lt;code&gt;&quot; &quot;&lt;/code&gt; vs &lt;code&gt;\t&lt;/code&gt;)&lt;/html&gt;</description>
+  <highlighted_element />
+  <language>JAVA</language>
+  <offset>57</offset>
+  <length>6</length>
+</problem>
+</problems>

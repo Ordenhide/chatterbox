@@ -1,0 +1,14 @@
+<problems>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModule.h</file>
+  <line>175</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModule.h" />
+  <problem_class id="OCUnusedInstanceVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Instance Variable</problem_class>
+  <description>Instance variable '_eventEmitterCallback' is never used</description>
+  <highlighted_element>_eventEmitterCallback</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>40</offset>
+  <length>21</length>
+</problem>
+</problems>

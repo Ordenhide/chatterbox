@@ -1,0 +1,119 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageView</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>48</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>51</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>58</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>13</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>61</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>13</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>65</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>68</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>104</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml</file>
+  <line>111</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/res/layout/exo_legacy_player_control_view.xml" />
+  <problem_class id="AndroidLintContentDescription" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image without contentDescription</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;contentDescription&lt;/code&gt; attribute on image&lt;/html&gt;</description>
+  <highlighted_element>ImageButton</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>11</length>
+</problem>
+</problems>

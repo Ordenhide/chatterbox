@@ -1,0 +1,16 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerRegistry.kt</file>
+  <line>12</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerRegistry.kt" />
+  <problem_class id="AndroidLintUseSparseArrays" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">HashMap can be replaced with SparseArray</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use &lt;code&gt;new SparseIntArray(...)&lt;/code&gt; instead for better performance&lt;/html&gt;</description>
+  <highlighted_element>SparseArray&lt;Int?&gt;()</highlighted_element>
+  <language>kotlin</language>
+  <offset>27</offset>
+  <length>19</length>
+</problem>
+</problems>

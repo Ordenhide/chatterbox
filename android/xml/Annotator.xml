@@ -1,0 +1,114 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GenerateAutolinkingNewArchitecturesFileTask.kt</file>
+  <line>176</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GenerateAutolinkingNewArchitecturesFileTask.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>EOL, block, break, comment, continue, foreach, function, id, if, macro or while expected, got '{' #loc</description>
+  <highlighted_element>{</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt</file>
+  <line>149</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>'class' or 'interface' expected #loc</description>
+  <highlighted_element>{{</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt</file>
+  <line>149</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>Identifier expected #loc</description>
+  <highlighted_element />
+  <language>kotlin</language>
+  <offset>29</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt</file>
+  <line>149</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GeneratePackageListTask.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>'class' or 'interface' expected #loc</description>
+  <highlighted_element>}}</highlighted_element>
+  <language>kotlin</language>
+  <offset>30</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt</file>
+  <line>22</line>
+  <module>gradle-plugin-root.shared.test</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>&lt;value&gt; expected, got '¯' #loc</description>
+  <highlighted_element>¯</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt</file>
+  <line>94</line>
+  <module>gradle-plugin-root.shared.test</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>&lt;value&gt; expected, got '¯' #loc</description>
+  <highlighted_element>¯</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt</file>
+  <line>126</line>
+  <module>gradle-plugin-root.shared.test</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/shared/src/test/kotlin/com/facebook/react/utils/JsonUtilsTest.kt" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>&lt;value&gt; expected, got '¯' #loc</description>
+  <highlighted_element>¯</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java</file>
+  <line>36</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>&lt;column definition name&gt; expected, got 'key' #loc</description>
+  <highlighted_element />
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>0</length>
+</problem>
+</problems>

@@ -1,0 +1,14 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/testresults.gradle</file>
+  <line>5</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/testresults.gradle" />
+  <problem_class id="ConfigurationAvoidance" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Configuration avoidance</problem_class>
+  <description>Consider using 'withType(...).configureEach' to avoid unnecessary configuration</description>
+  <highlighted_element>withType</highlighted_element>
+  <language>Groovy</language>
+  <offset>6</offset>
+  <length>8</length>
+</problem>
+</problems>

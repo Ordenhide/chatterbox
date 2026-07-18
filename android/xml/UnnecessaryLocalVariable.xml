@@ -1,0 +1,119 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1271</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule android.net.Uri getAudioUri(java.lang.String _type, java.lang.String fileBundle, java.lang.String fileBundleExt, java.lang.String fileSysWithExt, java.lang.String fileSysPath, java.lang.String uriBundle, java.lang.String uriDefault)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;type&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>type</highlighted_element>
+  <language>JAVA</language>
+  <offset>15</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1364</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule.myToneGenerator void startPlay(java.util.Map data)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;name&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>name</highlighted_element>
+  <language>JAVA</language>
+  <offset>19</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/ScreenCaptureController.java</file>
+  <line>58</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.ScreenCaptureController org.webrtc.VideoCapturer createVideoCapturer()" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;videoCapturer&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>videoCapturer</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>194</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;cryptoOptions&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>cryptoOptions</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>345</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;v&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>v</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>352</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;v&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>v</highlighted_element>
+  <language>JAVA</language>
+  <offset>22</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>359</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;v&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>v</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>365</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;v&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>v</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>372</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule org.webrtc.PeerConnection.RTCConfiguration parseRTCConfiguration(com.facebook.react.bridge.ReadableMap map)" />
+  <problem_class id="UnnecessaryLocalVariable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant local variable</problem_class>
+  <description>Local variable &lt;code&gt;v&lt;/code&gt; is redundant #loc</description>
+  <highlighted_element>v</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>1</length>
+</problem>
+</problems>

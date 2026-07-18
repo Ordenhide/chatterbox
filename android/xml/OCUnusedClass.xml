@@ -1,0 +1,62 @@
+<problems>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModule.h</file>
+  <line>209</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModule.h" />
+  <problem_class id="OCUnusedClass" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Class</problem_class>
+  <description>Interface 'RCTBridge + RCTTurboModule' is never used</description>
+  <highlighted_element>RCTBridge</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>11</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModuleWithJSIBindings.h</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/platform/ios/ReactCommon/RCTTurboModuleWithJSIBindings.h" />
+  <problem_class id="OCUnusedClass" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Class</problem_class>
+  <description>Protocol 'RCTTurboModuleWithJSIBindings' is never used</description>
+  <highlighted_element>RCTTurboModuleWithJSIBindings</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>10</offset>
+  <length>29</length>
+</problem>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/imagemanager/platform/ios/react/renderer/imagemanager/RCTImageManager.h</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/imagemanager/platform/ios/react/renderer/imagemanager/RCTImageManager.h" />
+  <problem_class id="OCUnusedClass" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Class</problem_class>
+  <description>Interface 'RCTImageManager' is never used</description>
+  <highlighted_element>RCTImageManager</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>11</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/imagemanager/platform/ios/react/renderer/imagemanager/RCTSyncImageManager.h</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/imagemanager/platform/ios/react/renderer/imagemanager/RCTSyncImageManager.h" />
+  <problem_class id="OCUnusedClass" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Class</problem_class>
+  <description>Interface 'RCTSyncImageManager' is never used</description>
+  <highlighted_element>RCTSyncImageManager</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>11</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/textlayoutmanager/platform/ios/react/renderer/textlayoutmanager/RCTTextLayoutManager.h</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <entry_point TYPE="file" FQNAME="file://$USER_HOME$/.gradle/caches/8.13/transforms/b9829b7970a7154baae37da9322a7d7c/transformed/jetified-react-android-0.80.0-debug/prefab/modules/reactnative/include/react/renderer/textlayoutmanager/platform/ios/react/renderer/textlayoutmanager/RCTTextLayoutManager.h" />
+  <problem_class id="OCUnusedClass" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused Class</problem_class>
+  <description>Interface 'RCTTextLayoutManager' is never used</description>
+  <highlighted_element>RCTTextLayoutManager</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>11</offset>
+  <length>20</length>
+</problem>
+</problems>

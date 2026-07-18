@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/build.gradle</file>
+  <line>28</line>
+  <module>ChatterboxTemp.react-native-webrtc</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/build.gradle" />
+  <problem_class id="AndroidLintAligned16KB" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Native library dependency not 16 KB aligned</problem_class>
+  <hints />
+  <description>&lt;html&gt;The native library &lt;code&gt;arm64-v8a/libjingle_peerconnection_so.so&lt;/code&gt; (from &lt;code&gt;org.jitsi:webrtc:111.0.1&lt;/code&gt;) is not 16 KB aligned&lt;/html&gt;</description>
+  <highlighted_element>'org.jitsi:webrtc:111.+'</highlighted_element>
+  <language>Groovy</language>
+  <offset>8</offset>
+  <length>24</length>
+</problem>
+</problems>

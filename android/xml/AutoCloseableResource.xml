@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>203</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageModule$2 void doInBackgroundGuarded(java.lang.Void... params)" />
+  <problem_class id="AutoCloseableResource" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">AutoCloseable used without 'try'-with-resources</problem_class>
+  <description>'SQLiteStatement' used without 'try'-with-resources statement #loc</description>
+  <highlighted_element>compileStatement</highlighted_element>
+  <language>JAVA</language>
+  <offset>65</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java</file>
+  <line>123</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.Utils android.net.Uri getAppSpecificStorageUri(android.net.Uri sharedStorageUri, android.content.Context context)" />
+  <problem_class id="AutoCloseableResource" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">AutoCloseable used without 'try'-with-resources</problem_class>
+  <description>'Cursor' used without 'try'-with-resources statement #loc</description>
+  <highlighted_element>query</highlighted_element>
+  <language>JAVA</language>
+  <offset>36</offset>
+  <length>5</length>
+</problem>
+</problems>

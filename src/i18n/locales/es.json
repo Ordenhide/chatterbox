@@ -1,0 +1,359 @@
+{
+  "app": {
+    "name": "Chatterbox"
+  },
+  "common": {
+    "continue": "Continuar",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "error": "Error",
+    "ok": "OK",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "post": "Publicar",
+    "refresh": "Actualizar",
+    "send": "Enviar",
+    "copy": "Copiar",
+    "import": "Importar",
+    "export": "Exportar",
+    "new": "Nuevo",
+    "update": "Actualizar",
+    "remove": "Quitar",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "justNow": "Justo ahora",
+    "tapToRetry": "Toca para reintentar."
+  },
+  "tabs": {
+    "chats": "Chats",
+    "moments": "Momentos",
+    "profile": "Perfil"
+  },
+  "headers": {
+    "chats": "Chats",
+    "newChat": "Nuevo chat",
+    "chat": "Chat",
+    "media": "Medios",
+    "chatSettings": "Configuración del chat",
+    "call": "Llamada",
+    "moments": "Momentos",
+    "friends": "Amigos"
+  },
+  "auth": {
+    "login": {
+      "subtitleVariant": "Bienvenido de nuevo — vamos a chatear",
+      "subtitleDefault": "Inicia sesión para continuar",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "reset": "Restablecer",
+      "noAccount": "¿No tienes una cuenta?"
+    },
+    "signup": {
+      "title": "Crear cuenta",
+      "subtitle": "Regístrate para comenzar",
+      "displayNamePlaceholder": "Nombre de visualización (opcional)",
+      "passwordPlaceholder": "Contraseña (mín. 6 caracteres)",
+      "hasAccount": "¿Ya tienes una cuenta?"
+    },
+    "errors": {
+      "missingFields": "Por favor completa todos los campos",
+      "missingEmailPassword": "Por favor completa el correo electrónico y la contraseña",
+      "passwordMin": "La contraseña debe tener al menos 6 caracteres",
+      "loginFailed": "Error al iniciar sesión",
+      "signUpFailed": "Error al registrarse",
+      "generic": "Ocurrió un error",
+      "userNotFound": "No se encontró una cuenta con este correo electrónico",
+      "wrongPassword": "Contraseña incorrecta",
+      "invalidEmail": "Dirección de correo electrónico inválida",
+      "userDisabled": "Esta cuenta ha sido deshabilitada",
+      "emailInUse": "Ya existe una cuenta con este correo electrónico",
+      "weakPassword": "La contraseña es demasiado débil",
+      "networkError": "Error de red. Por favor verifica tu conexión",
+      "tooManyRequests": "Demasiados intentos. Por favor intenta de nuevo más tarde"
+    },
+    "reset": {
+      "title": "Restablecer contraseña",
+      "enterEmail": "Por favor ingresa tu correo electrónico arriba primero.",
+      "emailSentTitle": "Correo enviado",
+      "emailSentBody": "Revisa tu bandeja de entrada para las instrucciones de restablecimiento de contraseña.",
+      "failedTitle": "Restablecimiento fallido",
+      "failedBody": "No se pudo enviar el correo de restablecimiento."
+    },
+    "session": {
+      "title": "Sesión cerrada",
+      "message": "Esta cuenta fue iniciada en otro dispositivo."
+    }
+  },
+  "chatList": {
+    "title": "Chats",
+    "searchPlaceholder": "Buscar chats",
+    "empty": "Aún no hay chats.",
+    "offlineEmpty": "Sin conexión — mostrando chats en caché.",
+    "actionsTitle": "Acciones del chat",
+    "pin": "Fijar",
+    "unpin": "Desfijar"
+  },
+  "newChat": {
+    "heading": "Iniciar una conversación",
+    "subheading": "Ingresa el correo electrónico de la persona con la que quieres chatear.",
+    "recipientEmail": "Correo del destinatario",
+    "emailPlaceholder": "amigo@ejemplo.com",
+    "chatNameLabel": "Nombre del chat (opcional)",
+    "chatNamePlaceholder": "Nombre del chat",
+    "helpText": "El destinatario debe tener una cuenta existente.",
+    "creating": "Creando...",
+    "startChat": "Iniciar chat",
+    "errors": {
+      "enterEmail": "Por favor ingresa una dirección de correo electrónico",
+      "userNotFoundTitle": "Usuario no encontrado",
+      "userNotFoundBody": "Ese correo electrónico no existe en este dispositivo. Crea otra cuenta primero, luego intenta de nuevo.",
+      "selfChat": "No puedes iniciar un chat contigo mismo",
+      "createFailed": "Error al crear chat"
+    }
+  },
+  "moments": {
+    "title": "Momentos",
+    "friends": "Amigos",
+    "post": "Publicar",
+    "refresh": "Actualizar",
+    "empty": "Aún no hay momentos.",
+    "sharedMoment": "Compartió un momento",
+    "visibilityLabel": "Visibilidad: {{visibility}}",
+    "actions": {
+      "like": "Me gusta",
+      "liked": "Me gustó",
+      "comment": "Comentar",
+      "share": "Compartir"
+    },
+    "visibility": {
+      "public": "Público",
+      "friends": "Amigos",
+      "private": "Privado"
+    },
+    "modal": {
+      "newTitle": "Nuevo momento",
+      "editTitle": "Editar momento",
+      "placeholder": "¿En qué estás pensando?",
+      "addMedia": "Agregar foto/video",
+      "changeMedia": "Cambiar medios",
+      "uploading": "Subiendo {{percent}}%"
+    },
+    "alerts": {
+      "deleteTitle": "Eliminar momento",
+      "deleteConfirm": "¿Eliminar este momento?",
+      "postFailed": "Error al publicar momento.",
+      "deleteFailed": "Error al eliminar momento.",
+      "commentFailed": "Error al agregar comentario.",
+      "shareSuccessTitle": "Compartido",
+      "shareSuccessBody": "Momento enviado al chat.",
+      "shareFailedTitle": "Error",
+      "shareFailedBody": "Error al compartir momento.",
+      "refreshFailed": "No se pudo actualizar momentos."
+    },
+    "comments": {
+      "title": "Comentarios",
+      "placeholder": "Agrega un comentario...",
+      "empty": "Aún no hay comentarios.",
+      "post": "Publicar",
+      "close": "Cerrar"
+    },
+    "share": {
+      "title": "Compartir en chat",
+      "close": "Cerrar"
+    }
+  },
+  "friends": {
+    "addFriend": "Agregar amigo",
+    "uidPlaceholder": "Ingresa el UID del usuario",
+    "emailPlaceholder": "Ingresa el correo del usuario",
+    "searchTitle": "Buscar (correo o nombre)",
+    "searchPlaceholder": "Buscar por correo electrónico o nombre de visualización",
+    "sections": {
+      "requests": "Solicitudes",
+      "outgoing": "Enviadas",
+      "friends": "Amigos",
+      "blocked": "Bloqueados"
+    },
+    "empty": {
+      "requests": "No hay solicitudes.",
+      "outgoing": "No hay solicitudes enviadas.",
+      "friends": "Aún no hay amigos.",
+      "blocked": "No hay usuarios bloqueados."
+    },
+    "search": {
+      "searching": "Buscando…",
+      "noMatches": "No hay coincidencias.",
+      "prompt": "Escribe para buscar."
+    },
+    "buttons": {
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "chat": "Chat",
+      "remove": "Quitar",
+      "block": "Bloquear",
+      "unblock": "Desbloquear",
+      "add": "Agregar",
+      "cancel": "Cancelar"
+    },
+    "status": {
+      "friend": "Ya son amigos",
+      "incoming": "Solicitud entrante",
+      "pending": "Solicitud pendiente"
+    },
+    "labels": {
+      "pending": "Pendiente: {{name}}"
+    },
+    "alerts": {
+      "blockedTitle": "Bloqueado",
+      "blockedSend": "No puedes enviar una solicitud de amistad a este usuario.",
+      "blockedChat": "No puedes iniciar un chat con este usuario.",
+      "requestSentTitle": "Solicitud enviada",
+      "requestSentBody": "La solicitud de amistad ha sido enviada.",
+      "userNotFoundTitle": "Usuario no encontrado",
+      "userNotFoundBody": "Ninguna cuenta coincide con ese correo electrónico.",
+      "sendFailedTitle": "Error",
+      "sendFailedBody": "Error al enviar solicitud de amistad.",
+      "chatFailedTitle": "Error",
+      "chatFailedBody": "Error al iniciar chat.",
+      "removeTitle": "Quitar amigo",
+      "removeBody": "¿Quitar este amigo?",
+      "blockTitle": "Bloquear usuario",
+      "blockBody": "¿Bloquear este usuario? Esto lo eliminará de tus amigos."
+    }
+  },
+  "profile": {
+    "defaultName": "Usuario",
+    "memberBadge": "Miembro",
+    "visibilityTitle": "Visibilidad del perfil",
+    "visibilityDescription": "Controla quién puede ver los detalles de tu perfil.",
+    "defaultVisibilityTitle": "Visibilidad predeterminada de momentos",
+    "defaultVisibilityDescription": "Establece la audiencia predeterminada cuando creas un nuevo momento.",
+    "languageTitle": "Idioma",
+    "languageDescription": "Elige tu idioma preferido.",
+    "buttons": {
+      "feedback": "Enviar comentarios",
+      "export": "Exportar respaldo",
+      "import": "Importar respaldo",
+      "signOut": "Cerrar sesión"
+    },
+    "modals": {
+      "exportTitle": "Exportar respaldo",
+      "importTitle": "Importar respaldo",
+      "feedbackTitle": "Comentarios",
+      "importPlaceholder": "Pega el JSON del respaldo aquí",
+      "feedbackPlaceholder": "Cuéntanos qué funciona y qué no..."
+    },
+    "alerts": {
+      "copiedTitle": "Copiado",
+      "copiedBody": "JSON del respaldo copiado al portapapeles",
+      "importSuccessTitle": "Éxito",
+      "importSuccessBody": "Respaldo importado",
+      "importFailedTitle": "Error",
+      "importFailedBody": "JSON de respaldo inválido o incompatible.",
+      "exportFailedTitle": "Error",
+      "exportFailedBody": "No se pudo exportar respaldo.",
+      "feedbackSuccessTitle": "¡Gracias!",
+      "feedbackSuccessBody": "Tus comentarios han sido enviados.",
+      "feedbackFailedTitle": "Error",
+      "feedbackFailedBody": "No se pudo enviar comentarios.",
+      "signOutTitle": "Cerrar sesión",
+      "signOutBody": "¿Estás seguro de que quieres cerrar sesión?",
+      "signOutFailed": "Error al cerrar sesión",
+      "visibilityUpdateFailed": "No se pudo actualizar la visibilidad del perfil.",
+      "momentVisibilityUpdateFailed": "No se pudo actualizar la visibilidad predeterminada de momentos."
+    }
+  },
+  "notifications": {
+    "newMessageTitle": "Nuevo mensaje",
+    "newMessageBody": "Tienes un nuevo mensaje."
+  },
+  "calls": {
+    "incomingTitle": "Llamada entrante",
+    "voice": "Llamada de voz",
+    "video": "Llamada de video"
+  },
+  "call": {
+    "connecting": "Conectando...",
+    "active": "En llamada",
+    "ended": "Llamada finalizada",
+    "audioOnly": "Solo audio",
+    "waitingRemote": "Esperando remoto...",
+    "unmute": "Activar sonido",
+    "mute": "Silenciar",
+    "speakerOn": "Altavoz encendido",
+    "speakerOff": "Altavoz apagado",
+    "videoOff": "Video apagado",
+    "videoOn": "Video encendido",
+    "end": "Finalizar",
+    "errors": {
+      "startFailed": "No se pudo iniciar la llamada",
+      "videoFailed": "No se pudo habilitar el video"
+    }
+  },
+  "chatMedia": {
+    "seconds": "{{count}}s"
+  },
+  "chatSettings": {
+    "notifications": "Notificaciones",
+    "theme": "Tema",
+    "muteChat": "Silenciar chat",
+    "unmuteChat": "Activar sonido del chat",
+    "recipientName": "Nombre del destinatario",
+    "setCustomName": "Establecer nombre personalizado",
+    "nameWithValue": "Nombre: {{name}}",
+    "exportChat": "Exportar chat (JSON)",
+    "importChat": "Importar chat (JSON)",
+    "cleanupMedia": "Limpiar medios (30 días)",
+    "deleteChat": "Eliminar chat",
+    "data": "Datos",
+    "exportModalTitle": "Exportar chat",
+    "copy": "Copiar",
+    "close": "Cerrar",
+    "importModalTitle": "Importar chat",
+    "pasteJsonPlaceholder": "Pega el JSON del chat aquí",
+    "import": "Importar",
+    "cancel": "Cancelar",
+    "editRecipientName": "Editar nombre del destinatario",
+    "enterCustomNamePlaceholder": "Ingresa un nombre personalizado",
+    "save": "Guardar",
+    "clearName": "Limpiar nombre",
+    "alerts": {
+      "importSuccessTitle": "Éxito",
+      "importSuccessBody": "Chat importado",
+      "invalidJsonTitle": "Error",
+      "invalidJsonBody": "JSON inválido",
+      "cleanupTitle": "Limpiar",
+      "cleanupBody": "¿Eliminar medios de más de 30 días?",
+      "cleanupCancel": "Cancelar",
+      "cleanupRemove": "Eliminar",
+      "cleanupNotSupportedTitle": "Info",
+      "cleanupNotSupportedBody": "La limpieza de medios no está soportada en Firebase aún.",
+      "deleteTitle": "Eliminar chat",
+      "deleteBody": "Esto eliminará permanentemente todo el historial del chat para todos los participantes.",
+      "deleteCancel": "Cancelar",
+      "deleteConfirm": "Eliminar",
+      "deleteFailedTitle": "Error",
+      "deleteFailedBody": "Error al eliminar chat",
+      "copiedTitle": "Copiado",
+      "copiedBody": "JSON del chat copiado al portapapeles"
+    }
+  },
+  "burn": {
+    "tapToReveal": "Toca para revelar",
+    "messageBurned": "Mensaje quemado",
+    "burnsIn": "Se quema en {{duration}}",
+    "burnAfterReading": "Quemar después de leer ({{duration}})",
+    "burnTimerTitle": "Temporizador de quema",
+    "burnTimerDescription": "El mensaje será destruido después de ser leído",
+    "durations": {
+      "5s": "5s",
+      "10s": "10s",
+      "30s": "30s",
+      "1m": "1m",
+      "5m": "5m"
+    }
+  }
+}

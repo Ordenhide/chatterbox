@@ -1,0 +1,78 @@
+import {ColorSchemeName} from 'react-native';
+
+const light = {
+  backdrop: '#EEF1F8',
+  background: 'rgba(246,248,252,0.82)',
+  surface: 'rgba(255,255,255,0.72)',
+  surfaceStrong: 'rgba(255,255,255,0.92)',
+  text: '#09090F',
+  textSecondary: 'rgba(12,12,18,0.55)',
+  border: 'rgba(0,0,0,0.06)',
+  primary: '#3478F6',
+  textOnPrimary: '#fff',
+  primaryLight: 'rgba(52,120,246,0.12)',
+  secondary: '#5856D6',
+  success: '#34C759',
+  danger: '#FF3B30',
+  warning: '#FF9500',
+  glassTint1: 'rgba(90,140,255,0.28)',
+  glassTint2: 'rgba(255,120,170,0.18)',
+  glassTint3: 'rgba(120,230,210,0.14)',
+  glassBorder: 'rgba(255,255,255,0.40)',
+  glassHighlight: 'rgba(255,255,255,0.50)',
+  shadow: 'rgba(0,0,0,0.08)',
+  inputBackground: 'rgba(120,120,128,0.08)',
+  separator: 'rgba(0,0,0,0.08)',
+  mediaOverlayBg: '#000',
+  mediaOverlayText: '#fff',
+  mediaOverlayBadge: 'rgba(0,0,0,0.5)',
+  mediaOverlayBackdrop: 'rgba(0,0,0,0.9)',
+  cardShadow: {
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 3,
+  },
+};
+
+const dark = {
+  backdrop: '#08090E',
+  background: 'rgba(12,12,16,0.88)',
+  surface: 'rgba(28,30,42,0.65)',
+  surfaceStrong: 'rgba(28,30,42,0.92)',
+  text: '#F5F7FB',
+  textSecondary: 'rgba(245,247,251,0.55)',
+  border: 'rgba(255,255,255,0.08)',
+  primary: '#5AA0FF',
+  textOnPrimary: '#fff',
+  primaryLight: 'rgba(90,160,255,0.15)',
+  secondary: '#7B7AE0',
+  success: '#30D158',
+  danger: '#FF453A',
+  warning: '#FF9F0A',
+  glassTint1: 'rgba(80,120,255,0.28)',
+  glassTint2: 'rgba(255,90,140,0.18)',
+  glassTint3: 'rgba(90,210,255,0.14)',
+  glassBorder: 'rgba(255,255,255,0.10)',
+  glassHighlight: 'rgba(255,255,255,0.08)',
+  shadow: 'rgba(0,0,0,0.30)',
+  inputBackground: 'rgba(120,120,128,0.20)',
+  separator: 'rgba(255,255,255,0.06)',
+  mediaOverlayBg: '#000',
+  mediaOverlayText: '#fff',
+  mediaOverlayBadge: 'rgba(0,0,0,0.5)',
+  mediaOverlayBackdrop: 'rgba(0,0,0,0.9)',
+  cardShadow: {
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 4,
+  },
+};
+
+export function getColors(scheme: ColorSchemeName) {
+  return scheme === 'dark' ? dark : light;
+}
+

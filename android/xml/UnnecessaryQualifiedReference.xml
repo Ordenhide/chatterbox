@@ -1,0 +1,218 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/build.gradle</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/build.gradle</file>
+  <line>64</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/build.gradle</file>
+  <line>34</line>
+  <module>ChatterboxTemp.react-native-community_netinfo</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/build.gradle</file>
+  <line>120</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_app</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle</file>
+  <line>62</line>
+  <module>ChatterboxTemp.react-native-firebase_auth</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_functions</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/build.gradle</file>
+  <line>104</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_remote-config</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/build.gradle</file>
+  <line>63</line>
+  <module>ChatterboxTemp.react-native-firebase_storage</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle</file>
+  <line>31</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/build.gradle</file>
+  <line>27</line>
+  <module>ChatterboxTemp.react-native-document-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/build.gradle</file>
+  <line>67</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>13</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/build.gradle</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-incall-manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-safe-area-context</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle" />
+  <problem_class id="UnnecessaryQualifiedReference" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unnecessary qualified reference</problem_class>
+  <description>Unnecessary qualified reference</description>
+  <highlighted_element>com.android.Version</highlighted_element>
+  <language>Groovy</language>
+  <offset>21</offset>
+  <length>19</length>
+</problem>
+</problems>

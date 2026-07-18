@@ -1,0 +1,80 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateWithCreatePredefined.java</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.vibrateFactory.VibrateWithCreatePredefined void apply(android.os.Vibrator v)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>Empty &lt;code&gt;catch&lt;/code&gt; block #loc</description>
+  <highlighted_element>catch</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateWithDuration.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.vibrateFactory.VibrateWithDuration void apply(android.os.Vibrator v)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>Empty &lt;code&gt;catch&lt;/code&gt; block #loc</description>
+  <highlighted_element>catch</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-haptic-feedback/android/src/main/java/com/mkuczera/vibrateFactory/VibrateWithHapticConstant.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-haptic-feedback.main</module>
+  <package>com.mkuczera.vibrateFactory</package>
+  <entry_point TYPE="method" FQNAME="com.mkuczera.vibrateFactory.VibrateWithHapticConstant void apply(android.os.Vibrator v)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>Empty &lt;code&gt;catch&lt;/code&gt; block #loc</description>
+  <highlighted_element>catch</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>288</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer boolean copyExif(android.content.Context context, android.net.Uri imageUri, java.lang.String dstPath)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>'catch' parameter named &lt;code&gt;ignored&lt;/code&gt; is used #loc</description>
+  <highlighted_element>ignored</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>307</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer boolean copyExif(android.content.Context context, android.net.Uri imageUri, java.lang.String dstPath)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>'catch' parameter named &lt;code&gt;ignored&lt;/code&gt; is used #loc</description>
+  <highlighted_element>ignored</highlighted_element>
+  <language>JAVA</language>
+  <offset>27</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java</file>
+  <line>111</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizerModule void createResizedImageWithExceptions(java.lang.String imagePath, int newWidth, int newHeight, java.lang.String compressFormatString, int quality, int rotation, java.lang.String outputPath, boolean keepMeta, com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Callback successCb, com.facebook.react.bridge.Callback failureCb)" />
+  <problem_class id="CatchMayIgnoreException" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Catch block may ignore exception</problem_class>
+  <description>'catch' parameter named &lt;code&gt;ignored&lt;/code&gt; is used #loc</description>
+  <highlighted_element>ignored</highlighted_element>
+  <language>JAVA</language>
+  <offset>32</offset>
+  <length>7</length>
+</problem>
+</problems>

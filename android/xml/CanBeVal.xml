@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>64</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule void startRecorder(java.lang.String path, com.facebook.react.bridge.ReadableMap audioSet, boolean meteringEnabled, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="CanBeVal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Local 'var' is never modified and can be declared as 'val'</problem_class>
+  <description>Variable is never modified, so it can be declared using 'val'</description>
+  <highlighted_element>var</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>77</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule void startRecorder(java.lang.String path, com.facebook.react.bridge.ReadableMap audioSet, boolean meteringEnabled, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="CanBeVal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Local 'var' is never modified and can be declared as 'val'</problem_class>
+  <description>Variable is never modified, so it can be declared using 'val'</description>
+  <highlighted_element>var</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>407</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule boolean onRequestPermissionsResult(int requestCode, java.lang.String[] permissions, int[] grantResults)" />
+  <problem_class id="CanBeVal" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Local 'var' is never modified and can be declared as 'val'</problem_class>
+  <description>Variable is never modified, so it can be declared using 'val'</description>
+  <highlighted_element>var</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>3</length>
+</problem>
+</problems>

@@ -1,0 +1,119 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/src/main/java/com/dooboolab.audiorecorderplayer/RNAudioRecorderPlayerModule.kt</file>
+  <line>373</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player.main</module>
+  <package>com.dooboolab.audiorecorderplayer</package>
+  <entry_point TYPE="method" FQNAME="com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerModule void sendEvent(com.facebook.react.bridge.ReactContext reactContext, java.lang.String eventName, com.facebook.react.bridge.WritableMap params)" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;RCTDeviceEventEmitter&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>28</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerFactoryUtil.kt</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.gesturehandler.react.RNGestureHandlerFactoryUtil handlerFactories" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;GestureHandler.Factory&lt;*&gt;&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>40</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>170</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarBackgroundColor$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>59</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>174</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemActiveIndicatorColor$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>68</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>182</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemIconColor$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>57</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>186</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemTitleFontFamily$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;String?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>66</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>190</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemIconColorActive$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>63</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>194</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemTitleFontColor$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>62</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHost.kt</file>
+  <line>198</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs</package>
+  <entry_point TYPE="field" FQNAME="com.swmansion.rnscreens.gamma.tabs.TabsHost tabBarItemTitleFontColorActive$delegate" />
+  <problem_class id="RemoveExplicitTypeArguments" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Unnecessary type argument</problem_class>
+  <description>Explicit type arguments can be inferred</description>
+  <highlighted_element>&lt;Int?&gt;</highlighted_element>
+  <language>kotlin</language>
+  <offset>68</offset>
+  <length>6</length>
+</problem>
+</problems>

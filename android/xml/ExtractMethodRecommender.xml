@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>1727</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView java.util.ArrayList&lt;com.brentvatne.common.api.Track&gt; getBasicAudioTrackInfo()" />
+  <problem_class id="ExtractMethodRecommender" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Method can be extracted</problem_class>
+  <description>It's possible to extract method returning 'track' from a long surrounding method</description>
+  <highlighted_element>Format format = group.getFormat(0);</highlighted_element>
+  <language>JAVA</language>
+  <offset>12</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java</file>
+  <line>1762</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.exoplayer.ReactExoplayerView java.util.ArrayList&lt;com.brentvatne.common.api.Track&gt; getBasicTextTrackInfo()" />
+  <problem_class id="ExtractMethodRecommender" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Method can be extracted</problem_class>
+  <description>It's possible to extract method returning 'textTrack' from a long surrounding method</description>
+  <highlighted_element>Format format = group.getFormat(trackIndex);</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>44</length>
+</problem>
+</problems>

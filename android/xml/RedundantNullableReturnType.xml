@@ -1,0 +1,366 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>141</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.react.RNGestureHandlerButtonViewManager com.facebook.react.uimanager.ViewManagerDelegate&lt;com.swmansion.gesturehandler.react.RNGestureHandlerButtonViewManager.ButtonViewGroup&gt; getDelegate()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getDelegate' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>66</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-mmkv/android/src/main/java/com/margelo/nitro/mmkv/HybridMMKVPlatformContext.kt</file>
+  <line>15</line>
+  <module>ChatterboxTemp.react-native-mmkv.main</module>
+  <package>com.margelo.nitro.mmkv</package>
+  <entry_point TYPE="method" FQNAME="com.margelo.nitro.mmkv.HybridMMKVPlatformContext java.lang.String getAppGroupDirectory()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getAppGroupDirectory' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>47</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaUtils.kt</file>
+  <line>44</line>
+  <module>ChatterboxTemp.react-native-safe-area-context.main</module>
+  <package>com.th3rdwave.safeareacontext</package>
+  <entry_point TYPE="method" FQNAME="com.th3rdwave.safeareacontext.SafeAreaUtilsKt com.th3rdwave.safeareacontext.EdgeInsets getRootWindowInsetsCompatBase(android.view.View rootView)" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getRootWindowInsetsCompatBase' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>69</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenModalFragment.kt</file>
+  <line>122</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.ScreenModalFragment android.app.Activity tryGetActivity()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'tryGetActivity' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>43</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/HeaderAttachedEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.HeaderAttachedEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/HeaderBackButtonClickedEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.HeaderBackButtonClickedEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/HeaderDetachedEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.HeaderDetachedEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/HeaderHeightChangeEvent.kt</file>
+  <line>17</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.HeaderHeightChangeEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenAppearEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenAppearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenDisappearEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenDisappearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenDismissedEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenDismissedEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenTransitionProgressEvent.kt</file>
+  <line>19</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenTransitionProgressEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenWillAppearEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenWillAppearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/ScreenWillDisappearEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.ScreenWillDisappearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarBlurEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarBlurEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarChangeTextEvent.kt</file>
+  <line>17</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarChangeTextEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarCloseEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarCloseEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarFocusEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarFocusEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarOpenEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarOpenEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SearchBarSearchButtonPressEvent.kt</file>
+  <line>17</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SearchBarSearchButtonPressEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/SheetDetentChangedEvent.kt</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.SheetDetentChangedEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/events/StackFinishTransitioningEvent.kt</file>
+  <line>16</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.events</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.events.StackFinishTransitioningEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/event/TabScreenDidAppearEvent.kt</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.event</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.event.TabScreenDidAppearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/event/TabScreenDidDisappearEvent.kt</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.event</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.event.TabScreenDidDisappearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/event/TabScreenWillAppearEvent.kt</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.event</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.event.TabScreenWillAppearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/event/TabScreenWillDisappearEvent.kt</file>
+  <line>20</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.event</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.event.TabScreenWillDisappearEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/event/TabsHostNativeFocusChangeEvent.kt</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens.gamma.tabs.event</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.rnscreens.gamma.tabs.event.TabsHostNativeFocusChangeEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>44</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/common/react/VideoEventEmitter.kt</file>
+  <line>320</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.common.react</package>
+  <entry_point TYPE="method" FQNAME="com.brentvatne.common.react.VideoEventEmitter.VideoCustomEvent com.facebook.react.bridge.WritableMap getEventData()" />
+  <problem_class id="RedundantNullableReturnType" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant nullable return type</problem_class>
+  <description>'getEventData' always returns non-null type</description>
+  <highlighted_element>?</highlighted_element>
+  <language>kotlin</language>
+  <offset>48</offset>
+  <length>1</length>
+</problem>
+</problems>

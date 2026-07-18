@@ -1,0 +1,360 @@
+{
+  "app": {
+    "name": "Chatterbox"
+  },
+  "common": {
+    "continue": "Continue",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "cancel": "Cancel",
+    "close": "Close",
+    "error": "Error",
+    "ok": "OK",
+    "delete": "Delete",
+    "edit": "Edit",
+    "post": "Post",
+    "refresh": "Refresh",
+    "send": "Send",
+    "copy": "Copy",
+    "import": "Import",
+    "export": "Export",
+    "new": "New",
+    "update": "Update",
+    "remove": "Remove",
+    "accept": "Accept",
+    "decline": "Decline",
+    "justNow": "Just now",
+    "tapToRetry": "Tap to retry."
+  },
+  "tabs": {
+    "chats": "Chats",
+    "moments": "Moments",
+    "profile": "Profile"
+  },
+  "headers": {
+    "chats": "Chats",
+    "newChat": "New Chat",
+    "chat": "Chat",
+    "media": "Media",
+    "chatSettings": "Chat Settings",
+    "call": "Call",
+    "moments": "Moments",
+    "friends": "Friends"
+  },
+  "auth": {
+    "login": {
+      "subtitleVariant": "Welcome back — let’s get chatting",
+      "subtitleDefault": "Sign in to continue",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "forgotPassword": "Forgot your password?",
+      "reset": "Reset",
+      "noAccount": "Don't have an account?"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get started",
+      "displayNamePlaceholder": "Display Name (optional)",
+      "passwordPlaceholder": "Password (min 6 characters)",
+      "hasAccount": "Already have an account?"
+    },
+    "errors": {
+      "missingFields": "Please fill in all fields",
+      "missingEmailPassword": "Please fill in email and password",
+      "passwordMin": "Password must be at least 6 characters",
+      "loginFailed": "Login Failed",
+      "signUpFailed": "Sign Up Failed",
+      "generic": "An error occurred",
+      "userNotFound": "No account found with this email",
+      "wrongPassword": "Incorrect password",
+      "invalidEmail": "Invalid email address",
+      "userDisabled": "This account has been disabled",
+      "emailInUse": "An account with this email already exists",
+      "weakPassword": "Password is too weak",
+      "networkError": "Network error. Please check your connection",
+      "tooManyRequests": "Too many attempts. Please try again later"
+    },
+    "reset": {
+      "title": "Reset Password",
+      "enterEmail": "Please enter your email above first.",
+      "emailSentTitle": "Email Sent",
+      "emailSentBody": "Check your inbox for password reset instructions.",
+      "failedTitle": "Reset Failed",
+      "failedBody": "Unable to send reset email."
+    },
+    "session": {
+      "title": "Signed out",
+      "message": "This account was signed in on another device."
+    }
+  },
+  "chatList": {
+    "title": "Chats",
+    "searchPlaceholder": "Search chats",
+    "empty": "No chats yet.",
+    "offlineEmpty": "Offline — showing cached chats.",
+    "actionsTitle": "Chat Actions",
+    "pin": "Pin",
+    "unpin": "Unpin"
+  },
+  "newChat": {
+    "heading": "Start a Conversation",
+    "subheading": "Enter the email of the person you want to chat with.",
+    "recipientEmail": "Recipient Email",
+    "emailPlaceholder": "friend@example.com",
+    "chatNameLabel": "Chat Name (optional)",
+    "chatNamePlaceholder": "Chat name",
+    "helpText": "The recipient must have an existing account.",
+    "creating": "Creating...",
+    "startChat": "Start Chat",
+    "errors": {
+      "enterEmail": "Please enter an email address",
+      "userNotFoundTitle": "User not found",
+      "userNotFoundBody": "That email does not exist on this device. Create another account first, then try again.",
+      "selfChat": "You cannot start a chat with yourself",
+      "createFailed": "Failed to create chat"
+    }
+  },
+  "moments": {
+    "title": "Moments",
+    "friends": "Friends",
+    "post": "Post",
+    "refresh": "Refresh",
+    "empty": "No moments yet.",
+    "sharedMoment": "Shared a moment",
+    "visibilityLabel": "Visibility: {{visibility}}",
+    "actions": {
+      "like": "Like",
+      "liked": "Liked",
+      "comment": "Comment",
+      "share": "Share"
+    },
+    "visibility": {
+      "public": "Public",
+      "friends": "Friends",
+      "private": "Private"
+    },
+    "modal": {
+      "newTitle": "New Moment",
+      "editTitle": "Edit Moment",
+      "placeholder": "What's on your mind?",
+      "addMedia": "Add Photo/Video",
+      "changeMedia": "Change Media",
+      "uploading": "Uploading {{percent}}%"
+    },
+    "alerts": {
+      "deleteTitle": "Delete Moment",
+      "deleteConfirm": "Delete this moment?",
+      "postFailed": "Failed to post moment.",
+      "deleteFailed": "Failed to delete moment.",
+      "commentFailed": "Failed to add comment.",
+      "shareSuccessTitle": "Shared",
+      "shareSuccessBody": "Moment sent to chat.",
+      "shareFailedTitle": "Error",
+      "shareFailedBody": "Failed to share moment.",
+      "refreshFailed": "Unable to refresh moments."
+    },
+    "comments": {
+      "title": "Comments",
+      "placeholder": "Add a comment...",
+      "empty": "No comments yet.",
+      "post": "Post",
+      "close": "Close"
+    },
+    "share": {
+      "title": "Share to Chat",
+      "close": "Close"
+    }
+  },
+  "friends": {
+    "addFriend": "Add Friend",
+    "uidPlaceholder": "Enter user UID",
+    "emailPlaceholder": "Enter user email",
+    "searchTitle": "Search (email or name)",
+    "searchPlaceholder": "Search by email or display name",
+    "sections": {
+      "requests": "Requests",
+      "outgoing": "Outgoing",
+      "friends": "Friends",
+      "blocked": "Blocked"
+    },
+    "empty": {
+      "requests": "No requests.",
+      "outgoing": "No outgoing requests.",
+      "friends": "No friends yet.",
+      "blocked": "No blocked users."
+    },
+    "search": {
+      "searching": "Searching…",
+      "noMatches": "No matches.",
+      "prompt": "Type to search."
+    },
+    "buttons": {
+      "accept": "Accept",
+      "decline": "Decline",
+      "chat": "Chat",
+      "remove": "Remove",
+      "block": "Block",
+      "unblock": "Unblock",
+      "add": "Add",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "friend": "Already friends",
+      "incoming": "Incoming request",
+      "pending": "Request pending"
+    },
+    "labels": {
+      "pending": "Pending: {{name}}"
+    },
+    "alerts": {
+      "blockedTitle": "Blocked",
+      "blockedSend": "You cannot send a friend request to this user.",
+      "blockedChat": "You cannot start a chat with this user.",
+      "requestSentTitle": "Request sent",
+      "requestSentBody": "Friend request has been sent.",
+      "userNotFoundTitle": "User not found",
+      "userNotFoundBody": "No account matches that email.",
+      "sendFailedTitle": "Error",
+      "sendFailedBody": "Failed to send friend request.",
+      "chatFailedTitle": "Error",
+      "chatFailedBody": "Failed to start chat.",
+      "removeTitle": "Remove Friend",
+      "removeBody": "Remove this friend?",
+      "blockTitle": "Block User",
+      "blockBody": "Block this user? This will remove them from your friends."
+    }
+  },
+  "profile": {
+    "defaultName": "User",
+    "memberBadge": "Member",
+    "visibilityTitle": "Profile visibility",
+    "visibilityDescription": "Control who can see your profile details.",
+    "defaultVisibilityTitle": "Default moment visibility",
+    "defaultVisibilityDescription": "Sets the default audience when you create a new moment.",
+    "languageTitle": "Language",
+    "languageDescription": "Choose your preferred language.",
+    "buttons": {
+      "feedback": "Send Feedback",
+      "export": "Export Backup",
+      "import": "Import Backup",
+      "signOut": "Sign Out"
+    },
+    "modals": {
+      "exportTitle": "Export Backup",
+      "importTitle": "Import Backup",
+      "feedbackTitle": "Feedback",
+      "importPlaceholder": "Paste backup JSON here",
+      "feedbackPlaceholder": "Tell us what's working and what isn't..."
+    },
+    "alerts": {
+      "copiedTitle": "Copied",
+      "copiedBody": "Backup JSON copied to clipboard",
+      "importSuccessTitle": "Success",
+      "importSuccessBody": "Backup imported",
+      "importFailedTitle": "Error",
+      "importFailedBody": "Invalid or incompatible backup JSON.",
+      "exportFailedTitle": "Error",
+      "exportFailedBody": "Unable to export backup.",
+      "feedbackSuccessTitle": "Thanks!",
+      "feedbackSuccessBody": "Your feedback has been submitted.",
+      "feedbackFailedTitle": "Error",
+      "feedbackFailedBody": "Unable to send feedback.",
+      "signOutTitle": "Sign Out",
+      "signOutBody": "Are you sure you want to sign out?",
+      "signOutFailed": "Failed to sign out",
+      "visibilityUpdateFailed": "Unable to update profile visibility.",
+      "momentVisibilityUpdateFailed": "Unable to update default moment visibility."
+    }
+  },
+  "notifications": {
+    "newMessageTitle": "New message",
+    "newMessageBody": "You have a new message."
+  },
+  "calls": {
+    "incomingTitle": "Incoming call",
+    "voice": "Voice call",
+    "video": "Video call"
+  },
+  "call": {
+    "connecting": "Connecting...",
+    "active": "In Call",
+    "ended": "Call Ended",
+    "audioOnly": "Audio only",
+    "waitingRemote": "Waiting for remote...",
+    "unmute": "Unmute",
+    "mute": "Mute",
+    "speakerOn": "Speaker On",
+    "speakerOff": "Speaker Off",
+    "videoOff": "Video Off",
+    "videoOn": "Video On",
+    "end": "End",
+    "errors": {
+      "startFailed": "Unable to start call",
+      "videoFailed": "Unable to enable video"
+    }
+  },
+  "chatMedia": {
+    "seconds": "{{count}}s"
+  },
+  "chatSettings": {
+    "notifications": "Notifications",
+    "theme": "Theme",
+    "muteChat": "Mute Chat",
+    "unmuteChat": "Unmute Chat",
+    "recipientName": "Recipient Name",
+    "setCustomName": "Set Custom Name",
+    "nameWithValue": "Name: {{name}}",
+    "exportChat": "Export Chat (JSON)",
+    "importChat": "Import Chat (JSON)",
+    "cleanupMedia": "Cleanup Media (30 days)",
+    "deleteChat": "Delete Chat",
+    "data": "Data",
+    "exportModalTitle": "Export Chat",
+    "copy": "Copy",
+    "close": "Close",
+    "importModalTitle": "Import Chat",
+    "pasteJsonPlaceholder": "Paste chat JSON here",
+    "import": "Import",
+    "cancel": "Cancel",
+    "editRecipientName": "Edit Recipient Name",
+    "enterCustomNamePlaceholder": "Enter a custom name",
+    "save": "Save",
+    "clearName": "Clear name",
+    "alerts": {
+      "importSuccessTitle": "Success",
+      "importSuccessBody": "Chat imported",
+      "invalidJsonTitle": "Error",
+      "invalidJsonBody": "Invalid JSON",
+      "cleanupTitle": "Cleanup",
+      "cleanupBody": "Remove media older than 30 days?",
+      "cleanupCancel": "Cancel",
+      "cleanupRemove": "Remove",
+      "cleanupNotSupportedTitle": "Info",
+      "cleanupNotSupportedBody": "Media cleanup is not supported on Firebase yet.",
+      "deleteTitle": "Delete Chat",
+      "deleteBody": "This will permanently delete the entire chat history for all participants.",
+      "deleteCancel": "Cancel",
+      "deleteConfirm": "Delete",
+      "deleteFailedTitle": "Error",
+      "deleteFailedBody": "Failed to delete chat",
+      "copiedTitle": "Copied",
+      "copiedBody": "Chat JSON copied to clipboard"
+    }
+  },
+  "burn": {
+    "tapToReveal": "Tap to reveal",
+    "messageBurned": "Message burned",
+    "burnsIn": "Burns in {{duration}}",
+    "burnAfterReading": "Burn after reading ({{duration}})",
+    "burnTimerTitle": "Burn Timer",
+    "burnTimerDescription": "Message will be destroyed after being read",
+    "durations": {
+      "5s": "5s",
+      "10s": "10s",
+      "30s": "30s",
+      "1m": "1m",
+      "5m": "5m"
+    }
+  }
+}
+

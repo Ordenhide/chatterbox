@@ -1,0 +1,106 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/BackwardCompatUtils.kt</file>
+  <line>10</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/BackwardCompatUtils.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.util.*</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.react</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerButtonViewManager.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.view.View.OnClickListener</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModules.kt</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/NitroModules.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.facebook.react.turbomodule.core.interfaces.CallInvokerHolder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>71</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyMap.kt</file>
+  <line>7</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/AnyMap.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.util.Dictionary</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/Null.kt</file>
+  <line>5</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro.core</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/main/java/com/margelo/nitro/core/Null.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.margelo.nitro.core.NullType.Companion.NULL</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/oldarch/NitroModulesSpec.kt</file>
+  <line>5</line>
+  <module>ChatterboxTemp.react-native-nitro-modules.main</module>
+  <package>com.margelo.nitro</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/src/oldarch/NitroModulesSpec.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.facebook.react.bridge.Promise</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackHeaderConfig.kt</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/ScreenStackHeaderConfig.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.view.View.OnClickListener</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt</file>
+  <line>8</line>
+  <module>ChatterboxTemp.react-native-video.main</module>
+  <package>com.brentvatne.exoplayer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/src/main/java/com/brentvatne/exoplayer/ExoPlayerView.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.view.View.MeasureSpec</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>36</length>
+</problem>
+</problems>

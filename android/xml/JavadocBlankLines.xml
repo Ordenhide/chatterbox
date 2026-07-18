@@ -1,0 +1,782 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/tasks/GenerateEntryPointTask.kt</file>
+  <line>81</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="field" FQNAME="com.facebook.react.tasks.GenerateEntryPointTask generatedFileContentsTemplate" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/test/kotlin/com/facebook/react/tasks/GenerateEntryPointTaskTest.kt</file>
+  <line>66</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.test</module>
+  <package>com.facebook.react.tasks</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.tasks.GenerateEntryPointTaskTest void composeFileContent_withNoPackages_returnsValidFile()" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncLocalStorageUtil.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncLocalStorageUtil.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncLocalStorageUtil.java</file>
+  <line>153</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncLocalStorageUtil void verifyAndForceSqliteCheckpoint(android.content.Context ctx)" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>3</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageErrorUtil.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageErrorUtil.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/SerialExecutor.java</file>
+  <line>9</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="class" FQNAME="com.reactnativecommunity.asyncstorage.SerialExecutor" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/oldarch/java/com/reactnativecommunity/asyncstorage/NativeAsyncStorageModuleSpec.java</file>
+  <line>4</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/oldarch/java/com/reactnativecommunity/asyncstorage/NativeAsyncStorageModuleSpec.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/paper/java/com/reactnativecommunity/clipboard/NativeClipboardModuleSpec.java</file>
+  <line>4</line>
+  <module>ChatterboxTemp.react-native-clipboard_clipboard.main</module>
+  <package>com.reactnativecommunity.clipboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-clipboard/clipboard/android/src/paper/java/com/reactnativecommunity/clipboard/NativeClipboardModuleSpec.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/BroadcastReceiverConnectivityReceiver.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/BroadcastReceiverConnectivityReceiver.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/ConnectivityReceiver.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoModule.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoModule.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoPackage.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoUtils.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetInfoUtils.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/NetworkCallbackConnectivityReceiver.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/types/CellularGeneration.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo.types</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/types/CellularGeneration.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/types/ConnectionType.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-community_netinfo.main</module>
+  <package>com.reactnativecommunity.netinfo.types</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android/src/main/java/com/reactnativecommunity/netinfo/types/ConnectionType.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/paper/java/com/reactnativedocumentpicker/NativeDocumentPickerSpec.java</file>
+  <line>4</line>
+  <module>ChatterboxTemp.react-native-document-picker.main</module>
+  <package>com.reactnativedocumentpicker</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-document-picker/android/src/paper/java/com/reactnativedocumentpicker/NativeDocumentPickerSpec.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerButtonManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/facebook/react/viewmanagers/RNGestureHandlerRootViewManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/swmansion/gesturehandler/NativeRNGestureHandlerModuleSpec.java</file>
+  <line>4</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/paper/src/main/java/com/swmansion/gesturehandler/NativeRNGestureHandlerModuleSpec.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>22</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="class" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="class" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="class" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector.OnScaleGestureListener" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>83</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector.OnScaleGestureListener void onScaleEnd(com.swmansion.gesturehandler.core.ScaleGestureDetector detector)" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>9</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>435</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector float getFocusX()" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/core/ScaleGestureDetector.java</file>
+  <line>449</line>
+  <module>ChatterboxTemp.react-native-gesture-handler.main</module>
+  <package>com.swmansion.gesturehandler.core</package>
+  <entry_point TYPE="method" FQNAME="com.swmansion.gesturehandler.core.ScaleGestureDetector float getFocusY()" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>374</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap loadBitmap(android.content.Context context, android.net.Uri imageUri, android.graphics.BitmapFactory.Options options)" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSBottomTabsScreenManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSafeAreaViewManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSafeAreaViewManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSafeAreaViewManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSafeAreaViewManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContainerManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenContentWrapperManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenFooterManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderConfigManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackHeaderSubviewManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSScreenStackManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerDelegate.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerInterface.java</file>
+  <line>3</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.facebook.react.viewmanagers</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/facebook/react/viewmanagers/RNSSearchBarManagerInterface.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>0</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/swmansion/rnscreens/NativeScreensModuleSpec.java</file>
+  <line>4</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <package>com.swmansion.rnscreens</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/src/paper/java/com/swmansion/rnscreens/NativeScreensModuleSpec.java" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCView.java</file>
+  <line>32</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCView DEFAULT_SCALING_TYPE" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCView.java</file>
+  <line>35</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="field" FQNAME="com.oney.WebRTCModule.WebRTCView DEFAULT_SCALING_TYPE" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>5</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/webrtcutils/H264AndSoftwareVideoDecoderFactory.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.webrtcutils</package>
+  <entry_point TYPE="class" FQNAME="com.oney.WebRTCModule.webrtcutils.H264AndSoftwareVideoDecoderFactory" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/webrtcutils/H264AndSoftwareVideoEncoderFactory.java</file>
+  <line>18</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule.webrtcutils</package>
+  <entry_point TYPE="class" FQNAME="com.oney.WebRTCModule.webrtcutils.H264AndSoftwareVideoEncoderFactory" />
+  <problem_class id="JavadocBlankLines" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Blank line should be replaced with &lt;p&gt; to break lines</problem_class>
+  <description>Blank line will be ignored</description>
+  <highlighted_element>*</highlighted_element>
+  <language>JAVA</language>
+  <offset>1</offset>
+  <length>1</length>
+</problem>
+</problems>

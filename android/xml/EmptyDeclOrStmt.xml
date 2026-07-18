@@ -1,0 +1,26 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/cpp/RNScreensTurboModule.cpp</file>
+  <line>25</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/cpp/RNScreensTurboModule.cpp" />
+  <problem_class id="EmptyDeclOrStmt" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Empty declaration or statement</problem_class>
+  <description>Empty declaration</description>
+  <highlighted_element>;</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>48</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/cpp/RNScreensTurboModule.cpp</file>
+  <line>46</line>
+  <module>ChatterboxTemp.react-native-screens.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/cpp/RNScreensTurboModule.cpp" />
+  <problem_class id="EmptyDeclOrStmt" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Empty declaration or statement</problem_class>
+  <description>Empty declaration</description>
+  <highlighted_element>;</highlighted_element>
+  <language>ObjectiveC</language>
+  <offset>26</offset>
+  <length>1</length>
+</problem>
+</problems>

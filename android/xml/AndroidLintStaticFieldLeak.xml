@@ -1,0 +1,114 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>120</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>2314</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>194</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>2089</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>260</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>1503</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>308</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>1980</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>371</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>571</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>395</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override protected voi...</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>1019</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/ReactDatabaseSupplier.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;Do not place Android context classes in static fields (static reference to &lt;code&gt;ReactDatabaseSupplier&lt;/code&gt; which has field &lt;code&gt;mContext&lt;/code&gt; pointing to &lt;code&gt;Context&lt;/code&gt;); this is a memory leak&lt;/html&gt;</description>
+  <highlighted_element>static</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java</file>
+  <line>59</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizerModule.java" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;This &lt;code&gt;AsyncTask&lt;/code&gt; class should be static or leaks might occur (anonymous com.facebook.react.bridge.GuardedAsyncTask)&lt;/html&gt;</description>
+  <highlighted_element>new GuardedAsyncTask&lt;Void, Void&gt;(getReactApplicationContext()) { @Override p...</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>503</length>
+</problem>
+</problems>

@@ -1,0 +1,275 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/build.gradle</file>
+  <line>18</line>
+  <module>ChatterboxTemp</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.gms:google-services than 4.4.2 is available: 4.4.4&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.gms:google-services:4.4.2&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/build.gradle</file>
+  <line>19</line>
+  <module>ChatterboxTemp</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.firebase:firebase-crashlytics-gradle than 3.0.2 is available: 3.0.6&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.firebase:firebase-crashlytics-gradle:3.0.2&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/build.gradle</file>
+  <line>106</line>
+  <module>ChatterboxTemp.react-native-firebase_app</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.android.gms:play-services-auth than 21.3.0 is available: 21.5.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.android.gms:play-services-auth:${ReactNative.ext.getVersion(&quot;play&quot;, &quot;play-services-auth&quot;...</highlighted_element>
+  <language>Groovy</language>
+  <offset>17</offset>
+  <length>103</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle</file>
+  <line>60</line>
+  <module>ChatterboxTemp.react-native-audio-recorder-player</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-audio-recorder-player/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk7 than 1.9.0 is available: 2.2.10&lt;/html&gt;</description>
+  <highlighted_element>&quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7:${safeExtGet('kotlinVersion', project.ext.kotlinVersion)}&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>17</offset>
+  <length>99</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>249</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.7.1&lt;/html&gt;</description>
+  <highlighted_element>'androidx.appcompat:appcompat:1.7.0'</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>250</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.17.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.core:core-ktx:1.16.0&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle</file>
+  <line>251</line>
+  <module>ChatterboxTemp.react-native-gesture-handler</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of org.jetbrains.kotlin:kotlin-stdlib than 2.1.20 is available: 2.2.10&lt;/html&gt;</description>
+  <highlighted_element>&quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>11</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of &lt;code&gt;compileSdkVersion&lt;/code&gt; than 35 is available: 36&lt;/html&gt;</description>
+  <highlighted_element>compileSdkVersion 35</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>69</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.core:core than 1.3.1 is available: 1.17.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.core:core:1.3.1&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle</file>
+  <line>70</line>
+  <module>ChatterboxTemp.react-native-image-picker</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.exifinterface:exifinterface than 1.3.3 is available: 1.4.2&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.exifinterface:exifinterface:1.3.3&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>44</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/build.gradle</file>
+  <line>24</line>
+  <module>ChatterboxTemp.react-native-image-resizer</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.exifinterface:exifinterface than 1.3.2 is available: 1.4.2&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.exifinterface:exifinterface:1.3.2&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>44</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/build.gradle</file>
+  <line>26</line>
+  <module>ChatterboxTemp.react-native-incall-manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.media:media than 1.4.3 is available: 1.7.1&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.media:media:1.4.3&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle</file>
+  <line>123</line>
+  <module>ChatterboxTemp.react-native-safe-area-context</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of org.jetbrains.kotlin:kotlin-stdlib than 2.1.20 is available: 2.2.10&lt;/html&gt;</description>
+  <highlighted_element>&quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>219</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.appcompat:appcompat than 1.6.1 is available: 1.7.1&lt;/html&gt;</description>
+  <highlighted_element>'androidx.appcompat:appcompat:1.6.1'</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>220</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.fragment:fragment-ktx than 1.6.1 is available: 1.8.9&lt;/html&gt;</description>
+  <highlighted_element>'androidx.fragment:fragment-ktx:1.6.1'</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>221</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.coordinatorlayout:coordinatorlayout than 1.2.0 is available: 1.3.0&lt;/html&gt;</description>
+  <highlighted_element>'androidx.coordinatorlayout:coordinatorlayout:1.2.0'</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>222</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.swiperefreshlayout:swiperefreshlayout than 1.1.0 is available: 1.2.0&lt;/html&gt;</description>
+  <highlighted_element>'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>224</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.core:core-ktx than 1.8.0 is available: 1.17.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.core:core-ktx:1.8.0&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle</file>
+  <line>227</line>
+  <module>ChatterboxTemp.react-native-screens</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-screens/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.lifecycle:lifecycle-viewmodel-ktx than 2.5.1 is available: 2.10.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>23</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle</file>
+  <line>233</line>
+  <module>ChatterboxTemp.react-native-video</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.core:core-ktx than 1.13.1 is available: 1.17.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.core:core-ktx:$androidxCore_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle</file>
+  <line>234</line>
+  <module>ChatterboxTemp.react-native-video</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle" />
+  <problem_class id="AndroidLintGradleDependency" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete Gradle Dependency</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of androidx.activity:activity-ktx than 1.9.3 is available: 1.12.3&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.activity:activity-ktx:$androidxActivity_version&quot;</highlighted_element>
+  <language>Groovy</language>
+  <offset>19</offset>
+  <length>58</length>
+</problem>
+</problems>

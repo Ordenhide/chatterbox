@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/ProjectUtils.kt</file>
+  <line>74</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.ProjectUtils boolean needsCodegenFromPackageJson$react_native_gradle_plugin(org.gradle.api.Project $this$needsCodegenFromPackageJson, com.facebook.react.model.ModelPackageJson model)" />
+  <problem_class id="UnusedReceiverParameter" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused receiver parameter</problem_class>
+  <description>Receiver parameter is never used</description>
+  <highlighted_element>Project</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/ProjectUtils.kt</file>
+  <line>90</line>
+  <module>gradle-plugin-root.react-native-gradle-plugin.main</module>
+  <package>com.facebook.react.utils</package>
+  <entry_point TYPE="method" FQNAME="com.facebook.react.utils.ProjectUtils java.lang.String reactNativeDir$react_native_gradle_plugin(org.gradle.api.Project $this$reactNativeDir, com.facebook.react.ReactExtension extension)" />
+  <problem_class id="UnusedReceiverParameter" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused receiver parameter</problem_class>
+  <description>Receiver parameter is never used</description>
+  <highlighted_element>Project</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>7</length>
+</problem>
+</problems>

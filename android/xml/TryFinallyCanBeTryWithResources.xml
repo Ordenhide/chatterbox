@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncLocalStorageUtil.java</file>
+  <line>73</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncLocalStorageUtil java.lang.String getItemImpl(android.database.sqlite.SQLiteDatabase db, java.lang.String key)" />
+  <problem_class id="TryFinallyCanBeTryWithResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'try finally' can be replaced with 'try' with resources</problem_class>
+  <description>&lt;code&gt;try&lt;/code&gt; can use automatic resource management #loc</description>
+  <highlighted_element>try</highlighted_element>
+  <language>JAVA</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>142</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageModule$1 void doInBackgroundGuarded(java.lang.Void... params)" />
+  <problem_class id="TryFinallyCanBeTryWithResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'try finally' can be replaced with 'try' with resources</problem_class>
+  <description>&lt;code&gt;try&lt;/code&gt; can use automatic resource management #loc</description>
+  <highlighted_element>try</highlighted_element>
+  <language>JAVA</language>
+  <offset>10</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-async-storage/async-storage/android/src/main/java/com/reactnativecommunity/asyncstorage/AsyncStorageModule.java</file>
+  <line>406</line>
+  <module>ChatterboxTemp.react-native-async-storage_async-storage.main</module>
+  <package>com.reactnativecommunity.asyncstorage</package>
+  <entry_point TYPE="method" FQNAME="com.reactnativecommunity.asyncstorage.AsyncStorageModule$6 void doInBackgroundGuarded(java.lang.Void... params)" />
+  <problem_class id="TryFinallyCanBeTryWithResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'try finally' can be replaced with 'try' with resources</problem_class>
+  <description>&lt;code&gt;try&lt;/code&gt; can use automatic resource management #loc</description>
+  <highlighted_element>try</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>3</length>
+</problem>
+</problems>

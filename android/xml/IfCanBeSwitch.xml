@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1174</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule$12 void onPrepared(android.media.MediaPlayer mp)" />
+  <problem_class id="IfCanBeSwitch" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'if' can be replaced with 'switch'</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement can be replaced with 'switch' statement #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>16</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1204</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule void getAudioUriJS(java.lang.String audioType, java.lang.String fileType, com.facebook.react.bridge.Promise promise)" />
+  <problem_class id="IfCanBeSwitch" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'if' can be replaced with 'switch'</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement can be replaced with 'switch' statement #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1322</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule android.net.Uri getDefaultUserUri(java.lang.String type)" />
+  <problem_class id="IfCanBeSwitch" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'if' can be replaced with 'switch'</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement can be replaced with 'switch' statement #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>8</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>1446</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule.myToneGenerator void run()" />
+  <problem_class id="IfCanBeSwitch" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">'if' can be replaced with 'switch'</problem_class>
+  <description>&lt;code&gt;if&lt;/code&gt; statement can be replaced with 'switch' statement #loc</description>
+  <highlighted_element>if</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>2</length>
+</problem>
+</problems>

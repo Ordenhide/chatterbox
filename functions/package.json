@@ -1,0 +1,14 @@
+{
+  "name": "chatterbox-functions",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "@genkit-ai/google-genai": "^1.28.0",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^4.9.0",
+    "genkit": "^1.28.0"
+  }
+}

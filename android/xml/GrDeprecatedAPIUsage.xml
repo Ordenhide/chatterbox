@@ -1,0 +1,146 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle</file>
+  <line>83</line>
+  <module>ChatterboxTemp.app</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'compileSdk' is deprecated</description>
+  <highlighted_element>compileSdk</highlighted_element>
+  <language>Groovy</language>
+  <offset>4</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/build.gradle</file>
+  <line>42</line>
+  <module>ChatterboxTemp.react-native-firebase_analytics</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/analytics/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_auth</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/auth/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_crashlytics</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/crashlytics/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_functions</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_messaging</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_remote-config</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/remote-config/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/build.gradle</file>
+  <line>41</line>
+  <module>ChatterboxTemp.react-native-firebase_storage</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/@react-native-firebase/storage/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildFinished' is deprecated</description>
+  <highlighted_element>buildFinished</highlighted_element>
+  <language>Groovy</language>
+  <offset>9</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/build.gradle</file>
+  <line>164</line>
+  <module>ChatterboxTemp.react-native-nitro-modules</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-nitro-modules/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildDir' is deprecated</description>
+  <highlighted_element>buildDir</highlighted_element>
+  <language>Groovy</language>
+  <offset>18</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle</file>
+  <line>89</line>
+  <module>ChatterboxTemp.react-native-safe-area-context</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-safe-area-context/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildDir' is deprecated</description>
+  <highlighted_element>buildDir</highlighted_element>
+  <language>Groovy</language>
+  <offset>31</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle</file>
+  <line>198</line>
+  <module>ChatterboxTemp.react-native-video</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-video/android/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'buildDir' is deprecated</description>
+  <highlighted_element>buildDir</highlighted_element>
+  <language>Groovy</language>
+  <offset>35</offset>
+  <length>8</length>
+</problem>
+</problems>

@@ -1,0 +1,197 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/RCTConvertFirebase.java</file>
+  <line>139</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.RCTConvertFirebase com.facebook.react.bridge.WritableMap mapPutValue(java.lang.String key, java.lang.Object value, com.facebook.react.bridge.WritableMap map)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;floatVal&lt;/code&gt; to &lt;code&gt;double&lt;/code&gt; is redundant</description>
+  <highlighted_element>double</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java</file>
+  <line>337</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.SharedUtils void arrayPushValue(java.lang.Object value, com.facebook.react.bridge.WritableArray array)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;floatVal&lt;/code&gt; to &lt;code&gt;double&lt;/code&gt; is redundant</description>
+  <highlighted_element>double</highlighted_element>
+  <language>JAVA</language>
+  <offset>26</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android/src/reactnative/java/io/invertase/firebase/common/SharedUtils.java</file>
+  <line>392</line>
+  <module>ChatterboxTemp.react-native-firebase_app.main</module>
+  <package>io.invertase.firebase.common</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.common.SharedUtils void mapPutValue(java.lang.String key, java.lang.Object value, com.facebook.react.bridge.WritableMap map)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;floatVal&lt;/code&gt; to &lt;code&gt;double&lt;/code&gt; is redundant</description>
+  <highlighted_element>double</highlighted_element>
+  <language>JAVA</language>
+  <offset>28</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/main/java/io/invertase/firebase/firestore/UniversalFirebaseFirestoreCommon.java</file>
+  <line>86</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.UniversalFirebaseFirestoreCommon void setFirestoreSettings(com.google.firebase.firestore.FirebaseFirestore firebaseFirestore, java.lang.String firestoreKey)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;cacheSizeBytes&lt;/code&gt; to &lt;code&gt;long&lt;/code&gt; is redundant</description>
+  <highlighted_element>long</highlighted_element>
+  <language>JAVA</language>
+  <offset>43</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>75</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery void applyFilters(com.facebook.react.bridge.ReadableArray filters)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;fieldPathArray.toArray(...)&lt;/code&gt; to &lt;code&gt;String[]&lt;/code&gt; is redundant</description>
+  <highlighted_element>String[]</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/firestore/android/src/reactnative/java/io/invertase/firebase/firestore/ReactNativeFirebaseFirestoreQuery.java</file>
+  <line>142</line>
+  <module>ChatterboxTemp.react-native-firebase_firestore.main</module>
+  <package>io.invertase.firebase.firestore</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.firestore.ReactNativeFirebaseFirestoreQuery com.google.firebase.firestore.Filter applyFilterQueries(com.facebook.react.bridge.ReadableMap filter)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;Objects.requireNonNull(...)&lt;/code&gt; to &lt;code&gt;String&lt;/code&gt; is redundant</description>
+  <highlighted_element>String</highlighted_element>
+  <language>JAVA</language>
+  <offset>11</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/src/main/java/io/invertase/firebase/functions/UniversalFirebaseFunctionsModule.java</file>
+  <line>59</line>
+  <module>ChatterboxTemp.react-native-firebase_functions.main</module>
+  <package>io.invertase.firebase.functions</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.functions.UniversalFirebaseFunctionsModule com.google.android.gms.tasks.Task&lt;java.lang.Object&gt; httpsCallable(java.lang.String appName, java.lang.String region, java.lang.String host, java.lang.Integer port, java.lang.String name, java.lang.Object data, com.facebook.react.bridge.ReadableMap options)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;options.getInt(...)&lt;/code&gt; to &lt;code&gt;long&lt;/code&gt; is redundant</description>
+  <highlighted_element>long</highlighted_element>
+  <language>JAVA</language>
+  <offset>38</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/@react-native-firebase/functions/android/src/main/java/io/invertase/firebase/functions/UniversalFirebaseFunctionsModule.java</file>
+  <line>88</line>
+  <module>ChatterboxTemp.react-native-firebase_functions.main</module>
+  <package>io.invertase.firebase.functions</package>
+  <entry_point TYPE="method" FQNAME="io.invertase.firebase.functions.UniversalFirebaseFunctionsModule com.google.android.gms.tasks.Task&lt;java.lang.Object&gt; httpsCallableFromUrl(java.lang.String appName, java.lang.String region, java.lang.String host, java.lang.Integer port, java.lang.String url, java.lang.Object data, com.facebook.react.bridge.ReadableMap options)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;options.getInt(...)&lt;/code&gt; to &lt;code&gt;long&lt;/code&gt; is redundant</description>
+  <highlighted_element>long</highlighted_element>
+  <language>JAVA</language>
+  <offset>38</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>139</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModuleImpl void launchImageLibrary(com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Callback callback)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;PickVisualMedia.ImageOnly.INSTANCE&lt;/code&gt; to &lt;code&gt;PickVisualMedia.VisualMediaType&lt;/code&gt; is redundant</description>
+  <highlighted_element>PickVisualMedia.VisualMediaType</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>141</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModuleImpl void launchImageLibrary(com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Callback callback)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;PickVisualMedia.VideoOnly.INSTANCE&lt;/code&gt; to &lt;code&gt;PickVisualMedia.VisualMediaType&lt;/code&gt; is redundant</description>
+  <highlighted_element>PickVisualMedia.VisualMediaType</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java</file>
+  <line>143</line>
+  <module>ChatterboxTemp.react-native-image-picker.main</module>
+  <package>com.imagepicker</package>
+  <entry_point TYPE="method" FQNAME="com.imagepicker.ImagePickerModuleImpl void launchImageLibrary(com.facebook.react.bridge.ReadableMap options, com.facebook.react.bridge.Callback callback)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;PickVisualMedia.ImageAndVideo.INSTANCE&lt;/code&gt; to &lt;code&gt;PickVisualMedia.VisualMediaType&lt;/code&gt; is redundant</description>
+  <highlighted_element>PickVisualMedia.VisualMediaType</highlighted_element>
+  <language>JAVA</language>
+  <offset>25</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>174</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap resizeImage(android.graphics.Bitmap image, int newWidth, int newHeight, java.lang.String mode, boolean onlyScaleDown)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;Math.round(...)&lt;/code&gt; to &lt;code&gt;int&lt;/code&gt; is redundant</description>
+  <highlighted_element>int</highlighted_element>
+  <language>JAVA</language>
+  <offset>30</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-image-resizer/android/src/main/java/fr/bamlab/rnimageresizer/ImageResizer.java</file>
+  <line>175</line>
+  <module>ChatterboxTemp.react-native-image-resizer.main</module>
+  <package>fr.bamlab.rnimageresizer</package>
+  <entry_point TYPE="method" FQNAME="fr.bamlab.rnimageresizer.ImageResizer android.graphics.Bitmap resizeImage(android.graphics.Bitmap image, int newWidth, int newHeight, java.lang.String mode, boolean onlyScaleDown)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;Math.round(...)&lt;/code&gt; to &lt;code&gt;int&lt;/code&gt; is redundant</description>
+  <highlighted_element>int</highlighted_element>
+  <language>JAVA</language>
+  <offset>31</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallManagerModule.java</file>
+  <line>340</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="method" FQNAME="com.zxcpoiu.incallmanager.InCallManagerModule$5 void onReceive(android.content.Context context, android.content.Intent intent)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;intent.getParcelableExtra(...)&lt;/code&gt; to &lt;code&gt;KeyEvent&lt;/code&gt; is redundant</description>
+  <highlighted_element>KeyEvent</highlighted_element>
+  <language>JAVA</language>
+  <offset>42</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-webrtc/android/src/main/java/com/oney/WebRTCModule/WebRTCModule.java</file>
+  <line>384</line>
+  <module>ChatterboxTemp.react-native-webrtc.main</module>
+  <package>com.oney.WebRTCModule</package>
+  <entry_point TYPE="method" FQNAME="com.oney.WebRTCModule.WebRTCModule boolean peerConnectionInit(com.facebook.react.bridge.ReadableMap configuration, int id)" />
+  <problem_class id="RedundantCast" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant type cast</problem_class>
+  <description>Casting &lt;code&gt;ThreadUtils.submitToExecutor(...).get()&lt;/code&gt; to &lt;code&gt;boolean&lt;/code&gt; is redundant</description>
+  <highlighted_element>boolean</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>7</length>
+</problem>
+</problems>

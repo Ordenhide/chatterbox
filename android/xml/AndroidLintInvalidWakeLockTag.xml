@@ -1,0 +1,58 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java</file>
+  <line>87</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallProximityManager.java" />
+  <problem_class id="AndroidLintInvalidWakeLockTag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Invalid Wake Lock Tag</problem_class>
+  <hints />
+  <description>&lt;html&gt;Tag name should use a unique prefix followed by a colon (found InCallProximityManager). For instance &lt;code&gt;myapp:mywakelocktag&lt;/code&gt;. This will help with debugging&lt;/html&gt;</description>
+  <highlighted_element>powerManager.newWakeLock(proximityScreenOffWakeLock, TAG)</highlighted_element>
+  <language>JAVA</language>
+  <offset>33</offset>
+  <length>57</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java</file>
+  <line>37</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java" />
+  <problem_class id="AndroidLintInvalidWakeLockTag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Invalid Wake Lock Tag</problem_class>
+  <hints />
+  <description>&lt;html&gt;Tag name should use a unique prefix followed by a colon (found InCallWakeLockUtils). For instance &lt;code&gt;myapp:mywakelocktag&lt;/code&gt;. This will help with debugging&lt;/html&gt;</description>
+  <highlighted_element>mPowerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerMa...</highlighted_element>
+  <language>JAVA</language>
+  <offset>20</offset>
+  <length>128</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java</file>
+  <line>40</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java" />
+  <problem_class id="AndroidLintInvalidWakeLockTag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Invalid Wake Lock Tag</problem_class>
+  <hints />
+  <description>&lt;html&gt;Tag name should use a unique prefix followed by a colon (found InCallWakeLockUtils). For instance &lt;code&gt;myapp:mywakelocktag&lt;/code&gt;. This will help with debugging&lt;/html&gt;</description>
+  <highlighted_element>mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG)</highlighted_element>
+  <language>JAVA</language>
+  <offset>23</offset>
+  <length>62</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java</file>
+  <line>43</line>
+  <module>ChatterboxTemp.react-native-incall-manager.main</module>
+  <package>com.zxcpoiu.incallmanager</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/../node_modules/react-native-incall-manager/android/src/main/java/com/zxcpoiu/incallmanager/InCallWakeLockUtils.java" />
+  <problem_class id="AndroidLintInvalidWakeLockTag" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Invalid Wake Lock Tag</problem_class>
+  <hints />
+  <description>&lt;html&gt;Tag name should use a unique prefix followed by a colon (found InCallWakeLockUtils). For instance &lt;code&gt;myapp:mywakelocktag&lt;/code&gt;. This will help with debugging&lt;/html&gt;</description>
+  <highlighted_element>mPowerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerMa...</highlighted_element>
+  <language>JAVA</language>
+  <offset>24</offset>
+  <length>128</length>
+</problem>
+</problems>
