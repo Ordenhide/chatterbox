@@ -501,7 +501,7 @@ export default function MomentsScreen() {
     setMediaChanged(true);
   };
 
-  const handleDeleteMoment = (momentId: string) => {
+  const handleDeleteMoment = (momentId: string, mediaUrl?: string | null) => {
     Alert.alert(t('moments.alerts.deleteTitle'), t('moments.alerts.deleteConfirm'), [
       {text: t('common.cancel'), style: 'cancel'},
       {
@@ -509,7 +509,7 @@ export default function MomentsScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
-            await deleteMoment(momentId);
+            await deleteMoment(momentId, mediaUrl);
           } catch (error) {
             reportError(error, 'deleteMoment');
             if (__DEV__) {
@@ -541,7 +541,12 @@ export default function MomentsScreen() {
         </View>
         <Text style={[styles.cardText, {color: colors.text}]}>{item.text || ''}</Text>
         {item.mediaUrl && item.mediaType === 'image' ? (
-          <Image source={{uri: item.mediaUrl}} style={styles.media} resizeMode="cover" />
+          <Image
+            source={{uri: item.mediaUrl}}
+            style={styles.media}
+            resizeMode="cover"
+            resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+          />
         ) : null}
         {item.mediaUrl && item.mediaType === 'video' ? (
           <Video source={{uri: item.mediaUrl}} style={styles.media} resizeMode="cover" paused />
@@ -583,7 +588,7 @@ export default function MomentsScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardActionButton, {backgroundColor: colors.surface}]}
-              onPress={() => handleDeleteMoment(item.id)}>
+              onPress={() => handleDeleteMoment(item.id, item.mediaUrl)}>
                   <Text style={[styles.cardActionText, {color: colors.text}]}>{t('common.delete')}</Text>
             </TouchableOpacity>
           </View>
@@ -665,7 +670,12 @@ export default function MomentsScreen() {
           {media ? (
             <View style={styles.mediaPreview}>
               {media.type === 'image' ? (
-                <Image source={{uri: media.uri}} style={styles.media} resizeMode="cover" />
+                <Image
+                  source={{uri: media.uri}}
+                  style={styles.media}
+                  resizeMode="cover"
+                  resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+                />
               ) : (
                 <Video source={{uri: media.uri}} style={styles.media} resizeMode="cover" paused />
               )}
@@ -748,6 +758,10 @@ export default function MomentsScreen() {
             keyExtractor={item => item.id}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            initialNumToRender={12}
+            maxToRenderPerBatch={12}
+            windowSize={7}
+            removeClippedSubviews={Platform.OS === 'android'}
             ListEmptyComponent={
               <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
                 {t('moments.comments.empty')}
@@ -798,6 +812,10 @@ export default function MomentsScreen() {
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.listContent}
+              initialNumToRender={10}
+              maxToRenderPerBatch={10}
+              windowSize={7}
+              removeClippedSubviews={Platform.OS === 'android'}
               ListEmptyComponent={
                 <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
                   {t('chatList.empty')}

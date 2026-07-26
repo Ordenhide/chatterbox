@@ -35,7 +35,7 @@ export default function PrivacyPolicyScreen() {
           </Section>
 
           <Section title="4. Data Sharing" colors={colors}>
-            {`We do not sell, trade, or rent your personal information to third parties. We may share data with:\n\n• Google Firebase — as our backend infrastructure provider.\n• Tenor (Google LLC) — to provide GIF search. Search queries are sent to the Tenor API.\n\nWe may disclose information if required by law or to protect the rights and safety of our users.`}
+            {`We do not sell, trade, or rent your personal information to third parties. We may share data with:\n\n• Google Firebase — as our backend infrastructure provider.\n• GIPHY — to provide GIF search. Search queries are sent to the GIPHY API.\n\nWe may disclose information if required by law or to protect the rights and safety of our users.`}
           </Section>
 
           <Section title="5. Push Notifications" colors={colors}>

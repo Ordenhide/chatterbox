@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-native-macos/ReactCommon/react/renderer/graphics/React-graphics.podspec b/node_modules/react-native-macos/ReactCommon/react/renderer/graphics/React-graphics.podspec
+index 489b1d9..694bad2 100644
+--- a/node_modules/react-native-macos/ReactCommon/react/renderer/graphics/React-graphics.podspec
++++ b/node_modules/react-native-macos/ReactCommon/react/renderer/graphics/React-graphics.podspec
+@@ -17,7 +17,13 @@ else
+ end
+ 
+ Pod::Spec.new do |s|
+-  source_files = ["*.{m,mm,cpp,h}", "platform/ios/**/*.{m,mm,cpp,h}"]
++  # Patched: this unconditionally pulled in platform/ios/** for every Apple
++  # platform, including macOS — there is no platform/macos implementation of
++  # HostPlatformColor, so on macOS this collided with platform/cxx's generic
++  # fallback (both defining the same symbols) and failed with "redefinition
++  # of 'Color'" etc. Scope platform/ios to ios/visionos only, and use the
++  # cxx fallback for macOS.
++  source_files = ["*.{m,mm,cpp,h}"]
+   header_search_paths = [
+     "\"$(PODS_TARGET_SRCROOT)/../../../\"",
+   ]
+@@ -30,7 +36,10 @@ Pod::Spec.new do |s|
+   s.author                 = "Meta Platforms, Inc. and its affiliates"
+   s.platforms              = min_supported_versions
+   s.source                 = source
+-  s.source_files           = podspec_sources(source_files, ["*.h", "platform/ios/**/*.h"])
++  s.source_files           = podspec_sources(source_files, ["*.h"])
++  s.ios.source_files       = podspec_sources(["platform/ios/**/*.{m,mm,cpp,h}"], ["platform/ios/**/*.h"])
++  s.visionos.source_files  = podspec_sources(["platform/ios/**/*.{m,mm,cpp,h}"], ["platform/ios/**/*.h"])
++  s.osx.source_files       = podspec_sources(["platform/cxx/**/*.{m,mm,cpp,h}"], ["platform/cxx/**/*.h"])
+   s.header_dir             = "react/renderer/graphics"
+   # [macOS Restrict UIKit to iOS and visionOS
+   s.ios.framework = "UIKit"

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, AppState, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import {Alert, AppState, DeviceEventEmitter, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {NavigationContainer, createNavigationContainerRef} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
 import {getApp, getApps, initializeApp} from '@react-native-firebase/app';
+import appCheckModule, {initializeAppCheck} from '@react-native-firebase/app-check';
 import {
   getMessaging,
   getToken,
@@ -22,67 +23,29 @@ import LiquidGlassBackground from './src/components/LiquidGlassBackground';
 import i18n from './src/i18n';
 import {flushReadReceipts} from './src/services/readReceipts';
 import {clearOldImageCache} from './src/services/imageCache';
-import {isAppLockEnabled} from './src/services/appLock';
-import {checkRemoteWipe, clearRemoteWipeFlag, checkInDeadMan, isDeadManTriggered} from './src/services/messageExpiry';
-import AppLockScreen from './src/screens/AppLockScreen';
+import ErrorBoundary from './src/components/ErrorBoundary';
+import TutorialTour from './src/components/TutorialTour';
+import {hasSeenTutorial, markTutorialSeen, TUTORIAL_EVENT} from './src/services/tutorial';
 
 const APP_START_TS = Date.now();
 
 const navigationRef = createNavigationContainerRef();
 
 function AppContent() {
-  const {user, loading, signOut} = useAuth();
+  const {user, loading} = useAuth();
   const callListenersRef = useRef<Map<string, () => void>>(new Map());
   const handledCallIdsRef = useRef<Set<string>>(new Set());
   const routeNameRef = useRef<string | undefined>(undefined);
   const scheme = useColorScheme();
-  const [appLocked, setAppLocked] = useState(() => isAppLockEnabled());
+  const [tutorialVisible, setTutorialVisible] = useState(false);
 
+  // Guided tour: auto-runs once after first sign-in, and re-runs on demand
+  // (Profile → "Replay tutorial", which fires TUTORIAL_EVENT).
   useEffect(() => {
-    if (!user?.uid) return;
-    checkInDeadMan();
-    let active = true;
-    (async () => {
-      try {
-        const wipe = await checkRemoteWipe(user.uid);
-        if (wipe && active) {
-          const {performLocalWipe} = require('./src/services/messageExpiry');
-          await performLocalWipe();
-          await clearRemoteWipeFlag(user.uid);
-          Alert.alert('Remote Wipe', 'A remote wipe was triggered. All local data has been cleared.', [
-            {text: 'OK', onPress: () => signOut()},
-          ]);
-        }
-      } catch { /* ignore */ }
-      try {
-        const triggered = await isDeadManTriggered();
-        if (triggered && active) {
-          const {performLocalWipe} = require('./src/services/messageExpiry');
-          await performLocalWipe();
-          Alert.alert('Account Inactive', 'Your dead man\'s switch has been triggered. Local data has been cleared.', [
-            {text: 'I\'m here!', onPress: () => checkInDeadMan()},
-          ]);
-        }
-      } catch { /* ignore */ }
-    })();
-    return () => { active = false; };
-  }, [user?.uid]);
-
-  useEffect(() => {
-    let backgroundTimestamp = 0;
-    const sub = AppState.addEventListener('change', state => {
-      if (state === 'background' || state === 'inactive') {
-        backgroundTimestamp = Date.now();
-      } else if (state === 'active' && isAppLockEnabled()) {
-        const {getAutoLockDelay} = require('./src/services/privacyGuard');
-        const delay = getAutoLockDelay() * 1000;
-        if (delay === 0 || Date.now() - backgroundTimestamp >= delay) {
-          setAppLocked(true);
-        }
-      }
-    });
+    if (user && !hasSeenTutorial()) setTutorialVisible(true);
+    const sub = DeviceEventEmitter.addListener(TUTORIAL_EVENT, () => setTutorialVisible(true));
     return () => sub.remove();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (!user || loading) return;
@@ -202,15 +165,6 @@ function AppContent() {
     return null;
   }
 
-  if (appLocked && user) {
-    return (
-      <View style={styles.appRoot}>
-        <LiquidGlassBackground />
-        <AppLockScreen onUnlock={() => setAppLocked(false)} />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.appRoot}>
       <LiquidGlassBackground />
@@ -237,6 +191,15 @@ function AppContent() {
         <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
         {user ? <MainNavigator /> : <AuthNavigator />}
       </NavigationContainer>
+      {user && (
+        <TutorialTour
+          visible={tutorialVisible}
+          onClose={() => {
+            markTutorialSeen();
+            setTutorialVisible(false);
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -251,6 +214,19 @@ function App(): React.JSX.Element {
       if (__DEV__) {
         console.log('[firebase] default app initialized:', app.name);
       }
+
+      // App Check: attests that requests to Firestore/Storage/Functions come from
+      // this real, unmodified app build, blocking scripted abuse of the backend.
+      // In debug builds this uses the Debug provider, which logs a token on first
+      // run — register that token once in Firebase Console > App Check > Manage
+      // debug tokens. Release builds use Play Integrity (Android) / App Attest (iOS),
+      // which require enabling App Check for this app in the Firebase Console first.
+      const appCheckProvider = appCheckModule(app).newReactNativeFirebaseAppCheckProvider();
+      appCheckProvider.configure({
+        android: {provider: __DEV__ ? 'debug' : 'playIntegrity'},
+        apple: {provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback'},
+      });
+      initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});
     } catch (error) {
       if (__DEV__) {
         console.error('[firebase] default app not initialized:', error);
@@ -275,13 +251,15 @@ function App(): React.JSX.Element {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <SafeAreaProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <SafeAreaProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
 

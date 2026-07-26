@@ -48,20 +48,31 @@ service cloud.firestore {
         request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
     }
 
-    function canReadUserProfile(userId) {
-      return request.auth.uid == userId ||
-        (resource.data.profileVisibility == "friends" && isFriend(request.auth.uid, userId)) ||
-        (isSignedIn() && (resource.data.profileVisibility == "public" || resource.data.profileVisibility == null));
-    }
-
     match /users/{userId} {
+      // Any signed-in user can read profiles. This is required for user
+      // discovery: "add friend / new chat by email" runs a query filtered by
+      // email, and Firestore rejects a whole query if the read rule gates on a
+      // field the query doesn't filter (profileVisibility) — so a visibility-
+      // gated rule makes email lookup fail with permission-denied. It also lets
+      // a request recipient read the (not-yet-friend) sender's name.
       allow read: if isSignedIn();
       allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
     match /friendRequests/{requestId} {
-      allow read: if isSignedIn() &&
-        (request.auth.uid == resource.data.fromId || request.auth.uid == resource.data.toId);
+      // get: the sender's transaction reads friendRequests/{pairId} to check for
+      // a duplicate; that doc doesn't exist yet, so allow reading a missing doc
+      // (resource == null) — otherwise the read is denied and the send fails.
+      allow get: if isSignedIn() &&
+        (resource == null ||
+         request.auth.uid == resource.data.fromId ||
+         request.auth.uid == resource.data.toId);
+      // list: the incoming (toId == me) / outgoing (fromId == me) request
+      // listeners. Kept separate so `resource == null` never enters the query
+      // authorization analysis (a query's resource is always a real document).
+      allow list: if isSignedIn() &&
+        (request.auth.uid == resource.data.fromId ||
+         request.auth.uid == resource.data.toId);
       allow create: if isSignedIn() &&
         request.auth.uid == request.resource.data.fromId &&
         request.resource.data.toId is string &&
@@ -131,7 +142,22 @@ service cloud.firestore {
         request.auth.uid in resource.data.participants;
 
       match /messages/{messageId} {
-        allow read, create: if isChatParticipant(chatId);
+        allow read: if isChatParticipant(chatId);
+        // You may only create a message authored as yourself. The one exception
+        // is a "missed call" system notice, which the *recipient* legitimately
+        // writes on the caller's behalf: it must be flagged system + missed, use
+        // the deterministic missed_<callId> id, and name a real participant as
+        // the author — so the worst a forger could do is fake a missed-call.
+        allow create: if isChatParticipant(chatId) && (
+          request.resource.data.get('user', {}).get('_id', '') == request.auth.uid ||
+          (
+            request.resource.data.get('system', false) == true &&
+            request.resource.data.get('call', {}).get('outcome', '') == 'missed' &&
+            messageId.matches('missed_.*') &&
+            request.resource.data.get('user', {}).get('_id', '') in
+              get(/databases/$(database)/documents/chats/$(chatId)).data.participants
+          )
+        );
         allow update, delete: if isChatParticipant(chatId);
       }
 
@@ -157,20 +183,11 @@ service cloud.firestore {
         allow update, delete: if isChatParticipant(chatId);
       }
 
-      match /liveLocations/{userId} {
-        allow read: if isChatParticipant(chatId);
-        allow write: if isChatParticipant(chatId) && request.auth.uid == userId;
-      }
-
       match /whiteboards/{whiteboardId} {
         allow read, write: if isChatParticipant(chatId);
       }
 
       match /quoteWall/{quoteId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
-
-      match /rituals/{ritualId} {
         allow read, write: if isChatParticipant(chatId);
       }
 
@@ -188,6 +205,13 @@ service cloud.firestore {
     }
 
     match /users/{userId}/bookmarks/{bookmarkId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Owner-only private data (e.g. push/FCM tokens). Kept out of the public
+    // /users profile doc, which any signed-in user can read. Cloud Functions use
+    // the Admin SDK and bypass these rules.
+    match /users/{userId}/private/{docId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
   }

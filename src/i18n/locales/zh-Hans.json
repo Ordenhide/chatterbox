@@ -212,6 +212,8 @@
       "blockedChat": "你无法与此用户开始聊天。",
       "requestSentTitle": "请求已发送",
       "requestSentBody": "好友请求已发送。",
+      "alreadyFriendsBody": "你们已经是好友了。",
+      "alreadyPendingBody": "与该用户的请求已在等待中。",
       "userNotFoundTitle": "未找到用户",
       "userNotFoundBody": "没有匹配该邮箱的账号。",
       "sendFailedTitle": "错误",
@@ -233,6 +235,19 @@
     "defaultVisibilityDescription": "创建动态时默认的可见范围。",
     "languageTitle": "语言",
     "languageDescription": "选择你偏好的语言。",
+    "voiceDiaryTitle": "语音日记",
+    "voiceDiaryDescription": "录制一段简短的语音作为你的状态，好友可以收听。",
+    "recordVoiceDiary": "录制语音日记",
+    "voiceDiaryStop": "停止",
+    "voiceDiaryPlay": "播放（{{seconds}}秒）",
+    "voiceDiaryRemove": "删除",
+    "voiceDiaryModalDescription": "录制一段简短的语音消息（最长15秒），好友可以在你的资料中收听。",
+    "voiceDiaryRecordButton": "录制",
+    "voiceDiarySave": "保存",
+    "shortcutsTitle": "快捷入口",
+    "shortcutSaved": "收藏",
+    "shortcutMemories": "回忆",
+    "shortcutPrivacy": "隐私",
     "buttons": {
       "feedback": "发送反馈",
       "export": "导出备份",
@@ -296,6 +311,20 @@
   "chatMedia": {
     "seconds": "{{count}}秒"
   },
+  "chat": {
+    "isTyping": "{{name}} 正在输入…",
+    "search": "搜索",
+    "done": "完成",
+    "more": "更多",
+    "attach": "附加",
+    "composerPlaceholder": "输入消息…",
+    "replyPreview": {
+      "photo": "[图片]",
+      "video": "[视频]",
+      "voiceMessage": "[语音消息]",
+      "file": "[文件]"
+    }
+  },
   "chatSettings": {
     "notifications": "通知",
     "theme": "主题",
@@ -355,6 +384,58 @@
       "1m": "1分钟",
       "5m": "5分钟"
     }
+  },
+  "smartReply": {
+    "thumbsUp": "👍",
+    "soundsGood": "好的！",
+    "gotIt": "收到",
+    "yes": "好的！",
+    "notSure": "不太确定",
+    "letMeThink": "让我想想",
+    "hey": "嘿！",
+    "whatsUp": "怎么了？",
+    "howAreYou": "你还好吗？",
+    "youreWelcome": "不客气！",
+    "noProblem": "没问题！",
+    "anytime": "随时！",
+    "noWorries": "别担心！",
+    "itsAllGood": "没事的",
+    "dontWorry": "别放在心上",
+    "laughEmoji": "😂",
+    "hilarious": "太好笑了",
+    "cantEven": "笑死我了 😂",
+    "imIn": "我来！",
+    "whatAreYouThinking": "你想吃什么？",
+    "worksForMe": "我可以",
+    "letMeCheck": "我看看",
+    "whatTime": "几点？"
+  },
+  "tutorial": {
+    "welcomeTitle": "欢迎使用 Chatterbox",
+    "welcomeBody": "让我们快速了解一下核心功能——只需几步。",
+    "chatsTitle": "你的聊天",
+    "chatsBody": "所有对话都在「聊天」标签里。有未读消息时会在那里显示提示。",
+    "newChatTitle": "发起聊天",
+    "newChatBody": "在「聊天」中点击 + 找到好友，开始新的对话。",
+    "composerTitle": "不只是文字",
+    "composerBody": "在聊天中，你可以发送照片、文件、语音和 GIF，回复或 @提及，甚至定时发送消息。",
+    "spacesTitle": "共享空间",
+    "spacesBody": "打开聊天的菜单，即可使用白板、共享播放列表、倒计时、媒体库和协作清单。",
+    "callsTitle": "语音和视频通话",
+    "callsBody": "在聊天中即可直接拨打——一键语音，一键视频。",
+    "momentsTitle": "动态",
+    "momentsBody": "与好友分享照片和近况，也能看到他们发布的内容。",
+    "profileTitle": "你与设置",
+    "profileBody": "在这里设置名称、主题、语言和隐私——还能随时重播本教程。",
+    "doneTitle": "一切就绪！",
+    "doneBody": "导览到此结束。你随时可以在「我的」中重新播放。",
+    "skip": "跳过",
+    "back": "上一步",
+    "next": "下一步",
+    "done": "知道了",
+    "settingsTitle": "新手教程",
+    "settingsDescription": "第一次使用？来看看 Chatterbox 的引导教程。",
+    "replay": "重新播放教程"
   }
 }
 

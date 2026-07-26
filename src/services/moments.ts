@@ -12,7 +12,7 @@ import firestore, {
   setDoc,
   where,
 } from '@react-native-firebase/firestore';
-import {getDownloadURL, getStorage, putFile, ref} from '@react-native-firebase/storage';
+import {deleteObject, getDownloadURL, getStorage, putFile, ref} from '@react-native-firebase/storage';
 import {Moment, MomentComment, MomentVisibility} from '../types';
 import {reportError} from './telemetry';
 import {isExifStrippingEnabled} from './privacyGuard';
@@ -205,9 +205,12 @@ export async function updateMoment(
   }
 }
 
-export async function deleteMoment(momentId: string) {
+export async function deleteMoment(momentId: string, mediaUrl?: string | null) {
   if (!momentId) return;
   try {
+    if (mediaUrl) {
+      await deleteObject(ref(storage, mediaUrl)).catch(() => undefined);
+    }
     await deleteDoc(doc(momentsRef(), momentId));
   } catch (error) {
     logError(error, 'deleteMoment');

@@ -33,6 +33,7 @@ import {createChatPet, getChatPet} from '../../services/chatPet';
 import {setChatLockPIN, removeChatLock, isChatLocked} from '../../services/appLock';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
 import {ChatPet, SoundscapeId} from '../../types';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '@react-native-firebase/firestore';
 
 const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
@@ -292,6 +293,8 @@ export default function ChatSettingsScreen() {
         <View style={styles.wallpaperRow}>{wallpaperDots}</View>
       </GlassView>
 
+      {SHOW_NATIVE_ONLY_FEATURES && (
+      <>
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Soundscape</Text>
         <View style={styles.wallpaperRow}>
@@ -341,6 +344,8 @@ export default function ChatSettingsScreen() {
           </View>
         )}
       </GlassView>
+      </>
+      )}
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>
@@ -349,15 +354,11 @@ export default function ChatSettingsScreen() {
           onPress={() => navigation.navigate('Whiteboard' as never, {chatId} as never)}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>Whiteboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.row}
-          onPress={() => navigation.navigate('QuoteWall' as never, {chatId} as never)}>
-          <Text style={[styles.rowLabel, {color: colors.text}]}>Quote Wall</Text>
-        </TouchableOpacity>
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{'\uD83D\uDD12'} Security</Text>
+        {SHOW_NATIVE_ONLY_FEATURES && (
         <TouchableOpacity
           style={styles.row}
           onPress={() => {
@@ -382,6 +383,7 @@ export default function ChatSettingsScreen() {
             Chat Lock: {chatLocked ? 'ON' : 'OFF'}
           </Text>
         </TouchableOpacity>
+        )}
         <Text style={[styles.sectionTitle, {color: colors.text, marginTop: 12}]}>Message Expiry</Text>
         <View style={styles.wallpaperRow}>
           {getExpiryOptions().map(opt => (

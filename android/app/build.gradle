@@ -43,6 +43,30 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    // Read release signing credentials from environment variables or gradle.properties —
+    // never hardcode secrets. Set these in ~/.gradle/gradle.properties or your CI environment:
+    //   CHATTERBOX_STORE_FILE=/path/to/release.keystore
+    //   CHATTERBOX_STORE_PASSWORD=...
+    //   CHATTERBOX_KEY_ALIAS=...
+    //   CHATTERBOX_KEY_PASSWORD=...
+    def releaseStoreFile = System.getenv("CHATTERBOX_STORE_FILE") ?: project.findProperty("CHATTERBOX_STORE_FILE")
+    def releaseStorePassword = System.getenv("CHATTERBOX_STORE_PASSWORD") ?: project.findProperty("CHATTERBOX_STORE_PASSWORD")
+    def releaseKeyAlias = System.getenv("CHATTERBOX_KEY_ALIAS") ?: project.findProperty("CHATTERBOX_KEY_ALIAS")
+    def releaseKeyPassword = System.getenv("CHATTERBOX_KEY_PASSWORD") ?: project.findProperty("CHATTERBOX_KEY_PASSWORD")
+
+    // Fail loudly rather than silently signing a release build with the debug key.
+    // Only enforced when a release task is actually requested, so `assembleDebug`/local
+    // dev builds work without these credentials set.
+    def isReleaseBuildRequested = gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
+    if (isReleaseBuildRequested && (!releaseStoreFile || !releaseStorePassword || !releaseKeyAlias || !releaseKeyPassword)) {
+        throw new GradleException(
+            "Release build requested but release signing credentials are missing.\n" +
+            "Set CHATTERBOX_STORE_FILE, CHATTERBOX_STORE_PASSWORD, CHATTERBOX_KEY_ALIAS, and CHATTERBOX_KEY_PASSWORD\n" +
+            "as environment variables (or in ~/.gradle/gradle.properties) before building a release.\n" +
+            "Refusing to fall back to the debug keystore for a release build."
+        )
+    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -51,16 +75,10 @@ android {
             keyPassword 'android'
         }
         release {
-            // Read from environment variables or gradle.properties — never hardcode secrets.
-            // Set these in ~/.gradle/gradle.properties or your CI environment:
-            //   CHATTERBOX_STORE_FILE=/path/to/release.keystore
-            //   CHATTERBOX_STORE_PASSWORD=...
-            //   CHATTERBOX_KEY_ALIAS=...
-            //   CHATTERBOX_KEY_PASSWORD=...
-            storeFile file(System.getenv("CHATTERBOX_STORE_FILE") ?: project.findProperty("CHATTERBOX_STORE_FILE") ?: "debug.keystore")
-            storePassword System.getenv("CHATTERBOX_STORE_PASSWORD") ?: project.findProperty("CHATTERBOX_STORE_PASSWORD") ?: "android"
-            keyAlias System.getenv("CHATTERBOX_KEY_ALIAS") ?: project.findProperty("CHATTERBOX_KEY_ALIAS") ?: "androiddebugkey"
-            keyPassword System.getenv("CHATTERBOX_KEY_PASSWORD") ?: project.findProperty("CHATTERBOX_KEY_PASSWORD") ?: "android"
+            storeFile file(releaseStoreFile ?: "debug.keystore")
+            storePassword releaseStorePassword ?: "android"
+            keyAlias releaseKeyAlias ?: "androiddebugkey"
+            keyPassword releaseKeyPassword ?: "android"
         }
     }
     buildTypes {

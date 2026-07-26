@@ -1,23 +1,26 @@
 import {GifResult} from '../types';
 import {getStringFlag} from './featureFlags';
 
-const TENOR_BASE = 'https://tenor.googleapis.com/v2';
+// Google shut down the public Tenor API on 2026-06-30, so GIF search moved to
+// GIPHY. The key lives in Firebase Remote Config as "giphy_api_key" (set it via
+// the Firebase console so it never lives in the bundle).
+const GIPHY_BASE = 'https://api.giphy.com/v1/gifs';
 const LIMIT = 30;
+// A chat app shouldn't surface explicit GIFs by default; cap at PG-13.
+const RATING = 'pg-13';
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_MAX = 50;
 
 let _resolvedKey: string | null = null;
 
-async function getTenorApiKey(): Promise<string> {
+async function getGiphyApiKey(): Promise<string> {
   if (_resolvedKey) return _resolvedKey;
-  // Key is stored in Firebase Remote Config as "tenor_api_key".
-  // Set it there via the Firebase console so it never lives in the bundle.
-  const key = await getStringFlag('tenor_api_key', '');
+  const key = await getStringFlag('giphy_api_key', '');
   if (key) {
     _resolvedKey = key;
     return key;
   }
-  throw new Error('GIF search is unavailable: tenor_api_key not configured in Remote Config.');
+  throw new Error('GIF search is unavailable: giphy_api_key not configured in Remote Config.');
 }
 
 const cache = new Map<string, {data: GifResult[]; ts: number}>();
@@ -37,33 +40,37 @@ function getCached(key: string): GifResult[] | null {
   return null;
 }
 
-async function tenorFetch(endpoint: string, params: Record<string, string>): Promise<any> {
-  const apiKey = await getTenorApiKey();
-  const qs = new URLSearchParams({key: apiKey, client_key: 'chatterbox', ...params});
-  const response = await fetch(`${TENOR_BASE}/${endpoint}?${qs.toString()}`);
+async function giphyFetch(endpoint: string, params: Record<string, string>): Promise<any> {
+  const apiKey = await getGiphyApiKey();
+  const qs = new URLSearchParams({api_key: apiKey, rating: RATING, ...params});
+  const response = await fetch(`${GIPHY_BASE}/${endpoint}?${qs.toString()}`);
   if (!response.ok) {
-    throw new Error(`Tenor API error: ${response.status}`);
+    throw new Error(`GIPHY API error: ${response.status}`);
   }
   return response.json();
 }
 
+// GIPHY nests renditions under `images`; pick a full gif, a lightweight preview
+// gif for the grid, and the matching mp4s. Dimensions come back as strings.
 function mapResults(results: any[]): GifResult[] {
-  return (results || []).map(item => {
-    const gif = item.media_formats?.gif || item.media_formats?.mediumgif || {};
-    const preview = item.media_formats?.tinygif || item.media_formats?.nanogif || gif;
-    const mp4 = item.media_formats?.mp4 || {};
-    const mp4Preview = item.media_formats?.tinymp4 || item.media_formats?.nanomp4 || mp4;
-    return {
-      id: item.id,
-      url: gif.url || '',
-      previewUrl: preview.url || gif.url || '',
-      mp4Url: mp4.url || '',
-      mp4PreviewUrl: mp4Preview.url || mp4.url || '',
-      width: gif.dims?.[0] || 220,
-      height: gif.dims?.[1] || 220,
-      title: item.content_description || '',
-    };
-  }).filter(g => g.url);
+  return (results || [])
+    .map(item => {
+      const img = item.images || {};
+      const full = img.original || img.downsized || {};
+      const preview = img.fixed_width || img.preview_gif || img.fixed_width_small || full;
+      const mp4Preview = img.preview || img.fixed_width_small || img.fixed_width || full;
+      return {
+        id: item.id,
+        url: full.url || preview.url || '',
+        previewUrl: preview.url || full.url || '',
+        mp4Url: full.mp4 || preview.mp4 || '',
+        mp4PreviewUrl: mp4Preview.mp4 || full.mp4 || '',
+        width: Number(full.width) || 220,
+        height: Number(full.height) || 220,
+        title: item.title || '',
+      };
+    })
+    .filter(g => g.url);
 }
 
 export async function searchGifs(queryText: string): Promise<GifResult[]> {
@@ -71,12 +78,11 @@ export async function searchGifs(queryText: string): Promise<GifResult[]> {
   const cached = getCached(key);
   if (cached) return cached;
 
-  const data = await tenorFetch('search', {
+  const data = await giphyFetch('search', {
     q: queryText,
     limit: String(LIMIT),
-    media_filter: 'gif,tinygif,mp4,tinymp4',
   });
-  const results = mapResults(data.results);
+  const results = mapResults(data.data);
   setCache(key, results);
   return results;
 }
@@ -86,11 +92,10 @@ export async function getTrendingGifs(): Promise<GifResult[]> {
   const cached = getCached(key);
   if (cached) return cached;
 
-  const data = await tenorFetch('featured', {
+  const data = await giphyFetch('trending', {
     limit: String(LIMIT),
-    media_filter: 'gif,tinygif,mp4,tinymp4',
   });
-  const results = mapResults(data.results);
+  const results = mapResults(data.data);
   setCache(key, results);
   return results;
 }

@@ -1,0 +1,558 @@
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+  startAfter,
+  Timestamp,
+  where,
+  writeBatch,
+  type QueryDocumentSnapshot,
+} from 'firebase/firestore';
+import {db} from '../firebase';
+import {deleteQueryInChunks} from './firestoreBatch';
+import type {ChatMessage, ChatRoom, UserProfile} from '../types';
+
+export const MESSAGE_PAGE_SIZE = 30;
+
+// ---- Users -----------------------------------------------------------------
+
+export async function getUserByEmail(email: string): Promise<UserProfile | null> {
+  const snap = await getDocs(
+    query(collection(db, 'users'), where('email', '==', email.trim().toLowerCase()), limit(1)),
+  );
+  if (snap.empty) return null;
+  return snap.docs[0].data() as UserProfile;
+}
+
+export async function getUserById(uid: string): Promise<UserProfile | null> {
+  const snap = await getDoc(doc(db, 'users', uid));
+  return snap.exists() ? (snap.data() as UserProfile) : null;
+}
+
+// ---- Chats -----------------------------------------------------------------
+
+export function listenChatsForUser(userId: string, cb: (chats: ChatRoom[]) => void) {
+  const q = query(
+    collection(db, 'chats'),
+    where('participants', 'array-contains', userId),
+    orderBy('updatedAt', 'desc'),
+  );
+  return onSnapshot(
+    q,
+    snap => cb(snap.docs.map(d => ({id: d.id, ...(d.data() as Omit<ChatRoom, 'id'>)}))),
+    err => {
+      console.warn('listenChatsForUser error:', err.message);
+      cb([]);
+    },
+  );
+}
+
+// Matches the mobile app's createChat(participants, name).
+export async function createChat(participants: string[], name?: string): Promise<string> {
+  const ref = doc(collection(db, 'chats'));
+  await setDoc(ref, {
+    participants,
+    name: name || 'Chat',
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    pinnedBy: [],
+    mutedBy: [],
+  });
+  return ref.id;
+}
+
+/** Find an existing 1:1 chat with the other user, or create one. */
+export async function findOrCreateDirectChat(
+  myUid: string,
+  other: UserProfile,
+): Promise<string> {
+  const snap = await getDocs(
+    query(collection(db, 'chats'), where('participants', 'array-contains', myUid)),
+  );
+  const existing = snap.docs.find(d => {
+    const p = (d.data().participants as string[]) || [];
+    return p.length === 2 && p.includes(other.uid);
+  });
+  if (existing) return existing.id;
+  return createChat([myUid, other.uid], other.displayName || other.email);
+}
+
+// ---- Messages --------------------------------------------------------------
+
+export type MessageCursor = QueryDocumentSnapshot;
+
+/**
+ * Live-subscribes to the newest page of messages. The callback also receives the
+ * oldest doc snapshot in the window (the pagination cursor) and whether a full
+ * page came back (a hint that older messages likely exist).
+ */
+export function listenMessages(
+  chatId: string,
+  cb: (messages: ChatMessage[], oldest: MessageCursor | null, maybeMore: boolean) => void,
+) {
+  const q = query(
+    collection(db, 'chats', chatId, 'messages'),
+    orderBy('createdAt', 'desc'),
+    limit(MESSAGE_PAGE_SIZE),
+  );
+  return onSnapshot(
+    q,
+    snap => {
+      // `estimate` gives just-sent messages (pending serverTimestamp) a local
+      // timestamp so they order correctly and show a time instead of being blank.
+      const messages = snap.docs.map(d => ({
+        _id: d.id,
+        ...(d.data({serverTimestamps: 'estimate'}) as Omit<ChatMessage, '_id'>),
+      }));
+      const oldest = snap.docs.length ? snap.docs[snap.docs.length - 1] : null;
+      cb(messages, oldest, snap.docs.length === MESSAGE_PAGE_SIZE);
+    },
+    err => {
+      console.warn('listenMessages error:', err.message);
+      cb([], null, false);
+    },
+  );
+}
+
+/**
+ * One-shot fetch of the page of messages older than `cursor` (for infinite
+ * scroll-up). Returns messages newest-first plus the next cursor and whether a
+ * full page came back.
+ */
+export async function fetchOlderMessages(
+  chatId: string,
+  cursor: MessageCursor,
+): Promise<{messages: ChatMessage[]; oldest: MessageCursor | null; maybeMore: boolean}> {
+  const snap = await getDocs(
+    query(
+      collection(db, 'chats', chatId, 'messages'),
+      orderBy('createdAt', 'desc'),
+      startAfter(cursor),
+      limit(MESSAGE_PAGE_SIZE),
+    ),
+  );
+  const messages = snap.docs.map(d => ({
+    _id: d.id,
+    ...(d.data({serverTimestamps: 'estimate'}) as Omit<ChatMessage, '_id'>),
+  }));
+  const oldest = snap.docs.length ? snap.docs[snap.docs.length - 1] : null;
+  return {messages, oldest, maybeMore: snap.docs.length === MESSAGE_PAGE_SIZE};
+}
+
+/**
+ * Sends a text message using the exact same document shape and chat-metadata
+ * update (lastMessage + unreadCountBy transaction) as the mobile app's
+ * sendMessage, so mobile and web interoperate.
+ */
+export async function sendTextMessage(
+  chatId: string,
+  text: string,
+  me: {uid: string; name: string},
+): Promise<void> {
+  return sendMessage(chatId, {text}, me);
+}
+
+export interface OutgoingMedia {
+  text?: string;
+  image?: string;
+  file?: {uri: string; name: string; size?: number};
+  audio?: string;
+  audioDuration?: number;
+  burnAfterReading?: {duration: number};
+  viewOnce?: boolean;
+  system?: boolean;
+  call?: {type: 'voice' | 'video'; outcome: 'missed' | 'declined'};
+  replyTo?: ChatMessage['replyTo'];
+  mentions?: string[];
+  gif?: ChatMessage['gif'];
+}
+
+/**
+ * Sends a message (text and/or media), matching the mobile document shape and
+ * the lastMessage / unreadCountBy chat-metadata update so mobile and web
+ * interoperate. Media URLs come from Firebase Storage (see services/storage).
+ */
+export async function sendMessage(
+  chatId: string,
+  media: OutgoingMedia,
+  me: {uid: string; name: string},
+): Promise<void> {
+  const messageId =
+    typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  const doc_: Record<string, unknown> = {
+    _id: messageId,
+    text: media.text || '',
+    createdAt: serverTimestamp(),
+    user: {_id: me.uid, name: me.name},
+  };
+  if (media.image) doc_.image = media.image;
+  if (media.file) doc_.file = media.file;
+  if (media.audio) doc_.audio = media.audio;
+  if (media.audioDuration) doc_.audioDuration = media.audioDuration;
+  if (media.burnAfterReading) doc_.burnAfterReading = media.burnAfterReading;
+  if (media.viewOnce) doc_.viewOnce = true;
+  if (media.system) doc_.system = true;
+  if (media.call) doc_.call = media.call;
+  if (media.replyTo) doc_.replyTo = media.replyTo;
+  if (media.mentions && media.mentions.length) doc_.mentions = media.mentions;
+  if (media.gif) doc_.gif = media.gif;
+
+  await setDoc(doc(db, 'chats', chatId, 'messages', messageId), doc_);
+
+  // Never leak burn-message text into the chat-list preview.
+  const preview = media.burnAfterReading
+    ? '🔥'
+    : media.text ||
+      (media.gif ? '[GIF]' : media.image ? '[Photo]' : media.audio ? '[Voice message]' : media.file ? '[File]' : '');
+
+  await runTransaction(db, async tx => {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatSnap = await tx.get(chatRef);
+    if (!chatSnap.exists()) return;
+    const chat = chatSnap.data() as ChatRoom;
+    const unreadCountBy: Record<string, number> = {...(chat.unreadCountBy || {})};
+    (chat.participants || []).forEach(uid => {
+      unreadCountBy[uid] = uid === me.uid ? 0 : (unreadCountBy[uid] || 0) + 1;
+    });
+    tx.set(
+      chatRef,
+      {
+        lastMessage: {text: preview, createdAt: serverTimestamp()},
+        updatedAt: serverTimestamp(),
+        unreadCountBy,
+      },
+      {merge: true},
+    );
+  });
+}
+
+/** Reads this user's unread count once (before it's cleared) for the "new
+ * messages" divider placement when opening a chat. */
+export async function getInitialUnread(chatId: string, uid: string): Promise<number> {
+  try {
+    const snap = await getDoc(doc(db, 'chats', chatId));
+    const map = (snap.data()?.unreadCountBy as Record<string, number>) || {};
+    return map[uid] || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** Clears this user's unread counter when they open a chat. */
+export async function markChatRead(chatId: string, uid: string): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {unreadCountBy: {[uid]: 0}, lastReadAt: {[uid]: Date.now()}},
+    {merge: true},
+  );
+}
+
+/** Live chat doc — used for typing indicator, read receipts, pin/mute state. */
+export function listenChat(chatId: string, cb: (chat: ChatRoom | null) => void) {
+  return onSnapshot(doc(db, 'chats', chatId), s =>
+    cb(s.exists() ? ({id: s.id, ...(s.data() as Omit<ChatRoom, 'id'>)}) : null),
+  );
+}
+
+/** Toggle an emoji reaction on a message (reactions: {emoji: uid[]}). */
+export async function toggleReaction(
+  chatId: string,
+  messageId: string,
+  emoji: string,
+  uid: string,
+): Promise<void> {
+  const ref = doc(db, 'chats', chatId, 'messages', messageId);
+  await runTransaction(db, async tx => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) return;
+    const reactions: Record<string, string[]> = {...(snap.data().reactions || {})};
+    const set = new Set(reactions[emoji] || []);
+    if (set.has(uid)) set.delete(uid);
+    else set.add(uid);
+    if (set.size === 0) delete reactions[emoji];
+    else reactions[emoji] = Array.from(set);
+    tx.set(ref, {reactions}, {merge: true});
+  });
+}
+
+export async function deleteMessage(chatId: string, messageId: string): Promise<void> {
+  await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId));
+  await recomputeChatLastMessage(chatId).catch(() => undefined);
+}
+
+/**
+ * Hard-deletes multiple messages from the database at once. Fully removes each
+ * document (no soft-delete flag) in 450-op batches to stay under Firestore's
+ * 500-writes-per-batch limit.
+ */
+export async function deleteMessages(chatId: string, messageIds: string[]): Promise<void> {
+  const ids = [...new Set(messageIds)].filter(Boolean);
+  for (let i = 0; i < ids.length; i += 450) {
+    const batch = writeBatch(db);
+    for (const id of ids.slice(i, i + 450)) {
+      batch.delete(doc(db, 'chats', chatId, 'messages', id));
+    }
+    await batch.commit();
+  }
+  await recomputeChatLastMessage(chatId).catch(() => undefined);
+}
+
+// Same preview rules as sendMessage (never leak burn text).
+function messagePreview(m: ChatMessage): string {
+  if (m.burnAfterReading) return '🔥';
+  return (
+    m.text ||
+    (m.gif ? '[GIF]' : m.image ? '[Photo]' : m.audio ? '[Voice message]' : m.file ? '[File]' : '')
+  );
+}
+
+/**
+ * Recomputes the chat's `lastMessage` preview from the newest remaining message
+ * — call after deleting messages so the chat-list preview doesn't show a
+ * just-deleted message. Clears the preview when the chat has no messages left.
+ */
+export async function recomputeChatLastMessage(chatId: string): Promise<void> {
+  const snap = await getDocs(
+    query(collection(db, 'chats', chatId, 'messages'), orderBy('createdAt', 'desc'), limit(1)),
+  );
+  const chatRef = doc(db, 'chats', chatId);
+  if (snap.empty) {
+    await setDoc(chatRef, {lastMessage: {text: '', createdAt: null}}, {merge: true});
+    return;
+  }
+  const m = snap.docs[0].data() as ChatMessage;
+  await setDoc(
+    chatRef,
+    {lastMessage: {text: messagePreview(m), createdAt: m.createdAt ?? serverTimestamp()}},
+    {merge: true},
+  );
+}
+
+/** Edits a message's text in place, stamping `editedAt` so the UI can flag it. */
+export async function editMessage(chatId: string, messageId: string, text: string): Promise<void> {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  await setDoc(
+    doc(db, 'chats', chatId, 'messages', messageId),
+    {text: trimmed, editedAt: serverTimestamp()},
+    {merge: true},
+  );
+}
+
+/**
+ * Posts a "Missed call" notice exactly once, keyed to the call id.
+ *
+ * Uses the SAME deterministic message id as the server-side `onCallEnded`
+ * function (`missed_<callId>`) and refuses to write if that message already
+ * exists — so the client fallback and the Cloud Function can both run without
+ * duplicating the notice or double-incrementing unread counts. This is what
+ * makes the feature work before Cloud Functions are deployed.
+ */
+export async function logMissedCall(
+  chatId: string,
+  callId: string,
+  caller: {uid: string; name: string},
+  type: 'voice' | 'video',
+): Promise<void> {
+  const messageId = `missed_${callId}`;
+  const msgRef = doc(db, 'chats', chatId, 'messages', messageId);
+  const chatRef = doc(db, 'chats', chatId);
+  const text = type === 'video' ? 'Missed video call' : 'Missed voice call';
+
+  await runTransaction(db, async tx => {
+    const existing = await tx.get(msgRef);
+    if (existing.exists()) return; // already logged (by us, the other client, or the server)
+    const chatSnap = await tx.get(chatRef);
+    if (!chatSnap.exists()) return;
+    const chat = chatSnap.data() as ChatRoom;
+
+    tx.set(msgRef, {
+      _id: messageId,
+      text,
+      createdAt: serverTimestamp(),
+      user: {_id: caller.uid, name: caller.name},
+      system: true,
+      call: {type, outcome: 'missed'},
+    });
+
+    const unreadCountBy: Record<string, number> = {...(chat.unreadCountBy || {})};
+    (chat.participants || []).forEach(uid => {
+      unreadCountBy[uid] = uid === caller.uid ? 0 : (unreadCountBy[uid] || 0) + 1;
+    });
+    tx.set(
+      chatRef,
+      {
+        lastMessage: {text, createdAt: serverTimestamp()},
+        updatedAt: serverTimestamp(),
+        unreadCountBy,
+      },
+      {merge: true},
+    );
+  });
+}
+
+// ---- Ephemeral messages ----------------------------------------------------
+
+/** Marks a burn-after-reading message as revealed (starts its countdown). */
+export async function revealBurnMessage(
+  chatId: string,
+  messageId: string,
+  burn: {duration: number},
+): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId, 'messages', messageId),
+    {burnAfterReading: {...burn, burnStartedAt: Date.now()}},
+    {merge: true},
+  );
+}
+
+/** Wipes a burn message's content and flags it burned (matches mobile `burnMessage`). */
+export async function burnMessage(chatId: string, messageId: string): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId, 'messages', messageId),
+    {
+      text: '',
+      image: null,
+      video: null,
+      audio: null,
+      audioDuration: null,
+      file: null,
+      burnAfterReading: {burned: true},
+    },
+    {merge: true},
+  );
+}
+
+/** Marks a view-once media message as viewed by `uid` and expired. */
+export async function markViewOnceViewed(chatId: string, messageId: string, uid: string): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId, 'messages', messageId),
+    {viewOnceViewedBy: arrayUnion(uid), viewOnceExpired: true, viewOnceOpenedAt: serverTimestamp()},
+    {merge: true},
+  );
+}
+
+// ---- Disappearing-messages policy -----------------------------------------
+
+export const EXPIRY_OPTIONS: {hours: number}[] = [
+  {hours: 0},
+  {hours: 1},
+  {hours: 24},
+  {hours: 168},
+  {hours: 720},
+];
+
+/**
+ * Sets the chat's disappearing-messages policy in hours (0 = off). Enabling a
+ * policy also stamps `messageExpirySince` = now, so the timer applies only to
+ * messages sent from this point on — turning it on never retroactively deletes
+ * existing history (and cancelling it right away deletes nothing).
+ */
+export async function setChatExpiryPolicy(chatId: string, hours: number): Promise<void> {
+  const patch: {messageExpiry: number; messageExpirySince?: number} = {messageExpiry: hours};
+  if (hours > 0) patch.messageExpirySince = Date.now();
+  await setDoc(doc(db, 'chats', chatId), patch, {merge: true});
+}
+
+/**
+ * Deletes messages that were sent AFTER the policy was enabled and have since
+ * outlived the expiry window. Firestore rules let any participant delete
+ * messages, so this enforces the policy client-side for both users. It never
+ * touches messages that predate the policy (`since`), so enabling disappearing
+ * messages can't wipe the existing conversation. No-op when the policy is off.
+ */
+export async function sweepExpiredMessages(chatId: string, hours: number, since?: number): Promise<number> {
+  if (!hours || hours <= 0) return 0;
+  // Without a recorded activation time we can't tell backlog from new messages,
+  // so do nothing rather than risk deleting history.
+  if (!since) return 0;
+  const cutoffMs = Date.now() - hours * 3600 * 1000;
+  // Nothing sent after activation is old enough to expire yet.
+  if (cutoffMs <= since) return 0;
+  return deleteQueryInChunks(
+    query(
+      collection(db, 'chats', chatId, 'messages'),
+      where('createdAt', '>=', Timestamp.fromMillis(since)),
+      where('createdAt', '<', Timestamp.fromMillis(cutoffMs)),
+    ),
+  );
+}
+
+let typingTimer: ReturnType<typeof setTimeout> | null = null;
+export function setTyping(chatId: string, uid: string, isTyping: boolean): void {
+  setDoc(doc(db, 'chats', chatId), {typingBy: {[uid]: isTyping ? Date.now() : 0}}, {merge: true}).catch(
+    () => undefined,
+  );
+  if (typingTimer) clearTimeout(typingTimer);
+  if (isTyping) {
+    typingTimer = setTimeout(() => {
+      setDoc(doc(db, 'chats', chatId), {typingBy: {[uid]: 0}}, {merge: true}).catch(() => undefined);
+    }, 4000);
+  }
+}
+
+// ---- Chat settings ---------------------------------------------------------
+
+export async function togglePinChat(chatId: string, uid: string, pinned: boolean): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {pinnedBy: pinned ? arrayRemove(uid) : arrayUnion(uid)},
+    {merge: true},
+  );
+}
+
+export async function toggleMuteChat(chatId: string, uid: string, muted: boolean): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {mutedBy: muted ? arrayRemove(uid) : arrayUnion(uid)},
+    {merge: true},
+  );
+}
+
+/** Per-user custom chat name (nameBy: {uid: name}), matching the mobile app. */
+export async function setChatName(chatId: string, uid: string, name: string | null): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId), {nameBy: {[uid]: name}}, {merge: true});
+}
+
+/** Per-user accent color (themeBy: {uid: color}), matching the mobile app. */
+export async function setChatTheme(chatId: string, uid: string, color: string): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId), {themeBy: {[uid]: color}}, {merge: true});
+}
+
+/** Per-user chat wallpaper (wallpaperBy: {uid: color|null}), matching the mobile app. */
+export async function setChatWallpaper(chatId: string, uid: string, wallpaper: string | null): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId), {wallpaperBy: {[uid]: wallpaper}}, {merge: true});
+}
+
+/** Pin/unpin a message within a chat (chat.pinnedMessageIds), matching mobile. */
+export async function togglePinMessage(chatId: string, messageId: string): Promise<void> {
+  const ref = doc(db, 'chats', chatId);
+  await runTransaction(db, async tx => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) return;
+    const pinned = new Set((snap.data().pinnedMessageIds as string[]) || []);
+    if (pinned.has(messageId)) pinned.delete(messageId);
+    else pinned.add(messageId);
+    tx.set(ref, {pinnedMessageIds: Array.from(pinned)}, {merge: true});
+  });
+}
+
+export async function deleteChat(chatId: string): Promise<void> {
+  // Delete messages in bounded chunks (batches cap at 500) before the chat doc.
+  await deleteQueryInChunks(collection(db, 'chats', chatId, 'messages'));
+  await deleteDoc(doc(db, 'chats', chatId));
+}

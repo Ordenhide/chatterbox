@@ -1,0 +1,558 @@
+/* ==== Theme tokens ==================================================== */
+/* Dark ("Aurora Glass") is the default; light overrides under [data-theme]. */
+:root {
+  --cb-canvas: #0a0a14;
+  --cb-text: #f3f4fb;
+  --cb-text-secondary: rgba(240, 242, 255, 0.62);
+  --cb-text-tertiary: rgba(240, 242, 255, 0.4);
+  --cb-placeholder: rgba(240, 242, 255, 0.38);
+
+  --cb-surface: rgba(255, 255, 255, 0.055);
+  --cb-surface-strong: rgba(22, 23, 38, 0.72);
+  --cb-menu-solid: #1b1c2c;
+  --cb-glass-border: rgba(255, 255, 255, 0.1);
+  --cb-hover: rgba(255, 255, 255, 0.07);
+  --cb-input-bg: rgba(255, 255, 255, 0.06);
+  --cb-border: rgba(255, 255, 255, 0.09);
+  --cb-border-strong: rgba(255, 255, 255, 0.15);
+
+  --cb-primary: #7c6bff;
+  --cb-primary-soft: #a99bff;
+  --cb-primary-light: rgba(124, 107, 255, 0.16);
+  --cb-secondary: #28d6ee;
+  --cb-success: #2fe0a6;
+  --cb-danger: #ff5a72;
+
+  --cb-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.7);
+  --cb-shadow-soft: 0 16px 40px -20px rgba(0, 0, 0, 0.55);
+  --cb-shadow-glow: 0 14px 36px -10px rgba(124, 107, 255, 0.55);
+
+  /* aurora glow opacities (dimmed in light mode) */
+  --cb-aurora-1: rgba(124, 107, 255, 0.55);
+  --cb-aurora-2: rgba(40, 214, 238, 0.4);
+  --cb-aurora-3: rgba(255, 107, 179, 0.4);
+  --cb-aurora-4: rgba(91, 141, 255, 0.38);
+  --cb-grain-opacity: 0.05;
+  --cb-scroll-thumb: rgba(255, 255, 255, 0.16);
+  --cb-scroll-thumb-hover: rgba(255, 255, 255, 0.28);
+}
+
+:root[data-theme='light'] {
+  --cb-canvas: #eef0f8;
+  --cb-text: #191a2c;
+  --cb-text-secondary: rgba(25, 26, 44, 0.64);
+  --cb-text-tertiary: rgba(25, 26, 44, 0.44);
+  --cb-placeholder: rgba(25, 26, 44, 0.4);
+
+  --cb-surface: rgba(255, 255, 255, 0.62);
+  --cb-surface-strong: rgba(255, 255, 255, 0.88);
+  --cb-menu-solid: #ffffff;
+  --cb-glass-border: rgba(20, 24, 60, 0.1);
+  --cb-hover: rgba(20, 24, 60, 0.05);
+  --cb-input-bg: rgba(20, 24, 60, 0.04);
+  --cb-border: rgba(20, 24, 60, 0.11);
+  --cb-border-strong: rgba(20, 24, 60, 0.18);
+
+  --cb-primary: #6a58f0;
+  --cb-primary-soft: #6a58f0;
+  --cb-primary-light: rgba(124, 107, 255, 0.14);
+  --cb-secondary: #0fb0c6;
+  --cb-success: #12b886;
+  --cb-danger: #e23652;
+
+  --cb-shadow: 0 30px 70px -28px rgba(30, 34, 80, 0.28);
+  --cb-shadow-soft: 0 16px 40px -20px rgba(30, 34, 80, 0.2);
+  --cb-shadow-glow: 0 14px 36px -10px rgba(124, 107, 255, 0.4);
+
+  --cb-aurora-1: rgba(124, 107, 255, 0.28);
+  --cb-aurora-2: rgba(40, 214, 238, 0.22);
+  --cb-aurora-3: rgba(255, 107, 179, 0.2);
+  --cb-aurora-4: rgba(91, 141, 255, 0.2);
+  --cb-grain-opacity: 0.03;
+  --cb-scroll-thumb: rgba(20, 24, 60, 0.2);
+  --cb-scroll-thumb-hover: rgba(20, 24, 60, 0.32);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--cb-text);
+  background: var(--cb-canvas);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ---- Aurora backdrop: slow-drifting colored light behind the glass ---- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(38% 42% at 22% 18%, var(--cb-aurora-1), transparent 60%),
+    radial-gradient(34% 40% at 82% 26%, var(--cb-aurora-2), transparent 60%),
+    radial-gradient(40% 44% at 70% 84%, var(--cb-aurora-3), transparent 62%),
+    radial-gradient(46% 48% at 12% 88%, var(--cb-aurora-4), transparent 62%);
+  /* The radial gradients are already soft, so a light blur is enough. A large
+     blur radius here is very expensive to re-rasterize when the tab regains
+     focus; `will-change` keeps the layer promoted so it isn't discarded. */
+  filter: blur(12px) saturate(112%);
+  will-change: transform;
+  transform: translateZ(0);
+  animation: aurora 26s ease-in-out infinite alternate;
+}
+
+/* ---- Fine grain overlay for a premium, non-flat surface ---- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--cb-grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes aurora {
+  0% {
+    transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1.05);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) rotate(8deg) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-2%, 4%, 0) rotate(-6deg) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
+a {
+  color: inherit;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+input,
+textarea {
+  font-family: inherit;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--cb-placeholder);
+}
+input:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid rgba(124, 107, 255, 0.6);
+  outline-offset: 1px;
+}
+
+.backdrop {
+  display: none;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #7c6bff 0%, #9b5cff 55%, #28d6ee 150%);
+  color: #fff;
+  box-shadow: 0 10px 26px -10px rgba(124, 107, 255, 0.7);
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px -10px rgba(124, 107, 255, 0.85);
+}
+.btn-soft {
+  background: var(--cb-hover);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-glass-border);
+}
+.btn-soft:hover:not(:disabled) {
+  background: var(--cb-border-strong);
+  transform: translateY(-1px);
+}
+
+/* ---- Chat list items ---- */
+.chat-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 16px;
+  border: none;
+  text-align: left;
+  background: transparent;
+  margin-bottom: 2px;
+  transition: background 0.15s ease;
+}
+.chat-item:hover {
+  background: var(--cb-hover);
+}
+.chat-item.active {
+  background: linear-gradient(135deg, rgba(124, 107, 255, 0.22), rgba(40, 214, 238, 0.12));
+  box-shadow: inset 0 0 0 1px rgba(124, 107, 255, 0.3);
+}
+
+/* ---- Nav rail buttons ---- */
+.rail-btn {
+  width: 62px;
+  height: 60px;
+  border-radius: 18px;
+  border: none;
+  background: transparent;
+  color: var(--cb-text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.rail-btn:hover {
+  background: var(--cb-hover);
+  color: var(--cb-text);
+}
+.rail-btn.active {
+  background: var(--cb-primary-light);
+  color: var(--cb-primary-soft);
+  box-shadow: inset 0 0 0 1px rgba(124, 107, 255, 0.3);
+}
+.rail-btn span {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ---- Nav unread badge ---- */
+.nav-icon {
+  position: relative;
+  display: inline-flex;
+}
+.nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--cb-danger);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--cb-canvas);
+}
+
+/* ---- Mobile bottom tab bar ---- */
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--cb-text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 0 11px;
+  transition: color 0.15s ease;
+}
+.tab-btn span {
+  font-size: 11px;
+  font-weight: 600;
+}
+.tab-btn.active {
+  color: var(--cb-primary-soft);
+}
+.tab-btn:active {
+  opacity: 0.6;
+}
+
+/* ---- Scrollbars ---- */
+.scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cb-scroll-thumb) transparent;
+}
+.scroll::-webkit-scrollbar {
+  width: 9px;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--cb-scroll-thumb);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--cb-scroll-thumb-hover);
+  background-clip: padding-box;
+}
+
+/* ---- Misc ---- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.28s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Toasts ---- */
+.toast-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  width: max-content;
+  max-width: 92vw;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cb-text);
+  background: var(--cb-surface-strong);
+  border: 1px solid var(--cb-border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--cb-shadow-soft);
+  animation: toastIn 0.24s ease;
+}
+.toast.error {
+  border-color: var(--cb-danger);
+}
+.toast.success {
+  border-color: var(--cb-success);
+}
+.toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Offline / connection banner ---- */
+.conn-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  padding: 7px 12px;
+  background: linear-gradient(90deg, #ff5a72, #ff8a5a);
+  animation: toastIn 0.2s ease;
+}
+
+/* ---- Image lightbox ---- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(6, 7, 16, 0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  animation: fadeIn 0.18s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+}
+.lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Jump-to-latest ---- */
+.jump-latest {
+  position: absolute;
+  right: 22px;
+  bottom: 92px;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-strong);
+  color: var(--cb-text);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--cb-shadow-soft);
+  z-index: 6;
+  animation: fadeIn 0.2s ease;
+}
+.jump-latest .badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--cb-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Unread divider ---- */
+.unread-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 14px;
+  color: var(--cb-primary-soft);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.unread-divider::before,
+.unread-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124, 107, 255, 0.5), transparent);
+}
+
+/* ---- Message rows (Slack/Discord style) ---- */
+.msg-row {
+  transition: background 0.1s ease;
+}
+.msg-row:hover {
+  background: var(--cb-hover);
+}
+.grouped-time {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.msg-row:hover .grouped-time {
+  opacity: 1;
+}
+
+/* ---- Offscreen render skipping (virtualization-lite) ----
+   Lets the browser skip layout/paint for rows scrolled out of view. `auto` in
+   contain-intrinsic-size makes it remember real sizes after first render, so
+   only never-seen offscreen rows use the estimate. */
+.cv-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+/* ---- Drag-over drop hint ---- */
+.drop-hint {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  margin: 12px;
+  border: 2px dashed var(--cb-primary);
+  border-radius: 18px;
+  background: rgba(124, 107, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--cb-primary-soft);
+  pointer-events: none;
+}

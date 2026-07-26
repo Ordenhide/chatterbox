@@ -1,9 +1,107 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const dns = require('dns');
+const https = require('https');
+const http = require('http');
+const {isPrivateOrReservedIp} = require('./ssrfGuard');
 
 admin.initializeApp();
 
 const db = admin.firestore();
+
+// Scheduled (Cloud Scheduler / pubsub) functions require the Blaze plan. When
+// billing is closed they block *every* deploy (the CLI enables required APIs
+// codebase-wide). We define them normally but strip them from `exports` at the
+// bottom of this file unless CHATTERBOX_ENABLE_SCHEDULED=true, so the rest of
+// the functions can still deploy. To ship the scheduled ones once billing is on:
+//   CHATTERBOX_ENABLE_SCHEDULED=true npx firebase deploy --only functions
+const SCHEDULED_ENABLED = process.env.CHATTERBOX_ENABLE_SCHEDULED === 'true';
+const SCHEDULED_FUNCTIONS = [
+  'processScheduledMessages',
+  'processReminders',
+  'processExpiredMessages',
+  'processDeadManSwitch',
+  'sweepStaleCalls',
+];
+
+/**
+ * Per-user, per-function call throttle backed by Firestore.
+ * Uses a transaction so concurrent calls can't race past the limit.
+ */
+async function checkRateLimit(uid, key, {maxCalls, windowMs}) {
+  const ref = db.doc(`users/${uid}/rateLimits/${key}`);
+  const now = Date.now();
+  await db.runTransaction(async tx => {
+    const snap = await tx.get(ref);
+    const data = snap.exists ? snap.data() : null;
+    if (!data || now - data.windowStart > windowMs) {
+      tx.set(ref, {windowStart: now, count: 1});
+      return;
+    }
+    if (data.count >= maxCalls) {
+      throw new functions.https.HttpsError(
+        'resource-exhausted',
+        'Rate limit exceeded. Please slow down and try again shortly.',
+      );
+    }
+    tx.update(ref, {count: admin.firestore.FieldValue.increment(1)});
+  });
+}
+
+// ─── SSRF-safe outbound fetch (used by fetchLinkPreview) ───────────────────
+const MAX_REDIRECTS = 3;
+const MAX_BODY_BYTES = 50000;
+const FETCH_TIMEOUT_MS = 5000;
+
+async function safeFetchUrl(targetUrl, redirectsLeft = MAX_REDIRECTS) {
+  const parsed = new URL(targetUrl);
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('Only http/https URLs are allowed.');
+  }
+  const {address} = await dns.promises.lookup(parsed.hostname);
+  if (isPrivateOrReservedIp(address)) {
+    throw new Error('URL resolves to a private/internal address and is not allowed.');
+  }
+  const client = parsed.protocol === 'https:' ? https : http;
+
+  return new Promise((resolve, reject) => {
+    const req = client.get(
+      {
+        // Connect to the already-validated IP (not the hostname) so a DNS
+        // rebind between the lookup above and the request can't bypass the check.
+        host: address,
+        port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+        path: parsed.pathname + parsed.search,
+        headers: {Host: parsed.hostname, 'User-Agent': 'ChatterboxBot/1.0'},
+        servername: parsed.protocol === 'https:' ? parsed.hostname : undefined,
+        timeout: FETCH_TIMEOUT_MS,
+      },
+      res => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          res.resume();
+          if (redirectsLeft <= 0) {
+            reject(new Error('Too many redirects.'));
+            return;
+          }
+          const nextUrl = new URL(res.headers.location, targetUrl).toString();
+          safeFetchUrl(nextUrl, redirectsLeft - 1).then(resolve).catch(reject);
+          return;
+        }
+        let body = '';
+        res.on('data', chunk => {
+          body += chunk;
+          if (body.length > MAX_BODY_BYTES) res.destroy();
+        });
+        res.on('end', () => resolve(body));
+      },
+    );
+    req.on('error', reject);
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('timeout'));
+    });
+  });
+}
 
 /**
  * Session claim function that replaces the active session.
@@ -209,8 +307,9 @@ exports.processReminders = functions.pubsub
           const reminder = reminderDoc.data();
           const userRef = reminderDoc.ref.parent.parent;
           if (!userRef) continue;
-          const userData = (await userRef.get()).data();
-          const fcmToken = userData?.fcmToken;
+          // Push token now lives in the owner-only private subcollection.
+          const pushData = (await userRef.collection('private').doc('push').get()).data();
+          const fcmToken = pushData?.fcmToken || pushData?.fcmTokens?.[0];
           if (fcmToken) {
             try {
               await admin.messaging().send({
@@ -249,6 +348,7 @@ exports.transcribeVoiceMessage = functions.https.onCall(async (data, context) =>
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  await checkRateLimit(context.auth.uid, 'transcribeVoiceMessage', {maxCalls: 10, windowMs: 60000});
   const {chatId, messageId} = data || {};
   if (!chatId || !messageId) {
     throw new functions.https.HttpsError('invalid-argument', 'chatId and messageId required.');
@@ -277,6 +377,7 @@ exports.summarizeChat = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  await checkRateLimit(context.auth.uid, 'summarizeChat', {maxCalls: 5, windowMs: 60000});
   const {chatId, messageCount} = data || {};
   if (!chatId) {
     throw new functions.https.HttpsError('invalid-argument', 'chatId required.');
@@ -315,6 +416,7 @@ exports.translateMessage = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  await checkRateLimit(context.auth.uid, 'translateMessage', {maxCalls: 20, windowMs: 60000});
   const {chatId, messageId, targetLanguage} = data || {};
   if (!chatId || !messageId || !targetLanguage) {
     throw new functions.https.HttpsError('invalid-argument', 'chatId, messageId, and targetLanguage required.');
@@ -482,33 +584,13 @@ exports.fetchLinkPreview = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  await checkRateLimit(context.auth.uid, 'fetchLinkPreview', {maxCalls: 20, windowMs: 60000});
   const {url} = data || {};
   if (!url || typeof url !== 'string') {
     throw new functions.https.HttpsError('invalid-argument', 'url required.');
   }
   try {
-    const https = require('https');
-    const http = require('http');
-    const fetchUrl = (targetUrl) => {
-      return new Promise((resolve, reject) => {
-        const client = targetUrl.startsWith('https') ? https : http;
-        const req = client.get(targetUrl, {
-          timeout: 5000,
-          headers: {'User-Agent': 'ChatterboxBot/1.0'},
-        }, (res) => {
-          if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-            fetchUrl(res.headers.location).then(resolve).catch(reject);
-            return;
-          }
-          let body = '';
-          res.on('data', chunk => { body += chunk; if (body.length > 50000) res.destroy(); });
-          res.on('end', () => resolve(body));
-        });
-        req.on('error', reject);
-        req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
-      });
-    };
-    const html = await fetchUrl(url);
+    const html = await safeFetchUrl(url);
     const getMetaContent = (name) => {
       const patterns = [
         new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]+content=["']([^"']*)["']`, 'i'),
@@ -557,12 +639,13 @@ exports.processDeadManSwitch = functions.pubsub
           const trustedContacts = data.trustedContacts || [];
           for (const contact of trustedContacts) {
             if (!contact.uid) continue;
-            const contactSnap = await db.doc(`users/${contact.uid}`).get();
-            const contactData = contactSnap.data();
-            if (contactData?.fcmToken) {
+            const pushSnap = await db.doc(`users/${contact.uid}/private/push`).get();
+            const pushData = pushSnap.data();
+            const contactToken = pushData?.fcmToken || pushData?.fcmTokens?.[0];
+            if (contactToken) {
               try {
                 await admin.messaging().send({
-                  token: contactData.fcmToken,
+                  token: contactToken,
                   notification: {
                     title: 'Dead Man Switch Alert',
                     body: `${data.displayName || 'A contact'} has been inactive for ${dms.days} days.`,
@@ -586,3 +669,147 @@ exports.processDeadManSwitch = functions.pubsub
     return null;
   });
 
+
+// ─── Missed Calls ───────────────────────────────────────────────────────────
+// Server-authoritative missed-call notices. The client no longer writes these,
+// so the record is guaranteed even if the caller's tab/app dies mid-ring.
+
+const RING_TIMEOUT_MS = 60 * 1000;
+
+/**
+ * Writes the "Missed call" system message for a call that ended unanswered.
+ * Claims the work via a transaction on the call doc (`missedLogged`), so the
+ * onUpdate trigger and the stale-call sweep can never double-post or
+ * double-increment unread counts.
+ */
+async function postMissedCallNotice(chatId, callId, call) {
+  const callRef = db.doc(`chats/${chatId}/calls/${callId}`);
+  const messageId = `missed_${callId}`;
+  const msgRef = db.doc(`chats/${chatId}/messages/${messageId}`);
+
+  // Claim the work. Also bail if a client already wrote the notice (same
+  // deterministic id), so the client fallback and this function never both post.
+  const claimed = await db.runTransaction(async tx => {
+    const snap = await tx.get(callRef);
+    if (!snap.exists) return false;
+    if (snap.data().missedLogged) return false;
+    const existing = await tx.get(msgRef);
+    if (existing.exists) {
+      tx.update(callRef, {missedLogged: true});
+      return false;
+    }
+    tx.update(callRef, {missedLogged: true});
+    return true;
+  });
+  if (!claimed) return false;
+
+  const chatRef = db.doc(`chats/${chatId}`);
+  const chatSnap = await chatRef.get();
+  if (!chatSnap.exists) return false;
+  const chat = chatSnap.data();
+
+  const callerId = call.createdBy;
+  const callerSnap = await db.doc(`users/${callerId}`).get();
+  const caller = callerSnap.exists ? callerSnap.data() : null;
+  const type = call.type === 'video' ? 'video' : 'voice';
+  // English fallback text; clients localize from the `call` field.
+  const text = type === 'video' ? 'Missed video call' : 'Missed voice call';
+
+  await msgRef.set({
+    _id: messageId,
+    text,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    user: {
+      _id: callerId,
+      name: caller?.displayName || caller?.email || 'User',
+    },
+    system: true,
+    call: {type, outcome: 'missed'},
+  });
+
+  const unreadCountBy = {...(chat.unreadCountBy || {})};
+  (chat.participants || []).forEach(uid => {
+    unreadCountBy[uid] = uid === callerId ? 0 : (unreadCountBy[uid] || 0) + 1;
+  });
+  await chatRef.set(
+    {
+      lastMessage: {text, createdAt: admin.firestore.FieldValue.serverTimestamp()},
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      unreadCountBy,
+    },
+    {merge: true},
+  );
+  return true;
+}
+
+/** Fires when a call doc transitions to `ended`; logs it if never answered. */
+exports.onCallEnded = functions.firestore
+  .document('chats/{chatId}/calls/{callId}')
+  .onUpdate(async (change, context) => {
+    try {
+      const before = change.before.data();
+      const after = change.after.data();
+      if (!before || !after) return null;
+      if (before.status === 'ended' || after.status !== 'ended') return null;
+      // `answer` is only set when the recipient accepts — its absence means the
+      // call was never picked up.
+      if (after.answer) return null;
+      const {chatId, callId} = context.params;
+      await postMissedCallNotice(chatId, callId, after);
+    } catch (error) {
+      functions.logger.error('onCallEnded failed', error);
+    }
+    return null;
+  });
+
+/**
+ * Safety net: ends calls left ringing (e.g. the caller's tab closed mid-ring),
+ * which in turn triggers onCallEnded to post the notice.
+ */
+exports.sweepStaleCalls = functions.pubsub
+  .schedule('every 1 minutes')
+  .onRun(async () => {
+    try {
+      const cutoff = admin.firestore.Timestamp.fromMillis(Date.now() - RING_TIMEOUT_MS);
+      const snap = await db
+        .collectionGroup('calls')
+        .where('status', '==', 'ringing')
+        .where('createdAt', '<=', cutoff)
+        .limit(50)
+        .get();
+      if (snap.empty) return null;
+
+      let ended = 0;
+      for (const callDoc of snap.docs) {
+        try {
+          const chatRef = callDoc.ref.parent.parent;
+          if (!chatRef) continue;
+          await callDoc.ref.set(
+            {
+              status: 'ended',
+              endedAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            },
+            {merge: true},
+          );
+          ended++;
+        } catch (e) {
+          functions.logger.error('Failed to end stale call', e);
+        }
+      }
+      if (ended > 0) functions.logger.info(`Ended ${ended} stale ringing call(s)`);
+    } catch (error) {
+      functions.logger.error('sweepStaleCalls failed', error);
+    }
+    return null;
+  });
+
+// Strip scheduled functions from exports unless explicitly enabled — see the
+// SCHEDULED_ENABLED note near the top. firebase-tools inspects module.exports
+// after this file finishes loading, so deleting keys here hides them from deploy
+// (and stops the CLI from trying to enable Cloud Scheduler / billing).
+if (!SCHEDULED_ENABLED) {
+  for (const name of SCHEDULED_FUNCTIONS) {
+    delete exports[name];
+  }
+}

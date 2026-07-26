@@ -29,9 +29,16 @@ export function buildFriendPairId(userA: string, userB: string) {
   return userA < userB ? `${userA}_${userB}` : `${userB}_${userA}`;
 }
 
-export async function sendFriendRequest(fromId: string, toId: string) {
+export type SendRequestResult = 'sent' | 'exists' | 'friends' | 'invalid' | 'error';
+
+/**
+ * Sends a friend request and reports the outcome so the UI can give accurate
+ * feedback (instead of always claiming success). Stays non-throwing — callers
+ * may fire-and-forget — surfacing failures as the 'error' result.
+ */
+export async function sendFriendRequest(fromId: string, toId: string): Promise<SendRequestResult> {
   if (!fromId || !toId || fromId === toId) {
-    return;
+    return 'invalid';
   }
 
   const requestId = buildFriendPairId(fromId, toId);
@@ -39,14 +46,14 @@ export async function sendFriendRequest(fromId: string, toId: string) {
   const friendRef = doc(friendsRef(), requestId);
 
   try {
-    await runTransaction(db, async tx => {
+    return await runTransaction<SendRequestResult>(db, async tx => {
       const friendSnap = await tx.get(friendRef);
       if (friendSnap.exists) {
-        return;
+        return 'friends';
       }
       const requestSnap = await tx.get(requestRef);
       if (requestSnap.exists) {
-        return;
+        return 'exists';
       }
       tx.set(requestRef, {
         fromId,
@@ -54,9 +61,11 @@ export async function sendFriendRequest(fromId: string, toId: string) {
         status: 'pending',
         createdAt: serverTimestamp(),
       });
+      return 'sent';
     });
   } catch (error) {
     logError(error, 'sendFriendRequest');
+    return 'error';
   }
 }
 

@@ -103,11 +103,7 @@ export async function getTrustedContacts(
 
 export async function performLocalWipe(): Promise<void> {
   const {mmkvStorage} = require('./storageMMKV');
-  const {clearVault} = require('./secureVault');
   const {clearUserCache} = require('./firebaseChat');
-  try {
-    await clearVault();
-  } catch {}
   try {
     await mmkvStorage.clear();
   } catch {}

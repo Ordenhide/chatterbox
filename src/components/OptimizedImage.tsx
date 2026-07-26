@@ -1,59 +1,50 @@
 import React from 'react';
-import FastImage, { FastImageProps } from 'react-native-fast-image';
-import { Platform, Image as RNImage, ImageProps as RNImageProps } from 'react-native';
+import {Image, ImageResizeMode, ImageSourcePropType, ImageStyle, Platform, StyleProp} from 'react-native';
 
-interface OptimizedImageProps extends Omit<FastImageProps, 'source'> {
+interface OptimizedImageProps {
   uri?: string;
-  source?: RNImageProps['source'];
-  resizeMode?: 'contain' | 'cover' | 'stretch' | 'center';
-  priority?: 'low' | 'normal' | 'high';
+  source?: ImageSourcePropType;
+  resizeMode?: ImageResizeMode;
+  /** Provide alongside `height` for remote images — lets the native image
+   *  pipeline downsample during decode instead of decoding at full source
+   *  resolution. This is the main lever for avoiding jank/OOM on low-end
+   *  devices when rendering image-heavy lists (chat bubbles, moments feed). */
+  width?: number;
+  height?: number;
+  style?: StyleProp<ImageStyle>;
+  onLoad?: () => void;
+  onError?: () => void;
+  testID?: string;
 }
 
-export const OptimizedImage: React.FC<OptimizedImageProps> = ({
-  uri,
-  source,
-  resizeMode = 'cover',
-  priority = 'normal',
-  ...props
-}) => {
-  // Use FastImage for remote images, RN Image for local
-  const isRemoteUri = typeof uri === 'string' && (uri.startsWith('http') || uri.startsWith('https'));
-  
-  if (isRemoteUri && Platform.OS !== 'web') {
+export const OptimizedImage: React.FC<OptimizedImageProps> = React.memo(
+  ({uri, source, resizeMode = 'cover', width, height, style, onLoad, onError, testID}) => {
+    const imageSource = source ?? (uri ? {uri} : undefined);
+    if (!imageSource) return null;
+
     return (
-      <FastImage
-        source={{
-          uri,
-          priority: FastImage.priority[priority],
-          cache: FastImage.cacheControl.immutable,
-        }}
-        resizeMode={FastImage.resizeMode[resizeMode]}
-        {...props}
+      <Image
+        source={imageSource}
+        resizeMode={resizeMode}
+        // Forces Fresco (Android) / ImageIO (iOS) to decode at the displayed
+        // size rather than the source's native resolution.
+        resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+        style={[width != null && {width}, height != null && {height}, style]}
+        onLoad={onLoad}
+        onError={onError}
+        testID={testID}
       />
     );
-  }
-  
-  // Fallback to regular Image for local assets or web
-  const imageSource = source || (uri ? { uri } : undefined);
-  return (
-    <RNImage
-      source={imageSource!}
-      resizeMode={resizeMode}
-      {...props as any}
-    />
-  );
-};
+  },
+);
 
-// Preload images
-export const preloadImages = (urls: string[]) => {
-  if (Platform.OS === 'web') return;
-  
-  urls.forEach(url => {
-    FastImage.preload([
-      {
-        uri: url,
-        priority: FastImage.priority.normal,
-      },
-    ]);
-  });
-};
+export default OptimizedImage;
+
+/** Warms the native image cache so images already look loaded when scrolled into view. */
+export function preloadImages(urls: string[]) {
+  urls
+    .filter((url): url is string => typeof url === 'string' && url.length > 0)
+    .forEach(url => {
+      Image.prefetch(url).catch(() => undefined);
+    });
+}

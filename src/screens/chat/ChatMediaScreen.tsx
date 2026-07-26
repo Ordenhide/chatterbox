@@ -3,6 +3,7 @@ import {
   View,
   FlatList,
   Image,
+  Platform,
   StyleSheet,
   Pressable,
   Modal,
@@ -75,7 +76,12 @@ export default function ChatMediaScreen() {
                   })
             }>
             {item.image ? (
-              <Image source={{uri: item.image}} style={styles.thumb} />
+              <Image
+                source={{uri: item.image}}
+                style={styles.thumb}
+                resizeMode="cover"
+                resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+              />
             ) : (
               <View style={[styles.videoThumbWrap, {backgroundColor: colors.mediaOverlayBg}]}>
                 <Video source={{uri: item.video}} style={styles.videoThumb} paused />
@@ -92,7 +98,7 @@ export default function ChatMediaScreen() {
         initialNumToRender={24}
         maxToRenderPerBatch={24}
         windowSize={9}
-        removeClippedSubviews
+        removeClippedSubviews={Platform.OS === 'android'}
       />
       <ImageViewing
         images={imageList}

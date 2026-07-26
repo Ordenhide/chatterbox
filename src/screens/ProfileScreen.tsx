@@ -27,6 +27,8 @@ import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
 import {enableFocusMode, disableFocusMode} from '../services/focusMode';
 import {uploadVoiceStatus, removeVoiceStatus} from '../services/voiceStatus';
+import {startTutorial} from '../services/tutorial';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../config/parity';
 import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
@@ -399,10 +401,11 @@ export default function ProfileScreen() {
       </GlassView>
 
       <View style={styles.section}>
+        {SHOW_NATIVE_ONLY_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>Voice Diary</Text>
+          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('profile.voiceDiaryTitle')}</Text>
           <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            Record a short audio clip as your status. Friends can listen to it.
+            {t('profile.voiceDiaryDescription')}
           </Text>
           {voiceStatusUrl ? (
             <View style={styles.vsActiveRow}>
@@ -410,38 +413,39 @@ export default function ProfileScreen() {
                 style={[styles.vsPlayBtn, {backgroundColor: colors.primary}]}
                 onPress={vsPlaying ? handleVsStop : handleVsPlay}>
                 <Text style={styles.vsPlayBtnText}>
-                  {vsPlaying ? 'Stop' : `Play (${voiceStatusDuration}s)`}
+                  {vsPlaying ? t('profile.voiceDiaryStop') : t('profile.voiceDiaryPlay', {seconds: voiceStatusDuration})}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.vsPlayBtn, {backgroundColor: colors.danger}]}
                 onPress={handleVsRemove}>
-                <Text style={styles.vsPlayBtnText}>Remove</Text>
+                <Text style={styles.vsPlayBtnText}>{t('profile.voiceDiaryRemove')}</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
               style={[styles.focusBtn, {backgroundColor: colors.primary}]}
               onPress={() => setVsModalVisible(true)}>
-              <Text style={styles.focusBtnText}>Record Voice Diary</Text>
+              <Text style={styles.focusBtnText}>{t('profile.recordVoiceDiary')}</Text>
             </TouchableOpacity>
           )}
         </GlassView>
+        )}
 
         <GlassView style={[styles.shortcutsCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.shortcutsTitle, {color: colors.textSecondary}]}>Shortcuts</Text>
+          <Text style={[styles.shortcutsTitle, {color: colors.textSecondary}]}>{t('profile.shortcutsTitle')}</Text>
           <View style={styles.shortcutsRow}>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Bookmarks'} as never)}>
               <Text style={styles.shortcutIcon}>{'\uD83D\uDCDD'}</Text>
-              <Text style={[styles.shortcutLabel, {color: colors.text}]}>Saved</Text>
+              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutSaved')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Memories'} as never)}>
               <Text style={styles.shortcutIcon}>{'\uD83D\uDCF7'}</Text>
-              <Text style={[styles.shortcutLabel, {color: colors.text}]}>Memories</Text>
+              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutMemories')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'PrivacyDashboard'} as never)}>
               <Text style={styles.shortcutIcon}>{'\uD83D\uDD12'}</Text>
-              <Text style={[styles.shortcutLabel, {color: colors.text}]}>Privacy</Text>
+              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutPrivacy')}</Text>
             </TouchableOpacity>
           </View>
         </GlassView>
@@ -540,6 +544,16 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </GlassView>
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
+          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('tutorial.settingsTitle')}</Text>
+          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
+            {t('tutorial.settingsDescription')}
+          </Text>
+          <TouchableOpacity style={[styles.focusBtn, {backgroundColor: colors.primary}]} onPress={() => startTutorial()}>
+            <Text style={styles.focusBtnText}>{t('tutorial.replay')}</Text>
+          </TouchableOpacity>
+        </GlassView>
+        {SHOW_NATIVE_ONLY_FEATURES && (
+        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             Focus Mode
           </Text>
@@ -548,9 +562,8 @@ export default function ProfileScreen() {
           </Text>
           {focusEnabled ? (
             <View>
-              <View style={[styles.focusActiveBar, {backgroundColor: '#34C75920'}]}>
-                <Text style={styles.focusActiveIcon}>{'🎯'}</Text>
-                <Text style={[styles.focusActiveText, {color: '#34C759'}]}>
+              <View style={[styles.focusActiveBar, {backgroundColor: `${colors.success}20`}]}>
+                <Text style={[styles.focusActiveText, {color: colors.success}]}>
                   Active until {focusUntil ? new Date(focusUntil).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : '—'}
                 </Text>
               </View>
@@ -573,6 +586,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
         </GlassView>
+        )}
         {feedbackEnabled ? (
           <TouchableOpacity
             style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
@@ -710,9 +724,9 @@ export default function ProfileScreen() {
       {vsModalVisible && (
         <Modal visible animationType="slide" onRequestClose={() => setVsModalVisible(false)}>
           <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>Record Voice Diary</Text>
+            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.recordVoiceDiary')}</Text>
             <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
-              Record a short audio message (max 15s) that friends can listen to on your profile.
+              {t('profile.voiceDiaryModalDescription')}
             </Text>
             <View style={styles.vsRecordArea}>
               <Text style={[styles.vsTimer, {color: colors.text}]}>{vsRecordedDuration}s</Text>
@@ -720,13 +734,13 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                   style={[styles.vsRecordBtn, {backgroundColor: colors.danger}]}
                   onPress={handleVsStartRecording}>
-                  <Text style={styles.vsRecordBtnText}>Record</Text>
+                  <Text style={styles.vsRecordBtnText}>{t('profile.voiceDiaryRecordButton')}</Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   style={[styles.vsRecordBtn, {backgroundColor: colors.primary}]}
                   onPress={handleVsStopRecording}>
-                  <Text style={styles.vsRecordBtnText}>Stop</Text>
+                  <Text style={styles.vsRecordBtnText}>{t('profile.voiceDiaryStop')}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -739,7 +753,7 @@ export default function ProfileScreen() {
                 ]}
                 onPress={handleVsSave}
                 disabled={!vsRecordedUri}>
-                <Text style={styles.buttonText}>Save</Text>
+                <Text style={styles.buttonText}>{t('profile.voiceDiarySave')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
@@ -1008,9 +1022,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 8,
     marginBottom: 8,
-  },
-  focusActiveIcon: {
-    fontSize: 20,
   },
   focusActiveText: {
     fontSize: 15,

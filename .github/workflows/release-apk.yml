@@ -1,0 +1,63 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Decodes the CHATTERBOX_KEYSTORE_BASE64 secret back into the .keystore
+      # file that android/app/build.gradle expects at CHATTERBOX_STORE_FILE.
+      - name: Decode release keystore
+        run: echo "${{ secrets.CHATTERBOX_KEYSTORE_BASE64 }}" | base64 --decode > android/app/chatterbox-release.keystore
+
+      - name: Build release APK
+        working-directory: android
+        env:
+          CHATTERBOX_STORE_FILE: chatterbox-release.keystore
+          CHATTERBOX_STORE_PASSWORD: ${{ secrets.CHATTERBOX_STORE_PASSWORD }}
+          CHATTERBOX_KEY_ALIAS: ${{ secrets.CHATTERBOX_KEY_ALIAS }}
+          CHATTERBOX_KEY_PASSWORD: ${{ secrets.CHATTERBOX_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Remove decoded keystore
+        if: always()
+        run: rm -f android/app/chatterbox-release.keystore
+
+      - name: Upload APK as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatterbox-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Attach APK to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
+          generate_release_notes: true

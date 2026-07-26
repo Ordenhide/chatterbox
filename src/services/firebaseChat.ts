@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteField,
   doc,
   deleteDoc,
   getDoc,
@@ -91,10 +92,16 @@ export async function upsertUserProfile(user: User) {
     doc(usersRef(), user.uid),
     {
       uid: user.uid,
-      email: user.email,
+      // Normalize to lowercase so the account stays discoverable by email —
+      // this runs on every login, so a mixed-case value here would clobber the
+      // normalized email from signup and break friend-request/new-chat lookups.
+      email: user.email ? user.email.toLowerCase() : null,
       displayName: user.displayName || null,
       photoURL: user.photoURL || null,
-      fcmToken: user.fcmToken ?? null,
+      // Push token lives in the owner-only private subcollection now, not on the
+      // public profile (which any signed-in user can read). Strip any stale
+      // value left on the public doc from older app versions.
+      fcmToken: deleteField(),
       profileVisibility: user.profileVisibility || 'public',
       updatedAt: serverTimestamp(),
     },
@@ -104,7 +111,7 @@ export async function upsertUserProfile(user: User) {
 
 export async function setUserFcmToken(userId: string, token: string | null) {
   await setDoc(
-    doc(usersRef(), userId),
+    doc(db, 'users', userId, 'private', 'push'),
     {
       fcmToken: token ?? null,
       fcmUpdatedAt: serverTimestamp(),
@@ -114,7 +121,9 @@ export async function setUserFcmToken(userId: string, token: string | null) {
 }
 
 export async function getUserByEmail(email: string) {
-  const snapshot = await getDocs(query(usersRef(), where('email', '==', email), limit(1)));
+  // Stored emails are lowercased (see upsertUserProfile); normalize the query
+  // so lookups are case-insensitive, matching the web client.
+  const snapshot = await getDocs(query(usersRef(), where('email', '==', email.trim().toLowerCase()), limit(1)));
   if (snapshot.empty) return null;
   return snapshot.docs[0].data() as User;
 }
@@ -122,6 +131,8 @@ export async function getUserByEmail(email: string) {
 export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 5) {
   const trimmed = searchTerm.trim();
   if (!trimmed) return [];
+  // Emails are stored lowercased; names are matched as-typed.
+  const emailTerm = trimmed.toLowerCase();
   const results: User[] = [];
   const seen = new Set<string>();
   const addResult = (user: User) => {
@@ -131,13 +142,13 @@ export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 
   };
 
   if (trimmed.includes('@')) {
-    const snapshot = await getDocs(query(usersRef(), where('email', '==', trimmed), limit(maxResults)));
+    const snapshot = await getDocs(query(usersRef(), where('email', '==', emailTerm), limit(maxResults)));
     snapshot.docs.forEach(docSnap => addResult(docSnap.data() as User));
     return results;
   }
 
   const [emailSnap, nameSnap] = await Promise.all([
-    getDocs(query(usersRef(), where('email', '==', trimmed), limit(maxResults))),
+    getDocs(query(usersRef(), where('email', '==', emailTerm), limit(maxResults))),
     getDocs(query(usersRef(), where('displayName', '==', trimmed), limit(maxResults))),
   ]);
 
@@ -410,6 +421,55 @@ export async function updateMessage(chatId: string, messageId: string | number, 
   await setDoc(doc(collection(doc(chatsRef(), chatId), 'messages'), String(messageId)), stripUndefined(updates), {
     merge: true,
   });
+}
+
+/**
+ * Hard-deletes one or more messages — fully removes the documents (no
+ * soft-delete flag), in 450-op batches, then refreshes the chat's lastMessage
+ * preview so the chat list doesn't show a just-deleted message.
+ */
+export async function deleteMessages(chatId: string, messageIds: Array<string | number>): Promise<void> {
+  const ids = [...new Set(messageIds.map(String))].filter(Boolean);
+  const messagesRef = collection(doc(chatsRef(), chatId), 'messages');
+  for (let i = 0; i < ids.length; i += 450) {
+    const batch = writeBatch(db);
+    for (const id of ids.slice(i, i + 450)) {
+      batch.delete(doc(messagesRef, id));
+    }
+    await batch.commit();
+  }
+  await recomputeChatLastMessage(chatId).catch(() => undefined);
+}
+
+/** Rebuilds the chat's lastMessage preview from the newest remaining message. */
+export async function recomputeChatLastMessage(chatId: string): Promise<void> {
+  const messagesRef = collection(doc(chatsRef(), chatId), 'messages');
+  const snap = await getDocs(query(messagesRef, orderBy('createdAt', 'desc'), limit(1)));
+  const chatRef = doc(chatsRef(), chatId);
+  if (snap.empty) {
+    await setDoc(
+      chatRef,
+      {lastMessage: {text: '', createdAt: null, image: null, video: null, audio: null, file: null, moment: null}},
+      {merge: true},
+    );
+    return;
+  }
+  const m = snap.docs[0].data() as Message;
+  await setDoc(
+    chatRef,
+    {
+      lastMessage: {
+        text: m.text || (m.moment ? 'Shared a moment' : ''),
+        createdAt: m.createdAt ?? serverTimestamp(),
+        image: m.image || null,
+        video: m.video || null,
+        audio: m.audio || null,
+        file: m.file || null,
+        moment: m.moment || null,
+      },
+    },
+    {merge: true},
+  );
 }
 
 export async function burnMessage(chatId: string, messageId: string | number) {

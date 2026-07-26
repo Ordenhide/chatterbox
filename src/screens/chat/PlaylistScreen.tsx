@@ -8,6 +8,7 @@ import {
   Modal,
   Alert,
   FlatList,
+  Platform,
   useColorScheme,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
@@ -140,6 +141,10 @@ export default function PlaylistScreen() {
         keyExtractor={item => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             No tracks yet

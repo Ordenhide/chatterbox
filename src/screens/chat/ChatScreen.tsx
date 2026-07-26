@@ -16,7 +16,8 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import {GiftedChat, IMessage, MessageImage, Bubble, Time} from 'react-native-gifted-chat';
+import {GiftedChat, IMessage, MessageImage, Bubble, Time, Send} from 'react-native-gifted-chat';
+import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import Video from 'react-native-video';
@@ -52,6 +53,7 @@ import {prefetchMessageImages} from '../../services/imageCache';
 import {
   burnMessage,
   createCall,
+  deleteMessages,
   getChat,
   getMessagesPage,
   getUserById,
@@ -86,8 +88,10 @@ import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {isScreenshotProtectionEnabled, isLinkPreviewEnabled, isStealthMode, generateWatermark, isExifStrippingEnabled} from '../../services/privacyGuard';
 import {generateSafetyNumber} from '../../services/messageExpiry';
 import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
 export default function ChatScreen() {
+  const {t} = useTranslation();
   const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
   const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
   const MAX_FILE_BYTES = 25 * 1024 * 1024;
@@ -166,6 +170,8 @@ export default function ChatScreen() {
   const [chatPinInput, setChatPinInput] = useState('');
   const [incognitoMode, setIncognitoMode] = useState(false);
   const [attachSheetVisible, setAttachSheetVisible] = useState(false);
+  const [msgSelectMode, setMsgSelectMode] = useState(false);
+  const [msgSelected, setMsgSelected] = useState<Set<string>>(new Set());
   const dictationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const burnTimersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
@@ -263,7 +269,7 @@ export default function ChatScreen() {
 
   useEffect(() => {
     if (!chatId) return;
-    if (isChatLocked(chatId)) {
+    if (SHOW_NATIVE_ONLY_FEATURES && isChatLocked(chatId)) {
       setChatUnlocked(false);
     }
   }, [chatId]);
@@ -680,20 +686,20 @@ export default function ChatScreen() {
 
   useEffect(() => {
     navigation.setOptions({
-      title: isTyping ? `${otherUserName} is typing...` : otherUserName,
+      title: isTyping ? t('chat.isTyping', {name: otherUserName}) : otherUserName,
       headerRight: () => (
         <View style={styles.headerActions}>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => setShowSearch(prev => !prev)}>
             <Text style={[styles.headerButtonText, {color: colors.primary}]}>
-              {showSearch ? 'Done' : 'Search'}
+              {showSearch ? t('chat.done') : t('chat.search')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => setActionsModalVisible(true)}>
-            <Text style={[styles.headerButtonText, {color: colors.primary}]}>More</Text>
+            <Text style={[styles.headerButtonText, {color: colors.primary}]}>{t('chat.more')}</Text>
           </TouchableOpacity>
         </View>
       ),
@@ -706,15 +712,16 @@ export default function ChatScreen() {
     otherUserName,
     isTyping,
     showTimestamps,
+    t,
   ]);
 
   const getReplyPreviewText = (message?: any) => {
     if (!message) return '';
     if (message.text) return message.text;
-    if (message.image) return '[Photo]';
-    if (message.video) return '[Video]';
-    if (message.audio) return '[Voice Message]';
-    if (message.file) return '[File]';
+    if (message.image) return t('chat.replyPreview.photo');
+    if (message.video) return t('chat.replyPreview.video');
+    if (message.audio) return t('chat.replyPreview.voiceMessage');
+    if (message.file) return t('chat.replyPreview.file');
     return '';
   };
 
@@ -1141,10 +1148,10 @@ export default function ChatScreen() {
         style={[styles.attachSingleBtn, {backgroundColor: colors.surface, borderColor: colors.border}]}
         onPress={() => setAttachSheetVisible(true)}>
         <Text style={[styles.attachSingleIcon, {color: colors.primary}]}>＋</Text>
-        <Text style={[styles.attachSingleLabel, {color: colors.textSecondary}]}>Attach</Text>
+        <Text style={[styles.attachSingleLabel, {color: colors.textSecondary}]}>{t('chat.attach')}</Text>
       </TouchableOpacity>
     ),
-    [colors.surface, colors.border, colors.primary, colors.textSecondary],
+    [colors.surface, colors.border, colors.primary, colors.textSecondary, t],
   );
 
   const removePendingMessage = useCallback((id: string) => {
@@ -1613,7 +1620,7 @@ export default function ChatScreen() {
       if (msg?.viewOnce && msg?.viewOnceExpired) {
         return (
           <View style={styles.viewOnceExpired}>
-            <Text style={styles.viewOnceExpiredText}>View-once media expired</Text>
+            <Text style={[styles.viewOnceExpiredText, {color: colors.textSecondary}]}>View-once media expired</Text>
           </View>
         );
       }
@@ -1822,12 +1829,65 @@ export default function ChatScreen() {
     [colors.primary, colors.text, colors.textOnPrimary, colors.warning, revealedMessages],
   );
 
+  // ---- Multi-select delete --------------------------------------------------
+  const toggleMsgSelect = (id: string) =>
+    setMsgSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const enterMsgSelect = (id?: string) => {
+    setMsgSelected(id ? new Set([id]) : new Set());
+    setMsgSelectMode(true);
+  };
+  const exitMsgSelect = () => {
+    setMsgSelectMode(false);
+    setMsgSelected(new Set());
+  };
+  const handleDeleteSelectedMsgs = () => {
+    const ids = [...msgSelected];
+    if (!chatId || ids.length === 0) return;
+    Alert.alert(
+      'Delete messages',
+      `Permanently delete ${ids.length} message${ids.length > 1 ? 's' : ''} for everyone? This cannot be undone.`,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteMessages(chatId, ids);
+            } catch {
+              /* ignore */
+            }
+            exitMsgSelect();
+          },
+        },
+      ],
+    );
+  };
+  const handleDeleteSingle = (id: string | number) => {
+    if (!chatId) return;
+    Alert.alert('Delete message', 'Permanently delete this message for everyone? This cannot be undone.', [
+      {text: 'Cancel', style: 'cancel'},
+      {text: 'Delete', style: 'destructive', onPress: () => deleteMessages(chatId, [id]).catch(() => {})},
+    ]);
+  };
+
   const handleLongPress = (_: any, message: IMessage) => {
+    if (msgSelectMode) {
+      toggleMsgSelect(String(message._id));
+      return;
+    }
     if (!user || !chatId) return;
     const emojiOptions = ['😀', '😍', '😢', '😡', '🎉', '🔥', '👏'];
     const hasAudio = !!(message as any).audio;
     const actions = [
       {label: 'Reply', onPress: () => setReplyTo(message)},
+      {label: 'Select Messages', onPress: () => enterMsgSelect(String(message._id))},
+      {label: 'Delete Message', onPress: () => handleDeleteSingle(message._id)},
       {
         label: pinnedMessageIds.includes(message._id) ? 'Unpin Message' : 'Pin Message',
         onPress: () => togglePinMessage(chatId, message._id),
@@ -2032,6 +2092,7 @@ export default function ChatScreen() {
       })();
 
     const isMine = user && current.user?._id === user.uid;
+    const isSelected = msgSelectMode && msgSelected.has(String(current._id));
 
     if (burn?.burned) {
       return (
@@ -2070,7 +2131,7 @@ export default function ChatScreen() {
       <Swipeable
         renderRightActions={() => (
           <View style={styles.swipeReply}>
-            <Text style={styles.swipeReplyText}>Reply</Text>
+            <Text style={[styles.swipeReplyText, {color: colors.primary}]}>Reply</Text>
           </View>
         )}
         onSwipeableOpen={() => setReplyTo(current)}
@@ -2096,8 +2157,8 @@ export default function ChatScreen() {
               <Bubble
                 {...bubbleProps}
                 wrapperStyle={{
-                  right: {backgroundColor: colors.warning},
-                  left: {backgroundColor: colors.surface},
+                  right: {backgroundColor: isSelected ? colors.primary : colors.warning},
+                  left: {backgroundColor: isSelected ? colors.primaryLight : colors.surface},
                 }}
               />
               {isBurnCountingDown && countdown != null ? (
@@ -2119,7 +2180,8 @@ export default function ChatScreen() {
             <Bubble
               {...bubbleProps}
               wrapperStyle={{
-                right: {backgroundColor: themeColor},
+                right: {backgroundColor: isSelected ? colors.primary : themeColor},
+                left: isSelected ? {backgroundColor: colors.primaryLight} : undefined,
               }}
             />
           )}
@@ -2212,7 +2274,7 @@ export default function ChatScreen() {
                   `${current.location.latitude.toFixed(4)}, ${current.location.longitude.toFixed(4)}`}
               </Text>
               {current.location.isLive ? (
-                <Text style={[styles.locationLive, {color: '#34C759'}]}>LIVE</Text>
+                <Text style={[styles.locationLive, {color: colors.success}]}>LIVE</Text>
               ) : null}
             </View>
           ) : null}
@@ -2236,7 +2298,7 @@ export default function ChatScreen() {
               </Text>
             </View>
           ) : null}
-          {contextCards[String(current._id)]?.map(card => (
+          {SHOW_NATIVE_ONLY_FEATURES && contextCards[String(current._id)]?.map(card => (
             <TouchableOpacity
               key={card.id}
               activeOpacity={0.7}
@@ -2285,11 +2347,11 @@ export default function ChatScreen() {
           {current.lottery ? (
             <Pressable
               onPress={() => current.lottery.revealedIndex == null && revealLottery(current._id)}
-              style={[styles.lotteryCard, {backgroundColor: colors.surface, borderColor: current.lottery.revealedIndex != null ? '#34C759' : '#F59E0B'}]}>
+              style={[styles.lotteryCard, {backgroundColor: colors.surface, borderColor: current.lottery.revealedIndex != null ? colors.success : '#F59E0B'}]}>
               <Text style={styles.lotteryIcon}>{current.lottery.revealedIndex != null ? '\uD83C\uDF89' : '\uD83C\uDFB0'}</Text>
               {current.lottery.revealedIndex != null ? (
                 <>
-                  <Text style={[styles.lotteryRevealed, {color: '#34C759'}]}>
+                  <Text style={[styles.lotteryRevealed, {color: colors.success}]}>
                     {current.lottery.options[current.lottery.revealedIndex]}
                   </Text>
                   <Text style={[styles.lotteryRevealedBy, {color: colors.textSecondary}]}>
@@ -2313,7 +2375,7 @@ export default function ChatScreen() {
           ) : null}
           {current.reactionChain?.length ? (
             <View style={[styles.reactionChainRow, {backgroundColor: colors.surface}]}>
-              <Text style={styles.reactionChainLabel}>Story: </Text>
+              <Text style={[styles.reactionChainLabel, {color: colors.textSecondary}]}>Story: </Text>
               {current.reactionChain.map((emoji: string, i: number) => (
                 <Text key={i} style={styles.reactionChainEmoji}>{emoji}</Text>
               ))}
@@ -2336,7 +2398,7 @@ export default function ChatScreen() {
         </View>
       </Swipeable>
     );
-  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, themeColor, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards]);
+  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, themeColor, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected]);
 
   const renderAccessory = () => {
     if (!replyTo && !burnMode) {
@@ -2432,7 +2494,7 @@ export default function ChatScreen() {
         </View>
       ) : null}
       {isScreenshotProtectionEnabled() ? (
-        <View style={[styles.offlineBanner, {backgroundColor: '#34C759'}]}>
+        <View style={[styles.offlineBanner, {backgroundColor: colors.success}]}>
           <Text style={styles.offlineText}>{'\uD83D\uDEE1\uFE0F'} Screenshot protection active</Text>
         </View>
       ) : null}
@@ -2489,20 +2551,34 @@ export default function ChatScreen() {
           ) : null}
         </View>
       ) : null}
-      {chatPet ? (
+      {SHOW_NATIVE_ONLY_FEATURES && chatPet ? (
         <View style={[styles.petWidget, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
           <Text style={styles.petAvatar}>
             {chatPet.species === 'plant' ? '\uD83C\uDF31' : chatPet.species === 'cat' ? '\uD83D\uDC31' : chatPet.species === 'dog' ? '\uD83D\uDC36' : chatPet.species === 'bunny' ? '\uD83D\uDC30' : '\uD83E\uDD8A'}
           </Text>
           <View style={styles.petInfo}>
             <Text style={[styles.petName, {color: colors.text}]}>{chatPet.name} Lv.{chatPet.level}</Text>
-            <View style={styles.petHealthBar}>
-              <View style={[styles.petHealthFill, {width: `${Math.max(0, Math.min(100, decayHealth(chatPet)))}%`, backgroundColor: decayHealth(chatPet) > 50 ? '#34C759' : decayHealth(chatPet) > 20 ? '#FF9500' : '#FF3B30'}]} />
+            <View style={[styles.petHealthBar, {backgroundColor: colors.border}]}>
+              <View style={[styles.petHealthFill, {width: `${Math.max(0, Math.min(100, decayHealth(chatPet)))}%`, backgroundColor: decayHealth(chatPet) > 50 ? colors.success : decayHealth(chatPet) > 20 ? colors.warning : colors.danger}]} />
             </View>
           </View>
           <Text style={styles.petMood}>
             {calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'happy' ? '\u2764\uFE0F' : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'neutral' ? '\uD83D\uDE10' : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'sad' ? '\uD83D\uDE22' : '\uD83D\uDCA4'}
           </Text>
+        </View>
+      ) : null}
+      {msgSelectMode ? (
+        <View style={[styles.msgSelectBar, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}>
+          <TouchableOpacity onPress={exitMsgSelect} style={styles.msgSelectCancel}>
+            <Text style={[styles.msgSelectCancelText, {color: colors.text}]}>Cancel</Text>
+          </TouchableOpacity>
+          <Text style={[styles.msgSelectCount, {color: colors.text}]}>{msgSelected.size} selected</Text>
+          <TouchableOpacity
+            onPress={handleDeleteSelectedMsgs}
+            disabled={msgSelected.size === 0}
+            style={[styles.msgSelectDelete, {backgroundColor: colors.danger, opacity: msgSelected.size ? 1 : 0.4}]}>
+            <Text style={styles.msgSelectDeleteText}>Delete</Text>
+          </TouchableOpacity>
         </View>
       ) : null}
       {smartReplies.length > 0 && !inputText ? (
@@ -2534,6 +2610,9 @@ export default function ChatScreen() {
         renderBubble={renderBubble}
         renderAccessory={renderAccessory}
         onLongPress={handleLongPress}
+        onPress={(_: any, message: IMessage) => {
+          if (msgSelectMode) toggleMsgSelect(String(message._id));
+        }}
         renderTime={
           showTimestamps
             ? (props: any) => {
@@ -2543,9 +2622,10 @@ export default function ChatScreen() {
             : undefined
         }
         listViewProps={listViewProps}
-        placeholder="Type a message..."
+        placeholder={t('chat.composerPlaceholder')}
         showUserAvatar
         alwaysShowSend
+        renderSend={(props: any) => <Send {...props} label={t('common.send')} />}
         textInputProps={{
           autoCorrect: !incognitoMode,
           autoComplete: incognitoMode ? 'off' : undefined,
@@ -2587,6 +2667,7 @@ export default function ChatScreen() {
                 <Text style={styles.recordButtonText}>Send</Text>
               </TouchableOpacity>
             </View>
+            {SHOW_NATIVE_ONLY_FEATURES && (
             <View style={styles.smartReplyRow}>
               {(['none', 'chipmunk', 'deep', 'echo', 'robot', 'whisper'] as VoiceFilter[]).map(f => (
                 <TouchableOpacity
@@ -2602,6 +2683,7 @@ export default function ChatScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            )}
             <TouchableOpacity
               style={styles.recordCancel}
               onPress={() => {
@@ -2675,6 +2757,8 @@ export default function ChatScreen() {
                 </View>
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>Message style</Text>
                 <View style={styles.attachSectionRow}>
+                  {SHOW_NATIVE_ONLY_FEATURES && (
+                    <>
                   <TouchableOpacity style={[styles.attachOption, timeCapsuleMode && {backgroundColor: '#8B5CF6'}]} onPress={() => { setTimeCapsuleMode(prev => !prev); }} onLongPress={() => setCapsulePickerVisible(true)}>
                     <Text style={[styles.attachOptionIcon, timeCapsuleMode && {color: '#fff'}]}>{'\u23F3'}</Text>
                     <Text style={[styles.attachOptionText, {color: timeCapsuleMode ? '#fff' : colors.text}]}>Timer</Text>
@@ -2687,6 +2771,8 @@ export default function ChatScreen() {
                     <Text style={[styles.attachOptionIcon, messageStyle !== 'none' && {color: '#fff'}]}>Aa</Text>
                     <Text style={[styles.attachOptionText, {color: messageStyle !== 'none' ? '#fff' : colors.text}]}>Style</Text>
                   </TouchableOpacity>
+                    </>
+                  )}
                   <TouchableOpacity style={[styles.attachOption, burnMode && {backgroundColor: colors.warning}]} onPress={() => setBurnMode(prev => !prev)} onLongPress={() => setBurnDurationPickerVisible(true)}>
                     <Text style={[styles.attachOptionIcon, burnMode && {color: colors.textOnPrimary}]}>🔥</Text>
                     <Text style={[styles.attachOptionText, {color: burnMode ? colors.textOnPrimary : colors.text}]}>Burn</Text>
@@ -2795,30 +2881,6 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('QuoteWall' as never, {chatId} as never);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Quote Wall</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                navigation.navigate('ChatWrapped' as never, {chatId} as never);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Year in Review</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                navigation.navigate('Rituals' as never, {chatId} as never);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Chat Rituals</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
                 navigation.navigate('Playlist' as never, {chatId} as never);
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Playlist</Text>
@@ -2831,14 +2893,8 @@ export default function ChatScreen() {
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Countdowns</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                navigation.navigate('ChatTimeline' as never, {chatId} as never);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Timeline</Text>
-            </TouchableOpacity>
+            {SHOW_NATIVE_ONLY_FEATURES && (
+              <>
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Privacy</Text>
             <TouchableOpacity
               style={styles.actionSheetItem}
@@ -2856,7 +2912,7 @@ export default function ChatScreen() {
                 setActionsModalVisible(false);
                 setIncognitoMode(prev => !prev);
               }}>
-              <Text style={[styles.actionSheetText, {color: incognitoMode ? '#34C759' : colors.text}]}>
+              <Text style={[styles.actionSheetText, {color: incognitoMode ? colors.success : colors.text}]}>
                 {incognitoMode ? '\uD83D\uDD35 Incognito ON' : '\uD83D\uDD35 Incognito'}
               </Text>
             </TouchableOpacity>
@@ -2888,6 +2944,8 @@ export default function ChatScreen() {
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Mystery Box</Text>
             </TouchableOpacity>
+              </>
+            )}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Settings</Text>
             <TouchableOpacity
               style={styles.actionSheetItem}
@@ -3488,7 +3546,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   swipeReplyText: {
-    color: '#007AFF',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -4249,9 +4306,22 @@ const styles = StyleSheet.create({
   petAvatar: {fontSize: 24, marginRight: 8},
   petInfo: {flex: 1},
   petName: {fontSize: 12, fontWeight: '700'},
-  petHealthBar: {height: 4, borderRadius: 2, backgroundColor: '#E5E5EA', marginTop: 3, overflow: 'hidden'},
+  petHealthBar: {height: 4, borderRadius: 2, marginTop: 3, overflow: 'hidden'},
   petHealthFill: {height: '100%', borderRadius: 2},
   petMood: {fontSize: 16, marginLeft: 6},
+  msgSelectBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  msgSelectCancel: {paddingVertical: 4, paddingRight: 4},
+  msgSelectCancelText: {fontSize: 15, fontWeight: '600'},
+  msgSelectCount: {flex: 1, fontSize: 15, fontWeight: '700'},
+  msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999},
+  msgSelectDeleteText: {color: '#fff', fontSize: 14, fontWeight: '700'},
   smartReplyRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -4319,7 +4389,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginHorizontal: 4,
   },
-  reactionChainLabel: {fontSize: 10, color: '#999', fontWeight: '600'},
+  reactionChainLabel: {fontSize: 10, fontWeight: '600'},
   reactionChainEmoji: {fontSize: 16, marginHorizontal: 1},
   gestureModal: {flex: 1},
   gestureHeader: {
@@ -4435,6 +4505,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 4,
   },
-  viewOnceExpiredText: {fontSize: 12, fontWeight: '500', color: '#8E8E93', fontStyle: 'italic'},
+  viewOnceExpiredText: {fontSize: 12, fontWeight: '500', fontStyle: 'italic'},
 });
 

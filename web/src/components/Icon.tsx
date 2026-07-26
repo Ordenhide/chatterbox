@@ -1,0 +1,278 @@
+import type {CSSProperties} from 'react';
+
+export type IconName =
+  | 'phone'
+  | 'phoneOff'
+  | 'video'
+  | 'more'
+  | 'sparkles'
+  | 'pin'
+  | 'bellOff'
+  | 'globe'
+  | 'bookmark'
+  | 'trash'
+  | 'heart'
+  | 'heartFilled'
+  | 'comment'
+  | 'mic'
+  | 'micOff'
+  | 'camera'
+  | 'cameraOff'
+  | 'close'
+  | 'search'
+  | 'plus'
+  | 'back'
+  | 'image'
+  | 'paperclip'
+  | 'file'
+  | 'download'
+  | 'play'
+  | 'pause'
+  | 'stop'
+  | 'edit'
+  | 'sun'
+  | 'moon'
+  | 'bell'
+  | 'flame'
+  | 'eye'
+  | 'eyeOff'
+  | 'timer'
+  | 'eraser'
+  | 'undo'
+  | 'reply'
+  | 'gif'
+  | 'settings'
+  | 'music'
+  | 'calendar'
+  | 'list'
+  | 'check'
+  | 'smile';
+
+const FILLED = new Set<IconName>(['more', 'heartFilled', 'play', 'pause', 'stop']);
+
+export default function Icon({
+  name,
+  size = 18,
+  strokeWidth = 1.9,
+  style,
+}: {
+  name: IconName;
+  size?: number;
+  strokeWidth?: number;
+  style?: CSSProperties;
+}) {
+  const filled = FILLED.has(name);
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{flexShrink: 0, ...style}}
+      aria-hidden="true">
+      {PATHS[name]}
+    </svg>
+  );
+}
+
+const PATHS: Record<IconName, React.ReactNode> = {
+  phone: (
+    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.1 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />
+  ),
+  phoneOff: <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.1 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" transform="rotate(135 12 12)" />,
+  video: (
+    <>
+      <path d="M23 7l-7 5 7 5V7z" />
+      <rect x="1" y="5" width="15" height="14" rx="2.5" />
+    </>
+  ),
+  more: (
+    <>
+      <circle cx="5" cy="12" r="1.7" />
+      <circle cx="12" cy="12" r="1.7" />
+      <circle cx="19" cy="12" r="1.7" />
+    </>
+  ),
+  sparkles: (
+    <>
+      <path d="M12 3l1.6 4.8L18 9.4l-4.4 1.6L12 16l-1.6-5L6 9.4l4.4-1.6L12 3z" />
+      <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" />
+    </>
+  ),
+  pin: <path d="M9 3h6l-1 7 3 2.5V14H8v-1.5L11 10 10 3M12 14v7" />,
+  bellOff: (
+    <>
+      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+      <path d="M18.6 13A17.9 17.9 0 0 1 18 8M6.3 6.3A5.9 5.9 0 0 0 6 8c0 7-3 9-3 9h14" />
+      <path d="M18 8a6 6 0 0 0-9.3-5" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+    </>
+  ),
+  bookmark: <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />,
+  trash: (
+    <>
+      <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+    </>
+  ),
+  heart: <path d="M20.8 5.1a5.5 5.5 0 0 0-7.8 0L12 6.1l-1-1a5.5 5.5 0 0 0-7.8 7.7l1 1.1L12 21l7.8-7.1 1-1.1a5.5 5.5 0 0 0 0-7.7z" />,
+  heartFilled: <path d="M20.8 5.1a5.5 5.5 0 0 0-7.8 0L12 6.1l-1-1a5.5 5.5 0 0 0-7.8 7.7l1 1.1L12 21l7.8-7.1 1-1.1a5.5 5.5 0 0 0 0-7.7z" />,
+  comment: (
+    <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z" />
+  ),
+  mic: (
+    <>
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4" />
+    </>
+  ),
+  micOff: (
+    <>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <path d="M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V5a3 3 0 0 0-5.9-.6" />
+      <path d="M17 17a7 7 0 0 1-12-5v-1M12 18v4" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M23 7l-7 5 7 5V7z" />
+      <rect x="1" y="5" width="15" height="14" rx="2.5" />
+    </>
+  ),
+  cameraOff: (
+    <>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <path d="M16 16H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1M9.5 5H15a2 2 0 0 1 2 2v3.5M23 7l-7 5" />
+    </>
+  ),
+  close: <path d="M18 6L6 18M6 6l12 12" />,
+  search: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4-4" />
+    </>
+  ),
+  plus: <path d="M12 5v14M5 12h14" />,
+  back: <path d="M15 19l-7-7 7-7" />,
+  image: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="2.5" />
+      <circle cx="8.5" cy="8.5" r="1.6" />
+      <path d="M21 15l-5-5L5 21" />
+    </>
+  ),
+  paperclip: (
+    <path d="M21.4 11l-9.2 9.2a5 5 0 0 1-7.1-7.1l9.2-9.2a3.33 3.33 0 0 1 4.72 4.72l-9.2 9.2a1.67 1.67 0 0 1-2.36-2.36l8.49-8.48" />
+  ),
+  file: (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+    </>
+  ),
+  download: <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />,
+  play: <path d="M8 5v14l11-7z" />,
+  pause: (
+    <>
+      <rect x="6" y="5" width="4" height="14" rx="1" />
+      <rect x="14" y="5" width="4" height="14" rx="1" />
+    </>
+  ),
+  stop: <rect x="6" y="6" width="12" height="12" rx="2" />,
+  edit: (
+    <>
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    </>
+  ),
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </>
+  ),
+  moon: <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />,
+  bell: (
+    <>
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    </>
+  ),
+  flame: <path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1.5.6-2.7 1.3-3.6.2 1 .9 1.8 1.7 1.8 1 0 1.5-.8 1.3-2.4C11.2 5.6 12 3.6 12 2z" />,
+  eye: (
+    <>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  eyeOff: (
+    <>
+      <path d="M9.9 5.2A9.5 9.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.6M6.1 6.1A17 17 0 0 0 2 12s3.5 7 10 7a9.5 9.5 0 0 0 3.3-.6" />
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </>
+  ),
+  timer: (
+    <>
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2.5 2.5M9 2h6" />
+    </>
+  ),
+  eraser: (
+    <>
+      <path d="M14.5 3.5a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L11 19H6l-2.5-2.5a2 2 0 0 1 0-2.8L14.5 3.5z" />
+      <path d="M8.5 9.5l6 6" />
+    </>
+  ),
+  undo: (
+    <>
+      <path d="M9 14L4 9l5-5" />
+      <path d="M4 9h10a6 6 0 0 1 0 12h-3" />
+    </>
+  ),
+  reply: <path d="M9 17l-5-5 5-5M4 12h11a5 5 0 0 1 5 5v2" />,
+  gif: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="3" />
+      <path d="M9 10.5a2.2 2.2 0 1 0 0 3h.6V12M13 9.5v5M16 9.5h3M16 12h2.4" />
+    </>
+  ),
+  settings: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H2.5a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V2.5a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1h.3a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z" />
+    </>
+  ),
+  music: (
+    <>
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3" y="4" width="18" height="18" rx="2.5" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
+    </>
+  ),
+  list: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />,
+  check: <path d="M20 6L9 17l-5-5" />,
+  smile: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <path d="M9 9h.01M15 9h.01" />
+    </>
+  ),
+};

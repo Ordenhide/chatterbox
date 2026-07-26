@@ -212,6 +212,8 @@
       "blockedChat": "You cannot start a chat with this user.",
       "requestSentTitle": "Request sent",
       "requestSentBody": "Friend request has been sent.",
+      "alreadyFriendsBody": "You're already friends with this person.",
+      "alreadyPendingBody": "A request with this person is already pending.",
       "userNotFoundTitle": "User not found",
       "userNotFoundBody": "No account matches that email.",
       "sendFailedTitle": "Error",
@@ -233,6 +235,19 @@
     "defaultVisibilityDescription": "Sets the default audience when you create a new moment.",
     "languageTitle": "Language",
     "languageDescription": "Choose your preferred language.",
+    "voiceDiaryTitle": "Voice Diary",
+    "voiceDiaryDescription": "Record a short audio clip as your status. Friends can listen to it.",
+    "recordVoiceDiary": "Record Voice Diary",
+    "voiceDiaryStop": "Stop",
+    "voiceDiaryPlay": "Play ({{seconds}}s)",
+    "voiceDiaryRemove": "Remove",
+    "voiceDiaryModalDescription": "Record a short audio message (max 15s) that friends can listen to on your profile.",
+    "voiceDiaryRecordButton": "Record",
+    "voiceDiarySave": "Save",
+    "shortcutsTitle": "Shortcuts",
+    "shortcutSaved": "Saved",
+    "shortcutMemories": "Memories",
+    "shortcutPrivacy": "Privacy",
     "buttons": {
       "feedback": "Send Feedback",
       "export": "Export Backup",
@@ -296,6 +311,20 @@
   "chatMedia": {
     "seconds": "{{count}}s"
   },
+  "chat": {
+    "isTyping": "{{name}} is typing...",
+    "search": "Search",
+    "done": "Done",
+    "more": "More",
+    "attach": "Attach",
+    "composerPlaceholder": "Type a message...",
+    "replyPreview": {
+      "photo": "[Photo]",
+      "video": "[Video]",
+      "voiceMessage": "[Voice Message]",
+      "file": "[File]"
+    }
+  },
   "chatSettings": {
     "notifications": "Notifications",
     "theme": "Theme",
@@ -355,6 +384,58 @@
       "1m": "1m",
       "5m": "5m"
     }
+  },
+  "smartReply": {
+    "thumbsUp": "👍",
+    "soundsGood": "Sounds good!",
+    "gotIt": "Got it",
+    "yes": "Yes!",
+    "notSure": "Not sure",
+    "letMeThink": "Let me think about it",
+    "hey": "Hey!",
+    "whatsUp": "What's up?",
+    "howAreYou": "How are you?",
+    "youreWelcome": "You're welcome!",
+    "noProblem": "No problem!",
+    "anytime": "Anytime!",
+    "noWorries": "No worries!",
+    "itsAllGood": "It's all good",
+    "dontWorry": "Don't worry about it",
+    "laughEmoji": "😂",
+    "hilarious": "That's hilarious",
+    "cantEven": "I can't 😂",
+    "imIn": "I'm in!",
+    "whatAreYouThinking": "What are you thinking?",
+    "worksForMe": "Works for me",
+    "letMeCheck": "Let me check",
+    "whatTime": "What time?"
+  },
+  "tutorial": {
+    "welcomeTitle": "Welcome to Chatterbox",
+    "welcomeBody": "Let's take a quick tour of the essentials — it only takes a few taps.",
+    "chatsTitle": "Your chats",
+    "chatsBody": "All your conversations live in the Chats tab. Unread messages show a badge there.",
+    "newChatTitle": "Start a chat",
+    "newChatBody": "Tap the + in Chats to find a friend and start a new conversation.",
+    "composerTitle": "Say more than words",
+    "composerBody": "In a chat you can send photos, files, voice notes and GIFs, reply or @mention, and even schedule a message for later.",
+    "spacesTitle": "Shared spaces",
+    "spacesBody": "Open a chat's menu for the whiteboard, shared playlist, countdowns, media gallery, and collaborative lists.",
+    "callsTitle": "Voice & video calls",
+    "callsBody": "Call anyone right from the chat — one tap for voice, one for video.",
+    "momentsTitle": "Moments",
+    "momentsBody": "Share photos and updates with your friends, and see what they post.",
+    "profileTitle": "You & settings",
+    "profileBody": "Set your name, theme, language and privacy here — and replay this tour anytime.",
+    "doneTitle": "You're all set!",
+    "doneBody": "That's the tour. You can replay it whenever you like from your profile.",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "Got it",
+    "settingsTitle": "Tutorial",
+    "settingsDescription": "New here? Take the guided tour of Chatterbox.",
+    "replay": "Replay tutorial"
   }
 }
 

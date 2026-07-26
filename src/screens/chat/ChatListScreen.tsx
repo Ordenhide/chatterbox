@@ -29,6 +29,7 @@ import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
 import {isDecoyMode} from '../../services/appLock';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
 type ChatListItemProps = {
   id: string;
@@ -337,7 +338,7 @@ export default function ChatListScreen() {
   };
 
   const filteredChats = useMemo(() => {
-    if (isDecoyMode()) return [];
+    if (SHOW_NATIVE_ONLY_FEATURES && isDecoyMode()) return [];
     if (!searchQuery.trim()) return chats;
     const query = searchQuery.toLowerCase();
     return chats.filter(chat => (chat.displayName || '').toLowerCase().includes(query));
@@ -409,6 +410,10 @@ export default function ChatListScreen() {
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         renderItem={({item}) => (
           <ChatListItem
             id={item.id}

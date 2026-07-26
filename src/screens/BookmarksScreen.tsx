@@ -7,6 +7,7 @@ import {
   Alert,
   useColorScheme,
   FlatList,
+  Platform,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors} from '../theme/colors';
@@ -95,7 +96,6 @@ export default function BookmarksScreen() {
     <GlassScreen style={styles.container}>
       {bookmarks.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>{'🔖'}</Text>
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             No bookmarks yet
           </Text>
@@ -110,6 +110,10 @@ export default function BookmarksScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={7}
+          removeClippedSubviews={Platform.OS === 'android'}
         />
       )}
     </GlassScreen>
@@ -165,10 +169,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: 16,
   },
   emptyText: {
     fontSize: 18,

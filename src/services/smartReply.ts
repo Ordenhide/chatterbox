@@ -1,37 +1,45 @@
+import i18n from '../i18n';
+
 export function getSmartReplies(
   recentMessages: Array<{text: string; isOutgoing: boolean}>,
 ): string[] {
+  const t = i18n.t.bind(i18n);
+  const defaults = () => [t('smartReply.thumbsUp'), t('smartReply.soundsGood'), t('smartReply.gotIt')];
+
   const recent = recentMessages.slice(-3);
   const lastIncoming = [...recent].reverse().find(m => !m.isOutgoing);
-  if (!lastIncoming) return ['👍', 'Sounds good!', 'Got it'];
+  if (!lastIncoming) return defaults();
 
   const text = lastIncoming.text.toLowerCase();
   const suggestions: string[] = [];
 
+  // Keyword detection below only matches English words, so these
+  // context-aware suggestions mainly trigger for English conversations;
+  // other languages fall back to the (localized) defaults.
   if (text.includes('?')) {
-    suggestions.push('Yes!', 'Not sure', 'Let me think about it');
+    suggestions.push(t('smartReply.yes'), t('smartReply.notSure'), t('smartReply.letMeThink'));
   }
   if (/\b(hi|hey|hello|morning|evening)\b/.test(text)) {
-    suggestions.push('Hey!', "What's up?", 'How are you?');
+    suggestions.push(t('smartReply.hey'), t('smartReply.whatsUp'), t('smartReply.howAreYou'));
   }
   if (/\b(thanks?|thank)\b/.test(text)) {
-    suggestions.push("You're welcome!", 'No problem!', 'Anytime!');
+    suggestions.push(t('smartReply.youreWelcome'), t('smartReply.noProblem'), t('smartReply.anytime'));
   }
   if (/\bsorry\b/.test(text)) {
-    suggestions.push('No worries!', "It's all good", "Don't worry about it");
+    suggestions.push(t('smartReply.noWorries'), t('smartReply.itsAllGood'), t('smartReply.dontWorry'));
   }
   if (/\b(lol|haha|funny)\b/.test(text)) {
-    suggestions.push('😂', "That's hilarious", "I can't 😂");
+    suggestions.push(t('smartReply.laughEmoji'), t('smartReply.hilarious'), t('smartReply.cantEven'));
   }
   if (/\b(food|eat|dinner|lunch)\b/.test(text)) {
-    suggestions.push('Sounds good!', "I'm in!", 'What are you thinking?');
+    suggestions.push(t('smartReply.soundsGood'), t('smartReply.imIn'), t('smartReply.whatAreYouThinking'));
   }
   if (/\b(time|when|tomorrow)\b/.test(text)) {
-    suggestions.push('Works for me', 'Let me check', 'What time?');
+    suggestions.push(t('smartReply.worksForMe'), t('smartReply.letMeCheck'), t('smartReply.whatTime'));
   }
 
   if (suggestions.length === 0) {
-    return ['👍', 'Sounds good!', 'Got it'];
+    return defaults();
   }
 
   const unique = [...new Set(suggestions)];

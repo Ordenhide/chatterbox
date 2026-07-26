@@ -1,0 +1,2256 @@
+import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {avatarColor, colors} from '../theme';
+import {
+  burnMessage,
+  deleteChat,
+  deleteMessage,
+  deleteMessages,
+  editMessage,
+  EXPIRY_OPTIONS,
+  fetchOlderMessages,
+  getInitialUnread,
+  listenChat,
+  listenMessages,
+  markChatRead,
+  markViewOnceViewed,
+  revealBurnMessage,
+  sendMessage,
+  setChatExpiryPolicy,
+  setTyping,
+  sweepExpiredMessages,
+  toggleMuteChat,
+  togglePinChat,
+  togglePinMessage,
+  toggleReaction,
+  type MessageCursor,
+} from '../services/chat';
+import {uploadChatBlob, uploadChatFile, uploadChatImage} from '../services/storage';
+import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
+import {addBookmark} from '../services/bookmarks';
+import {summarizeChat, transcribeVoiceMessage, translateMessage} from '../services/ai';
+import {getDraft, setDraft} from '../services/drafts';
+import {
+  cancelScheduledMessage,
+  deliverDueScheduledMessages,
+  listenScheduledMessages,
+  scheduleMessage,
+  type ScheduledMessage,
+} from '../services/scheduledMessages';
+import type {GifResult} from '../services/gifSearch';
+import {getSmartReplies} from '../services/smartReply';
+import {createReminder} from '../services/reminders';
+import {useCall} from '../call/CallProvider';
+import {useToast} from '../context/ToastContext';
+import {useLightbox} from '../context/LightboxContext';
+import {useT, type TKey} from '../i18n';
+import {cycleBurnDuration, formatBurnDuration} from '../utils/ephemeral';
+import LinkPreviewCard from './LinkPreviewCard';
+import Icon from './Icon';
+import AudioMessage from './AudioMessage';
+import WhiteboardModal from './WhiteboardModal';
+import GifPicker from './GifPicker';
+import ChatSettingsModal from './ChatSettingsModal';
+import ChatMediaModal from './ChatMediaModal';
+import PlaylistModal from './PlaylistModal';
+import CountdownModal from './CountdownModal';
+import SharedListsModal from './SharedListsModal';
+import type {ChatMessage, ChatRoom, Reminder} from '../types';
+
+const QUICK_EMOJI = ['👍', '❤️', '😂', '🎉', '🔥'];
+const TYPING_WINDOW_MS = 6000;
+const GROUP_WINDOW_MS = 5 * 60 * 1000; // consecutive-message grouping window
+const URL_RE = /(https?:\/\/[^\s]+)/i;
+const TRANSLATE_TO = (navigator.language || 'en').split('-')[0];
+
+export default function ChatPane({
+  chatId,
+  title,
+  me,
+  onDeleted,
+  onBack,
+}: {
+  chatId: string;
+  title: string;
+  me: {uid: string; name: string};
+  onDeleted: () => void;
+  onBack?: () => void;
+}) {
+  const {t} = useT();
+  const toast = useToast();
+  const lightbox = useLightbox();
+  const {startCall} = useCall();
+
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chat, setChat] = useState<ChatRoom | null>(null);
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [activeMsg, setActiveMsg] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [summarizing, setSummarizing] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [recSecs, setRecSecs] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [atBottom, setAtBottom] = useState(true);
+  const [newCount, setNewCount] = useState(0);
+  const [unreadAtOpen, setUnreadAtOpen] = useState(0);
+  const [editing, setEditing] = useState<{id: string; text: string} | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [otherLastActive, setOtherLastActive] = useState<number | null>(null);
+  const [burnMode, setBurnMode] = useState(false);
+  const [burnDuration, setBurnDuration] = useState(10);
+  const [viewOnceMode, setViewOnceMode] = useState(false);
+  const [expiryOpen, setExpiryOpen] = useState(false);
+  const [whiteboardOpen, setWhiteboardOpen] = useState(false);
+  const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
+  const [replyTarget, setReplyTarget] = useState<ChatMessage | null>(null);
+  const [gifOpen, setGifOpen] = useState(false);
+  const [transcribing, setTranscribing] = useState<Set<string>>(new Set());
+  const [scheduled, setScheduled] = useState<ScheduledMessage[]>([]);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [scheduleAt, setScheduleAt] = useState('');
+  const [showScheduled, setShowScheduled] = useState(false);
+  const [mention, setMention] = useState<{query: string; start: number} | null>(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [reactionOpen, setReactionOpen] = useState<string | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
+  const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [countdownOpen, setCountdownOpen] = useState(false);
+  const [listsOpen, setListsOpen] = useState(false);
+  const [reminderFor, setReminderFor] = useState<ChatMessage | null>(null);
+  const [reminderAt, setReminderAt] = useState('');
+  const draftLoadedRef = useRef(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recChunksRef = useRef<Blob[]>([]);
+  const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recStartRef = useRef<number>(0);
+
+  const cursorRef = useRef<MessageCursor | null>(null);
+  const hasPagedRef = useRef(false);
+  const hasMoreRef = useRef(false);
+  const loadingOlderRef = useRef(false);
+  const atBottomRef = useRef(true);
+  const lastSeenIdRef = useRef<string | null>(null);
+  const prependAdjustRef = useRef<number | null>(null);
+  const burnTimersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
+
+  // ---- Subscribe to messages + chat doc; reset paging on chat switch --------
+  useEffect(() => {
+    setMessages([]);
+    setHasMore(false);
+    setNewCount(0);
+    setAtBottom(true);
+    setUnreadAtOpen(0);
+    setReplyTarget(null);
+    setMention(null);
+    cursorRef.current = null;
+    hasPagedRef.current = false;
+    hasMoreRef.current = false;
+    atBottomRef.current = true;
+    lastSeenIdRef.current = null;
+    prependAdjustRef.current = null;
+
+    // Restore any saved draft for this chat.
+    draftLoadedRef.current = false;
+    setText(getDraft(me.uid, chatId));
+    draftLoadedRef.current = true;
+
+    getInitialUnread(chatId, me.uid).then(setUnreadAtOpen);
+
+    const unsubMsgs = listenMessages(chatId, (liveMsgs, oldest, maybeMore) => {
+      const liveChrono = [...liveMsgs].reverse(); // service returns newest-first
+      // Boundary = oldest *resolved* time in the live window; ignore pending
+      // (just-sent) messages, which belong at the newest end, not the oldest.
+      const resolved = liveChrono
+        .map(m => m.createdAt?.toMillis?.())
+        .filter((x): x is number => typeof x === 'number');
+      const liveOldestMs = resolved.length ? Math.min(...resolved) : 0;
+      setMessages(prev => {
+        const older = prev.filter(m => (m.createdAt?.toMillis?.() ?? Infinity) < liveOldestMs);
+        const map = new Map<string, ChatMessage>();
+        for (const m of [...older, ...liveChrono]) map.set(m._id, m);
+        return sortByTime(Array.from(map.values()));
+      });
+      if (!hasPagedRef.current) {
+        cursorRef.current = oldest;
+        hasMoreRef.current = maybeMore;
+        setHasMore(maybeMore);
+      }
+    });
+    const unsubChat = listenChat(chatId, setChat);
+    markChatRead(chatId, me.uid).catch(() => undefined);
+    return () => {
+      unsubMsgs();
+      unsubChat();
+    };
+  }, [chatId, me.uid]);
+
+  // ---- Scroll management: pin to bottom / restore on prepend / new badge -----
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (prependAdjustRef.current != null) {
+      el.scrollTop = el.scrollHeight - prependAdjustRef.current;
+      prependAdjustRef.current = null;
+      return;
+    }
+    const lastId = messages[messages.length - 1]?._id;
+    if (lastId && lastId !== lastSeenIdRef.current) {
+      const mine = messages[messages.length - 1]?.user?._id === me.uid;
+      if (atBottomRef.current || mine) {
+        endRef.current?.scrollIntoView({block: 'end'});
+        setNewCount(0);
+      } else {
+        setNewCount(c => c + 1);
+      }
+      lastSeenIdRef.current = lastId;
+    }
+  }, [messages, me.uid]);
+
+  useEffect(() => {
+    markChatRead(chatId, me.uid).catch(() => undefined);
+  }, [messages, chatId, me.uid]);
+
+  // Persist the composer draft (debounced) so it survives reloads / tab close.
+  useEffect(() => {
+    if (!draftLoadedRef.current || editing) return;
+    const id = setTimeout(() => setDraft(me.uid, chatId, text), 400);
+    return () => clearTimeout(id);
+  }, [text, chatId, me.uid, editing]);
+
+  // Live list of this chat's pending scheduled messages (for the composer UI).
+  // Actual *delivery* runs globally in CallProvider so it isn't tied to this chat
+  // being open — but sweep once on open too for immediacy.
+  useEffect(() => {
+    deliverDueScheduledMessages(chatId, me.uid).catch(() => undefined);
+    return listenScheduledMessages(chatId, setScheduled);
+  }, [chatId, me.uid]);
+
+  const loadOlder = useCallback(async () => {
+    if (loadingOlderRef.current || !hasMoreRef.current || !cursorRef.current) return;
+    loadingOlderRef.current = true;
+    setLoadingOlder(true);
+    const el = scrollRef.current;
+    prependAdjustRef.current = el ? el.scrollHeight - el.scrollTop : null;
+    try {
+      const {messages: older, oldest, maybeMore} = await fetchOlderMessages(chatId, cursorRef.current);
+      hasPagedRef.current = true;
+      if (oldest) cursorRef.current = oldest;
+      hasMoreRef.current = maybeMore;
+      setHasMore(maybeMore);
+      if (older.length) {
+        const olderChrono = [...older].reverse();
+        setMessages(prev => {
+          const map = new Map<string, ChatMessage>();
+          for (const m of [...olderChrono, ...prev]) if (!map.has(m._id)) map.set(m._id, m);
+          return sortByTime(Array.from(map.values()));
+        });
+      } else {
+        prependAdjustRef.current = null;
+      }
+    } catch (err) {
+      console.warn('loadOlder failed:', err);
+      prependAdjustRef.current = null;
+    } finally {
+      loadingOlderRef.current = false;
+      setLoadingOlder(false);
+    }
+  }, [chatId]);
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 90;
+    atBottomRef.current = nearBottom;
+    setAtBottom(nearBottom);
+    if (nearBottom) setNewCount(0);
+    if (el.scrollTop < 80) loadOlder();
+  };
+
+  const jumpToLatest = () => {
+    endRef.current?.scrollIntoView({behavior: 'smooth', block: 'end'});
+    setNewCount(0);
+  };
+
+  // ---- Ephemeral: burn-after-reading countdowns -----------------------------
+  const startBurnCountdown = useCallback(
+    (messageId: string, duration: number, startedAt: number) => {
+      const key = String(messageId);
+      if (burnTimersRef.current[key]) return;
+      const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+      const remaining = Math.max(0, duration - elapsed);
+      if (remaining <= 0) {
+        burnMessage(chatId, key).catch(() => undefined);
+        return;
+      }
+      setBurnCountdowns(prev => ({...prev, [key]: remaining}));
+      burnTimersRef.current[key] = setInterval(() => {
+        setBurnCountdowns(prev => {
+          const left = (prev[key] ?? remaining) - 1;
+          if (left <= 0) {
+            clearInterval(burnTimersRef.current[key]);
+            delete burnTimersRef.current[key];
+            burnMessage(chatId, key).catch(() => undefined);
+            const {[key]: _removed, ...rest} = prev;
+            return rest;
+          }
+          return {...prev, [key]: left};
+        });
+      }, 1000);
+    },
+    [chatId],
+  );
+
+  // Resume countdowns for any already-revealed (but not burned) burn messages —
+  // covers both the recipient and the sender, and reloads mid-countdown.
+  useEffect(() => {
+    messages.forEach(m => {
+      const burn = m.burnAfterReading;
+      if (!burn?.burnStartedAt || burn.burned) return;
+      if (burnTimersRef.current[m._id]) return;
+      startBurnCountdown(m._id, burn.duration, burn.burnStartedAt);
+    });
+  }, [messages, startBurnCountdown]);
+
+  // Clear all burn timers when leaving the chat / unmounting.
+  useEffect(() => {
+    const timers = burnTimersRef.current;
+    return () => {
+      Object.values(timers).forEach(clearInterval);
+      burnTimersRef.current = {};
+    };
+  }, [chatId]);
+
+  const revealBurn = async (m: ChatMessage) => {
+    const burn = m.burnAfterReading;
+    if (!burn || burn.burnStartedAt || burn.burned) return;
+    const now = Date.now();
+    try {
+      await revealBurnMessage(chatId, m._id, {duration: burn.duration});
+      startBurnCountdown(m._id, burn.duration, now);
+    } catch {
+      // stays hidden on failure
+    }
+  };
+
+  const openViewOnce = (m: ChatMessage) => {
+    if (!m.image) return;
+    lightbox.open(m.image);
+    if (m.user?._id !== me.uid) markViewOnceViewed(chatId, m._id, me.uid).catch(() => undefined);
+  };
+
+  // ---- Disappearing messages: sweep on policy + interval --------------------
+  // Only messages sent after the policy was enabled (messageExpirySince) are
+  // eligible, so enabling it never deletes existing history.
+  const expiryHours = chat?.messageExpiry || 0;
+  const expirySince = chat?.messageExpirySince || 0;
+  useEffect(() => {
+    if (!expiryHours || !expirySince) return;
+    sweepExpiredMessages(chatId, expiryHours, expirySince).catch(() => undefined);
+    const id = setInterval(
+      () => sweepExpiredMessages(chatId, expiryHours, expirySince).catch(() => undefined),
+      60_000,
+    );
+    return () => clearInterval(id);
+  }, [chatId, expiryHours, expirySince]);
+
+  // ---- Derived --------------------------------------------------------------
+  const otherUid = chat?.participants.find(p => p !== me.uid);
+
+  // Presence of the other participant (heartbeat-based).
+  useEffect(() => {
+    if (!otherUid) {
+      setOtherLastActive(null);
+      return;
+    }
+    return listenPresence(otherUid, setOtherLastActive);
+  }, [otherUid]);
+
+  const presenceText =
+    otherLastActive == null
+      ? ''
+      : Date.now() - otherLastActive < ONLINE_WINDOW_MS
+      ? t('chat.online')
+      : `${t('chat.lastSeen')} ${formatRelative(otherLastActive, t)}`;
+
+  const otherTypingTs = otherUid ? chat?.typingBy?.[otherUid] || 0 : 0;
+  const otherTyping = otherTypingTs > Date.now() - TYPING_WINDOW_MS;
+  const isPinned = !!chat?.pinnedBy?.includes(me.uid);
+  const isMuted = !!chat?.mutedBy?.includes(me.uid);
+  const pinnedIds = chat?.pinnedMessageIds || [];
+  const latestPinnedId = pinnedIds[pinnedIds.length - 1];
+  const latestPinned = latestPinnedId ? messages.find(m => m._id === latestPinnedId) : null;
+
+  const myLastMsg = [...messages].reverse().find(m => m.user?._id === me.uid);
+  const otherRead = otherUid ? chat?.lastReadAt?.[otherUid] || 0 : 0;
+  const seen = !!myLastMsg && !!myLastMsg.createdAt && myLastMsg.createdAt.toMillis() <= otherRead;
+  // "Seen 3:42 PM" — the read-receipt timestamp is when the other side last
+  // marked the chat read (lastReadAt), matching the mobile read-receipt data.
+  const seenAt =
+    seen && otherRead
+      ? new Date(otherRead).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+      : '';
+
+  // Per-user chat appearance (Chat settings).
+  const themeColor = chat?.themeBy?.[me.uid] || colors.primary;
+  const wallpaper = chat?.wallpaperBy?.[me.uid] || null;
+
+  // Suggested quick replies: shown when the composer is empty and the other
+  // person spoke last (so you can one-tap a response). English-keyword heuristic.
+  const lastMsg = messages[messages.length - 1];
+  const showSmartReplies =
+    !text.trim() && !editing && !recording && !!lastMsg && lastMsg.user?._id !== me.uid && !lastMsg.system;
+  const smartReplies = showSmartReplies
+    ? getSmartReplies(
+        messages.slice(-3).map(m => ({text: m.text || '', isOutgoing: m.user?._id === me.uid})),
+        t,
+      )
+    : [];
+
+  const searching = search !== null && search.trim() !== '';
+  const shownMessages = searching
+    ? messages.filter(m => (m.text || '').toLowerCase().includes(search!.trim().toLowerCase()))
+    : messages;
+
+  // First unread message id (for the "new messages" divider), hidden while searching.
+  const firstUnreadId =
+    !searching && unreadAtOpen > 0 && messages.length >= unreadAtOpen
+      ? messages[messages.length - unreadAtOpen]?._id
+      : null;
+  const firstUnreadIsMine =
+    firstUnreadId && messages.find(m => m._id === firstUnreadId)?.user?._id === me.uid;
+
+  // Participants you can @mention (everyone but yourself). 1:1 → just the other.
+  const mentionCandidates: {name: string; uid: string}[] = otherUid ? [{name: title, uid: otherUid}] : [];
+  const mentionNames = [me.name, ...mentionCandidates.map(c => c.name)].filter(Boolean);
+  const computeMentions = (txt: string) =>
+    mentionCandidates.filter(c => txt.includes(`@${c.name}`)).map(c => c.uid);
+
+  // ---- Sending / editing ----------------------------------------------------
+  const send = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editing) return saveEdit();
+    const trimmed = text.trim();
+    if (!trimmed || sending) return;
+    const reply = replyTarget ? buildReplyTo(replyTarget) : undefined;
+    const mentions = computeMentions(trimmed);
+    setText('');
+    setReplyTarget(null);
+    setMention(null);
+    setTyping(chatId, me.uid, false);
+    setDraft(me.uid, chatId, '');
+    setSending(true);
+    try {
+      await sendMessage(
+        chatId,
+        {
+          text: trimmed,
+          ...(burnMode ? {burnAfterReading: {duration: burnDuration}} : {}),
+          ...(reply ? {replyTo: reply} : {}),
+          ...(mentions.length ? {mentions} : {}),
+        },
+        me,
+      );
+    } catch (err) {
+      console.warn('send failed:', err);
+      setText(trimmed);
+      setReplyTarget(replyTarget);
+      toast.error(t('chat.sendFailed'));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const saveEdit = async () => {
+    if (!editing) return;
+    const trimmed = editing.text.trim();
+    if (!trimmed) return;
+    try {
+      await editMessage(chatId, editing.id, trimmed);
+    } catch (err) {
+      console.warn('edit failed:', err);
+      toast.error(t('chat.sendFailed'));
+    } finally {
+      setEditing(null);
+    }
+  };
+
+  const startEdit = (m: ChatMessage) => {
+    setEditing({id: m._id, text: m.text || ''});
+    setActiveMsg(null);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const onInput = (v: string) => {
+    if (editing) {
+      setEditing({...editing, text: v});
+      return;
+    }
+    setText(v);
+    setTyping(chatId, me.uid, v.length > 0);
+    // Mention autocomplete: trigger while typing "@partial" at the end.
+    const mm = /(?:^|\s)@(\S*)$/.exec(v);
+    setMention(mm && mentionCandidates.length ? {query: mm[1].toLowerCase(), start: mm.index} : null);
+  };
+
+  const pickMention = (c: {name: string; uid: string}) => {
+    const at = text.lastIndexOf('@');
+    if (at < 0) return;
+    setText(`${text.slice(0, at)}@${c.name} `);
+    setMention(null);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const mentionMatches = mention
+    ? mentionCandidates.filter(c => c.name.toLowerCase().includes(mention.query))
+    : [];
+
+  // Auto-grow the composer/edit textarea to fit its content (capped by CSS).
+  useLayoutEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [text, editing]);
+
+  // Enter sends; Shift+Enter inserts a newline. Never send mid-IME-composition
+  // (important for Pinyin/CJK input, where Enter confirms a candidate).
+  const onComposerKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
+  };
+
+  const saveBookmark = (m: ChatMessage) => {
+    addBookmark(me.uid, {
+      chatId,
+      messageId: m._id,
+      text: m.text || '',
+      senderId: m.user?._id || '',
+      senderName: m.user?.name || '',
+    })
+      .then(() => toast.success(t('chat.save')))
+      .catch(() => undefined);
+    setActiveMsg(null);
+  };
+
+  const onGifPick = async (g: GifResult) => {
+    setGifOpen(false);
+    const reply = replyTarget ? buildReplyTo(replyTarget) : undefined;
+    setReplyTarget(null);
+    try {
+      await sendMessage(
+        chatId,
+        {
+          gif: {
+            url: g.url,
+            previewUrl: g.previewUrl,
+            mp4Url: g.mp4Url,
+            mp4PreviewUrl: g.mp4PreviewUrl,
+            width: g.width,
+            height: g.height,
+          },
+          ...(reply ? {replyTo: reply} : {}),
+        },
+        me,
+      );
+    } catch {
+      toast.error(t('chat.sendFailed'));
+    }
+  };
+
+  const onTogglePin = (m: ChatMessage) => {
+    togglePinMessage(chatId, m._id).catch(() => undefined);
+    setActiveMsg(null);
+  };
+
+  const onTranscribe = async (m: ChatMessage) => {
+    setActiveMsg(null);
+    if (m.transcription || transcribing.has(m._id)) return;
+    setTranscribing(prev => new Set(prev).add(m._id));
+    try {
+      await transcribeVoiceMessage(chatId, m._id); // writes onto the message → arrives via listener
+    } catch {
+      toast.error(t('chat.transcribeFailed'));
+    } finally {
+      setTranscribing(prev => {
+        const n = new Set(prev);
+        n.delete(m._id);
+        return n;
+      });
+    }
+  };
+
+  const scrollToMessage = (id: string) => {
+    scrollRef.current?.querySelector(`[data-mid="${id}"]`)?.scrollIntoView({behavior: 'smooth', block: 'center'});
+  };
+
+  const doSchedule = async () => {
+    const at = scheduleAt ? new Date(scheduleAt).getTime() : 0;
+    const trimmed = text.trim();
+    if (!trimmed || !at || at <= Date.now()) return;
+    try {
+      await scheduleMessage(chatId, trimmed, at, me);
+      setText('');
+      setDraft(me.uid, chatId, '');
+      setScheduleOpen(false);
+      setScheduleAt('');
+      toast.success(t('chat.scheduledCount'));
+    } catch {
+      toast.error(t('chat.sendFailed'));
+    }
+  };
+
+  // Create a reminder for the selected message at the chosen time.
+  const doRemind = async () => {
+    if (!reminderFor || !reminderAt) return;
+    const remindAt = new Date(reminderAt).getTime();
+    if (remindAt <= Date.now()) {
+      toast.error(t('reminder.future'));
+      return;
+    }
+    const raw = reminderFor.text || (reminderFor.gif ? '[GIF]' : reminderFor.image ? '[Photo]' : '');
+    const preview = raw ? raw.slice(0, 80) : t('reminder.default');
+    const reminder: Reminder = {
+      id: `${chatId}_${reminderFor._id}_${remindAt}`,
+      userId: me.uid,
+      chatId,
+      messageId: reminderFor._id,
+      messagePreview: preview,
+      remindAt,
+      createdAt: Date.now(),
+      sent: false,
+    };
+    try {
+      await createReminder(me.uid, reminder);
+      toast.success(t('reminder.set'));
+    } catch {
+      toast.error(t('common.error'));
+    }
+    setReminderFor(null);
+    setReminderAt('');
+  };
+
+  const confirmDelete = async () => {
+    if (!window.confirm(t('chat.confirmDelete'))) return;
+    await deleteChat(chatId);
+    onDeleted();
+  };
+
+  // ---- Multi-select delete --------------------------------------------------
+  const enterSelect = (firstId?: string) => {
+    setActiveMsg(null);
+    setMenuOpen(false);
+    setSelected(firstId ? new Set([firstId]) : new Set());
+    setSelectMode(true);
+  };
+  const exitSelect = () => {
+    setSelectMode(false);
+    setSelected(new Set());
+  };
+  const toggleSelect = (id: string) =>
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const deleteSelected = async () => {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    if (!window.confirm(t('chat.confirmDeleteSelected'))) return;
+    try {
+      await deleteMessages(chatId, ids);
+      toast.success(t('chat.deletedCount'));
+    } catch {
+      toast.error(t('common.error'));
+    }
+    exitSelect();
+  };
+
+  const doSummarize = async () => {
+    setMenuOpen(false);
+    setSummarizing(true);
+    setSummary('');
+    try {
+      setSummary(await summarizeChat(chatId));
+    } catch {
+      setSummary(t('chat.summaryFailed'));
+    } finally {
+      setSummarizing(false);
+    }
+  };
+
+  const doTranslate = async (m: ChatMessage) => {
+    setActiveMsg(null);
+    if (translations[m._id]) return;
+    try {
+      const tr = await translateMessage(chatId, m._id, TRANSLATE_TO);
+      setTranslations(prev => ({...prev, [m._id]: tr}));
+    } catch {
+      setTranslations(prev => ({...prev, [m._id]: '(translation unavailable)'}));
+    }
+  };
+
+  const startVoice = () => otherUid && startCall(chatId, otherUid, title, 'voice');
+  const startVideo = () => otherUid && startCall(chatId, otherUid, title, 'video');
+
+  // ---- Uploads (button / drag / paste) --------------------------------------
+  const uploadAndSend = async (file: File, kind: 'image' | 'file' | 'auto') => {
+    const asImage = kind === 'image' || (kind === 'auto' && file.type.startsWith('image/'));
+    const burn = burnMode ? {burnAfterReading: {duration: burnDuration}} : {};
+    setUploadPct(0);
+    try {
+      if (asImage) {
+        const url = await uploadChatImage(chatId, file, setUploadPct);
+        await sendMessage(chatId, {image: url, ...(viewOnceMode ? {viewOnce: true} : {}), ...burn}, me);
+        if (viewOnceMode) setViewOnceMode(false); // one-shot, like mobile
+      } else {
+        const url = await uploadChatFile(chatId, file, setUploadPct);
+        await sendMessage(chatId, {file: {uri: url, name: file.name, size: file.size}, ...burn}, me);
+      }
+    } catch (err) {
+      console.warn('upload failed:', err);
+      toast.error(t('chat.uploadFailed'));
+    } finally {
+      setUploadPct(null);
+    }
+  };
+
+  const onImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) uploadAndSend(file, 'image');
+  };
+  const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) uploadAndSend(file, 'file');
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file && uploadPct === null) uploadAndSend(file, 'auto');
+  };
+  const onDragOver = (e: React.DragEvent) => {
+    if (e.dataTransfer?.types?.includes('Files')) {
+      e.preventDefault();
+      if (!dragging) setDragging(true);
+    }
+  };
+  const onDragLeave = (e: React.DragEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragging(false);
+  };
+  const onPaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const it of items) {
+      if (it.type.startsWith('image/')) {
+        const f = it.getAsFile();
+        if (f && uploadPct === null) {
+          e.preventDefault();
+          uploadAndSend(f, 'image');
+          return;
+        }
+      }
+    }
+  };
+
+  // ---- Voice recording ------------------------------------------------------
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+      recChunksRef.current = [];
+      recorder.ondataavailable = ev => ev.data.size && recChunksRef.current.push(ev.data);
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(tr => tr.stop());
+        const secs = Math.max(1, Math.round((Date.now() - recStartRef.current) / 1000));
+        const blob = new Blob(recChunksRef.current, {type: 'audio/webm'});
+        if (blob.size > 0) {
+          setUploadPct(0);
+          try {
+            const url = await uploadChatBlob(chatId, blob, 'webm', setUploadPct);
+            await sendMessage(
+              chatId,
+              {audio: url, audioDuration: secs, ...(burnMode ? {burnAfterReading: {duration: burnDuration}} : {})},
+              me,
+            );
+          } catch (err) {
+            console.warn('voice upload failed:', err);
+            toast.error(t('chat.uploadFailed'));
+          } finally {
+            setUploadPct(null);
+          }
+        }
+      };
+      recorder.start();
+      recStartRef.current = Date.now();
+      setRecording(true);
+      setRecSecs(0);
+      recTimerRef.current = setInterval(() => setRecSecs(s => s + 1), 1000);
+    } catch {
+      toast.error(t('chat.micDenied'));
+    }
+  };
+
+  const stopRecording = (doSend: boolean) => {
+    if (recTimerRef.current) clearInterval(recTimerRef.current);
+    setRecording(false);
+    const recorder = recorderRef.current;
+    if (!recorder) return;
+    if (!doSend) recChunksRef.current = [];
+    recorder.stop();
+    recorderRef.current = null;
+  };
+
+  // ---- Render ---------------------------------------------------------------
+  return (
+    <div style={styles.pane} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
+      {dragging && <div className="drop-hint">{t('chat.dropToSend')}</div>}
+
+      <header style={styles.header}>
+        <div style={styles.headerLeft}>
+          {onBack && (
+            <button style={styles.backBtn} onClick={onBack} title="Back">
+              <Icon name="back" size={22} strokeWidth={2.2} />
+            </button>
+          )}
+          <div style={styles.headerTitleCol}>
+            <span style={styles.headerTitle}>
+              {title}
+              {isPinned && <span style={styles.tag}><Icon name="pin" size={14} /></span>}
+              {isMuted && <span style={styles.tag}><Icon name="bellOff" size={14} /></span>}
+            </span>
+            {presenceText && (
+              <span style={{...styles.presence, color: otherLastActive != null && Date.now() - otherLastActive < ONLINE_WINDOW_MS ? colors.success : colors.textSecondary}}>
+                {presenceText}
+              </span>
+            )}
+          </div>
+        </div>
+        <div style={styles.headerActions}>
+          <button
+            style={styles.menuBtn}
+            title={t('chat.search')}
+            onClick={() => setSearch(prev => (prev === null ? '' : null))}>
+            <Icon name="search" size={17} />
+          </button>
+          <button style={styles.menuBtn} title={t('chat.voiceCall')} onClick={startVoice}>
+            <Icon name="phone" size={18} />
+          </button>
+          <button style={styles.menuBtn} title={t('chat.videoCall')} onClick={startVideo}>
+            <Icon name="video" size={18} />
+          </button>
+          <div style={{position: 'relative'}}>
+            <button style={styles.menuBtn} title="More" onClick={() => setMenuOpen(o => !o)}>
+              <Icon name="more" size={20} />
+            </button>
+            {menuOpen && (
+              <div style={styles.menu}>
+                <button style={styles.menuItemRow} onClick={doSummarize}>
+                  <Icon name="sparkles" size={15} /> {t('chat.summarize')}
+                </button>
+                <button style={styles.menuItemRow} onClick={() => enterSelect()}>
+                  <Icon name="check" size={15} /> {t('chat.selectMessages')}
+                </button>
+                <button style={styles.menuItem} onClick={() => togglePinChat(chatId, me.uid, isPinned)}>
+                  {isPinned ? t('chat.unpin') : t('chat.pin')}
+                </button>
+                <button style={styles.menuItem} onClick={() => toggleMuteChat(chatId, me.uid, isMuted)}>
+                  {isMuted ? t('chat.unmute') : t('chat.mute')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setBurnMode(v => !v);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="flame" size={15} /> {t('chat.burnAfterReading')}
+                  {burnMode ? <span style={styles.menuCheck}>✓</span> : null}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setViewOnceMode(v => !v);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="eye" size={15} /> {t('chat.viewOnce')}
+                  {viewOnceMode ? <span style={styles.menuCheck}>✓</span> : null}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setExpiryOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="timer" size={15} /> {t('chat.disappearing')}
+                  {expiryHours ? <span style={styles.menuCheck}>{expiryLabel(t, expiryHours)}</span> : null}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setWhiteboardOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="edit" size={15} /> {t('chat.whiteboard')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setScheduleOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="timer" size={15} /> {t('chat.schedule')}
+                </button>
+                <div style={styles.menuDivider} />
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setMediaOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="image" size={15} /> {t('media.title')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setPlaylistOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="music" size={15} /> {t('playlist.title')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setCountdownOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="calendar" size={15} /> {t('countdown.title')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setListsOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="list" size={15} /> {t('lists.title')}
+                </button>
+                <div style={styles.menuDivider} />
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setSettingsOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="settings" size={15} /> {t('chatSettings.title')}
+                </button>
+                <button style={{...styles.menuItem, color: colors.danger}} onClick={confirmDelete}>
+                  {t('chat.delete')}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {selectMode && (
+        <div style={styles.selectBar}>
+          <button style={styles.selectCancel} onClick={exitSelect} title={t('common.cancel')}>
+            <Icon name="close" size={18} />
+          </button>
+          <span style={styles.selectCount}>
+            {selected.size} {t('chat.selected')}
+          </span>
+          <button
+            style={styles.selectAllBtn}
+            onClick={() => setSelected(new Set(shownMessages.map(m => m._id)))}>
+            {t('chat.selectAll')}
+          </button>
+          <button
+            style={{...styles.selectDelete, opacity: selected.size ? 1 : 0.45}}
+            disabled={!selected.size}
+            onClick={deleteSelected}>
+            <Icon name="trash" size={16} /> {t('common.delete')}
+          </button>
+        </div>
+      )}
+
+      {(summarizing || summary !== null) && (
+        <div style={styles.summaryBar}>
+          <div style={styles.summaryTitle}>
+            <Icon name="sparkles" size={14} /> {t('chat.summaryTitle')}
+          </div>
+          <div style={styles.summaryText}>{summarizing ? t('chat.summarizing') : summary}</div>
+          {!summarizing && (
+            <button style={styles.summaryClose} onClick={() => setSummary(null)} title={t('common.close')}>
+              <Icon name="close" size={14} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {search !== null && (
+        <div style={styles.searchBar}>
+          <Icon name="search" size={16} style={{color: colors.textTertiary}} />
+          <input
+            style={styles.searchInput}
+            placeholder={t('chat.searchPlaceholder')}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            autoFocus
+          />
+          <button style={styles.searchClose} onClick={() => setSearch(null)}>
+            <Icon name="close" size={16} />
+          </button>
+        </div>
+      )}
+
+      {expiryOpen && (
+        <div style={styles.expiryBar}>
+          <span style={styles.expiryTitle}>
+            <Icon name="timer" size={15} /> {t('chat.disappearing')}
+          </span>
+          <div style={styles.expiryChips}>
+            {EXPIRY_OPTIONS.map(o => (
+              <button
+                key={o.hours}
+                onClick={() => {
+                  setChatExpiryPolicy(chatId, o.hours).catch(() => undefined);
+                  setExpiryOpen(false);
+                }}
+                style={{
+                  ...styles.expiryChip,
+                  ...(expiryHours === o.hours ? styles.expiryChipOn : null),
+                }}>
+                {expiryLabel(t, o.hours)}
+              </button>
+            ))}
+          </div>
+          <button style={styles.searchClose} onClick={() => setExpiryOpen(false)}>
+            <Icon name="close" size={16} />
+          </button>
+        </div>
+      )}
+
+      {pinnedIds.length > 0 && (
+        <button style={styles.pinnedBanner} onClick={() => scrollToMessage(latestPinnedId)}>
+          <Icon name="pin" size={14} style={{color: colors.primary, flexShrink: 0}} />
+          <span style={styles.pinnedBannerText}>{latestPinned?.text || '[Media]'}</span>
+          {pinnedIds.length > 1 && <span style={styles.pinnedBannerCount}>{pinnedIds.length}</span>}
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="scroll"
+        style={wallpaper ? {...styles.messages, background: wallpaper} : styles.messages}
+        onScroll={onScroll}
+        onClick={() => setActiveMsg(null)}>
+        {shownMessages.length > 0 && <div style={styles.msgSpacer} />}
+        {hasMore && !searching && (
+          <div style={styles.loadOlder}>
+            <button style={styles.loadOlderBtn} onClick={loadOlder} disabled={loadingOlder}>
+              {loadingOlder ? <span className="spinner" /> : t('chat.loadOlder')}
+            </button>
+          </div>
+        )}
+        {shownMessages.length === 0 ? (
+          <div style={styles.emptyMsgs}>{searching ? t('chat.noMatch') : t('chat.empty')}</div>
+        ) : (
+          shownMessages.map((m, i) => {
+            const mine = m.user?._id === me.uid;
+            const reactions = Object.entries(m.reactions || {}).filter(([, u]) => u.length > 0);
+            const showDivider = m._id === firstUnreadId && !firstUnreadIsMine;
+
+            // System notices (e.g. missed calls) render as a centered pill.
+            if (m.system || m.call) {
+              return (
+                <div key={m._id} className="cv-row">
+                  {showDivider && <div className="unread-divider">{t('chat.newMessages')}</div>}
+                  <div style={styles.systemRow}>
+                    <span style={styles.systemPill}>
+                      <Icon name={m.call?.type === 'video' ? 'cameraOff' : 'phoneOff'} size={14} />
+                      {/* Server writes an English fallback; localize from the
+                          structured `call` field when present. */}
+                      {m.call?.outcome === 'missed'
+                        ? t(m.call.type === 'video' ? 'call.missedVideo' : 'call.missedVoice')
+                        : m.text}
+                      <span style={styles.systemTime}>{formatTime(m.createdAt)}</span>
+                    </span>
+                  </div>
+                </div>
+              );
+            }
+
+            const burn = m.burnAfterReading;
+            const burned = !!burn?.burned;
+            const burnUnrevealed = !!burn && !burn.burnStartedAt && !burned && !mine;
+            const contentHidden = burned || burnUnrevealed;
+            const countdown = burnCountdowns[m._id];
+            const viewedBy = m.viewOnceViewedBy || [];
+            const voExpired = !!m.viewOnce && !mine && (!!m.viewOnceExpired || viewedBy.includes(me.uid));
+            const voLocked = !!m.viewOnce && !mine && !voExpired;
+            // Group consecutive messages from the same author within a short window.
+            const prev = shownMessages[i - 1];
+            const grouped =
+              !showDivider &&
+              !!prev &&
+              prev.user?._id === m.user?._id &&
+              msgTime(m) - msgTime(prev) < GROUP_WINDOW_MS;
+            const senderName = m.user?.name || (mine ? me.name : 'User');
+            const seed = m.user?._id || m._id;
+            const isMsgPinned = (chat?.pinnedMessageIds || []).includes(m._id);
+            return (
+              <div key={m._id} className="cv-row">
+                {showDivider && <div className="unread-divider">{t('chat.newMessages')}</div>}
+                <div
+                  className="msg-row"
+                  data-mid={m._id}
+                  style={{
+                    ...styles.msgRow,
+                    marginTop: grouped ? 0 : 8,
+                    ...(selectMode ? {cursor: 'pointer'} : null),
+                    ...(selectMode && selected.has(m._id) ? styles.msgRowSelected : null),
+                  }}
+                  onClick={e => {
+                    e.stopPropagation();
+                    if (selectMode) {
+                      toggleSelect(m._id);
+                      return;
+                    }
+                    setReactionOpen(null);
+                    setActiveMsg(activeMsg === m._id ? null : m._id);
+                  }}>
+                  {selectMode && (
+                    <span style={{...styles.selCheck, ...(selected.has(m._id) ? styles.selCheckOn : null)}}>
+                      {selected.has(m._id) && <Icon name="check" size={13} style={{color: '#fff'}} />}
+                    </span>
+                  )}
+                  <div style={styles.gutter}>
+                    {grouped ? (
+                      <span className="grouped-time" style={styles.groupedTime}>
+                        {formatTime(m.createdAt)}
+                      </span>
+                    ) : (
+                      <div style={{...styles.msgAvatar, background: avatarColor(seed)}}>
+                        {senderName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={styles.msgMain}>
+                    {!grouped && (
+                      <div style={styles.msgHead}>
+                        <span style={{...styles.senderName, color: mine ? colors.primary : colors.text}}>
+                          {senderName}
+                        </span>
+                        <span style={styles.msgHeadTime}>{formatTime(m.createdAt)}</span>
+                        {isMsgPinned && <Icon name="pin" size={12} style={{color: colors.textTertiary}} />}
+                      </div>
+                    )}
+
+                    <div style={styles.msgContent}>
+                      {burned ? (
+                        <div style={styles.burnedRow}>
+                          <Icon name="flame" size={16} /> {t('chat.messageBurned')}
+                        </div>
+                      ) : burnUnrevealed ? (
+                        <button style={styles.burnReveal} onClick={e => {e.stopPropagation(); revealBurn(m);}}>
+                          <Icon name="flame" size={18} />
+                          <span style={styles.burnRevealTitle}>{t('chat.tapToReveal')}</span>
+                          <span style={styles.burnRevealSub}>{formatBurnDuration(burn!.duration)}</span>
+                        </button>
+                      ) : (
+                        <>
+                          {m.replyTo && (
+                            <button
+                              style={styles.replyQuote}
+                              onClick={e => {
+                                e.stopPropagation();
+                                scrollToMessage(m.replyTo!._id);
+                              }}>
+                              <span style={styles.replyQuoteName}>{m.replyTo.user?.name || 'User'}</span>
+                              <span style={styles.replyQuoteText}>
+                                {m.replyTo.text || (m.replyTo.image ? '[Photo]' : '')}
+                              </span>
+                            </button>
+                          )}
+                          {m.image &&
+                            (voLocked ? (
+                              <button
+                                style={styles.voPlaceholder}
+                                onClick={e => {e.stopPropagation(); openViewOnce(m);}}>
+                                <Icon name="eye" size={18} />
+                                <span>{t('chat.viewOncePhoto')}</span>
+                              </button>
+                            ) : voExpired ? (
+                              <div style={styles.voExpired}>
+                                <Icon name="eyeOff" size={16} /> {t('chat.viewOnceExpired')}
+                              </div>
+                            ) : (
+                              <div>
+                                {m.viewOnce && (
+                                  <span style={styles.voBadge}>
+                                    <Icon name="eye" size={11} /> {t('chat.viewOnceBadge')}
+                                  </span>
+                                )}
+                                <img
+                                  src={m.image}
+                                  alt=""
+                                  style={styles.image}
+                                  onClick={e => {e.stopPropagation(); lightbox.open(m.image!);}}
+                                />
+                              </div>
+                            ))}
+                          {m.gif && (
+                            <img
+                              src={m.gif.previewUrl || m.gif.url}
+                              alt="GIF"
+                              style={styles.gifMsg}
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (m.gif?.url) lightbox.open(m.gif.url);
+                              }}
+                            />
+                          )}
+                          {m.audio && <AudioMessage url={m.audio} duration={m.audioDuration} />}
+                          {m.audio && (transcribing.has(m._id) || m.transcription) && (
+                            <div style={styles.transcription}>
+                              {transcribing.has(m._id) ? t('chat.transcribing') : m.transcription}
+                            </div>
+                          )}
+                          {m.file && (
+                            <a
+                              href={m.file.uri}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              style={styles.fileCard}>
+                              <Icon name="file" size={20} />
+                              <span style={styles.fileName}>{m.file.name}</span>
+                              <Icon name="download" size={16} />
+                            </a>
+                          )}
+                          {m.text && <span style={styles.msgText}>{renderMentions(m.text, mentionNames)}</span>}
+                          {(countdown != null || m.editedAt) && (
+                            <span style={styles.inlineMeta}>
+                              {countdown != null && (
+                                <span style={styles.burnCountdown}>
+                                  <Icon name="flame" size={11} style={{verticalAlign: '-1px'}} /> {countdown}s
+                                </span>
+                              )}
+                              {m.editedAt && <span style={styles.edited}> {t('chat.edited')}</span>}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {!contentHidden && translations[m._id] && (
+                      <div style={styles.translation}>
+                        <Icon name="globe" size={13} style={{marginRight: 5, verticalAlign: '-2px'}} />
+                        {translations[m._id]}
+                      </div>
+                    )}
+                    {!contentHidden && m.text && URL_RE.test(m.text) && (
+                      <LinkPreviewCard url={m.text.match(URL_RE)![0]} />
+                    )}
+
+                    {reactions.length > 0 && (
+                      <div style={styles.reactions}>
+                        {reactions.map(([emoji, uids]) => (
+                          <button
+                            key={emoji}
+                            onClick={e => {
+                              e.stopPropagation();
+                              toggleReaction(chatId, m._id, emoji, me.uid);
+                            }}
+                            style={{
+                              ...styles.reactionChip,
+                              borderColor: uids.includes(me.uid) ? colors.primary : colors.border,
+                            }}>
+                            {emoji} {uids.length}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {activeMsg === m._id && (
+                      <div style={styles.actionBar} onClick={e => e.stopPropagation()}>
+                        {reactionOpen === m._id && (
+                          <div style={styles.reactionGroup}>
+                            {QUICK_EMOJI.map(emoji => (
+                              <button
+                                key={emoji}
+                                style={styles.emojiBtn}
+                                onClick={() => {
+                                  toggleReaction(chatId, m._id, emoji, me.uid);
+                                  setActiveMsg(null);
+                                  setReactionOpen(null);
+                                }}>
+                                {emoji}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        <div style={styles.actionGroup}>
+                        <button
+                          style={
+                            reactionOpen === m._id
+                              ? {...styles.smallAction, borderColor: colors.primary, color: colors.primary}
+                              : styles.smallAction
+                          }
+                          title={t('chat.react')}
+                          onClick={() => setReactionOpen(reactionOpen === m._id ? null : m._id)}>
+                          <Icon name="smile" size={15} />
+                        </button>
+                        {!contentHidden && (
+                          <button
+                            style={styles.smallAction}
+                            title={t('chat.reply')}
+                            onClick={() => {
+                              setReplyTarget(m);
+                              setActiveMsg(null);
+                              setTimeout(() => inputRef.current?.focus(), 0);
+                            }}>
+                            <Icon name="reply" size={15} />
+                          </button>
+                        )}
+                        {!contentHidden && (
+                          <button
+                            style={styles.smallAction}
+                            title={isMsgPinned ? t('chat.unpinMessage') : t('chat.pinMessage')}
+                            onClick={() => onTogglePin(m)}>
+                            <Icon name="pin" size={15} style={isMsgPinned ? {color: colors.primary} : undefined} />
+                          </button>
+                        )}
+                        {!contentHidden && m.audio && !m.transcription && (
+                          <button style={styles.smallAction} title={t('chat.transcribe')} onClick={() => onTranscribe(m)}>
+                            <Icon name="sparkles" size={15} />
+                          </button>
+                        )}
+                        {!contentHidden && (
+                          <button style={styles.smallAction} title={t('chat.save')} onClick={() => saveBookmark(m)}>
+                            <Icon name="bookmark" size={15} />
+                          </button>
+                        )}
+                        {!contentHidden && (
+                          <button
+                            style={styles.smallAction}
+                            title={t('reminder.remindMe')}
+                            onClick={() => {
+                              const d = new Date(Date.now() + 60 * 60 * 1000);
+                              d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                              setReminderAt(d.toISOString().slice(0, 16));
+                              setReminderFor(m);
+                              setActiveMsg(null);
+                            }}>
+                            <Icon name="bell" size={15} />
+                          </button>
+                        )}
+                        {!contentHidden && m.text && (
+                          <button style={styles.smallAction} title={t('chat.translate')} onClick={() => doTranslate(m)}>
+                            <Icon name="globe" size={15} />
+                          </button>
+                        )}
+                        {!contentHidden && mine && m.text && !m.burnAfterReading && (
+                          <button style={styles.smallAction} title={t('chat.edit')} onClick={() => startEdit(m)}>
+                            <Icon name="edit" size={15} />
+                          </button>
+                        )}
+                        <button
+                          style={styles.smallAction}
+                          title={t('chat.selectMessages')}
+                          onClick={() => enterSelect(m._id)}>
+                          <Icon name="check" size={15} />
+                        </button>
+                        {mine && (
+                          <button
+                            style={styles.smallAction}
+                            title={t('common.delete')}
+                            onClick={() => {
+                              deleteMessage(chatId, m._id);
+                              setActiveMsg(null);
+                            }}>
+                            <Icon name="trash" size={15} />
+                          </button>
+                        )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+        {seen && (
+          <div style={styles.seen}>
+            <Icon name="check" size={12} style={{verticalAlign: '-1px'}} /> {t('chat.seen')} {seenAt}
+          </div>
+        )}
+        {otherTyping && <div style={styles.typing}>{t('chat.typing')}</div>}
+        <div ref={endRef} />
+      </div>
+
+      {!atBottom && (
+        <button className="jump-latest" onClick={jumpToLatest} title={t('chat.newMessages')}>
+          <Icon name="back" size={18} style={{transform: 'rotate(-90deg)'}} />
+          {newCount > 0 && <span className="badge">{newCount}</span>}
+        </button>
+      )}
+
+      {uploadPct !== null && (
+        <div style={styles.uploadBar}>
+          <div style={{...styles.uploadFill, width: `${uploadPct}%`}} />
+          <span style={styles.uploadLabel}>
+            {t('chat.uploading')} {uploadPct}%
+          </span>
+        </div>
+      )}
+
+      <input ref={imageInputRef} type="file" accept="image/*" hidden onChange={onImageSelected} />
+      <input ref={fileInputRef} type="file" hidden onChange={onFileSelected} />
+
+      {(burnMode || viewOnceMode) && !editing && !recording && (
+        <div style={styles.ephemeralBar}>
+          {burnMode && (
+            <button
+              style={styles.ephemChip}
+              title={t('chat.burnAfterReading')}
+              onClick={() => setBurnDuration(cycleBurnDuration)}>
+              <Icon name="flame" size={13} /> {t('chat.burnAfterReading')} · {formatBurnDuration(burnDuration)}
+            </button>
+          )}
+          {viewOnceMode && (
+            <span style={styles.ephemChip}>
+              <Icon name="eye" size={13} /> {t('chat.viewOnce')}
+            </span>
+          )}
+          <button
+            style={styles.ephemClose}
+            title={t('common.close')}
+            onClick={() => {
+              setBurnMode(false);
+              setViewOnceMode(false);
+            }}>
+            <Icon name="close" size={14} />
+          </button>
+        </div>
+      )}
+
+      {scheduled.length > 0 && !editing && (
+        <div style={styles.scheduledWrap}>
+          <button style={styles.scheduledChip} onClick={() => setShowScheduled(v => !v)}>
+            <Icon name="timer" size={13} /> {t('chat.scheduledCount')} · {scheduled.length}
+          </button>
+          {showScheduled && (
+            <div style={styles.scheduledList}>
+              {scheduled.map(s => (
+                <div key={s._id} style={styles.scheduledItem}>
+                  <span style={styles.scheduledText}>{s.text}</span>
+                  <span style={styles.scheduledTime}>
+                    {new Date(s.scheduledFor).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                  </span>
+                  <button style={styles.searchClose} onClick={() => cancelScheduledMessage(chatId, s._id).catch(() => undefined)}>
+                    <Icon name="close" size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {scheduleOpen && !editing && (
+        <div style={styles.expiryBar}>
+          <span style={styles.expiryTitle}>
+            <Icon name="timer" size={15} /> {t('chat.schedule')}
+          </span>
+          <input
+            type="datetime-local"
+            style={styles.scheduleInput}
+            value={scheduleAt}
+            onChange={e => setScheduleAt(e.target.value)}
+          />
+          <button style={styles.recSend} onClick={doSchedule} disabled={!text.trim() || !scheduleAt}>
+            {t('chat.schedule')}
+          </button>
+          <button style={styles.searchClose} onClick={() => setScheduleOpen(false)}>
+            <Icon name="close" size={16} />
+          </button>
+        </div>
+      )}
+
+      {reminderFor && (
+        <div style={styles.expiryBar}>
+          <span style={styles.expiryTitle}>
+            <Icon name="bell" size={15} /> {t('reminder.remindMe')}
+          </span>
+          <input
+            type="datetime-local"
+            style={styles.scheduleInput}
+            value={reminderAt}
+            onChange={e => setReminderAt(e.target.value)}
+          />
+          <button style={styles.recSend} onClick={doRemind} disabled={!reminderAt}>
+            {t('reminder.set')}
+          </button>
+          <button style={styles.searchClose} onClick={() => setReminderFor(null)}>
+            <Icon name="close" size={16} />
+          </button>
+        </div>
+      )}
+
+      {smartReplies.length > 0 && (
+        <div style={styles.smartReplies}>
+          {smartReplies.map(s => (
+            <button
+              key={s}
+              style={styles.smartReplyChip}
+              onClick={() => {
+                setText(s);
+                setTimeout(() => inputRef.current?.focus(), 0);
+              }}>
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {replyTarget && !editing && (
+        <div style={styles.replyBar}>
+          <Icon name="reply" size={15} style={{color: colors.primary, flexShrink: 0}} />
+          <div style={styles.replyBarBody}>
+            <span style={styles.replyBarName}>
+              {t('chat.replyingTo')} {replyTarget.user?.name || 'User'}
+            </span>
+            <span style={styles.replyBarText}>
+              {replyTarget.text ||
+                (replyTarget.image ? '[Photo]' : replyTarget.gif ? '[GIF]' : replyTarget.audio ? '[Voice message]' : '[Media]')}
+            </span>
+          </div>
+          <button style={styles.ephemClose} onClick={() => setReplyTarget(null)} title={t('common.cancel')}>
+            <Icon name="close" size={14} />
+          </button>
+        </div>
+      )}
+
+      {mention && mentionMatches.length > 0 && !editing && (
+        <div style={styles.mentionPopup}>
+          {mentionMatches.map(c => (
+            <button key={c.uid} style={styles.mentionItem} onClick={() => pickMention(c)}>
+              <div style={{...styles.mentionAvatar, background: avatarColor(c.uid)}}>
+                {c.name.charAt(0).toUpperCase()}
+              </div>
+              <span>{c.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {editing ? (
+        <form onSubmit={send} style={styles.composer}>
+          <div style={styles.editTag}>
+            <Icon name="edit" size={14} /> {t('chat.editing')}
+          </div>
+          <textarea
+            ref={inputRef}
+            rows={1}
+            style={styles.input}
+            value={editing.text}
+            onChange={e => onInput(e.target.value)}
+            onKeyDown={onComposerKeyDown}
+            autoFocus
+          />
+          <button type="submit" style={{...styles.sendBtn, background: themeColor}}>
+            {t('common.save')}
+          </button>
+          <button type="button" style={styles.composerIcon} title={t('common.cancel')} onClick={() => setEditing(null)}>
+            <Icon name="close" size={20} />
+          </button>
+        </form>
+      ) : recording ? (
+        <div style={styles.recBar}>
+          <span style={styles.recDot} />
+          <span style={styles.recTime}>
+            {t('chat.recording')} · {formatSecs(recSecs)}
+          </span>
+          <button style={styles.recCancel} onClick={() => stopRecording(false)}>
+            {t('common.cancel')}
+          </button>
+          <button style={styles.recSend} onClick={() => stopRecording(true)}>
+            {t('common.send')}
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={send} style={styles.composer}>
+          <button
+            type="button"
+            style={styles.composerIcon}
+            title={t('moments.addPhoto')}
+            disabled={uploadPct !== null}
+            onClick={() => imageInputRef.current?.click()}>
+            <Icon name="image" size={20} />
+          </button>
+          <button
+            type="button"
+            style={styles.composerIcon}
+            title="Attach a file"
+            disabled={uploadPct !== null}
+            onClick={() => fileInputRef.current?.click()}>
+            <Icon name="paperclip" size={20} />
+          </button>
+          <button
+            type="button"
+            style={styles.composerIcon}
+            title={t('chat.sendGif')}
+            onClick={() => setGifOpen(true)}>
+            <Icon name="gif" size={22} />
+          </button>
+          <textarea
+            ref={inputRef}
+            rows={1}
+            style={styles.input}
+            placeholder={t('chat.typeMessage')}
+            value={text}
+            onChange={e => onInput(e.target.value)}
+            onKeyDown={onComposerKeyDown}
+            onBlur={() => setTyping(chatId, me.uid, false)}
+            onPaste={onPaste}
+            autoFocus
+          />
+          {text.trim() ? (
+            <button type="submit" style={{...styles.sendBtn, background: themeColor}} disabled={sending}>
+              {t('common.send')}
+            </button>
+          ) : (
+            <button type="button" style={styles.composerIcon} title="Record a voice message" onClick={startRecording}>
+              <Icon name="mic" size={20} />
+            </button>
+          )}
+        </form>
+      )}
+
+      {whiteboardOpen && (
+        <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
+      )}
+      {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
+      {settingsOpen && (
+        <ChatSettingsModal
+          chatId={chatId}
+          me={me}
+          chat={chat}
+          onClose={() => setSettingsOpen(false)}
+          onDeleted={onDeleted}
+        />
+      )}
+      {mediaOpen && <ChatMediaModal messages={messages} onClose={() => setMediaOpen(false)} />}
+      {playlistOpen && <PlaylistModal chatId={chatId} me={me} onClose={() => setPlaylistOpen(false)} />}
+      {countdownOpen && <CountdownModal chatId={chatId} me={me} onClose={() => setCountdownOpen(false)} />}
+      {listsOpen && <SharedListsModal chatId={chatId} me={me} onClose={() => setListsOpen(false)} />}
+    </div>
+  );
+}
+
+function formatTime(ts: ChatMessage['createdAt']): string {
+  const d = ts?.toDate ? ts.toDate() : null;
+  if (!d) return '';
+  return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+}
+
+function formatSecs(s: number): string {
+  const m = Math.floor(s / 60);
+  return `${m}:${(s % 60).toString().padStart(2, '0')}`;
+}
+
+const MENTION_STYLE: React.CSSProperties = {color: colors.primary, fontWeight: 700};
+
+// Renders message text with @mentions of known participant names highlighted.
+function renderMentions(text: string, names: string[]): React.ReactNode {
+  if (!names.length) return text;
+  const escaped = names
+    .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .sort((a, b) => b.length - a.length);
+  const re = new RegExp(`@(?:${escaped.join('|')})`, 'g');
+  const out: React.ReactNode[] = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    out.push(
+      <span key={m.index} style={MENTION_STYLE}>
+        {m[0]}
+      </span>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out.length ? out : text;
+}
+
+// Builds the compact reply snapshot stored on a reply message, omitting empty
+// fields (Firestore rejects nested `undefined`).
+function buildReplyTo(m: ChatMessage): NonNullable<ChatMessage['replyTo']> {
+  const r: NonNullable<ChatMessage['replyTo']> = {
+    _id: m._id,
+    user: {_id: m.user?._id || '', name: m.user?.name || ''},
+  };
+  if (m.text) r.text = m.text;
+  else if (m.image) r.text = '[Photo]';
+  else if (m.gif) r.text = '[GIF]';
+  else if (m.audio) r.text = '[Voice message]';
+  else if (m.file) r.text = '[File]';
+  if (m.image) r.image = m.image;
+  return r;
+}
+
+function formatRelative(ms: number, t: (k: TKey) => string): string {
+  const min = Math.floor((Date.now() - ms) / 60000);
+  if (min < 1) return t('chat.justNow');
+  if (min < 60) return `${min}m`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `${d}d`;
+  return new Date(ms).toLocaleDateString([], {month: 'short', day: 'numeric'});
+}
+
+// Chronological order; messages with an unresolved (pending) timestamp sort to
+// the newest end so a just-sent message stays at the bottom, not the top.
+function msgTime(m: ChatMessage): number {
+  return m.createdAt?.toMillis?.() ?? Number.MAX_SAFE_INTEGER;
+}
+function sortByTime(list: ChatMessage[]): ChatMessage[] {
+  return list.sort((a, b) => msgTime(a) - msgTime(b));
+}
+
+function expiryLabel(t: (k: TKey) => string, hours: number): string {
+  switch (hours) {
+    case 1:
+      return t('chat.expiry1h');
+    case 24:
+      return t('chat.expiry24h');
+    case 168:
+      return t('chat.expiry7d');
+    case 720:
+      return t('chat.expiry30d');
+    default:
+      return t('chat.expiryOff');
+  }
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  pane: {flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, position: 'relative'},
+  header: {
+    padding: '15px 24px',
+    fontWeight: 700,
+    fontSize: 17,
+    color: colors.text,
+    borderBottom: `1px solid ${colors.border}`,
+    background: colors.surface,
+    backdropFilter: 'blur(14px)',
+    WebkitBackdropFilter: 'blur(14px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerLeft: {display: 'flex', alignItems: 'center', flex: 1, minWidth: 0},
+  headerTitleCol: {display: 'flex', flexDirection: 'column', minWidth: 0},
+  headerTitle: {display: 'flex', alignItems: 'center', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'},
+  presence: {fontSize: 12, fontWeight: 500, marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'},
+  backBtn: {
+    background: 'none',
+    border: 'none',
+    color: colors.primary,
+    display: 'flex',
+    alignItems: 'center',
+    marginRight: 6,
+    marginLeft: -6,
+    padding: 4,
+  },
+  tag: {marginLeft: 8, display: 'inline-flex', alignItems: 'center', color: colors.textSecondary},
+  headerActions: {display: 'flex', alignItems: 'center', gap: 8},
+  menuBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    color: colors.text,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menu: {
+    position: 'absolute',
+    right: 0,
+    top: 40,
+    background: colors.menuSolid,
+    backdropFilter: 'blur(30px)',
+    WebkitBackdropFilter: 'blur(30px)',
+    border: `1px solid ${colors.border}`,
+    borderRadius: 12,
+    boxShadow: '0 24px 48px -16px rgba(0,0,0,0.5)',
+    overflow: 'hidden',
+    zIndex: 30,
+    minWidth: 168,
+  },
+  menuItem: {
+    display: 'block',
+    width: '100%',
+    textAlign: 'left',
+    padding: '11px 16px',
+    border: 'none',
+    background: 'transparent',
+    fontSize: 14,
+    color: colors.text,
+  },
+  menuDivider: {height: 1, background: colors.border, margin: '4px 8px'},
+  smartReplies: {display: 'flex', flexWrap: 'wrap', gap: 8, padding: '8px 16px 0'},
+  smartReplyChip: {
+    padding: '7px 14px',
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surface,
+    color: colors.primary,
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: 'pointer',
+  },
+  menuItemRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 9,
+    width: '100%',
+    textAlign: 'left',
+    padding: '11px 16px',
+    border: 'none',
+    background: 'transparent',
+    fontSize: 14,
+    color: colors.text,
+  },
+  summaryBar: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 10,
+    padding: '12px 24px',
+    background: colors.primaryLight,
+    borderBottom: `1px solid ${colors.border}`,
+  },
+  summaryTitle: {display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: colors.primary, flexShrink: 0, marginTop: 2},
+  summaryText: {flex: 1, fontSize: 14, color: colors.text, lineHeight: 1.4, whiteSpace: 'pre-wrap'},
+  summaryClose: {background: 'none', border: 'none', color: colors.textSecondary, display: 'flex', alignItems: 'center'},
+  translation: {
+    marginTop: 4,
+    padding: '6px 10px',
+    borderRadius: 10,
+    background: colors.surfaceStrong,
+    border: `1px dashed ${colors.border}`,
+    fontSize: 13.5,
+    color: colors.textSecondary,
+    maxWidth: '100%',
+  },
+  messages: {
+    flex: 1,
+    overflowY: 'auto',
+    // Left-anchored column (Slack-style): content hugs the left, capped in width
+    // on very wide screens with the extra space falling on the right.
+    padding: '20px max(24px, calc(100% - 1064px)) 20px 24px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  // Grows to push a short conversation to the bottom; collapses to 0 once the
+  // content overflows (so scrolling/pagination is unaffected).
+  msgSpacer: {flexGrow: 1, flexShrink: 1, minHeight: 0},
+  loadOlder: {display: 'flex', justifyContent: 'center', marginBottom: 12},
+  loadOlderBtn: {
+    padding: '7px 16px',
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    color: colors.textSecondary,
+    fontSize: 13,
+    fontWeight: 600,
+    minWidth: 120,
+    minHeight: 32,
+  },
+  emptyMsgs: {flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textSecondary},
+  systemRow: {display: 'flex', justifyContent: 'center', margin: '10px 0'},
+  systemPill: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 7,
+    padding: '6px 14px',
+    borderRadius: 999,
+    background: colors.surfaceStrong,
+    border: `1px solid ${colors.border}`,
+    color: colors.textSecondary,
+    fontSize: 13,
+    fontWeight: 600,
+  },
+  systemTime: {fontSize: 11, color: colors.textTertiary},
+  // ---- Slack/Discord-style message rows ----
+  msgRow: {display: 'flex', gap: 12, padding: '2px 12px', borderRadius: 8, position: 'relative'},
+  msgRowSelected: {background: colors.primaryLight},
+  selCheck: {
+    flexShrink: 0,
+    width: 20,
+    height: 20,
+    borderRadius: 999,
+    border: `2px solid ${colors.borderStrong}`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  selCheckOn: {background: colors.primary, borderColor: colors.primary},
+  selectBar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: '10px 16px',
+    borderBottom: `1px solid ${colors.border}`,
+    background: colors.surface,
+  },
+  selectCancel: {
+    border: 'none',
+    background: 'transparent',
+    color: colors.text,
+    display: 'flex',
+    cursor: 'pointer',
+    padding: 4,
+  },
+  selectCount: {flex: 1, fontWeight: 700, color: colors.text, fontSize: 15},
+  selectAllBtn: {
+    border: 'none',
+    background: 'transparent',
+    color: colors.primary,
+    fontWeight: 600,
+    fontSize: 13,
+    cursor: 'pointer',
+    padding: '6px 8px',
+  },
+  selectDelete: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    padding: '8px 14px',
+    borderRadius: 999,
+    border: 'none',
+    background: colors.danger,
+    color: '#fff',
+    fontWeight: 700,
+    fontSize: 13,
+    cursor: 'pointer',
+  },
+  gutter: {width: 40, flexShrink: 0, display: 'flex', justifyContent: 'center', paddingTop: 2},
+  msgAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 700,
+    fontSize: 16,
+    flexShrink: 0,
+  },
+  groupedTime: {fontSize: 10.5, color: colors.textTertiary, lineHeight: '22px'},
+  msgMain: {flex: 1, minWidth: 0},
+  msgHead: {display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 1},
+  senderName: {fontWeight: 700, fontSize: 15},
+  msgHeadTime: {fontSize: 11.5, color: colors.textTertiary, flexShrink: 0},
+  msgContent: {fontSize: 15, lineHeight: 1.45, color: colors.text, wordBreak: 'break-word'},
+  msgText: {whiteSpace: 'pre-wrap'},
+  inlineMeta: {marginLeft: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
+  gifMsg: {display: 'block', maxWidth: 260, width: '100%', borderRadius: 12, margin: '4px 0', cursor: 'zoom-in'},
+  transcription: {
+    margin: '4px 0',
+    padding: '7px 11px',
+    borderRadius: 10,
+    background: colors.surfaceStrong,
+    border: `1px dashed ${colors.border}`,
+    fontSize: 13.5,
+    color: colors.textSecondary,
+    maxWidth: 360,
+  },
+  replyQuote: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 1,
+    textAlign: 'left',
+    maxWidth: 320,
+    margin: '2px 0 5px',
+    padding: '5px 10px',
+    border: 'none',
+    borderLeft: `3px solid ${colors.primary}`,
+    borderRadius: '4px 8px 8px 4px',
+    background: colors.surfaceStrong,
+    cursor: 'pointer',
+  },
+  replyQuoteName: {fontSize: 12, fontWeight: 700, color: colors.primary},
+  replyQuoteText: {fontSize: 13, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 300},
+  pinnedBanner: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    width: '100%',
+    padding: '9px 24px',
+    border: 'none',
+    borderBottom: `1px solid ${colors.border}`,
+    background: colors.surface,
+    color: colors.text,
+    textAlign: 'left',
+  },
+  pinnedBannerText: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13.5, color: colors.textSecondary},
+  pinnedBannerCount: {fontSize: 11, fontWeight: 700, color: colors.primary, background: colors.primaryLight, borderRadius: 999, padding: '1px 8px'},
+  replyBar: {display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', borderTop: `1px solid ${colors.border}`, background: colors.surface},
+  replyBarBody: {flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column'},
+  replyBarName: {fontSize: 12.5, fontWeight: 700, color: colors.primary},
+  replyBarText: {fontSize: 13, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'},
+  mentionPopup: {
+    margin: '0 16px',
+    background: colors.menuSolid,
+    border: `1px solid ${colors.border}`,
+    borderRadius: 12,
+    boxShadow: colors.shadowSoft,
+    overflow: 'hidden',
+  },
+  mentionItem: {display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '9px 14px', border: 'none', background: 'transparent', color: colors.text, textAlign: 'left', fontSize: 14},
+  mentionAvatar: {width: 26, height: 26, borderRadius: 999, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 12, flexShrink: 0},
+  scheduledWrap: {borderTop: `1px solid ${colors.border}`, background: colors.surface, padding: '8px 16px'},
+  scheduledChip: {display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 999, border: `1px solid ${colors.border}`, background: 'transparent', color: colors.textSecondary, fontSize: 12.5, fontWeight: 600},
+  scheduledList: {marginTop: 8, display: 'flex', flexDirection: 'column', gap: 4},
+  scheduledItem: {display: 'flex', alignItems: 'center', gap: 8, padding: '6px 4px'},
+  scheduledText: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13.5, color: colors.text},
+  scheduledTime: {fontSize: 12, color: colors.textTertiary, flexShrink: 0},
+  scheduleInput: {padding: '7px 10px', borderRadius: 10, border: `1px solid ${colors.border}`, background: colors.inputBg, color: colors.text, fontSize: 13, fontFamily: 'inherit'},
+  image: {display: 'block', maxWidth: 360, width: '100%', borderRadius: 10, margin: '4px 0', cursor: 'zoom-in'},
+  fileCard: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '9px 12px',
+    margin: '4px 0',
+    borderRadius: 10,
+    background: colors.surfaceStrong,
+    border: `1px solid ${colors.border}`,
+    color: colors.text,
+    textDecoration: 'none',
+    minWidth: 200,
+    maxWidth: 320,
+  },
+  fileName: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 14},
+  searchBar: {display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderBottom: `1px solid ${colors.border}`, background: colors.surface},
+  searchInput: {flex: 1, padding: '8px 12px', borderRadius: 10, border: `1px solid ${colors.border}`, background: colors.inputBg, fontSize: 14, color: colors.text},
+  searchClose: {background: 'none', border: 'none', color: colors.textSecondary, display: 'flex', alignItems: 'center'},
+  uploadBar: {position: 'relative', height: 26, background: colors.surface, borderTop: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center'},
+  uploadFill: {position: 'absolute', left: 0, top: 0, bottom: 0, background: colors.primaryLight},
+  uploadLabel: {position: 'relative', fontSize: 12, color: colors.textSecondary, paddingLeft: 16},
+  composerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    border: 'none',
+    background: 'transparent',
+    color: colors.textSecondary,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  editTag: {display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: colors.primary, alignSelf: 'center', flexShrink: 0},
+  recBar: {display: 'flex', alignItems: 'center', gap: 12, padding: 16, borderTop: `1px solid ${colors.border}`, background: colors.surface},
+  recDot: {width: 12, height: 12, borderRadius: 999, background: colors.danger, animation: 'spin 1s linear infinite'},
+  recTime: {flex: 1, color: colors.text, fontWeight: 600},
+  recCancel: {padding: '9px 16px', borderRadius: 999, border: `1px solid ${colors.border}`, background: 'transparent', color: colors.text, fontWeight: 600},
+  recSend: {padding: '9px 20px', borderRadius: 999, border: 'none', background: colors.primary, color: '#fff', fontWeight: 700},
+  time: {display: 'block', fontSize: 10.5, marginTop: 3, textAlign: 'right'},
+  edited: {opacity: 0.85, fontStyle: 'italic'},
+  burnCountdown: {color: colors.danger, fontWeight: 700},
+  burnedRow: {display: 'flex', alignItems: 'center', gap: 7, color: colors.textSecondary, fontStyle: 'italic', fontSize: 14},
+  burnReveal: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 3,
+    padding: '10px 22px',
+    minWidth: 150,
+    border: 'none',
+    background: 'transparent',
+    color: colors.text,
+  },
+  burnRevealTitle: {fontWeight: 700, fontSize: 14},
+  burnRevealSub: {fontSize: 12, color: colors.textSecondary},
+  voPlaceholder: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '14px 18px',
+    minWidth: 170,
+    borderRadius: 10,
+    border: `1px dashed ${colors.borderStrong}`,
+    background: 'transparent',
+    color: colors.text,
+    fontWeight: 600,
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  voExpired: {display: 'flex', alignItems: 'center', gap: 7, color: colors.textSecondary, fontStyle: 'italic', fontSize: 13.5},
+  voBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    fontSize: 11,
+    fontWeight: 700,
+    color: colors.secondary,
+    marginBottom: 5,
+  },
+  ephemeralBar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '8px 16px',
+    borderTop: `1px solid ${colors.border}`,
+    background: colors.primaryLight,
+  },
+  ephemChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    padding: '5px 12px',
+    borderRadius: 999,
+    border: `1px solid ${colors.primary}`,
+    background: 'transparent',
+    color: colors.primary,
+    fontSize: 12.5,
+    fontWeight: 700,
+  },
+  ephemClose: {
+    marginLeft: 'auto',
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    border: 'none',
+    background: 'transparent',
+    color: colors.textSecondary,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  expiryBar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '10px 16px',
+    borderBottom: `1px solid ${colors.border}`,
+    background: colors.surface,
+    flexWrap: 'wrap',
+  },
+  expiryTitle: {display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: colors.text},
+  expiryChips: {display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1},
+  expiryChip: {
+    padding: '6px 12px',
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: 'transparent',
+    color: colors.textSecondary,
+    fontSize: 12.5,
+    fontWeight: 600,
+  },
+  expiryChipOn: {background: colors.primary, color: '#fff', borderColor: colors.primary},
+  menuCheck: {marginLeft: 'auto', color: colors.primary, fontWeight: 700, fontSize: 12},
+  reactions: {display: 'flex', gap: 4, marginTop: 4},
+  reactionChip: {
+    padding: '2px 8px',
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    fontSize: 12,
+    color: colors.text,
+  },
+  actionBar: {display: 'flex', gap: 10, marginTop: 6, flexWrap: 'wrap', alignItems: 'center'},
+  // Emoji reactions grouped into one cohesive pill, distinct from the actions.
+  reactionGroup: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 2,
+    padding: '3px 6px',
+    borderRadius: 999,
+    background: colors.surfaceStrong,
+    border: `1px solid ${colors.border}`,
+    boxShadow: colors.shadowSoft,
+  },
+  emojiBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 999,
+    border: 'none',
+    background: 'transparent',
+    fontSize: 17,
+    lineHeight: 1,
+    padding: 0,
+    cursor: 'pointer',
+  },
+  actionGroup: {display: 'inline-flex', alignItems: 'center', gap: 4, flexWrap: 'wrap'},
+  smallAction: {
+    width: 32,
+    height: 32,
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    color: colors.text,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seen: {textAlign: 'right', fontSize: 11.5, color: colors.textSecondary, marginTop: -4, marginBottom: 6},
+  typing: {fontSize: 13, color: colors.textSecondary, fontStyle: 'italic', padding: '2px 4px'},
+  composer: {
+    display: 'flex',
+    gap: 10,
+    padding: '16px max(24px, calc(100% - 1064px)) 16px 24px',
+    borderTop: `1px solid ${colors.border}`,
+    background: colors.surface,
+    backdropFilter: 'blur(14px)',
+    WebkitBackdropFilter: 'blur(14px)',
+    alignItems: 'flex-end',
+  },
+  input: {
+    flex: 1,
+    padding: '11px 16px',
+    borderRadius: 22,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    fontSize: 15,
+    lineHeight: 1.4,
+    color: colors.text,
+    fontFamily: 'inherit',
+    resize: 'none',
+    maxHeight: 140,
+    overflowY: 'auto',
+    display: 'block',
+  },
+  sendBtn: {padding: '0 22px', height: 44, borderRadius: 999, border: 'none', background: colors.primary, color: '#fff', fontWeight: 700, fontSize: 15, flexShrink: 0},
+};

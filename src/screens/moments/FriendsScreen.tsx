@@ -7,6 +7,7 @@ import {
   FlatList,
   TextInput,
   Alert,
+  Platform,
   useColorScheme,
 } from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
@@ -24,6 +25,7 @@ import {
   listenFriends,
   removeFriend,
   sendFriendRequest,
+  type SendRequestResult,
 } from '../../services/friends';
 import {blockUser, listenBlockedByMe, listenBlockedMe, unblockUser} from '../../services/blocks';
 import {BlockRecord, Friend, FriendRequest, User} from '../../types';
@@ -157,6 +159,19 @@ export default function FriendsScreen() {
     return date ? date.toLocaleString() : '';
   };
 
+  // Always surface the outcome of a send, so the user knows what happened.
+  const notifySendResult = (result: SendRequestResult) => {
+    if (result === 'error') {
+      Alert.alert(t('friends.alerts.sendFailedTitle'), t('friends.alerts.sendFailedBody'));
+    } else if (result === 'friends') {
+      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.alreadyFriendsBody'));
+    } else if (result === 'exists') {
+      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.alreadyPendingBody'));
+    } else if (result === 'sent') {
+      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.requestSentBody'));
+    }
+  };
+
   const handleSendRequestByUid = async () => {
     if (!user?.uid) return;
     const trimmed = targetUid.trim();
@@ -165,17 +180,9 @@ export default function FriendsScreen() {
       Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedSend'));
       return;
     }
-    try {
-      await sendFriendRequest(user.uid, trimmed);
-      setTargetUid('');
-      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.requestSentBody'));
-    } catch (error) {
-      reportError(error, 'sendFriendRequest');
-      if (__DEV__) {
-        console.error('sendFriendRequest error:', error);
-      }
-      Alert.alert(t('friends.alerts.sendFailedTitle'), t('friends.alerts.sendFailedBody'));
-    }
+    const result = await sendFriendRequest(user.uid, trimmed);
+    if (result !== 'error' && result !== 'invalid') setTargetUid('');
+    notifySendResult(result);
   };
 
   const handleSendRequestByEmail = async () => {
@@ -192,9 +199,9 @@ export default function FriendsScreen() {
         Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedSend'));
         return;
       }
-      await sendFriendRequest(user.uid, target.uid);
-      setTargetEmail('');
-      Alert.alert(t('friends.alerts.requestSentTitle'), t('friends.alerts.requestSentBody'));
+      const result = await sendFriendRequest(user.uid, target.uid);
+      if (result !== 'error' && result !== 'invalid') setTargetEmail('');
+      notifySendResult(result);
     } catch (error) {
       reportError(error, 'sendFriendRequestByEmail');
       if (__DEV__) {
@@ -377,7 +384,7 @@ export default function FriendsScreen() {
         {status === 'none' ? (
           <TouchableOpacity
             style={[styles.actionButton, {backgroundColor: colors.primary}]}
-            onPress={() => sendFriendRequest(user?.uid || '', item.uid)}>
+            onPress={async () => notifySendResult(await sendFriendRequest(user?.uid || '', item.uid))}>
             <Text style={[styles.actionTextPrimary, {color: colors.textOnPrimary}]}>{t('friends.buttons.add')}</Text>
           </TouchableOpacity>
         ) : (
@@ -444,6 +451,10 @@ export default function FriendsScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           searchQuery.trim().length ? (
             searching ? (
@@ -470,6 +481,10 @@ export default function FriendsScreen() {
         renderItem={renderRequest}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             {t('friends.empty.requests')}
@@ -484,6 +499,10 @@ export default function FriendsScreen() {
         renderItem={renderOutgoing}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             {t('friends.empty.outgoing')}
@@ -498,6 +517,10 @@ export default function FriendsScreen() {
         renderItem={renderFriend}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             {t('friends.empty.friends')}
@@ -512,6 +535,10 @@ export default function FriendsScreen() {
         renderItem={renderBlocked}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
             {t('friends.empty.blocked')}

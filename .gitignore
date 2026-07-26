@@ -19,6 +19,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 ios/.xcode.env.local
+macos/.xcode.env.local
 
 # Android/IntelliJ
 build/
@@ -47,6 +48,7 @@ yarn-error.log
 
 # CocoaPods
 /ios/Pods/
+/macos/Pods/
 
 # Expo
 .expo/
@@ -63,6 +65,12 @@ service-account-key.json
 # Environment variables
 .env
 .env.local
+
+# Local-only secrets (never commit)
+RELEASE_KEYSTORE_SECRETS.txt
+
+# Claude Code local settings (per-developer, not shared)
+**/.claude/settings.local.json
 
 # TypeScript
 *.tsbuildinfo

@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Platform, StyleSheet, Text, useColorScheme} from 'react-native';
+import {Platform, StyleSheet, useColorScheme} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -9,21 +9,23 @@ import NewChatScreen from '../screens/chat/NewChatScreen';
 import ChatMediaScreen from '../screens/chat/ChatMediaScreen';
 import ChatSettingsScreen from '../screens/chat/ChatSettingsScreen';
 import CallScreen from '../screens/chat/CallScreen';
-import WhiteboardScreen from '../screens/chat/WhiteboardScreen';
-import QuoteWallScreen from '../screens/chat/QuoteWallScreen';
-import ChatWrappedScreen from '../screens/chat/ChatWrappedScreen';
-import RitualsScreen from '../screens/chat/RitualsScreen';
-import PlaylistScreen from '../screens/chat/PlaylistScreen';
-import CountdownScreen from '../screens/chat/CountdownScreen';
-import ChatTimelineScreen from '../screens/chat/ChatTimelineScreen';
-import BookmarksScreen from '../screens/BookmarksScreen';
-import MemoriesScreen from '../screens/MemoriesScreen';
-import PrivacyDashboardScreen from '../screens/PrivacyDashboardScreen';
-import SecureVaultScreen from '../screens/SecureVaultScreen';
-import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MomentsScreen from '../screens/moments/MomentsScreen';
 import FriendsScreen from '../screens/moments/FriendsScreen';
+import {lazyLoad} from '../utils/lazyLoading';
+
+// Less-frequently-visited screens are lazy-loaded: with Babel's inlineRequires
+// (see metro.config.js) a plain `import` still gets evaluated the first time
+// ANY screen in the same stack renders (all `<Stack.Screen component={X}>`
+// entries are dereferenced together when the stack mounts), so without this
+// every one of these modules' top-level work runs on first opening the Chats
+// tab. Wrapping them in React.lazy defers that work until the user actually
+// navigates to each specific screen.
+const WhiteboardScreen = lazyLoad(() => import('../screens/chat/WhiteboardScreen'));
+const PlaylistScreen = lazyLoad(() => import('../screens/chat/PlaylistScreen'));
+const CountdownScreen = lazyLoad(() => import('../screens/chat/CountdownScreen'));
+const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
+const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScreen'));
 import {useAuth} from '../contexts/AuthContext';
 import {listenFriends, listenFriendRequests} from '../services/friends';
 import {listenMomentsForAuthors} from '../services/moments';
@@ -32,6 +34,7 @@ import {getMomentsLastSeen, onMomentsLastSeen} from '../services/notifications';
 import {Friend, Moment} from '../types';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
+import TabIcon from '../components/TabIcon';
 import {useTranslation} from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
@@ -177,9 +180,9 @@ export default function MainNavigator() {
     ],
     [colors.glassBorder, insets.bottom],
   );
-  const chatIcon = React.useCallback(() => <Text style={styles.tabIcon}>{'💬'}</Text>, []);
-  const momentsIcon = React.useCallback(() => <Text style={styles.tabIcon}>{'✨'}</Text>, []);
-  const profileIcon = React.useCallback(() => <Text style={styles.tabIcon}>👤</Text>, []);
+  const chatIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="chats" color={color} />, []);
+  const momentsIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="moments" color={color} />, []);
+  const profileIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="profile" color={color} />, []);
 
   const ChatStack = useMemo(() => {
     function _ChatStack() {
@@ -223,29 +226,9 @@ export default function MainNavigator() {
             options={{title: 'Whiteboard'}}
           />
           <Stack.Screen
-            name="QuoteWall"
-            component={QuoteWallScreen}
-            options={{title: 'Quote Wall'}}
-          />
-          <Stack.Screen
             name="Bookmarks"
             component={BookmarksScreen}
             options={{title: 'Saved Messages'}}
-          />
-          <Stack.Screen
-            name="Memories"
-            component={MemoriesScreen}
-            options={{title: 'Memories'}}
-          />
-          <Stack.Screen
-            name="ChatWrapped"
-            component={ChatWrappedScreen}
-            options={{title: 'Year in Review'}}
-          />
-          <Stack.Screen
-            name="Rituals"
-            component={RitualsScreen}
-            options={{title: 'Chat Rituals'}}
           />
           <Stack.Screen
             name="Playlist"
@@ -256,21 +239,6 @@ export default function MainNavigator() {
             name="Countdown"
             component={CountdownScreen}
             options={{title: 'Countdowns'}}
-          />
-          <Stack.Screen
-            name="ChatTimeline"
-            component={ChatTimelineScreen}
-            options={{title: 'Timeline'}}
-          />
-          <Stack.Screen
-            name="PrivacyDashboard"
-            component={PrivacyDashboardScreen}
-            options={{title: 'Privacy & Security'}}
-          />
-          <Stack.Screen
-            name="SecureVault"
-            component={SecureVaultScreen}
-            options={{title: 'Secure Vault'}}
           />
           <Stack.Screen
             name="PrivacyPolicy"
@@ -354,9 +322,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 0.2,
     marginTop: 2,
-  },
-  tabIcon: {
-    fontSize: 22,
   },
   tabBadge: {
     backgroundColor: '#FF453A',

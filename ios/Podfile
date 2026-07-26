@@ -8,6 +8,11 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 $FirebaseSDKVersion = '11.15.0'
+# GoogleAdsOnDeviceConversion (pulled in for ad-ID conversion tracking) has no
+# Mac Catalyst build and fails the link step. This app doesn't run ads, so
+# disabling ad-ID support is a fine trade — it's also a reasonable privacy
+# default from a messaging app anyway.
+$RNFirebaseAnalyticsWithoutAdIdSupport = true
 
 # Disable the New Architecture to avoid runtime crashes from modules that
 # are not yet fully compatible with Fabric/TurboModules.
@@ -54,8 +59,26 @@ target 'ChatterboxTemp' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false
+      :mac_catalyst_enabled => true
     )
+
+    # react-native-webrtc's precompiled JitsiWebRTC binary has no Mac Catalyst
+    # slice (consistent with every current WebRTC fork lacking macOS/Catalyst
+    # support). Calls are out of scope for the Mac build for now — exclude
+    # just these two pods from the Catalyst variant; regular iOS device/
+    # simulator builds are unaffected.
+    installer.pods_project.targets.each do |target|
+      if ['react-native-webrtc', 'JitsiWebRTC'].include?(target.name)
+        target.build_configurations.each do |build_config|
+          build_config.build_settings['SUPPORTS_MACCATALYST'] = 'NO'
+          # SUPPORTS_MACCATALYST alone doesn't drop the target from the
+          # aggregate build graph — it still gets compiled (with broken
+          # header search paths). Excluding its archs for the macosx/Catalyst
+          # SDK is what actually skips compiling it for that destination.
+          build_config.build_settings['EXCLUDED_ARCHS[sdk=macosx*]'] = 'arm64 x86_64'
+        end
+      end
+    end
 
     # Align pods to a supported iOS deployment target to silence warnings
     installer.pods_project.targets.each do |target|
