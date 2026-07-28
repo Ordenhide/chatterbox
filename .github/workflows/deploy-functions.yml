@@ -1,7 +1,7 @@
 name: Deploy Firebase Functions
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch: # Manual trigger
   push:
     branches: [main, master]
     paths:
@@ -13,26 +13,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: functions/package-lock.json
-      
+
       - name: Install function dependencies
         run: |
           cd functions
           npm ci
-      
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
+
+      # `FirebaseExtended/action-hosting-deploy` (the previous step here) only
+      # deploys Firebase Hosting — it has no mechanism for Cloud Functions, so
+      # this workflow never actually shipped a function no matter how many
+      # times it ran. This authenticates a real GCP service account instead
+      # and calls the Firebase CLI directly, which is what actually deploys
+      # functions.
+      #
+      # Setup required (one-time): create a service account in the GCP
+      # console for project chatterbox-e5d10, grant it "Cloud Functions
+      # Admin", "Service Account User", and "Cloud Build Editor" (2nd-gen
+      # functions build via Cloud Build), generate a JSON key, and store the
+      # full key file contents as the FIREBASE_SERVICE_ACCOUNT repo secret.
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: chatterbox-e5d10
-          target: functions
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+
+      # Scheduled (pubsub) functions are intentionally excluded from
+      # `exports` unless CHATTERBOX_ENABLE_SCHEDULED=true (see the comment at
+      # the top of functions/index.js) because they require the Blaze plan
+      # and would otherwise fail this deploy entirely if billing isn't
+      # enabled. Left unset here so the default deploy stays safe; flip it on
+      # once billing is confirmed enabled, either here or via a manual
+      # `workflow_dispatch` run with the env var set.
+      - name: Deploy functions
+        run: npx firebase-tools@^15 deploy --only functions --project chatterbox-e5d10 --non-interactive

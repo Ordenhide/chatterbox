@@ -3,8 +3,9 @@ import {colors} from '../theme';
 import {useT} from '../i18n';
 import BrandMark from '../components/BrandMark';
 import {signIn, signUp} from '../services/auth';
+import {checkPasswordStrength} from '../services/passwordPolicy';
 
-export default function LoginScreen() {
+export default function LoginScreen({displaced = false}: {displaced?: boolean}) {
   const {t} = useT();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -19,6 +20,19 @@ export default function LoginScreen() {
     if (!email.trim() || !password) {
       setError(t('login.enterBoth'));
       return;
+    }
+    if (mode === 'signup') {
+      const strength = checkPasswordStrength(password);
+      if (strength !== 'ok') {
+        setError(
+          {
+            'too-short': 'Password must be at least 8 characters.',
+            'too-common': 'That password is too common — please choose a less predictable one.',
+            'too-simple': 'That password is too predictable (repeated or sequential characters) — please choose another.',
+          }[strength],
+        );
+        return;
+      }
     }
     setBusy(true);
     try {
@@ -71,6 +85,9 @@ export default function LoginScreen() {
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
         />
 
+        {/* Explains an involuntary sign-out, so being kicked out mid-session
+            doesn't look like a bug or an expired login. */}
+        {displaced && !error && <div style={styles.notice}>{t('login.displaced')}</div>}
         {error && <div style={styles.error}>{error}</div>}
 
         <button type="submit" className="btn btn-primary" style={styles.primaryBtn} disabled={busy}>
@@ -102,7 +119,7 @@ function friendlyError(err: unknown): string {
     'auth/wrong-password': 'Incorrect password.',
     'auth/invalid-credential': 'Incorrect email or password.',
     'auth/email-already-in-use': 'An account already exists for that email.',
-    'auth/weak-password': 'Password should be at least 6 characters.',
+    'auth/weak-password': 'Password should be at least 8 characters.',
     'auth/too-many-requests': 'Too many attempts. Try again later.',
   };
   return map[code] || 'Something went wrong. Please try again.';
@@ -176,6 +193,17 @@ const styles: Record<string, React.CSSProperties> = {
     color: colors.danger,
     fontSize: 13,
     marginBottom: 10,
+    textAlign: 'center',
+  },
+  // Informational, not a failure — this sign-out was the system working.
+  notice: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginBottom: 10,
+    padding: '8px 12px',
+    borderRadius: 10,
+    border: `1px solid ${colors.border}`,
+    background: colors.surface,
     textAlign: 'center',
   },
 };

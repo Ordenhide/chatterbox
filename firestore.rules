@@ -1,8 +1,53 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Enforces that a request actually comes from the account's most
+    // recently claimed session, not just any still-technically-valid token.
+    //
+    // Session takeover (see services/session.ts on both clients) was
+    // previously enforced only client-side: the displaced device's own
+    // real-time listener notices activeSessionId changed and signs itself
+    // out. Nothing server-side backed that up — a device that's offline, or
+    // whose listener doesn't fire, kept full read/write access on its
+    // already-issued token for the rest of that token's ~1hr life.
+    //
+    // The obvious fix — compare request.auth.token.sessionId (a custom claim
+    // set by the claimSession Cloud Function) against activeSessionId —
+    // doesn't actually work: custom claims live on the *account*, not the
+    // device, so any client's background token refresh (which happens
+    // silently, without the user doing anything, and is *required* SDK
+    // behavior near a token's expiry) picks up whatever the *current* claim
+    // is regardless of whether that client did the claiming. Verified
+    // empirically against the Auth emulator: a claim's custom claim shows up
+    // in another device's very next refresh. That would close this gap for
+    // about an hour and then silently reopen it.
+    //
+    // auth_time does not have that problem: it reflects when the token's
+    // owner last *actually authenticated* (password sign-in), and is stable
+    // across silent refreshes — also verified empirically, not assumed.
+    // Comparing it against sessionClaimedAt (written by claimSession in the
+    // same request that sets the custom claim) distinguishes "this device
+    // (re)authenticated at or after the last claim" from "this device
+    // silently refreshed a token minted long before it". The 120s grace
+    // window covers the network round-trip between a real sign-in and the
+    // claimSession call that immediately follows it — both clients await
+    // that call before proceeding, but the two are still separate requests.
+    //
+    // No claim ever recorded (sessionClaimedAt absent, or no profile doc at
+    // all — an account that predates this check, or a request racing sign-up
+    // before the profile doc is written) is NOT enforced: this only starts
+    // applying to an account from its first claim onward, so deploying it
+    // doesn't retroactively lock out every already-signed-in session.
+    function hasCurrentSession(uid) {
+      let path = /databases/$(database)/documents/users/$(uid);
+      let profile = exists(path) ? get(path).data : null;
+      return profile == null ||
+        !('sessionClaimedAt' in profile) ||
+        request.auth.token.auth_time >= profile.sessionClaimedAt.toMillis() / 1000 - 120;
+    }
+
     function isSignedIn() {
-      return request.auth != null;
+      return request.auth != null && hasCurrentSession(request.auth.uid);
     }
 
     function pairId(userA, userB) {
@@ -213,6 +258,15 @@ service cloud.firestore {
     // the Admin SDK and bypass these rules.
     match /users/{userId}/private/{docId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Published E2EE public keys. Readable by any signed-in user — that is what
+    // "public key" means, and a peer must fetch yours to encrypt to you — but
+    // writable only by the owner, so nobody can substitute their own key for
+    // yours. The matching secret key never leaves the device.
+    match /users/{userId}/publicKeys/{keyId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
     }
   }
 }

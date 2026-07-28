@@ -70,6 +70,23 @@ export interface ChatMessage {
   viewOnceViewedBy?: string[];
   viewOnceExpired?: boolean;
   viewOnceOpenedAt?: Timestamp;
+  // E2EE — see services/e2ee.ts and services/e2eeKeys.ts. Both mobile and web
+  // now enroll a device keypair and can decrypt these; the plain field (text/
+  // image/audio/file.uri) is populated once decryption succeeds and is what
+  // the rest of the UI renders, so no separate "encrypted" code path exists
+  // outside ChatPane's decrypt effect.
+  encrypted?: EncryptedField | null;
+  encryptedImage?: EncryptedField | null;
+  encryptedVideo?: EncryptedField | null;
+  encryptedAudio?: EncryptedField | null;
+  encryptedFileUri?: EncryptedField | null;
+}
+
+export interface EncryptedField {
+  alg: string;
+  body: string;
+  senderKey: string;
+  recipientKey: string;
 }
 
 export interface FriendRequest {

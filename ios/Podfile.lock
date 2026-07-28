@@ -3301,7 +3301,37 @@ PODS:
     - SocketRocket
   - react-native-biometrics (3.0.1):
     - React-Core
+  - react-native-blob-util (0.24.10):
+    - React-Core
   - react-native-document-picker (9.3.1):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
+  - react-native-get-random-values (2.0.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -4143,7 +4173,9 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
+  - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -4333,8 +4365,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-biometrics:
     :path: "../node_modules/react-native-biometrics"
+  react-native-blob-util:
+    :path: "../node_modules/react-native-blob-util"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
@@ -4531,7 +4567,9 @@ SPEC CHECKSUMS:
   React-Mapbuffer: f137b397c7457f8fd7ca06dfaf543ccf5fc7dd56
   React-microtasksnativemodule: f4762eb5cc8d2287f2513c9e404e48b30bf9fc69
   react-native-biometrics: 43ed5b828646a7862dbc7945556446be00798e7d
+  react-native-blob-util: 97d6fd6ee0c44a52cde1c8ab52639457a06dfca3
   react-native-document-picker: cc1861518db77f88540bfa7739b15e231e9203bc
+  react-native-get-random-values: 858016fc705257e01e7d4b536edadfb25fe54c00
   react-native-image-picker: 405433f5b42fb7600132a6bff5ae7175c3be3195
   react-native-image-resizer: 17b2d73c030975b6543395c7e7368bc8774c5efa
   react-native-netinfo: 387c95161b1971d0b2acd61f5ecf394c8fd3fb95
@@ -4594,4 +4632,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1858476152bee4e4d2ebe8d4740f4ebcf945c538
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.17.0

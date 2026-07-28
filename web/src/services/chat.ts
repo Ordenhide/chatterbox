@@ -21,7 +21,8 @@ import {
 } from 'firebase/firestore';
 import {db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
-import type {ChatMessage, ChatRoom, UserProfile} from '../types';
+import {assertRecipientReachable} from './recipient';
+import type {ChatMessage, ChatRoom, EncryptedField, UserProfile} from '../types';
 
 export const MESSAGE_PAGE_SIZE = 30;
 
@@ -176,18 +177,32 @@ export interface OutgoingMedia {
   replyTo?: ChatMessage['replyTo'];
   mentions?: string[];
   gif?: ChatMessage['gif'];
+  // E2EE — set by ChatPane's encryptOutgoingMessage in place of the plain
+  // field it seals (see services/e2ee.ts). sendMessage below only persists
+  // whatever it's given; it has no key material and does no sealing itself.
+  encrypted?: EncryptedField;
+  encryptedImage?: EncryptedField;
+  encryptedAudio?: EncryptedField;
+  encryptedFileUri?: EncryptedField;
 }
 
 /**
  * Sends a message (text and/or media), matching the mobile document shape and
  * the lastMessage / unreadCountBy chat-metadata update so mobile and web
  * interoperate. Media URLs come from Firebase Storage (see services/storage).
+ *
+ * Throws RecipientUnreachableError if the other participant deleted their
+ * account. The check lives here rather than in the composer because every send
+ * path — text, image, file, voice, GIF, scheduled — funnels through this one
+ * function, and a guard in the UI would have to be repeated at each of them.
  */
 export async function sendMessage(
   chatId: string,
   media: OutgoingMedia,
   me: {uid: string; name: string},
 ): Promise<void> {
+  await assertRecipientReachable(chatId, me.uid);
+
   const messageId =
     typeof crypto !== 'undefined' && crypto.randomUUID
       ? crypto.randomUUID()
@@ -210,12 +225,27 @@ export async function sendMessage(
   if (media.replyTo) doc_.replyTo = media.replyTo;
   if (media.mentions && media.mentions.length) doc_.mentions = media.mentions;
   if (media.gif) doc_.gif = media.gif;
+  if (media.encrypted) doc_.encrypted = media.encrypted;
+  if (media.encryptedImage) doc_.encryptedImage = media.encryptedImage;
+  if (media.encryptedAudio) doc_.encryptedAudio = media.encryptedAudio;
+  if (media.encryptedFileUri) doc_.encryptedFileUri = media.encryptedFileUri;
 
   await setDoc(doc(db, 'chats', chatId, 'messages', messageId), doc_);
 
-  // Never leak burn-message text into the chat-list preview.
+  // Never leak burn-message text into the chat-list preview. An encrypted
+  // send clears the plain field it seals (see ChatPane's
+  // encryptOutgoingMessage), so without this branch the preview would go
+  // blank instead of falling through to '[GIF]' / '[Photo]' / etc.
+  const isEncrypted = !!(
+    media.encrypted ||
+    media.encryptedImage ||
+    media.encryptedAudio ||
+    media.encryptedFileUri
+  );
   const preview = media.burnAfterReading
     ? '🔥'
+    : isEncrypted
+    ? '🔒 Encrypted message'
     : media.text ||
       (media.gif ? '[GIF]' : media.image ? '[Photo]' : media.audio ? '[Voice message]' : media.file ? '[File]' : '');
 

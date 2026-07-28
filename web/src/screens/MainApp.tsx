@@ -3,7 +3,6 @@ import type {User} from 'firebase/auth';
 import {colors} from '../theme';
 import {useT} from '../i18n';
 import BrandMark from '../components/BrandMark';
-import {ensureActiveSession} from '../services/storage';
 import {heartbeat} from '../services/presence';
 import {useIsMobile} from '../hooks/useIsMobile';
 import {useHashRoute, type Tab} from '../hooks/useHashRoute';
@@ -110,11 +109,6 @@ export default function MainApp({user}: {user: User}) {
       )}
     </span>
   );
-
-  // Ensure a session is claimed so Storage-gated media (photos/voice) works.
-  useEffect(() => {
-    ensureActiveSession(user.uid).catch(() => undefined);
-  }, [user.uid]);
 
   // Presence heartbeat while the tab is open/visible.
   useEffect(() => {

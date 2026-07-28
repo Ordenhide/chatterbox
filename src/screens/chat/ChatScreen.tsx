@@ -58,7 +58,6 @@ import {
   getMessagesPage,
   getUserById,
   listenChat,
-  listenLatestCall,
   listenMessages,
   sendMessage,
   setChatName,
@@ -72,10 +71,26 @@ import {
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
+import {computeSafetyNumber, decryptMessage, encryptMessage, isEncryptedPayload} from '../../services/e2ee';
+import {
+  fetchPeerPublicKey,
+  fetchPeerPublicKeyChecked,
+  getOrCreateDeviceKeypair,
+} from '../../services/e2eeKeys';
+import {
+  hasLostPeer,
+  isProfileDeleted,
+  isRecipientUnreachable,
+} from '../../services/recipient';
 import {scheduleMessage, listenScheduledMessages} from '../../services/scheduledMessages';
 import {createSharedList, updateSharedListItem} from '../../services/sharedLists';
 import {createReminder} from '../../services/reminders';
 import {transcribeVoiceMessage} from '../../services/transcription';
+import {
+  encodeAudioForInline,
+  isDataUri,
+  materializeInlineAudio,
+} from '../../services/inlineAudio';
 import {getChatSummary} from '../../services/aiSummary';
 import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
@@ -86,7 +101,6 @@ import {listenChatPet, feedPet, calculatePetMood, decayHealth} from '../../servi
 import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {isScreenshotProtectionEnabled, isLinkPreviewEnabled, isStealthMode, generateWatermark, isExifStrippingEnabled} from '../../services/privacyGuard';
-import {generateSafetyNumber} from '../../services/messageExpiry';
 import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
@@ -117,7 +131,19 @@ export default function ChatScreen() {
   const [nameModalVisible, setNameModalVisible] = useState(false);
   const [otherUserId, setOtherUserId] = useState<string | null>(null);
   const [otherUser, setOtherUser] = useState<User | null>(null);
-  const [canListenCalls, setCanListenCalls] = useState(false);
+  // Set when e2eeKeys detects the peer's public key changed after this device
+  // had already trusted one for them — could be a substitution attack, could
+  // be a reinstall. Surfaced as a banner rather than acted on automatically,
+  // since this prototype cannot tell the two apart on its own.
+  const [peerKeyChanged, setPeerKeyChanged] = useState(false);
+  // The other person deleted their account. Two independent signals feed this
+  // (services/recipient.ts): they vanished from the chat's participants, or
+  // their profile document is gone. A deleted account leaves its chats behind —
+  // this side keeps their own messages — so without this the conversation looks
+  // completely normal and messages sent into it are read by nobody, forever.
+  const [peerMissingFromChat, setPeerMissingFromChat] = useState(false);
+  const [peerProfileGone, setPeerProfileGone] = useState(false);
+  const peerDeleted = peerMissingFromChat || peerProfileGone;
   const [isTyping, setIsTyping] = useState(false);
   const [showTimestamps, setShowTimestamps] = useState(false);
   const [actionsModalVisible, setActionsModalVisible] = useState(false);
@@ -190,20 +216,94 @@ export default function ChatScreen() {
   const pendingRef = useRef<IMessage[]>([]);
   const cacheWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingCacheRef = useRef<{chatId: string; messages: IMessage[]} | null>(null);
+  // Decrypted plaintext by message id, so a message is decrypted once and
+  // reused across snapshot re-renders rather than re-decrypted every time the
+  // listener fires for an unrelated change elsewhere in the chat. One map per
+  // field, mirroring the encryptedX sibling fields on the Message type.
+  const decryptedTextRef = useRef<Map<string, string>>(new Map());
+  const decryptedImageRef = useRef<Map<string, string>>(new Map());
+  const decryptedVideoRef = useRef<Map<string, string>>(new Map());
+  const decryptedAudioRef = useRef<Map<string, string>>(new Map());
+  const decryptedFileUriRef = useRef<Map<string, string>>(new Map());
 
+  /**
+   * Best-effort E2EE for everything personal in an outgoing message: text,
+   * and any of image/video/audio/file.uri that are present. If the peer has
+   * no published key — not enrolled, offline, or any failure resolving one —
+   * every field is returned exactly as given: plaintext, same as before this
+   * feature existed. A message is never held back or dropped for lack of a
+   * key. Used by every send path, INCLUDING the outbox flush, so a message
+   * queued while offline gets the same protection as one sent live once the
+   * network returns — that path used to send the queued plaintext outright.
+   *
+   * This is also where a changed peer key is noticed and surfaced: see
+   * fetchPeerPublicKeyChecked in e2eeKeys.ts.
+   *
+   * Declared this early (rather than near onSend, its main caller) because
+   * the outbox-flush effect further down needs it in a dependency array —
+   * useCallback/useEffect deps are evaluated as part of the component's
+   * synchronous render, so referencing a `const` before its own declaration
+   * line is a real temporal-dead-zone crash, not just a style nit.
+   */
+  const encryptOutgoingMessage = useCallback(
+    async (data: ChatMessage): Promise<ChatMessage> => {
+      if (!user || !otherUserId || !chatId) return data;
+      try {
+        const {key: peerPublicKey, status} = await fetchPeerPublicKeyChecked(otherUserId);
+        if (status === 'changed') setPeerKeyChanged(true);
+        if (!peerPublicKey) return data;
+
+        const {secretKey} = await getOrCreateDeviceKeypair(user.uid);
+        const seal = (plaintext: string) => encryptMessage(plaintext, secretKey, peerPublicKey, chatId);
+        const next: ChatMessage = {...data};
+
+        if (next.text) {
+          next.encrypted = seal(next.text);
+          next.text = '';
+        }
+        if (next.image) {
+          next.encryptedImage = seal(next.image);
+          next.image = undefined;
+        }
+        if (next.video) {
+          next.encryptedVideo = seal(next.video);
+          next.video = undefined;
+        }
+        if (next.audio) {
+          next.encryptedAudio = seal(next.audio);
+          next.audio = undefined;
+        }
+        if (next.file?.uri) {
+          next.encryptedFileUri = seal(next.file.uri);
+          next.file = {...next.file, uri: ''};
+        }
+        return next;
+      } catch (e2eeError) {
+        reportError(e2eeError, 'e2ee_send_failed');
+        return data;
+      }
+    },
+    [user, otherUserId, chatId],
+  );
+
+  // Voice-grade AAC. At 128 kbps a clip outgrew the inline budget after ~30s;
+  // 32 kbps mono at 24 kHz is transparent for speech and fits ~2 minutes, which
+  // is what lets voice messages live inside the Firestore document. Matches the
+  // web client's recorder settings.
   const audioSet: AudioSet = {
     // Android
     AudioSourceAndroid: AudioSourceAndroidType.MIC,
     OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
     AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-    AudioEncodingBitRateAndroid: 128000,
-    AudioSamplingRateAndroid: 44100,
+    AudioEncodingBitRateAndroid: 32000,
+    AudioSamplingRateAndroid: 24000,
     AudioChannelsAndroid: 1,
     // iOS
     AVFormatIDKeyIOS: AVEncodingOption.aac,
-    AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+    AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.medium,
+    AVEncoderBitRateKeyIOS: 32000,
     AVNumberOfChannelsKeyIOS: 1,
-    AVSampleRateKeyIOS: 44100,
+    AVSampleRateKeyIOS: 24000,
     AVModeIOS: AVModeIOSOption.voicechat,
   };
 
@@ -319,6 +419,58 @@ export default function ChatScreen() {
             scheduledFor: (msg as any).scheduledFor,
             gif: (msg as any).gif,
             timeCapsule: (msg as any).timeCapsule,
+            // E2EE: substitute cached plaintext once decrypted (below); until
+            // then, the plain field is genuinely empty — the sender clears it
+            // when sealing, so there is no ciphertext to accidentally render —
+            // and a "🔒 …" placeholder stands in via `text`. Each encryptedX
+            // field is carried through so the decrypt pass below can find it
+            // again without re-reading the original snapshot.
+            ...(isEncryptedPayload((msg as any).encrypted)
+              ? {
+                  text: decryptedTextRef.current.get(String(msg._id)) ?? '🔒 …',
+                  encrypted: (msg as any).encrypted,
+                }
+              : null),
+            ...(isEncryptedPayload((msg as any).encryptedImage)
+              ? {
+                  image: decryptedImageRef.current.get(String(msg._id)) || undefined,
+                  encryptedImage: (msg as any).encryptedImage,
+                }
+              : null),
+            ...(isEncryptedPayload((msg as any).encryptedVideo)
+              ? {
+                  video: decryptedVideoRef.current.get(String(msg._id)) || undefined,
+                  encryptedVideo: (msg as any).encryptedVideo,
+                }
+              : null),
+            ...(isEncryptedPayload((msg as any).encryptedAudio)
+              ? {
+                  audio: decryptedAudioRef.current.get(String(msg._id)) || undefined,
+                  encryptedAudio: (msg as any).encryptedAudio,
+                }
+              : null),
+            ...(isEncryptedPayload((msg as any).encryptedFileUri)
+              ? {
+                  file: decryptedFileUriRef.current.has(String(msg._id))
+                    ? {...msg.file, uri: decryptedFileUriRef.current.get(String(msg._id))!}
+                    : undefined,
+                  encryptedFileUri: (msg as any).encryptedFileUri,
+                }
+              : null),
+            // A media message has empty `text` from the sender; show the same
+            // lock placeholder there until its own field (above) resolves, so
+            // the bubble isn't just blank while decryption is in flight.
+            ...(!isEncryptedPayload((msg as any).encrypted) &&
+            (isEncryptedPayload((msg as any).encryptedImage) ||
+              isEncryptedPayload((msg as any).encryptedVideo) ||
+              isEncryptedPayload((msg as any).encryptedAudio) ||
+              isEncryptedPayload((msg as any).encryptedFileUri)) &&
+            !decryptedImageRef.current.has(String(msg._id)) &&
+            !decryptedVideoRef.current.has(String(msg._id)) &&
+            !decryptedAudioRef.current.has(String(msg._id)) &&
+            !decryptedFileUriRef.current.has(String(msg._id))
+              ? {text: '🔒 …'}
+              : null),
             user: {
               _id: msg.user._id,
               name: msg.user.name || 'User',
@@ -341,7 +493,103 @@ export default function ChatScreen() {
         })();
         setMessages(merged);
         scheduleMessageCacheWrite(chatId, formattedMessages);
-        
+
+        // E2EE: decrypt any messages in this batch not already resolved, then
+        // patch their placeholder(s) in place. Deliberately runs after
+        // setMessages(merged) rather than blocking it, so the placeholder
+        // ("🔒 …") is visible immediately instead of delaying the whole list.
+        const needsDecrypt = (m: IMessage) => {
+          const em = m as any;
+          const id = String(m._id);
+          return (
+            (isEncryptedPayload(em.encrypted) && !decryptedTextRef.current.has(id)) ||
+            (isEncryptedPayload(em.encryptedImage) && !decryptedImageRef.current.has(id)) ||
+            (isEncryptedPayload(em.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
+            (isEncryptedPayload(em.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
+            (isEncryptedPayload(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id))
+          );
+        };
+        const toDecrypt = merged.filter(needsDecrypt);
+        if (toDecrypt.length) {
+          (async () => {
+            try {
+              const {secretKey} = await getOrCreateDeviceKeypair(user.uid);
+              if (!active) return;
+              toDecrypt.forEach(m => {
+                const em = m as any;
+                const id = String(m._id);
+                let mediaFailed = false;
+
+                if (isEncryptedPayload(em.encrypted) && !decryptedTextRef.current.has(id)) {
+                  try {
+                    decryptedTextRef.current.set(id, decryptMessage(em.encrypted, secretKey, chatId));
+                  } catch (decryptError) {
+                    // Wrong/rotated key, or a payload from before this device
+                    // enrolled — distinct from "still loading" so it doesn't
+                    // spin on the placeholder forever.
+                    reportError(decryptError, 'e2ee_decrypt_failed');
+                    decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                  }
+                }
+
+                const mediaField = (
+                  payload: unknown,
+                  cache: React.MutableRefObject<Map<string, string>>,
+                ) => {
+                  if (!isEncryptedPayload(payload) || cache.current.has(id)) return;
+                  try {
+                    cache.current.set(id, decryptMessage(payload as any, secretKey, chatId));
+                  } catch (decryptError) {
+                    reportError(decryptError, 'e2ee_decrypt_failed');
+                    cache.current.set(id, '');
+                    mediaFailed = true;
+                  }
+                };
+                mediaField(em.encryptedImage, decryptedImageRef);
+                mediaField(em.encryptedVideo, decryptedVideoRef);
+                mediaField(em.encryptedAudio, decryptedAudioRef);
+                mediaField(em.encryptedFileUri, decryptedFileUriRef);
+
+                // A media message has no `encrypted` text of its own to carry
+                // a failure message, so surface it the same way a text
+                // decrypt failure does.
+                if (mediaFailed && !isEncryptedPayload(em.encrypted)) {
+                  decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                }
+              });
+              if (active) {
+                setMessages(prev =>
+                  prev.map(item => {
+                    const id = String(item._id);
+                    const patch: Record<string, unknown> = {};
+                    if (decryptedTextRef.current.has(id)) {
+                      patch.text = decryptedTextRef.current.get(id);
+                    }
+                    if (decryptedImageRef.current.has(id)) {
+                      patch.image = decryptedImageRef.current.get(id) || undefined;
+                    }
+                    if (decryptedVideoRef.current.has(id)) {
+                      patch.video = decryptedVideoRef.current.get(id) || undefined;
+                    }
+                    if (decryptedAudioRef.current.has(id)) {
+                      patch.audio = decryptedAudioRef.current.get(id) || undefined;
+                    }
+                    if (decryptedFileUriRef.current.has(id) && (item as any).file) {
+                      patch.file = {
+                        ...(item as any).file,
+                        uri: decryptedFileUriRef.current.get(id) || '',
+                      };
+                    }
+                    return Object.keys(patch).length ? {...item, ...patch} : item;
+                  }),
+                );
+              }
+            } catch (keyError) {
+              reportError(keyError, 'e2ee_decrypt_key_unavailable');
+            }
+          })();
+        }
+
         // Prefetch images for better UX
         prefetchMessageImages(formattedMessages.slice(0, 20));
       });
@@ -491,12 +739,26 @@ export default function ChatScreen() {
       for (const item of forChat) {
         if (!active) return;
         try {
-          await sendMessage(chatId, item.message);
+          // Encrypts here, not at enqueue time: fetching the peer's key needs
+          // network, which is exactly what wasn't available when this was
+          // queued. This used to send `item.message` — the original plaintext
+          // — outright, so anything sent while offline permanently skipped
+          // E2EE even when the peer had a key.
+          const outgoing = await encryptOutgoingMessage(item.message);
+          await sendMessage(chatId, outgoing);
           await removeOutboxMessage(user.uid, item.id);
           setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
           setMessages(prev => prev.filter(m => !(String(m._id) === item.id && (m as any).pending)));
         } catch (error) {
-          // Keep in outbox if it still fails.
+          // Keep in outbox if it still fails — unless the recipient deleted
+          // their account, which no amount of retrying will fix. Left queued,
+          // it would be re-attempted on every launch and stay stuck on screen
+          // as a pending message that never resolves.
+          if (isRecipientUnreachable(error)) {
+            await removeOutboxMessage(user.uid, item.id);
+            setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
+            setMessages(prev => prev.filter(m => String(m._id) !== item.id));
+          }
         }
       }
     };
@@ -504,7 +766,44 @@ export default function ChatScreen() {
     return () => {
       active = false;
     };
-  }, [chatId, user, isOnline]);
+  }, [chatId, user, isOnline, encryptOutgoingMessage]);
+
+  // Proactively checks the peer's key when the chat opens, not just when this
+  // device sends something — encryptOutgoingMessage's check would otherwise
+  // miss a device that only ever reads this conversation and never sends.
+  useEffect(() => {
+    // Reset first: a screen instance can be reused across chats (e.g. tapping
+    // between conversations without fully unmounting), and a flag left over
+    // from the previous peer must not paint onto this one while we check.
+    setPeerKeyChanged(false);
+    if (!otherUserId) return;
+    let active = true;
+    fetchPeerPublicKeyChecked(otherUserId)
+      .then(({status}) => {
+        if (active && status === 'changed') setPeerKeyChanged(true);
+      })
+      .catch(error => reportError(error, 'e2ee_key_change_check_failed'));
+    return () => {
+      active = false;
+    };
+  }, [otherUserId]);
+
+  // Authoritative half of the deleted-account check: the peer is still listed
+  // as a participant, but their profile is gone — a purge that removed the
+  // account without finishing every chat. Same reset-first reasoning as above.
+  useEffect(() => {
+    setPeerProfileGone(false);
+    if (!otherUserId) return;
+    let active = true;
+    isProfileDeleted(otherUserId)
+      .then(gone => {
+        if (active) setPeerProfileGone(gone);
+      })
+      .catch(error => reportError(error, 'recipient_check_failed'));
+    return () => {
+      active = false;
+    };
+  }, [otherUserId]);
 
   useEffect(() => {
     if (!chatId || !user) return;
@@ -558,14 +857,17 @@ export default function ChatScreen() {
 
       const unsubscribe = listenChat(chatId, async chat => {
         if (!chat || !Array.isArray(chat.participants)) {
-          setCanListenCalls(false);
           return;
         }
         if (!chat.participants.includes(user.uid)) {
-          setCanListenCalls(false);
           return;
         }
-        setCanListenCalls(true);
+        // Structural half of the deleted-account check. purgeChat in
+        // services/account.ts is the only code that ever removes a participant,
+        // and createChat writes both uids at once, so a 1:1 chat down to one
+        // participant means the other person deleted their account.
+        setPeerMissingFromChat(hasLostPeer(chat.participants, user.uid));
+
         const otherId = chat.participants.find(id => id !== user.uid);
         if (otherId) {
           const otherUser = await getUserById(otherId);
@@ -599,44 +901,10 @@ export default function ChatScreen() {
     }, [chatId, user]),
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!chatId || !user || !canListenCalls) return;
-      let handledCallId: string | null = null;
-      const unsubscribe = listenLatestCall(chatId, call => {
-        if (!call) return;
-        if (call.status !== 'ringing') return;
-        if (call.createdBy === user.uid) return;
-        if (handledCallId === call.id) return;
-        const createdAt = (call.createdAt as any)?.toDate
-          ? (call.createdAt as any).toDate().getTime()
-          : new Date(call.createdAt as any).getTime();
-        if (Number.isFinite(createdAt) && Date.now() - createdAt > 60000) {
-          updateCall(chatId, call.id, {status: 'ended'});
-          return;
-        }
-        handledCallId = call.id;
-        Alert.alert('Incoming call', call.type === 'video' ? 'Video call' : 'Voice call', [
-          {
-            text: 'Decline',
-            style: 'destructive',
-            onPress: () => updateCall(chatId, call.id, {status: 'ended'}),
-          },
-          {
-            text: 'Accept',
-            onPress: () =>
-              navigation.navigate('Call' as never, {
-                chatId,
-                callId: call.id,
-                isCaller: false,
-                type: call.type,
-              } as never),
-          },
-        ]);
-      });
-      return () => unsubscribe();
-    }, [chatId, user, navigation, canListenCalls]),
-  );
+  // Incoming calls are handled app-wide by IncomingCallManager (mounted in
+  // App.tsx), which rings and shows the answer UI wherever the user is. A
+  // second listener here fired a competing Alert whenever this chat happened
+  // to be open, so the same call prompted twice.
 
   useEffect(() => {
     if (!chatId) return;
@@ -858,6 +1126,36 @@ export default function ChatScreen() {
       }
     },
     [],
+  );
+
+  /**
+   * Resolves a locally recorded file into something the *recipient* can play.
+   *
+   * Inline-first: short clips are embedded in the message document as a base64
+   * data URI, so voice messages work without Cloud Storage (which requires a
+   * paid Firebase plan). Only clips too large to embed are uploaded, so
+   * enabling billing later widens the limit with no code change. Mirrors the
+   * web client. Returns null when neither route is available.
+   */
+  const prepareAudioForSend = useCallback(
+    async (fileUri: string, label: string): Promise<string | null> => {
+      try {
+        const inline = await encodeAudioForInline(fileUri);
+        if (inline) return inline;
+      } catch (error) {
+        reportError(error, 'voice_inline_encode');
+      }
+      if (!chatId) return null;
+      try {
+        return await runUpload(label, progress =>
+          uploadFile(chatId, fileUri, `audio_${Date.now()}.m4a`, progress),
+        );
+      } catch (error) {
+        reportError(error, 'voice_overflow_upload');
+        return null;
+      }
+    },
+    [chatId, runUpload],
   );
 
   const handleScheduleSend = useCallback(async () => {
@@ -1118,15 +1416,33 @@ export default function ChatScreen() {
 
       Alert.alert('Transcribing...', 'Converting your speech to text.');
 
+      // `uri` is a path on *this* device; sending it raw produced a message the
+      // recipient could never play. Resolve it to an inline clip (or an upload)
+      // the same way a normal voice message is sent.
+      const audioUrl = await prepareAudioForSend(uri, 'Uploading dictation');
+      if (!audioUrl) {
+        setDictating(false);
+        Alert.alert(t('chat.voiceTooLongTitle'), t('chat.voiceTooLongBody'));
+        return;
+      }
+
+      // Deliberately NOT run through encryptOutgoingMessage: transcribeVoiceMessage
+      // below is a server-side Cloud Function that reads msg.audio to run
+      // speech-to-text (currently a stub, but functions/index.js documents real
+      // STT as the intended implementation). A server-side step fundamentally
+      // needs the plaintext bytes — encrypting first would make transcription
+      // permanently impossible rather than just currently unconfigured. The
+      // plain voice-message path (sendRecording, below) has no such constraint
+      // and is encrypted.
       const tempMsgId = `dictation_${Date.now()}`;
       await sendMessage(chatId, {
         _id: tempMsgId,
         text: '',
         createdAt: new Date(),
-        audio: uri,
+        audio: audioUrl,
         audioDuration: dictationSeconds,
         user: {_id: user.uid, name: user.displayName || user.email || 'User'},
-      } as any);
+      } as ChatMessage);
 
       try {
         const transcription = await transcribeVoiceMessage(chatId, tempMsgId);
@@ -1140,7 +1456,7 @@ export default function ChatScreen() {
       setDictating(false);
       Alert.alert('Error', 'Failed to process dictation.');
     }
-  }, [chatId, user, dictationSeconds]);
+  }, [chatId, user, dictationSeconds, prepareAudioForSend, t]);
 
   const renderActions = useCallback(
     () => (
@@ -1163,6 +1479,40 @@ export default function ChatScreen() {
     const matches = text.match(/@([a-zA-Z0-9_]+)/g) || [];
     return matches.map(match => match.slice(1));
   };
+
+  /**
+   * Computes and shows the safety number for out-of-band verification, and
+   * clears the "key changed" banner — verifying is the one action that should
+   * dismiss it, since nothing else naturally would once it's set.
+   */
+  const verifyContact = useCallback(async () => {
+    if (!otherUserId || !user) return;
+    try {
+      const [{publicKey: myPublicKey}, peerPublicKey] = await Promise.all([
+        getOrCreateDeviceKeypair(user.uid),
+        fetchPeerPublicKey(otherUserId),
+      ]);
+      if (!peerPublicKey) {
+        Alert.alert(
+          'Verify Contact',
+          "Your contact hasn't set up secure messaging on their device yet, so there's no key to verify.",
+        );
+        return;
+      }
+      // Computed from the actual encryption keys, not identities — if a
+      // compromised server substituted either key, the two devices would
+      // show different numbers here. See computeSafetyNumber().
+      const sn = computeSafetyNumber(myPublicKey, peerPublicKey);
+      setPeerKeyChanged(false);
+      Alert.alert(
+        'Safety Number',
+        `${sn}\n\nCompare this with your contact in person or over a trusted channel. If it matches on both devices, this chat is encrypted directly between you two.`,
+      );
+    } catch (error) {
+      reportError(error, 'safety_number_failed');
+      Alert.alert('Verify Contact', 'Unable to compute a safety number right now.');
+    }
+  }, [otherUserId, user]);
 
   const onSend = useCallback(
     async (newMessages: IMessage[] = []) => {
@@ -1242,9 +1592,23 @@ export default function ChatScreen() {
       }
 
       try {
-        await sendMessage(chatId, messageData);
+        const outgoing = await encryptOutgoingMessage(messageData);
+        await sendMessage(chatId, outgoing);
         removePendingMessage(String(messageData._id));
       } catch (error) {
+        // A deleted recipient is permanent, so it must never reach the outbox:
+        // every retry would fail identically and the message would sit in the
+        // queue forever, re-appearing as pending on each launch.
+        if (isRecipientUnreachable(error)) {
+          removePendingMessage(String(messageData._id));
+          setMessages(prev => prev.filter(m => String(m._id) !== String(messageData._id)));
+          setInputText(message.text || '');
+          Alert.alert(t('chat.recipientDeleted'), t('chat.recipientDeletedComposer'));
+          return;
+        }
+        // Queued for retry as the original, unencrypted messageData —
+        // flushOutbox re-encrypts at send time rather than here, since the
+        // peer's key may only become fetchable once connectivity returns.
         await enqueueOutboxMessage(user.uid, {
           id: String(messageData._id),
           chatId,
@@ -1258,7 +1622,22 @@ export default function ChatScreen() {
         void addLinkPreview(chatId, messageData._id, url);
       }
     },
-    [chatId, user, replyTo, isOnline, removePendingMessage, burnMode, burnDuration, invisibleInkMode, messageStyle, anonymousMode, chatPet],
+    [
+      chatId,
+      user,
+      replyTo,
+      isOnline,
+      otherUserId,
+      removePendingMessage,
+      burnMode,
+      burnDuration,
+      invisibleInkMode,
+      messageStyle,
+      anonymousMode,
+      chatPet,
+      encryptOutgoingMessage,
+      t,
+    ],
   );
 
   const sendGestureMessage = useCallback(async () => {
@@ -1418,9 +1797,9 @@ export default function ChatScreen() {
     };
 
     if (viewOnceMode) setViewOnceMode(false);
-    await sendMessage(chatId, messageData);
+    await sendMessage(chatId, await encryptOutgoingMessage(messageData));
     setReplyTo(null);
-  }, [chatId, user, replyTo, isOnline, viewOnceMode]);
+  }, [chatId, user, replyTo, isOnline, viewOnceMode, encryptOutgoingMessage]);
 
   const handlePickFile = useCallback(async () => {
     if (!chatId || !user) return;
@@ -1474,7 +1853,7 @@ export default function ChatScreen() {
         },
       };
 
-      await sendMessage(chatId, messageData);
+      await sendMessage(chatId, await encryptOutgoingMessage(messageData));
       setReplyTo(null);
       HapticFeedback.trigger('impactLight');
     } catch (error: any) {
@@ -1482,7 +1861,7 @@ export default function ChatScreen() {
         Alert.alert('Error', 'Unable to pick file');
       }
     }
-  }, [chatId, user, replyTo, isOnline]);
+  }, [chatId, user, replyTo, isOnline, encryptOutgoingMessage]);
 
   const startRecording = async () => {
     try {
@@ -1516,13 +1895,9 @@ export default function ChatScreen() {
       Alert.alert('Offline', 'Voice messages require an internet connection.');
       return;
     }
-    let remoteUrl: string | null = null;
-    try {
-      remoteUrl = await runUpload('Uploading voice message', progress =>
-        uploadFile(chatId, recordedUri, `audio_${Date.now()}.m4a`, progress),
-      );
-    } catch (error) {
-      Alert.alert('Storage required', 'Voice messages need Firebase Storage enabled.');
+    const remoteUrl = await prepareAudioForSend(recordedUri, 'Uploading voice message');
+    if (!remoteUrl) {
+      Alert.alert(t('chat.voiceTooLongTitle'), t('chat.voiceTooLongBody'));
       return;
     }
     const messageData: ChatMessage = {
@@ -1550,14 +1925,25 @@ export default function ChatScreen() {
         avatar: user.photoURL,
       },
     };
-    await sendMessage(chatId, messageData);
+    await sendMessage(chatId, await encryptOutgoingMessage(messageData));
     setReplyTo(null);
     setRecordModalVisible(false);
     setRecordedUri(null);
     setRecordedDuration(null);
     setVoiceFilter('none');
     HapticFeedback.trigger('impactLight');
-  }, [recordedUri, recordedDuration, chatId, user, replyTo, isOnline, voiceFilter]);
+  }, [
+    recordedUri,
+    recordedDuration,
+    chatId,
+    user,
+    replyTo,
+    isOnline,
+    voiceFilter,
+    prepareAudioForSend,
+    t,
+    encryptOutgoingMessage,
+  ]);
 
   const playAudio = async (messageId: string | number, uri: string) => {
     try {
@@ -1567,7 +1953,14 @@ export default function ChatScreen() {
         return;
       }
       setPlayingAudioId(messageId);
-      await recorderRef.current.startPlayer(uri);
+      // Native playback (AVAudioPlayer / MediaPlayer) accepts a file or http(s)
+      // URL but not a `data:` URI, so an inline clip is decoded to a real file
+      // first. Cached per message id, so replaying costs nothing after the
+      // first decode.
+      const playableUri = isDataUri(uri)
+        ? await materializeInlineAudio(uri, messageId)
+        : uri;
+      await recorderRef.current.startPlayer(playableUri);
       await recorderRef.current.setVolume(1.0);
       recorderRef.current.addPlayBackListener(e => {
         if (e.currentPosition >= e.duration) {
@@ -2503,6 +2896,25 @@ export default function ChatScreen() {
           <Text style={styles.offlineText}>Offline — messages will send when you're back online</Text>
         </View>
       ) : null}
+      {peerDeleted ? (
+        // A fixed slate rather than a palette token: styles.offlineText is
+        // hard-coded to dark ink, so every banner background has to stay light
+        // in dark mode too, and no neutral in the palette is light in both.
+        <View style={[styles.offlineBanner, {backgroundColor: '#C7CDD6'}]}>
+          <Text style={styles.offlineText}>
+            {'🚫'} {t('chat.recipientDeleted')}
+          </Text>
+        </View>
+      ) : null}
+      {peerKeyChanged && !peerDeleted ? (
+        <TouchableOpacity
+          style={[styles.offlineBanner, {backgroundColor: colors.danger}]}
+          onPress={verifyContact}>
+          <Text style={styles.offlineText}>
+            {'⚠️'} {otherUserName}'s security code changed. Tap to verify.
+          </Text>
+        </TouchableOpacity>
+      ) : null}
       {uploading ? (
         <View style={[styles.uploadBanner, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}>
           <Text style={[styles.uploadText, {color: colors.text}]}>
@@ -2602,6 +3014,25 @@ export default function ChatScreen() {
         user={giftedUser}
         text={inputText}
         onInputTextChanged={setInputText}
+        // Replaces the composer outright rather than disabling it. A greyed-out
+        // input still invites you to type something you can't send; a plain
+        // statement of why the conversation is over does not. Returning null
+        // from renderInputToolbar would leave a bare screen with no explanation.
+        renderInputToolbar={
+          peerDeleted
+            ? () => (
+                <View
+                  style={[
+                    styles.deletedComposer,
+                    {backgroundColor: colors.surface, borderTopColor: colors.border},
+                  ]}>
+                  <Text style={[styles.deletedComposerText, {color: colors.textSecondary}]}>
+                    {t('chat.recipientDeletedComposer')}
+                  </Text>
+                </View>
+              )
+            : undefined
+        }
         renderActions={renderActions}
         renderMessageImage={renderMessageImage}
         renderMessageVideo={renderMessageVideo}
@@ -2921,8 +3352,7 @@ export default function ChatScreen() {
                 style={styles.actionSheetItem}
                 onPress={() => {
                   setActionsModalVisible(false);
-                  const sn = generateSafetyNumber(user.uid, otherUserId);
-                  Alert.alert('Safety Number', `Your verification code with this contact:\n\n${sn}\n\nCompare this with your contact in person to verify identity.`);
+                  verifyContact();
                 }}>
                 <Text style={[styles.actionSheetText, {color: colors.text}]}>{'\uD83D\uDD10'} Verify Contact</Text>
               </TouchableOpacity>
@@ -3421,6 +3851,16 @@ const styles = StyleSheet.create({
     color: '#111',
     fontSize: 12,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  deletedComposer: {
+    paddingHorizontal: 24,
+    paddingVertical: 18,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  deletedComposerText: {
+    fontSize: 13,
+    lineHeight: 19,
     textAlign: 'center',
   },
   uploadBanner: {

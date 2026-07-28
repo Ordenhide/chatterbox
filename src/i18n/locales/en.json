@@ -55,13 +55,15 @@
       "title": "Create Account",
       "subtitle": "Sign up to get started",
       "displayNamePlaceholder": "Display Name (optional)",
-      "passwordPlaceholder": "Password (min 6 characters)",
+      "passwordPlaceholder": "Password (min 8 characters)",
       "hasAccount": "Already have an account?"
     },
     "errors": {
       "missingFields": "Please fill in all fields",
       "missingEmailPassword": "Please fill in email and password",
-      "passwordMin": "Password must be at least 6 characters",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordTooCommon": "That password is too common — please choose a less predictable one",
+      "passwordTooSimple": "That password is too predictable (repeated or sequential characters) — please choose another",
       "loginFailed": "Login Failed",
       "signUpFailed": "Sign Up Failed",
       "generic": "An error occurred",
@@ -252,12 +254,38 @@
       "feedback": "Send Feedback",
       "export": "Export Backup",
       "import": "Import Backup",
-      "signOut": "Sign Out"
+      "signOut": "Sign Out",
+      "changePassword": "Change Password",
+      "deleteAccount": "Delete Account"
+    },
+    "account": {
+      "changePasswordTitle": "Change password",
+      "changePasswordDescription": "You will stay signed in on this device.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "passwordChanged": "Your password has been changed.",
+      "passwordMismatch": "The new passwords do not match.",
+      "wrongPassword": "That current password is not correct.",
+      "tooManyRequests": "Too many attempts. Please try again later.",
+      "genericError": "Something went wrong. Please try again.",
+      "deleteTitle": "Delete account",
+      "deleteDescription": "Permanently deletes your account, profile, moments, saved items and the messages you sent. This cannot be undone.",
+      "deleteWhatHappens": "This permanently deletes:\n\n• Your profile, moments, saved items and friend connections\n• Messages and media you sent, in every conversation\n• Your encryption keys stored on this device\n\nMessages other people sent you stay in their own copy of the conversation.\n\nThis cannot be undone.",
+      "deleteConfirm": "Delete Everything",
+      "deleteEnterPassword": "Enter your password to permanently delete your account.",
+      "deleting": "Deleting your data…",
+      "deleteFailed": "Could not delete the account. Please try again.",
+      "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support."
     },
     "modals": {
       "exportTitle": "Export Backup",
       "importTitle": "Import Backup",
       "feedbackTitle": "Feedback",
+      "exportPassphraseHint": "Choose a passphrase of at least {{min}} characters. Your backup is encrypted with it, and it is never stored — if you lose it, the backup cannot be recovered.",
+      "passphrasePlaceholder": "Backup passphrase",
+      "encryptBackup": "Encrypt Backup",
+      "working": "Working…",
       "importPlaceholder": "Paste backup JSON here",
       "feedbackPlaceholder": "Tell us what's working and what isn't..."
     },
@@ -270,6 +298,7 @@
       "importFailedBody": "Invalid or incompatible backup JSON.",
       "exportFailedTitle": "Error",
       "exportFailedBody": "Unable to export backup.",
+      "passphraseTooShort": "Passphrase must be at least {{min}} characters.",
       "feedbackSuccessTitle": "Thanks!",
       "feedbackSuccessBody": "Your feedback has been submitted.",
       "feedbackFailedTitle": "Error",
@@ -306,7 +335,16 @@
     "errors": {
       "startFailed": "Unable to start call",
       "videoFailed": "Unable to enable video"
-    }
+    },
+    "incomingVoice": "Incoming voice call…",
+    "incomingVideo": "Incoming video call…",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cameraOn": "Camera on",
+    "cameraOff": "Camera off",
+    "cameraWillBeOff": "You will join with your camera off",
+    "cameraUnavailable": "Camera unavailable — you can still answer with audio",
+    "unknownCaller": "Someone"
   },
   "chatMedia": {
     "seconds": "{{count}}s"
@@ -318,12 +356,16 @@
     "more": "More",
     "attach": "Attach",
     "composerPlaceholder": "Type a message...",
+    "recipientDeleted": "This account has been deleted.",
+    "recipientDeletedComposer": "You can't send messages to a deleted account. Your existing conversation is still here to read.",
     "replyPreview": {
       "photo": "[Photo]",
       "video": "[Video]",
       "voiceMessage": "[Voice Message]",
       "file": "[File]"
-    }
+    },
+    "voiceTooLongTitle": "Recording too long",
+    "voiceTooLongBody": "That recording is too long to send. Try one under two minutes."
   },
   "chatSettings": {
     "notifications": "Notifications",
@@ -438,4 +480,3 @@
     "replay": "Replay tutorial"
   }
 }
-

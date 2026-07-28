@@ -7,6 +7,7 @@ import {
   persistentMultipleTabManager,
   type Firestore,
 } from 'firebase/firestore';
+import {getFunctions} from 'firebase/functions';
 
 /**
  * Firebase config for the WEB SDK.
@@ -58,6 +59,9 @@ if (recaptchaKey) {
 
 export {app};
 export const auth = getAuth(app);
+// No region override — matches the mobile client's getFunctions() default,
+// which resolves to the functions' actual deployed region (us-central1).
+export const functions = getFunctions(app);
 
 /**
  * Firestore with **offline persistence** (IndexedDB): the app opens with cached

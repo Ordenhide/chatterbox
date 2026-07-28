@@ -23,6 +23,7 @@ export default function CallModal({
   type,
   me,
   otherName,
+  initialCamOn = true,
   onClose,
 }: {
   chatId: string;
@@ -31,6 +32,8 @@ export default function CallModal({
   type: CallType;
   me: {uid: string; name: string};
   otherName: string;
+  /** Camera state picked on the answer screen, applied before the first frame is sent. */
+  initialCamOn?: boolean;
   onClose: () => void;
 }) {
   const {t} = useT();
@@ -38,7 +41,7 @@ export default function CallModal({
     isCaller ? 'ringing' : 'connecting',
   );
   const [micOn, setMicOn] = useState(true);
-  const [camOn, setCamOn] = useState(type === 'video');
+  const [camOn, setCamOn] = useState(type === 'video' && initialCamOn);
   const [error, setError] = useState<string | null>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -84,6 +87,12 @@ export default function CallModal({
       if (cancelled) {
         stream.getTracks().forEach(t => t.stop());
         return;
+      }
+      // Apply the answer-screen camera choice before the track is ever attached
+      // to the peer connection, so a call answered with the camera off never
+      // transmits a single frame.
+      if (type === 'video' && !initialCamOn) {
+        stream.getVideoTracks().forEach(t => (t.enabled = false));
       }
       localStreamRef.current = stream;
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
@@ -221,6 +230,8 @@ export default function CallModal({
     }
   };
 
+  const connected = status === 'active';
+
   const statusLabel = error
     ? ''
     : status === 'active'
@@ -235,7 +246,21 @@ export default function CallModal({
         {type === 'video' ? (
           <div style={styles.videoStage}>
             <video ref={remoteVideoRef} autoPlay playsInline style={styles.remoteVideo} />
-            <video ref={localVideoRef} autoPlay playsInline muted style={styles.localVideo} />
+            {/* Before the other side connects there is nothing to show but black,
+                so the local preview takes the full stage — that is the window in
+                which you most need to see what your camera is about to send. */}
+            <video
+              ref={localVideoRef}
+              autoPlay
+              playsInline
+              muted
+              style={connected ? styles.localVideo : styles.localVideoStage}
+            />
+            {!camOn && (
+              <div style={connected ? styles.localVideoOff : styles.localVideoOffStage}>
+                {t('call.cameraOff')}
+              </div>
+            )}
             <div style={styles.videoOverlayName}>{otherName}</div>
           </div>
         ) : (
@@ -311,6 +336,41 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 10,
     border: '2px solid rgba(255,255,255,0.5)',
     objectFit: 'cover',
+    transform: 'scaleX(-1)', // mirror, so your own preview reads like a mirror
+  },
+  /** Full-stage self-view used while the call is still connecting/ringing. */
+  localVideoStage: {
+    position: 'absolute',
+    inset: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transform: 'scaleX(-1)',
+  },
+  localVideoOff: {
+    position: 'absolute',
+    right: 12,
+    bottom: 12,
+    width: 120,
+    aspectRatio: '4 / 3',
+    borderRadius: 10,
+    border: '2px solid rgba(255,255,255,0.5)',
+    background: '#000',
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 11,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  localVideoOffStage: {
+    position: 'absolute',
+    inset: 0,
+    background: '#000',
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   videoOverlayName: {
     position: 'absolute',

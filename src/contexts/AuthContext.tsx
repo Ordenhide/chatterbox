@@ -18,11 +18,21 @@ import {clearSessionId, getSessionId, rotateSessionId} from '../services/session
 import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '@react-native-firebase/functions';
 import i18n from '../i18n';
+import {getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
 const TOKEN_REFRESH_WINDOW_MS = 5 * 60 * 1000;
 const SESSION_CLAIM_WAIT_MS = 15_000;
 const SESSION_ALERT_COOLDOWN_MS = 4_000;
+// The SDK default is 70s. claimSession/sessionHeartbeat both have a fallback
+// for when the function is unreachable (see claimNewSession and the
+// heartbeat's catch block below), but that fallback only helps if the call
+// actually *fails* in a reasonable time — a hung call still blocks sign-in
+// for up to 70s otherwise. This project's Cloud Functions currently run
+// against a closed billing account (2nd-gen functions need active billing to
+// execute, not just deploy — confirmed via the Cloud Billing API), so this
+// is a real, present failure mode, not a hypothetical one.
+const CLAIM_FUNCTION_TIMEOUT_MS = 8_000;
 
 function getAuthErrorMessage(error: any): string {
   const code = error?.code || '';
@@ -145,6 +155,13 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             reportError(error, 'startup_profile_sync');
           }
         })();
+        // Enrolls (or loads) this device's E2EE keypair and publishes the
+        // public half, so peers can encrypt to this user. Fire-and-forget:
+        // messaging still works as plaintext if this hasn't completed yet —
+        // see e2eeMessages.ts, which falls back when a peer key is missing.
+        getOrCreateDeviceKeypair(firebaseUser.uid).catch(error => {
+          reportError(error, 'e2ee_enroll_failed');
+        });
       } else {
         setUser(null);
         setTelemetryUser(null);
@@ -205,6 +222,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           await signOutDueToSession();
         }
       } catch (error) {
+        // Deliberately non-fatal, including for permission-denied.
+        // firestore.rules *is* written to deny this read once a token's
+        // auth_time falls behind the account's latest sessionClaimedAt — which
+        // would make permission-denied a genuine displacement signal — but
+        // those rules are not deployed yet. Until they are, a permission error
+        // here can only mean something unexpected (e.g. a token that has not
+        // propagated yet), and signing the user out over it costs a working
+        // session for no security benefit. Revisit alongside the rules
+        // deployment; ensureActiveSession below already handles the denial
+        // path for the case that actually matters today.
         reportError(error, 'session_check');
       }
     };
@@ -311,7 +338,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         if (!active || !user || appStateRef.current !== 'active' || heartbeatUnavailable) return;
         try {
           const heartbeatSessionId = await resolveSessionId();
-          const heartbeatFn = httpsCallable(functions, 'sessionHeartbeat');
+          const heartbeatFn = httpsCallable(functions, 'sessionHeartbeat', {timeout: CLAIM_FUNCTION_TIMEOUT_MS});
           await heartbeatFn({sessionId: heartbeatSessionId});
         } catch (error) {
           const code = (error as any)?.code;
@@ -370,7 +397,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const claimNewSession = async (uid: string, sessionId: string) => {
     try {
       const deviceInfo = await getDeviceInfo();
-      const claimSessionFn = httpsCallable(functions, 'claimSession');
+      const claimSessionFn = httpsCallable(functions, 'claimSession', {timeout: CLAIM_FUNCTION_TIMEOUT_MS});
       await claimSessionFn({
         sessionId,
         deviceInfo: {

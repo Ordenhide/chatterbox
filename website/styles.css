@@ -1,35 +1,51 @@
+/* Security-console palette, matched to the web client (web/src/styles.css) and
+   the mobile theme (src/theme/colors.ts): cool slate neutrals, one cyan signal
+   accent, a steel-blue support tone. Radii are tightened from 28/18/12 —
+   precise geometry is a large part of what makes a product read as tooling. */
 :root {
-  --bg: #eef1f8;
-  --bg-elevated: rgba(255, 255, 255, 0.72);
-  --bg-elevated-strong: rgba(255, 255, 255, 0.92);
-  --text: #09090f;
-  --text-secondary: rgba(12, 12, 18, 0.6);
-  --border: rgba(0, 0, 0, 0.08);
-  --primary: #3478f6;
-  --secondary: #5856d6;
-  --success: #34c759;
-  --tint-1: rgba(90, 140, 255, 0.28);
-  --tint-2: rgba(255, 120, 170, 0.22);
-  --tint-3: rgba(120, 230, 210, 0.2);
-  --shadow: rgba(20, 30, 60, 0.12);
-  --radius-lg: 28px;
-  --radius-md: 18px;
-  --radius-sm: 12px;
+  --bg: #eef2f7;
+  --bg-elevated: rgba(255, 255, 255, 0.75);
+  --bg-elevated-strong: rgba(255, 255, 255, 0.93);
+  --text: #0b1220;
+  --text-secondary: rgba(11, 18, 32, 0.62);
+  --border: rgba(15, 33, 60, 0.1);
+  /* Darkened accents: the dark-mode cyan fails contrast on a light canvas. */
+  --primary: #0b7f9e;
+  --primary-light: rgba(11, 127, 158, 0.12);
+  --text-on-primary: #ffffff;
+  --secondary: #2f62b5;
+  --success: #0f8f63;
+  --tint-1: rgba(11, 127, 158, 0.18);
+  --tint-2: rgba(47, 98, 181, 0.14);
+  --tint-3: rgba(15, 143, 99, 0.1);
+  --grid-line: rgba(15, 33, 60, 0.05);
+  --grid-size: 44px;
+  --shadow: rgba(15, 33, 60, 0.12);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
   --max-width: 1120px;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #08090e;
-    --bg-elevated: rgba(255, 255, 255, 0.06);
-    --bg-elevated-strong: rgba(255, 255, 255, 0.1);
-    --text: #f5f6fa;
-    --text-secondary: rgba(245, 246, 250, 0.62);
-    --border: rgba(255, 255, 255, 0.1);
-    --tint-1: rgba(90, 140, 255, 0.22);
-    --tint-2: rgba(255, 120, 170, 0.16);
-    --tint-3: rgba(120, 230, 210, 0.14);
-    --shadow: rgba(0, 0, 0, 0.5);
+    --bg: #070b12;
+    --bg-elevated: rgba(130, 173, 219, 0.05);
+    --bg-elevated-strong: rgba(18, 27, 40, 0.9);
+    --text: #e3ecf7;
+    --text-secondary: rgba(227, 236, 247, 0.6);
+    --border: rgba(130, 173, 219, 0.12);
+    --primary: #16b5d8;
+    --primary-light: rgba(22, 181, 216, 0.14);
+    --text-on-primary: #070b12;
+    --secondary: #4c82d8;
+    --success: #1fb57e;
+    --tint-1: rgba(22, 181, 216, 0.2);
+    --tint-2: rgba(76, 130, 216, 0.15);
+    --tint-3: rgba(31, 181, 126, 0.1);
+    --grid-line: rgba(130, 173, 219, 0.06);
+    --shadow: rgba(0, 0, 0, 0.55);
   }
 }
 
@@ -67,11 +83,25 @@ img {
   pointer-events: none;
 }
 
+/* Blueprint grid over the accent glows — matches the web client's backdrop
+   (web/src/styles.css) and the mobile LiquidGlassBackground. */
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid-size)),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
+  -webkit-mask-image: radial-gradient(120% 110% at 30% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(120% 110% at 30% 0%, #000 40%, transparent 100%);
+}
+
 .blob {
   position: absolute;
   border-radius: 999px;
   filter: blur(10px);
-  opacity: 0.8;
+  /* Dimmed from 0.8 so the glows frame the grid rather than dominate it. */
+  opacity: 0.5;
 }
 
 .blob-1 {
@@ -165,9 +195,9 @@ img {
 
 .nav-cta {
   padding: 9px 18px !important;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: var(--primary);
-  color: #fff !important;
+  color: var(--text-on-primary) !important;
 }
 
 @media (max-width: 640px) {
@@ -199,16 +229,20 @@ img {
   }
 }
 
+/* Technical eyebrow: mono + tracked-out caps reads as a system label. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 11.5px;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--primary);
-  background: rgba(52, 120, 246, 0.12);
+  background: var(--primary-light);
   padding: 6px 14px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   margin-bottom: 20px;
 }
 
@@ -247,7 +281,7 @@ h1 {
   align-items: center;
   gap: 10px;
   padding: 14px 26px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
@@ -259,10 +293,13 @@ h1 {
   transform: translateY(-1px);
 }
 
+/* Flat fill, and theme-dependent ink: white on the light-mode deep cyan
+   (4.62:1), dark on the dark-mode bright cyan (8.10:1). White-on-bright-cyan
+   would be 2.43:1 — a WCAG failure. */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #fff;
-  box-shadow: 0 10px 30px -10px rgba(52, 120, 246, 0.6);
+  background: var(--primary);
+  color: var(--text-on-primary);
+  box-shadow: 0 10px 30px -12px rgba(22, 181, 216, 0.45);
 }
 
 .btn-secondary {
@@ -278,13 +315,14 @@ h1 {
 }
 
 .badge {
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   padding: 6px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
 }
 
 /* Hero mockup */
@@ -439,7 +477,7 @@ h1 {
 
 /* Download */
 .download-card {
-  background: linear-gradient(135deg, rgba(52, 120, 246, 0.12), rgba(88, 86, 214, 0.12));
+  background: linear-gradient(135deg, rgba(22, 181, 216, 0.12), rgba(76, 130, 216, 0.12));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 56px;

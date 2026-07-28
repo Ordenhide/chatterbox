@@ -111,16 +111,3 @@ export async function performLocalWipe(): Promise<void> {
     clearUserCache();
   } catch {}
 }
-
-export function generateSafetyNumber(
-  myUid: string,
-  otherUid: string,
-): string {
-  const combined = [myUid, otherUid].sort().join('');
-  let hash = 0;
-  for (let i = 0; i < combined.length; i++) {
-    hash += combined.charCodeAt(i);
-  }
-  const hex = hash.toString(16).padStart(16, '0').slice(0, 16);
-  return hex.match(/.{4}/g)!.join(' ');
-}

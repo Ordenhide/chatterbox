@@ -12,12 +12,12 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		67837A0AB94FDE0EB5B98346 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */; };
-		7FB3067DF321DAE1C6FC3896 /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D599A44BE5BD4F62CF4F65F2 /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */; };
+		7CF5421E16070FBF5AD193B4 /* Pods_ChatterboxTemp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8FE77A534A7BCEC734196E7C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */; };
 		A2C1D2E3F4A5B60718293D04 /* GlassBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D2E3F4A5B60718293D02 /* GlassBlurView.m */; };
 		A2C1D2E3F4A5B60718293D05 /* GlassBlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D2E3F4A5B60718293D03 /* GlassBlurViewManager.m */; };
 		D3A1B2C3D4E5F60718293A4B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */; };
-		D763DD8C1A772747A57428C4 /* Pods_ChatterboxTemp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B5D97290DE9E5BD0B1C632 /* Pods_ChatterboxTemp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,23 +34,23 @@
 		00E356EE1AD99517003FC87E /* ChatterboxTempTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatterboxTempTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ChatterboxTempTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatterboxTempTests.m; sourceTree = "<group>"; };
-		1257727C2F8E1850C6860C24 /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ChatterboxTemp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatterboxTemp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ChatterboxTemp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ChatterboxTemp/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ChatterboxTemp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ChatterboxTemp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ChatterboxTemp/main.m; sourceTree = "<group>"; };
+		17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp_ChatterboxTempTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.debug.xcconfig"; sourceTree = "<group>"; };
+		64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.release.xcconfig"; sourceTree = "<group>"; };
+		815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ChatterboxTemp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A1E131326B8C9493B4103AF6 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; sourceTree = "<group>"; };
+		93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; sourceTree = "<group>"; };
 		A2C1D2E3F4A5B60718293D01 /* GlassBlurView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GlassBlurView.h; path = ChatterboxTemp/GlassBlurView.h; sourceTree = "<group>"; };
 		A2C1D2E3F4A5B60718293D02 /* GlassBlurView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurView.m; path = ChatterboxTemp/GlassBlurView.m; sourceTree = "<group>"; };
 		A2C1D2E3F4A5B60718293D03 /* GlassBlurViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurViewManager.m; path = ChatterboxTemp/GlassBlurViewManager.m; sourceTree = "<group>"; };
-		A700E4515A0BCF23402003F8 /* Pods-ChatterboxTemp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.release.xcconfig"; sourceTree = "<group>"; };
-		C9B5D97290DE9E5BD0B1C632 /* Pods_ChatterboxTemp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ChatterboxTemp/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		D599A44BE5BD4F62CF4F65F2 /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp_ChatterboxTempTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1A8B7F33FDFF868D9C93C40 /* Pods-ChatterboxTemp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ChatterboxTemp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FB3067DF321DAE1C6FC3896 /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */,
+				8FE77A534A7BCEC734196E7C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D763DD8C1A772747A57428C4 /* Pods_ChatterboxTemp.framework in Frameworks */,
+				7CF5421E16070FBF5AD193B4 /* Pods_ChatterboxTemp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,8 +114,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				C9B5D97290DE9E5BD0B1C632 /* Pods_ChatterboxTemp.framework */,
-				D599A44BE5BD4F62CF4F65F2 /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */,
+				815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */,
+				17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -154,10 +154,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E1A8B7F33FDFF868D9C93C40 /* Pods-ChatterboxTemp.debug.xcconfig */,
-				A700E4515A0BCF23402003F8 /* Pods-ChatterboxTemp.release.xcconfig */,
-				1257727C2F8E1850C6860C24 /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */,
-				A1E131326B8C9493B4103AF6 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */,
+				35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */,
+				64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */,
+				0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */,
+				93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -169,12 +169,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChatterboxTempTests" */;
 			buildPhases = (
-				DDAC57365656058AA49FE453 /* [CP] Check Pods Manifest.lock */,
+				552C9C95996108B42D46FCC8 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				91E4990CD18DDC939230D195 /* [CP] Embed Pods Frameworks */,
-				29175378384D113B0E095C62 /* [CP] Copy Pods Resources */,
+				BC7C48DB6F4F15298D0593D6 /* [CP] Embed Pods Frameworks */,
+				0961D63A0CF582B582371119 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -190,15 +190,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ChatterboxTemp" */;
 			buildPhases = (
-				267CCD498651A62A65F4FD69 /* [CP] Check Pods Manifest.lock */,
+				A7DD7EC0584174C4F643BF4F /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				E19E87615E1E9B42B0011EAF /* [CP] Embed Pods Frameworks */,
-				D57A2FCDDC165AE2931AC4D6 /* [CP] Copy Pods Resources */,
-				F9E381D06A2FBC2D13E0E999 /* [CP-User] [RNFB] Core Configuration */,
-				49F9A3C2A3834F755735D349 /* [CP-User] [RNFB] Crashlytics Configuration */,
+				44063A71D48F5EB6A358AA80 /* [CP] Embed Pods Frameworks */,
+				7A0F49923B6620DAA04BEB7B /* [CP] Copy Pods Resources */,
+				F513F8D789C0F1288CA05D80 /* [CP-User] [RNFB] Core Configuration */,
+				AB7EE70A42C48F503C2FB8AA /* [CP-User] [RNFB] Crashlytics Configuration */,
 			);
 			buildRules = (
 			);
@@ -283,29 +283,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\nexport SKIP_BUNDLING_METRO_IP=1\nIP_ADDRESS=$(ipconfig getifaddr en0 || true)\nif [ -z \"$IP_ADDRESS\" ]; then\n  IP_ADDRESS=$(ipconfig getifaddr en1 || true)\nfi\nif [ -z \"$IP_ADDRESS\" ]; then\n  IP_ADDRESS=\"127.0.0.1\"\nfi\nexport IP_ADDRESS\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		267CCD498651A62A65F4FD69 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ChatterboxTemp-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		29175378384D113B0E095C62 /* [CP] Copy Pods Resources */ = {
+		0961D63A0CF582B582371119 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -322,55 +300,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		49F9A3C2A3834F755735D349 /* [CP-User] [RNFB] Crashlytics Configuration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = "[CP-User] [RNFB] Crashlytics Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec FirebaseCrashlytics Run from Pods\"\n  \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n  echo \"info: Exec FirebaseCrashlytics Run from framework\"\n  \"${PROJECT_DIR}/FirebaseCrashlytics.framework/run\"\nfi\n";
-		};
-		91E4990CD18DDC939230D195 /* [CP] Embed Pods Frameworks */ = {
+		44063A71D48F5EB6A358AA80 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D57A2FCDDC165AE2931AC4D6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DDAC57365656058AA49FE453 /* [CP] Check Pods Manifest.lock */ = {
+		552C9C95996108B42D46FCC8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -392,24 +339,77 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E19E87615E1E9B42B0011EAF /* [CP] Embed Pods Frameworks */ = {
+		7A0F49923B6620DAA04BEB7B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F9E381D06A2FBC2D13E0E999 /* [CP-User] [RNFB] Core Configuration */ = {
+		A7DD7EC0584174C4F643BF4F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ChatterboxTemp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AB7EE70A42C48F503C2FB8AA /* [CP-User] [RNFB] Crashlytics Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "[CP-User] [RNFB] Crashlytics Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec FirebaseCrashlytics Run from Pods\"\n  \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n  echo \"info: Exec FirebaseCrashlytics Run from framework\"\n  \"${PROJECT_DIR}/FirebaseCrashlytics.framework/run\"\nfi\n";
+		};
+		BC7C48DB6F4F15298D0593D6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F513F8D789C0F1288CA05D80 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -457,7 +457,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1257727C2F8E1850C6860C24 /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */;
+			baseConfigurationReference = 0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEAD_CODE_STRIPPING = YES;
@@ -491,7 +491,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A1E131326B8C9493B4103AF6 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */;
+			baseConfigurationReference = 93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -522,7 +522,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1A8B7F33FDFF868D9C93C40 /* Pods-ChatterboxTemp.debug.xcconfig */;
+			baseConfigurationReference = 35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -560,7 +560,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A700E4515A0BCF23402003F8 /* Pods-ChatterboxTemp.release.xcconfig */;
+			baseConfigurationReference = 64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

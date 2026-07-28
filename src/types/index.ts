@@ -88,6 +88,14 @@ export interface WhiteboardStroke {
   points: Array<{x: number; y: number}>;
 }
 
+/** An E2EE-sealed value — see services/e2ee.ts. */
+export interface EncryptedField {
+  alg: string;
+  body: string;
+  senderKey: string;
+  recipientKey: string;
+}
+
 export interface Message {
   _id: string | number;
   text: string;
@@ -180,6 +188,25 @@ export interface Message {
   gesture?: GestureStroke[];
   reactionChain?: string[];
   lottery?: LotteryMessage;
+  /**
+   * E2EE envelope. When present, `text` is empty on the wire and the real body
+   * lives here, decryptable only by the two participants' devices.
+   * See services/e2ee.ts — prototype, not yet enabled by default.
+   */
+  encrypted?: EncryptedField;
+  /**
+   * Same envelope shape, applied to media: when present, the corresponding
+   * plaintext field (image/video/audio, or file.uri) is empty on the wire.
+   * Only the access pointer is protected — for Storage-hosted media the
+   * download URL doubles as a bearer token (Firebase embeds an access token
+   * in it), so a Firestore-only leak no longer hands out working links to
+   * every photo/video/voice message. The bytes at that URL, and file
+   * name/type/size, are still plaintext — see e2ee.ts's documented limits.
+   */
+  encryptedImage?: EncryptedField;
+  encryptedVideo?: EncryptedField;
+  encryptedAudio?: EncryptedField;
+  encryptedFileUri?: EncryptedField;
   user: {
     _id: string;
     name?: string;

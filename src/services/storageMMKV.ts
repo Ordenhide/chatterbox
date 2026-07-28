@@ -1,4 +1,6 @@
 import {createMMKV} from 'react-native-mmkv';
+import {generateKeyHex} from './crypto';
+import {reportError} from './telemetry';
 
 const logError = (context: string, error: unknown) => {
   if (__DEV__) {
@@ -7,24 +9,63 @@ const logError = (context: string, error: unknown) => {
 };
 
 // Bootstrap store: unencrypted, holds only the per-device encryption key.
-// The key itself is not sensitive data — it's a random token generated on first
-// launch that protects the main store against offline extraction of the device.
+// That key IS sensitive — it is the only thing protecting the cached message
+// store against offline extraction from the device — so it must come from a
+// cryptographically secure source.
 const bootstrap = createMMKV({id: 'chatterbox-bootstrap'});
 
 const ENC_KEY_STORAGE = 'enc_key';
+
+/**
+ * Best-effort entropy for the rare case generateKeyHex() itself is unavailable
+ * (e.g. the native RNGetRandomValues module isn't linked into this build).
+ * Weaker than a real CSPRNG, but this only runs on that failure path — see the
+ * try/catch below — and reportError() surfaces it so the gap doesn't go
+ * unnoticed. Mixing several independent Math.random() draws with a high-
+ * resolution timestamp is meaningfully harder to predict than a single call,
+ * even though it is still not cryptographically secure.
+ */
+function fallbackWeakKeyHex(): string {
+  let mixed = `${Date.now()}:${Math.random()}`;
+  for (let i = 0; i < 8; i++) mixed += `:${Math.random()}:${Date.now()}`;
+  let hash1 = 0;
+  let hash2 = 0;
+  for (let i = 0; i < mixed.length; i++) {
+    hash1 = (Math.imul(hash1, 31) + mixed.charCodeAt(i)) | 0;
+    hash2 = (Math.imul(hash2, 131) + mixed.charCodeAt(mixed.length - 1 - i)) | 0;
+  }
+  const seed = `${hash1 >>> 0}${hash2 >>> 0}${Date.now()}${Math.random()}`.replace(/\D/g, '');
+  return seed.padEnd(64, '0').slice(0, 64);
+}
 
 function getOrCreateEncryptionKey(): string {
   const existing = bootstrap.getString(ENC_KEY_STORAGE);
   if (existing) return existing;
 
-  // Generate a 32-byte random key as hex on first launch.
-  const array = new Uint8Array(32);
-  for (let i = 0; i < array.length; i++) {
-    array[i] = Math.floor(Math.random() * 256);
+  // Previously this used Math.random() unconditionally, which is not a CSPRNG:
+  // V8/Hermes seed a small internal state and an attacker who observes some
+  // output can predict the rest, so the "32-byte" key carried far less real
+  // entropy than its length suggested. generateKeyHex() draws from
+  // crypto.getRandomValues, a real CSPRNG.
+  //
+  // That call depends on a native module, so it must not be allowed to crash
+  // the whole app at module-load time — before React, and ErrorBoundary, even
+  // mount. If it throws, fall back rather than hard-crashing; report it so a
+  // genuine native-linking regression doesn't go unnoticed. This is a backstop
+  // for an exceptional path, not the intended steady state.
+  let key: string;
+  try {
+    key = generateKeyHex();
+  } catch (error) {
+    logError('generateKeyHex unavailable, using degraded fallback key', error);
+    reportError(error, 'mmkv_encryption_key_fallback');
+    key = fallbackWeakKeyHex();
   }
-  const key = Array.from(array)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+
+  // Existing installs keep their old key (the branch above) — rotating it would
+  // orphan the encrypted store and wipe local history. New installs are secure
+  // (or, on the failure path above, best-effort). Migrating existing installs
+  // to a stronger key needs a re-encrypt pass, tracked separately.
   bootstrap.set(ENC_KEY_STORAGE, key);
   return key;
 }

@@ -1,76 +1,92 @@
 /* ==== Theme tokens ==================================================== */
-/* Dark ("Aurora Glass") is the default; light overrides under [data-theme]. */
+/* Dark is the default and the primary design target (security tooling is
+   overwhelmingly dark-first); light overrides under [data-theme]. The palette
+   is deliberately restrained: one cyan signal accent + a steel-blue support
+   tone over cool slate neutrals. No magenta/violet — saturated "fun" hues read
+   as consumer-social and undercut the security posture. */
 :root {
-  --cb-canvas: #0a0a14;
-  --cb-text: #f3f4fb;
-  --cb-text-secondary: rgba(240, 242, 255, 0.62);
-  --cb-text-tertiary: rgba(240, 242, 255, 0.4);
-  --cb-placeholder: rgba(240, 242, 255, 0.38);
+  --cb-canvas: #070b12;
+  --cb-text: #e3ecf7;
+  --cb-text-secondary: rgba(227, 236, 247, 0.58);
+  --cb-text-tertiary: rgba(227, 236, 247, 0.38);
+  --cb-placeholder: rgba(227, 236, 247, 0.34);
 
-  --cb-surface: rgba(255, 255, 255, 0.055);
-  --cb-surface-strong: rgba(22, 23, 38, 0.72);
-  --cb-menu-solid: #1b1c2c;
-  --cb-glass-border: rgba(255, 255, 255, 0.1);
-  --cb-hover: rgba(255, 255, 255, 0.07);
-  --cb-input-bg: rgba(255, 255, 255, 0.06);
-  --cb-border: rgba(255, 255, 255, 0.09);
-  --cb-border-strong: rgba(255, 255, 255, 0.15);
+  --cb-surface: rgba(130, 173, 219, 0.05);
+  --cb-surface-strong: rgba(14, 21, 32, 0.88);
+  --cb-menu-solid: #101927;
+  --cb-glass-border: rgba(130, 173, 219, 0.12);
+  --cb-hover: rgba(130, 173, 219, 0.07);
+  --cb-input-bg: rgba(130, 173, 219, 0.055);
+  --cb-border: rgba(130, 173, 219, 0.11);
+  --cb-border-strong: rgba(130, 173, 219, 0.2);
 
-  --cb-primary: #7c6bff;
-  --cb-primary-soft: #a99bff;
-  --cb-primary-light: rgba(124, 107, 255, 0.16);
-  --cb-secondary: #28d6ee;
-  --cb-success: #2fe0a6;
-  --cb-danger: #ff5a72;
+  --cb-primary: #16b5d8;
+  --cb-primary-soft: #5ed2ea;
+  --cb-primary-light: rgba(22, 181, 216, 0.14);
+  --cb-secondary: #4c82d8;
+  --cb-success: #1fb57e;
+  --cb-danger: #e5484d;
+  /* Dark ink on the bright cyan fill: 8.10:1. White would be 2.43:1 — a WCAG
+     failure — which is why primary buttons are not white-on-cyan here. */
+  --cb-text-on-primary: #070b12;
 
-  --cb-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.7);
-  --cb-shadow-soft: 0 16px 40px -20px rgba(0, 0, 0, 0.55);
-  --cb-shadow-glow: 0 14px 36px -10px rgba(124, 107, 255, 0.55);
+  --cb-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.78);
+  --cb-shadow-soft: 0 16px 40px -20px rgba(0, 0, 0, 0.6);
+  --cb-shadow-glow: 0 14px 36px -12px rgba(22, 181, 216, 0.42);
 
-  /* aurora glow opacities (dimmed in light mode) */
-  --cb-aurora-1: rgba(124, 107, 255, 0.55);
-  --cb-aurora-2: rgba(40, 214, 238, 0.4);
-  --cb-aurora-3: rgba(255, 107, 179, 0.4);
-  --cb-aurora-4: rgba(91, 141, 255, 0.38);
-  --cb-grain-opacity: 0.05;
-  --cb-scroll-thumb: rgba(255, 255, 255, 0.16);
-  --cb-scroll-thumb-hover: rgba(255, 255, 255, 0.28);
+  /* Backdrop: two restrained glows + a blueprint grid, in place of the old
+     drifting multi-hue aurora. Reads as instrumentation, not ambience. */
+  --cb-glow-1: rgba(22, 181, 216, 0.2);
+  --cb-glow-2: rgba(76, 130, 216, 0.16);
+  --cb-grid-line: rgba(130, 173, 219, 0.055);
+  --cb-grid-size: 44px;
+  --cb-grain-opacity: 0.04;
+  --cb-scroll-thumb: rgba(130, 173, 219, 0.18);
+  --cb-scroll-thumb-hover: rgba(130, 173, 219, 0.3);
+
+  /* Technical metadata (timestamps, ids, status, counts) sets in mono. */
+  --cb-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 :root[data-theme='light'] {
-  --cb-canvas: #eef0f8;
-  --cb-text: #191a2c;
-  --cb-text-secondary: rgba(25, 26, 44, 0.64);
-  --cb-text-tertiary: rgba(25, 26, 44, 0.44);
-  --cb-placeholder: rgba(25, 26, 44, 0.4);
+  --cb-canvas: #eef2f7;
+  --cb-text: #0b1220;
+  --cb-text-secondary: rgba(11, 18, 32, 0.62);
+  --cb-text-tertiary: rgba(11, 18, 32, 0.42);
+  --cb-placeholder: rgba(11, 18, 32, 0.38);
 
-  --cb-surface: rgba(255, 255, 255, 0.62);
-  --cb-surface-strong: rgba(255, 255, 255, 0.88);
+  --cb-surface: rgba(255, 255, 255, 0.72);
+  --cb-surface-strong: rgba(255, 255, 255, 0.92);
   --cb-menu-solid: #ffffff;
-  --cb-glass-border: rgba(20, 24, 60, 0.1);
-  --cb-hover: rgba(20, 24, 60, 0.05);
-  --cb-input-bg: rgba(20, 24, 60, 0.04);
-  --cb-border: rgba(20, 24, 60, 0.11);
-  --cb-border-strong: rgba(20, 24, 60, 0.18);
+  --cb-glass-border: rgba(15, 33, 60, 0.1);
+  --cb-hover: rgba(15, 33, 60, 0.05);
+  --cb-input-bg: rgba(15, 33, 60, 0.04);
+  --cb-border: rgba(15, 33, 60, 0.11);
+  --cb-border-strong: rgba(15, 33, 60, 0.2);
 
-  --cb-primary: #6a58f0;
-  --cb-primary-soft: #6a58f0;
-  --cb-primary-light: rgba(124, 107, 255, 0.14);
-  --cb-secondary: #0fb0c6;
-  --cb-success: #12b886;
-  --cb-danger: #e23652;
+  /* Darkened accents: the dark-mode cyan fails contrast on a light canvas. */
+  --cb-primary: #0b7f9e;
+  --cb-primary-soft: #0b7f9e;
+  --cb-primary-light: rgba(11, 127, 158, 0.12);
+  --cb-secondary: #2f62b5;
+  --cb-success: #0f8f63;
+  --cb-danger: #c8353a;
+  /* Light mode inverts: white on the deepened cyan is 4.62:1. */
+  --cb-text-on-primary: #ffffff;
 
-  --cb-shadow: 0 30px 70px -28px rgba(30, 34, 80, 0.28);
-  --cb-shadow-soft: 0 16px 40px -20px rgba(30, 34, 80, 0.2);
-  --cb-shadow-glow: 0 14px 36px -10px rgba(124, 107, 255, 0.4);
+  --cb-shadow: 0 30px 70px -28px rgba(15, 33, 60, 0.26);
+  --cb-shadow-soft: 0 16px 40px -20px rgba(15, 33, 60, 0.18);
+  --cb-shadow-glow: 0 14px 36px -12px rgba(11, 127, 158, 0.3);
 
-  --cb-aurora-1: rgba(124, 107, 255, 0.28);
-  --cb-aurora-2: rgba(40, 214, 238, 0.22);
-  --cb-aurora-3: rgba(255, 107, 179, 0.2);
-  --cb-aurora-4: rgba(91, 141, 255, 0.2);
-  --cb-grain-opacity: 0.03;
-  --cb-scroll-thumb: rgba(20, 24, 60, 0.2);
-  --cb-scroll-thumb-hover: rgba(20, 24, 60, 0.32);
+  --cb-glow-1: rgba(11, 127, 158, 0.1);
+  --cb-glow-2: rgba(47, 98, 181, 0.08);
+  --cb-grid-line: rgba(15, 33, 60, 0.045);
+  --cb-grid-size: 44px;
+  --cb-grain-opacity: 0.02;
+  --cb-scroll-thumb: rgba(15, 33, 60, 0.2);
+  --cb-scroll-thumb-hover: rgba(15, 33, 60, 0.32);
+
+  --cb-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 * {
@@ -94,24 +110,32 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* ---- Aurora backdrop: slow-drifting colored light behind the glass ---- */
+/* ---- Backdrop: blueprint grid under two fixed accent glows ----
+   Replaces the old animated aurora. A static, aligned grid reads as
+   instrumentation/telemetry; constant motion behind a *messaging* surface is
+   both distracting and (at this blur radius) needlessly expensive. */
 body::before {
   content: '';
   position: fixed;
-  inset: -20%;
+  inset: 0;
   z-index: -2;
   background:
-    radial-gradient(38% 42% at 22% 18%, var(--cb-aurora-1), transparent 60%),
-    radial-gradient(34% 40% at 82% 26%, var(--cb-aurora-2), transparent 60%),
-    radial-gradient(40% 44% at 70% 84%, var(--cb-aurora-3), transparent 62%),
-    radial-gradient(46% 48% at 12% 88%, var(--cb-aurora-4), transparent 62%);
-  /* The radial gradients are already soft, so a light blur is enough. A large
-     blur radius here is very expensive to re-rasterize when the tab regains
-     focus; `will-change` keeps the layer promoted so it isn't discarded. */
-  filter: blur(12px) saturate(112%);
-  will-change: transform;
-  transform: translateZ(0);
-  animation: aurora 26s ease-in-out infinite alternate;
+    radial-gradient(42% 46% at 18% 12%, var(--cb-glow-1), transparent 62%),
+    radial-gradient(46% 50% at 84% 88%, var(--cb-glow-2), transparent 64%),
+    repeating-linear-gradient(
+      to right,
+      var(--cb-grid-line) 0 1px,
+      transparent 1px var(--cb-grid-size)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--cb-grid-line) 0 1px,
+      transparent 1px var(--cb-grid-size)
+    );
+  /* Fades the grid out toward the bottom-right so it frames rather than
+     competes with content. */
+  -webkit-mask-image: radial-gradient(120% 120% at 30% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(120% 120% at 30% 0%, #000 40%, transparent 100%);
 }
 
 /* ---- Fine grain overlay for a premium, non-flat surface ---- */
@@ -123,24 +147,6 @@ body::after {
   pointer-events: none;
   opacity: var(--cb-grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@keyframes aurora {
-  0% {
-    transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1.05);
-  }
-  50% {
-    transform: translate3d(4%, 3%, 0) rotate(8deg) scale(1.12);
-  }
-  100% {
-    transform: translate3d(-2%, 4%, 0) rotate(-6deg) scale(1.08);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body::before {
-    animation: none;
-  }
 }
 
 a {
@@ -162,7 +168,7 @@ textarea::placeholder {
 input:focus,
 textarea:focus,
 button:focus-visible {
-  outline: 2px solid rgba(124, 107, 255, 0.6);
+  outline: 2px solid rgba(22, 181, 216, 0.6);
   outline-offset: 1px;
 }
 
@@ -170,11 +176,14 @@ button:focus-visible {
   display: none;
 }
 
-/* ---- Buttons ---- */
+/* ---- Buttons ----
+   Squared-off (10px) rather than fully-pill: precise geometry reads as
+   technical tooling, where pills read as consumer-social. */
 .btn {
   border: none;
-  border-radius: 999px;
-  font-weight: 700;
+  border-radius: 10px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.15s ease;
 }
@@ -182,14 +191,17 @@ button:focus-visible {
   opacity: 0.5;
   cursor: default;
 }
+/* Flat fill rather than a gradient: gradients on primary actions are a
+   consumer-app tell, and a two-stop ramp made the text contrast vary across
+   the button. Solid keeps it uniform and measurable. */
 .btn-primary {
-  background: linear-gradient(135deg, #7c6bff 0%, #9b5cff 55%, #28d6ee 150%);
-  color: #fff;
-  box-shadow: 0 10px 26px -10px rgba(124, 107, 255, 0.7);
+  background: var(--cb-primary);
+  color: var(--cb-text-on-primary);
+  box-shadow: 0 10px 26px -12px rgba(22, 181, 216, 0.6);
 }
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 16px 34px -10px rgba(124, 107, 255, 0.85);
+  box-shadow: 0 16px 34px -12px rgba(22, 181, 216, 0.75);
 }
 .btn-soft {
   background: var(--cb-hover);
@@ -208,7 +220,7 @@ button:focus-visible {
   align-items: center;
   gap: 12px;
   padding: 11px 12px;
-  border-radius: 16px;
+  border-radius: 10px;
   border: none;
   text-align: left;
   background: transparent;
@@ -219,15 +231,15 @@ button:focus-visible {
   background: var(--cb-hover);
 }
 .chat-item.active {
-  background: linear-gradient(135deg, rgba(124, 107, 255, 0.22), rgba(40, 214, 238, 0.12));
-  box-shadow: inset 0 0 0 1px rgba(124, 107, 255, 0.3);
+  background: linear-gradient(135deg, rgba(22, 181, 216, 0.22), rgba(76, 130, 216, 0.12));
+  box-shadow: inset 0 0 0 1px rgba(22, 181, 216, 0.3);
 }
 
 /* ---- Nav rail buttons ---- */
 .rail-btn {
   width: 62px;
   height: 60px;
-  border-radius: 18px;
+  border-radius: 12px;
   border: none;
   background: transparent;
   color: var(--cb-text-secondary);
@@ -245,7 +257,7 @@ button:focus-visible {
 .rail-btn.active {
   background: var(--cb-primary-light);
   color: var(--cb-primary-soft);
-  box-shadow: inset 0 0 0 1px rgba(124, 107, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(22, 181, 216, 0.3);
 }
 .rail-btn span {
   font-size: 10px;
@@ -416,7 +428,9 @@ button:focus-visible {
   font-weight: 600;
   color: #fff;
   padding: 7px 12px;
-  background: linear-gradient(90deg, #ff5a72, #ff8a5a);
+  /* Flat danger fill rather than the old pink→orange ramp: an alert state
+     should read as one unambiguous status colour, not decoration. */
+  background: #b3282d;
   animation: toastIn 0.2s ease;
 }
 
@@ -509,7 +523,7 @@ button:focus-visible {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(124, 107, 255, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(22, 181, 216, 0.5), transparent);
 }
 
 /* ---- Message rows (Slack/Discord style) ---- */
@@ -548,7 +562,7 @@ button:focus-visible {
   margin: 12px;
   border: 2px dashed var(--cb-primary);
   border-radius: 18px;
-  background: rgba(124, 107, 255, 0.12);
+  background: rgba(22, 181, 216, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;

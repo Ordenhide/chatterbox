@@ -6,9 +6,14 @@ import {
 } from 'firebase/auth';
 import {doc, serverTimestamp, setDoc} from 'firebase/firestore';
 import {auth, db} from '../firebase';
+import {claimSession} from './session';
 
 export async function signIn(email: string, password: string) {
   const cred = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password);
+  // Signing in here displaces any session elsewhere: the previous device sees
+  // activeSessionId change and signs itself out. Awaited so the app never
+  // renders before this browser owns the session.
+  await claimSession(cred.user.uid);
   return cred.user;
 }
 
@@ -33,6 +38,7 @@ export async function signUp(email: string, password: string, displayName?: stri
     },
     {merge: true},
   );
+  await claimSession(cred.user.uid);
   return cred.user;
 }
 

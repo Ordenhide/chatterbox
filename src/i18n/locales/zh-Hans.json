@@ -55,13 +55,15 @@
       "title": "创建账号",
       "subtitle": "注册后开始使用",
       "displayNamePlaceholder": "昵称（可选）",
-      "passwordPlaceholder": "密码（至少6位）",
+      "passwordPlaceholder": "密码（至少8位）",
       "hasAccount": "已有账号？"
     },
     "errors": {
       "missingFields": "请填写所有字段",
       "missingEmailPassword": "请填写邮箱和密码",
-      "passwordMin": "密码至少 6 位",
+      "passwordMin": "密码至少 8 位",
+      "passwordTooCommon": "该密码过于常见，请选择一个不易被猜到的密码",
+      "passwordTooSimple": "该密码过于简单（重复或连续字符），请更换一个",
       "loginFailed": "登录失败",
       "signUpFailed": "注册失败",
       "generic": "发生错误",
@@ -252,12 +254,38 @@
       "feedback": "发送反馈",
       "export": "导出备份",
       "import": "导入备份",
-      "signOut": "退出登录"
+      "signOut": "退出登录",
+      "changePassword": "修改密码",
+      "deleteAccount": "删除账号"
+    },
+    "account": {
+      "changePasswordTitle": "修改密码",
+      "changePasswordDescription": "修改后本设备仍保持登录状态。",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "passwordChanged": "密码已修改。",
+      "passwordMismatch": "两次输入的新密码不一致。",
+      "wrongPassword": "当前密码不正确。",
+      "tooManyRequests": "尝试次数过多，请稍后再试。",
+      "genericError": "出错了，请重试。",
+      "deleteTitle": "删除账号",
+      "deleteDescription": "将永久删除你的账号、资料、朋友圈、收藏以及你发送的消息。此操作无法撤销。",
+      "deleteWhatHappens": "此操作将永久删除：\n\n• 你的个人资料、朋友圈、收藏和好友关系\n• 你在所有会话中发送的消息与媒体文件\n• 存储在此设备上的加密密钥\n\n对方发给你的消息仍会保留在他们自己的会话中。\n\n此操作无法撤销。",
+      "deleteConfirm": "全部删除",
+      "deleteEnterPassword": "请输入密码以永久删除你的账号。",
+      "deleting": "正在删除你的数据…",
+      "deleteFailed": "无法删除账号，请重试。",
+      "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。"
     },
     "modals": {
       "exportTitle": "导出备份",
       "importTitle": "导入备份",
       "feedbackTitle": "反馈",
+      "exportPassphraseHint": "请设置至少 {{min}} 个字符的密码。备份将使用该密码加密，且不会被保存——一旦遗失，备份将无法恢复。",
+      "passphrasePlaceholder": "备份密码",
+      "encryptBackup": "加密备份",
+      "working": "处理中…",
       "importPlaceholder": "在此粘贴备份 JSON",
       "feedbackPlaceholder": "告诉我们哪些地方好用，哪些需要改进..."
     },
@@ -270,6 +298,7 @@
       "importFailedBody": "备份 JSON 无效或不兼容。",
       "exportFailedTitle": "错误",
       "exportFailedBody": "导出备份失败。",
+      "passphraseTooShort": "密码至少需要 {{min}} 个字符。",
       "feedbackSuccessTitle": "感谢！",
       "feedbackSuccessBody": "你的反馈已提交。",
       "feedbackFailedTitle": "错误",
@@ -306,7 +335,16 @@
     "errors": {
       "startFailed": "无法发起通话",
       "videoFailed": "无法开启视频"
-    }
+    },
+    "incomingVoice": "语音通话来电…",
+    "incomingVideo": "视频通话来电…",
+    "accept": "接听",
+    "decline": "拒绝",
+    "cameraOn": "摄像头已开",
+    "cameraOff": "摄像头已关",
+    "cameraWillBeOff": "接听时将关闭摄像头",
+    "cameraUnavailable": "摄像头不可用——仍可用语音接听",
+    "unknownCaller": "某人"
   },
   "chatMedia": {
     "seconds": "{{count}}秒"
@@ -318,12 +356,16 @@
     "more": "更多",
     "attach": "附加",
     "composerPlaceholder": "输入消息…",
+    "recipientDeleted": "该账号已注销。",
+    "recipientDeletedComposer": "无法向已注销的账号发送消息。此前的聊天记录仍可查看。",
     "replyPreview": {
       "photo": "[图片]",
       "video": "[视频]",
       "voiceMessage": "[语音消息]",
       "file": "[文件]"
-    }
+    },
+    "voiceTooLongTitle": "录音过长",
+    "voiceTooLongBody": "录音过长，无法发送。请录制两分钟以内的语音。"
   },
   "chatSettings": {
     "notifications": "通知",
@@ -438,4 +480,3 @@
     "replay": "重新播放教程"
   }
 }
-

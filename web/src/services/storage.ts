@@ -1,28 +1,95 @@
 import {getApp} from 'firebase/app';
 import {getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject} from 'firebase/storage';
-import {doc, getDoc, serverTimestamp, setDoc} from 'firebase/firestore';
-import {db} from '../firebase';
 
-const storage = getStorage(getApp());
+// Exported so account.ts can delete objects through the same instance rather
+// than standing up a second one.
+export const storage = getStorage(getApp());
 
 /**
- * Firebase Storage rules require the uploader's user doc to carry a non-null
- * `activeSessionId` (the app's single-session gate). We claim one only if none
- * exists, so a web-only user can upload media without stomping an active mobile
- * session. (If a device later claims the session, media still works here since
- * the field just needs to be non-null.)
+ * Maps a failed upload to a specific i18n key. Every media failure used to
+ * collapse into one generic "needs Storage and a session" toast, which hid the
+ * actual cause — a denied rule, a signed-out session, and a dropped connection
+ * all looked identical. The raw code is logged alongside so the console shows
+ * exactly which Storage error fired.
  */
-export async function ensureActiveSession(uid: string): Promise<void> {
-  const userRef = doc(db, 'users', uid);
-  const snap = await getDoc(userRef);
-  const current = snap.exists() ? (snap.data().activeSessionId as string | null) : null;
-  if (current) return;
-  let sid = localStorage.getItem('cb_web_session');
-  if (!sid) {
-    sid = 'web-' + (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
-    localStorage.setItem('cb_web_session', sid);
+export function describeUploadError(err: unknown): string {
+  const code = (err as {code?: string} | null)?.code ?? '';
+  switch (code) {
+    case 'storage/unauthorized':
+      return 'chat.uploadDenied';
+    case 'storage/unauthenticated':
+      return 'chat.uploadSignedOut';
+    case 'storage/retry-limit-exceeded':
+    case 'storage/canceled':
+      return 'chat.uploadNetwork';
+    case 'storage/quota-exceeded':
+      return 'chat.uploadQuota';
+    case 'permission-denied':
+      // The file reached Storage but the Firestore message write was rejected.
+      return 'chat.uploadSentButNotSaved';
+    default:
+      return 'chat.uploadFailed';
   }
-  await setDoc(userRef, {activeSessionId: sid, sessionUpdatedAt: serverTimestamp()}, {merge: true});
+}
+
+/** Logs the underlying Storage/Firestore error code so failures are diagnosable. */
+export function logUploadError(context: string, err: unknown): void {
+  const code = (err as {code?: string} | null)?.code ?? '(no code)';
+  console.warn(`${context} failed [${code}]:`, err);
+}
+
+/**
+ * Ceiling on a base64 data URI stored directly in a Firestore message document.
+ * Firestore caps a document at 1 MiB and base64 inflates bytes by 4/3, so this
+ * leaves comfortable headroom for the rest of the message (reply preview, user,
+ * mentions). Mirrors the mobile app's inline-audio budget.
+ */
+export const MAX_INLINE_DATA_URI_CHARS = 700_000;
+
+/**
+ * Room reserved for the `data:<mime>;base64,` prefix. The longest type we
+ * record is `audio/webm;codecs=opus` (~22 chars), so 128 is generous.
+ */
+const DATA_URI_PREFIX_BUDGET = 128;
+
+/**
+ * Raw byte budget that stays under MAX_INLINE_DATA_URI_CHARS once base64-encoded
+ * *including* the prefix — base64 emits 4 characters per 3 bytes. Without the
+ * prefix allowance a clip at exactly the budget encoded to 700,023 chars and was
+ * silently rejected.
+ */
+export const MAX_INLINE_BYTES = Math.floor(
+  ((MAX_INLINE_DATA_URI_CHARS - DATA_URI_PREFIX_BUDGET) * 3) / 4,
+);
+
+/** Reads a Blob into a `data:<mime>;base64,…` URI. */
+export function blobToDataUri(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error ?? new Error('could not read blob'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Encodes a recording for storage *inside* the Firestore message, avoiding
+ * Cloud Storage entirely. Returns null when the clip is too large to inline,
+ * so the caller can fall back to a Storage upload.
+ */
+export async function encodeInlineMedia(blob: Blob): Promise<string | null> {
+  if (blob.size > MAX_INLINE_BYTES) return null;
+  const uri = await blobToDataUri(blob);
+  return uri.length > MAX_INLINE_DATA_URI_CHARS ? null : uri;
+}
+
+/** Maps a recorder MIME type (which may carry `;codecs=…`) to a file extension. */
+export function extensionForMime(mime: string): string {
+  const base = mime.split(';')[0].trim();
+  if (base === 'audio/mp4' || base === 'audio/aac') return 'm4a';
+  if (base === 'audio/mpeg') return 'mp3';
+  if (base === 'audio/ogg') return 'ogg';
+  return 'webm';
 }
 
 function sanitize(name: string): string {

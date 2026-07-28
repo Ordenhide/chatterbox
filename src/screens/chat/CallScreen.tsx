@@ -36,11 +36,13 @@ export default function CallScreen() {
   const callId = (route.params as any)?.callId as string;
   const isCaller = (route.params as any)?.isCaller as boolean;
   const callType = ((route.params as any)?.type as CallType) || 'voice';
+  // Camera state chosen on the answer screen, before the call was accepted.
+  const initialCamOn = ((route.params as any)?.camOn ?? true) as boolean;
 
   const [localStream, setLocalStream] = useState<any>(null);
   const [remoteStream, setRemoteStream] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(callType === 'video');
+  const [isVideoEnabled, setIsVideoEnabled] = useState(callType === 'video' && initialCamOn);
   const [isSpeakerOn, setIsSpeakerOn] = useState(callType === 'video');
   const [status, setStatus] = useState<'ringing' | 'active' | 'ended'>('ringing');
 
@@ -100,6 +102,14 @@ export default function CallScreen() {
         video: callType === 'video',
       });
       if (!isMounted) return;
+      // Apply the answer-screen camera choice before the track is attached to
+      // the peer connection, so a call answered with the camera off never
+      // transmits a frame.
+      if (callType === 'video' && !initialCamOn) {
+        stream.getVideoTracks().forEach((track: any) => {
+          track.enabled = false;
+        });
+      }
       localStreamRef.current = stream;
       setLocalStream(stream);
       InCallManager.start({media: callType === 'video' ? 'video' : 'audio'});

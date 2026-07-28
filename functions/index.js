@@ -114,7 +114,13 @@ exports.claimSession = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
-  
+  // A claim overwrites setCustomUserClaims (a quota-limited Admin operation)
+  // and immediately evicts whatever session currently holds the account —
+  // both are worth bounding even though the caller must already be
+  // authenticated as this uid. Generous enough for legitimate multi-device
+  // switching; well below anything a spamming/looping client would produce.
+  await checkRateLimit(context.auth.uid, 'claimSession', {maxCalls: 5, windowMs: 60000});
+
   const sessionId = data && typeof data.sessionId === 'string' ? data.sessionId.trim() : '';
   if (!sessionId) {
     throw new functions.https.HttpsError('invalid-argument', 'Missing sessionId.');
@@ -178,7 +184,13 @@ exports.sessionHeartbeat = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
-  
+  // Mobile heartbeats every 60s (see AuthContext.tsx; web doesn't call this
+  // function at all yet), so 10/min is generous headroom over normal use.
+  // The 30s no-write check below already avoids redundant *writes*, but
+  // still pays for a Firestore read on every call — this bounds the call
+  // rate itself.
+  await checkRateLimit(context.auth.uid, 'sessionHeartbeat', {maxCalls: 10, windowMs: 60000});
+
   const uid = context.auth.uid;
   const sessionId = data && typeof data.sessionId === 'string' ? data.sessionId.trim() : '';
   if (!sessionId) {

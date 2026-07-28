@@ -36,3 +36,31 @@ jobs:
 
       - name: Test
         run: npm test -- --ci
+
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Runs the actual firestore.rules / storage.rules against a real
+      # emulator (test/rules/) — a PR that weakens a rule or reintroduces the
+      # $(database)-in-Storage-rules class of bug fails here, before merge,
+      # rather than surfacing as a user-facing "everything is denied" report.
+      - name: Firestore & Storage rules tests
+        run: npm run test:rules

@@ -21,6 +21,8 @@ import {getStorage, getDownloadURL, putFile, ref} from '@react-native-firebase/s
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
 import {isStealthMode} from './privacyGuard';
+import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
+import {assertRecipientReachable} from './recipient';
 
 const db = getFirestore();
 const storage = getStorage();
@@ -373,7 +375,18 @@ export async function createChat(participants: string[], name?: string) {
   }
 }
 
+/**
+ * Sends a message.
+ *
+ * Throws RecipientUnreachableError if the other participant deleted their
+ * account. The check lives here rather than in the composer because this screen
+ * has more than a dozen send paths — text, GIF, image, video, voice, gesture,
+ * lottery, scheduled, moment share — and a guard in the UI would have to be
+ * repeated correctly at every one of them.
+ */
 export async function sendMessage(chatId: string, message: Message) {
+  await assertRecipientReachable(chatId, String(message.user._id));
+
   const messageData = {
     ...message,
     createdAt: serverTimestamp(),
@@ -393,11 +406,25 @@ export async function sendMessage(chatId: string, message: Message) {
         unreadCountBy[uid] = (unreadCountBy[uid] || 0) + 1;
       }
     });
+    // An E2EE-sealed message (see encryptOutgoingMessage in ChatScreen.tsx) has
+    // already had text/image/video/audio/file.uri cleared by this point — only
+    // the encryptedX sibling is set. Without this check, the chat list would
+    // show a blank preview for the most recent message in an encrypted
+    // conversation, on both mobile and web (both read this same field).
+    const isEncrypted = !!(
+      message.encrypted ||
+      message.encryptedImage ||
+      message.encryptedVideo ||
+      message.encryptedAudio ||
+      message.encryptedFileUri
+    );
     tx.set(
       chatRef,
       {
         lastMessage: {
-          text: message.text || (message.moment ? 'Shared a moment' : ''),
+          text:
+            message.text ||
+            (message.moment ? 'Shared a moment' : isEncrypted ? '🔒 Encrypted message' : ''),
           createdAt: serverTimestamp(),
           image: message.image || null,
           video: message.video || null,
@@ -817,18 +844,32 @@ export async function exportChat(chatId: string) {
   };
 }
 
-export async function exportAll() {
+/**
+ * Exports the signed-in user's own data: their profile, the chats they take
+ * part in, and those chats' messages.
+ *
+ * This previously called `getDocs(usersRef())` with no filter. Because the
+ * Firestore rules let any signed-in user read any profile, "export my data"
+ * actually pulled *every user account in the database* into the file. The
+ * chats query was unscoped too. Both are now filtered to the caller.
+ */
+export async function exportAll(userId: string) {
+  if (!userId) throw new Error('exportAll requires the signed-in user id');
   try {
-    const usersSnap = await getDocs(usersRef());
-    const chatsSnap = await getDocs(chatsRef());
+    const selfSnap = await getDoc(doc(usersRef(), userId));
+    const chatsSnap = await getDocs(
+      query(chatsRef(), where('participants', 'array-contains', userId)),
+    );
     const messages: Record<string, any[]> = {};
     for (const chat of chatsSnap.docs) {
       const msgSnap = await getDocs(collection(doc(chatsRef(), chat.id), 'messages'));
-      messages[chat.id] = msgSnap.docs.map(doc => ({_id: doc.id, ...doc.data()}));
+      messages[chat.id] = msgSnap.docs.map(d => ({_id: d.id, ...d.data()}));
     }
     return {
-      users: usersSnap.docs.map(doc => doc.data()),
-      chats: chatsSnap.docs.map(doc => ({id: doc.id, ...doc.data()})),
+      // RN Firebase exposes `exists` as a property, not a method (unlike the
+      // firebase-js web SDK, where it is `exists()`).
+      users: selfSnap.exists ? [selfSnap.data()] : [],
+      chats: chatsSnap.docs.map(d => ({id: d.id, ...d.data()})),
       messages,
     };
   } catch (error) {
@@ -837,41 +878,52 @@ export async function exportAll() {
   }
 }
 
-export async function encryptedExportAll(passphrase: string): Promise<string> {
-  const data = await exportAll();
-  const json = JSON.stringify(data);
-  let key = 0;
-  for (let i = 0; i < passphrase.length; i++) {
-    key = ((key << 5) - key + passphrase.charCodeAt(i)) | 0;
+export const MIN_BACKUP_PASSPHRASE_LENGTH = 12;
+
+/**
+ * Encrypts a backup with a user-supplied passphrase (scrypt → XChaCha20-Poly1305,
+ * see services/crypto.ts).
+ *
+ * The previous "CBXENC1" format was not encryption: it XOR'd each character
+ * against a keystream derived from a 32-bit string hash, so the plaintext was
+ * recoverable from the ciphertext alone (the payload is JSON, so an attacker
+ * knows it starts with `{"users":`). It was also always invoked with the
+ * hardcoded passphrase "chatterbox", meaning there was no user secret at all.
+ * CBXENC1 is still *readable* below so existing backups aren't stranded, but it
+ * is never produced again.
+ */
+export async function encryptedExportAll(userId: string, passphrase: string): Promise<string> {
+  if (!passphrase || passphrase.length < MIN_BACKUP_PASSPHRASE_LENGTH) {
+    throw new Error(`passphrase must be at least ${MIN_BACKUP_PASSPHRASE_LENGTH} characters`);
   }
-  const encoded = Array.from(json)
-    .map((char, i) => {
-      const seed = (key + i * 31) & 0xff;
-      return String.fromCharCode(char.charCodeAt(0) ^ seed);
-    })
-    .join('');
-  const base64 = btoa(unescape(encodeURIComponent(encoded)));
-  return `CBXENC1:${base64}`;
+  const data = await exportAll(userId);
+  return `CBXENC2:${encryptWithPassphrase(JSON.stringify(data), passphrase)}`;
 }
 
 export async function decryptedImportAll(encrypted: string, passphrase: string): Promise<void> {
-  if (!encrypted.startsWith('CBXENC1:')) {
-    return importAll(JSON.parse(encrypted));
+  if (encrypted.startsWith('CBXENC2:')) {
+    // Throws on a wrong passphrase or tampered payload (Poly1305 verification).
+    const json = decryptWithPassphrase(encrypted.slice('CBXENC2:'.length), passphrase);
+    return importAll(JSON.parse(json));
   }
-  const base64 = encrypted.slice(8);
-  const encoded = decodeURIComponent(escape(atob(base64)));
-  let key = 0;
-  for (let i = 0; i < passphrase.length; i++) {
-    key = ((key << 5) - key + passphrase.charCodeAt(i)) | 0;
+
+  if (encrypted.startsWith('CBXENC1:')) {
+    // Legacy read path only. These backups were produced with the broken XOR
+    // scheme under the fixed passphrase "chatterbox"; the argument is ignored
+    // because it was never actually variable.
+    const encoded = decodeURIComponent(escape(atob(encrypted.slice('CBXENC1:'.length))));
+    const legacyPassphrase = 'chatterbox';
+    let key = 0;
+    for (let i = 0; i < legacyPassphrase.length; i++) {
+      key = ((key << 5) - key + legacyPassphrase.charCodeAt(i)) | 0;
+    }
+    const json = Array.from(encoded)
+      .map((char, i) => String.fromCharCode(char.charCodeAt(0) ^ ((key + i * 31) & 0xff)))
+      .join('');
+    return importAll(JSON.parse(json));
   }
-  const json = Array.from(encoded)
-    .map((char, i) => {
-      const seed = (key + i * 31) & 0xff;
-      return String.fromCharCode(char.charCodeAt(0) ^ seed);
-    })
-    .join('');
-  const data = JSON.parse(json);
-  return importAll(data);
+
+  return importAll(JSON.parse(encrypted));
 }
 
 export async function importChat(chatId: string, payload: {chat?: ChatRoom; messages?: Message[]}) {

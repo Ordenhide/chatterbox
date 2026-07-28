@@ -17,6 +17,7 @@ import {useTranslation} from 'react-i18next';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
+import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -37,8 +38,14 @@ export default function SignUpScreen() {
       return;
     }
 
-    if (password.length < 6) {
-      Alert.alert(t('common.error'), t('auth.errors.passwordMin'));
+    const strength = checkPasswordStrength(password);
+    if (strength !== 'ok') {
+      const messageKey = {
+        'too-short': 'auth.errors.passwordMin',
+        'too-common': 'auth.errors.passwordTooCommon',
+        'too-simple': 'auth.errors.passwordTooSimple',
+      }[strength];
+      Alert.alert(t('common.error'), t(messageKey));
       return;
     }
 

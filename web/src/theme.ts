@@ -1,8 +1,9 @@
-// "Aurora Glass" theme. Colors are exposed as CSS custom properties (defined in
-// styles.css for both dark and light schemes) so the whole app — which styles
-// via this `colors` object — recolors instantly when the theme toggles, with no
-// component changes. Values that must be real colors in JS (avatar palette,
-// accent gradient) stay literal.
+// Security-console theme: cool slate neutrals, a single cyan signal accent, and
+// a steel-blue support tone. Colors are exposed as CSS custom properties
+// (defined in styles.css for both dark and light schemes) so the whole app —
+// which styles via this `colors` object — recolors instantly when the theme
+// toggles, with no component changes. Values that must be real colors in JS
+// (avatar palette, accent gradient) stay literal.
 export const colors = {
   canvas: 'var(--cb-canvas)',
   text: 'var(--cb-text)',
@@ -21,7 +22,9 @@ export const colors = {
   primary: 'var(--cb-primary)',
   primaryLight: 'var(--cb-primary-light)',
   secondary: 'var(--cb-secondary)',
-  textOnPrimary: '#ffffff',
+  // Theme-dependent: dark ink on the bright cyan (dark mode), white on the
+  // deepened cyan (light mode). A fixed #fff fails contrast in dark mode.
+  textOnPrimary: 'var(--cb-text-on-primary)',
 
   success: 'var(--cb-success)',
   danger: 'var(--cb-danger)',
@@ -31,19 +34,22 @@ export const colors = {
   shadowGlow: 'var(--cb-shadow-glow)',
 };
 
-// Signature accent gradient (buttons, outgoing bubbles, logo).
-export const accentGradient = 'linear-gradient(135deg, #7C6BFF 0%, #9B5CFF 55%, #28D6EE 140%)';
+// Signature accent gradient (buttons, outgoing bubbles, logo). Two stops, not
+// three: a tight cyan→steel-blue ramp instead of the old violet/magenta sweep.
+export const accentGradient = 'linear-gradient(135deg, #16B5D8 0%, #4C82D8 130%)';
 
-// Vivid per-user avatar colors that pop on either canvas.
+// Per-user avatar colors. Held to the cyan→blue→slate range (plus restrained
+// teal/amber) so identity chips stay legible without reintroducing the
+// consumer-social pink/violet the rest of the theme drops.
 const AVATAR_COLORS = [
-  '#7C6BFF',
-  '#28D6EE',
-  '#FF6BB3',
-  '#FFB454',
-  '#5CE1A6',
-  '#B98CFF',
-  '#4C8DFF',
-  '#FF7A6B',
+  '#16B5D8',
+  '#4C82D8',
+  '#2FA98B',
+  '#6E8BA8',
+  '#3E9AD4',
+  '#1FB57E',
+  '#C08A3E',
+  '#5A7BC4',
 ];
 
 export function avatarColor(seed: string): string {

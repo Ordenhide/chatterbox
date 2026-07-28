@@ -16,7 +16,7 @@ import {
   onTokenRefresh,
 } from '@react-native-firebase/messaging';
 import {firebaseConfig} from './src/firebaseConfig';
-import {listenLatestCall, listenChatsForUser, setUserFcmToken, updateCall} from './src/services/firebaseChat';
+import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
 import LiquidGlassBackground from './src/components/LiquidGlassBackground';
@@ -25,6 +25,7 @@ import {flushReadReceipts} from './src/services/readReceipts';
 import {clearOldImageCache} from './src/services/imageCache';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import TutorialTour from './src/components/TutorialTour';
+import IncomingCallManager from './src/components/IncomingCallManager';
 import {hasSeenTutorial, markTutorialSeen, TUTORIAL_EVENT} from './src/services/tutorial';
 
 const APP_START_TS = Date.now();
@@ -33,8 +34,6 @@ const navigationRef = createNavigationContainerRef();
 
 function AppContent() {
   const {user, loading} = useAuth();
-  const callListenersRef = useRef<Map<string, () => void>>(new Map());
-  const handledCallIdsRef = useRef<Set<string>>(new Set());
   const routeNameRef = useRef<string | undefined>(undefined);
   const scheme = useColorScheme();
   const [tutorialVisible, setTutorialVisible] = useState(false);
@@ -47,73 +46,6 @@ function AppContent() {
     return () => sub.remove();
   }, [user]);
 
-  useEffect(() => {
-    if (!user || loading) return;
-
-    const cleanupCallListeners = (keepIds: Set<string>) => {
-      callListenersRef.current.forEach((unsub, chatId) => {
-        if (!keepIds.has(chatId)) {
-          unsub();
-          callListenersRef.current.delete(chatId);
-        }
-      });
-    };
-
-    const unsubscribeChats = listenChatsForUser(user.uid, chats => {
-      const currentChatIds = new Set(chats.map(chat => chat.id));
-      cleanupCallListeners(currentChatIds);
-
-      chats.forEach(chat => {
-        if (callListenersRef.current.has(chat.id)) return;
-        const unsubscribeCall = listenLatestCall(chat.id, call => {
-          if (!call) return;
-          if (call.status !== 'ringing') return;
-          if (call.createdBy === user.uid) return;
-          if (handledCallIdsRef.current.has(call.id)) return;
-          const createdAt = (call.createdAt as any)?.toDate
-            ? (call.createdAt as any).toDate().getTime()
-            : new Date(call.createdAt as any).getTime();
-          if (Number.isFinite(createdAt) && Date.now() - createdAt > 60000) {
-            updateCall(chat.id, call.id, {status: 'ended'});
-            return;
-          }
-          handledCallIdsRef.current.add(call.id);
-          Alert.alert(
-            i18n.t('calls.incomingTitle'),
-            call.type === 'video' ? i18n.t('calls.video') : i18n.t('calls.voice'),
-            [
-              {
-                text: i18n.t('common.decline'),
-                style: 'destructive',
-                onPress: () => updateCall(chat.id, call.id, {status: 'ended'}),
-              },
-              {
-                text: i18n.t('common.accept'),
-                onPress: () => {
-                  if (navigationRef.isReady()) {
-                    navigationRef.navigate('Call' as never, {
-                      chatId: chat.id,
-                      callId: call.id,
-                      isCaller: false,
-                      type: call.type,
-                    } as never);
-                  }
-                },
-              },
-            ],
-          );
-        });
-        callListenersRef.current.set(chat.id, unsubscribeCall);
-      });
-    });
-
-    return () => {
-      unsubscribeChats();
-      callListenersRef.current.forEach(unsub => unsub());
-      callListenersRef.current.clear();
-      handledCallIdsRef.current.clear();
-    };
-  }, [user, loading]);
 
   useEffect(() => {
     if (!user || loading || Platform.OS !== 'android') return;
@@ -191,6 +123,23 @@ function AppContent() {
         <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
         {user ? <MainNavigator /> : <AuthNavigator />}
       </NavigationContainer>
+      {user && (
+        <IncomingCallManager
+          isBusy={() => navigationRef.isReady() && navigationRef.getCurrentRoute()?.name === 'Call'}
+          onAccept={(call, {camOn}) => {
+            if (!navigationRef.isReady()) return;
+            // The navigator has no ParamList, so navigate() resolves to `never`
+            // for both arguments; cast the function rather than each argument.
+            (navigationRef.navigate as (screen: string, params: object) => void)('Call', {
+              chatId: call.chatId,
+              callId: call.id,
+              isCaller: false,
+              type: call.type,
+              camOn,
+            });
+          }}
+        />
+      )}
       {user && (
         <TutorialTour
           visible={tutorialVisible}

@@ -58,9 +58,18 @@ web-build/
 # Firebase
 google-services.json
 GoogleService-Info.plist
-firebase.json
-.firebaserc
 service-account-key.json
+*-debug.log
+.firebase/
+
+# firebase.json and .firebaserc are deliberately NOT ignored: they contain no
+# secrets (just rule/function source paths, emulator ports, and the public
+# project id — already hardcoded elsewhere, e.g. web/src/firebase.ts's
+# fallback config) and CI needs them checked out to know what `firebase
+# deploy` / `firebase emulators:exec` should do. They were ignored before,
+# which meant deploy-functions.yml and deploy-rules.yml would have failed in
+# CI (no firebase.json in the checkout) regardless of anything else being
+# correct in those workflows.
 
 # Environment variables
 .env

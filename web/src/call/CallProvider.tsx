@@ -1,9 +1,10 @@
 import {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {colors} from '../theme';
 import {createCall, endCall, listenLatestCall, type CallSession, type CallType} from '../services/call';
 import {getUserById, listenChatsForUser, logMissedCall} from '../services/chat';
 import {deliverDueScheduledMessages} from '../services/scheduledMessages';
 import CallModal from '../components/CallModal';
+import IncomingCall from '../components/IncomingCall';
+import {createRingtone} from './ringtone';
 
 // If a call is still ringing this long after it started, the recipient logs it
 // as missed on the caller's behalf (covers the caller's tab dying mid-ring).
@@ -18,6 +19,8 @@ interface ActiveCall {
   isCaller: boolean;
   type: CallType;
   otherName: string;
+  /** Camera state chosen on the answer screen, before the call opened. */
+  camOn: boolean;
 }
 
 interface CallCtx {
@@ -42,10 +45,41 @@ export default function CallProvider({
   const [active, setActive] = useState<ActiveCall | null>(null);
   const [incoming, setIncoming] = useState<{session: CallSession; otherName: string} | null>(null);
   const [chatIds, setChatIds] = useState<string[]>([]);
+  const [ringAudible, setRingAudible] = useState(true);
   const handled = useRef<Set<string>>(new Set());
   const missTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const activeRef = useRef(active);
   activeRef.current = active;
+  const ringtone = useRef(createRingtone());
+
+  // Ring (and flash the tab title) for as long as a call is pending. The title
+  // alert matters because the ringtone is silenced by autoplay policy until the
+  // page has seen a user gesture — a background tab may have never had one.
+  useEffect(() => {
+    if (!incoming || active) return;
+
+    let cancelled = false;
+    ringtone.current.start().then(ok => {
+      if (!cancelled) setRingAudible(ok);
+    });
+
+    if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+
+    const original = document.title;
+    let on = false;
+    const flash = setInterval(() => {
+      on = !on;
+      document.title = on ? `📞 ${incoming.otherName}…` : original;
+    }, 900);
+
+    return () => {
+      cancelled = true;
+      ringtone.current.stop();
+      clearInterval(flash);
+      document.title = original;
+      if (navigator.vibrate) navigator.vibrate(0);
+    };
+  }, [incoming, active]);
 
   // Track the user's chats so we can watch each for an incoming call.
   useEffect(() => listenChatsForUser(user.uid, chats => setChatIds(chats.map(c => c.id))), [user.uid]);
@@ -144,7 +178,7 @@ export default function CallProvider({
   const startCall = useCallback(
     async (chatId: string, otherUid: string, otherName: string, type: CallType) => {
       const callId = await createCall(chatId, user.uid, otherUid, type);
-      setActive({chatId, callId, isCaller: true, type, otherName});
+      setActive({chatId, callId, isCaller: true, type, otherName, camOn: type === 'video'});
     },
     [user.uid],
   );
@@ -157,7 +191,7 @@ export default function CallProvider({
     }
   };
 
-  const acceptIncoming = () => {
+  const acceptIncoming = ({camOn}: {camOn: boolean}) => {
     if (!incoming) return;
     handled.current.add(incoming.session.id);
     clearMissTimer(incoming.session.id);
@@ -167,6 +201,7 @@ export default function CallProvider({
       isCaller: false,
       type: incoming.session.type,
       otherName: incoming.otherName,
+      camOn,
     });
     setIncoming(null);
   };
@@ -182,21 +217,13 @@ export default function CallProvider({
       {children}
 
       {incoming && !active && (
-        <div style={styles.incoming}>
-          <div style={styles.incomingAvatar}>{incoming.otherName.charAt(0).toUpperCase()}</div>
-          <div style={{flex: 1, minWidth: 0}}>
-            <div style={styles.incomingName}>{incoming.otherName}</div>
-            <div style={styles.incomingSub}>
-              Incoming {incoming.session.type === 'video' ? 'video' : 'voice'} call…
-            </div>
-          </div>
-          <button style={styles.decline} onClick={declineIncoming}>
-            Decline
-          </button>
-          <button style={styles.accept} onClick={acceptIncoming}>
-            Accept
-          </button>
-        </div>
+        <IncomingCall
+          callerName={incoming.otherName}
+          type={incoming.session.type}
+          audible={ringAudible}
+          onAccept={acceptIncoming}
+          onDecline={declineIncoming}
+        />
       )}
 
       {active && (
@@ -207,57 +234,10 @@ export default function CallProvider({
           type={active.type}
           me={user}
           otherName={active.otherName}
+          initialCamOn={active.camOn}
           onClose={() => setActive(null)}
         />
       )}
     </Ctx.Provider>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  incoming: {
-    position: 'fixed',
-    top: 20,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    background: colors.surfaceStrong,
-    border: `1px solid ${colors.border}`,
-    borderRadius: 16,
-    padding: '12px 16px',
-    boxShadow: '0 20px 50px -15px rgba(20,30,60,0.35)',
-    zIndex: 50,
-    minWidth: 360,
-  },
-  incomingAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 999,
-    background: colors.primary,
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 700,
-  },
-  incomingName: {fontWeight: 700, color: colors.text},
-  incomingSub: {fontSize: 13, color: colors.textSecondary},
-  decline: {
-    padding: '9px 16px',
-    borderRadius: 999,
-    border: `1px solid ${colors.danger}`,
-    background: 'transparent',
-    color: colors.danger,
-    fontWeight: 700,
-  },
-  accept: {
-    padding: '9px 18px',
-    borderRadius: 999,
-    border: 'none',
-    background: colors.success,
-    color: '#fff',
-    fontWeight: 700,
-  },
-};

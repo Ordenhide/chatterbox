@@ -1,9 +1,27 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // Same session-currency check as firestore.rules' hasCurrentSession() —
+    // see that file for the full reasoning (why comparing the sessionId
+    // custom claim doesn't work: it's account-level, so any device's silent
+    // background token refresh picks up whichever claim is current
+    // regardless of who made it; auth_time is refresh-stable and only
+    // changes on a real re-authentication, verified against the Auth
+    // emulator rather than assumed). Kept consistent with that file's
+    // fail-open default for an account with no claim recorded yet, rather
+    // than this copy's previous stricter "activeSessionId must be set at
+    // all" gate — having the two rules files disagree on what "no session
+    // claimed yet" means would be its own bug.
+    function hasCurrentSessionForUid(uid) {
+      let path = /databases/(default)/documents/users/$(uid);
+      let profile = firestore.get(path);
+      return profile == null ||
+        !('sessionClaimedAt' in profile.data) ||
+        request.auth.token.auth_time >= profile.data.sessionClaimedAt.toMillis() / 1000 - 120;
+    }
+
     function hasActiveSession() {
-      return request.auth != null &&
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.activeSessionId != null;
+      return request.auth != null && hasCurrentSessionForUid(request.auth.uid);
     }
 
     function isChatParticipant(chatId) {

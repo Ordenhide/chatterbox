@@ -13,7 +13,11 @@ import {
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors} from '../theme/colors';
-import {decryptedImportAll, encryptedExportAll} from '../services/firebaseChat';
+import {
+  decryptedImportAll,
+  encryptedExportAll,
+  MIN_BACKUP_PASSPHRASE_LENGTH,
+} from '../services/firebaseChat';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {getBooleanFlag} from '../services/featureFlags';
 import {submitFeedback} from '../services/feedback';
@@ -31,6 +35,8 @@ import {startTutorial} from '../services/tutorial';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../config/parity';
 import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import {changePassword, deleteAccount, type PasswordChangeError} from '../services/account';
+import {checkPasswordStrength} from '../services/passwordPolicy';
 
 export default function ProfileScreen() {
   const {user, signOut} = useAuth();
@@ -40,6 +46,20 @@ export default function ProfileScreen() {
   const [importText, setImportText] = useState('');
   const [exportVisible, setExportVisible] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
+  // Change-password / delete-account flows.
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [deleteVisible, setDeleteVisible] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  // Backups are encrypted under a passphrase the user chooses; it is never
+  // persisted, so losing it means losing the backup.
+  const [exportPassphrase, setExportPassphrase] = useState('');
+  const [importPassphrase, setImportPassphrase] = useState('');
+  const [exporting, setExporting] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackEnabled, setFeedbackEnabled] = useState(true);
@@ -328,16 +348,125 @@ export default function ProfileScreen() {
     ]);
   }, [signOut]);
 
-  const handleExport = useCallback(async () => {
+  const passwordErrorMessage = useCallback(
+    (reason: PasswordChangeError | undefined) =>
+      reason === 'wrong-password'
+        ? t('profile.account.wrongPassword')
+        : reason === 'too-many-requests'
+        ? t('profile.account.tooManyRequests')
+        : t('profile.account.genericError'),
+    [t],
+  );
+
+  const submitPasswordChange = useCallback(async () => {
+    if (newPassword !== confirmPassword) {
+      Alert.alert(t('common.error'), t('profile.account.passwordMismatch'));
+      return;
+    }
+    // Same policy the sign-up screen enforces, so changing a password cannot
+    // be used to sidestep it and land on something weaker.
+    const strength = checkPasswordStrength(newPassword);
+    if (strength !== 'ok') {
+      const key = {
+        'too-short': 'auth.errors.passwordMin',
+        'too-common': 'auth.errors.passwordTooCommon',
+        'too-simple': 'auth.errors.passwordTooSimple',
+      }[strength];
+      Alert.alert(t('common.error'), t(key));
+      return;
+    }
+    setChangingPassword(true);
     try {
-      const backup = await encryptedExportAll('chatterbox');
+      await changePassword(currentPassword, newPassword);
+      setPasswordVisible(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      Alert.alert(t('profile.account.changePasswordTitle'), t('profile.account.passwordChanged'));
+    } catch (error) {
+      Alert.alert(t('common.error'), passwordErrorMessage((error as any)?.reason));
+    } finally {
+      setChangingPassword(false);
+    }
+  }, [confirmPassword, currentPassword, newPassword, passwordErrorMessage, t]);
+
+  const runDeletion = useCallback(
+    async (password: string) => {
+      setDeleting(true);
+      try {
+        const report = await deleteAccount(password);
+        // The account is gone regardless at this point; AuthContext's
+        // onAuthStateChanged returns the app to the login screen on its own.
+        // Surfacing a partial failure matters because the user can no longer
+        // sign in to retry it.
+        if (report.errors.length > 0) {
+          reportError(new Error(report.errors.join('; ')), 'account_delete_partial');
+          Alert.alert(t('common.error'), t('profile.account.deletePartial'));
+        }
+      } catch (error) {
+        setDeleting(false);
+        setDeleteVisible(false);
+        Alert.alert(
+          t('common.error'),
+          (error as any)?.reason
+            ? passwordErrorMessage((error as any).reason)
+            : t('profile.account.deleteFailed'),
+        );
+      }
+    },
+    [passwordErrorMessage, t],
+  );
+
+  /**
+   * Two-step confirmation: an explicit summary of what is destroyed, then the
+   * account password. The action is irreversible and cannot be undone by
+   * support — the data is genuinely gone, not flagged — so a single tap must
+   * never be enough to trigger it.
+   */
+  const handleDeleteAccount = useCallback(() => {
+    Alert.alert(t('profile.account.deleteTitle'), t('profile.account.deleteWhatHappens'), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('profile.account.deleteConfirm'),
+        style: 'destructive',
+        onPress: () => {
+          setDeletePassword('');
+          setDeleteVisible(true);
+        },
+      },
+    ]);
+  }, [t]);
+
+  // Opens the modal in "choose a passphrase" state; the backup is only produced
+  // once the user supplies one (see handleGenerateExport).
+  const handleExport = useCallback(() => {
+    setExportText('');
+    setExportPassphrase('');
+    setExportVisible(true);
+  }, []);
+
+  const handleGenerateExport = useCallback(async () => {
+    if (!user?.uid) return;
+    if (exportPassphrase.length < MIN_BACKUP_PASSPHRASE_LENGTH) {
+      Alert.alert(
+        t('common.error'),
+        t('profile.alerts.passphraseTooShort', {min: MIN_BACKUP_PASSPHRASE_LENGTH}),
+      );
+      return;
+    }
+    setExporting(true);
+    try {
+      // scrypt is deliberately slow (~100ms+); yield first so the spinner paints.
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const backup = await encryptedExportAll(user.uid, exportPassphrase);
       setExportText(backup);
-      setExportVisible(true);
     } catch (error) {
       reportError(error, 'export_backup_failed');
       Alert.alert(t('profile.alerts.exportFailedTitle'), t('profile.alerts.exportFailedBody'));
+    } finally {
+      setExporting(false);
     }
-  }, [t]);
+  }, [exportPassphrase, t, user?.uid]);
 
   const openImport = useCallback(() => {
     setImportVisible(true);
@@ -354,15 +483,18 @@ export default function ProfileScreen() {
 
   const handleImport = useCallback(async () => {
     try {
-      await decryptedImportAll(importText.trim(), 'chatterbox');
+      await decryptedImportAll(importText.trim(), importPassphrase);
       setImportText('');
+      setImportPassphrase('');
       setImportVisible(false);
       Alert.alert(t('profile.alerts.importSuccessTitle'), t('profile.alerts.importSuccessBody'));
     } catch (error) {
+      // A wrong passphrase and a tampered payload both land here — Poly1305
+      // rejects rather than returning garbage, so we can say so specifically.
       reportError(error, 'import_backup_failed');
       Alert.alert(t('profile.alerts.importFailedTitle'), t('profile.alerts.importFailedBody'));
     }
-  }, [importText, t]);
+  }, [importText, importPassphrase, t]);
 
   const handleSendFeedback = useCallback(async () => {
     if (!user?.uid) return;
@@ -609,28 +741,186 @@ export default function ProfileScreen() {
           onPress={() => navigation.navigate('Chats' as never, {screen: 'PrivacyPolicy'} as never)}>
           <Text style={[styles.buttonText, {color: colors.text}]}>Privacy Policy</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
+          onPress={() => {
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            setPasswordVisible(true);
+          }}>
+          <Text style={[styles.buttonText, {color: colors.text}]}>
+            {t('profile.buttons.changePassword')}
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.button, {backgroundColor: colors.danger}]} onPress={handleSignOut}>
           <Text style={styles.buttonText}>{t('profile.buttons.signOut')}</Text>
         </TouchableOpacity>
+        {/* Kept visually apart from the routine actions above: this one is
+            irreversible, so it should never sit flush against sign-out. */}
+        <TouchableOpacity
+          style={[styles.buttonSecondary, {borderWidth: 1, borderColor: colors.danger, marginTop: 24}]}
+          onPress={handleDeleteAccount}>
+          <Text style={[styles.buttonText, {color: colors.danger}]}>
+            {t('profile.buttons.deleteAccount')}
+          </Text>
+        </TouchableOpacity>
       </View>
       </ScrollView>
+
+      {passwordVisible && (
+        <Modal visible animationType="slide" transparent onRequestClose={() => setPasswordVisible(false)}>
+          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
+            <Text style={[styles.modalTitle, {color: colors.text}]}>
+              {t('profile.account.changePasswordTitle')}
+            </Text>
+            <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
+              {t('profile.account.changePasswordDescription')}
+            </Text>
+            <TextInput
+              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
+              placeholder={t('profile.account.currentPassword')}
+              placeholderTextColor={colors.textSecondary}
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
+              placeholder={t('profile.account.newPassword')}
+              placeholderTextColor={colors.textSecondary}
+              value={newPassword}
+              onChangeText={setNewPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
+              placeholder={t('profile.account.confirmPassword')}
+              placeholderTextColor={colors.textSecondary}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {backgroundColor: colors.primary},
+                (changingPassword || !currentPassword || !newPassword || !confirmPassword) && {opacity: 0.5},
+              ]}
+              disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
+              onPress={submitPasswordChange}>
+              {changingPassword ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>{t('profile.account.changePasswordTitle')}</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
+              onPress={() => setPasswordVisible(false)}
+              disabled={changingPassword}>
+              <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
+            </TouchableOpacity>
+          </SafeAreaView>
+        </Modal>
+      )}
+
+      {deleteVisible && (
+        <Modal visible animationType="slide" transparent onRequestClose={() => !deleting && setDeleteVisible(false)}>
+          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
+            <Text style={[styles.modalTitle, {color: colors.danger}]}>
+              {t('profile.account.deleteTitle')}
+            </Text>
+            <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
+              {t('profile.account.deleteEnterPassword')}
+            </Text>
+            <TextInput
+              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
+              placeholder={t('profile.account.currentPassword')}
+              placeholderTextColor={colors.textSecondary}
+              value={deletePassword}
+              onChangeText={setDeletePassword}
+              secureTextEntry
+              autoCapitalize="none"
+              editable={!deleting}
+            />
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {backgroundColor: colors.danger},
+                (deleting || !deletePassword) && {opacity: 0.5},
+              ]}
+              disabled={deleting || !deletePassword}
+              onPress={() => runDeletion(deletePassword)}>
+              {deleting ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>{t('profile.account.deleteConfirm')}</Text>
+              )}
+            </TouchableOpacity>
+            {deleting ? (
+              <Text style={[styles.modalHint, {color: colors.textSecondary, textAlign: 'center'}]}>
+                {t('profile.account.deleting')}
+              </Text>
+            ) : (
+              <TouchableOpacity
+                style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
+                onPress={() => setDeleteVisible(false)}>
+                <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+            )}
+          </SafeAreaView>
+        </Modal>
+      )}
 
       {exportVisible && (
         <Modal visible animationType="slide">
           <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
             <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.modals.exportTitle')}</Text>
-            <TextInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
-              value={exportText}
-              multiline
-              editable={false}
-            />
+            {exportText ? (
+              <TextInput
+                style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
+                value={exportText}
+                multiline
+                editable={false}
+              />
+            ) : (
+              <>
+                <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
+                  {t('profile.modals.exportPassphraseHint', {min: MIN_BACKUP_PASSPHRASE_LENGTH})}
+                </Text>
+                <TextInput
+                  style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
+                  value={exportPassphrase}
+                  onChangeText={setExportPassphrase}
+                  placeholder={t('profile.modals.passphrasePlaceholder')}
+                  placeholderTextColor={colors.textSecondary}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </>
+            )}
             <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                onPress={handleCopyExport}>
-                <Text style={styles.buttonText}>{t('common.copy')}</Text>
-              </TouchableOpacity>
+              {exportText ? (
+                <TouchableOpacity
+                  style={[styles.modalButton, {backgroundColor: colors.primary}]}
+                  onPress={handleCopyExport}>
+                  <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.copy')}</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.modalButton, {backgroundColor: colors.primary, opacity: exporting ? 0.6 : 1}]}
+                  disabled={exporting}
+                  onPress={handleGenerateExport}>
+                  <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+                    {exporting ? t('profile.modals.working') : t('profile.modals.encryptBackup')}
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
                 onPress={() => setExportVisible(false)}>
@@ -652,6 +942,16 @@ export default function ProfileScreen() {
               placeholder={t('profile.modals.importPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               multiline
+            />
+            <TextInput
+              style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
+              value={importPassphrase}
+              onChangeText={setImportPassphrase}
+              placeholder={t('profile.modals.passphrasePlaceholder')}
+              placeholderTextColor={colors.textSecondary}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
             />
             <View style={styles.modalActions}>
               <TouchableOpacity
@@ -999,6 +1299,19 @@ const styles = StyleSheet.create({
     padding: 16,
     textAlignVertical: 'top',
     fontSize: 15,
+  },
+  modalHint: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  passphraseInput: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    marginTop: 12,
   },
   modalActions: {
     flexDirection: 'row',
