@@ -44,7 +44,7 @@ export function logUploadError(context: string, err: unknown): void {
  * leaves comfortable headroom for the rest of the message (reply preview, user,
  * mentions). Mirrors the mobile app's inline-audio budget.
  */
-export const MAX_INLINE_DATA_URI_CHARS = 700_000;
+export const MAX_INLINE_DATA_URI_CHARS = 320_000;
 
 /**
  * Room reserved for the `data:<mime>;base64,` prefix. The longest type we
@@ -175,6 +175,22 @@ export async function uploadChatImage(
   return uploadWithProgress(`chats/${chatId}/${Date.now()}.${extFor(blob, file.name)}`, blob, onProgress);
 }
 
+/**
+ * Uploads a custom chat wallpaper, downscaling it first. Fixed per-user path
+ * (unlike uploadChatImage's timestamped one) so re-uploading replaces the
+ * previous wallpaper instead of accumulating orphaned Storage files — mirrors
+ * the mobile client's wallpaper_{uid}.jpg pattern (ChatSettingsScreen.tsx).
+ */
+export async function uploadChatWallpaper(
+  chatId: string,
+  uid: string,
+  file: File,
+  onProgress?: (pct: number) => void,
+): Promise<string> {
+  const blob = await downscaleImage(file);
+  return uploadWithProgress(`chats/${chatId}/wallpaper_${uid}.${extFor(blob, file.name)}`, blob, onProgress);
+}
+
 export function uploadChatBlob(
   chatId: string,
   blob: Blob,
@@ -193,11 +209,20 @@ export async function uploadMomentImage(
   return uploadWithProgress(`moments/${uid}/${Date.now()}.${extFor(blob, file.name)}`, blob, onProgress);
 }
 
-/** Best-effort delete of a moment's media file, given its download URL. */
-export async function deleteMomentImage(url: string): Promise<void> {
+/**
+ * Best-effort delete of a Storage object by its download URL. Never throws.
+ * Shared by moment cleanup, message-media cleanup (chat.ts), and account
+ * purge (account.ts) — one primitive for "this URL's object should go away."
+ */
+export async function deleteStorageObjectByUrl(url: string): Promise<boolean> {
+  // Inline media (data: URIs) lives inside the Firestore document itself, so
+  // there's no Storage object behind it — and ref() would throw on it.
+  if (!url.startsWith('http')) return false;
   try {
     await deleteObject(ref(storage, url));
+    return true;
   } catch {
-    // file may already be gone, or the URL doesn't map to a storage object
+    // Already deleted, or the URL doesn't map to an object in this bucket.
+    return false;
   }
 }

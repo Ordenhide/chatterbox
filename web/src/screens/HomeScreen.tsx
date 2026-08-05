@@ -1,13 +1,16 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import type {User} from 'firebase/auth';
 import {avatarColor, colors} from '../theme';
 import {useT} from '../i18n';
-import {getUserById, listenChatsForUser} from '../services/chat';
+import {getUserById, listenChatsForUser, toggleHideChat} from '../services/chat';
+import {partitionChats, unreadTotal} from '../services/hiddenChats';
+import {useToast} from '../context/ToastContext';
 import {useIsMobile} from '../hooks/useIsMobile';
 import type {ChatRoom, UserProfile} from '../types';
 import ChatPane from '../components/ChatPane';
 import NewChatModal from '../components/NewChatModal';
 import Icon from '../components/Icon';
+import {SHORTCUT_EVENT, stepChat, type ShortcutId} from '../services/shortcuts';
 
 export default function HomeScreen({
   user,
@@ -23,7 +26,13 @@ export default function HomeScreen({
   const [userCache, setUserCache] = useState<Record<string, UserProfile>>({});
   const [showNewChat, setShowNewChat] = useState(false);
   const [search, setSearch] = useState('');
+  // The hidden list is a separate view of the same sidebar rather than a
+  // section inside it — a collapsed group still advertises that hidden chats
+  // exist every time you glance at the list.
+  const [viewingHidden, setViewingHidden] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
+  const toast = useToast();
 
   useEffect(() => listenChatsForUser(user.uid, setChats), [user.uid]);
 
@@ -62,15 +71,69 @@ export default function HomeScreen({
     [user.uid, userCache],
   );
 
+  const {visible: visibleChats, hidden: hiddenChats} = useMemo(
+    () => partitionChats(chats, user.uid),
+    [chats, user.uid],
+  );
+  const hiddenUnread = useMemo(() => unreadTotal(hiddenChats, user.uid), [hiddenChats, user.uid]);
+
   const orderedChats = useMemo(() => {
+    const source = viewingHidden ? hiddenChats : visibleChats;
     const pinned = (c: ChatRoom) => (c.pinnedBy?.includes(user.uid) ? 0 : 1);
-    const list = [...chats].sort((a, b) => pinned(a) - pinned(b));
+    const list = [...source].sort((a, b) => pinned(a) - pinned(b));
     const q = search.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
       c => chatMeta(c).title.toLowerCase().includes(q) || (c.lastMessage?.text || '').toLowerCase().includes(q),
     );
-  }, [chats, user.uid, search, chatMeta]);
+  }, [visibleChats, hiddenChats, viewingHidden, user.uid, search, chatMeta]);
+
+  /**
+   * Chat-list shortcuts, dispatched by the app shell (see services/shortcuts).
+   * Handled here because this is where the *filtered, ordered* list lives —
+   * stepping through anything else would not match what is on screen.
+   */
+  useEffect(() => {
+    const onShortcut = (e: Event) => {
+      const id = (e as CustomEvent<ShortcutId>).detail;
+      if (id === 'search') {
+        searchRef.current?.focus();
+        searchRef.current?.select();
+        return;
+      }
+      if (id === 'newChat') {
+        setShowNewChat(true);
+        return;
+      }
+      if (id === 'closeOrClear') {
+        // Escape clears an active filter first; only then does it give up
+        // focus, so one press never does both and loses your place.
+        if (search) setSearch('');
+        else searchRef.current?.blur();
+        return;
+      }
+      if (id === 'prevChat' || id === 'nextChat') {
+        const next = stepChat(orderedChats.map(c => c.id), selectedId, id === 'nextChat' ? 1 : -1);
+        if (next) onSelectChat(next);
+      }
+    };
+    window.addEventListener(SHORTCUT_EVENT, onShortcut);
+    return () => window.removeEventListener(SHORTCUT_EVENT, onShortcut);
+  }, [orderedChats, selectedId, onSelectChat, search]);
+
+  /**
+   * Hiding the chat you're reading would leave it open with no way back to it
+   * from the list, so close it on the way out.
+   */
+  const setHidden = async (chat: ChatRoom, hidden: boolean) => {
+    try {
+      await toggleHideChat(chat.id, user.uid, hidden);
+      if (!hidden && selectedId === chat.id) onSelectChat(null);
+      toast.show(t(hidden ? 'chats.recovered' : 'chats.hidden'));
+    } catch {
+      toast.error(t('common.error'));
+    }
+  };
 
   const selectedChat = chats.find(c => c.id === selectedId) || null;
   const myName = user.displayName || user.email || 'Me';
@@ -84,17 +147,34 @@ export default function HomeScreen({
       {showSidebar && (
       <aside style={{...styles.sidebar, ...(isMobile ? styles.sidebarMobile : null)}}>
         <div style={styles.sidebarHeader}>
-          <span style={styles.brand}>{t('chats.title')}</span>
-          <button
-            className="btn btn-primary"
-            style={styles.newBtn}
-            data-tour="new-chat"
-            onClick={() => setShowNewChat(true)}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4">
-              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-            </svg>
-            {t('chats.newChat')}
-          </button>
+          {viewingHidden ? (
+            <>
+              <button
+                style={styles.backBtn}
+                aria-label={t('common.close')}
+                onClick={() => {
+                  setViewingHidden(false);
+                  setSearch('');
+                }}>
+                <Icon name="back" size={20} />
+              </button>
+              <h1 style={styles.brand}>{t('chats.hiddenTitle')}</h1>
+            </>
+          ) : (
+            <>
+              <h1 style={styles.brand}>{t('chats.title')}</h1>
+              <button
+                className="btn btn-primary"
+                style={styles.newBtn}
+                data-tour="new-chat"
+                onClick={() => setShowNewChat(true)}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4">
+                  <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                </svg>
+                {t('chats.newChat')}
+              </button>
+            </>
+          )}
         </div>
 
         <div style={styles.searchWrap}>
@@ -103,8 +183,10 @@ export default function HomeScreen({
             <path d="M21 21l-4-4" strokeLinecap="round" />
           </svg>
           <input
+            ref={searchRef}
             style={styles.searchInput}
             placeholder={t('chats.search')}
+            aria-label={t('chats.search')}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -112,16 +194,23 @@ export default function HomeScreen({
 
         <div className="scroll" style={styles.chatList}>
           {orderedChats.length === 0 ? (
-            <div style={styles.emptyList}>{search ? t('chat.noMatch') : t('chats.empty')}</div>
+            <div style={styles.emptyList}>
+              {search ? t('chat.noMatch') : viewingHidden ? t('chats.hiddenEmpty') : t('chats.empty')}
+            </div>
           ) : (
-            orderedChats.map(chat => {
+            orderedChats.map((chat, i) => {
               const {title, seed} = chatMeta(chat);
               const unread = chat.unreadCountBy?.[user.uid] || 0;
               const active = chat.id === selectedId;
               const pinned = chat.pinnedBy?.includes(user.uid);
               return (
-                <button
+                <div
                   key={chat.id}
+                  className="chat-row"
+                  // Capped at 10 steps: past that the stagger stops reading as
+                  // a cascade and just becomes the last rows arriving late.
+                  style={{'--cb-stagger': `${Math.min(i, 10) * 28}ms`} as React.CSSProperties}>
+                <button
                   onClick={() => onSelectChat(chat.id)}
                   className={`chat-item${active ? ' active' : ''}`}>
                   <div style={{...styles.avatar, background: avatarColor(seed)}}>
@@ -141,19 +230,47 @@ export default function HomeScreen({
                       <span style={{...styles.chatPreview, fontWeight: unread ? 600 : 400, color: unread ? colors.text : colors.textSecondary}}>
                         {chat.lastMessage?.text || t('chat.empty')}
                       </span>
-                      {unread > 0 && <span style={styles.badge}>{unread}</span>}
+                      {unread > 0 && <span className="cb-badge" style={styles.badge}>{unread}</span>}
                     </div>
                   </div>
                 </button>
+                {/* A sibling of the row button, never a child: an interactive
+                    element nested inside another is invalid, and its label gets
+                    absorbed into the row's own accessible name — which made the
+                    control unclickable, selecting the chat instead. */}
+                <button
+                  className="chat-hide-btn"
+                  style={styles.hideBtn}
+                  aria-label={`${viewingHidden ? t('chats.recover') : t('chats.hide')} — ${title}`}
+                  title={viewingHidden ? t('chats.recover') : t('chats.hide')}
+                  onClick={() => setHidden(chat, viewingHidden)}>
+                  <Icon name={viewingHidden ? 'eye' : 'eyeOff'} size={16} />
+                </button>
+                </div>
               );
             })
           )}
         </div>
+
+        {/* Only advertised once something is actually hidden — an always-present
+            "Hidden (0)" row would defeat the point of hiding a chat. */}
+        {!viewingHidden && hiddenChats.length > 0 && (
+          <button style={styles.hiddenEntry} onClick={() => setViewingHidden(true)}>
+            <Icon name="eyeOff" size={16} />
+            <span style={{flex: 1, textAlign: 'left'}}>{t('chats.hiddenTitle')}</span>
+            <span style={styles.hiddenCount}>
+              {hiddenUnread > 0 ? `${hiddenChats.length} · ${hiddenUnread}` : hiddenChats.length}
+            </span>
+          </button>
+        )}
       </aside>
       )}
 
       {showMain && (
-      <main style={styles.main}>
+      // A plain div, not a <main> — MainApp.tsx already provides the single
+      // main landmark for whichever tab is active, and a second one here
+      // would violate axe's landmark-no-duplicate-main/landmark-unique rules.
+      <div style={styles.main}>
         {selectedChat ? (
           <ChatPane
             key={selectedChat.id}
@@ -181,7 +298,7 @@ export default function HomeScreen({
             </button>
           </div>
         )}
-      </main>
+      </div>
       )}
 
       {showNewChat && (
@@ -210,6 +327,54 @@ function formatTime(chat: ChatRoom): string {
 }
 
 const styles: Record<string, React.CSSProperties> = {
+  backBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 999,
+    border: 'none',
+    background: 'transparent',
+    color: colors.text,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  hideBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: colors.textTertiary,
+    flexShrink: 0,
+    cursor: 'pointer',
+  },
+  hiddenEntry: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    width: '100%',
+    padding: '12px 16px',
+    border: 'none',
+    borderTop: `1px solid ${colors.border}`,
+    background: 'transparent',
+    color: colors.textSecondary,
+    font: 'inherit',
+    fontSize: 13.5,
+    fontWeight: 600,
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  hiddenCount: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: colors.textTertiary,
+    background: colors.inputBg,
+    borderRadius: 999,
+    padding: '2px 8px',
+  },
   shell: {flex: 1, minWidth: 0, height: '100%', display: 'flex'},
   sidebar: {
     width: 340,

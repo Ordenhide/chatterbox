@@ -1,38 +1,31 @@
-import {useEffect, useState} from 'react';
 import {colors} from '../theme';
-import {fetchLinkPreview, type LinkPreview} from '../services/ai';
+import {hasPreviewContent, type LinkPreviewData} from '../services/linkPreview';
+import {safeExternalUrl} from '../utils/safeUrl';
 
-const cache = new Map<string, LinkPreview | null>();
+/**
+ * Renders a preview the message already carries. Deliberately does no
+ * fetching: this used to call the `fetchLinkPreview` function as it mounted,
+ * which meant every viewer reported every link to the server on every load.
+ * The sender now resolves it once and encrypts it into the message — see
+ * services/linkPreview.ts for why.
+ *
+ * A message sent before that change has no stored preview and simply renders
+ * without a card.
+ */
+export default function LinkPreviewCard({preview}: {preview: LinkPreviewData | null | undefined}) {
+  if (!preview || !hasPreviewContent(preview)) return null;
+  const {url} = preview;
 
-export default function LinkPreviewCard({url}: {url: string}) {
-  const [preview, setPreview] = useState<LinkPreview | null>(cache.get(url) ?? null);
-  const [tried, setTried] = useState(cache.has(url));
-
-  useEffect(() => {
-    if (cache.has(url)) return;
-    let active = true;
-    fetchLinkPreview(url)
-      .then(p => {
-        cache.set(url, p);
-        if (active) {
-          setPreview(p);
-          setTried(true);
-        }
-      })
-      .catch(() => {
-        cache.set(url, null);
-        if (active) setTried(true);
-      });
-    return () => {
-      active = false;
-    };
-  }, [url]);
-
-  if (!tried || !preview || (!preview.title && !preview.description && !preview.image)) return null;
+  // The URL comes from the sender's message, so it is not trustworthy.
+  // A preview that can't be linked safely isn't worth rendering at all.
+  const href = safeExternalUrl(url);
+  if (!href) return null;
+  // Same for the thumbnail: it's a URL scraped from a page the sender chose.
+  const imageSrc = safeExternalUrl(preview.image);
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" style={styles.card}>
-      {preview.image && <img src={preview.image} alt="" style={styles.image} />}
+    <a href={href} target="_blank" rel="noopener noreferrer" style={styles.card}>
+      {imageSrc && <img src={imageSrc} alt="" style={styles.image} />}
       <div style={styles.body}>
         {preview.title && <div style={styles.title}>{preview.title}</div>}
         {preview.description && <div style={styles.desc}>{preview.description}</div>}

@@ -56,6 +56,7 @@ export default function MomentComments({
         <input
           style={styles.input}
           placeholder="Add a comment…"
+          aria-label="Add a comment"
           value={text}
           onChange={e => setText(e.target.value)}
         />

@@ -55,6 +55,7 @@ export default function GifPicker({
             <input
               style={styles.input}
               placeholder={t('gif.search')}
+              aria-label={t('gif.search')}
               value={q}
               onChange={e => setQ(e.target.value)}
               autoFocus
@@ -77,7 +78,7 @@ export default function GifPicker({
           ) : (
             <div style={styles.masonry}>
               {gifs.map(g => (
-                <button key={g.id} style={styles.gifBtn} onClick={() => onPick(g)}>
+                <button key={g.id} style={styles.gifBtn} aria-label="Choose this GIF" onClick={() => onPick(g)}>
                   <img src={g.previewUrl} alt="" loading="lazy" style={styles.gifImg} />
                 </button>
               ))}

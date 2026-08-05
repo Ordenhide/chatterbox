@@ -1,12 +1,27 @@
-import {useEffect, useState} from 'react';
-import type {User} from 'firebase/auth';
+import {useEffect, useRef, useState} from 'react';
+import {RecaptchaVerifier, type ConfirmationResult, type User} from 'firebase/auth';
 import {avatarColor, colors} from '../theme';
 import {useTheme} from '../context/ThemeContext';
 import {useToast} from '../context/ToastContext';
 import {useT, type Lang} from '../i18n';
 import {setProfileVisibility, signOut, updateDisplayName} from '../services/auth';
-import {changePassword, type PasswordChangeError} from '../services/account';
+import {auth} from '../firebase';
+import {
+  changePassword,
+  confirmPhoneLink,
+  sendPhoneLinkCode,
+  unlinkPhoneNumber,
+  type PasswordChangeError,
+  type PhoneLinkError,
+} from '../services/account';
+import {exportUserData} from '../services/dataExport';
+import {downloadJson} from '../utils/downloadFile';
+import {createBillingPortalSession} from '../services/billing';
+import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
+import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/linkPreview';
+import {useEntitlement} from '../context/EntitlementContext';
 import {checkPasswordStrength} from '../services/passwordPolicy';
+import {COUNTRY_CODES, flagEmoji, toE164, type CountryDialCode} from '../utils/countryCodes';
 import {getUserById} from '../services/chat';
 import {currentPermission, enablePush, notificationsSupported} from '../services/push';
 import {startTour} from '../services/tour';
@@ -35,6 +50,38 @@ export default function ProfileScreen({user}: {user: User}) {
   const [pwError, setPwError] = useState<string | null>(null);
   const [changingPw, setChangingPw] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [exportingData, setExportingData] = useState(false);
+  const [exportDataError, setExportDataError] = useState<string | null>(null);
+  const {entitlement, isPro} = useEntitlement();
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [billingError, setBillingError] = useState<string | null>(null);
+  // Per-device, so this reflects the browser you're sitting at.
+  const [aiAllowed, setAiAllowed] = useState(hasAiConsent);
+  const [previewsOn, setPreviewsOn] = useState(isLinkPreviewEnabled);
+  // Add-phone-number flow: password + phone -> OTP code, mirroring the
+  // password-change form's state/loading/error pattern. The web SDK (unlike
+  // mobile) needs an invisible reCAPTCHA verifier bound to a DOM node.
+  const [linkedPhone, setLinkedPhone] = useState<string | null>(user.phoneNumber);
+  const [phoneStep, setPhoneStep] = useState<'entry' | 'code'>('entry');
+  const [phonePw, setPhonePw] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryDialCode>(() => {
+    let region: string | undefined;
+    try {
+      region = new Intl.Locale(navigator.language).maximize().region;
+    } catch {
+      // Intl.Locale unsupported or navigator.language unparsable — fall back below.
+    }
+    return COUNTRY_CODES.find(c => c.iso2 === region) ?? COUNTRY_CODES.find(c => c.iso2 === 'US')!;
+  });
+  const [phoneCode, setPhoneCode] = useState('');
+  const [phoneConfirmation, setPhoneConfirmation] = useState<ConfirmationResult | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [sendingPhone, setSendingPhone] = useState(false);
+  const [verifyingPhone, setVerifyingPhone] = useState(false);
+  const [removingPhone, setRemovingPhone] = useState(false);
+  const recaptchaContainerRef = useRef<HTMLDivElement | null>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   useEffect(() => {
     getUserById(user.uid).then(p => {
@@ -46,6 +93,13 @@ export default function ProfileScreen({user}: {user: User}) {
     });
     setPushSupported(notificationsSupported());
   }, [user.uid]);
+
+  useEffect(() => {
+    return () => {
+      recaptchaVerifierRef.current?.clear();
+      recaptchaVerifierRef.current = null;
+    };
+  }, []);
 
   const saveName = async () => {
     const trimmed = name.trim();
@@ -127,6 +181,160 @@ export default function ProfileScreen({user}: {user: User}) {
     }
   };
 
+  const phoneErrorMessage = (reason: PhoneLinkError | undefined) => {
+    switch (reason) {
+      case 'wrong-password':
+        return t('account.wrongPassword');
+      case 'invalid-phone-number':
+        return t('account.phoneInvalid');
+      case 'invalid-verification-code':
+        return t('account.phoneInvalidCode');
+      case 'code-expired':
+        return t('account.phoneCodeExpired');
+      case 'phone-already-in-use':
+        return t('account.phoneAlreadyInUse');
+      case 'too-many-requests':
+        return t('account.tooManyRequests');
+      case 'provider-not-enabled':
+        return t('account.phoneProviderNotEnabled');
+      case 'recaptcha-failed':
+        return t('account.phoneRecaptchaFailed');
+      default:
+        return t('account.genericError');
+    }
+  };
+
+  // Lazily created once, and reset after each attempt: a RecaptchaVerifier's
+  // widget is single-use, so a failed/expired attempt needs a fresh one
+  // rather than reusing the same instance for a retry.
+  const getRecaptchaVerifier = () => {
+    if (!recaptchaVerifierRef.current) {
+      if (!recaptchaContainerRef.current) throw new Error('recaptcha container not mounted');
+      recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+        size: 'invisible',
+      });
+    }
+    return recaptchaVerifierRef.current;
+  };
+
+  const resetRecaptcha = () => {
+    recaptchaVerifierRef.current?.clear();
+    recaptchaVerifierRef.current = null;
+  };
+
+  const resetPhoneForm = () => {
+    setPhoneStep('entry');
+    setPhonePw('');
+    setPhoneNum('');
+    setPhoneCode('');
+    setPhoneConfirmation(null);
+    setPhoneError(null);
+  };
+
+  const doSendPhoneCode = async () => {
+    setPhoneError(null);
+    setSendingPhone(true);
+    try {
+      const verifier = getRecaptchaVerifier();
+      const fullNumber = toE164(selectedCountry.dialCode, phoneNum);
+      const confirmation = await sendPhoneLinkCode(phonePw, fullNumber, verifier);
+      setPhoneConfirmation(confirmation);
+      setPhoneStep('code');
+    } catch (err) {
+      resetRecaptcha();
+      // The mapped reason collapses several distinct backend failures into
+      // "unknown", so log what Firebase actually said — its FirebaseError
+      // carries the raw Identity Toolkit response on customData.
+      const cause = (err as {cause?: unknown}).cause;
+      console.warn(
+        'phone link send failed:',
+        (cause as {code?: string})?.code,
+        (cause as {customData?: {serverResponse?: unknown}})?.customData?.serverResponse ?? cause,
+      );
+      setPhoneError(phoneErrorMessage((err as {reason?: PhoneLinkError}).reason));
+    } finally {
+      setSendingPhone(false);
+    }
+  };
+
+  const submitSendPhoneCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    doSendPhoneCode();
+  };
+
+  const submitVerifyPhoneCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneConfirmation) return;
+    setPhoneError(null);
+    setVerifyingPhone(true);
+    try {
+      await confirmPhoneLink(phoneConfirmation, phoneCode);
+      setLinkedPhone(toE164(selectedCountry.dialCode, phoneNum));
+      resetPhoneForm();
+      toast.success(t('account.phoneAdded'));
+    } catch (err) {
+      setPhoneError(phoneErrorMessage((err as {reason?: PhoneLinkError}).reason));
+    } finally {
+      setVerifyingPhone(false);
+    }
+  };
+
+  const handleRemovePhone = async () => {
+    if (!window.confirm(t('account.phoneRemoveConfirm'))) return;
+    setRemovingPhone(true);
+    try {
+      await unlinkPhoneNumber();
+      setLinkedPhone(null);
+      toast.success(t('account.phoneRemoved'));
+    } catch (err) {
+      toast.error(phoneErrorMessage((err as {reason?: PhoneLinkError}).reason));
+    } finally {
+      setRemovingPhone(false);
+    }
+  };
+
+  // "Download my data": a human-readable, decrypted copy of the account's
+  // Firestore data (profile, conversations, moments, social graph). Reading
+  // the account's own data doesn't count as a Firebase Auth "sensitive
+  // operation", so unlike password change/delete this needs no reauthentication.
+  const handleDownloadData = async () => {
+    setExportingData(true);
+    setExportDataError(null);
+    try {
+      const data = await exportUserData(user.uid);
+      downloadJson(`chatterbox-data-${new Date().toISOString().slice(0, 10)}.json`, data);
+    } catch (err) {
+      console.warn('data export failed:', err);
+      setExportDataError(t('account.exportDataFailed'));
+    } finally {
+      setExportingData(false);
+    }
+  };
+
+  // Both billing actions hand off to a Stripe-hosted page, so card details
+  // never touch this app.
+  const startBilling = async (getUrl: () => Promise<string>) => {
+    setBillingBusy(true);
+    setBillingError(null);
+    try {
+      window.location.assign(await getUrl());
+    } catch (err) {
+      console.warn('billing action failed:', err);
+      setBillingError(t('pro.error'));
+      setBillingBusy(false); // stays busy on success — we're navigating away
+    }
+  };
+
+  const handleManageBilling = () => startBilling(createBillingPortalSession);
+
+  const proStatusText = (() => {
+    if (!entitlement) return t('pro.active');
+    const renews = new Date(entitlement.currentPeriodEnd).toLocaleDateString();
+    if (entitlement.cancelAtPeriodEnd) return `${t('pro.endsOn')} ${renews}`;
+    if (entitlement.status === 'past_due') return t('pro.pastDue');
+    return `${t('pro.renewsOn')} ${renews}`;
+  })();
+
   const initial = (savedName || user.email || '?').charAt(0).toUpperCase();
 
   return (
@@ -140,9 +348,12 @@ export default function ProfileScreen({user}: {user: User}) {
         </div>
 
         <section style={styles.card}>
-          <label style={styles.cardTitle}>{t('profile.displayName')}</label>
+          <label style={styles.cardTitle} htmlFor="profile-display-name">
+            {t('profile.displayName')}
+          </label>
           <div style={styles.nameRow}>
             <input
+              id="profile-display-name"
               style={styles.input}
               value={name}
               onChange={e => setName(e.target.value)}
@@ -259,6 +470,7 @@ export default function ProfileScreen({user}: {user: User}) {
             style={{...styles.input, marginBottom: 8}}
             type="password"
             placeholder={t('account.currentPassword')}
+            aria-label={t('account.currentPassword')}
             value={currentPw}
             onChange={e => setCurrentPw(e.target.value)}
             autoComplete="current-password"
@@ -267,6 +479,7 @@ export default function ProfileScreen({user}: {user: User}) {
             style={{...styles.input, marginBottom: 8}}
             type="password"
             placeholder={t('account.newPassword')}
+            aria-label={t('account.newPassword')}
             value={newPw}
             onChange={e => setNewPw(e.target.value)}
             autoComplete="new-password"
@@ -275,6 +488,7 @@ export default function ProfileScreen({user}: {user: User}) {
             style={{...styles.input, marginBottom: 8}}
             type="password"
             placeholder={t('account.confirmPassword')}
+            aria-label={t('account.confirmPassword')}
             value={confirmPw}
             onChange={e => setConfirmPw(e.target.value)}
             autoComplete="new-password"
@@ -288,6 +502,197 @@ export default function ProfileScreen({user}: {user: User}) {
             {changingPw ? <span className="spinner" /> : t('account.changePassword')}
           </button>
         </form>
+
+        <section style={styles.card}>
+          <div style={styles.cardTitle}>{t('account.phoneNumber')}</div>
+          <div style={styles.cardDesc}>{linkedPhone || t('account.phoneNotAdded')}</div>
+          {linkedPhone ? (
+            <button
+              className="btn"
+              style={styles.deleteBtn}
+              onClick={handleRemovePhone}
+              disabled={removingPhone}>
+              {removingPhone ? <span className="spinner" /> : t('account.phoneRemove')}
+            </button>
+          ) : phoneStep === 'entry' ? (
+            <form onSubmit={submitSendPhoneCode}>
+              <input
+                style={{...styles.input, marginBottom: 8}}
+                type="password"
+                placeholder={t('account.currentPassword')}
+                aria-label={t('account.currentPassword')}
+                value={phonePw}
+                onChange={e => setPhonePw(e.target.value)}
+                autoComplete="current-password"
+              />
+              <div style={{display: 'flex', gap: 8, marginBottom: 8}}>
+                <select
+                  style={styles.countrySelect}
+                  value={selectedCountry.iso2}
+                  onChange={e => {
+                    const next = COUNTRY_CODES.find(c => c.iso2 === e.target.value);
+                    if (next) setSelectedCountry(next);
+                  }}
+                  aria-label={t('account.phoneCountryLabel')}>
+                  {COUNTRY_CODES.map(c => (
+                    <option key={c.iso2} value={c.iso2}>
+                      {flagEmoji(c.iso2)} {c.name} ({c.dialCode})
+                    </option>
+                  ))}
+                </select>
+                <input
+                  style={{...styles.input, flex: 1}}
+                  type="tel"
+                  placeholder={t('account.phonePlaceholder')}
+                  aria-label={t('account.phonePlaceholder')}
+                  value={phoneNum}
+                  onChange={e => setPhoneNum(e.target.value)}
+                  autoComplete="tel"
+                />
+              </div>
+              {/* What actually gets sent to Firebase — shown so a mistyped or
+                  doubled country code is visible before the request is made. */}
+              {phoneNum.trim() && (
+                <div style={styles.phonePreview}>
+                  {t('account.phoneWillSend')} {toE164(selectedCountry.dialCode, phoneNum)}
+                </div>
+              )}
+              {phoneError && <div style={styles.pwError}>{phoneError}</div>}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={styles.pwSubmit}
+                disabled={sendingPhone || !phonePw || !phoneNum}>
+                {sendingPhone ? <span className="spinner" /> : t('account.phoneSendCode')}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={submitVerifyPhoneCode}>
+              <input
+                style={{...styles.input, marginBottom: 8}}
+                type="text"
+                inputMode="numeric"
+                placeholder={t('account.phoneCodePlaceholder')}
+                aria-label={t('account.phoneCodePlaceholder')}
+                value={phoneCode}
+                onChange={e => setPhoneCode(e.target.value)}
+              />
+              {phoneError && <div style={styles.pwError}>{phoneError}</div>}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={styles.pwSubmit}
+                disabled={verifyingPhone || !phoneCode}>
+                {verifyingPhone ? <span className="spinner" /> : t('account.phoneVerifyCode')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-soft"
+                style={{...styles.pwSubmit, marginTop: 8}}
+                onClick={doSendPhoneCode}
+                disabled={sendingPhone}>
+                {t('account.phoneResendCode')}
+              </button>
+            </form>
+          )}
+          {/* Invisible reCAPTCHA host required by the web SDK's phone-auth flow. */}
+          <div ref={recaptchaContainerRef} />
+        </section>
+
+        <section style={styles.card}>
+          <div style={styles.cardTitle}>
+            {t('pro.title')}
+            {isPro && <span style={styles.proBadge}>{t('pro.badge')}</span>}
+          </div>
+          <div style={styles.cardDesc}>
+            {isPro ? proStatusText : t('pro.pitch')}
+          </div>
+          {billingError && <div style={styles.pwError}>{billingError}</div>}
+          {isPro ? (
+            <button
+              type="button"
+              className="btn btn-soft"
+              style={styles.pwSubmit}
+              disabled={billingBusy}
+              onClick={handleManageBilling}>
+              {billingBusy ? <span className="spinner" /> : t('pro.manage')}
+            </button>
+          ) : (
+            /* Buying happens in one place — the Store. This card only reports
+               status and points there, so there's a single commerce surface. */
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={styles.pwSubmit}
+              onClick={() => {
+                window.location.hash = '#/store';
+              }}>
+              {t('store.openStore')}
+            </button>
+          )}
+        </section>
+
+        <section style={styles.card}>
+          <div style={styles.cardTitle}>{t('aiConsent.settingsTitle')}</div>
+          <div style={styles.cardDesc}>
+            {aiAllowed ? t('aiConsent.settingsOn') : t('aiConsent.settingsOff')}
+          </div>
+          <button
+            type="button"
+            className={aiAllowed ? 'btn' : 'btn btn-primary'}
+            style={aiAllowed ? styles.deleteBtn : styles.pwSubmit}
+            onClick={() => {
+              if (aiAllowed) {
+                revokeAiConsent();
+                setAiAllowed(false);
+                toast.show(t('aiConsent.turnedOff'));
+              } else {
+                grantAiConsent();
+                setAiAllowed(true);
+              }
+            }}>
+            {aiAllowed ? t('aiConsent.turnOff') : t('aiConsent.turnOn')}
+          </button>
+        </section>
+
+        <section style={styles.card}>
+          <div style={styles.cardTitle}>{t('linkPreview.settingsTitle')}</div>
+          <div style={styles.cardDesc}>
+            {previewsOn ? t('linkPreview.settingsOn') : t('linkPreview.settingsOff')}
+          </div>
+          <button
+            type="button"
+            className={previewsOn ? 'btn' : 'btn btn-primary'}
+            style={previewsOn ? styles.deleteBtn : styles.pwSubmit}
+            onClick={() => {
+              setLinkPreviewEnabled(!previewsOn);
+              setPreviewsOn(!previewsOn);
+              if (previewsOn) toast.show(t('linkPreview.turnedOff'));
+            }}>
+            {previewsOn ? t('linkPreview.turnOff') : t('linkPreview.turnOn')}
+          </button>
+        </section>
+
+        <section style={styles.card}>
+          <div style={styles.cardTitle}>{t('account.exportData')}</div>
+          <div style={styles.cardDesc}>{t('account.exportDataDesc')}</div>
+          {exportDataError && <div style={styles.pwError}>{exportDataError}</div>}
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={styles.pwSubmit}
+            disabled={exportingData}
+            onClick={handleDownloadData}>
+            {exportingData ? (
+              <span className="spinner" />
+            ) : (
+              <>
+                <Icon name="download" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+                {t('account.exportData')}
+              </>
+            )}
+          </button>
+        </section>
 
         <button style={styles.signOut} onClick={() => signOut()}>
           {t('profile.signOut')}
@@ -355,6 +760,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     color: colors.text,
   },
+  countrySelect: {
+    maxWidth: 120,
+    padding: '11px 8px',
+    borderRadius: 12,
+    border: `1px solid ${colors.border}`,
+    background: colors.inputBg,
+    fontSize: 15,
+    color: colors.text,
+  },
   saveBtn: {padding: '0 22px', borderRadius: 12, minWidth: 84},
   visRow: {display: 'flex', gap: 8},
   visChip: {
@@ -394,7 +808,20 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 8,
   },
   pwError: {color: colors.danger, fontSize: 13, marginBottom: 8},
+  phonePreview: {color: colors.textSecondary, fontSize: 13, marginBottom: 8, fontVariantNumeric: 'tabular-nums'},
   pwSubmit: {width: '100%', padding: '12px', borderRadius: 12, fontSize: 14.5, marginTop: 2},
+  proBadge: {
+    marginLeft: 8,
+    padding: '2px 8px',
+    borderRadius: 999,
+    background: colors.primary,
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 700,
+    verticalAlign: 'middle',
+  },
+  proPlanRow: {display: 'flex', gap: 10},
+  proPlanBtn: {flex: 1, padding: '12px', borderRadius: 12, fontSize: 14.5, marginTop: 2},
   // Visually separated from the rest of the settings so the irreversible
   // action never sits flush against routine toggles.
   dangerZone: {

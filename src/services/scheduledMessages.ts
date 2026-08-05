@@ -10,6 +10,7 @@ import {
   where,
 } from '@react-native-firebase/firestore';
 import {Message} from '../types';
+import {guardQuerySnapshot} from './snapshotGuard';
 
 const db = getFirestore();
 
@@ -35,13 +36,13 @@ export function listenScheduledMessages(
 ) {
   return onSnapshot(
     query(scheduledRef(chatId), where('sent', '==', false), orderBy('scheduledFor', 'asc')),
-    snapshot => {
+    guardQuerySnapshot('listen_scheduled_messages', snapshot => {
       const messages = snapshot.docs.map(d => ({
         _id: d.id,
         ...d.data(),
       })) as Array<Message & {scheduledFor: number}>;
       callback(messages);
-    },
+    }),
     () => callback([]),
   );
 }

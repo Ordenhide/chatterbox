@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
+import {useArtifactCrypto} from '../hooks/useArtifactCrypto';
 import {useT, type TKey} from '../i18n';
 import {
   addTask,
@@ -38,10 +39,13 @@ function remaining(target: number, now: number): {d: number; h: number; m: numbe
 export default function CountdownModal({
   chatId,
   me,
+  peerUid,
   onClose,
 }: {
   chatId: string;
   me: {uid: string; name: string};
+  /** Needed to seal contents to the pair — see services/e2eeArtifacts.ts. */
+  peerUid?: string;
   onClose: () => void;
 }) {
   const {t} = useT();
@@ -54,7 +58,10 @@ export default function CountdownModal({
   const [when, setWhen] = useState('');
   const [taskDraft, setTaskDraft] = useState<Record<string, string>>({});
 
-  useEffect(() => listenCountdowns(chatId, setItems), [chatId]);
+  const crypto = useArtifactCrypto(me.uid, peerUid, chatId);
+  // Re-subscribes once the sealer resolves so content decrypts rather than
+  // flashing empty.
+  useEffect(() => listenCountdowns(chatId, setItems, crypto), [chatId, crypto]);
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(id);
@@ -69,7 +76,7 @@ export default function CountdownModal({
       emoji: emoji.trim() || undefined,
       createdBy: me.uid,
       createdByName: me.name,
-    }).catch(() => toast.error(t('common.error')));
+    }, crypto).catch(() => toast.error(t('common.error')));
     setTitle('');
     setEmoji('');
     setWhen('');
@@ -103,11 +110,11 @@ export default function CountdownModal({
 
         <div style={styles.addBox}>
           <div style={styles.addRow}>
-            <input style={{...styles.input, maxWidth: 52, textAlign: 'center'}} placeholder="🎉" value={emoji} onChange={e => setEmoji(e.target.value)} />
-            <input style={styles.input} placeholder={t('countdown.eventName')} value={title} onChange={e => setTitle(e.target.value)} />
+            <input style={{...styles.input, maxWidth: 52, textAlign: 'center'}} placeholder="🎉" aria-label="Emoji" value={emoji} onChange={e => setEmoji(e.target.value)} />
+            <input style={styles.input} placeholder={t('countdown.eventName')} aria-label={t('countdown.eventName')} value={title} onChange={e => setTitle(e.target.value)} />
           </div>
           <div style={styles.addRow}>
-            <input style={styles.input} type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} />
+            <input style={styles.input} type="datetime-local" aria-label={t('countdown.eventDateTime')} value={when} onChange={e => setWhen(e.target.value)} />
             <button style={styles.addBtn} onClick={create} disabled={!title.trim() || !when}>
               {t('countdown.add')}
             </button>
@@ -165,11 +172,14 @@ export default function CountdownModal({
                     <input
                       style={{...styles.input, fontSize: 13, padding: '7px 10px'}}
                       placeholder={t('countdown.addTask')}
+                      aria-label={t('countdown.addTask')}
                       value={draft}
                       onChange={e => setTaskDraft(prev => ({...prev, [c.id]: e.target.value}))}
                       onKeyDown={e => {
                         if (e.key === 'Enter' && draft.trim()) {
-                          addTask(chatId, c.id, draft.trim()).catch(() => toast.error(t('common.error')));
+                          addTask(chatId, c.id, draft.trim(), crypto).catch(() =>
+                            toast.error(t('common.error')),
+                          );
                           setTaskDraft(prev => ({...prev, [c.id]: ''}));
                         }
                       }}

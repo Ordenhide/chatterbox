@@ -109,6 +109,9 @@ export default function WhiteboardScreen() {
             {COLORS.map(c => (
               <TouchableOpacity
                 key={c}
+                accessibilityRole="button"
+                accessibilityLabel={`Pen color ${c}`}
+                accessibilityState={{selected: color === c}}
                 onPress={() => setColor(c)}
                 style={[
                   styles.colorBtn,
@@ -122,6 +125,9 @@ export default function WhiteboardScreen() {
             {[2, 4, 6].map(w => (
               <TouchableOpacity
                 key={w}
+                accessibilityRole="button"
+                accessibilityLabel={`Stroke width ${w}`}
+                accessibilityState={{selected: strokeWidth === w}}
                 onPress={() => setStrokeWidth(w)}
                 style={[
                   styles.widthBtn,
@@ -135,7 +141,7 @@ export default function WhiteboardScreen() {
           <TouchableOpacity
             onPress={handleClear}
             style={[styles.clearBtn, {borderColor: colors.glassBorder}]}>
-            <Text style={[styles.clearText, {color: colors.error}]}>Clear</Text>
+            <Text style={[styles.clearText, {color: colors.danger}]}>Clear</Text>
           </TouchableOpacity>
         </View>
 

@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
+import {useArtifactCrypto} from '../hooks/useArtifactCrypto';
 import {useT} from '../i18n';
 import {addTrack, listenPlaylist, removeTrack, voteTrack} from '../services/playlist';
 import {useToast} from '../context/ToastContext';
+import {safeExternalUrl} from '../utils/safeUrl';
 import type {PlaylistItem} from '../types';
 import Icon from './Icon';
 
@@ -16,10 +18,13 @@ function ranked(items: PlaylistItem[]): PlaylistItem[] {
 export default function PlaylistModal({
   chatId,
   me,
+  peerUid,
   onClose,
 }: {
   chatId: string;
   me: {uid: string; name: string};
+  /** Needed to seal contents to the pair — see services/e2eeArtifacts.ts. */
+  peerUid?: string;
   onClose: () => void;
 }) {
   const {t} = useT();
@@ -30,7 +35,10 @@ export default function PlaylistModal({
   const [artist, setArtist] = useState('');
   const [url, setUrl] = useState('');
 
-  useEffect(() => listenPlaylist(chatId, setItems), [chatId]);
+  const crypto = useArtifactCrypto(me.uid, peerUid, chatId);
+  // Re-subscribes once the sealer resolves so content decrypts rather than
+  // flashing empty.
+  useEffect(() => listenPlaylist(chatId, setItems, crypto), [chatId, crypto]);
 
   const add = () => {
     const trimmed = title.trim();
@@ -41,7 +49,7 @@ export default function PlaylistModal({
       url: url.trim(),
       addedBy: me.uid,
       addedByName: me.name,
-    }).catch(() => toast.error(t('common.error')));
+    }, crypto).catch(() => toast.error(t('common.error')));
     setTitle('');
     setArtist('');
     setUrl('');
@@ -67,10 +75,10 @@ export default function PlaylistModal({
         </div>
 
         <div style={styles.addBox}>
-          <input style={styles.input} placeholder={t('playlist.song')} value={title} onChange={e => setTitle(e.target.value)} />
+          <input style={styles.input} placeholder={t('playlist.song')} aria-label={t('playlist.song')} value={title} onChange={e => setTitle(e.target.value)} />
           <div style={styles.addRow}>
-            <input style={styles.input} placeholder={t('playlist.artist')} value={artist} onChange={e => setArtist(e.target.value)} />
-            <input style={styles.input} placeholder={t('playlist.link')} value={url} onChange={e => setUrl(e.target.value)} />
+            <input style={styles.input} placeholder={t('playlist.artist')} aria-label={t('playlist.artist')} value={artist} onChange={e => setArtist(e.target.value)} />
+            <input style={styles.input} placeholder={t('playlist.link')} aria-label={t('playlist.link')} value={url} onChange={e => setUrl(e.target.value)} />
             <button style={styles.addBtn} onClick={add} disabled={!title.trim()} aria-label={t('playlist.add')}>
               <Icon name="plus" size={18} style={{color: '#fff'}} />
             </button>
@@ -83,11 +91,15 @@ export default function PlaylistModal({
           ) : (
             ranked(items).map(track => {
               const voted = track.votes?.includes(me.uid);
+              // Any participant can write a track's URL, so an unchecked one
+              // could be `javascript:…`. Unsafe values degrade to plain text
+              // rather than a link that runs someone else's code.
+              const trackUrl = safeExternalUrl(track.url);
               return (
                 <div key={track.id} style={styles.row}>
                   <div style={{flex: 1, minWidth: 0}}>
-                    {track.url ? (
-                      <a href={track.url} target="_blank" rel="noreferrer" style={styles.trackTitle}>
+                    {trackUrl ? (
+                      <a href={trackUrl} target="_blank" rel="noreferrer" style={styles.trackTitle}>
                         {track.title}
                       </a>
                     ) : (

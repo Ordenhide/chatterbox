@@ -14,7 +14,7 @@ import {
   where,
 } from 'firebase/firestore';
 import {db} from '../firebase';
-import {deleteMomentImage} from './storage';
+import {deleteStorageObjectByUrl} from './storage';
 import type {Moment, MomentComment, MomentVisibility} from '../types';
 
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -78,7 +78,7 @@ export async function fetchFeed(myUid: string): Promise<Moment[]> {
 
 /** Deletes a moment (author only, per rules) and its media file, if any. */
 export async function deleteMoment(momentId: string, mediaUrl?: string | null): Promise<void> {
-  if (mediaUrl) await deleteMomentImage(mediaUrl);
+  if (mediaUrl) await deleteStorageObjectByUrl(mediaUrl);
   await deleteDoc(doc(db, 'moments', momentId));
 }
 

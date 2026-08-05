@@ -49,7 +49,7 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} role="main">
       <form onSubmit={submit} style={styles.card}>
         <div style={{display: 'flex', justifyContent: 'center', marginBottom: 18}}>
           <BrandMark size={56} />
@@ -63,6 +63,7 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
           <input
             style={styles.input}
             placeholder={t('login.displayName')}
+            aria-label={t('login.displayName')}
             value={displayName}
             onChange={e => setDisplayName(e.target.value)}
             autoComplete="name"
@@ -71,6 +72,7 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
         <input
           style={styles.input}
           placeholder={t('login.email')}
+          aria-label={t('login.email')}
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -79,6 +81,7 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
         <input
           style={styles.input}
           placeholder={t('login.password')}
+          aria-label={t('login.password')}
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}

@@ -186,6 +186,30 @@ service cloud.firestore {
       allow update, delete: if isSignedIn() &&
         request.auth.uid in resource.data.participants;
 
+      // Recently-deleted messages, pending permanent removal.
+      //
+      // A deleted message is MOVED here rather than soft-flagged in place.
+      // Flagging would have meant either leaving it in /messages (where the
+      // other participant's client could still read it — "delete for everyone"
+      // would have become a lie) or gating the read rule on a deleted field,
+      // which breaks the thread query outright: Firestore rejects a whole query
+      // when the read rule tests a field the query doesn't filter on. Moving it
+      // keeps the thread query untouched and lets the rule below be strict.
+      //
+      // Only the person who deleted it may read, recover or purge it. The other
+      // participant loses access the moment it lands here, so this is no weaker
+      // than the previous hard delete from their side.
+      match /trash/{messageId} {
+        allow read, delete: if isChatParticipant(chatId) &&
+          resource.data.deletedBy == request.auth.uid;
+        allow create: if isChatParticipant(chatId) &&
+          request.resource.data.deletedBy == request.auth.uid;
+        // Never editable: a recovered message must be byte-identical to what
+        // was deleted, so the only writes are create (delete) and delete
+        // (recover/purge).
+        allow update: if false;
+      }
+
       match /messages/{messageId} {
         allow read: if isChatParticipant(chatId);
         // You may only create a message authored as yourself. The one exception
@@ -243,6 +267,11 @@ service cloud.firestore {
       match /countdowns/{countdownId} {
         allow read, write: if isChatParticipant(chatId);
       }
+
+      match /liveLocations/{userId} {
+        allow read: if isChatParticipant(chatId);
+        allow write: if isChatParticipant(chatId) && request.auth.uid == userId;
+      }
     }
 
     match /users/{userId}/reminders/{reminderId} {
@@ -267,6 +296,22 @@ service cloud.firestore {
     match /users/{userId}/publicKeys/{keyId} {
       allow read: if isSignedIn();
       allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Paid-subscription entitlement. Deliberately a TOP-LEVEL collection
+    // rather than a field on /users/{uid} or a doc under /users/{uid}/private:
+    // both of those grant the owner blanket write access (see the rules
+    // above), so an entitlement living there could be self-granted with a
+    // one-line write from the browser console. Rules are a permissive union —
+    // a narrower `allow write: if false` does NOT revoke a broader allow — so
+    // isolation, not nesting, is what makes this safe.
+    //
+    // Written exclusively by the Stripe webhook (functions/index.js) through
+    // the Admin SDK, which bypasses rules entirely. No client, including the
+    // owner, may write it.
+    match /entitlements/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
     }
   }
 }

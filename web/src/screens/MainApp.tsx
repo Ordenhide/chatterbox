@@ -1,4 +1,4 @@
-import {Suspense, lazy, useEffect, useRef, useState} from 'react';
+import {Suspense, lazy, useCallback, useEffect, useRef, useState} from 'react';
 import type {User} from 'firebase/auth';
 import {colors} from '../theme';
 import {useT} from '../i18n';
@@ -10,7 +10,11 @@ import {useChatNotifications} from '../hooks/useChatNotifications';
 import {useReminders} from '../hooks/useReminders';
 import {useIncomingRequests} from '../hooks/useIncomingRequests';
 import {useToast} from '../context/ToastContext';
+import {EntitlementProvider} from '../context/EntitlementContext';
 import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
+import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
+import {emitShortcut, type ShortcutId} from '../services/shortcuts';
+import ShortcutsHelp from '../components/ShortcutsHelp';
 import HomeScreen from './HomeScreen';
 import CallProvider from '../call/CallProvider';
 import TourOverlay from '../components/TourOverlay';
@@ -18,6 +22,7 @@ import TourOverlay from '../components/TourOverlay';
 // Moments and Profile load on demand — they're not the default tab, so their
 // code (and the Moments/Friends Firestore paths) stay out of the initial chunk.
 const MomentsScreen = lazy(() => import('./MomentsScreen'));
+const StoreScreen = lazy(() => import('./StoreScreen'));
 const ProfileScreen = lazy(() => import('./ProfileScreen'));
 
 const ICONS: Record<Tab, React.ReactNode> = {
@@ -37,6 +42,12 @@ const ICONS: Record<Tab, React.ReactNode> = {
       <circle cx="12" cy="12" r="4" />
     </>
   ),
+  store: (
+    <>
+      <path d="M3 9h18l-1.5 10.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 9z" strokeLinejoin="round" />
+      <path d="M8 9V6.5a4 4 0 0 1 8 0V9" strokeLinecap="round" />
+    </>
+  ),
   profile: (
     <>
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round" />
@@ -45,7 +56,7 @@ const ICONS: Record<Tab, React.ReactNode> = {
   ),
 };
 
-const TAB_KEYS = ['chats', 'moments', 'profile'] as const;
+const TAB_KEYS = ['chats', 'moments', 'store', 'profile'] as const;
 
 export default function MainApp({user}: {user: User}) {
   const {route, navigate} = useHashRoute();
@@ -82,6 +93,53 @@ export default function MainApp({user}: {user: User}) {
     markTourSeen();
     setTourOpen(false);
   };
+
+  // ---- Keyboard shortcuts ---------------------------------------------------
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  const onShortcut = useCallback(
+    (id: ShortcutId) => {
+      // While the help overlay is up it is the only thing that should respond:
+      // '?' toggles it back off (as its own hint promises) and Escape closes
+      // it, but Ctrl+K must not yank focus to a search box hidden behind it.
+      // An earlier version disabled the whole hook instead, which also killed
+      // the '?' that was supposed to close it.
+      if (shortcutsOpen && id !== 'help' && id !== 'closeOrClear') return;
+
+      switch (id) {
+        case 'help':
+          setShortcutsOpen(open => !open);
+          return;
+        case 'tabChats':
+          navigate({tab: 'chats', chatId: undefined});
+          return;
+        case 'tabMoments':
+          navigate({tab: 'moments', chatId: undefined});
+          return;
+        case 'tabStore':
+          navigate({tab: 'store', chatId: undefined});
+          return;
+        case 'tabProfile':
+          navigate({tab: 'profile', chatId: undefined});
+          return;
+        case 'closeOrClear':
+          // Only the help overlay is the shell's to close — every other dialog
+          // handles its own Escape in the capture phase and stops propagation,
+          // so this never runs for them.
+          setShortcutsOpen(false);
+          emitShortcut(id);
+          return;
+        default:
+          // Chat-list shortcuts belong to HomeScreen, which owns the filtered,
+          // ordered list the user is actually looking at.
+          if (route.tab !== 'chats') navigate({tab: 'chats'});
+          emitShortcut(id);
+      }
+    },
+    [navigate, route.tab, shortcutsOpen],
+  );
+
+  useKeyboardShortcuts(onShortcut);
 
   const TABS: {key: Tab; label: string}[] = TAB_KEYS.map(key => ({
     key,
@@ -131,16 +189,19 @@ export default function MainApp({user}: {user: User}) {
           onSelectChat={id => navigate({tab: 'chats', chatId: id ?? undefined})}
         />
       )}
+      {shortcutsOpen && <ShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
       {tab === 'moments' && <MomentsScreen user={user} requestCount={requestCount} />}
+      {tab === 'store' && <StoreScreen user={user} />}
       {tab === 'profile' && <ProfileScreen user={user} />}
     </Suspense>
   );
 
   return (
+    <EntitlementProvider uid={user.uid}>
     <CallProvider user={me}>
       {isMobile ? (
         <div style={styles.mobileShell}>
-          <div style={styles.mobileContent}>{content}</div>
+          <div style={styles.mobileContent} role="main">{content}</div>
           <nav style={styles.bottomBar}>
             {TABS.map(t => (
               <button
@@ -172,12 +233,15 @@ export default function MainApp({user}: {user: User}) {
               </button>
             ))}
           </nav>
-          {content}
+          <div role="main" style={styles.mainContent}>
+            {content}
+          </div>
         </div>
       )}
 
       {tourOpen && <TourOverlay onClose={closeTour} />}
     </CallProvider>
+    </EntitlementProvider>
   );
 }
 
@@ -186,6 +250,7 @@ const styles: Record<string, React.CSSProperties> = {
   tabLoading: {flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'},
   mobileShell: {height: '100%', display: 'flex', flexDirection: 'column'},
   mobileContent: {flex: 1, minHeight: 0, display: 'flex'},
+  mainContent: {flex: 1, minWidth: 0, display: 'flex'},
   rail: {
     width: 78,
     flexShrink: 0,

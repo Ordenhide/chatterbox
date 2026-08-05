@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
@@ -11,13 +11,20 @@ import {
   setChatWallpaper,
   toggleMuteChat,
 } from '../services/chat';
+import {uploadChatWallpaper} from '../services/storage';
+import {useStoreTheme} from '../hooks/useStoreTheme';
+import {resolveAccent} from '../services/storeTheme';
 import {useToast} from '../context/ToastContext';
 import type {ChatRoom} from '../types';
 import Icon from './Icon';
 
-// Accent colors and wallpaper tints — a web-tasteful subset that overlaps the
-// mobile palette so a choice made on either client reads sensibly on both.
+// Plain per-chat accent overrides. The named catalog — free and Pro alike —
+// lives in the Store, which applies account-wide; these are just a quick way
+// to make one conversation stand out afterwards.
 const THEME_COLORS = ['#6366F1', '#0EA5E9', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6', '#64748B'];
+
+// Wallpaper tints kept as their own row: a store theme sets a coordinated
+// wallpaper, but people can still override it independently afterwards.
 const WALLPAPERS: {id: string; value: string | null}[] = [
   {id: 'none', value: null},
   {id: 'blush', value: '#FDECF3'},
@@ -44,12 +51,33 @@ export default function ChatSettingsModal({
   const {t} = useT();
   const toast = useToast();
   const dialogRef = useModal<HTMLDivElement>(onClose);
+  const wallpaperFileRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(chat?.nameBy?.[me.uid] || '');
   const isMuted = !!chat?.mutedBy?.includes(me.uid);
-  const theme = chat?.themeBy?.[me.uid] || THEME_COLORS[0];
+  // Mirrors what ChatPane actually renders, so the highlighted swatch matches
+  // the chat on screen even when the colour comes from the account-wide Store
+  // theme rather than this chat's own stored value.
+  const storeTheme = useStoreTheme(me.uid);
+  const theme = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, THEME_COLORS[0]);
   const wallpaper = chat?.wallpaperBy?.[me.uid] ?? null;
   const expiry = chat?.messageExpiry || 0;
+  const [uploadingWallpaper, setUploadingWallpaper] = useState(false);
+
+  const onWallpaperFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-selecting the same file next time
+    if (!file) return;
+    setUploadingWallpaper(true);
+    try {
+      const url = await uploadChatWallpaper(chatId, me.uid, file);
+      await setChatWallpaper(chatId, me.uid, url);
+    } catch {
+      toast.error(t('common.error'));
+    } finally {
+      setUploadingWallpaper(false);
+    }
+  };
 
   const saveName = () => {
     const trimmed = name.trim();
@@ -98,6 +126,7 @@ export default function ChatSettingsModal({
                 style={styles.input}
                 value={name}
                 placeholder={t('chatSettings.customNamePlaceholder')}
+                aria-label={t('chatSettings.customNamePlaceholder')}
                 onChange={e => setName(e.target.value)}
                 onBlur={saveName}
                 onKeyDown={e => e.key === 'Enter' && saveName()}
@@ -117,7 +146,9 @@ export default function ChatSettingsModal({
             </span>
           </button>
 
-          {/* Theme accent */}
+          {/* Accent — a per-chat override. The full named catalog (including
+              the Pro ones) lives in the Store, which applies account-wide;
+              duplicating it here is what made theming feel scattered. */}
           <div style={styles.section}>
             <div style={styles.label}>{t('chatSettings.theme')}</div>
             <div style={styles.swatchRow}>
@@ -125,16 +156,21 @@ export default function ChatSettingsModal({
                 <button
                   key={c}
                   aria-label={c}
-                  onClick={() => setChatTheme(chatId, me.uid, c).catch(() => toast.error(t('common.error')))}
+                  aria-pressed={theme.toLowerCase() === c.toLowerCase()}
+                  onClick={() =>
+                    setChatTheme(chatId, me.uid, c).catch(() => toast.error(t('common.error')))
+                  }
                   style={{
                     ...styles.swatch,
                     background: c,
-                    outline: theme === c ? `2px solid ${colors.text}` : 'none',
-                    outlineOffset: 2,
+                    outline: theme.toLowerCase() === c.toLowerCase() ? `2px solid ${colors.text}` : 'none',
                   }}
                 />
               ))}
             </div>
+            <button style={styles.storeLink} onClick={() => (window.location.hash = '#/store')}>
+              {t('store.themeMovedHint')} {t('store.openStore')} →
+            </button>
           </div>
 
           {/* Wallpaper */}
@@ -156,6 +192,30 @@ export default function ChatSettingsModal({
                   {w.value === null && <Icon name="close" size={14} style={{color: colors.textTertiary}} />}
                 </button>
               ))}
+              <button
+                aria-label="Upload photo wallpaper"
+                title="Upload photo wallpaper"
+                onClick={() => wallpaperFileRef.current?.click()}
+                disabled={uploadingWallpaper}
+                style={{
+                  ...styles.swatch,
+                  backgroundImage: wallpaper?.startsWith('http') ? `url(${wallpaper})` : undefined,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  border: `1px dashed ${colors.borderStrong}`,
+                  outline: wallpaper?.startsWith('http') ? `2px solid ${colors.text}` : 'none',
+                  outlineOffset: 2,
+                  opacity: uploadingWallpaper ? 0.5 : 1,
+                }}>
+                {!wallpaper?.startsWith('http') && <Icon name="image" size={14} style={{color: colors.textTertiary}} />}
+              </button>
+              <input
+                ref={wallpaperFileRef}
+                type="file"
+                accept="image/*"
+                style={{display: 'none'}}
+                onChange={onWallpaperFileChange}
+              />
             </div>
           </div>
 
@@ -263,6 +323,17 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
   },
   swatchRow: {display: 'flex', flexWrap: 'wrap', gap: 10},
+  storeLink: {
+    marginTop: 10,
+    padding: 0,
+    border: 'none',
+    background: 'none',
+    color: colors.primary,
+    fontSize: 12.5,
+    fontWeight: 600,
+    cursor: 'pointer',
+    textAlign: 'left',
+  },
   swatch: {
     width: 34,
     height: 34,

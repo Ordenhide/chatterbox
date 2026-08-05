@@ -1,0 +1,4 @@
+- [x] Centralize node path discovery in root `build.gradle`
+- [x] Update `app/build.gradle` to use centralized node path
+- [x] Patch `@react-native-community/netinfo` to use the resolved React Native directory
+- [x] Verify Gradle Sync

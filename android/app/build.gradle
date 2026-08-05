@@ -4,13 +4,8 @@ apply plugin: "com.google.gms.google-services"
 apply plugin: "com.google.firebase.crashlytics"
 apply plugin: "com.facebook.react"
 
-// Use first existing node path so codegen works from IDE (PATH often missing /opt/homebrew/bin or /usr/local/bin).
-def nodePath = "node"
-["/opt/homebrew/bin/node", "/usr/local/bin/node"].each { p ->
-    if (new File(p).exists()) { nodePath = p }
-}
 react {
-    nodeExecutableAndArgs.set([nodePath])
+    nodeExecutableAndArgs.set([rootProject.ext.NODE_BINARY])
     // Required so the app gets implementation project() for each native module (fixes "package does not exist").
     autolinkLibrariesWithApp()
 }

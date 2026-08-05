@@ -9,7 +9,9 @@ import {
   Modal,
   useColorScheme,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useAuth} from '../../contexts/AuthContext';
@@ -22,6 +24,7 @@ import {
   setChatName,
   setChatWallpaper,
   getChat,
+  uploadFile,
 } from '../../services/firebaseChat';
 import {getColors} from '../../theme/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -78,6 +81,7 @@ export default function ChatSettingsScreen() {
   const [exportText, setExportText] = useState('');
   const [importText, setImportText] = useState('');
   const [wallpaper, setWallpaper] = useState<string | null>(null);
+  const [uploadingWallpaper, setUploadingWallpaper] = useState(false);
   const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
   const [hasPet, setHasPet] = useState(false);
   const [chatLocked, setChatLocked] = useState(false);
@@ -228,11 +232,42 @@ export default function ChatSettingsScreen() {
     }
   };
 
+  const handleUploadWallpaperPhoto = async () => {
+    if (!chatId || !user || uploadingWallpaper) return;
+    const result = await launchImageLibrary({mediaType: 'photo', selectionLimit: 1, quality: 0.7});
+    if (result.didCancel) return;
+    const asset = result.assets?.[0];
+    if (!asset?.uri) {
+      Alert.alert(t('common.error'), 'Unable to load selected photo');
+      return;
+    }
+    setUploadingWallpaper(true);
+    try {
+      // Same Storage path/upload pattern as chat photo/video messages
+      // (firebaseChat.ts's uploadFile) — one wallpaper per user per chat, so
+      // a re-upload overwrites the previous one rather than accumulating.
+      const fileName = `wallpaper_${user.uid}.jpg`;
+      const url = await uploadFile(chatId, asset.uri, fileName);
+      await setChatWallpaper(chatId, user.uid, url);
+      setWallpaper(url);
+    } catch (err) {
+      if (__DEV__) {
+        console.warn('ChatSettingsScreen: failed to upload wallpaper photo', err);
+      }
+      Alert.alert(t('common.error'), 'Failed to upload wallpaper. Please try again.');
+    } finally {
+      setUploadingWallpaper(false);
+    }
+  };
+
   const wallpaperDots = useMemo(
     () =>
       WALLPAPER_COLORS.map((wp, idx) => (
         <TouchableOpacity
           key={wp || 'none'}
+          accessibilityRole="button"
+          accessibilityLabel={wp ? `Wallpaper color ${wp}` : 'No wallpaper'}
+          accessibilityState={{selected: wallpaper === wp || (idx === 0 && !wallpaper)}}
           style={[
             styles.themeDot,
             {backgroundColor: wp || '#fff', borderWidth: 1, borderColor: colors.border},
@@ -246,15 +281,24 @@ export default function ChatSettingsScreen() {
     [wallpaper, colors.text, colors.border],
   );
 
+  // Plain per-chat accent overrides. The named catalog — free and Pro alike —
+  // lives in the Store tab, which applies account-wide; duplicating it here is
+  // what made theming feel scattered.
   const themeDots = useMemo(
     () =>
       THEME_COLORS.map(color => (
         <TouchableOpacity
           key={color}
+          accessibilityRole="button"
+          accessibilityLabel={`Accent color ${color}`}
+          accessibilityState={{selected: themeColor.toLowerCase() === color.toLowerCase()}}
           style={[
             styles.themeDot,
             {backgroundColor: color},
-            themeColor === color && [styles.themeDotSelected, {borderColor: colors.text}],
+            themeColor.toLowerCase() === color.toLowerCase() && [
+              styles.themeDotSelected,
+              {borderColor: colors.text},
+            ],
           ]}
           onPress={() => handleThemeSelect(color)}
         />
@@ -277,6 +321,13 @@ export default function ChatSettingsScreen() {
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.theme')}</Text>
         <View style={styles.themeRow}>{themeDots}</View>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={() => navigation.navigate('Store' as never)}>
+          <Text style={[styles.storeHint, {color: colors.primary}]}>
+            {`${t('store.themeMovedHint')} ${t('store.openStore')} →`}
+          </Text>
+        </TouchableOpacity>
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
@@ -291,6 +342,18 @@ export default function ChatSettingsScreen() {
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Wallpaper</Text>
         <View style={styles.wallpaperRow}>{wallpaperDots}</View>
+        <TouchableOpacity
+          style={[styles.row, uploadingWallpaper && {opacity: 0.5}]}
+          onPress={handleUploadWallpaperPhoto}
+          disabled={uploadingWallpaper}>
+          {uploadingWallpaper ? (
+            <ActivityIndicator color={colors.primary} />
+          ) : (
+            <Text style={[styles.rowLabel, {color: colors.primary}]}>
+              {wallpaper?.startsWith('http') ? 'Change photo wallpaper' : 'Upload photo wallpaper'}
+            </Text>
+          )}
+        </TouchableOpacity>
       </GlassView>
 
       {SHOW_NATIVE_ONLY_FEATURES && (
@@ -556,7 +619,10 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  storeHint: {fontSize: 12.5, fontWeight: '600', marginTop: 10},
   themeDotSelected: {
     borderWidth: 2,
   },

@@ -1,7 +1,7 @@
 import React from 'react';
 import Svg, {Circle, Path} from 'react-native-svg';
 
-export type TabIconName = 'chats' | 'moments' | 'profile';
+export type TabIconName = 'chats' | 'moments' | 'store' | 'profile';
 
 type TabIconProps = {
   name: TabIconName;
@@ -42,6 +42,13 @@ function TabIcon({name, color, size = 24}: TabIconProps) {
             {...common}
           />
           <Circle cx="12" cy="12" r="4" {...common} />
+        </Svg>
+      );
+    case 'store':
+      return (
+        <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <Path d="M3 9h18l-1.5 10.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 9z" {...common} />
+          <Path d="M8 9V6.5a4 4 0 0 1 8 0V9" {...common} />
         </Svg>
       );
     case 'profile':

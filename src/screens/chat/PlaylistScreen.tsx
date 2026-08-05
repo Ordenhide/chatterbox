@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {useAuth} from '../../contexts/AuthContext';
+import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
 import {getColors} from '../../theme/colors';
 import {addTrack, removeTrack, voteTrack, listenPlaylist} from '../../services/playlist';
 import {PlaylistItem} from '../../types';
@@ -23,6 +24,7 @@ export default function PlaylistScreen() {
   const route = useRoute();
   const chatId = (route.params as any)?.chatId as string;
   const {user} = useAuth();
+  const crypto = useArtifactCrypto(chatId);
   const colors = getColors(useColorScheme());
   const [tracks, setTracks] = useState<PlaylistItem[]>([]);
   const [addVisible, setAddVisible] = useState(false);
@@ -32,9 +34,9 @@ export default function PlaylistScreen() {
 
   useEffect(() => {
     if (!chatId) return;
-    const unsub = listenPlaylist(chatId, setTracks);
+    const unsub = listenPlaylist(chatId, setTracks, crypto);
     return () => unsub();
-  }, [chatId]);
+  }, [chatId, crypto]);
 
   const sorted = useMemo(
     () => [...tracks].sort((a, b) => b.votes.length - a.votes.length),
@@ -50,13 +52,17 @@ export default function PlaylistScreen() {
       return;
     }
     try {
-      await addTrack(chatId, {
-        url: trimmedUrl,
-        title: trimmedTitle,
-        artist: artist.trim() || undefined,
-        addedBy: user.uid,
-        addedByName: user.displayName || user.email || 'User',
-      });
+      await addTrack(
+        chatId,
+        {
+          url: trimmedUrl,
+          title: trimmedTitle,
+          artist: artist.trim() || undefined,
+          addedBy: user.uid,
+          addedByName: user.displayName || user.email || 'User',
+        },
+        crypto,
+      );
       setTrackTitle('');
       setArtist('');
       setUrl('');

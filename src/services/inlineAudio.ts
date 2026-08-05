@@ -21,7 +21,7 @@ const fs = ReactNativeBlobUtil.fs;
  * base64 inflates by 4/3; this leaves headroom for the rest of the message
  * (reply preview, user, filter). Matches the web client exactly.
  */
-export const MAX_INLINE_DATA_URI_CHARS = 700_000;
+export const MAX_INLINE_DATA_URI_CHARS = 320_000;
 
 /** Room for the `data:<mime>;base64,` prefix. */
 const DATA_URI_PREFIX_BUDGET = 128;

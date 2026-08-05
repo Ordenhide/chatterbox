@@ -8,6 +8,7 @@ import {
   serverTimestamp,
 } from '@react-native-firebase/firestore';
 import {WhiteboardStroke} from '../types';
+import {guardDocSnapshot} from './snapshotGuard';
 
 const db = getFirestore();
 const WHITEBOARD_ID = 'default';
@@ -23,11 +24,11 @@ export function listenWhiteboard(
   const ref = whiteboardRef(chatId);
   return onSnapshot(
     ref,
-    snapshot => {
+    guardDocSnapshot('listen_whiteboard', snapshot => {
       const data = snapshot.data();
       const strokes = (data?.strokes ?? []) as WhiteboardStroke[];
       callback(strokes);
-    },
+    }),
     () => callback([]),
   );
 }

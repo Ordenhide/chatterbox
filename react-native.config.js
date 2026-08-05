@@ -45,11 +45,24 @@ const noMacosSupport = [
 // pods are integrated.
 const buildingCatalyst = process.env.CHATTERBOX_CATALYST === '1';
 
+// The macOS target autolinks from the **ios** bucket — no package in this tree
+// declares a `macos` platform, so the `macos: null` entries above are inert and
+// what actually gets linked is whatever iOS podspec also declares `:osx`.
+//
+// That is why webrtc has to be dropped from `ios` here, not `macos`:
+// react-native-webrtc 124's podspec declares `:osx => '10.13'` (111's did not),
+// so upgrading it silently pulled the pod into the macOS build, where its
+// sources `#import <UIKit/UIKit.h>` and fail to compile — exactly the "no
+// working macOS implementation" case noted above.
+//
+// macos/Podfile sets this automatically, so no one has to remember the env var.
+const buildingMacos = process.env.CHATTERBOX_MACOS === '1';
+
 const dependencies = Object.fromEntries(
   noMacosSupport.map(name => [name, {platforms: {macos: null}}]),
 );
 
-if (buildingCatalyst) {
+if (buildingCatalyst || buildingMacos) {
   dependencies['react-native-webrtc'] = {platforms: {ios: null, macos: null}};
 }
 

@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useState} from 'react';
 
-export type Tab = 'chats' | 'moments' | 'profile';
+export type Tab = 'chats' | 'moments' | 'store' | 'profile';
 export interface Route {
   tab: Tab;
   chatId?: string;
 }
 
-const TABS: Tab[] = ['chats', 'moments', 'profile'];
+const TABS: Tab[] = ['chats', 'moments', 'store', 'profile'];
 
 function parse(): Route {
   const raw = window.location.hash.replace(/^#\/?/, '');
@@ -23,7 +23,7 @@ function build(r: Route): string {
 /**
  * Hash-based routing so the current tab and open chat survive a refresh and are
  * shareable/bookmarkable, and the browser back button works. Routes look like
- * `#/chats`, `#/chats/<chatId>`, `#/moments`, `#/profile`.
+ * `#/chats`, `#/chats/<chatId>`, `#/moments`, `#/store`, `#/profile`.
  */
 export function useHashRoute() {
   const [route, setRoute] = useState<Route>(parse);

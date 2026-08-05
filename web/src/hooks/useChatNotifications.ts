@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {listenChatsForUser} from '../services/chat';
+import {isChatHidden} from '../services/hiddenChats';
 import {showLocalNotification} from '../services/push';
 import {useToast} from '../context/ToastContext';
 import {useT} from '../i18n';
@@ -30,7 +31,8 @@ function playPing() {
 }
 
 /**
- * Returns the total unread count (muted chats excluded) for the Chats-tab badge,
+ * Returns the total unread count (muted and hidden chats excluded) for the
+ * Chats-tab badge,
  * and — as a side effect — pops a toast + ping when a new message arrives in a
  * chat you're NOT currently viewing (and haven't muted). One chats listener
  * powers both, so it doesn't add extra Firestore subscriptions.
@@ -57,7 +59,9 @@ export function useChatNotifications(uid: string, activeChatId: string | null): 
       for (const c of chats) {
         const n = c.unreadCountBy?.[uid] || 0;
         next[c.id] = n;
-        if (!c.mutedBy?.includes(uid)) total += n;
+        // Hidden chats are excluded from the badge and from the toast below:
+        // a notification naming a chat you deliberately hid would give it away.
+        if (!c.mutedBy?.includes(uid) && !isChatHidden(c, uid)) total += n;
       }
       setCount(total);
 
@@ -66,7 +70,12 @@ export function useChatNotifications(uid: string, activeChatId: string | null): 
         for (const c of chats) {
           const before = prev[c.id] || 0;
           const now = next[c.id] || 0;
-          if (now > before && c.id !== activeRef.current && !c.mutedBy?.includes(uid)) {
+          if (
+            now > before &&
+            c.id !== activeRef.current &&
+            !c.mutedBy?.includes(uid) &&
+            !isChatHidden(c, uid)
+          ) {
             const name = c.nameBy?.[uid] || c.name;
             const body = c.lastMessage?.text || tRef.current('chat.newMessages');
             toastRef.current.show(name ? `${name}: ${body}` : body, 'info');

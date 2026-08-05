@@ -116,6 +116,12 @@ export interface Message {
   };
   audio?: string;
   audioDuration?: number;
+  // Real capture settings, needed by transcribeVoiceMessage's explicit
+  // (non-auto-detect) decoding config for AAC clips — unlike Opus, AAC's
+  // actual sample rate isn't a fixed codec property, so the server can't
+  // assume it. Absent on messages sent before this field existed.
+  audioSampleRateHertz?: number;
+  audioChannelCount?: number;
   file?: {
     uri: string;
     name?: string;
@@ -207,6 +213,12 @@ export interface Message {
   encryptedVideo?: EncryptedField;
   encryptedAudio?: EncryptedField;
   encryptedFileUri?: EncryptedField;
+  /**
+   * The sealed form of `linkPreview` above (a JSON-encoded preview — see
+   * services/linkPreview.ts). When present the plaintext field is absent; the
+   * chat screen's decrypt pass fills it back in for rendering.
+   */
+  encryptedLinkPreview?: EncryptedField;
   user: {
     _id: string;
     name?: string;
@@ -226,6 +238,8 @@ export interface ChatRoom {
   lastReadAt?: Record<string, number>;
   pinnedMessageIds?: Array<string | number>;
   mutedBy?: string[];
+  /** Per-user hidden flag — see services/hiddenChats.ts. */
+  hiddenBy?: string[];
   themeBy?: Record<string, string>;
   wallpaperBy?: Record<string, string>;
   typingBy?: Record<string, number>;

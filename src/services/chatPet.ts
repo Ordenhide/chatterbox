@@ -1,5 +1,6 @@
 import {doc, getDoc, getFirestore, setDoc, onSnapshot} from '@react-native-firebase/firestore';
 import {ChatPet} from '../types';
+import {guardDocSnapshot} from './snapshotGuard';
 
 const db = getFirestore();
 
@@ -49,9 +50,12 @@ export function listenChatPet(
   chatId: string,
   callback: (pet: ChatPet | null) => void,
 ): () => void {
-  return onSnapshot(doc(db, 'chats', chatId), snap => {
-    callback(snap.data()?.pet ?? null);
-  });
+  return onSnapshot(
+    doc(db, 'chats', chatId),
+    guardDocSnapshot('listen_chat_pet', snap => {
+      callback(snap.data()?.pet ?? null);
+    }),
+  );
 }
 
 export function calculatePetMood(pet: ChatPet): ChatPet['mood'] {

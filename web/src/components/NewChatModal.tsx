@@ -59,6 +59,7 @@ export default function NewChatModal({
         <input
           style={styles.input}
           placeholder="friend@example.com"
+          aria-label="Email address"
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}

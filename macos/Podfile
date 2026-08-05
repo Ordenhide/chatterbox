@@ -1,5 +1,12 @@
 require 'pathname'
 
+# Tells react-native.config.js this is the macOS install, so packages whose iOS
+# sources can't compile against AppKit (currently react-native-webrtc, which
+# imports UIKit) are dropped from autolinking. Set here rather than expected
+# from the environment so `pod install` in this directory always does the right
+# thing.
+ENV['CHATTERBOX_MACOS'] = '1'
+
 ws_dir = Pathname.new(__dir__)
 ws_dir = ws_dir.parent until
   File.exist?("#{ws_dir}/node_modules/react-native-macos/scripts/react_native_pods.rb") ||
@@ -48,6 +55,51 @@ target 'chatterbox-macOS' do
 
   post_install do |installer|
     react_native_post_install(installer)
+
+    # React-graphics keeps its platform-specific headers under
+    # `platform/<os>/`. There is no `platform/macos`, so the react-native-macos
+    # patch in patches/ scopes macOS to the generic `platform/cxx` fallback —
+    # but the header search paths react-native-macos generates still hardcode
+    # `platform/ios`. The result is that every Fabric target that includes
+    # <react/renderer/graphics/Float.h> (via Point.h, primitives.h, …) fails
+    # with "file not found", because the directory it's told to look in isn't
+    # the one the framework actually shipped.
+    #
+    # Repoint those entries at the cxx headers that macOS really builds.
+    #
+    # Done by rewriting the generated .xcconfig files rather than each target's
+    # build_settings: CocoaPods writes these paths into "Target Support Files"
+    # from the podspec, and editing the pbxproj layer leaves the xcconfig (which
+    # is what the compiler actually reads) untouched.
+    # Each ReactCommon module ships a different mix of platform directories, so
+    # a single substitution isn't enough:
+    #
+    #   components/view          android, cxx, macos   -> macos (real macOS impl)
+    #   graphics                 android, cxx, ios     -> cxx   (no macOS impl)
+    #   imagemanager             android, cxx, ios     -> cxx
+    #   textlayoutmanager        android, cxx, ios     -> cxx
+    #   components/textinput     android, ios          -> ios   (nothing better)
+    #
+    # Rule: prefer platform/macos when it exists, fall back to platform/cxx,
+    # and otherwise leave the path alone. Derived from what's actually on disk
+    # rather than hardcoded, so it stays correct across react-native-macos
+    # upgrades that add or drop a platform implementation.
+    rncommon = File.expand_path('../node_modules/react-native-macos/ReactCommon', __dir__)
+    rewritten = 0
+    Dir.glob("#{installer.sandbox.root}/Target Support Files/**/*.xcconfig").each do |path|
+      contents = File.read(path)
+      updated = contents.gsub(%r{(react/renderer/(?:[\w.-]+/)*?[\w.-]+)/platform/(\w+)}) do
+        mod = Regexp.last_match(1)
+        original = Regexp.last_match(2)
+        base = File.join(rncommon, mod, 'platform')
+        pick = %w[macos cxx].find { |candidate| Dir.exist?(File.join(base, candidate)) } || original
+        "#{mod}/platform/#{pick}"
+      end
+      next if updated == contents
+      File.write(path, updated)
+      rewritten += 1
+    end
+    Pod::UI.puts "ReactCommon: resolved platform header paths for macOS in #{rewritten} xcconfig file(s)".green
 
     # Same gRPC-Core/gRPC-C++ modulemap fix as ios/Podfile — Firestore/Functions
     # pull in gRPC, which needs an explicit modulemap path and C++20 or the

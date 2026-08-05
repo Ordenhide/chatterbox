@@ -16,6 +16,7 @@ import {
   revealBurnMessage,
   sendMessage,
   setChatExpiryPolicy,
+  setMessageLinkPreview,
   setTyping,
   sweepExpiredMessages,
   toggleMuteChat,
@@ -38,8 +39,39 @@ import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
 import {decryptMessage, encryptMessage, isEncryptedPayload} from '../services/e2ee';
 import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {makeArtifactCrypto} from '../services/e2eeArtifacts';
+import {
+  buildLinkPreviewPatch,
+  extractFirstUrl,
+  hasPreviewContent,
+  isLinkPreviewEnabled,
+  normalizePreview,
+  parsePreview,
+  type LinkPreviewData,
+} from '../services/linkPreview';
+import {
+  listenLiveLocation,
+  shouldSendLocationUpdate,
+  startSharingLocation,
+  stopSharingLocation,
+  updateSharedLocation,
+  type LiveLocationShare,
+} from '../services/liveLocation';
+import {useEntitlement} from '../context/EntitlementContext';
+import {useStoreTheme} from '../hooks/useStoreTheme';
+import {resolveAccent, resolveWallpaper} from '../services/storeTheme';
+import {isDarkWallpaper} from '../services/themeCatalog';
+import {safeExternalUrl} from '../utils/safeUrl';
+import {formatDayLabel, isSameDay} from '../utils/messageDay';
+import ProUpsellModal from './ProUpsellModal';
+import RecentlyDeletedModal from './RecentlyDeletedModal';
+import {getCurrentPosition, watchMyPosition, LocationError} from '../utils/geolocation';
+import {formatCoordinates, staticMapTileUrl} from '../utils/mapTile';
+import ShareLocationModal from './ShareLocationModal';
 import {addBookmark} from '../services/bookmarks';
-import {summarizeChat, transcribeVoiceMessage, translateMessage} from '../services/ai';
+import {fetchLinkPreview, summarizeChat, transcribeVoiceMessage, translateMessage} from '../services/ai';
+import {isAiConsentError} from '../services/aiConsent';
+import AiConsentModal from './AiConsentModal';
 import {getDraft, setDraft} from '../services/drafts';
 import {
   cancelScheduledMessage,
@@ -57,6 +89,8 @@ import {useLightbox} from '../context/LightboxContext';
 import {useT, type TKey} from '../i18n';
 import {cycleBurnDuration, formatBurnDuration} from '../utils/ephemeral';
 import LinkPreviewCard from './LinkPreviewCard';
+import {celebrate, useReactionBurst} from './ReactionBurst';
+import MessageMotion from './MessageMotion';
 import Icon from './Icon';
 import AudioMessage from './AudioMessage';
 import WhiteboardModal from './WhiteboardModal';
@@ -72,10 +106,8 @@ import type {ChatMessage, ChatRoom, Reminder} from '../types';
 const QUICK_EMOJI = ['👍', '❤️', '😂', '🎉', '🔥'];
 const TYPING_WINDOW_MS = 6000;
 const GROUP_WINDOW_MS = 5 * 60 * 1000; // consecutive-message grouping window
-const URL_RE = /(https?:\/\/[^\s]+)/i;
-const TRANSLATE_TO = (navigator.language || 'en').split('-')[0];
 
-/** Opus at voice grade — ~4 KB/s, so ~2 minutes fits the Firestore inline budget. */
+/** Opus at voice grade — ~4 KB/s, so ~60s fits the Firestore inline budget. */
 const VOICE_BITRATE = 32_000;
 
 /**
@@ -107,19 +139,24 @@ export default function ChatPane({
   onDeleted: () => void;
   onBack?: () => void;
 }) {
-  const {t} = useT();
+  const {t, lang} = useT();
   const toast = useToast();
   const lightbox = useLightbox();
   const {startCall} = useCall();
+  const {isPro} = useEntitlement();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chat, setChat] = useState<ChatRoom | null>(null);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  /** Text of the send currently in flight, for synchronous double-submit detection. */
+  const inFlightTextRef = useRef<string | null>(null);
   const [activeMsg, setActiveMsg] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [summarizing, setSummarizing] = useState(false);
+  const [summaryQuestion, setSummaryQuestion] = useState('');
+  const [summaryAskedQuestion, setSummaryAskedQuestion] = useState('');
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [search, setSearch] = useState<string | null>(null);
@@ -151,6 +188,11 @@ export default function ChatPane({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [reactionOpen, setReactionOpen] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [trashOpen, setTrashOpen] = useState(false);
+  // Set when an AI call is refused for want of consent; holds the action to
+  // re-run once the disclosure is accepted, so the user isn't made to repeat
+  // whatever they were doing.
+  const [aiConsentRetry, setAiConsentRetry] = useState<(() => void) | null>(null);
   const [mediaOpen, setMediaOpen] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [countdownOpen, setCountdownOpen] = useState(false);
@@ -160,7 +202,13 @@ export default function ChatPane({
   const [peerKeyChanged, setPeerKeyChanged] = useState(false);
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [peerProfileGone, setPeerProfileGone] = useState(false);
+  const [proPromptOpen, setProPromptOpen] = useState(false);
+  const [sharingLocation, setSharingLocation] = useState(false);
+  const [shareLocationModalOpen, setShareLocationModalOpen] = useState(false);
+  const [peerLiveLocation, setPeerLiveLocation] = useState<LiveLocationShare | null>(null);
   const draftLoadedRef = useRef(false);
+  const stopLocationWatchRef = useRef<(() => void) | null>(null);
+  const lastLocationSentAtRef = useRef<number | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -192,6 +240,13 @@ export default function ChatPane({
   const decryptedVideoRef = useRef<Map<string, string>>(new Map());
   const decryptedAudioRef = useRef<Map<string, string>>(new Map());
   const decryptedFileUriRef = useRef<Map<string, string>>(new Map());
+  // Reaction confetti + the send button's kick. Both are pure feedback, so
+  // they live in local state and never touch what gets persisted.
+  const {burst} = useReactionBurst();
+  const [launching, setLaunching] = useState(false);
+  // Link previews decrypt to a JSON blob rather than a URL, so this cache
+  // holds the parsed card (or null when the payload is unreadable/invalid).
+  const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
 
   /**
    * Substitutes decrypted (or placeholder) content for any encrypted field a
@@ -448,7 +503,8 @@ export default function ChatPane({
         (isEncryptedPayload(m.encryptedImage) && !decryptedImageRef.current.has(id)) ||
         (isEncryptedPayload(m.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
         (isEncryptedPayload(m.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedFileUri) && !decryptedFileUriRef.current.has(id))
+        (isEncryptedPayload(m.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
+        (isEncryptedPayload(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
       );
     };
     const toDecrypt = messages.filter(needsDecrypt);
@@ -491,6 +547,21 @@ export default function ChatPane({
           mediaField(m.encryptedAudio, decryptedAudioRef);
           mediaField(m.encryptedFileUri, decryptedFileUriRef);
 
+          // A preview that won't decrypt is cached as null rather than left
+          // absent, so this doesn't retry it on every render — and a missing
+          // card is a far smaller loss than an unreadable message, so it
+          // deliberately doesn't count towards mediaFailed.
+          if (isEncryptedPayload(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id)) {
+            try {
+              decryptedPreviewRef.current.set(
+                id,
+                parsePreview(decryptMessage(m.encryptedLinkPreview, secretKey, chatId)),
+              );
+            } catch {
+              decryptedPreviewRef.current.set(id, null);
+            }
+          }
+
           // A media-only message has no `encrypted` text of its own to carry
           // a failure message, so surface it the same way a text decrypt
           // failure does.
@@ -510,6 +581,9 @@ export default function ChatPane({
               if (decryptedAudioRef.current.has(id)) patch.audio = decryptedAudioRef.current.get(id) || undefined;
               if (decryptedFileUriRef.current.has(id) && item.file) {
                 patch.file = {...item.file, uri: decryptedFileUriRef.current.get(id) || ''};
+              }
+              if (decryptedPreviewRef.current.has(id)) {
+                patch.linkPreview = decryptedPreviewRef.current.get(id);
               }
               return Object.keys(patch).length ? {...item, ...patch} : item;
             }),
@@ -568,6 +642,91 @@ export default function ChatPane({
     }
     return listenPresence(otherUid, setOtherLastActive);
   }, [otherUid]);
+
+  // The other participant's active live-location share, if any.
+  useEffect(() => {
+    setPeerLiveLocation(null);
+    if (!otherUid) return;
+    let unsubscribe: (() => void) | null = null;
+    let cancelled = false;
+    getOrCreateDeviceKeypair(me.uid)
+      .then(({secretKey}) => {
+        if (cancelled || !otherUid) return;
+        unsubscribe = listenLiveLocation(chatId, otherUid, secretKey, setPeerLiveLocation);
+      })
+      .catch(err => console.warn('live location listen failed:', err));
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [chatId, otherUid, me.uid]);
+
+  // Pause the outgoing watch whenever the chat changes (foreground-only
+  // tracking, scoped to one open chat at a time) — the share itself (the
+  // Firestore doc) is left in place, only the local GPS watch stops, so the
+  // peer still sees the last known position rather than it vanishing.
+  useEffect(() => {
+    return () => {
+      stopLocationWatchRef.current?.();
+      stopLocationWatchRef.current = null;
+    };
+  }, [chatId]);
+
+  // "Updated Xs ago" ticks even between Firestore snapshots.
+  const [, forceLocationAgeTick] = useState(0);
+  useEffect(() => {
+    if (!peerLiveLocation) return;
+    const interval = setInterval(() => forceLocationAgeTick(t => t + 1), 1000);
+    return () => clearInterval(interval);
+  }, [peerLiveLocation]);
+
+  const beginSharingLocation = useCallback(
+    async (durationMs: number) => {
+      setShareLocationModalOpen(false);
+      if (!otherUid) return;
+      try {
+        const initial = await getCurrentPosition();
+        await startSharingLocation(chatId, me.uid, otherUid, durationMs, initial);
+        setSharingLocation(true);
+        lastLocationSentAtRef.current = Date.now();
+        stopLocationWatchRef.current = watchMyPosition(
+          position => {
+            const now = Date.now();
+            if (!shouldSendLocationUpdate(lastLocationSentAtRef.current, now)) return;
+            lastLocationSentAtRef.current = now;
+            updateSharedLocation(chatId, me.uid, otherUid, position).catch(err =>
+              console.warn('live location update failed:', err),
+            );
+          },
+          err => console.warn('live location watch failed:', err),
+        );
+      } catch (err) {
+        if (err instanceof LocationError && err.reason === 'denied') {
+          toast.error('Allow location access to share your live location.');
+        } else if (err instanceof LocationError && err.reason === 'services-off') {
+          toast.error('Turn on location services to share your live location.');
+        } else if (err instanceof Error && err.message.includes('encryption key')) {
+          toast.error("Can't share location securely until they've opened Chatterbox once.");
+        } else {
+          console.warn('live location start failed:', err);
+          toast.error('Unable to start sharing your location.');
+        }
+      }
+    },
+    [chatId, me.uid, otherUid, toast],
+  );
+
+  const handleStopSharingLocation = useCallback(() => {
+    stopLocationWatchRef.current?.();
+    stopLocationWatchRef.current = null;
+    lastLocationSentAtRef.current = null;
+    setSharingLocation(false);
+    stopSharingLocation(chatId, me.uid).catch(() => undefined);
+  }, [chatId, me.uid]);
+
+  const openInMaps = useCallback((lat: number, lng: number) => {
+    window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank', 'noopener,noreferrer');
+  }, []);
 
   // E2EE: proactively checks the peer's key when the chat is opened, not just
   // on send — so a device that only ever reads a conversation still gets
@@ -648,9 +807,21 @@ export default function ChatPane({
       ? new Date(otherRead).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
       : '';
 
-  // Per-user chat appearance (Chat settings).
-  const themeColor = chat?.themeBy?.[me.uid] || colors.primary;
-  const wallpaper = chat?.wallpaperBy?.[me.uid] || null;
+  // Per-user chat appearance. A chat's own stored value wins; otherwise the
+  // account-wide Store theme applies, so a conversation created after the
+  // theme was chosen still looks right (the Store's batch write can only
+  // reach chats that already existed).
+  const storeTheme = useStoreTheme(me.uid);
+  const themeColor = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, colors.primary);
+  const wallpaper = resolveWallpaper(chat?.wallpaperBy?.[me.uid], storeTheme?.wallpaper);
+  // Message text is a fixed dark colour, which vanishes against a dark
+  // wallpaper. Every Pro theme is dark, so the thread flips to light ink.
+  // A 1:1 thread doesn't need sender names — the side a bubble sits on says
+  // who wrote it. Group chats still label each speaker.
+  const isGroupChat = (chat?.participants?.length || 0) > 2;
+  const darkWallpaper = isDarkWallpaper(wallpaper);
+  const threadText = darkWallpaper ? '#E8EEF7' : colors.text;
+  const threadTextDim = darkWallpaper ? 'rgba(232,238,247,0.62)' : colors.textTertiary;
 
   // Suggested quick replies: shown when the composer is empty and the other
   // person spoke last (so you can one-tap a response). English-keyword heuristic.
@@ -730,6 +901,32 @@ export default function ChatPane({
     }
   };
 
+  /**
+   * Resolves a link preview for a message that was just sent, and writes it
+   * back sealed. Fire-and-forget: the bubble is already on screen, and a slow
+   * or unreachable site must never hold up the send.
+   *
+   * Only the *sender* does this, and only once. Previously every viewer
+   * fetched the preview as the bubble rendered, which told the server about
+   * every link in a supposedly private chat on every single load — see
+   * services/linkPreview.ts.
+   */
+  const attachLinkPreview = async (messageId: string, text: string) => {
+    if (!isLinkPreviewEnabled()) return;
+    const url = extractFirstUrl(text);
+    if (!url) return;
+    try {
+      const preview = normalizePreview(await fetchLinkPreview(url));
+      if (!preview || !hasPreviewContent(preview)) return;
+      const crypto = await makeArtifactCrypto(me.uid, otherUid, chatId);
+      await setMessageLinkPreview(chatId, messageId, buildLinkPreviewPatch(preview, crypto));
+    } catch (err) {
+      // A site with no metadata, a blocked host, or a rate limit — the message
+      // is already delivered, so this is cosmetic.
+      console.warn('link preview failed:', err);
+    }
+  };
+
   // ---- Sending / editing ----------------------------------------------------
 
   /**
@@ -746,7 +943,16 @@ export default function ChatPane({
     e.preventDefault();
     if (editing) return saveEdit();
     const trimmed = text.trim();
-    if (!trimmed || sending) return;
+    if (!trimmed) return;
+    // Guard only against re-submitting the *same* text. The previous version
+    // bailed on `sending`, which meant hitting Enter while an earlier message
+    // was still in flight silently dropped the new one — it just sat in the
+    // composer with no feedback, and in a fast exchange you'd assume it sent.
+    // A ref, not state: React may not have flushed setText('') yet when a
+    // second Enter arrives in the same tick, so this has to update
+    // synchronously to catch a true double-submit.
+    if (inFlightTextRef.current === trimmed) return;
+    inFlightTextRef.current = trimmed;
     const reply = replyTarget ? buildReplyTo(replyTarget) : undefined;
     const mentions = computeMentions(trimmed);
     setText('');
@@ -756,7 +962,7 @@ export default function ChatPane({
     setDraft(me.uid, chatId, '');
     setSending(true);
     try {
-      await sendMessage(
+      const messageId = await sendMessage(
         chatId,
         await encryptOutgoingMessage({
           text: trimmed,
@@ -766,12 +972,23 @@ export default function ChatPane({
         }),
         me,
       );
+      // Not for burn-after-reading: the whole point of that mode is leaving no
+      // trace, and a preview card would outlive the text it came from.
+      if (!burnMode) void attachLinkPreview(messageId, trimmed);
+      // Kicks only once the send has actually landed, so the animation is
+      // confirmation rather than optimism.
+      setLaunching(true);
+      window.setTimeout(() => setLaunching(false), 1100);
+      // A first message is worth marking. Only the first: confetti on every
+      // send would be exhausting within a minute.
+      if (messages.length === 0) celebrate(themeColor);
     } catch (err) {
       console.warn('send failed:', err);
       setText(trimmed);
       setReplyTarget(replyTarget);
       toast.error(t(sendErrorKey(err, 'chat.sendFailed')));
     } finally {
+      inFlightTextRef.current = null;
       setSending(false);
     }
   };
@@ -834,6 +1051,44 @@ export default function ChatPane({
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       e.currentTarget.form?.requestSubmit();
+      return;
+    }
+
+    // Escape backs out of whatever the composer is currently attached to,
+    // innermost first: an edit, then a reply. Without this the only way out is
+    // to hunt for the small ✕, and Escape appearing to do nothing in a text
+    // field reads as the app ignoring you.
+    if (e.key === 'Escape') {
+      if (editing) {
+        e.preventDefault();
+        setEditing(null);
+        return;
+      }
+      if (replyTarget) {
+        e.preventDefault();
+        setReplyTarget(null);
+        return;
+      }
+      return;
+    }
+
+    // Up-arrow in an *empty* composer edits your last message — the convention
+    // in Slack, Discord and iMessage. Guarded on empty so it never steals the
+    // caret while there's a draft to move around in.
+    if (
+      e.key === 'ArrowUp' &&
+      !e.shiftKey &&
+      !e.altKey &&
+      !e.metaKey &&
+      !e.ctrlKey &&
+      !editing &&
+      e.currentTarget.value === ''
+    ) {
+      const mine = [...messages].reverse().find(m => m.user?._id === me.uid && !m.system && m.text);
+      if (mine) {
+        e.preventDefault();
+        startEdit(mine);
+      }
     }
   };
 
@@ -883,11 +1138,23 @@ export default function ChatPane({
   const onTranscribe = async (m: ChatMessage) => {
     setActiveMsg(null);
     if (m.transcription || transcribing.has(m._id)) return;
+    // m.audio is already the decrypted plaintext clip by this point (patched
+    // in from decryptedAudioRef once decrypted — see the effect above);
+    // voice messages are otherwise end-to-end encrypted, so the server has
+    // no way to read this itself.
+    if (!m.audio) {
+      toast.error(t('chat.transcribeFailed'));
+      return;
+    }
     setTranscribing(prev => new Set(prev).add(m._id));
     try {
-      await transcribeVoiceMessage(chatId, m._id); // writes onto the message → arrives via listener
-    } catch {
-      toast.error(t('chat.transcribeFailed'));
+      // writes onto the message → arrives via listener
+      await transcribeVoiceMessage(chatId, m._id, m.audio, lang, m.audioSampleRateHertz, m.audioChannelCount);
+    } catch (err) {
+      // Not an error the user caused: they haven't been shown the disclosure
+      // yet. Prompt, then re-run exactly what they asked for.
+      if (isAiConsentError(err)) setAiConsentRetry(() => () => onTranscribe(m));
+      else toast.error(t('chat.transcribeFailed'));
     } finally {
       setTranscribing(prev => {
         const n = new Set(prev);
@@ -976,7 +1243,7 @@ export default function ChatPane({
     if (ids.length === 0) return;
     if (!window.confirm(t('chat.confirmDeleteSelected'))) return;
     try {
-      await deleteMessages(chatId, ids);
+      await deleteMessages(chatId, ids, me.uid);
       toast.success(t('chat.deletedCount'));
     } catch {
       toast.error(t('common.error'));
@@ -984,14 +1251,34 @@ export default function ChatPane({
     exitSelect();
   };
 
-  const doSummarize = async () => {
+  const doSummarize = async (question?: string) => {
     setMenuOpen(false);
+    // Pro gate. The server enforces this too (functions/index.js's
+    // requirePro) — this check only spares subscribers-to-be a raw
+    // permission error and shows them what they'd be buying.
+    if (!isPro) {
+      setProPromptOpen(true);
+      return;
+    }
     setSummarizing(true);
     setSummary('');
+    setSummaryAskedQuestion(question?.trim() || '');
     try {
-      setSummary(await summarizeChat(chatId));
-    } catch {
-      setSummary(t('chat.summaryFailed'));
+      // messages is newest-first with decrypted .text already patched in
+      // (see decryptedTextRef above) — reverse to chronological order for
+      // the transcript sent to the AI.
+      const transcript = messages
+        .slice(0, 50)
+        .map(m => ({sender: m.user?.name || 'User', text: m.text || '[media]'}))
+        .reverse();
+      setSummary(await summarizeChat(chatId, transcript, question));
+    } catch (err) {
+      if (isAiConsentError(err)) {
+        setSummary('');
+        setAiConsentRetry(() => () => doSummarize(question));
+      } else {
+        setSummary(t('chat.summaryFailed'));
+      }
     } finally {
       setSummarizing(false);
     }
@@ -999,12 +1286,13 @@ export default function ChatPane({
 
   const doTranslate = async (m: ChatMessage) => {
     setActiveMsg(null);
-    if (translations[m._id]) return;
+    if (translations[m._id] || !m.text) return;
     try {
-      const tr = await translateMessage(chatId, m._id, TRANSLATE_TO);
+      const tr = await translateMessage(chatId, m._id, m.text, lang);
       setTranslations(prev => ({...prev, [m._id]: tr}));
-    } catch {
-      setTranslations(prev => ({...prev, [m._id]: '(translation unavailable)'}));
+    } catch (err) {
+      if (isAiConsentError(err)) setAiConsentRetry(() => () => doTranslate(m));
+      else setTranslations(prev => ({...prev, [m._id]: '(translation unavailable)'}));
     }
   };
 
@@ -1093,14 +1381,20 @@ export default function ChatPane({
    * Storage is unavailable. Only clips too big to inline fall back to a Storage
    * upload, so enabling billing later widens the limit without a code change.
    */
-  const sendVoiceMessage = async (blob: Blob, secs: number) => {
+  const sendVoiceMessage = async (
+    blob: Blob,
+    secs: number,
+    audioSampleRateHertz?: number,
+    audioChannelCount?: number,
+  ) => {
     const burn = burnMode ? {burnAfterReading: {duration: burnDuration}} : {};
     const inline = await encodeInlineMedia(blob);
+    const audioMeta = {audioDuration: secs, audioSampleRateHertz, audioChannelCount};
 
     if (!inline) {
       try {
         const url = await uploadChatBlob(chatId, blob, extensionForMime(blob.type), setUploadPct);
-        await sendMessage(chatId, await encryptOutgoingMessage({audio: url, audioDuration: secs, ...burn}), me);
+        await sendMessage(chatId, await encryptOutgoingMessage({audio: url, ...audioMeta, ...burn}), me);
       } catch (err) {
         // Storage is the only route for a clip this long, so surface the
         // length as the actionable problem rather than the Storage error —
@@ -1111,7 +1405,7 @@ export default function ChatPane({
       return;
     }
 
-    await sendMessage(chatId, await encryptOutgoingMessage({audio: inline, audioDuration: secs, ...burn}), me);
+    await sendMessage(chatId, await encryptOutgoingMessage({audio: inline, ...audioMeta, ...burn}), me);
   };
 
   // ---- Voice recording ------------------------------------------------------
@@ -1129,6 +1423,11 @@ export default function ChatPane({
       recChunksRef.current = [];
       recorder.ondataavailable = ev => ev.data.size && recChunksRef.current.push(ev.data);
       recorder.onstop = async () => {
+        // Read the track's actual negotiated capture settings before
+        // stopping it — needed for AAC clips (audio/mp4), where, unlike
+        // Opus, the real sample rate isn't a fixed codec property the
+        // transcription function could assume server-side.
+        const trackSettings = stream.getAudioTracks()[0]?.getSettings();
         stream.getTracks().forEach(tr => tr.stop());
         const secs = Math.max(1, Math.round((Date.now() - recStartRef.current) / 1000));
         // Use what the recorder actually produced — Safari yields audio/mp4,
@@ -1138,7 +1437,7 @@ export default function ChatPane({
         if (blob.size > 0) {
           setUploadPct(0);
           try {
-            await sendVoiceMessage(blob, secs);
+            await sendVoiceMessage(blob, secs, trackSettings?.sampleRate, trackSettings?.channelCount);
           } catch (err) {
             logUploadError('voice send', err);
             toast.error(t(sendErrorKey(err, describeUploadError(err) as TKey)));
@@ -1172,7 +1471,12 @@ export default function ChatPane({
     <div style={styles.pane} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
       {dragging && <div className="drop-hint">{t('chat.dropToSend')}</div>}
 
-      <header style={styles.header}>
+      {/* A plain div, not <header> — this is the per-chat title bar inside
+          MainApp's main landmark, not the page's global banner; the
+          semantic <header> tag only avoids an implicit banner role when
+          nested inside main/article/section, which axe flagged as not
+          reliably holding here. */}
+      <div style={styles.header}>
         <div style={styles.headerLeft}>
           {onBack && (
             <button style={styles.backBtn} onClick={onBack} title="Back">
@@ -1219,8 +1523,14 @@ export default function ChatPane({
             </button>
             {menuOpen && (
               <div style={styles.menu}>
-                <button style={styles.menuItemRow} onClick={doSummarize}>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setSummaryQuestion('');
+                    doSummarize();
+                  }}>
                   <Icon name="sparkles" size={15} /> {t('chat.summarize')}
+                  {!isPro && <span style={styles.menuProTag}>{t('pro.badge')}</span>}
                 </button>
                 <button style={styles.menuItemRow} onClick={() => enterSelect()}>
                   <Icon name="check" size={15} /> {t('chat.selectMessages')}
@@ -1321,6 +1631,14 @@ export default function ChatPane({
                 <button
                   style={styles.menuItemRow}
                   onClick={() => {
+                    setTrashOpen(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="trash" size={15} /> {t('trash.title')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
                     setSettingsOpen(true);
                     setMenuOpen(false);
                   }}>
@@ -1333,7 +1651,7 @@ export default function ChatPane({
             )}
           </div>
         </div>
-      </header>
+      </div>
 
       {selectMode && (
         <div style={styles.selectBar}>
@@ -1359,15 +1677,38 @@ export default function ChatPane({
 
       {(summarizing || summary !== null) && (
         <div style={styles.summaryBar}>
-          <div style={styles.summaryTitle}>
-            <Icon name="sparkles" size={14} /> {t('chat.summaryTitle')}
+          <div style={styles.summaryRow}>
+            <div style={styles.summaryTitle}>
+              <Icon name="sparkles" size={14} />{' '}
+              {summaryAskedQuestion ? `Re: "${summaryAskedQuestion}"` : t('chat.summaryTitle')}
+            </div>
+            <div style={styles.summaryText}>
+              {summarizing ? (summaryAskedQuestion ? 'Searching this chat...' : t('chat.summarizing')) : summary}
+            </div>
+            {!summarizing && (
+              <button style={styles.summaryClose} onClick={() => setSummary(null)} title={t('common.close')}>
+                <Icon name="close" size={14} />
+              </button>
+            )}
           </div>
-          <div style={styles.summaryText}>{summarizing ? t('chat.summarizing') : summary}</div>
-          {!summarizing && (
-            <button style={styles.summaryClose} onClick={() => setSummary(null)} title={t('common.close')}>
-              <Icon name="close" size={14} />
+          <form
+            style={styles.summaryAskRow}
+            onSubmit={e => {
+              e.preventDefault();
+              doSummarize(summaryQuestion);
+            }}>
+            <input
+              style={styles.summaryAskInput}
+              placeholder="Ask about this chat (e.g. what did we decide about the trip?)"
+              aria-label="Ask about this chat"
+              value={summaryQuestion}
+              onChange={e => setSummaryQuestion(e.target.value)}
+              disabled={summarizing}
+            />
+            <button type="submit" style={styles.summaryAskBtn} disabled={summarizing}>
+              {summaryQuestion.trim() ? 'Ask' : 'Regenerate'}
             </button>
-          )}
+          </form>
         </div>
       )}
 
@@ -1377,11 +1718,12 @@ export default function ChatPane({
           <input
             style={styles.searchInput}
             placeholder={t('chat.searchPlaceholder')}
+            aria-label={t('chat.searchPlaceholder')}
             value={search}
             onChange={e => setSearch(e.target.value)}
             autoFocus
           />
-          <button style={styles.searchClose} onClick={() => setSearch(null)}>
+          <button style={styles.searchClose} aria-label={t('common.close')} onClick={() => setSearch(null)}>
             <Icon name="close" size={16} />
           </button>
         </div>
@@ -1408,7 +1750,7 @@ export default function ChatPane({
               </button>
             ))}
           </div>
-          <button style={styles.searchClose} onClick={() => setExpiryOpen(false)}>
+          <button style={styles.searchClose} aria-label={t('common.close')} onClick={() => setExpiryOpen(false)}>
             <Icon name="close" size={16} />
           </button>
         </div>
@@ -1434,10 +1776,71 @@ export default function ChatPane({
         </button>
       )}
 
+      {sharingLocation && (
+        <div style={{...styles.locationBanner, background: colors.primary}}>
+          <span>{'📍 Sharing your location'}</span>
+          <button type="button" style={styles.locationBannerStop} onClick={handleStopSharingLocation}>
+            Stop
+          </button>
+        </div>
+      )}
+
+      {peerLiveLocation?.position && (
+        <button
+          style={styles.locationPreview}
+          aria-label={`Live location shared by ${title}, open in Maps`}
+          onClick={() => openInMaps(peerLiveLocation.position!.latitude, peerLiveLocation.position!.longitude)}>
+          <img
+            src={staticMapTileUrl(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
+            alt=""
+            style={styles.locationPreviewImage}
+          />
+          <span style={styles.locationPreviewInfo}>
+            <span style={styles.locationPreviewTitle}>{'📍 Live location'}</span>
+            <span style={styles.locationPreviewCoords}>
+              {formatCoordinates(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
+            </span>
+            <span style={styles.locationPreviewMeta}>
+              Updated {Math.max(0, Math.round((Date.now() - peerLiveLocation.updatedAt) / 1000))}s ago · Open in Maps
+            </span>
+          </span>
+        </button>
+      )}
+
+      {/* Living backdrop behind the thread. Only when the chat has no
+          wallpaper of its own — a chosen wallpaper must win outright rather
+          than get an uninvited gradient laid over it. Rendered as a sibling of
+          the scroll container, not inside it, so it stays put while you
+          scroll. */}
+      {!wallpaper && (
+        <div
+          className="cb-aurora"
+          aria-hidden="true"
+          style={{'--cb-anim-accent': themeColor} as React.CSSProperties}
+        />
+      )}
+
       <div
         ref={scrollRef}
         className="scroll"
-        style={wallpaper ? {...styles.messages, background: wallpaper} : styles.messages}
+        // Sits above the aurora layer rendered behind it.
+        data-thread="true"
+        style={
+          wallpaper
+            ? // Custom wallpapers are Storage download URLs (always start with
+              // "http"); preset wallpapers are hex colors — same field
+              // (wallpaperBy), distinguished by shape rather than a schema change.
+              wallpaper.startsWith('http')
+              ? {
+                  ...styles.messages,
+                  backgroundImage: `url(${wallpaper})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }
+              : {...styles.messages, background: wallpaper}
+            : styles.messages
+        }
         onScroll={onScroll}
         onClick={() => setActiveMsg(null)}>
         {shownMessages.length > 0 && <div style={styles.msgSpacer} />}
@@ -1453,6 +1856,15 @@ export default function ChatPane({
         ) : (
           shownMessages.map((m, i) => {
             const mine = m.user?._id === me.uid;
+            // Own bubbles carry the chat accent, so their text is always light
+            // regardless of wallpaper; peer bubbles sit on the thread surface.
+            const bubbleBg = mine
+              ? themeColor
+              : darkWallpaper
+                ? 'rgba(255,255,255,0.10)'
+                : colors.surfaceStrong;
+            const bubbleText = mine ? '#FFFFFF' : threadText;
+            const bubbleDim = mine ? 'rgba(255,255,255,0.72)' : threadTextDim;
             const reactions = Object.entries(m.reactions || {}).filter(([, u]) => u.length > 0);
             const showDivider = m._id === firstUnreadId && !firstUnreadIsMine;
 
@@ -1486,8 +1898,12 @@ export default function ChatPane({
             const voLocked = !!m.viewOnce && !mine && !voExpired;
             // Group consecutive messages from the same author within a short window.
             const prev = shownMessages[i - 1];
+            // A day change always starts a fresh run, so a message sent at
+            // 00:01 never groups onto yesterday's last one.
+            const newDay = !prev || !isSameDay(msgTime(m), msgTime(prev));
             const grouped =
               !showDivider &&
+              !newDay &&
               !!prev &&
               prev.user?._id === m.user?._id &&
               msgTime(m) - msgTime(prev) < GROUP_WINDOW_MS;
@@ -1496,13 +1912,17 @@ export default function ChatPane({
             const isMsgPinned = (chat?.pinnedMessageIds || []).includes(m._id);
             return (
               <div key={m._id} className="cv-row">
+                {newDay && <div style={styles.dayDivider}><span style={styles.dayPill}>{formatDayLabel(msgTime(m), t)}</span></div>}
                 {showDivider && <div className="unread-divider">{t('chat.newMessages')}</div>}
                 <div
-                  className="msg-row"
+                  // `mine`/`theirs` pick which side the bubble springs in
+                  // from — see the motion section in styles.css.
+                  className={`msg-row ${mine ? 'mine' : 'theirs'}`}
                   data-mid={m._id}
                   style={{
                     ...styles.msgRow,
-                    marginTop: grouped ? 0 : 8,
+                    flexDirection: mine ? 'row-reverse' : 'row',
+                    marginTop: grouped ? 2 : 10,
                     ...(selectMode ? {cursor: 'pointer'} : null),
                     ...(selectMode && selected.has(m._id) ? styles.msgRowSelected : null),
                   }}
@@ -1520,30 +1940,39 @@ export default function ChatPane({
                       {selected.has(m._id) && <Icon name="check" size={13} style={{color: '#fff'}} />}
                     </span>
                   )}
-                  <div style={styles.gutter}>
-                    {grouped ? (
-                      <span className="grouped-time" style={styles.groupedTime}>
-                        {formatTime(m.createdAt)}
-                      </span>
-                    ) : (
-                      <div style={{...styles.msgAvatar, background: avatarColor(seed)}}>
-                        {senderName.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
+                  {/* Your own messages need no avatar — the right-hand side
+                      already identifies them, and dropping it widens the thread. */}
+                  {!mine && (
+                    <div style={styles.gutter}>
+                      {grouped ? (
+                        <span style={styles.gutterSpacer} />
+                      ) : (
+                        <div style={{...styles.msgAvatar, background: avatarColor(seed)}}>
+                          {senderName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-                  <div style={styles.msgMain}>
-                    {!grouped && (
+                  <MessageMotion
+                    mine={mine}
+                    style={{
+                      ...styles.msgMain,
+                      background: bubbleBg,
+                      alignItems: mine ? 'flex-end' : 'flex-start',
+                      // Square off the corner nearest the speaker so a run of
+                      // bubbles reads as one turn rather than separate cards.
+                      borderTopRightRadius: mine && grouped ? 6 : 18,
+                      borderTopLeftRadius: !mine && grouped ? 6 : 18,
+                    }}>
+                    {/* Names only earn their space in a group thread. */}
+                    {!grouped && !mine && isGroupChat && (
                       <div style={styles.msgHead}>
-                        <span style={{...styles.senderName, color: mine ? colors.primary : colors.text}}>
-                          {senderName}
-                        </span>
-                        <span style={styles.msgHeadTime}>{formatTime(m.createdAt)}</span>
-                        {isMsgPinned && <Icon name="pin" size={12} style={{color: colors.textTertiary}} />}
+                        <span style={{...styles.senderName, color: themeColor}}>{senderName}</span>
                       </div>
                     )}
 
-                    <div style={styles.msgContent}>
+                    <div style={{...styles.msgContent, color: bubbleText}}>
                       {burned ? (
                         <div style={styles.burnedRow}>
                           <Icon name="flame" size={16} /> {t('chat.messageBurned')}
@@ -1588,24 +2017,26 @@ export default function ChatPane({
                                     <Icon name="eye" size={11} /> {t('chat.viewOnceBadge')}
                                   </span>
                                 )}
-                                <img
-                                  src={m.image}
-                                  alt=""
-                                  style={styles.image}
-                                  onClick={e => {e.stopPropagation(); lightbox.open(m.image!);}}
-                                />
+                                <button
+                                  type="button"
+                                  style={styles.imageBtn}
+                                  aria-label={`Photo from ${m.user?.name || 'User'}, open full size`}
+                                  onClick={e => {e.stopPropagation(); lightbox.open(m.image!);}}>
+                                  <img src={m.image} alt="" style={styles.image} />
+                                </button>
                               </div>
                             ))}
                           {m.gif && (
-                            <img
-                              src={m.gif.previewUrl || m.gif.url}
-                              alt="GIF"
-                              style={styles.gifMsg}
+                            <button
+                              type="button"
+                              style={styles.imageBtn}
+                              aria-label={`GIF from ${m.user?.name || 'User'}, open full size`}
                               onClick={e => {
                                 e.stopPropagation();
                                 if (m.gif?.url) lightbox.open(m.gif.url);
-                              }}
-                            />
+                              }}>
+                              <img src={m.gif.previewUrl || m.gif.url} alt="" style={styles.gifMsg} />
+                            </button>
                           )}
                           {m.audio && <AudioMessage url={m.audio} duration={m.audioDuration} />}
                           {m.audio && (transcribing.has(m._id) || m.transcription) && (
@@ -1613,18 +2044,36 @@ export default function ChatPane({
                               {transcribing.has(m._id) ? t('chat.transcribing') : m.transcription}
                             </div>
                           )}
-                          {m.file && (
-                            <a
-                              href={m.file.uri}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={e => e.stopPropagation()}
-                              style={styles.fileCard}>
-                              <Icon name="file" size={20} />
-                              <span style={styles.fileName}>{m.file.name}</span>
-                              <Icon name="download" size={16} />
-                            </a>
-                          )}
+                          {m.file &&
+                            // The sender's client writes this uri; a hostile one
+                            // could make it `javascript:…`. Legitimate values are
+                            // Storage URLs or inline data: attachments, both of
+                            // which survive the check — anything else renders as
+                            // a non-clickable card instead of running code.
+                            (() => {
+                              const fileUrl = safeExternalUrl(m.file.uri);
+                              const inner = (
+                                <>
+                                  <Icon name="file" size={20} />
+                                  <span style={styles.fileName}>{m.file.name}</span>
+                                  {fileUrl && <Icon name="download" size={16} />}
+                                </>
+                              );
+                              return fileUrl ? (
+                                <a
+                                  href={fileUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={e => e.stopPropagation()}
+                                  style={styles.fileCard}>
+                                  {inner}
+                                </a>
+                              ) : (
+                                <div style={styles.fileCard} title={t('chat.unsafeLink')}>
+                                  {inner}
+                                </div>
+                              );
+                            })()}
                           {m.text && <span style={styles.msgText}>{renderMentions(m.text, mentionNames)}</span>}
                           {(countdown != null || m.editedAt) && (
                             <span style={styles.inlineMeta}>
@@ -1640,23 +2089,33 @@ export default function ChatPane({
                       )}
                     </div>
 
+                    {/* Time sits in the bubble's trailing corner, the way a
+                        modern messenger does, instead of on a header line
+                        that repeated the sender's name on every message. */}
+                    <div style={{...styles.bubbleFoot, color: bubbleDim}}>
+                      {isMsgPinned && <Icon name="pin" size={11} />}
+                      <span>{formatTime(m.createdAt)}</span>
+                    </div>
+
                     {!contentHidden && translations[m._id] && (
                       <div style={styles.translation}>
                         <Icon name="globe" size={13} style={{marginRight: 5, verticalAlign: '-2px'}} />
                         {translations[m._id]}
                       </div>
                     )}
-                    {!contentHidden && m.text && URL_RE.test(m.text) && (
-                      <LinkPreviewCard url={m.text.match(URL_RE)![0]} />
-                    )}
+                    {!contentHidden && <LinkPreviewCard preview={m.linkPreview} />}
 
                     {reactions.length > 0 && (
                       <div style={styles.reactions}>
                         {reactions.map(([emoji, uids]) => (
                           <button
                             key={emoji}
+                            className="cb-reaction"
                             onClick={e => {
                               e.stopPropagation();
+                              // Only celebrate adding one. Bursting on removal
+                              // would reward taking a reaction back.
+                              if (!uids.includes(me.uid)) burst(emoji, e.clientX, e.clientY);
                               toggleReaction(chatId, m._id, emoji, me.uid);
                             }}
                             style={{
@@ -1676,8 +2135,10 @@ export default function ChatPane({
                             {QUICK_EMOJI.map(emoji => (
                               <button
                                 key={emoji}
+                                className="cb-reaction"
                                 style={styles.emojiBtn}
-                                onClick={() => {
+                                onClick={e => {
+                                  burst(emoji, e.clientX, e.clientY);
                                   toggleReaction(chatId, m._id, emoji, me.uid);
                                   setActiveMsg(null);
                                   setReactionOpen(null);
@@ -1763,7 +2224,7 @@ export default function ChatPane({
                             style={styles.smallAction}
                             title={t('common.delete')}
                             onClick={() => {
-                              deleteMessage(chatId, m._id);
+                              deleteMessage(chatId, m._id, me.uid);
                               setActiveMsg(null);
                             }}>
                             <Icon name="trash" size={15} />
@@ -1772,7 +2233,7 @@ export default function ChatPane({
                         </div>
                       </div>
                     )}
-                  </div>
+                  </MessageMotion>
                 </div>
               </div>
             );
@@ -1783,7 +2244,18 @@ export default function ChatPane({
             <Icon name="check" size={12} style={{verticalAlign: '-1px'}} /> {t('chat.seen')} {seenAt}
           </div>
         )}
-        {otherTyping && <div style={styles.typing}>{t('chat.typing')}</div>}
+        {/* The bouncing dots carry the meaning, so the label is visually
+            dropped and kept for screen readers only. */}
+        {otherTyping && (
+          <div style={styles.typing}>
+            <span className="cb-typing" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span className="sr-only">{t('chat.typing')}</span>
+          </div>
+        )}
         <div ref={endRef} />
       </div>
 
@@ -1846,7 +2318,10 @@ export default function ChatPane({
                   <span style={styles.scheduledTime}>
                     {new Date(s.scheduledFor).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
                   </span>
-                  <button style={styles.searchClose} onClick={() => cancelScheduledMessage(chatId, s._id).catch(() => undefined)}>
+                  <button
+                    style={styles.searchClose}
+                    aria-label={`Cancel scheduled message: ${s.text}`}
+                    onClick={() => cancelScheduledMessage(chatId, s._id).catch(() => undefined)}>
                     <Icon name="close" size={14} />
                   </button>
                 </div>
@@ -1864,13 +2339,14 @@ export default function ChatPane({
           <input
             type="datetime-local"
             style={styles.scheduleInput}
+            aria-label={t('chat.schedule')}
             value={scheduleAt}
             onChange={e => setScheduleAt(e.target.value)}
           />
           <button style={styles.recSend} onClick={doSchedule} disabled={!text.trim() || !scheduleAt}>
             {t('chat.schedule')}
           </button>
-          <button style={styles.searchClose} onClick={() => setScheduleOpen(false)}>
+          <button style={styles.searchClose} aria-label={t('common.close')} onClick={() => setScheduleOpen(false)}>
             <Icon name="close" size={16} />
           </button>
         </div>
@@ -1884,13 +2360,14 @@ export default function ChatPane({
           <input
             type="datetime-local"
             style={styles.scheduleInput}
+            aria-label={t('reminder.remindMe')}
             value={reminderAt}
             onChange={e => setReminderAt(e.target.value)}
           />
           <button style={styles.recSend} onClick={doRemind} disabled={!reminderAt}>
             {t('reminder.set')}
           </button>
-          <button style={styles.searchClose} onClick={() => setReminderFor(null)}>
+          <button style={styles.searchClose} aria-label={t('common.close')} onClick={() => setReminderFor(null)}>
             <Icon name="close" size={16} />
           </button>
         </div>
@@ -1964,7 +2441,10 @@ export default function ChatPane({
             onKeyDown={onComposerKeyDown}
             autoFocus
           />
-          <button type="submit" style={{...styles.sendBtn, background: themeColor}}>
+          <button
+            type="submit"
+            className="cb-send"
+            style={{...styles.sendBtn, background: themeColor}}>
             {t('common.save')}
           </button>
           <button type="button" style={styles.composerIcon} title={t('common.cancel')} onClick={() => setEditing(null)}>
@@ -2009,6 +2489,13 @@ export default function ChatPane({
             onClick={() => setGifOpen(true)}>
             <Icon name="gif" size={22} />
           </button>
+          <button
+            type="button"
+            style={{...styles.composerIcon, ...(sharingLocation ? {color: colors.primary} : null)}}
+            title={sharingLocation ? 'Stop sharing location' : 'Share live location'}
+            onClick={() => (sharingLocation ? handleStopSharingLocation() : setShareLocationModalOpen(true))}>
+            <span style={{fontSize: 18, lineHeight: 1}}>{'📍'}</span>
+          </button>
           <textarea
             ref={inputRef}
             rows={1}
@@ -2022,7 +2509,13 @@ export default function ChatPane({
             autoFocus
           />
           {text.trim() ? (
-            <button type="submit" style={{...styles.sendBtn, background: themeColor}} disabled={sending}>
+            <button
+              type="submit"
+              className={`cb-send cb-glow${launching ? ' cb-launch cb-shimmer' : ''}`}
+              style={
+                {...styles.sendBtn, background: themeColor, '--cb-anim-accent': themeColor} as React.CSSProperties
+              }
+              disabled={sending}>
               {t('common.send')}
             </button>
           ) : (
@@ -2037,6 +2530,23 @@ export default function ChatPane({
         <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
       )}
       {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
+      {proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
+      {shareLocationModalOpen && (
+        <ShareLocationModal onClose={() => setShareLocationModalOpen(false)} onChoose={beginSharingLocation} />
+      )}
+      {aiConsentRetry && (
+        <AiConsentModal
+          onAccept={() => {
+            const retry = aiConsentRetry;
+            setAiConsentRetry(null);
+            retry();
+          }}
+          onClose={() => setAiConsentRetry(null)}
+        />
+      )}
+      {trashOpen && (
+        <RecentlyDeletedModal chatId={chatId} uid={me.uid} onClose={() => setTrashOpen(false)} />
+      )}
       {settingsOpen && (
         <ChatSettingsModal
           chatId={chatId}
@@ -2047,9 +2557,11 @@ export default function ChatPane({
         />
       )}
       {mediaOpen && <ChatMediaModal messages={messages} onClose={() => setMediaOpen(false)} />}
-      {playlistOpen && <PlaylistModal chatId={chatId} me={me} onClose={() => setPlaylistOpen(false)} />}
-      {countdownOpen && <CountdownModal chatId={chatId} me={me} onClose={() => setCountdownOpen(false)} />}
-      {listsOpen && <SharedListsModal chatId={chatId} me={me} onClose={() => setListsOpen(false)} />}
+      {playlistOpen && <PlaylistModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setPlaylistOpen(false)} />}
+      {countdownOpen && <CountdownModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setCountdownOpen(false)} />}
+      {listsOpen && (
+        <SharedListsModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setListsOpen(false)} />
+      )}
       {verifyOpen && otherUid && (
         <VerifyContactModal
           myUid={me.uid}
@@ -2156,6 +2668,12 @@ function expiryLabel(t: (k: TKey) => string, hours: number): string {
 const styles: Record<string, React.CSSProperties> = {
   pane: {flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, position: 'relative'},
   header: {
+    // backdrop-filter creates a stacking context, which traps the dropdown
+    // menu's z-index inside this element. Without a position/z-index of its
+    // own the whole header stacks below the messages container that follows
+    // it in the DOM, so message bubbles painted over the open menu.
+    position: 'relative',
+    zIndex: 20,
     padding: '15px 24px',
     fontWeight: 700,
     fontSize: 17,
@@ -2205,7 +2723,13 @@ const styles: Record<string, React.CSSProperties> = {
     border: `1px solid ${colors.border}`,
     borderRadius: 12,
     boxShadow: '0 24px 48px -16px rgba(0,0,0,0.5)',
-    overflow: 'hidden',
+    // The menu has grown past what a short window can show. Without a cap it
+    // ran off the bottom and its last items (Chat settings, Delete chat) sat
+    // under the composer, unclickable. Cap to the space below the header and
+    // scroll the overflow instead.
+    maxHeight: 'calc(100vh - 96px)',
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
     zIndex: 30,
     minWidth: 168,
   },
@@ -2243,17 +2767,50 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     color: colors.text,
   },
+  menuProTag: {
+    marginLeft: 'auto',
+    padding: '1px 7px',
+    borderRadius: 999,
+    background: colors.primaryLight,
+    color: colors.primary,
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: '0.3px',
+  },
   summaryBar: {
     display: 'flex',
-    alignItems: 'flex-start',
-    gap: 10,
+    flexDirection: 'column',
+    gap: 8,
     padding: '12px 24px',
     background: colors.primaryLight,
     borderBottom: `1px solid ${colors.border}`,
   },
+  summaryRow: {display: 'flex', alignItems: 'flex-start', gap: 10},
   summaryTitle: {display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: colors.primary, flexShrink: 0, marginTop: 2},
   summaryText: {flex: 1, fontSize: 14, color: colors.text, lineHeight: 1.4, whiteSpace: 'pre-wrap'},
   summaryClose: {background: 'none', border: 'none', color: colors.textSecondary, display: 'flex', alignItems: 'center'},
+  summaryAskRow: {display: 'flex', gap: 8},
+  summaryAskInput: {
+    flex: 1,
+    padding: '8px 12px',
+    borderRadius: 10,
+    border: `1px solid ${colors.border}`,
+    background: colors.inputBg,
+    color: colors.text,
+    fontSize: 13,
+    outline: 'none',
+  },
+  summaryAskBtn: {
+    padding: '8px 14px',
+    borderRadius: 10,
+    border: 'none',
+    background: colors.primary,
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
   translation: {
     marginTop: 4,
     padding: '6px 10px',
@@ -2267,9 +2824,10 @@ const styles: Record<string, React.CSSProperties> = {
   messages: {
     flex: 1,
     overflowY: 'auto',
-    // Left-anchored column (Slack-style): content hugs the left, capped in width
-    // on very wide screens with the extra space falling on the right.
-    padding: '20px max(24px, calc(100% - 1064px)) 20px 24px',
+    // Symmetric gutters: bubbles are aligned to both edges now, so the
+    // Slack-style left-anchored column this used to have left own-messages
+    // floating far from the right edge on wide screens.
+    padding: '20px max(24px, calc((100% - 1064px) / 2))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -2304,7 +2862,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   systemTime: {fontSize: 11, color: colors.textTertiary},
   // ---- Slack/Discord-style message rows ----
-  msgRow: {display: 'flex', gap: 12, padding: '2px 12px', borderRadius: 8, position: 'relative'},
+  msgRow: {display: 'flex', gap: 8, padding: '0 14px', position: 'relative', alignItems: 'flex-end'},
   msgRowSelected: {background: colors.primaryLight},
   selCheck: {
     flexShrink: 0,
@@ -2357,10 +2915,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     cursor: 'pointer',
   },
-  gutter: {width: 40, flexShrink: 0, display: 'flex', justifyContent: 'center', paddingTop: 2},
+  gutter: {width: 32, flexShrink: 0, display: 'flex', justifyContent: 'center', alignSelf: 'flex-end'},
+  gutterSpacer: {width: 32, height: 1},
   msgAvatar: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
     borderRadius: 999,
     color: '#fff',
     display: 'flex',
@@ -2371,11 +2930,40 @@ const styles: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   groupedTime: {fontSize: 10.5, color: colors.textTertiary, lineHeight: '22px'},
-  msgMain: {flex: 1, minWidth: 0},
-  msgHead: {display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 1},
-  senderName: {fontWeight: 700, fontSize: 15},
+  msgMain: {
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: 0,
+    maxWidth: 'min(68%, 560px)',
+    padding: '8px 12px 6px',
+    borderRadius: 18,
+    boxShadow: '0 1px 2px rgba(15,23,42,0.06)',
+  },
+  msgHead: {display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 2},
+  dayDivider: {display: 'flex', justifyContent: 'center', margin: '18px 0 10px'},
+  dayPill: {
+    fontSize: 11.5,
+    fontWeight: 700,
+    letterSpacing: 0.3,
+    color: colors.textSecondary,
+    background: colors.surfaceStrong,
+    border: `1px solid ${colors.border}`,
+    borderRadius: 999,
+    padding: '4px 12px',
+  },
+  senderName: {fontWeight: 700, fontSize: 13},
   msgHeadTime: {fontSize: 11.5, color: colors.textTertiary, flexShrink: 0},
-  msgContent: {fontSize: 15, lineHeight: 1.45, color: colors.text, wordBreak: 'break-word'},
+  msgContent: {fontSize: 15, lineHeight: 1.45, color: colors.text, wordBreak: 'break-word', overflowWrap: 'anywhere'},
+  bubbleFoot: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-end',
+    fontSize: 10.5,
+    lineHeight: 1,
+    marginTop: 4,
+    whiteSpace: 'nowrap',
+  },
   msgText: {whiteSpace: 'pre-wrap'},
   inlineMeta: {marginLeft: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
   gifMsg: {display: 'block', maxWidth: 260, width: '100%', borderRadius: 12, margin: '4px 0', cursor: 'zoom-in'},
@@ -2454,6 +3042,42 @@ const styles: Record<string, React.CSSProperties> = {
   },
   pinnedBannerText: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13.5, color: colors.textSecondary},
   pinnedBannerCount: {fontSize: 11, fontWeight: 700, color: colors.primary, background: colors.primaryLight, borderRadius: 999, padding: '1px 8px'},
+  locationBanner: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: '9px 24px',
+    color: '#fff',
+    fontSize: 13.5,
+    fontWeight: 600,
+  },
+  locationBannerStop: {
+    border: 'none',
+    background: 'transparent',
+    color: '#fff',
+    fontSize: 13.5,
+    fontWeight: 700,
+    textDecoration: 'underline',
+    cursor: 'pointer',
+  },
+  locationPreview: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    margin: '8px 16px 0',
+    padding: 8,
+    borderRadius: 14,
+    border: `1px solid ${colors.border}`,
+    background: colors.surface,
+    textAlign: 'left',
+    cursor: 'pointer',
+  },
+  locationPreviewImage: {width: 56, height: 56, borderRadius: 10, objectFit: 'cover', flexShrink: 0},
+  locationPreviewInfo: {display: 'flex', flexDirection: 'column', minWidth: 0},
+  locationPreviewTitle: {fontSize: 13.5, fontWeight: 700, color: colors.text},
+  locationPreviewCoords: {fontSize: 12.5, color: colors.textSecondary, marginTop: 1},
+  locationPreviewMeta: {fontSize: 11.5, color: colors.textSecondary, marginTop: 2},
   replyBar: {display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', borderTop: `1px solid ${colors.border}`, background: colors.surface},
   replyBarBody: {flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column'},
   replyBarName: {fontSize: 12.5, fontWeight: 700, color: colors.primary},
@@ -2476,6 +3100,10 @@ const styles: Record<string, React.CSSProperties> = {
   scheduledTime: {fontSize: 12, color: colors.textTertiary, flexShrink: 0},
   scheduleInput: {padding: '7px 10px', borderRadius: 10, border: `1px solid ${colors.border}`, background: colors.inputBg, color: colors.text, fontSize: 13, fontFamily: 'inherit'},
   image: {display: 'block', maxWidth: 360, width: '100%', borderRadius: 10, margin: '4px 0', cursor: 'zoom-in'},
+  // Resets default button chrome so wrapping a message image in a real
+  // <button> (for keyboard access) doesn't change how it looks — the image's
+  // own style (image/gifMsg) still controls sizing.
+  imageBtn: {display: 'block', border: 'none', background: 'none', padding: 0, margin: 0, cursor: 'zoom-in'},
   fileCard: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -2655,7 +3283,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  seen: {textAlign: 'right', fontSize: 11.5, color: colors.textSecondary, marginTop: -4, marginBottom: 6},
+  seen: {textAlign: 'right', fontSize: 11.5, color: colors.textSecondary, margin: '4px 16px 8px 0'},
   typing: {fontSize: 13, color: colors.textSecondary, fontStyle: 'italic', padding: '2px 4px'},
   composer: {
     display: 'flex',

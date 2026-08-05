@@ -86,8 +86,11 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
           <div style={styles.keepsNote}>{t('account.deleteKeepsNote')}</div>
         </div>
 
-        <label style={styles.label}>{t('account.deleteTypeToConfirm')}</label>
+        <label style={styles.label} htmlFor="delete-account-confirm-word">
+          {t('account.deleteTypeToConfirm')}
+        </label>
         <input
+          id="delete-account-confirm-word"
           style={styles.input}
           value={confirmWord}
           onChange={e => setConfirmWord(e.target.value)}
@@ -96,8 +99,11 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
           disabled={busy}
         />
 
-        <label style={styles.label}>{t('account.deleteEnterPassword')}</label>
+        <label style={styles.label} htmlFor="delete-account-password">
+          {t('account.deleteEnterPassword')}
+        </label>
         <input
+          id="delete-account-password"
           style={styles.input}
           type="password"
           value={password}

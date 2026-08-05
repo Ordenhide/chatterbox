@@ -2,6 +2,18 @@
   "app": {
     "name": "Chatterbox"
   },
+  "pro": {
+    "title": "Chatterbox Pro",
+    "badge": "PRO",
+    "active": "Your subscription is active.",
+    "renewsOn": "Renews on {{date}}",
+    "endsOn": "Ends on {{date}}",
+    "pastDue": "We couldn't process your last payment — update your card on the web to keep Pro.",
+    "pitch": "Unlock AI chat summaries and search, plus the full theme collection.",
+    "manageOnWeb": "Subscribe or manage your subscription on the Chatterbox website.",
+    "lockedAiMobile": "AI chat summaries and search are part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock them here.",
+    "lockedTheme": "This theme is part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock it."
+  },
   "common": {
     "continue": "Continue",
     "signIn": "Sign In",
@@ -29,7 +41,20 @@
   "tabs": {
     "chats": "Chats",
     "moments": "Moments",
+    "store": "Store",
     "profile": "Profile"
+  },
+  "store": {
+    "title": "Store",
+    "subtitle": "Themes and upgrades for every conversation.",
+    "themes": "Themes",
+    "themesDesc": "Applies to all your chats.",
+    "applied": "{{name}} applied to {{count}} chats.",
+    "appliedOne": "{{name}} applied to 1 chat.",
+    "appliedNone": "{{name}} applied. It will be used by new chats.",
+    "appliedTag": "APPLIED",
+    "openStore": "Open Store",
+    "themeMovedHint": "Themes now live in the Store."
   },
   "headers": {
     "chats": "Chats",
@@ -88,6 +113,46 @@
       "title": "Signed out",
       "message": "This account was signed in on another device."
     }
+  },
+  "aiConsent": {
+    "title": "AI features send messages off your device",
+    "body": "Chatterbox encrypts your messages so only you and the other person can read them. AI is the one exception.\n\nTo summarise, translate or transcribe, the selected messages are decrypted on this device and sent to our server and its AI provider. They are sent to produce your result, not to train anything — but in transit and in processing they are not end-to-end encrypted.\n\nEverything else stays encrypted: messages you don't run AI on, your shared lists, playlists and countdowns.\n\nYou can turn this off at any time in Profile.",
+    "accept": "Allow AI features",
+    "decline": "Not now",
+    "settingsTitle": "AI features",
+    "settingsOn": "Allowed — selected messages are sent off this device when you use AI.",
+    "settingsOff": "Off — nothing is sent. You'll be asked before any AI feature runs.",
+    "turnOff": "Turn off AI features",
+    "turnOn": "Allow AI features",
+    "turnedOff": "AI features turned off on this device"
+  },
+  "linkPreview": {
+    "settingsTitle": "Link previews",
+    "settingsOn": "On — when you send a link, this device fetches its title and image once and encrypts them into the message. The person you send it to never asks our server about the link.",
+    "settingsOff": "Off — links you send stay plain links, and our server is never told about them.",
+    "turnOff": "Turn off link previews",
+    "turnOn": "Turn on link previews",
+    "turnedOff": "Link previews turned off on this device"
+  },
+  "trash": {
+    "title": "Recently deleted",
+    "desc": "Deleted messages can be recovered for 24 hours. After that they are gone permanently. Only you can see or recover the messages you deleted.",
+    "empty": "Nothing deleted recently.",
+    "recover": "Recover",
+    "expired": "That message can no longer be recovered.",
+    "timeLeft": "recoverable for",
+    "message": "Message",
+    "photo": "Photo",
+    "video": "Video",
+    "voice": "Voice message",
+    "file": "File"
+  },
+  "chats": {
+    "hide": "Hide chat",
+    "recover": "Recover chat",
+    "hiddenTitle": "Hidden chats",
+    "hiddenEmpty": "No hidden chats.",
+    "hiddenHint": "Hidden chats stay hidden until you recover them, even when new messages arrive."
   },
   "chatList": {
     "title": "Chats",
@@ -276,7 +341,35 @@
       "deleteEnterPassword": "Enter your password to permanently delete your account.",
       "deleting": "Deleting your data…",
       "deleteFailed": "Could not delete the account. Please try again.",
-      "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support."
+      "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support.",
+      "phoneTitle": "Phone Number",
+      "phoneCountryTitle": "Select Country",
+      "phoneNotAdded": "Not added",
+      "phoneAdd": "Add phone number",
+      "phoneChange": "Change phone number",
+      "phoneRemove": "Remove phone number",
+      "phoneRemoveConfirmTitle": "Remove phone number?",
+      "phoneRemoveConfirmBody": "You'll need to add and verify it again to use it later.",
+      "phonePlaceholder": "Phone number",
+      "phoneCodePlaceholder": "6-digit code",
+      "phoneSendCode": "Send code",
+      "phoneVerifyCode": "Verify",
+      "phoneResendCode": "Resend code",
+      "phoneAddedTitle": "Phone number added",
+      "phoneAdded": "Your phone number has been verified and added to your account.",
+      "phoneRemovedTitle": "Phone number removed",
+      "phoneRemoved": "Your phone number has been removed from your account.",
+      "phoneSendFailedTitle": "Couldn't send code",
+      "phoneVerifyFailedTitle": "Verification failed",
+      "phoneRemoveFailedTitle": "Couldn't remove phone number",
+      "phoneInvalid": "Enter a valid phone number in international format (e.g. +14155550123)",
+      "phoneInvalidCode": "That code is incorrect",
+      "phoneCodeExpired": "That code has expired. Request a new one.",
+      "phoneAlreadyInUse": "That phone number is already linked to another account.",
+      "phoneProviderNotEnabled": "Phone sign-in isn't turned on for this app yet. This needs to be enabled in the Firebase console (Authentication → Sign-in method) before phone numbers can be added.",
+      "downloadDataTitle": "Download my data",
+      "downloadDataDesc": "Get a copy of your profile, conversations, and moments as a plain-text file you can keep or inspect — different from Export Backup below, which creates an encrypted file for moving your account to a new device.",
+      "downloadDataButton": "Download"
     },
     "modals": {
       "exportTitle": "Export Backup",
@@ -307,7 +400,9 @@
       "signOutBody": "Are you sure you want to sign out?",
       "signOutFailed": "Failed to sign out",
       "visibilityUpdateFailed": "Unable to update profile visibility.",
-      "momentVisibilityUpdateFailed": "Unable to update default moment visibility."
+      "momentVisibilityUpdateFailed": "Unable to update default moment visibility.",
+      "downloadDataFailedTitle": "Error",
+      "downloadDataFailedBody": "Unable to prepare your data. Please try again."
     }
   },
   "notifications": {
@@ -350,6 +445,7 @@
     "seconds": "{{count}}s"
   },
   "chat": {
+    "unsafeLink": "That link was blocked because it isn't a safe web address.",
     "isTyping": "{{name}} is typing...",
     "search": "Search",
     "done": "Done",

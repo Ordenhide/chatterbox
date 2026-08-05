@@ -86,19 +86,33 @@ export default function CallScreen() {
     const setup = async () => {
       if (!user || !chatId || !callId) return;
 
+      // react-native-webrtc 124 tightened MediaTrackConstraints to describe
+      // only *video* fields (width/height/frameRate/facingMode/deviceId/
+      // groupId) — it declares no audio properties at all. These are standard
+      // WebRTC audio constraints and are still forwarded to the native layer
+      // unchanged, so this is a gap in the library's types, not a behaviour
+      // change.
+      //
+      // The target type is derived from getUserMedia's own signature rather
+      // than imported: the library does not export the constraint type from
+      // its package root, and reaching into lib/typescript/ would break on any
+      // internal reshuffle. Scoped to the audio object alone, so the video
+      // constraint below stays type-checked.
+      const audioConstraints = {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        // Best-effort hints; some platforms ignore these.
+        sampleRate: 48000,
+        channelCount: 1,
+        googEchoCancellation: true,
+        googNoiseSuppression: true,
+        googAutoGainControl: true,
+        googHighpassFilter: true,
+      } as unknown as Parameters<typeof mediaDevices.getUserMedia>[0]['audio'];
+
       const stream = await mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-          // Best-effort hints; some platforms ignore these.
-          sampleRate: 48000,
-          channelCount: 1,
-          googEchoCancellation: true,
-          googNoiseSuppression: true,
-          googAutoGainControl: true,
-          googHighpassFilter: true,
-        },
+        audio: audioConstraints,
         video: callType === 'video',
       });
       if (!isMounted) return;

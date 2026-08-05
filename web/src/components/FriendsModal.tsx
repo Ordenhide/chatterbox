@@ -108,6 +108,7 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
           <input
             style={styles.input}
             placeholder={t('friends.addByEmail')}
+            aria-label={t('friends.addByEmail')}
             value={email}
             onChange={e => setEmail(e.target.value)}
           />

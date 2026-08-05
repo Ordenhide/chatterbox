@@ -1,4 +1,16 @@
 buildscript {
+    // Use first existing node path so codegen works from IDE (PATH often missing /opt/homebrew/bin or /usr/local/bin).
+    def discoveredNodePath = "node"
+    def nvmDefault = new File("${System.getProperty('user.home')}/.nvm/alias/default")
+    def nvmCandidates = []
+    if (nvmDefault.exists()) {
+        def nvmVersionDirs = new File("${System.getProperty('user.home')}/.nvm/versions/node").listFiles()
+        if (nvmVersionDirs != null) { nvmVersionDirs.each { d -> nvmCandidates << "${d}/bin/node" } }
+    }
+    (["/opt/homebrew/bin/node", "/usr/local/bin/node"] + nvmCandidates).each { p ->
+        if (new File(p).exists()) { discoveredNodePath = p }
+    }
+
     ext {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 24
@@ -10,6 +22,7 @@ buildscript {
         // Tell react-native-gesture-handler (and similar libs) where React Native
         // lives, so they skip the `node` CLI call that fails in IDE-launched daemons.
         REACT_NATIVE_NODE_MODULES_DIR = "$rootDir/../node_modules/react-native"
+        NODE_BINARY = discoveredNodePath
     }
     repositories {
         google()

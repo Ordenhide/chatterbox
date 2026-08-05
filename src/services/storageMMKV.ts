@@ -97,7 +97,7 @@ export const mmkvStorage = {
 
   removeItem: async (key: string): Promise<void> => {
     try {
-      storage.delete(key);
+      storage.remove(key);
     } catch (error) {
       logError(`removeItem error for key "${key}"`, error);
       throw error;
@@ -180,7 +180,7 @@ export const mmkvStorage = {
 
   multiRemove: async (keys: string[]): Promise<void> => {
     try {
-      keys.forEach(key => storage.delete(key));
+      keys.forEach(key => storage.remove(key));
     } catch (error) {
       logError('multiRemove error', error);
       throw error;
@@ -189,7 +189,7 @@ export const mmkvStorage = {
 
   remove: (key: string): void => {
     try {
-      storage.delete(key);
+      storage.remove(key);
     } catch (error) {
       logError(`remove error for key "${key}"`, error);
     }

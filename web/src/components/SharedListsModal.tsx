@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
+import {useArtifactCrypto} from '../hooks/useArtifactCrypto';
 import {useT} from '../i18n';
 import {
   createSharedList,
@@ -19,10 +20,13 @@ function newId(): string {
 export default function SharedListsModal({
   chatId,
   me,
+  peerUid,
   onClose,
 }: {
   chatId: string;
   me: {uid: string};
+  /** Needed to seal list contents to the pair — see services/e2eeArtifacts.ts. */
+  peerUid?: string;
   onClose: () => void;
 }) {
   const {t} = useT();
@@ -32,14 +36,17 @@ export default function SharedListsModal({
   const [newList, setNewList] = useState('');
   const [itemDraft, setItemDraft] = useState<Record<string, string>>({});
 
-  useEffect(() => listenSharedLists(chatId, setLists), [chatId]);
+  const crypto = useArtifactCrypto(me.uid, peerUid, chatId);
+  // Re-subscribes once the sealer resolves, so titles decrypt as soon as the
+  // keys are available rather than flashing empty.
+  useEffect(() => listenSharedLists(chatId, setLists, crypto), [chatId, crypto]);
 
   const fail = () => toast.error(t('common.error'));
 
   const createList = () => {
     const title = newList.trim();
     if (!title) return;
-    createSharedList(chatId, title).catch(fail);
+    createSharedList(chatId, title, [], crypto).catch(fail);
     setNewList('');
   };
 
@@ -47,7 +54,7 @@ export default function SharedListsModal({
     const text = (itemDraft[list.id] || '').trim();
     if (!text) return;
     const item: SharedListItem = {id: newId(), text, checked: false};
-    updateSharedListItems(chatId, list.id, [...list.items, item]).catch(fail);
+    updateSharedListItems(chatId, list.id, [...list.items, item], crypto).catch(fail);
     setItemDraft(prev => ({...prev, [list.id]: ''}));
   };
 
@@ -55,11 +62,11 @@ export default function SharedListsModal({
     const items = list.items.map(it =>
       it.id === itemId ? {...it, checked: !it.checked, checkedBy: !it.checked ? me.uid : undefined} : it,
     );
-    updateSharedListItems(chatId, list.id, items).catch(fail);
+    updateSharedListItems(chatId, list.id, items, crypto).catch(fail);
   };
 
   const removeItem = (list: SharedList, itemId: string) => {
-    updateSharedListItems(chatId, list.id, list.items.filter(it => it.id !== itemId)).catch(fail);
+    updateSharedListItems(chatId, list.id, list.items.filter(it => it.id !== itemId), crypto).catch(fail);
   };
 
   return (
@@ -85,11 +92,12 @@ export default function SharedListsModal({
           <input
             style={styles.input}
             placeholder={t('lists.newList')}
+            aria-label={t('lists.newList')}
             value={newList}
             onChange={e => setNewList(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && createList()}
           />
-          <button style={styles.addBtn} onClick={createList} disabled={!newList.trim()}>
+          <button style={styles.addBtn} aria-label={t('lists.newList')} onClick={createList} disabled={!newList.trim()}>
             <Icon name="plus" size={18} style={{color: '#fff'}} />
           </button>
         </div>
@@ -129,6 +137,7 @@ export default function SharedListsModal({
                   <input
                     style={{...styles.input, fontSize: 13, padding: '7px 10px', marginTop: 4}}
                     placeholder={t('lists.addItem')}
+                    aria-label={t('lists.addItem')}
                     value={itemDraft[list.id] || ''}
                     onChange={e => setItemDraft(prev => ({...prev, [list.id]: e.target.value}))}
                     onKeyDown={e => e.key === 'Enter' && addItem(list)}

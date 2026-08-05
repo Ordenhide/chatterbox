@@ -4,10 +4,69 @@ const dns = require('dns');
 const https = require('https');
 const http = require('http');
 const {isPrivateOrReservedIp} = require('./ssrfGuard');
+const {SpeechClient} = require('@google-cloud/speech').v2;
+const {buildRecognizeRequest, extractTranscript} = require('./speechToText');
+const {Translate} = require('@google-cloud/translate').v2;
+const {validateTranslateInput, extractTranslation} = require('./translate');
+const {buildPrompt, extractAnswer} = require('./aiChat');
+const {
+  isProActive,
+  entitlementFromSubscription,
+  shouldApplyEvent,
+} = require('./entitlement');
 
 admin.initializeApp();
 
 const db = admin.firestore();
+const speechClient = new SpeechClient();
+const translateClient = new Translate();
+// Cloudflare Workers AI (free tier, no billing-enablement trap the way
+// Gemini's pay-as-you-go project setup had) — read from functions/.env,
+// same loading mechanism as GCLOUD_PROJECT below.
+const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+const CLOUDFLARE_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+// Set explicitly by 1st-gen Cloud Functions; GOOGLE_CLOUD_PROJECT covers
+// 2nd-gen/Cloud Run. Falling back through both keeps this working regardless
+// of which generation transcribeVoiceMessage ends up deployed as.
+const GCP_PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+
+// Chatterbox Pro billing — same functions/.env loading as the Cloudflare keys
+// above. Absent in an unconfigured environment, which the billing callables
+// detect and report as failed-precondition rather than crashing at load time
+// (every other function in this file must keep deploying without them).
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const STRIPE_PRICE_MONTHLY = process.env.STRIPE_PRICE_MONTHLY;
+const STRIPE_PRICE_YEARLY = process.env.STRIPE_PRICE_YEARLY;
+const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:5173';
+
+// Constructed lazily so a missing key can't throw during module load and
+// take every unrelated function in this file down with it.
+let stripeClient = null;
+function getStripe() {
+  if (!stripeClient) {
+    // eslint-disable-next-line global-require
+    stripeClient = require('stripe')(STRIPE_SECRET_KEY);
+  }
+  return stripeClient;
+}
+
+/**
+ * Checkout/portal redirect targets are attacker-influenceable (they arrive in
+ * the callable payload), so they're restricted to this app's own origins —
+ * otherwise the URL could be pointed at a lookalike site and the post-payment
+ * redirect turned into a phishing hop.
+ */
+function isAllowedReturnUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const allowed = new URL(APP_BASE_URL);
+    return parsed.origin === allowed.origin;
+  } catch {
+    return false;
+  }
+}
 
 // Scheduled (Cloud Scheduler / pubsub) functions require the Blaze plan. When
 // billing is closed they block *every* deploy (the CLI enables required APIs
@@ -22,6 +81,7 @@ const SCHEDULED_FUNCTIONS = [
   'processExpiredMessages',
   'processDeadManSwitch',
   'sweepStaleCalls',
+  'sweepExpiredLiveLocations',
 ];
 
 /**
@@ -243,6 +303,28 @@ async function verifyChatParticipant(chatId, uid) {
   return chat;
 }
 
+/**
+ * Server-side Chatterbox Pro gate. This is the actual paywall for paid
+ * features; client-side checks only decide whether to render a lock.
+ *
+ * Reads entitlements/{uid}, which no client can write (firestore.rules) —
+ * only the Stripe webhook does, via the Admin SDK. A missing document is the
+ * normal free-tier state, not an error.
+ *
+ * Throws `permission-denied` with a stable `reason` the clients key off to
+ * show an upgrade prompt rather than a generic failure.
+ */
+async function requirePro(uid) {
+  const snap = await db.doc(`entitlements/${uid}`).get();
+  if (!isProActive(snap.exists ? snap.data() : null)) {
+    throw new functions.https.HttpsError(
+      'permission-denied',
+      'Chatterbox Pro is required for this feature.',
+      {reason: 'pro-required'},
+    );
+  }
+}
+
 // ─── Feature 1: Scheduled Messages ─────────────────────────────────────────
 exports.processScheduledMessages = functions.pubsub
   .schedule('every 1 minutes')
@@ -356,14 +438,21 @@ exports.processReminders = functions.pubsub
   });
 
 // ─── Feature 4: Voice Transcription ─────────────────────────────────────────
+// Voice messages are normally end-to-end encrypted — the server never sees
+// their content. This function is the one deliberate, per-message exception:
+// the caller must already hold the decrypted plaintext clip (it does, for
+// playback) and explicitly opts in by tapping "Transcribe", sending that one
+// clip's audio here so it can be forwarded to Speech-to-Text. Nothing about
+// how messages are stored or synced between devices changes; the function
+// itself never reads ciphertext or has any way to decrypt it.
 exports.transcribeVoiceMessage = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
   await checkRateLimit(context.auth.uid, 'transcribeVoiceMessage', {maxCalls: 10, windowMs: 60000});
-  const {chatId, messageId} = data || {};
-  if (!chatId || !messageId) {
-    throw new functions.https.HttpsError('invalid-argument', 'chatId and messageId required.');
+  const {chatId, messageId, audio, language, sampleRateHertz, audioChannelCount} = data || {};
+  if (!chatId || !messageId || !audio) {
+    throw new functions.https.HttpsError('invalid-argument', 'chatId, messageId, and audio required.');
   }
   await verifyChatParticipant(chatId, context.auth.uid);
   const msgRef = db.doc(`chats/${chatId}/messages/${messageId}`);
@@ -372,66 +461,127 @@ exports.transcribeVoiceMessage = functions.https.onCall(async (data, context) =>
     throw new functions.https.HttpsError('not-found', 'Message not found.');
   }
   const msg = msgSnap.data();
-  if (!msg.audio) {
-    throw new functions.https.HttpsError('invalid-argument', 'Message has no audio.');
-  }
   if (msg.transcription) {
     return {transcription: msg.transcription};
   }
-  // Placeholder: In production, call Google Speech-to-Text API here.
-  const transcription = '[Transcription service not configured — set up Google Speech-to-Text API key]';
+
+  let request;
+  try {
+    request = buildRecognizeRequest(GCP_PROJECT_ID, audio, language, sampleRateHertz, audioChannelCount);
+  } catch (error) {
+    throw new functions.https.HttpsError('invalid-argument', error.message);
+  }
+
+  let response;
+  try {
+    [response] = await speechClient.recognize(request);
+  } catch (error) {
+    // Node's default error inspection truncates nested arrays (e.g.
+    // statusDetails[].fieldViolations) as "[Array]", hiding the one field
+    // that actually says what was wrong with the request. Logging it
+    // separately, fully expanded, is what made the MP4_AAC/WEBM_OPUS fix
+    // possible to diagnose from Cloud Logging in the first place.
+    functions.logger.error('transcribeVoiceMessage: Speech-to-Text call failed', {
+      message: error?.message,
+      code: error?.code,
+      details: error?.details,
+      statusDetails: JSON.stringify(error?.statusDetails, null, 2),
+    });
+    throw new functions.https.HttpsError('internal', 'Transcription failed. Please try again.');
+  }
+
+  const transcription = extractTranscript(response) || '[No speech detected]';
   await msgRef.update({transcription});
   return {transcription};
 });
 
-// ─── Feature 5: AI Chat Summary ─────────────────────────────────────────────
+// ─── Feature 5: AI Chat Summary / Topic Q&A ─────────────────────────────────
+// Message text is normally end-to-end encrypted — same rationale as
+// transcribeVoiceMessage/translateMessage above. This function cannot read
+// Firestore's msg.text (ciphertext for an encrypted chat), so the caller
+// sends the messages it has already decrypted client-side for display. One
+// deliberate, user-initiated exception to E2EE per "Catch Up" tap; nothing
+// about how messages are stored or synced changes.
+//
+// `question` is optional: omitted, this produces a general summary; given,
+// it answers that question using only the supplied conversation.
+//
+// Chatterbox Pro only. The entitlement check here IS the paywall — the
+// client's matching check (services/entitlement.ts) merely renders a lock
+// instead of an error, and can be bypassed by calling this callable directly
+// with any signed-in token. Checked first, before the rate-limit write and
+// well before any billable Cloudflare AI call, so an unentitled caller costs
+// one Firestore read and nothing else.
 exports.summarizeChat = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  await requirePro(context.auth.uid);
   await checkRateLimit(context.auth.uid, 'summarizeChat', {maxCalls: 5, windowMs: 60000});
-  const {chatId, messageCount} = data || {};
-  if (!chatId) {
-    throw new functions.https.HttpsError('invalid-argument', 'chatId required.');
+  const {chatId, messages, question} = data || {};
+  if (!chatId || !messages) {
+    throw new functions.https.HttpsError('invalid-argument', 'chatId and messages required.');
   }
   await verifyChatParticipant(chatId, context.auth.uid);
-  const limit = Math.min(messageCount || 50, 100);
-  const msgsSnap = await db
-    .collection(`chats/${chatId}/messages`)
-    .orderBy('createdAt', 'desc')
-    .limit(limit)
-    .get();
-  if (msgsSnap.empty) {
-    return {summary: 'No messages to summarize.'};
+
+  let prompt;
+  try {
+    prompt = buildPrompt(messages, question);
+  } catch (error) {
+    throw new functions.https.HttpsError('invalid-argument', error.message);
   }
-  const messages = msgsSnap.docs.reverse().map(d => {
-    const m = d.data();
-    return `${m.user?.name || 'User'}: ${m.text || '[media]'}`;
-  });
-  // Placeholder: In production, call OpenAI/Gemini API with the messages array.
-  // For now, generate a basic extractive summary.
-  const uniqueUsers = [...new Set(msgsSnap.docs.map(d => d.data().user?.name || 'User'))];
-  const topics = messages
-    .filter(m => m.length > 20)
-    .slice(-5)
-    .map(m => m.substring(0, 80));
-  const summary = [
-    `Chat between ${uniqueUsers.join(', ')} — ${msgsSnap.size} messages.`,
-    topics.length ? `Recent topics: ${topics.join(' | ')}` : '',
-    '[For AI-powered summaries, configure an LLM API key in Cloud Functions config]',
-  ].filter(Boolean).join('\n');
+
+  let response;
+  try {
+    const cfResponse = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${CLOUDFLARE_AI_MODEL}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({messages: [{role: 'user', content: prompt}]}),
+      },
+    );
+    response = await cfResponse.json();
+    if (!cfResponse.ok || response?.success === false) {
+      throw new Error(JSON.stringify(response?.errors || response));
+    }
+  } catch (error) {
+    functions.logger.error('summarizeChat: Cloudflare Workers AI call failed', {
+      message: error?.message,
+    });
+    throw new functions.https.HttpsError('internal', 'Summary failed. Please try again.');
+  }
+
+  const summary = extractAnswer(response) || 'No summary available.';
   return {summary};
 });
 
 // ─── Feature 8: Message Translation ──────────────────────────────────────────
+// Message text is normally end-to-end encrypted — same rationale as
+// transcribeVoiceMessage above. The server only ever sees ciphertext in
+// Firestore's msg.text for an encrypted message, so this is the one
+// deliberate, per-message exception: the caller sends its already-decrypted
+// plaintext (it has it, for display) when the user explicitly taps
+// "Translate". Nothing about how messages are stored or synced changes.
 exports.translateMessage = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
   await checkRateLimit(context.auth.uid, 'translateMessage', {maxCalls: 20, windowMs: 60000});
-  const {chatId, messageId, targetLanguage} = data || {};
-  if (!chatId || !messageId || !targetLanguage) {
-    throw new functions.https.HttpsError('invalid-argument', 'chatId, messageId, and targetLanguage required.');
+  const {chatId, messageId, text, targetLanguage} = data || {};
+  if (!chatId || !messageId || !text || !targetLanguage) {
+    functions.logger.warn('translateMessage: rejected — missing field(s)', {
+      hasChatId: !!chatId,
+      hasMessageId: !!messageId,
+      hasText: !!text,
+      textType: typeof text,
+      hasTargetLanguage: !!targetLanguage,
+      targetLanguageType: typeof targetLanguage,
+    });
+    throw new functions.https.HttpsError('invalid-argument', 'chatId, messageId, text, and targetLanguage required.');
   }
   await verifyChatParticipant(chatId, context.auth.uid);
   const msgRef = db.doc(`chats/${chatId}/messages/${messageId}`);
@@ -443,9 +593,26 @@ exports.translateMessage = functions.https.onCall(async (data, context) => {
   if (msg.translations?.[targetLanguage]) {
     return {translation: msg.translations[targetLanguage]};
   }
-  // Placeholder: In production, call Google Cloud Translate API here.
-  // For now, return a note about configuring the API.
-  const translation = `[Translation to ${targetLanguage} — configure Google Cloud Translate API]`;
+
+  try {
+    validateTranslateInput(text, targetLanguage);
+  } catch (error) {
+    throw new functions.https.HttpsError('invalid-argument', error.message);
+  }
+
+  let result;
+  try {
+    result = await translateClient.translate(text, targetLanguage);
+  } catch (error) {
+    functions.logger.error('translateMessage: Cloud Translate call failed', {
+      message: error?.message,
+      code: error?.code,
+      details: error?.details,
+    });
+    throw new functions.https.HttpsError('internal', 'Translation failed. Please try again.');
+  }
+
+  const translation = extractTranslation(result);
   await msgRef.update({
     [`translations.${targetLanguage}`]: translation,
   });
@@ -815,6 +982,256 @@ exports.sweepStaleCalls = functions.pubsub
     }
     return null;
   });
+
+// ─── Live Location Expiry ───────────────────────────────────────────────────
+// Storage/cost hygiene only, not a privacy guarantee: the client already
+// gates on expiresAt at read time (see liveLocation.js's listenLiveLocation
+// on both platforms), so a few minutes of sweep lag never surfaces stale
+// location to anyone — this just stops finished shares from lingering.
+exports.sweepExpiredLiveLocations = functions.pubsub
+  .schedule('every 5 minutes')
+  .onRun(async () => {
+    try {
+      const now = Date.now();
+      const snap = await db
+        .collectionGroup('liveLocations')
+        .where('expiresAt', '<=', now)
+        .limit(200)
+        .get();
+      if (snap.empty) return null;
+
+      const batch = db.batch();
+      snap.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+      functions.logger.info(`Deleted ${snap.size} expired live location share(s)`);
+    } catch (error) {
+      functions.logger.error('sweepExpiredLiveLocations failed', error);
+    }
+    return null;
+  });
+
+// ─── Chatterbox Pro: Stripe subscriptions ───────────────────────────────────
+// Purchase happens on the web client only. Apple and Google require their own
+// in-app purchase for digital goods sold inside a mobile app, so the mobile
+// client reads the resulting entitlement but never sells it.
+
+/** Resolves the Stripe customer for a uid, creating one on first checkout. */
+async function getOrCreateStripeCustomer(stripe, uid, email) {
+  const entRef = db.doc(`entitlements/${uid}`);
+  const existing = await entRef.get();
+  const existingId = existing.exists ? existing.data().stripeCustomerId : null;
+  if (existingId) return existingId;
+
+  // `metadata.uid` is the only link from a Stripe object back to a Chatterbox
+  // account — the webhook relies on it to know whose entitlement to write.
+  const customer = await stripe.customers.create({email: email || undefined, metadata: {uid}});
+  await entRef.set({stripeCustomerId: customer.id, updatedAt: Date.now()}, {merge: true});
+  return customer.id;
+}
+
+exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
+  }
+  if (!STRIPE_SECRET_KEY) {
+    throw new functions.https.HttpsError('failed-precondition', 'Billing is not configured.');
+  }
+  await checkRateLimit(context.auth.uid, 'createCheckoutSession', {maxCalls: 5, windowMs: 60000});
+
+  // The plan is chosen from a server-side allowlist, never taken as a raw
+  // price id from the client — otherwise a caller could substitute any price
+  // in the account (including a $0 one) and self-provision a subscription.
+  const plan = data?.plan === 'yearly' ? 'yearly' : 'monthly';
+  const priceId = plan === 'yearly' ? STRIPE_PRICE_YEARLY : STRIPE_PRICE_MONTHLY;
+  if (!priceId) {
+    throw new functions.https.HttpsError('failed-precondition', `No price configured for ${plan}.`);
+  }
+
+  const returnUrl = typeof data?.returnUrl === 'string' ? data.returnUrl : APP_BASE_URL;
+  if (!isAllowedReturnUrl(returnUrl)) {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid return URL.');
+  }
+
+  try {
+    const stripe = getStripe();
+    const customerId = await getOrCreateStripeCustomer(stripe, context.auth.uid, context.auth.token?.email);
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{price: priceId, quantity: 1}],
+      success_url: `${returnUrl}?pro=success`,
+      cancel_url: `${returnUrl}?pro=canceled`,
+      // Duplicated onto the subscription so subscription.* events (which do
+      // not carry the checkout session) can still resolve the uid.
+      metadata: {uid: context.auth.uid},
+      subscription_data: {metadata: {uid: context.auth.uid}},
+    });
+    return {url: session.url};
+  } catch (error) {
+    functions.logger.error('createCheckoutSession failed', {
+      message: error?.message,
+      type: error?.type,
+      code: error?.code,
+    });
+    throw new functions.https.HttpsError('internal', 'Could not start checkout.');
+  }
+});
+
+exports.createBillingPortalSession = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
+  }
+  if (!STRIPE_SECRET_KEY) {
+    throw new functions.https.HttpsError('failed-precondition', 'Billing is not configured.');
+  }
+  await checkRateLimit(context.auth.uid, 'createBillingPortalSession', {maxCalls: 5, windowMs: 60000});
+
+  const snap = await db.doc(`entitlements/${context.auth.uid}`).get();
+  const customerId = snap.exists ? snap.data().stripeCustomerId : null;
+  if (!customerId) {
+    throw new functions.https.HttpsError('failed-precondition', 'No subscription to manage.');
+  }
+
+  const returnUrl = typeof data?.returnUrl === 'string' ? data.returnUrl : APP_BASE_URL;
+  if (!isAllowedReturnUrl(returnUrl)) {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid return URL.');
+  }
+
+  try {
+    const session = await getStripe().billingPortal.sessions.create({
+      customer: customerId,
+      return_url: returnUrl,
+    });
+    return {url: session.url};
+  } catch (error) {
+    functions.logger.error('createBillingPortalSession failed', {
+      message: error?.message,
+      type: error?.type,
+      code: error?.code,
+    });
+    throw new functions.https.HttpsError('internal', 'Could not open the billing portal.');
+  }
+});
+
+/**
+ * Writes the entitlement for whichever account a Stripe subscription belongs
+ * to. `uid` comes from subscription metadata (set at checkout); if that is
+ * missing the customer record is consulted as a fallback.
+ */
+async function applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs) {
+  let uid = subscription.metadata?.uid;
+  if (!uid) {
+    const customerId =
+      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id;
+    if (customerId) {
+      const customer = await stripe.customers.retrieve(customerId);
+      uid = customer?.metadata?.uid;
+    }
+  }
+  if (!uid) {
+    functions.logger.error('Stripe subscription has no resolvable uid', {
+      subscriptionId: subscription.id,
+    });
+    return;
+  }
+
+  const ref = db.doc(`entitlements/${uid}`);
+  const existing = await ref.get();
+  if (!shouldApplyEvent(existing.exists ? existing.data() : null, eventCreatedMs)) {
+    functions.logger.info('Ignoring out-of-order Stripe event', {
+      uid,
+      subscriptionId: subscription.id,
+    });
+    return;
+  }
+
+  await ref.set(
+    {
+      ...entitlementFromSubscription(subscription),
+      lastEventAt: eventCreatedMs,
+      updatedAt: Date.now(),
+    },
+    {merge: true},
+  );
+}
+
+/**
+ * Stripe webhook. Every request is signature-verified against the raw body
+ * before anything is trusted — without that check, anyone who learns this
+ * URL could POST a forged "subscription active" event and grant themselves
+ * Pro, which would defeat the entire paywall.
+ *
+ * Note this reads `req.rawBody` (Firebase provides it) rather than `req.body`:
+ * Stripe's signature covers the exact bytes sent, so a re-serialized parsed
+ * body will not verify.
+ */
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SECRET) {
+    functions.logger.error('stripeWebhook called but billing env vars are missing');
+    res.status(500).send('Billing not configured');
+    return;
+  }
+
+  let event;
+  try {
+    event = getStripe().webhooks.constructEvent(
+      req.rawBody,
+      req.headers['stripe-signature'],
+      STRIPE_WEBHOOK_SECRET,
+    );
+  } catch (error) {
+    // Includes replayed/expired signatures, not just forgeries.
+    functions.logger.warn('Rejected Stripe webhook with bad signature', {message: error?.message});
+    res.status(400).send('Invalid signature');
+    return;
+  }
+
+  const eventCreatedMs = (event.created || 0) * 1000;
+  try {
+    const stripe = getStripe();
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        if (session.subscription) {
+          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          // Checkout sessions carry the uid even when the subscription's own
+          // metadata hasn't propagated yet.
+          if (!subscription.metadata?.uid && session.metadata?.uid) {
+            subscription.metadata = {...subscription.metadata, uid: session.metadata.uid};
+          }
+          await applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs);
+        }
+        break;
+      }
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted':
+        await applySubscriptionToEntitlement(stripe, event.data.object, eventCreatedMs);
+        break;
+      case 'invoice.payment_succeeded':
+      case 'invoice.payment_failed': {
+        // The invoice itself carries no period/status we can trust for
+        // entitlement; re-read the subscription as the source of truth.
+        const invoice = event.data.object;
+        if (invoice.subscription) {
+          const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+          await applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs);
+        }
+        break;
+      }
+      default:
+        break; // Unhandled event types are acknowledged, not retried.
+    }
+    res.json({received: true});
+  } catch (error) {
+    functions.logger.error('stripeWebhook handler failed', {
+      eventType: event?.type,
+      message: error?.message,
+    });
+    // 500 asks Stripe to retry — correct for a transient failure on our side.
+    res.status(500).send('Webhook handler failed');
+  }
+});
 
 // Strip scheduled functions from exports unless explicitly enabled — see the
 // SCHEDULED_ENABLED note near the top. firebase-tools inspects module.exports

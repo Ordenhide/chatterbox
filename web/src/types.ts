@@ -24,6 +24,8 @@ export interface ChatRoom {
   unreadCountBy?: Record<string, number>;
   pinnedBy?: string[];
   mutedBy?: string[];
+  /** Per-user hidden flag — see services/hiddenChats.ts. */
+  hiddenBy?: string[];
   typingBy?: Record<string, number>;
   lastReadAt?: Record<string, number>;
   // Per-user chat appearance (matches mobile ChatSettings).
@@ -50,6 +52,12 @@ export interface ChatMessage {
   video?: string | null;
   audio?: string | null;
   audioDuration?: number;
+  // Real capture settings, needed by transcribeVoiceMessage's explicit
+  // (non-auto-detect) decoding config for AAC clips — unlike Opus, AAC's
+  // actual sample rate isn't a fixed codec property, so the server can't
+  // assume it. Absent on messages sent before this field existed.
+  audioSampleRateHertz?: number;
+  audioChannelCount?: number;
   file?: {uri: string; name: string; size?: number} | null;
   reactions?: Record<string, string[]>; // emoji -> uids
   // Reply/quote: a snapshot of the message being replied to.
@@ -80,6 +88,12 @@ export interface ChatMessage {
   encryptedVideo?: EncryptedField | null;
   encryptedAudio?: EncryptedField | null;
   encryptedFileUri?: EncryptedField | null;
+  // Link preview, resolved once by the sender and sealed the same way (see
+  // services/linkPreview.ts). `linkPreview` is the legacy plaintext field the
+  // mobile client wrote before this, and the fallback when there's no peer key
+  // to encrypt to; ChatPane's decrypt pass fills it in from the sealed copy.
+  linkPreview?: {url: string; title?: string | null; description?: string | null; image?: string | null} | null;
+  encryptedLinkPreview?: EncryptedField | null;
 }
 
 export interface EncryptedField {

@@ -15,8 +15,13 @@ import {
   useColorScheme,
   FlatList,
   ScrollView,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {GiftedChat, IMessage, MessageImage, Bubble, Time, Send} from 'react-native-gifted-chat';
+import MessageEntrance from '../../components/MessageEntrance';
+import TypingDots from '../../components/TypingDots';
+import ReactionBurst, {useReactionBurst} from '../../components/ReactionBurst';
 import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
@@ -41,6 +46,23 @@ import HapticFeedback from 'react-native-haptic-feedback';
 import {Swipeable} from 'react-native-gesture-handler';
 import ImageViewing from 'react-native-image-viewing';
 import {getDraft, setDraft} from '../../services/drafts';
+import {
+  listenLiveLocation,
+  shouldSendLocationUpdate,
+  startSharingLocation,
+  stopSharingLocation,
+  updateSharedLocation,
+  type LiveLocationShare,
+} from '../../services/liveLocation';
+import {isProActive, listenEntitlement, type Entitlement} from '../../services/entitlement';
+import {listenStoreTheme, resolveAccent, resolveWallpaper} from '../../services/storeTheme';
+import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
+import {isAiConsentError} from '../../services/aiConsent';
+import {promptAiConsent} from '../../utils/aiConsentPrompt';
+import {safeExternalUrl} from '../../utils/safeUrl';
+import type {StoreTheme} from '../../services/themeCatalog';
+import {getCurrentPosition, watchMyPosition, LocationError} from '../../utils/geolocation';
+import {formatCoordinates, staticMapTileUrl} from '../../utils/mapTile';
 import {
   enqueueOutboxMessage,
   getCachedMessages,
@@ -72,6 +94,15 @@ import {
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
 import {computeSafetyNumber, decryptMessage, encryptMessage, isEncryptedPayload} from '../../services/e2ee';
+import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
+import {
+  buildLinkPreviewPatch,
+  extractFirstUrl,
+  hasPreviewContent,
+  normalizePreview,
+  parsePreview,
+  type LinkPreviewData,
+} from '../../services/linkPreview';
 import {
   fetchPeerPublicKey,
   fetchPeerPublicKeyChecked,
@@ -104,8 +135,15 @@ import {isScreenshotProtectionEnabled, isLinkPreviewEnabled, isStealthMode, gene
 import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
+// Fixed AAC capture settings used by both Android and iOS (see audioSet
+// below) — unlike web's Opus recordings, AAC's sample rate isn't a fixed
+// codec property, so transcribeVoiceMessage needs the real value sent
+// alongside the clip rather than assuming one server-side.
+const VOICE_SAMPLE_RATE_HERTZ = 24000;
+const VOICE_CHANNEL_COUNT = 1;
+
 export default function ChatScreen() {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
   const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
   const MAX_FILE_BYTES = 25 * 1024 * 1024;
@@ -165,6 +203,8 @@ export default function ChatScreen() {
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
   const [summaryText, setSummaryText] = useState('');
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryQuestion, setSummaryQuestion] = useState('');
+  const [summaryAskedQuestion, setSummaryAskedQuestion] = useState('');
   const [translatedTexts, setTranslatedTexts] = useState<Record<string, string>>({});
   const [gifPickerVisible, setGifPickerVisible] = useState(false);
   const [gifResults, setGifResults] = useState<GifResult[]>([]);
@@ -174,6 +214,12 @@ export default function ChatScreen() {
   const [capsuleHours, setCapsuleHours] = useState(24);
   const [capsulePickerVisible, setCapsulePickerVisible] = useState(false);
   const [chatWallpaper, setChatWallpaper] = useState<string | null>(null);
+  // The chat's own stored appearance, kept raw (undefined = never set) so the
+  // account-wide Store theme can fill in for chats created after it was
+  // applied. `null` is a real "no wallpaper" choice and must not fall through.
+  const [chatAccent, setChatAccent] = useState<string | undefined>(undefined);
+  const [chatWallpaperRaw, setChatWallpaperRaw] = useState<string | null | undefined>(undefined);
+  const [storeTheme, setStoreTheme] = useState<StoreTheme | undefined>(undefined);
   const [dictating, setDictating] = useState(false);
   const [dictationSeconds, setDictationSeconds] = useState(0);
   const [contextCards, setContextCards] = useState<Record<string, ContextCard[]>>({});
@@ -198,6 +244,11 @@ export default function ChatScreen() {
   const [attachSheetVisible, setAttachSheetVisible] = useState(false);
   const [msgSelectMode, setMsgSelectMode] = useState(false);
   const [msgSelected, setMsgSelected] = useState<Set<string>>(new Set());
+  const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
+  const [sharingLocation, setSharingLocation] = useState(false);
+  const [peerLiveLocation, setPeerLiveLocation] = useState<LiveLocationShare | null>(null);
+  const stopLocationWatchRef = useRef<(() => void) | null>(null);
+  const lastLocationSentAtRef = useRef<number | null>(null);
   const dictationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const burnTimersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
@@ -206,6 +257,10 @@ export default function ChatScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const chatId = (route.params as any)?.chatId;
+  // Seals shared-list contents to this pair — see services/e2eeArtifacts.ts.
+  // Declared after chatId on purpose: it is an argument here, and a hook
+  // placed above the declaration is a temporal-dead-zone crash.
+  const artifactCrypto = useArtifactCrypto(chatId);
   const {isOnline, isOffline} = useNetworkStatus();
   const recorderRef = useRef(new AudioRecorderPlayer());
   const draftSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -225,6 +280,21 @@ export default function ChatScreen() {
   const decryptedVideoRef = useRef<Map<string, string>>(new Map());
   const decryptedAudioRef = useRef<Map<string, string>>(new Map());
   const decryptedFileUriRef = useRef<Map<string, string>>(new Map());
+  // Link previews decrypt to a JSON blob rather than a URL, so this cache
+  // holds the parsed card (or null when the payload is unreadable/invalid).
+  const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
+
+  // Reaction confetti. Reactions are chosen from an action sheet here rather
+  // than tapped in place, so there is no pointer position to spawn from — the
+  // burst starts where the sheet was, just below centre.
+  const {bursts, burst, done: burstDone} = useReactionBurst();
+  const burstAtSheet = useCallback(
+    (emoji: string) => {
+      const {width, height} = Dimensions.get('window');
+      burst(emoji, width / 2, height * 0.62);
+    },
+    [burst],
+  );
 
   /**
    * Best-effort E2EE for everything personal in an outgoing message: text,
@@ -287,8 +357,8 @@ export default function ChatScreen() {
   );
 
   // Voice-grade AAC. At 128 kbps a clip outgrew the inline budget after ~30s;
-  // 32 kbps mono at 24 kHz is transparent for speech and fits ~2 minutes, which
-  // is what lets voice messages live inside the Firestore document. Matches the
+  // 32 kbps mono at 24 kHz is transparent for speech and fits ~60s, which is
+  // what lets voice messages live inside the Firestore document. Matches the
   // web client's recorder settings.
   const audioSet: AudioSet = {
     // Android
@@ -296,20 +366,33 @@ export default function ChatScreen() {
     OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
     AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
     AudioEncodingBitRateAndroid: 32000,
-    AudioSamplingRateAndroid: 24000,
-    AudioChannelsAndroid: 1,
+    AudioSamplingRateAndroid: VOICE_SAMPLE_RATE_HERTZ,
+    AudioChannelsAndroid: VOICE_CHANNEL_COUNT,
     // iOS
     AVFormatIDKeyIOS: AVEncodingOption.aac,
     AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.medium,
     AVEncoderBitRateKeyIOS: 32000,
-    AVNumberOfChannelsKeyIOS: 1,
-    AVSampleRateKeyIOS: 24000,
+    AVNumberOfChannelsKeyIOS: VOICE_CHANNEL_COUNT,
+    AVSampleRateKeyIOS: VOICE_SAMPLE_RATE_HERTZ,
     AVModeIOS: AVModeIOSOption.voicechat,
   };
 
   useEffect(() => {
     pendingRef.current = pendingMessages;
   }, [pendingMessages]);
+
+  // Account-wide Store theme, and the appearance actually rendered. Kept as a
+  // separate effect so a theme applied in the Store repaints an already-open
+  // chat without waiting for a chat-document write to arrive.
+  useEffect(() => {
+    if (!user) return;
+    return listenStoreTheme(user.uid, setStoreTheme);
+  }, [user]);
+
+  useEffect(() => {
+    setThemeColor(resolveAccent(chatAccent, storeTheme?.accent, '#007AFF'));
+    setChatWallpaper(resolveWallpaper(chatWallpaperRaw, storeTheme?.wallpaper));
+  }, [chatAccent, chatWallpaperRaw, storeTheme]);
 
   useEffect(() => {
     return () => {
@@ -404,6 +487,8 @@ export default function ChatScreen() {
             videoDuration: msg.videoDuration,
             audio: msg.audio,
             audioDuration: msg.audioDuration,
+            audioSampleRateHertz: msg.audioSampleRateHertz,
+            audioChannelCount: msg.audioChannelCount,
             file: msg.file,
             linkPreview: msg.linkPreview,
             replyTo: msg.replyTo,
@@ -457,6 +542,12 @@ export default function ChatScreen() {
                   encryptedFileUri: (msg as any).encryptedFileUri,
                 }
               : null),
+            ...(isEncryptedPayload((msg as any).encryptedLinkPreview)
+              ? {
+                  linkPreview: decryptedPreviewRef.current.get(String(msg._id)) ?? undefined,
+                  encryptedLinkPreview: (msg as any).encryptedLinkPreview,
+                }
+              : null),
             // A media message has empty `text` from the sender; show the same
             // lock placeholder there until its own field (above) resolves, so
             // the bubble isn't just blank while decryption is in flight.
@@ -506,7 +597,8 @@ export default function ChatScreen() {
             (isEncryptedPayload(em.encryptedImage) && !decryptedImageRef.current.has(id)) ||
             (isEncryptedPayload(em.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
             (isEncryptedPayload(em.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id))
+            (isEncryptedPayload(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
+            (isEncryptedPayload(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
           );
         };
         const toDecrypt = merged.filter(needsDecrypt);
@@ -550,6 +642,24 @@ export default function ChatScreen() {
                 mediaField(em.encryptedAudio, decryptedAudioRef);
                 mediaField(em.encryptedFileUri, decryptedFileUriRef);
 
+                // A preview that won't decrypt is cached as null rather than
+                // left absent, so this doesn't retry it on every snapshot —
+                // and a missing card is a far smaller loss than an unreadable
+                // message, so it deliberately doesn't count as mediaFailed.
+                if (
+                  isEncryptedPayload(em.encryptedLinkPreview) &&
+                  !decryptedPreviewRef.current.has(id)
+                ) {
+                  try {
+                    decryptedPreviewRef.current.set(
+                      id,
+                      parsePreview(decryptMessage(em.encryptedLinkPreview, secretKey, chatId)),
+                    );
+                  } catch {
+                    decryptedPreviewRef.current.set(id, null);
+                  }
+                }
+
                 // A media message has no `encrypted` text of its own to carry
                 // a failure message, so surface it the same way a text
                 // decrypt failure does.
@@ -579,6 +689,9 @@ export default function ChatScreen() {
                         ...(item as any).file,
                         uri: decryptedFileUriRef.current.get(id) || '',
                       };
+                    }
+                    if (decryptedPreviewRef.current.has(id)) {
+                      patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
                     }
                     return Object.keys(patch).length ? {...item, ...patch} : item;
                   }),
@@ -663,6 +776,8 @@ export default function ChatScreen() {
           videoDuration: msg.videoDuration,
           audio: msg.audio,
           audioDuration: msg.audioDuration,
+          audioSampleRateHertz: msg.audioSampleRateHertz,
+          audioChannelCount: msg.audioChannelCount,
           file: msg.file,
           linkPreview: msg.linkPreview,
           replyTo: msg.replyTo,
@@ -880,9 +995,10 @@ export default function ChatScreen() {
           setOtherLastReadAt(chat.lastReadAt?.[otherId] || 0);
         }
         setPinnedMessageIds(chat.pinnedMessageIds || []);
-        const theme = chat.themeBy?.[user.uid] || '#007AFF';
-        setThemeColor(theme);
-        setChatWallpaper(chat.wallpaperBy?.[user.uid] || null);
+        // Raw stored values only — the account-wide Store theme is folded in
+        // by the effect below, which also reruns when that theme changes.
+        setChatAccent(chat.themeBy?.[user.uid]);
+        setChatWallpaperRaw(chat.wallpaperBy?.[user.uid]);
 
         const typingAt = chat.typingBy?.[otherId || ''] || 0;
         if (typingAt && Date.now() - typingAt < 3000) {
@@ -993,42 +1109,52 @@ export default function ChatScreen() {
     return '';
   };
 
-  const extractUrl = (text: string) => {
-    const match = text.match(/https?:\/\/[^\s]+/i);
-    return match ? match[0] : null;
-  };
-
-  const addLinkPreview = async (currentChatId: string, messageId: string | number, url: string) => {
-    try {
-      const {httpsCallable} = require('@react-native-firebase/functions');
-      const {getFunctions} = require('@react-native-firebase/functions');
-      const fn = httpsCallable(getFunctions(), 'fetchLinkPreview');
-      const result = await fn({url});
-      const preview = (result as any)?.data?.preview;
-      if (preview) {
-        await updateMessage(currentChatId, messageId, {
-          linkPreview: {
-            url: preview.url || url,
-            title: preview.title,
-            description: preview.description,
-            image: preview.image,
-          },
-        });
-      }
-    } catch {
+  /**
+   * Resolves a link preview for a message that was just sent, and writes it
+   * back **sealed** to the peer's key.
+   *
+   * The fetch already happened once, here, on the sender's device — but the
+   * result used to be written to the message document in the clear, so a chat
+   * whose text was end-to-end encrypted still handed the server the title,
+   * description and image of every link either person shared. See
+   * services/linkPreview.ts.
+   */
+  const addLinkPreview = useCallback(
+    async (currentChatId: string, messageId: string | number, url: string) => {
+      const persist = async (raw: unknown) => {
+        const preview = normalizePreview(raw);
+        if (!preview || !hasPreviewContent(preview)) return;
+        // No peer (a group chat) means nothing to encrypt to, and
+        // makeArtifactCrypto returns an inert sealer — the write falls back to
+        // the plaintext field, exactly as the message path does.
+        const crypto = await makeArtifactCrypto(user!.uid, otherUserId ?? undefined, currentChatId);
+        await updateMessage(currentChatId, messageId, buildLinkPreviewPatch(preview, crypto) as any);
+      };
+      if (!user) return;
       try {
-        const data: any = await getLinkPreview(url);
-        await updateMessage(currentChatId, messageId, {
-          linkPreview: {
+        const {httpsCallable} = require('@react-native-firebase/functions');
+        const {getFunctions} = require('@react-native-firebase/functions');
+        const fn = httpsCallable(getFunctions(), 'fetchLinkPreview');
+        const result = await fn({url});
+        const preview = (result as any)?.data?.preview;
+        await persist(preview ? {...preview, url: preview.url || url} : null);
+      } catch {
+        // The callable is rate-limited and refuses private/blocked hosts, so
+        // fall back to fetching from the device directly — which reveals the
+        // link to nobody but the site itself.
+        try {
+          const data: any = await getLinkPreview(url);
+          await persist({
             url,
             title: data?.title,
             description: data?.description,
             image: data?.images?.[0],
-          },
-        });
-      } catch {}
-    }
-  };
+          });
+        } catch {}
+      }
+    },
+    [user, otherUserId],
+  );
 
   const formatDuration = (seconds?: number) => {
     if (!seconds && seconds !== 0) return '';
@@ -1189,7 +1315,7 @@ export default function ChatScreen() {
       return;
     }
     const listId = `list_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    await createSharedList(chatId, listId, title, items);
+    await createSharedList(chatId, listId, title, items, artifactCrypto);
     const msg: ChatMessage = {
       _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       text: `[Shared List] ${title}`,
@@ -1209,7 +1335,7 @@ export default function ChatScreen() {
       const updated = items.map(it =>
         it.id === itemId ? {...it, checked: !it.checked, checkedBy: user?.uid} : it,
       );
-      await updateSharedListItem(chatId, listId, updated);
+      await updateSharedListItem(chatId, listId, updated, artifactCrypto);
     },
     [chatId, user],
   );
@@ -1234,43 +1360,108 @@ export default function ChatScreen() {
   );
 
   const handleTranscribe = useCallback(
-    async (messageId: string | number) => {
+    async (message: IMessage) => {
       if (!chatId) return;
-      try {
-        const text = await transcribeVoiceMessage(chatId, messageId);
-        Alert.alert('Transcription', text);
-      } catch {
+      // The plaintext clip lives here, decrypted client-side for playback —
+      // the server never has it (see transcription.ts's doc comment).
+      const audio = decryptedAudioRef.current.get(String(message._id));
+      if (!audio) {
         Alert.alert('Error', 'Failed to transcribe voice message.');
+        return;
+      }
+      try {
+        const text = await transcribeVoiceMessage(
+          chatId,
+          message._id,
+          audio,
+          i18n.language,
+          (message as any).audioSampleRateHertz,
+          (message as any).audioChannelCount,
+        );
+        Alert.alert('Transcription', text);
+      } catch (err) {
+        // Not a failure the user caused: they haven't seen the disclosure yet.
+        // Prompt, then re-run exactly what they asked for.
+        if (isAiConsentError(err)) {
+          if (await promptAiConsent(t)) await handleTranscribe(message);
+        } else {
+          Alert.alert('Error', 'Failed to transcribe voice message.');
+        }
       }
     },
-    [chatId],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chatId, i18n.language, t],
   );
 
-  const handleSummarize = useCallback(async () => {
-    if (!chatId) return;
-    setSummaryLoading(true);
-    setSummaryModalVisible(true);
-    try {
-      const summary = await getChatSummary(chatId, 50);
-      setSummaryText(summary);
-    } catch (err: any) {
-      setSummaryText(err?.message || 'Failed to generate summary. Please try again.');
-    } finally {
-      setSummaryLoading(false);
-    }
-  }, [chatId]);
+  // Chatterbox Pro entitlement. Declared HERE, above the first callback whose
+  // dependency array names `isPro` — a dep array is evaluated synchronously
+  // during render at the line the useCallback appears on, so declaring this
+  // further down would be a real temporal-dead-zone crash, not a lint nit
+  // (the same trap ChatPane.tsx documents for `otherUid`).
+  //
+  // `isPro` is recomputed per render rather than stored, because an
+  // entitlement expires by the passage of time, not by an event.
+  useEffect(() => {
+    if (!user?.uid) return;
+    return listenEntitlement(user.uid, setEntitlement);
+  }, [user?.uid]);
+  const isPro = isProActive(entitlement);
 
-  const handleTranslateMessage = useCallback(
-    async (messageId: string | number) => {
+  const handleSummarize = useCallback(
+    async (question?: string) => {
       if (!chatId) return;
+      // Pro gate. The server enforces this too (functions/index.js's
+      // requirePro); this only spares non-subscribers a raw permission
+      // error. Purchase happens on the web — Apple and Google require their
+      // own in-app purchase for digital goods sold inside the app, so this
+      // explains rather than sells.
+      if (!isPro) {
+        Alert.alert(t('pro.title'), t('pro.lockedAiMobile'));
+        return;
+      }
+      setSummaryLoading(true);
+      setSummaryModalVisible(true);
+      setSummaryAskedQuestion(question?.trim() || '');
       try {
-        const translation = await translateMessage(chatId, messageId, 'en');
-        setTranslatedTexts(prev => ({...prev, [String(messageId)]: translation}));
-      } catch {
-        Alert.alert('Error', 'Failed to translate message.');
+        // messages is already newest-first with decrypted .text (see
+        // decryptedTextRef above) — reverse to chronological order for the
+        // transcript Gemini sees.
+        const transcript = messages
+          .slice(0, 50)
+          .map(m => ({sender: (m.user?.name as string) || 'User', text: (m.text as string) || '[media]'}))
+          .reverse();
+        const summary = await getChatSummary(chatId, transcript, question);
+        setSummaryText(summary);
+      } catch (err: any) {
+        if (isAiConsentError(err)) {
+          setSummaryText('');
+          if (await promptAiConsent(t)) await handleSummarize(question);
+        } else {
+          setSummaryText(err?.message || 'Failed to generate summary. Please try again.');
+        }
+      } finally {
+        setSummaryLoading(false);
       }
     },
-    [chatId],
+    [chatId, messages, isPro, t],
+  );
+
+  const handleTranslateMessage = useCallback(
+    async (message: IMessage) => {
+      if (!chatId || !message.text) return;
+      try {
+        const translation = await translateMessage(chatId, message._id, message.text, i18n.language);
+        setTranslatedTexts(prev => ({...prev, [String(message._id)]: translation}));
+      } catch (err) {
+        if (isAiConsentError(err)) {
+          if (await promptAiConsent(t)) await handleTranslateMessage(message);
+        } else {
+          Alert.alert('Error', 'Failed to translate message.');
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chatId, i18n.language, t],
   );
 
   const handleBookmarkMessage = useCallback(
@@ -1426,14 +1617,14 @@ export default function ChatScreen() {
         return;
       }
 
-      // Deliberately NOT run through encryptOutgoingMessage: transcribeVoiceMessage
-      // below is a server-side Cloud Function that reads msg.audio to run
-      // speech-to-text (currently a stub, but functions/index.js documents real
-      // STT as the intended implementation). A server-side step fundamentally
-      // needs the plaintext bytes — encrypting first would make transcription
-      // permanently impossible rather than just currently unconfigured. The
-      // plain voice-message path (sendRecording, below) has no such constraint
-      // and is encrypted.
+      // Deliberately NOT run through encryptOutgoingMessage: this message
+      // itself is sent as a plain, unencrypted voice message rather than
+      // going through transcribeVoiceMessage's normal "client sends
+      // already-decrypted audio" opt-in path — dictation has the plaintext
+      // clip on hand already, so there is no reason to encrypt it first only
+      // to immediately decrypt-and-send it again for transcription below.
+      // The plain voice-message path (sendRecording, below) is unaffected
+      // and stays encrypted.
       const tempMsgId = `dictation_${Date.now()}`;
       await sendMessage(chatId, {
         _id: tempMsgId,
@@ -1441,11 +1632,20 @@ export default function ChatScreen() {
         createdAt: new Date(),
         audio: audioUrl,
         audioDuration: dictationSeconds,
+        audioSampleRateHertz: VOICE_SAMPLE_RATE_HERTZ,
+        audioChannelCount: VOICE_CHANNEL_COUNT,
         user: {_id: user.uid, name: user.displayName || user.email || 'User'},
       } as ChatMessage);
 
       try {
-        const transcription = await transcribeVoiceMessage(chatId, tempMsgId);
+        const transcription = await transcribeVoiceMessage(
+          chatId,
+          tempMsgId,
+          audioUrl,
+          i18n.language,
+          VOICE_SAMPLE_RATE_HERTZ,
+          VOICE_CHANNEL_COUNT,
+        );
         if (transcription) {
           setInputText(prev => prev ? `${prev} ${transcription}` : transcription);
         }
@@ -1617,8 +1817,10 @@ export default function ChatScreen() {
         });
       }
 
-      const url = extractUrl(message.text);
-      if (url && isLinkPreviewEnabled() && !incognitoMode) {
+      const url = extractFirstUrl(message.text);
+      // Not for burn-after-reading: the whole point of that mode is leaving no
+      // trace, and a preview card would outlive the text it came from.
+      if (url && isLinkPreviewEnabled() && !incognitoMode && !burnMode) {
         void addLinkPreview(chatId, messageData._id, url);
       }
     },
@@ -1629,6 +1831,8 @@ export default function ChatScreen() {
       isOnline,
       otherUserId,
       removePendingMessage,
+      addLinkPreview,
+      incognitoMode,
       burnMode,
       burnDuration,
       invisibleInkMode,
@@ -1906,6 +2110,8 @@ export default function ChatScreen() {
       createdAt: new Date(),
       audio: remoteUrl,
       audioDuration: recordedDuration || undefined,
+      audioSampleRateHertz: VOICE_SAMPLE_RATE_HERTZ,
+      audioChannelCount: VOICE_CHANNEL_COUNT,
       voiceFilter: voiceFilter !== 'none' ? voiceFilter : undefined,
       replyTo: replyTo
         ? {
@@ -1974,6 +2180,145 @@ export default function ChatScreen() {
       Alert.alert('Error', 'Unable to play audio');
     }
   };
+
+  const handleStopSharingLocation = useCallback(() => {
+    stopLocationWatchRef.current?.();
+    stopLocationWatchRef.current = null;
+    lastLocationSentAtRef.current = null;
+    setSharingLocation(false);
+    if (chatId && user) {
+      stopSharingLocation(chatId, user.uid).catch(() => {});
+    }
+  }, [chatId, user]);
+
+  const beginSharingLocation = useCallback(
+    async (durationMs: number) => {
+      if (!chatId || !user || !otherUserId) return;
+      try {
+        const initial = await getCurrentPosition();
+        await startSharingLocation(chatId, user.uid, otherUserId, durationMs, initial);
+        setSharingLocation(true);
+        lastLocationSentAtRef.current = Date.now();
+        stopLocationWatchRef.current = watchMyPosition(
+          position => {
+            const now = Date.now();
+            if (!shouldSendLocationUpdate(lastLocationSentAtRef.current, now)) return;
+            lastLocationSentAtRef.current = now;
+            updateSharedLocation(chatId, user.uid, otherUserId, position).catch(error => {
+              reportError(error, 'live_location_update_failed');
+            });
+          },
+          error => {
+            reportError(error, 'live_location_watch_failed');
+          },
+        );
+      } catch (error) {
+        if (error instanceof LocationError && error.reason === 'denied') {
+          Alert.alert('Location permission needed', 'Allow location access to share your live location.');
+        } else if (error instanceof LocationError && error.reason === 'services-off') {
+          Alert.alert('Location services off', 'Turn on Location Services to share your live location.');
+        } else if (error instanceof Error && error.message.includes('encryption key')) {
+          Alert.alert(
+            "Can't share location securely",
+            "This works only once the other person has opened Chatterbox at least once.",
+          );
+        } else {
+          reportError(error, 'live_location_start_failed');
+          Alert.alert('Error', 'Unable to start sharing your location.');
+        }
+      }
+    },
+    [chatId, user, otherUserId],
+  );
+
+  const handleShareLocation = useCallback(() => {
+    Alert.alert('Share Live Location', 'How long do you want to share your location?', [
+      {text: 'Cancel', style: 'cancel'},
+      {text: '15 minutes', onPress: () => beginSharingLocation(15 * 60 * 1000)},
+      {text: '1 hour', onPress: () => beginSharingLocation(60 * 60 * 1000)},
+      {text: '8 hours', onPress: () => beginSharingLocation(8 * 60 * 60 * 1000)},
+    ]);
+  }, [beginSharingLocation]);
+
+  // Built here from numeric coordinates, so it is not participant-controlled
+  // and deliberately skips openExternal — Android's map intent uses `geo:`,
+  // which that allowlist (correctly) rejects for untrusted input.
+  const openInMaps = useCallback((lat: number, lng: number) => {
+    const url = Platform.OS === 'ios' ? `https://maps.apple.com/?ll=${lat},${lng}` : `geo:${lat},${lng}?q=${lat},${lng}`;
+    Linking.openURL(url).catch(() => {});
+  }, []);
+
+  /**
+   * Opens a link that came from the other participant (file URIs, link
+   * previews, context cards). Anything outside the safe-scheme allowlist is
+   * dropped rather than handed to whatever app claims that scheme.
+   */
+  const openExternal = useCallback(
+    (raw: string | null | undefined) => {
+      const url = safeExternalUrl(raw);
+      if (!url) {
+        Alert.alert(t('common.error'), t('chat.unsafeLink'));
+        return;
+      }
+      Linking.openURL(url).catch(() => {});
+    },
+    [t],
+  );
+
+  // Pause the outgoing watch on blur (foreground-only tracking) — the share
+  // itself (the Firestore doc) is left in place so the peer still sees the
+  // last known position rather than it vanishing; only an explicit Stop
+  // deletes it. Resumes automatically on refocus if still sharing.
+  useFocusEffect(
+    useCallback(() => {
+      if (sharingLocation && chatId && user && otherUserId && !stopLocationWatchRef.current) {
+        lastLocationSentAtRef.current = Date.now();
+        stopLocationWatchRef.current = watchMyPosition(
+          position => {
+            const now = Date.now();
+            if (!shouldSendLocationUpdate(lastLocationSentAtRef.current, now)) return;
+            lastLocationSentAtRef.current = now;
+            updateSharedLocation(chatId, user.uid, otherUserId, position).catch(error => {
+              reportError(error, 'live_location_update_failed');
+            });
+          },
+          error => reportError(error, 'live_location_watch_failed'),
+        );
+      }
+      return () => {
+        stopLocationWatchRef.current?.();
+        stopLocationWatchRef.current = null;
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatId, user, otherUserId]),
+  );
+
+  // Listen for the peer's active share, whenever this device's own key is available.
+  useEffect(() => {
+    if (!chatId || !user || !otherUserId) return;
+    let unsubscribe: (() => void) | null = null;
+    let cancelled = false;
+    getOrCreateDeviceKeypair(user.uid)
+      .then(({secretKey}) => {
+        if (cancelled) return;
+        unsubscribe = listenLiveLocation(chatId, otherUserId, secretKey, setPeerLiveLocation);
+      })
+      .catch(error => reportError(error, 'live_location_listen_failed'));
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+      setPeerLiveLocation(null);
+    };
+  }, [chatId, user, otherUserId]);
+
+  // Keeps "Updated Xs ago" fresh between Firestore snapshots, which only
+  // arrive roughly every MIN_LOCATION_UPDATE_INTERVAL_MS while sharing.
+  const [, forceLocationAgeTick] = useState(0);
+  useEffect(() => {
+    if (!peerLiveLocation) return;
+    const interval = setInterval(() => forceLocationAgeTick(t => t + 1), 1000);
+    return () => clearInterval(interval);
+  }, [peerLiveLocation]);
 
   const handlePickMedia = useCallback(() => {
     if (Platform.OS === 'ios') {
@@ -2087,7 +2432,7 @@ export default function ChatScreen() {
     return (
       <Pressable
         style={[styles.fileCard, {backgroundColor: colors.surface}]}
-        onPress={() => Linking.openURL(file.uri)}>
+        onPress={() => openExternal(file.uri)}>
         <View>
           <Text style={[styles.fileName, {color: colors.text}]}>{file.name || 'File'}</Text>
           {file.size ? (
@@ -2129,7 +2474,7 @@ export default function ChatScreen() {
     return (
       <Pressable
         style={[styles.linkPreview, {backgroundColor: colors.surface}]}
-        onPress={() => Linking.openURL(preview.url)}>
+        onPress={() => openExternal(preview.url)}>
         {preview.image ? (
           <Image source={{uri: preview.image}} style={styles.linkImage} />
         ) : null}
@@ -2240,7 +2585,7 @@ export default function ChatScreen() {
   };
   const handleDeleteSelectedMsgs = () => {
     const ids = [...msgSelected];
-    if (!chatId || ids.length === 0) return;
+    if (!chatId || !user || ids.length === 0) return;
     Alert.alert(
       'Delete messages',
       `Permanently delete ${ids.length} message${ids.length > 1 ? 's' : ''} for everyone? This cannot be undone.`,
@@ -2251,7 +2596,7 @@ export default function ChatScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteMessages(chatId, ids);
+              await deleteMessages(chatId, ids, user.uid);
             } catch {
               /* ignore */
             }
@@ -2262,10 +2607,10 @@ export default function ChatScreen() {
     );
   };
   const handleDeleteSingle = (id: string | number) => {
-    if (!chatId) return;
+    if (!chatId || !user) return;
     Alert.alert('Delete message', 'Permanently delete this message for everyone? This cannot be undone.', [
       {text: 'Cancel', style: 'cancel'},
-      {text: 'Delete', style: 'destructive', onPress: () => deleteMessages(chatId, [id]).catch(() => {})},
+      {text: 'Delete', style: 'destructive', onPress: () => deleteMessages(chatId, [id], user.uid).catch(() => {})},
     ]);
   };
 
@@ -2308,7 +2653,7 @@ export default function ChatScreen() {
       },
       {
         label: 'Translate',
-        onPress: () => handleTranslateMessage(message._id),
+        onPress: () => handleTranslateMessage(message),
       },
       {
         label: 'Bookmark',
@@ -2318,7 +2663,7 @@ export default function ChatScreen() {
         ? [{label: 'Save to Quote Wall', onPress: () => handleAddToQuoteWall(message)}]
         : []),
       ...(hasAudio
-        ? [{label: 'Transcribe', onPress: () => handleTranscribe(message._id)}]
+        ? [{label: 'Transcribe', onPress: () => handleTranscribe(message)}]
         : []),
       {
         label: 'More Reactions',
@@ -2347,6 +2692,7 @@ export default function ChatScreen() {
                 text: emoji,
                 onPress: () => {
                   toggleReaction(chatId, message._id, emoji, user.uid);
+                  burstAtSheet(emoji);
                   HapticFeedback.trigger('impactLight');
                 },
               })),
@@ -2360,6 +2706,7 @@ export default function ChatScreen() {
         label: 'React 👍',
         onPress: () => {
           toggleReaction(chatId, message._id, '👍', user.uid);
+          burstAtSheet('👍');
           HapticFeedback.trigger('impactLight');
         },
       },
@@ -2367,6 +2714,7 @@ export default function ChatScreen() {
         label: 'React ❤️',
         onPress: () => {
           toggleReaction(chatId, message._id, '❤️', user.uid);
+          burstAtSheet('❤️');
           HapticFeedback.trigger('impactLight');
         },
       },
@@ -2374,6 +2722,7 @@ export default function ChatScreen() {
         label: 'React 😂',
         onPress: () => {
           toggleReaction(chatId, message._id, '😂', user.uid);
+          burstAtSheet('😂');
           HapticFeedback.trigger('impactLight');
         },
       },
@@ -2695,7 +3044,7 @@ export default function ChatScreen() {
             <TouchableOpacity
               key={card.id}
               activeOpacity={0.7}
-              onPress={() => card.url && Linking.openURL(card.url)}
+              onPress={() => openExternal(card.url)}
               style={[styles.contextCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
               {card.image ? (
                 <Image source={{uri: card.image}} style={styles.contextCardImage} />
@@ -2879,7 +3228,18 @@ export default function ChatScreen() {
   return (
     <GlassScreen style={styles.container} edges={['top', 'bottom']}>
       {chatWallpaper ? (
-        <View style={[StyleSheet.absoluteFill, {backgroundColor: chatWallpaper, opacity: 0.15}]} />
+        // Custom wallpapers are Storage download URLs (always start with
+        // "http"); preset wallpapers are hex colors — same field
+        // (wallpaperBy), distinguished by shape rather than a schema change.
+        chatWallpaper.startsWith('http') ? (
+          <Image
+            source={{uri: chatWallpaper}}
+            style={[StyleSheet.absoluteFill, {opacity: 0.4}]}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, {backgroundColor: chatWallpaper, opacity: 0.15}]} />
+        )
       ) : null}
       {incognitoMode ? (
         <View style={[styles.offlineBanner, {backgroundColor: '#1A1A2E'}]}>
@@ -2993,6 +3353,33 @@ export default function ChatScreen() {
           </TouchableOpacity>
         </View>
       ) : null}
+      {sharingLocation ? (
+        <View style={[styles.locationBanner, {backgroundColor: colors.primary}]}>
+          <Text style={styles.locationBannerText}>{'📍 Sharing your location'}</Text>
+          <TouchableOpacity onPress={handleStopSharingLocation}>
+            <Text style={styles.locationBannerStop}>Stop</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+      {peerLiveLocation?.position ? (
+        <TouchableOpacity
+          style={[styles.locationPreview, {backgroundColor: colors.surface, borderColor: colors.border}]}
+          onPress={() => openInMaps(peerLiveLocation.position!.latitude, peerLiveLocation.position!.longitude)}>
+          <Image
+            source={{uri: staticMapTileUrl(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}}
+            style={styles.locationPreviewImage}
+          />
+          <View style={styles.locationPreviewInfo}>
+            <Text style={[styles.locationPreviewTitle, {color: colors.text}]}>{'📍 Live location'}</Text>
+            <Text style={[styles.locationPreviewCoords, {color: colors.textSecondary}]}>
+              {formatCoordinates(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
+            </Text>
+            <Text style={[styles.locationPreviewMeta, {color: colors.textSecondary}]}>
+              Updated {Math.max(0, Math.round((Date.now() - peerLiveLocation.updatedAt) / 1000))}s ago · Open in Maps
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
       {smartReplies.length > 0 && !inputText ? (
         <View style={styles.smartReplyRow}>
           {smartReplies.map((reply, i) => (
@@ -3038,7 +3425,24 @@ export default function ChatScreen() {
         renderMessageVideo={renderMessageVideo}
         renderMessageAudio={renderMessageAudio}
         renderMessageText={renderMessageText}
-        renderBubble={renderBubble}
+        // Wrapped at the call site rather than inside renderBubble: that
+        // function has several early returns (burned, unrevealed, media), and
+        // one wrapper here covers every one of them without touching any.
+        // A live "someone is typing" cue inside the thread. Until now this
+        // only appeared in the navigation title, where it is easy to miss.
+        renderFooter={() =>
+          isTyping ? (
+            <TypingDots
+              color={colors.primary}
+              accessibilityLabel={t('chat.isTyping', {name: otherUserName})}
+            />
+          ) : null
+        }
+        renderBubble={(props: any) => (
+          <MessageEntrance mine={!!user && props?.currentMessage?.user?._id === user.uid}>
+            {renderBubble(props)}
+          </MessageEntrance>
+        )}
         renderAccessory={renderAccessory}
         onLongPress={handleLongPress}
         onPress={(_: any, message: IMessage) => {
@@ -3048,7 +3452,11 @@ export default function ChatScreen() {
           showTimestamps
             ? (props: any) => {
                 const {key: _key, ...timeProps} = props || {};
-                return <Time {...timeProps} />;
+                // Match the text's horizontal inset (styles.messageText), so
+                // the timestamp lines up with the message above it instead of
+                // sitting on GiftedChat's narrower default margin.
+                const inset = {marginLeft: 14, marginRight: 14, marginBottom: 6};
+                return <Time {...timeProps} containerStyle={{left: inset, right: inset}} />;
               }
             : undefined
         }
@@ -3063,6 +3471,9 @@ export default function ChatScreen() {
           spellCheck: !incognitoMode,
         }}
       />
+      {/* Overlays the whole screen, so particles aren't clipped by the
+          message list the way an in-bubble animation would be. */}
+      <ReactionBurst bursts={bursts} onDone={burstDone} />
       {recordModalVisible && (
         <Modal
           visible
@@ -3185,6 +3596,12 @@ export default function ChatScreen() {
                     <Text style={styles.attachOptionIcon}>{'\uD83C\uDFA4'}</Text>
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? 'Stop' : 'Voice'}</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.attachOption, sharingLocation && {backgroundColor: colors.primary}]}
+                    onPress={() => { setAttachSheetVisible(false); sharingLocation ? handleStopSharingLocation() : handleShareLocation(); }}>
+                    <Text style={[styles.attachOptionIcon, sharingLocation && {color: '#fff'}]}>{'\uD83D\uDCCD'}</Text>
+                    <Text style={[styles.attachOptionText, {color: sharingLocation ? '#fff' : colors.text}]}>{sharingLocation ? 'Stop' : 'Location'}</Text>
+                  </TouchableOpacity>
                 </View>
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>Message style</Text>
                 <View style={styles.attachSectionRow}>
@@ -3295,6 +3712,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
+                setSummaryQuestion('');
                 handleSummarize();
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Catch Up (AI Summary)</Text>
@@ -3377,6 +3795,14 @@ export default function ChatScreen() {
               </>
             )}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Settings</Text>
+            <TouchableOpacity
+              style={styles.actionSheetItem}
+              onPress={() => {
+                setActionsModalVisible(false);
+                navigation.navigate('RecentlyDeleted' as never, {chatId} as never);
+              }}>
+              <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('trash.title')}</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionSheetItem}
               onPress={() => {
@@ -3688,15 +4114,33 @@ export default function ChatScreen() {
             onPress={() => setSummaryModalVisible(false)}>
             <View style={[styles.summarySheet, {backgroundColor: colors.background}]}>
               <Text style={[styles.summarySheetTitle, {color: colors.text}]}>
-                Chat Summary
+                {summaryAskedQuestion ? `Re: "${summaryAskedQuestion}"` : 'Chat Summary'}
               </Text>
               {summaryLoading ? (
                 <Text style={[styles.summaryLoading, {color: colors.textSecondary}]}>
-                  Generating summary...
+                  {summaryAskedQuestion ? 'Searching this chat...' : 'Generating summary...'}
                 </Text>
               ) : (
                 <Text style={[styles.summaryBody, {color: colors.text}]}>{summaryText}</Text>
               )}
+              <TextInput
+                style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 44}]}
+                placeholder="Ask about this chat (e.g. what did we decide about the trip?)"
+                placeholderTextColor={colors.textSecondary}
+                value={summaryQuestion}
+                onChangeText={setSummaryQuestion}
+                editable={!summaryLoading}
+              />
+              <TouchableOpacity
+                style={[styles.modalButton, {backgroundColor: colors.primary}, summaryLoading && {opacity: 0.5}]}
+                disabled={summaryLoading}
+                onPress={() => handleSummarize(summaryQuestion)}>
+                {summaryLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.modalButtonText}>{summaryQuestion.trim() ? 'Ask' : 'Regenerate Summary'}</Text>
+                )}
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.burnPickerCancel}
                 onPress={() => setSummaryModalVisible(false)}>
@@ -4047,6 +4491,14 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     lineHeight: 22,
+    // GiftedChat's stock MessageText supplies its own inset, but a custom
+    // renderMessageText replaces that component outright — so without this the
+    // text sat flush against the bubble edge on both platforms.
+    // Bottom is lighter than top because the timestamp sits underneath and
+    // carries its own margin.
+    paddingHorizontal: 14,
+    paddingTop: 9,
+    paddingBottom: 3,
   },
   momentCard: {
     marginTop: 6,
@@ -4762,6 +5214,30 @@ const styles = StyleSheet.create({
   msgSelectCount: {flex: 1, fontSize: 15, fontWeight: '700'},
   msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999},
   msgSelectDeleteText: {color: '#fff', fontSize: 14, fontWeight: '700'},
+  locationBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  locationBannerText: {color: '#fff', fontSize: 14, fontWeight: '600'},
+  locationBannerStop: {color: '#fff', fontSize: 14, fontWeight: '700', textDecorationLine: 'underline'},
+  locationPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: 12,
+    marginTop: 8,
+    padding: 8,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  locationPreviewImage: {width: 56, height: 56, borderRadius: 10},
+  locationPreviewInfo: {flex: 1},
+  locationPreviewTitle: {fontSize: 13.5, fontWeight: '700'},
+  locationPreviewCoords: {fontSize: 12.5, marginTop: 1},
+  locationPreviewMeta: {fontSize: 11.5, marginTop: 2},
   smartReplyRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',

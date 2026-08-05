@@ -16,12 +16,12 @@ import {
   startAfter,
   Timestamp,
   where,
-  writeBatch,
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import {db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
 import {assertRecipientReachable} from './recipient';
+import {purgeExpiredTrash, trashMessages} from './messageTrash';
 import type {ChatMessage, ChatRoom, EncryptedField, UserProfile} from '../types';
 
 export const MESSAGE_PAGE_SIZE = 30;
@@ -160,7 +160,7 @@ export async function sendTextMessage(
   chatId: string,
   text: string,
   me: {uid: string; name: string},
-): Promise<void> {
+): Promise<string> {
   return sendMessage(chatId, {text}, me);
 }
 
@@ -195,12 +195,17 @@ export interface OutgoingMedia {
  * account. The check lives here rather than in the composer because every send
  * path — text, image, file, voice, GIF, scheduled — funnels through this one
  * function, and a guard in the UI would have to be repeated at each of them.
+ *
+ * Returns the new message's id, which the composer needs to attach a link
+ * preview to the message it just sent (see services/linkPreview.ts). The id is
+ * generated here rather than by the caller, so there was previously no way to
+ * name the document afterwards.
  */
 export async function sendMessage(
   chatId: string,
   media: OutgoingMedia,
   me: {uid: string; name: string},
-): Promise<void> {
+): Promise<string> {
   await assertRecipientReachable(chatId, me.uid);
 
   const messageId =
@@ -268,6 +273,27 @@ export async function sendMessage(
       {merge: true},
     );
   });
+
+  return messageId;
+}
+
+/**
+ * Attaches a resolved link preview to an already-sent message.
+ *
+ * A separate write rather than part of the send: the preview needs a network
+ * round trip to the `fetchLinkPreview` function, and holding the message back
+ * until a slow or dead site responds would make sending feel broken. The
+ * bubble appears immediately and grows a card a moment later.
+ *
+ * `patch` comes from buildLinkPreviewPatch and is one of two shapes — sealed
+ * or plaintext — so this function stays out of the crypto decision.
+ */
+export async function setMessageLinkPreview(
+  chatId: string,
+  messageId: string,
+  patch: Record<string, unknown>,
+): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId, 'messages', messageId), patch, {merge: true});
 }
 
 /** Reads this user's unread count once (before it's cleared) for the "new
@@ -319,26 +345,32 @@ export async function toggleReaction(
   });
 }
 
-export async function deleteMessage(chatId: string, messageId: string): Promise<void> {
-  await deleteDoc(doc(db, 'chats', chatId, 'messages', messageId));
-  await recomputeChatLastMessage(chatId).catch(() => undefined);
-}
-
 /**
  * Hard-deletes multiple messages from the database at once. Fully removes each
  * document (no soft-delete flag) in 450-op batches to stay under Firestore's
- * 500-writes-per-batch limit.
+ * 500-writes-per-batch limit. Also cleans up any Storage media those messages
+ * pointed at (decrypting E2EE pointers with the caller's own device key first
+ * — see messageMedia.ts), best-effort and only after the Firestore deletion
+ * succeeds, so a Storage failure can never leave a live message pointing at
+ * broken media.
  */
-export async function deleteMessages(chatId: string, messageIds: string[]): Promise<void> {
-  const ids = [...new Set(messageIds)].filter(Boolean);
-  for (let i = 0; i < ids.length; i += 450) {
-    const batch = writeBatch(db);
-    for (const id of ids.slice(i, i + 450)) {
-      batch.delete(doc(db, 'chats', chatId, 'messages', id));
-    }
-    await batch.commit();
-  }
+export async function deleteMessages(chatId: string, messageIds: string[], uid: string): Promise<void> {
+  // Deletion is now recoverable: the documents are moved to the chat's trash
+  // subcollection instead of being destroyed, and their Storage media is left
+  // in place until the retention window closes (see services/messageTrash.ts).
+  // Deleting the blob here would make recovery restore a broken pointer.
+  await trashMessages(chatId, messageIds, uid);
   await recomputeChatLastMessage(chatId).catch(() => undefined);
+
+  // Opportunistic sweep — this project has no scheduled functions enabled, so
+  // expired trash is only ever cleaned up by a client that happens to be here.
+  purgeExpiredTrash(chatId, uid).catch(() => undefined);
+}
+
+/** Delegates to deleteMessages so there's exactly one implementation of the
+ * fetch → decrypt → delete → clean-up-Storage pipeline to keep correct. */
+export async function deleteMessage(chatId: string, messageId: string, uid: string): Promise<void> {
+  await deleteMessages(chatId, [messageId], uid);
 }
 
 // Same preview rules as sendMessage (never leak burn text).
@@ -549,6 +581,19 @@ export async function toggleMuteChat(chatId: string, uid: string, muted: boolean
   await setDoc(
     doc(db, 'chats', chatId),
     {mutedBy: muted ? arrayRemove(uid) : arrayUnion(uid)},
+    {merge: true},
+  );
+}
+
+/**
+ * Hides or recovers a chat for one user. Same per-user array shape as pin and
+ * mute, so the other participant is unaffected and nothing about the
+ * conversation itself changes.
+ */
+export async function toggleHideChat(chatId: string, uid: string, hidden: boolean): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {hiddenBy: hidden ? arrayRemove(uid) : arrayUnion(uid)},
     {merge: true},
   );
 }

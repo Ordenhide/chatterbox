@@ -34,7 +34,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to your camera to take photos and videos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Chatterbox uses your location only when you choose to share it with someone in a chat.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow access to your microphone to record voice messages.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

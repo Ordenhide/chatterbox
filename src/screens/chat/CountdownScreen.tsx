@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {useAuth} from '../../contexts/AuthContext';
+import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
 import {getColors} from '../../theme/colors';
 import {
   createCountdown,
@@ -67,6 +68,7 @@ export default function CountdownScreen() {
   const route = useRoute();
   const chatId = (route.params as any)?.chatId as string;
   const {user} = useAuth();
+  const crypto = useArtifactCrypto(chatId);
   const colors = getColors(useColorScheme());
   const [countdowns, setCountdowns] = useState<SharedCountdown[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -77,8 +79,8 @@ export default function CountdownScreen() {
 
   useEffect(() => {
     if (!chatId) return;
-    return listenCountdowns(chatId, setCountdowns);
-  }, [chatId]);
+    return listenCountdowns(chatId, setCountdowns, crypto);
+  }, [chatId, crypto]);
 
   const openModal = useCallback(() => {
     setTitle('');
@@ -101,13 +103,17 @@ export default function CountdownScreen() {
       return;
     }
     try {
-      await createCountdown(chatId, {
-        title: trimmed,
-        targetDate: parsed.getTime(),
-        emoji,
-        createdBy: user.uid,
-        createdByName: user.displayName || user.email || 'User',
-      });
+      await createCountdown(
+        chatId,
+        {
+          title: trimmed,
+          targetDate: parsed.getTime(),
+          emoji,
+          createdBy: user.uid,
+          createdByName: user.displayName || user.email || 'User',
+        },
+        crypto,
+      );
       setModalVisible(false);
     } catch {
       Alert.alert('Error', 'Failed to create countdown.');

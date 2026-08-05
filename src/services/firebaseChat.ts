@@ -17,12 +17,15 @@ import {
   where,
   writeBatch,
 } from '@react-native-firebase/firestore';
-import {getStorage, getDownloadURL, putFile, ref} from '@react-native-firebase/storage';
+import {getStorage, getDownloadURL, putFile, ref, refFromURL, deleteObject} from '@react-native-firebase/storage';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
 import {isStealthMode} from './privacyGuard';
 import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
 import {assertRecipientReachable} from './recipient';
+import {resolveMessageMediaUrls} from './messageMedia';
+import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {purgeExpiredTrash, trashMessages} from './messageTrash';
 
 const db = getFirestore();
 const storage = getStorage();
@@ -49,6 +52,33 @@ const logError = (error: unknown, context: string) => {
     console.error(context, error);
   }
   reportError(error, context);
+};
+
+/**
+ * Error handling for a *listener*, which differs from a one-shot call.
+ *
+ * Deleting or leaving a chat revokes read access while listeners are still
+ * attached — the rules' isChatParticipant() reads the chat document, which by
+ * then is gone — so every listener on that chat terminates with
+ * permission-denied. That is a listener's normal end of life, not a fault.
+ * Reporting it would raise a red error screen during an ordinary delete and
+ * bury genuine failures in Crashlytics under noise from routine use.
+ *
+ * Three listeners here already did this inline and three did not (listenChat
+ * among them, which is how deleting a chat surfaced an error). Sharing one
+ * helper is what stops the next listener from missing it.
+ *
+ * Anything that is *not* permission-denied is still a real failure and is
+ * reported as before.
+ */
+const logListenerError = (error: unknown, context: string) => {
+  if (isPermissionDenied(error)) {
+    if (__DEV__) {
+      console.warn(`${context}: listener closed — access revoked (chat deleted or session ended)`);
+    }
+    return;
+  }
+  logError(error, context);
 };
 
 const deleteCollectionInBatches = async (colRef: any) => {
@@ -117,6 +147,23 @@ export async function setUserFcmToken(userId: string, token: string | null) {
     {
       fcmToken: token ?? null,
       fcmUpdatedAt: serverTimestamp(),
+    },
+    {merge: true},
+  );
+}
+
+/**
+ * Stores the user's linked phone number in the owner-only private
+ * subcollection (same rationale as setUserFcmToken: a phone number is more
+ * sensitive than what's already on the public /users profile doc, which any
+ * signed-in user can read).
+ */
+export async function setUserPhoneNumber(userId: string, phoneNumber: string | null) {
+  await setDoc(
+    doc(db, 'users', userId, 'private', 'contact'),
+    {
+      phoneNumber: phoneNumber ?? null,
+      phoneUpdatedAt: serverTimestamp(),
     },
     {merge: true},
   );
@@ -271,13 +318,7 @@ export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[])
       callback(chats);
     },
     error => {
-      if (isPermissionDenied(error)) {
-        if (__DEV__) {
-          console.warn('listenChatsForUser: permission denied (session may have ended)');
-        }
-        return;
-      }
-      logError(error, 'listenChatsForUser');
+      logListenerError(error, 'listenChatsForUser');
       callback([]);
     },
   );
@@ -305,13 +346,7 @@ export function listenMessages(chatId: string, callback: (messages: Message[]) =
       callback(messages);
     },
     error => {
-      if (isPermissionDenied(error)) {
-        if (__DEV__) {
-          console.warn('listenMessages: permission denied (session may have ended)');
-        }
-        return;
-      }
-      logError(error, 'listenMessages');
+      logListenerError(error, 'listenMessages');
       callback([]);
     },
   );
@@ -347,7 +382,7 @@ export function listenChat(chatId: string, callback: (chat: ChatRoom | null) => 
       callback({id: snapshot.id, ...(snapshot.data() as ChatRoom)});
     },
     error => {
-      logError(error, 'listenChat');
+      logListenerError(error, 'listenChat');
       callback(null);
     },
   );
@@ -453,19 +488,25 @@ export async function updateMessage(chatId: string, messageId: string | number, 
 /**
  * Hard-deletes one or more messages — fully removes the documents (no
  * soft-delete flag), in 450-op batches, then refreshes the chat's lastMessage
- * preview so the chat list doesn't show a just-deleted message.
+ * preview so the chat list doesn't show a just-deleted message. Also cleans
+ * up any Storage media those messages pointed at (decrypting E2EE pointers
+ * with the caller's own device key first — see messageMedia.ts), best-effort
+ * and only after the Firestore deletion succeeds, so a Storage failure can
+ * never leave a live message pointing at broken media.
  */
-export async function deleteMessages(chatId: string, messageIds: Array<string | number>): Promise<void> {
-  const ids = [...new Set(messageIds.map(String))].filter(Boolean);
-  const messagesRef = collection(doc(chatsRef(), chatId), 'messages');
-  for (let i = 0; i < ids.length; i += 450) {
-    const batch = writeBatch(db);
-    for (const id of ids.slice(i, i + 450)) {
-      batch.delete(doc(messagesRef, id));
-    }
-    await batch.commit();
-  }
+export async function deleteMessages(
+  chatId: string,
+  messageIds: Array<string | number>,
+  uid: string,
+): Promise<void> {
+  // Deletion is recoverable: messages move to the chat's trash subcollection
+  // and their Storage media is kept until the retention window closes (see
+  // services/messageTrash.ts). Mobile must route through the same path as web,
+  // or one platform would permanently destroy what the other still offers to
+  // recover.
+  await trashMessages(chatId, messageIds.map(String), uid);
   await recomputeChatLastMessage(chatId).catch(() => undefined);
+  purgeExpiredTrash(chatId, uid).catch(() => undefined);
 }
 
 /** Rebuilds the chat's lastMessage preview from the newest remaining message. */
@@ -590,6 +631,27 @@ export async function toggleMuteChat(chatId: string, userId: string) {
   });
 }
 
+/**
+ * Hides or recovers a chat for one user. Same per-user array shape as pin and
+ * mute, so the other participant is unaffected and nothing about the
+ * conversation itself changes.
+ */
+export async function toggleHideChat(chatId: string, userId: string, hidden: boolean) {
+  const ref = doc(chatsRef(), chatId);
+  await runTransaction(db, async tx => {
+    const snapshot = await tx.get(ref);
+    if (!snapshot.exists) return;
+    const chat = snapshot.data() as ChatRoom;
+    const hiddenBy = new Set(chat.hiddenBy || []);
+    if (hidden) {
+      hiddenBy.delete(userId);
+    } else {
+      hiddenBy.add(userId);
+    }
+    tx.set(ref, {hiddenBy: Array.from(hiddenBy)}, {merge: true});
+  });
+}
+
 export async function setChatTheme(chatId: string, userId: string, color: string) {
   await setDoc(doc(chatsRef(), chatId), {themeBy: {[userId]: color}}, {merge: true});
 }
@@ -658,7 +720,7 @@ export function listenCall(
       callback({id: snapshot.id, ...(snapshot.data() as CallSession)});
     },
     error => {
-      logError(error, 'listenCall');
+      logListenerError(error, 'listenCall');
       callback(null);
     },
   );
@@ -679,13 +741,7 @@ export function listenLatestCall(
       callback({id: docSnap.id, ...(docSnap.data() as CallSession)});
     },
     error => {
-      if (isPermissionDenied(error)) {
-        if (__DEV__) {
-          console.warn(`listenLatestCall: permission denied for chat ${chatId}`);
-        }
-      } else {
-        logError(error, 'listenLatestCall');
-      }
+      logListenerError(error, 'listenLatestCall');
       callback(null);
     },
   );
@@ -753,7 +809,7 @@ export function listenCallCandidates(
       });
     },
     error => {
-      logError(error, 'listenCallCandidates');
+      logListenerError(error, 'listenCallCandidates');
     },
   );
 }
@@ -812,6 +868,24 @@ export async function uploadFile(
   }
   await task;
   return await getDownloadURL(storageRef);
+}
+
+/**
+ * Best-effort delete of a Storage object by its download URL. Never throws.
+ * Shared by message-media cleanup (deleteMessages below) and account purge
+ * (account.ts) — one primitive for "this URL's object should go away."
+ */
+export async function deleteStorageObjectByUrl(url: string): Promise<boolean> {
+  // Inline media (data: URIs) lives inside the Firestore document itself, so
+  // there's no Storage object behind it — and refFromURL() would throw on it.
+  if (!url.startsWith('http')) return false;
+  try {
+    await deleteObject(refFromURL(storage, url));
+    return true;
+  } catch {
+    // Already deleted, or the URL doesn't map to an object in this bucket.
+    return false;
+  }
 }
 
 export async function deleteChat(chatId: string) {

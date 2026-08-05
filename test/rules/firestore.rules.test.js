@@ -509,3 +509,115 @@ describe('feedback/{feedbackId}', () => {
     await assertFails(getDocs(collection(asUser('alice'), 'feedback')));
   });
 });
+
+describe('entitlements/{userId}', () => {
+  // This is the paywall. Everything else about Pro (UI locks, catalog flags)
+  // is presentation; the only thing actually stopping a user from taking the
+  // paid features for free is that they cannot write this document.
+  const PAID = {status: 'active', currentPeriodEnd: 4102444800000, priceId: 'price_x'};
+
+  it('lets the owner read their own entitlement', async () => {
+    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
+    await assertSucceeds(getDoc(doc(asUser('alice'), 'entitlements/alice')));
+  });
+
+  it('denies reading someone else\'s entitlement', async () => {
+    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
+    await assertFails(getDoc(doc(asUser('mallory'), 'entitlements/alice')));
+  });
+
+  it('denies an unauthenticated read', async () => {
+    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
+    await assertFails(getDoc(doc(anon(), 'entitlements/alice')));
+  });
+
+  it('denies the OWNER granting themselves Pro — the core paywall assertion', async () => {
+    // The attack this rule exists to stop: a signed-in user opens the
+    // console and writes their own entitlement. Note this is exactly what
+    // /users/{uid} and /users/{uid}/private/* WOULD have allowed, which is
+    // why the entitlement lives in its own top-level collection instead.
+    await assertFails(setDoc(doc(asUser('alice'), 'entitlements/alice'), PAID));
+  });
+
+  it('denies the owner upgrading an existing entitlement (update, not just create)', async () => {
+    await seed(db =>
+      setDoc(doc(db, 'entitlements/alice'), {status: 'canceled', currentPeriodEnd: 0}),
+    );
+    // Extending your own expiry is the same exploit as creating one outright.
+    await assertFails(
+      updateDoc(doc(asUser('alice'), 'entitlements/alice'), {
+        status: 'active',
+        currentPeriodEnd: 4102444800000,
+      }),
+    );
+  });
+
+  it('denies the owner deleting their entitlement, and denies third-party writes', async () => {
+    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
+    await assertFails(deleteDoc(doc(asUser('alice'), 'entitlements/alice')));
+    await assertFails(setDoc(doc(asUser('mallory'), 'entitlements/alice'), PAID));
+  });
+});
+
+describe('chats/{chatId}/trash/{messageId} — recently deleted messages', () => {
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']}));
+  });
+
+  const trashed = (uid) => ({
+    text: 'the deleted message',
+    user: {_id: 'alice'},
+    deletedBy: uid,
+    deletedAt: Date.now(),
+  });
+
+  it('lets a participant move their own deletion into the trash', async () => {
+    await assertSucceeds(setDoc(doc(asUser('alice'), 'chats/c1/trash/m1'), trashed('alice')));
+  });
+
+  it('denies creating a trash entry attributed to someone else', async () => {
+    // Otherwise Bob could stash a message into Alice's trash and read it back
+    // through her ownership rule.
+    await assertFails(setDoc(doc(asUser('bob'), 'chats/c1/trash/m1'), trashed('alice')));
+  });
+
+  it('THE KEY ASSERTION: the other participant cannot read a deleted message', async () => {
+    // This is what keeps "delete for everyone" honest. If Bob could read
+    // Alice's trash, a recoverable delete would just be a UI illusion.
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertFails(getDoc(doc(asUser('bob'), 'chats/c1/trash/m1')));
+  });
+
+  it('lets the deleter read their own trashed message back', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertSucceeds(getDoc(doc(asUser('alice'), 'chats/c1/trash/m1')));
+  });
+
+  it('lets the deleter remove it — recovering or purging', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/trash/m1')));
+  });
+
+  it('denies the other participant purging it', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertFails(deleteDoc(doc(asUser('bob'), 'chats/c1/trash/m1')));
+  });
+
+  it('denies editing a trashed message, so what is recovered is what was deleted', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'chats/c1/trash/m1'), {...trashed('alice'), text: 'tampered'}),
+    );
+  });
+
+  it('denies a non-participant entirely', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertFails(getDoc(doc(asUser('mallory'), 'chats/c1/trash/m1')));
+    await assertFails(setDoc(doc(asUser('mallory'), 'chats/c1/trash/m1'), trashed('mallory')));
+  });
+
+  it('denies unauthenticated access', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
+    await assertFails(getDoc(doc(anon(), 'chats/c1/trash/m1')));
+  });
+});

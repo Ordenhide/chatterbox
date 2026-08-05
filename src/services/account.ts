@@ -2,8 +2,11 @@ import {
   EmailAuthProvider,
   deleteUser,
   getAuth,
+  linkWithPhoneNumber,
   reauthenticateWithCredential,
+  unlink,
   updatePassword,
+  FirebaseAuthTypes,
 } from '@react-native-firebase/auth';
 import {
   arrayRemove,
@@ -22,6 +25,9 @@ import {
 import storage from '@react-native-firebase/storage';
 import {mmkvStorage} from './storageMMKV';
 import {reportError} from './telemetry';
+import {setUserPhoneNumber, deleteStorageObjectByUrl} from './firebaseChat';
+import {resolveMessageMediaUrls} from './messageMedia';
+import {getOrCreateDeviceKeypair} from './e2eeKeys';
 
 /**
  * Account-level operations: changing a password, and permanently deleting an
@@ -95,6 +101,98 @@ export async function changePassword(
   }
 }
 
+export type PhoneLinkError =
+  | 'wrong-password'
+  | 'invalid-phone-number'
+  | 'invalid-verification-code'
+  | 'code-expired'
+  | 'phone-already-in-use'
+  | 'too-many-requests'
+  | 'provider-not-enabled'
+  | 'unknown';
+
+export function describePhoneLinkError(error: unknown): PhoneLinkError {
+  const code = (error as {code?: string})?.code || '';
+  if (
+    code === 'auth/wrong-password' ||
+    code === 'auth/invalid-credential' ||
+    code === 'auth/invalid-login-credentials'
+  ) {
+    return 'wrong-password';
+  }
+  if (code === 'auth/invalid-phone-number') return 'invalid-phone-number';
+  if (code === 'auth/invalid-verification-code') return 'invalid-verification-code';
+  if (code === 'auth/code-expired') return 'code-expired';
+  if (code === 'auth/credential-already-in-use' || code === 'auth/provider-already-linked') {
+    return 'phone-already-in-use';
+  }
+  if (code === 'auth/too-many-requests') return 'too-many-requests';
+  // Thrown when the Phone sign-in provider hasn't been turned on for this
+  // Firebase project yet (Authentication -> Sign-in method, console-only
+  // step, not something this codebase can enable on its own).
+  if (code === 'auth/operation-not-allowed' || code === 'auth/admin-restricted-operation') {
+    return 'provider-not-enabled';
+  }
+  return 'unknown';
+}
+
+/**
+ * Starts linking a phone number to the signed-in user's account.
+ * Reauthenticates first (same reasoning as changePassword: this is a
+ * sensitive operation, and Firebase itself will refuse it on a stale token).
+ * Returns the confirmation handle for confirmPhoneLink to complete.
+ */
+export async function sendPhoneLinkCode(
+  currentPassword: string,
+  phoneNumber: string,
+): Promise<FirebaseAuthTypes.ConfirmationResult> {
+  const user = getAuth().currentUser;
+  if (!user) throw new Error('not signed in');
+  try {
+    await reauthenticate(currentPassword);
+    return await linkWithPhoneNumber(user, phoneNumber.trim());
+  } catch (error) {
+    const wrapped = new Error('phone link failed') as Error & {reason: PhoneLinkError; cause?: unknown};
+    wrapped.reason = describePhoneLinkError(error);
+    wrapped.cause = error;
+    throw wrapped;
+  }
+}
+
+/** Confirms the code sent by sendPhoneLinkCode and finishes linking the phone number. */
+export async function confirmPhoneLink(
+  confirmation: FirebaseAuthTypes.ConfirmationResult,
+  code: string,
+): Promise<void> {
+  const user = getAuth().currentUser;
+  if (!user) throw new Error('not signed in');
+  try {
+    const credential = await confirmation.confirm(code.trim());
+    const phoneNumber = credential?.user.phoneNumber;
+    await setUserPhoneNumber(user.uid, phoneNumber ?? null);
+  } catch (error) {
+    const wrapped = new Error('phone link confirmation failed') as Error & {reason: PhoneLinkError; cause?: unknown};
+    wrapped.reason = describePhoneLinkError(error);
+    wrapped.cause = error;
+    throw wrapped;
+  }
+}
+
+/** Removes the phone number linked to the signed-in user's account. */
+export async function unlinkPhoneNumber(): Promise<void> {
+  const user = getAuth().currentUser;
+  if (!user) throw new Error('not signed in');
+  try {
+    await unlink(user, 'phone');
+    await setUserPhoneNumber(user.uid, null);
+  } catch (error) {
+    const wrapped = new Error('phone unlink failed') as Error & {reason: PhoneLinkError; cause?: unknown};
+    wrapped.reason = describePhoneLinkError(error);
+    wrapped.cause = error;
+    throw wrapped;
+  }
+}
+
 const PAGE = 400;
 
 /** Deletes every doc matched by a query, in batches under Firestore's 500 cap. */
@@ -112,38 +210,28 @@ async function deleteQueryInChunks(baseQuery: any): Promise<number> {
   return total;
 }
 
-async function deleteByUrl(url: string, report: PurgeReport): Promise<void> {
-  // Inline media (data: URIs) lives inside the Firestore document, so it is
-  // already gone once that document is deleted — there is no Storage object.
-  if (!url.startsWith('http')) return;
-  try {
-    await storage().refFromURL(url).delete();
-    report.storageObjectsDeleted++;
-  } catch {
-    // Already deleted, or the URL does not map to an object in this bucket.
-  }
-}
-
-function mediaUrlsOf(message: any): string[] {
-  return [message?.image, message?.video, message?.audio, message?.file?.uri].filter(
-    (u: unknown): u is string => typeof u === 'string' && u.length > 0,
-  );
-}
-
 /**
  * Removes the user from one chat: deletes the messages they authored and the
  * media those messages point at, repairs the cached lastMessage preview, then
- * drops them from `participants`.
+ * drops them from `participants`. `secretKey` (this device's own, fetched
+ * once by purgeUserData) lets encrypted media pointers be resolved too, not
+ * just plaintext ones — see messageMedia.ts.
  */
-async function purgeChat(chatId: string, uid: string, report: PurgeReport): Promise<void> {
+async function purgeChat(
+  chatId: string,
+  uid: string,
+  report: PurgeReport,
+  secretKey: Uint8Array | null,
+): Promise<void> {
   const messagesRef = collection(db, 'chats', chatId, 'messages');
 
-  // Media first: once the message documents are gone their URLs are
-  // unrecoverable and the Storage objects would be orphaned forever.
+  // Media first: once the message documents are gone their URLs — plaintext
+  // or E2EE-sealed — are unrecoverable and the Storage objects would be
+  // orphaned forever.
   const mine = await getDocs(query(messagesRef, where('user._id', '==', uid)));
   for (const d of mine.docs) {
-    for (const url of mediaUrlsOf(d.data())) {
-      await deleteByUrl(url, report);
+    for (const url of resolveMessageMediaUrls(d.data() as Record<string, unknown>, secretKey, chatId)) {
+      if (await deleteStorageObjectByUrl(url)) report.storageObjectsDeleted++;
     }
   }
 
@@ -186,9 +274,11 @@ async function purgeChat(chatId: string, uid: string, report: PurgeReport): Prom
  *  - Likes/comments this user left on other people's moments would need a
  *    collection-group query the rules do not permit; only those attached to
  *    their own moments are removed.
- *  - Media on end-to-end encrypted messages is addressed by a sealed URL this
- *    code cannot read, so the document goes but the Storage object is
- *    orphaned rather than deleted.
+ *  - Media on end-to-end encrypted messages is decrypted with this device's
+ *    own key before deletion (see messageMedia.ts), so it's cleaned up the
+ *    same as plaintext media. It's still orphaned if that key is unavailable
+ *    (e.g. this device never enrolled one) or a payload fails to decrypt —
+ *    but that's now the degraded case, not the default outcome.
  */
 export async function purgeUserData(uid: string): Promise<PurgeReport> {
   const report: PurgeReport = {
@@ -199,12 +289,25 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
     errors: [],
   };
 
+  // Fetched once, up front: X25519 is symmetric, so this device's own key
+  // decrypts any message pointer in a chat this user participates in,
+  // whether they sent it or received it (see e2ee.ts). Falls back to null on
+  // failure so a keypair problem degrades to "encrypted media stays
+  // orphaned" — today's status quo — rather than aborting the purge; the
+  // account is being deleted regardless, and a partial purge beats none.
+  let secretKey: Uint8Array | null = null;
+  try {
+    secretKey = (await getOrCreateDeviceKeypair(uid)).secretKey;
+  } catch (error) {
+    report.errors.push(`device key unavailable: ${String(error)}`);
+  }
+
   try {
     const chats = await getDocs(
       query(collection(db, 'chats'), where('participants', 'array-contains', uid)),
     );
     for (const c of chats.docs) {
-      await purgeChat(c.id, uid, report);
+      await purgeChat(c.id, uid, report, secretKey);
     }
   } catch (error) {
     report.errors.push(`chats failed: ${String(error)}`);
@@ -221,7 +324,7 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
         }
       }
       const mediaUrl = (m.data() as {mediaUrl?: string | null})?.mediaUrl;
-      if (mediaUrl) await deleteByUrl(mediaUrl, report);
+      if (mediaUrl && (await deleteStorageObjectByUrl(mediaUrl))) report.storageObjectsDeleted++;
       try {
         await deleteDoc(doc(db, 'moments', m.id));
         report.momentsDeleted++;

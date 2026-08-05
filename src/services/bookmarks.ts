@@ -10,6 +10,7 @@ import {
   serverTimestamp,
 } from '@react-native-firebase/firestore';
 import {BookmarkedMessage} from '../types';
+import {guardQuerySnapshot} from './snapshotGuard';
 
 const db = getFirestore();
 
@@ -43,7 +44,7 @@ export function listenBookmarks(
   const q = query(bookmarksRef(userId), orderBy('bookmarkedAt', 'desc'));
   return onSnapshot(
     q,
-    snapshot => {
+    guardQuerySnapshot('listen_bookmarks', snapshot => {
       const bookmarks: BookmarkedMessage[] = snapshot.docs.map(d => {
         const data = d.data();
         const ba = data.bookmarkedAt;
@@ -63,7 +64,7 @@ export function listenBookmarks(
         };
       });
       callback(bookmarks);
-    },
+    }),
     error => {
       if (__DEV__) {
         console.warn('listenBookmarks error:', error);

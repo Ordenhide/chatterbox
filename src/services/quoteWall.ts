@@ -10,6 +10,7 @@ import {
   serverTimestamp,
 } from '@react-native-firebase/firestore';
 import {QuoteWallEntry} from '../types';
+import {guardQuerySnapshot} from './snapshotGuard';
 
 const db = getFirestore();
 
@@ -43,7 +44,7 @@ export function listenQuoteWall(
   const q = query(quoteWallRef(chatId), orderBy('pinnedAt', 'desc'));
   return onSnapshot(
     q,
-    snapshot => {
+    guardQuerySnapshot('listen_quote_wall', snapshot => {
       const entries: QuoteWallEntry[] = snapshot.docs.map(d => {
         const data = d.data();
         const pa = data.pinnedAt;
@@ -62,7 +63,7 @@ export function listenQuoteWall(
         };
       });
       callback(entries);
-    },
+    }),
     error => {
       if (__DEV__) {
         console.warn('listenQuoteWall error:', error);

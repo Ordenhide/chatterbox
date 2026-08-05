@@ -19,6 +19,7 @@ import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '@react-native-firebase/functions';
 import i18n from '../i18n';
 import {getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {guardDocSnapshot} from '../services/snapshotGuard';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
 const TOKEN_REFRESH_WINDOW_MS = 5 * 60 * 1000;
@@ -315,12 +316,12 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       // Set up real-time listener for session changes
       unsub = onSnapshot(
         sessionRef,
-        snap => {
+        guardDocSnapshot('session_listener', snap => {
           const current = (snap.data() as any)?.activeSessionId;
           if (current && current !== sessionId && !claimInProgressRef.current) {
             signOutDueToSession();
           }
-        },
+        }),
         error => {
           reportError(error, 'session_listener');
           const code = (error as any)?.code;

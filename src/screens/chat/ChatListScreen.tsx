@@ -1,4 +1,5 @@
 import React, {memo, useCallback, useMemo, useRef, useState, useEffect} from 'react';
+import ListEntrance from '../../components/ListEntrance';
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ import {
   listenChatsForUser,
   getUsersByIds,
   togglePinChat,
+  toggleHideChat,
 } from '../../services/firebaseChat';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
@@ -30,6 +32,7 @@ import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
 import {isDecoyMode} from '../../services/appLock';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
+import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
 
 type ChatListItemProps = {
   id: string;
@@ -135,6 +138,8 @@ export default function ChatListScreen() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  // Hidden chats live in a separate view of this same list.
+  const [viewingHidden, setViewingHidden] = useState(false);
   const {user} = useAuth();
   const navigation = useNavigation();
   const colors = getColors(useColorScheme());
@@ -190,7 +195,8 @@ export default function ChatListScreen() {
           const draftUpdatedAt = drafts[chat.id]?.updatedAt || 0;
           const unreadCount = chat.unreadCountBy?.[user.uid] || 0;
           const pinnedFlag = chat.pinnedBy?.includes(user.uid) ? 1 : 0;
-          return `${chat.id}:${updatedAtTime}:${lastMessageTime}:${unreadCount}:${draftUpdatedAt}:${pinnedFlag}:${typingAt}`;
+          const hiddenFlag = isChatHidden(chat, user.uid) ? 1 : 0;
+          return `${chat.id}:${updatedAtTime}:${lastMessageTime}:${unreadCount}:${draftUpdatedAt}:${pinnedFlag}:${hiddenFlag}:${typingAt}`;
         })
         .sort()
         .join('|');
@@ -311,10 +317,19 @@ export default function ChatListScreen() {
   const onLongPress = (chat: ChatRoom) => {
     if (!user) return;
 
+    const hidden = isChatHidden(chat, user.uid);
     const actions = [
       {
         label: chat.pinnedBy?.includes(user.uid) ? t('chatList.unpin') : t('chatList.pin'),
         onPress: () => togglePinChat(chat.id, user.uid),
+      },
+      {
+        label: hidden ? t('chats.recover') : t('chats.hide'),
+        onPress: () => {
+          toggleHideChat(chat.id, user.uid, hidden).catch(() =>
+            Alert.alert(t('common.error'), ''),
+          );
+        },
       },
     ];
 
@@ -337,12 +352,22 @@ export default function ChatListScreen() {
     ]);
   };
 
+  const {visible: visibleChats, hidden: hiddenChats} = useMemo(
+    () => (user ? partitionChats(chats, user.uid) : {visible: chats, hidden: []}),
+    [chats, user],
+  );
+  const hiddenUnread = useMemo(
+    () => (user ? unreadTotal(hiddenChats, user.uid) : 0),
+    [hiddenChats, user],
+  );
+
   const filteredChats = useMemo(() => {
     if (SHOW_NATIVE_ONLY_FEATURES && isDecoyMode()) return [];
-    if (!searchQuery.trim()) return chats;
+    const source = viewingHidden ? hiddenChats : visibleChats;
+    if (!searchQuery.trim()) return source;
     const query = searchQuery.toLowerCase();
-    return chats.filter(chat => (chat.displayName || '').toLowerCase().includes(query));
-  }, [chats, searchQuery]);
+    return source.filter(chat => (chat.displayName || '').toLowerCase().includes(query));
+  }, [visibleChats, hiddenChats, viewingHidden, searchQuery]);
 
   const formatChatTime = (value: any) => {
     const date = value?.toDate ? value.toDate() : value ? new Date(value) : null;
@@ -383,10 +408,24 @@ export default function ChatListScreen() {
   return (
     <GlassScreen style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.title, {color: colors.text}]}>{t('chatList.title')}</Text>
-        <TouchableOpacity style={[styles.newChatButton, {backgroundColor: colors.primary}]} onPress={createNewChat}>
-          <Text style={styles.newChatText}>{t('common.new')}</Text>
-        </TouchableOpacity>
+        <Text style={[styles.title, {color: colors.text}]}>
+          {viewingHidden ? t('chats.hiddenTitle') : t('chatList.title')}
+        </Text>
+        {viewingHidden ? (
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={[styles.newChatButton, {backgroundColor: colors.surface}]}
+            onPress={() => {
+              setViewingHidden(false);
+              setSearchQuery('');
+            }}>
+            <Text style={[styles.newChatText, {color: colors.text}]}>{t('common.close')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={[styles.newChatButton, {backgroundColor: colors.primary}]} onPress={createNewChat}>
+            <Text style={styles.newChatText}>{t('common.new')}</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <TextInput
         style={[
@@ -405,6 +444,20 @@ export default function ChatListScreen() {
         clearButtonMode="while-editing"
         returnKeyType="search"
       />
+      {!viewingHidden && hiddenChats.length > 0 && (
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={t('chats.hiddenTitle')}
+          style={[styles.hiddenEntry, {borderColor: colors.glassBorder}]}
+          onPress={() => setViewingHidden(true)}>
+          <Text style={[styles.hiddenEntryText, {color: colors.textSecondary}]}>
+            {t('chats.hiddenTitle')}
+          </Text>
+          <Text style={[styles.hiddenEntryCount, {color: colors.textSecondary}]}>
+            {hiddenUnread > 0 ? `${hiddenChats.length} · ${hiddenUnread}` : `${hiddenChats.length}`}
+          </Text>
+        </TouchableOpacity>
+      )}
       <FlatList
         data={filteredChats}
         keyExtractor={item => item.id}
@@ -414,7 +467,8 @@ export default function ChatListScreen() {
         maxToRenderPerBatch={10}
         windowSize={7}
         removeClippedSubviews={Platform.OS === 'android'}
-        renderItem={({item}) => (
+        renderItem={({item, index}) => (
+          <ListEntrance index={index}>
           <ChatListItem
             id={item.id}
             displayName={item.displayName}
@@ -441,6 +495,7 @@ export default function ChatListScreen() {
             cardBackground={colors.surface}
             cardBorder={colors.glassBorder}
           />
+          </ListEntrance>
         )}
         ListEmptyComponent={
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
@@ -453,6 +508,19 @@ export default function ChatListScreen() {
 }
 
 const styles = StyleSheet.create({
+  hiddenEntry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  hiddenEntryText: {fontSize: 14, fontWeight: '600'},
+  hiddenEntryCount: {fontSize: 12, fontWeight: '700'},
   container: {
     flex: 1,
   },

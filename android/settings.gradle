@@ -13,6 +13,10 @@ plugins {
 
 // Resolve npx path so Gradle (e.g. from Android Studio) can find it when PATH is minimal.
 def nodeDirs = ["/usr/local/bin", "/opt/homebrew/bin"]
+def nvmVersionsDir = new File("${System.getProperty('user.home')}/.nvm/versions/node")
+if (nvmVersionsDir.exists()) {
+  nvmVersionsDir.listFiles()?.each { d -> nodeDirs << "${d}/bin" }
+}
 def npxPath = null
 for (d in nodeDirs) {
   def f = new File("${d}/npx")

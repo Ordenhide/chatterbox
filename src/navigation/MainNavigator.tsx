@@ -10,6 +10,8 @@ import ChatMediaScreen from '../screens/chat/ChatMediaScreen';
 import ChatSettingsScreen from '../screens/chat/ChatSettingsScreen';
 import CallScreen from '../screens/chat/CallScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import StoreScreen from '../screens/StoreScreen';
+import RecentlyDeletedScreen from '../screens/chat/RecentlyDeletedScreen';
 import MomentsScreen from '../screens/moments/MomentsScreen';
 import FriendsScreen from '../screens/moments/FriendsScreen';
 import {lazyLoad} from '../utils/lazyLoading';
@@ -182,6 +184,7 @@ export default function MainNavigator() {
   );
   const chatIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="chats" color={color} />, []);
   const momentsIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="moments" color={color} />, []);
+  const storeIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="store" color={color} />, []);
   const profileIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="profile" color={color} />, []);
 
   const ChatStack = useMemo(() => {
@@ -214,6 +217,11 @@ export default function MainNavigator() {
             name="ChatSettings"
             component={ChatSettingsScreen}
             options={{title: t('headers.chatSettings')}}
+          />
+          <Stack.Screen
+            name="RecentlyDeleted"
+            component={RecentlyDeletedScreen}
+            options={{title: t('trash.title')}}
           />
           <Stack.Screen
             name="Call"
@@ -291,6 +299,14 @@ export default function MainNavigator() {
           tabBarIcon: momentsIcon,
           tabBarBadge: showMomentsBadge ? ' ' : undefined,
           tabBarBadgeStyle: styles.tabBadge,
+        }}
+      />
+      <Tab.Screen
+        name="Store"
+        component={StoreScreen}
+        options={{
+          tabBarLabel: t('tabs.store'),
+          tabBarIcon: storeIcon,
         }}
       />
       <Tab.Screen

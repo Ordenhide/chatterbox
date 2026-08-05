@@ -29,6 +29,17 @@ import {
 const blobOf = (bytes: number, type = 'audio/webm') =>
   new Blob([new Uint8Array(bytes)], {type});
 
+describe('MAX_INLINE_DATA_URI_CHARS', () => {
+  it('caps inline audio at ~60s of 32kbps recording, matching the mobile client exactly', () => {
+    // A purely relative test (e.g. "MAX_INLINE_BYTES derives correctly from
+    // MAX_INLINE_DATA_URI_CHARS") would still pass if this constant drifted
+    // from src/services/inlineAudio.ts's copy — only a pinned absolute value
+    // on both sides catches that.
+    expect(MAX_INLINE_DATA_URI_CHARS).toBe(320_000);
+    expect(MAX_INLINE_BYTES).toBe(239_904);
+  });
+});
+
 describe('extensionForMime', () => {
   it('maps Safari-recorded audio to m4a', () => {
     // Safari's MediaRecorder only produces audio/mp4 — labelling it .webm was

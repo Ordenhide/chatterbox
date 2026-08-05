@@ -13,6 +13,7 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		6D7CB7C4AD9C007E90140933 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F12710421E90FCEC5024C0E8 /* PrivacyInfo.xcprivacy */; };
 		7E0A3056623B0EAA14B06889 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F12710421E90FCEC5024C0E8 /* PrivacyInfo.xcprivacy */; };
+		AF53FF4CAAC766AB780560EA /* TouchBarModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6F91298F3769DC59B26EF9B0 /* TouchBarModule.mm */; };
 		F5B992766DC1D9F30C6417A5 /* Pods_chatterbox_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E1EF720E290426EC164E79 /* Pods_chatterbox_macOS.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,8 @@
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201572437B4B40078DB4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		514201592437B4B40078DB4F /* chatterbox.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = chatterbox.entitlements; sourceTree = "<group>"; };
+		62091EC10D1FD8810C5795A7 /* TouchBarModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TouchBarModule.h; sourceTree = "<group>"; };
+		6F91298F3769DC59B26EF9B0 /* TouchBarModule.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = TouchBarModule.mm; sourceTree = "<group>"; };
 		73F2145550167FD8052C49A1 /* Pods-chatterbox-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatterbox-macOS.debug.xcconfig"; path = "Target Support Files/Pods-chatterbox-macOS/Pods-chatterbox-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F12710421E90FCEC5024C0E8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -71,6 +74,8 @@
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
 				514201592437B4B40078DB4F /* chatterbox.entitlements */,
+				62091EC10D1FD8810C5795A7 /* TouchBarModule.h */,
+				6F91298F3769DC59B26EF9B0 /* TouchBarModule.mm */,
 			);
 			path = "chatterbox-macOS";
 			sourceTree = "<group>";
@@ -407,6 +412,7 @@
 			files = (
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				AF53FF4CAAC766AB780560EA /* TouchBarModule.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

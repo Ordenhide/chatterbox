@@ -63,6 +63,8 @@ export default function ChatMediaScreen() {
         renderItem={({item}) => (
           <Pressable
             style={styles.cell}
+            accessibilityRole="button"
+            accessibilityLabel={item.image ? 'Open photo full size' : 'Play video'}
             onPress={() =>
               item.image
                 ? (() => {
