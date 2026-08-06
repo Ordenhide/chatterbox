@@ -27,6 +27,27 @@ jobs:
           cd functions
           npm ci
 
+      # functions/.env is gitignored, so the checkout above never contains it
+      # and every process.env lookup in index.js would be undefined in
+      # production — Stripe billing would deploy but permanently answer
+      # "Billing is not configured." firebase-tools reads this file at deploy
+      # time and bakes the values into the deployed function config, so it has
+      # to be rebuilt here from repo secrets (Settings → Secrets and variables
+      # → Actions). Missing secrets write as empty, which degrades that one
+      # feature rather than failing the deploy — matching how index.js treats
+      # them. See functions/.env.example for what each value is.
+      - name: Write functions/.env from repo secrets
+        run: |
+          cat > functions/.env <<'EOF'
+          STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_PRICE_MONTHLY=${{ secrets.STRIPE_PRICE_MONTHLY }}
+          STRIPE_PRICE_YEARLY=${{ secrets.STRIPE_PRICE_YEARLY }}
+          APP_BASE_URL=${{ secrets.APP_BASE_URL }}
+          CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
+          EOF
+
       # `FirebaseExtended/action-hosting-deploy` (the previous step here) only
       # deploys Firebase Hosting — it has no mechanism for Cloud Functions, so
       # this workflow never actually shipped a function no matter how many

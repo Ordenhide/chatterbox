@@ -1,13 +1,14 @@
 import {initializeApp} from 'firebase/app';
 import {getAuth} from 'firebase/auth';
 import {
+  connectFirestoreEmulator,
   getFirestore,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
   type Firestore,
 } from 'firebase/firestore';
-import {getFunctions} from 'firebase/functions';
+import {connectFunctionsEmulator, getFunctions} from 'firebase/functions';
 
 /**
  * Firebase config for the WEB SDK.
@@ -91,6 +92,29 @@ if (import.meta.env.DEV && import.meta.env.VITE_AUTH_DISABLE_APP_VERIFICATION ==
 export const functions = getFunctions(app);
 
 /**
+ * Local-only escape hatch for testing Cloud Functions (Stripe billing,
+ * summaries, etc.) against `firebase emulators:start` instead of the real
+ * deployed backend — see BILLING.md for the full local test setup.
+ *
+ * Auth stays real/production even with this on: only Functions and Firestore
+ * point locally (the Firestore half is wired below, once `db` exists). That
+ * means sign-in works normally with a real account, but that account's
+ * chats/profile/moments will look empty here — the local Firestore emulator
+ * starts with no data of its own. Fine for exercising a function end to end
+ * (e.g. Store → Buy Pro → entitlement written), not for testing against real
+ * chat data.
+ *
+ * Double-gated on DEV **and** an explicit opt-in, and `import.meta.env.DEV`
+ * is statically false in a production build, so this whole block is dropped
+ * at build time and can never ship enabled — same pattern as the phone-auth
+ * escape hatch above.
+ */
+const USE_EMULATORS = import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true';
+if (USE_EMULATORS) {
+  connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+}
+
+/**
  * Firestore with **offline persistence** (IndexedDB): the app opens with cached
  * data when offline, and writes queue and sync on reconnect.
  * `persistentMultipleTabManager` keeps multiple open tabs consistent. Falls back
@@ -116,3 +140,15 @@ function makeDb(): Firestore {
 }
 
 export const db = makeDb();
+
+// Must connect before the app's first Firestore read/write. Safe here: every
+// other module imports `db` from this file rather than calling makeDb()
+// itself, and ES module evaluation order guarantees this line runs to
+// completion before any importer can act on the value.
+if (USE_EMULATORS) {
+  connectFirestoreEmulator(db, '127.0.0.1', 8080);
+  console.warn(
+    '[dev] Connected to local Firebase emulators (Functions :5001, Firestore :8080). ' +
+      'Auth is still real/production, so this account’s chats/profile will look empty here.',
+  );
+}

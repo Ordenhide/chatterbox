@@ -43,11 +43,23 @@ const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:5173';
 
 // Constructed lazily so a missing key can't throw during module load and
 // take every unrelated function in this file down with it.
+// Pinned rather than left to the SDK default. stripe-node already sends its
+// own bundled version, so "no pin" really means "whatever the next `npm
+// update` decides" — and the basil→dahlia move relocated
+// subscription.current_period_end onto items, which silently breaks
+// entitlement mapping (see entitlement.js). Pinning makes the version an
+// explicit, reviewable choice; bump it deliberately and re-read the changelog.
+const STRIPE_API_VERSION = '2026-07-29.dahlia';
+
+// Labels Checkout Sessions so flows can be compared in the Dashboard. Fixed,
+// not per-request: a value that changed every call couldn't be grouped.
+const STRIPE_INTEGRATION_ID = 'chatterbox_pro_qvbnmxkd';
+
 let stripeClient = null;
 function getStripe() {
   if (!stripeClient) {
     // eslint-disable-next-line global-require
-    stripeClient = require('stripe')(STRIPE_SECRET_KEY);
+    stripeClient = require('stripe')(STRIPE_SECRET_KEY, {apiVersion: STRIPE_API_VERSION});
   }
   return stripeClient;
 }
@@ -1058,7 +1070,12 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
+      // `payment_method_types` is deliberately absent: omitting it enables
+      // dynamic payment methods, so Apple Pay / Google Pay / Link and
+      // regional options are controlled from the Dashboard. Hardcoding it
+      // would lock the flow to cards and cost conversion.
       line_items: [{price: priceId, quantity: 1}],
+      integration_identifier: STRIPE_INTEGRATION_ID,
       success_url: `${returnUrl}?pro=success`,
       cancel_url: `${returnUrl}?pro=canceled`,
       // Duplicated onto the subscription so subscription.* events (which do

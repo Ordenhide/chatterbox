@@ -58,7 +58,21 @@ describe('isProActive', () => {
 });
 
 describe('entitlementFromSubscription', () => {
+  // The shape a REAL Stripe response has on the API version stripe-node v22
+  // sends (2026-07-29.dahlia): current_period_end lives on the item, and the
+  // subscription-level field no longer exists. The original fixture here used
+  // only the pre-basil top-level field, so these tests passed while the live
+  // webhook would have thrown on every event and never granted Pro.
   const subscription = {
+    id: 'sub_123',
+    status: 'active',
+    cancel_at_period_end: false,
+    customer: 'cus_abc',
+    items: {data: [{price: {id: 'price_monthly'}, current_period_end: 1_700_086_400}]},
+  };
+
+  // Pre-basil shape, still seen when Stripe replays an old event.
+  const legacySubscription = {
     id: 'sub_123',
     status: 'active',
     current_period_end: 1_700_086_400, // seconds
@@ -66,6 +80,32 @@ describe('entitlementFromSubscription', () => {
     customer: 'cus_abc',
     items: {data: [{price: {id: 'price_monthly'}}]},
   };
+
+  test('reads current_period_end from the item (2025-03-31.basil and later)', () => {
+    expect(entitlementFromSubscription(subscription).currentPeriodEnd).toBe(1_700_086_400_000);
+  });
+
+  test('still reads the legacy subscription-level current_period_end', () => {
+    expect(entitlementFromSubscription(legacySubscription).currentPeriodEnd).toBe(1_700_086_400_000);
+  });
+
+  test('uses the EARLIEST item period end when a subscription has several', () => {
+    // Access stops being fully paid for at the first item to lapse; taking the
+    // latest would hand out Pro past what was actually purchased.
+    const multi = {
+      id: 'sub_multi',
+      status: 'active',
+      cancel_at_period_end: false,
+      customer: 'cus_abc',
+      items: {
+        data: [
+          {price: {id: 'price_a'}, current_period_end: 1_700_200_000},
+          {price: {id: 'price_b'}, current_period_end: 1_700_086_400},
+        ],
+      },
+    };
+    expect(entitlementFromSubscription(multi).currentPeriodEnd).toBe(1_700_086_400_000);
+  });
 
   test('maps a Stripe subscription to the stored entitlement shape', () => {
     expect(entitlementFromSubscription(subscription)).toEqual({
@@ -82,7 +122,7 @@ describe('entitlementFromSubscription', () => {
     // A missed x1000 here would expire every subscription in 1970 — i.e.
     // silently revoke Pro from every paying customer.
     const {currentPeriodEnd} = entitlementFromSubscription(subscription);
-    expect(currentPeriodEnd).toBe(subscription.current_period_end * 1000);
+    expect(currentPeriodEnd).toBe(subscription.items.data[0].current_period_end * 1000);
     expect(isProActive({status: 'active', currentPeriodEnd}, 1_700_000_000_000)).toBe(true);
   });
 
@@ -97,8 +137,13 @@ describe('entitlementFromSubscription', () => {
   });
 
   test('tolerates a subscription with no line items rather than crashing the webhook', () => {
-    const noItems = {...subscription, items: undefined};
+    // Uses the legacy fixture on purpose: it still carries a subscription-level
+    // period end, so this isolates "no items ⇒ priceId null" from the separate
+    // case of having no period end anywhere (covered below, where throwing is
+    // the correct behaviour).
+    const noItems = {...legacySubscription, items: undefined};
     expect(entitlementFromSubscription(noItems).priceId).toBeNull();
+    expect(entitlementFromSubscription(noItems).currentPeriodEnd).toBe(1_700_086_400_000);
   });
 
   test('rejects a subscription with no usable period end', () => {

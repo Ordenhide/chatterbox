@@ -32,6 +32,32 @@ function isProActive(entitlement, now = Date.now()) {
 }
 
 /**
+ * When the paid-for period ends, in Stripe's seconds.
+ *
+ * Stripe MOVED this field. Through `2025-03-31.basil` it sat on the
+ * subscription; from that version on it lives only on each subscription
+ * *item*, and the subscription-level field is gone. stripe-node sends its own
+ * pinned API version (v22 → `2026-07-29.dahlia`), so reading only the old
+ * location yields `undefined` against a real Stripe response — which threw,
+ * failed the webhook, and left the entitlement unwritten, meaning a paying
+ * customer never actually received Pro.
+ *
+ * Both shapes are accepted: items first, then the legacy field, so replayed
+ * old events and pre-basil fixtures still map correctly.
+ *
+ * With multiple items the EARLIEST end wins — that's the moment access is no
+ * longer fully paid for, and it matches how Stripe's own subscription list
+ * filter treats "minimum item current_period_end".
+ */
+function subscriptionPeriodEndSecs(subscription, items) {
+  const itemEnds = items
+    .map(i => i && i.current_period_end)
+    .filter(v => typeof v === 'number');
+  if (itemEnds.length > 0) return Math.min(...itemEnds);
+  return subscription.current_period_end;
+}
+
+/**
  * Maps a Stripe Subscription object to the document we store at
  * entitlements/{uid}. Kept pure (no Firestore, no network) so the webhook's
  * event→document mapping is testable against fixtures.
@@ -43,11 +69,12 @@ function entitlementFromSubscription(subscription) {
   if (!subscription || typeof subscription !== 'object') {
     throw new Error('subscription is required');
   }
-  const periodEndSecs = subscription.current_period_end;
+  const items = (subscription.items && subscription.items.data) || [];
+  const item = items[0];
+  const periodEndSecs = subscriptionPeriodEndSecs(subscription, items);
   if (typeof periodEndSecs !== 'number') {
-    throw new Error('subscription.current_period_end must be a number');
+    throw new Error('subscription current_period_end must be a number');
   }
-  const item = subscription.items && subscription.items.data && subscription.items.data[0];
   return {
     status: subscription.status,
     currentPeriodEnd: periodEndSecs * 1000,
