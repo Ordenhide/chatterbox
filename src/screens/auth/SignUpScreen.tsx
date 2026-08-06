@@ -17,6 +17,7 @@ import {useTranslation} from 'react-i18next';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
+import PasswordInput from '../../components/PasswordInput';
 import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
@@ -101,7 +102,7 @@ export default function SignUpScreen() {
             autoComplete="email"
           />
 
-          <TextInput
+          <PasswordInput
             style={[
               styles.input,
               {backgroundColor: colors.surface, color: colors.text, borderColor: colors.glassBorder},
@@ -110,7 +111,6 @@ export default function SignUpScreen() {
             placeholderTextColor={colors.textSecondary}
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
             autoCapitalize="none"
           />
 

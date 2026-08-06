@@ -10,27 +10,27 @@
  * categories with real content ship — an empty "coming soon" shelf is worse
  * than no shelf.
  */
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import type {User} from 'firebase/auth';
 import {colors} from '../theme';
 import {useT} from '../i18n';
 import {useToast} from '../context/ToastContext';
 import {useEntitlement} from '../context/EntitlementContext';
+import {useAccountTheme} from '../context/StoreThemeContext';
 import {createBillingPortalSession, createCheckoutSession, type ProPlan} from '../services/billing';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
-import {applyStoreTheme, listenStoreTheme} from '../services/storeTheme';
+import {applyStoreTheme} from '../services/storeTheme';
+import Icon from '../components/Icon';
 
 export default function StoreScreen({user}: {user: User}) {
   const {t} = useT();
   const toast = useToast();
   const {isPro, entitlement} = useEntitlement();
 
-  const [applied, setApplied] = useState<StoreTheme | undefined>(undefined);
+  const applied = useAccountTheme();
   const [applyingId, setApplyingId] = useState<string | null>(null);
   const [billingBusy, setBillingBusy] = useState(false);
   const [billingError, setBillingError] = useState<string | null>(null);
-
-  useEffect(() => listenStoreTheme(user.uid, setApplied), [user.uid]);
 
   // Both billing actions hand off to a Stripe-hosted page, so card details
   // never touch this app.
@@ -160,7 +160,8 @@ export default function StoreScreen({user}: {user: User}) {
                   <span style={styles.cardName}>{theme.name}</span>
                   {theme.pro && (
                     <span style={locked ? styles.lock : styles.owned}>
-                      {locked ? `🔒 ${t('pro.badge')}` : t('pro.badge')}
+                      {locked && <Icon name="lock" size={10} style={{marginRight: 3, verticalAlign: '-1px'}} />}
+                      {t('pro.badge')}
                     </span>
                   )}
                   {selected && <span style={styles.appliedTag}>{t('store.appliedTag')}</span>}

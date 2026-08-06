@@ -27,6 +27,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
+import Icon from '../components/Icon';
 import {useAuth} from '../contexts/AuthContext';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
@@ -135,9 +136,16 @@ export default function StoreScreen() {
               </View>
               <Text style={[styles.themeName, {color: colors.text}]}>{theme.name}</Text>
               {theme.pro ? (
-                <Text style={[styles.themeTag, {color: locked ? colors.textSecondary : colors.primary}]}>
-                  {locked ? `🔒 ${t('pro.badge')}` : t('pro.badge')}
-                </Text>
+                locked ? (
+                  <View style={styles.themeTagRow}>
+                    <Icon name="lock" size={10} color={colors.textSecondary} />
+                    <Text style={[styles.themeTag, {color: colors.textSecondary, marginTop: 0}]}>
+                      {t('pro.badge')}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={[styles.themeTag, {color: colors.primary}]}>{t('pro.badge')}</Text>
+                )
               ) : null}
               {selected ? (
                 <Text style={[styles.themeTag, {color: colors.primary}]}>{t('store.appliedTag')}</Text>
@@ -183,5 +191,6 @@ const styles = StyleSheet.create({
   },
   dot: {width: 14, height: 14, borderRadius: 999},
   themeName: {fontSize: 13, fontWeight: '700'},
+  themeTagRow: {flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2},
   themeTag: {fontSize: 10.5, fontWeight: '800', letterSpacing: 0.4, marginTop: 2},
 });

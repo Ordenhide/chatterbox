@@ -58,7 +58,7 @@ import {
   type LiveLocationShare,
 } from '../services/liveLocation';
 import {useEntitlement} from '../context/EntitlementContext';
-import {useStoreTheme} from '../hooks/useStoreTheme';
+import {useAccountTheme} from '../context/StoreThemeContext';
 import {resolveAccent, resolveWallpaper} from '../services/storeTheme';
 import {isDarkWallpaper} from '../services/themeCatalog';
 import {safeExternalUrl} from '../utils/safeUrl';
@@ -811,7 +811,7 @@ export default function ChatPane({
   // account-wide Store theme applies, so a conversation created after the
   // theme was chosen still looks right (the Store's batch write can only
   // reach chats that already existed).
-  const storeTheme = useStoreTheme(me.uid);
+  const storeTheme = useAccountTheme();
   const themeColor = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, colors.primary);
   const wallpaper = resolveWallpaper(chat?.wallpaperBy?.[me.uid], storeTheme?.wallpaper);
   // Message text is a fixed dark colour, which vanishes against a dark
@@ -1548,7 +1548,7 @@ export default function ChatPane({
                     setMenuOpen(false);
                   }}>
                   <Icon name="flame" size={15} /> {t('chat.burnAfterReading')}
-                  {burnMode ? <span style={styles.menuCheck}>✓</span> : null}
+                  {burnMode ? <Icon name="check" size={14} style={styles.menuCheck} /> : null}
                 </button>
                 <button
                   style={styles.menuItemRow}
@@ -1557,7 +1557,7 @@ export default function ChatPane({
                     setMenuOpen(false);
                   }}>
                   <Icon name="eye" size={15} /> {t('chat.viewOnce')}
-                  {viewOnceMode ? <span style={styles.menuCheck}>✓</span> : null}
+                  {viewOnceMode ? <Icon name="check" size={14} style={styles.menuCheck} /> : null}
                 </button>
                 <button
                   style={styles.menuItemRow}
@@ -1575,7 +1575,7 @@ export default function ChatPane({
                       setVerifyOpen(true);
                       setMenuOpen(false);
                     }}>
-                    {'🔒 '} {t('chat.verifyContact')}
+                    <Icon name="lock" size={15} /> {t('chat.verifyContact')}
                   </button>
                 )}
                 <button
@@ -1758,13 +1758,15 @@ export default function ChatPane({
 
       {peerDeleted && (
         <div style={styles.deletedBanner} role="status">
-          <span>{'🚫 '}{t('chat.recipientDeleted')}</span>
+          <Icon name="blocked" size={14} style={{marginRight: 6, flexShrink: 0}} />
+          <span>{t('chat.recipientDeleted')}</span>
         </div>
       )}
 
       {peerKeyChanged && !peerDeleted && (
         <button style={styles.keyChangedBanner} onClick={() => setVerifyOpen(true)}>
-          <span>{'⚠️ '}{t('chat.keyChanged')}</span>
+          <Icon name="alertTriangle" size={14} style={{marginRight: 6, flexShrink: 0}} />
+          <span>{t('chat.keyChanged')}</span>
         </button>
       )}
 
@@ -1778,7 +1780,10 @@ export default function ChatPane({
 
       {sharingLocation && (
         <div style={{...styles.locationBanner, background: colors.primary}}>
-          <span>{'📍 Sharing your location'}</span>
+          <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
+            <Icon name="pin" size={13} />
+            Sharing your location
+          </span>
           <button type="button" style={styles.locationBannerStop} onClick={handleStopSharingLocation}>
             Stop
           </button>
@@ -1796,7 +1801,10 @@ export default function ChatPane({
             style={styles.locationPreviewImage}
           />
           <span style={styles.locationPreviewInfo}>
-            <span style={styles.locationPreviewTitle}>{'📍 Live location'}</span>
+            <span style={{...styles.locationPreviewTitle, display: 'flex', alignItems: 'center', gap: 4}}>
+              <Icon name="pin" size={12} />
+              Live location
+            </span>
             <span style={styles.locationPreviewCoords}>
               {formatCoordinates(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
             </span>
@@ -2494,7 +2502,7 @@ export default function ChatPane({
             style={{...styles.composerIcon, ...(sharingLocation ? {color: colors.primary} : null)}}
             title={sharingLocation ? 'Stop sharing location' : 'Share live location'}
             onClick={() => (sharingLocation ? handleStopSharingLocation() : setShareLocationModalOpen(true))}>
-            <span style={{fontSize: 18, lineHeight: 1}}>{'📍'}</span>
+            <Icon name="pin" size={18} />
           </button>
           <textarea
             ref={inputRef}

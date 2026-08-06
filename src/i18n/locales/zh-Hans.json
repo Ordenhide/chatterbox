@@ -24,7 +24,9 @@
     "accept": "接受",
     "decline": "拒绝",
     "justNow": "刚刚",
-    "tapToRetry": "点击重试。"
+    "tapToRetry": "点击重试。",
+    "showPassword": "显示密码",
+    "hidePassword": "隐藏密码"
   },
   "tabs": {
     "chats": "聊天",

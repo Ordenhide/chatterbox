@@ -19,6 +19,7 @@ import {getStringFlag} from '../../services/featureFlags';
 import {trackEvent} from '../../services/telemetry';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
+import PasswordInput from '../../components/PasswordInput';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -110,7 +111,7 @@ export default function LoginScreen() {
             autoComplete="email"
           />
 
-          <TextInput
+          <PasswordInput
             style={[
               styles.input,
               {backgroundColor: colors.surface, color: colors.text, borderColor: colors.glassBorder},
@@ -119,7 +120,6 @@ export default function LoginScreen() {
             placeholderTextColor={colors.textSecondary}
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
             autoCapitalize="none"
           />
 

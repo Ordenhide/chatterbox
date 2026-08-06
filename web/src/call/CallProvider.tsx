@@ -69,7 +69,7 @@ export default function CallProvider({
     let on = false;
     const flash = setInterval(() => {
       on = !on;
-      document.title = on ? `📞 ${incoming.otherName}…` : original;
+      document.title = on ? `(Incoming) ${incoming.otherName}…` : original;
     }, 900);
 
     return () => {

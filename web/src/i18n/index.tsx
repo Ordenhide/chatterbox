@@ -19,6 +19,8 @@ const en = {
   'common.delete': 'Delete',
   'common.retry': 'Retry',
   'common.error': 'Something went wrong. Please try again.',
+  'common.showPassword': 'Show password',
+  'common.hidePassword': 'Hide password',
 
   'login.signInToContinue': 'Sign in to continue',
   'login.createAccount': 'Create your account',
@@ -487,6 +489,8 @@ const zh: Partial<Record<Key, string>> = {
   'common.delete': '删除',
   'common.retry': '重试',
   'common.error': '出错了，请重试。',
+  'common.showPassword': '显示密码',
+  'common.hidePassword': '隐藏密码',
 
   'login.signInToContinue': '登录以继续',
   'login.createAccount': '创建你的账户',

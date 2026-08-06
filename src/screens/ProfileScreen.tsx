@@ -26,6 +26,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
 import GlassView from '../components/GlassView';
 import GlassScreen from '../components/GlassScreen';
+import Icon from '../components/Icon';
+import PasswordInput from '../components/PasswordInput';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
@@ -767,15 +769,15 @@ export default function ProfileScreen() {
           <Text style={[styles.shortcutsTitle, {color: colors.textSecondary}]}>{t('profile.shortcutsTitle')}</Text>
           <View style={styles.shortcutsRow}>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Bookmarks'} as never)}>
-              <Text style={styles.shortcutIcon}>{'\uD83D\uDCDD'}</Text>
+              <Icon name="bookmark" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutSaved')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Memories'} as never)}>
-              <Text style={styles.shortcutIcon}>{'\uD83D\uDCF7'}</Text>
+              <Icon name="camera" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutMemories')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'PrivacyDashboard'} as never)}>
-              <Text style={styles.shortcutIcon}>{'\uD83D\uDD12'}</Text>
+              <Icon name="lock" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutPrivacy')}</Text>
             </TouchableOpacity>
           </View>
@@ -1077,31 +1079,28 @@ export default function ProfileScreen() {
             <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
               {t('profile.account.changePasswordDescription')}
             </Text>
-            <TextInput
+            <PasswordInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
               placeholder={t('profile.account.currentPassword')}
               placeholderTextColor={colors.textSecondary}
               value={currentPassword}
               onChangeText={setCurrentPassword}
-              secureTextEntry
               autoCapitalize="none"
             />
-            <TextInput
+            <PasswordInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
               placeholder={t('profile.account.newPassword')}
               placeholderTextColor={colors.textSecondary}
               value={newPassword}
               onChangeText={setNewPassword}
-              secureTextEntry
               autoCapitalize="none"
             />
-            <TextInput
+            <PasswordInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
               placeholder={t('profile.account.confirmPassword')}
               placeholderTextColor={colors.textSecondary}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              secureTextEntry
               autoCapitalize="none"
             />
             <TouchableOpacity
@@ -1136,13 +1135,12 @@ export default function ProfileScreen() {
             </Text>
             {phoneModalStep === 'entry' ? (
               <>
-                <TextInput
+                <PasswordInput
                   style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
                   placeholder={t('profile.account.currentPassword')}
                   placeholderTextColor={colors.textSecondary}
                   value={phonePassword}
                   onChangeText={setPhonePassword}
-                  secureTextEntry
                   autoCapitalize="none"
                 />
                 <View style={styles.phoneRow}>
@@ -1270,7 +1268,7 @@ export default function ProfileScreen() {
                     </View>
                     {isSelected ? (
                       <View style={[styles.languageCheck, {backgroundColor: colors.primary}]}>
-                        <Text style={styles.languageCheckText}>{'✓'}</Text>
+                        <Icon name="check" size={14} color="#fff" />
                       </View>
                     ) : null}
                   </TouchableOpacity>
@@ -1295,13 +1293,12 @@ export default function ProfileScreen() {
             <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
               {t('profile.account.deleteEnterPassword')}
             </Text>
-            <TextInput
+            <PasswordInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
               placeholder={t('profile.account.currentPassword')}
               placeholderTextColor={colors.textSecondary}
               value={deletePassword}
               onChangeText={setDeletePassword}
-              secureTextEntry
               autoCapitalize="none"
               editable={!deleting}
             />
@@ -1564,7 +1561,7 @@ export default function ProfileScreen() {
                     </View>
                     {isSelected ? (
                       <View style={[styles.languageCheck, {backgroundColor: colors.primary}]}>
-                        <Text style={styles.languageCheckText}>{'✓'}</Text>
+                        <Icon name="check" size={14} color="#fff" />
                       </View>
                     ) : null}
                   </TouchableOpacity>

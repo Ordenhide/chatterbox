@@ -22,6 +22,7 @@ import {GiftedChat, IMessage, MessageImage, Bubble, Time, Send} from 'react-nati
 import MessageEntrance from '../../components/MessageEntrance';
 import TypingDots from '../../components/TypingDots';
 import ReactionBurst, {useReactionBurst} from '../../components/ReactionBurst';
+import Icon from '../../components/Icon';
 import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
@@ -1865,7 +1866,7 @@ export default function ChatScreen() {
     if (!chatId || !user || validOptions.length < 2) return;
     const messageData: ChatMessage = {
       _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      text: '\uD83C\uDFB0 Mystery Box',
+      text: 'Mystery Box',
       createdAt: new Date(),
       lottery: {options: validOptions},
       user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
@@ -2374,7 +2375,7 @@ export default function ChatScreen() {
                 setImageViewerVisible(true);
               }
             }}>
-            <Text style={styles.viewOnceIcon}>{'👁'}</Text>
+            <Icon name="eye" size={32} color="#10B981" style={styles.viewOnceIcon} />
             <Text style={styles.viewOnceText}>View once photo</Text>
           </Pressable>
         );
@@ -2414,7 +2415,7 @@ export default function ChatScreen() {
             paused
           />
           <View style={styles.videoOverlay}>
-            <Text style={styles.videoOverlayText}>▶</Text>
+            <Icon name="play" size={32} color="#fff" />
             {props?.currentMessage?.videoDuration ? (
               <Text style={styles.videoDurationText}>
                 {formatDuration(props.currentMessage.videoDuration)}
@@ -2454,9 +2455,12 @@ export default function ChatScreen() {
       <Pressable
         style={[styles.audioBubble, {backgroundColor: colors.surface}]}
         onPress={() => playAudio(message._id, message.audio || '')}>
-        <Text style={[styles.audioIcon, {color: colors.primary}]}>
-          {playingAudioId === message._id ? '⏸' : '▶'}
-        </Text>
+        <Icon
+          name={playingAudioId === message._id ? 'pause' : 'play'}
+          size={16}
+          color={colors.primary}
+          style={styles.audioIcon}
+        />
         <Text style={[styles.audioText, {color: colors.text}]}>
           {message.audioDuration ? `${message.audioDuration}s` : 'Voice message'}{filterLabel}
         </Text>
@@ -2534,7 +2538,10 @@ export default function ChatScreen() {
             style={styles.invisibleInkWrap}>
             <Text style={[styles.messageText, {color: 'transparent'}]}>{text}</Text>
             <View style={styles.invisibleInkOverlay}>
-              <Text style={styles.invisibleInkHint}>{'\uD83D\uDCA7'} Hold to reveal</Text>
+              <View style={styles.invisibleInkHintRow}>
+                <Icon name="droplet" size={14} color="#fff" />
+                <Text style={styles.invisibleInkHint}>Hold to reveal</Text>
+              </View>
             </View>
           </Pressable>
         );
@@ -2839,7 +2846,7 @@ export default function ChatScreen() {
     if (burn?.burned) {
       return (
         <View style={styles.burnedContainer}>
-          <Text style={styles.burnedIcon}>🔥</Text>
+          <Icon name="flame" size={14} color={colors.textSecondary} style={styles.burnedIcon} />
           <Text style={[styles.burnedText, {color: colors.textSecondary}]}>
             Message burned
           </Text>
@@ -2858,7 +2865,7 @@ export default function ChatScreen() {
         <Pressable
           onPress={() => handleRevealBurnMessage(current)}
           style={[styles.burnOverlay, {backgroundColor: colors.surface, borderColor: colors.warning}]}>
-          <Text style={styles.burnOverlayIcon}>🔥</Text>
+          <Icon name="flame" size={24} color={colors.warning} style={styles.burnOverlayIcon} />
           <Text style={[styles.burnOverlayText, {color: colors.text}]}>
             Tap to reveal
           </Text>
@@ -2892,7 +2899,10 @@ export default function ChatScreen() {
             </Pressable>
           ) : null}
           {current.forwarded ? (
-            <Text style={[styles.forwardedLabel, {color: colors.textSecondary}]}>↪ Forwarded</Text>
+            <View style={styles.forwardedLabel}>
+              <Icon name="forward" size={11} color={colors.textSecondary} />
+              <Text style={{color: colors.textSecondary, fontSize: 11, fontWeight: '600'}}>Forwarded</Text>
+            </View>
           ) : null}
           {burn ? (
             <View style={styles.burnBubbleWrap}>
@@ -2905,7 +2915,7 @@ export default function ChatScreen() {
               />
               {isBurnCountingDown && countdown != null ? (
                 <View style={styles.burnCountdownBar}>
-                  <Text style={styles.burnCountdownIcon}>🔥</Text>
+                  <Icon name="flame" size={10} color="#FF6B35" style={styles.burnCountdownIcon} />
                   <View style={styles.burnCountdownTrack}>
                     <View
                       style={[
@@ -2955,7 +2965,7 @@ export default function ChatScreen() {
           ) : null}
           {current.timeCapsule && Date.now() < current.timeCapsule.unlocksAt ? (
             <View style={[styles.capsuleOverlay, {backgroundColor: colors.surface, borderColor: '#8B5CF6'}]}>
-              <Text style={styles.capsuleIcon}>{'\u23F3'}</Text>
+              <Icon name="timer" size={36} color="#8B5CF6" style={styles.capsuleIcon} />
               <Text style={[styles.capsuleTitle, {color: '#8B5CF6'}]}>Time Capsule</Text>
               <Text style={[styles.capsuleSub, {color: colors.textSecondary}]}>
                 Opens {new Date(current.timeCapsule.unlocksAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
@@ -2968,9 +2978,12 @@ export default function ChatScreen() {
           {renderLinkPreview(current.linkPreview)}
           {current.sharedList ? (
             <View style={[styles.sharedListCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <Text style={[styles.sharedListTitle, {color: colors.primary}]}>
-                {'📋'} {current.sharedList.title}
-              </Text>
+              <View style={styles.sharedListTitleRow}>
+                <Icon name="list" size={14} color={colors.primary} />
+                <Text style={[styles.sharedListTitle, {color: colors.primary}]}>
+                  {current.sharedList.title}
+                </Text>
+              </View>
               {(current.sharedList.items || []).map((item: SharedListItem) => (
                 <TouchableOpacity
                   key={item.id}
@@ -2982,9 +2995,7 @@ export default function ChatScreen() {
                       item.id,
                     )
                   }>
-                  <Text style={styles.sharedListCheck}>
-                    {item.checked ? '☑' : '☐'}
-                  </Text>
+                  <Icon name={item.checked ? 'checkSquare' : 'square'} size={16} color={colors.text} />
                   <Text
                     style={[
                       styles.sharedListItemText,
@@ -2999,7 +3010,7 @@ export default function ChatScreen() {
           ) : null}
           {current.expense ? (
             <View style={[styles.expenseCard, {backgroundColor: colors.surface, borderColor: colors.primary}]}>
-              <Text style={[styles.expenseCardIcon]}>{'💰'}</Text>
+              <Icon name="wallet" size={20} color={colors.primary} style={styles.expenseCardIcon} />
               <Text style={[styles.expenseCardDesc, {color: colors.text}]}>
                 {current.expense.description || 'Expense'}
               </Text>
@@ -3010,7 +3021,7 @@ export default function ChatScreen() {
           ) : null}
           {current.location ? (
             <View style={[styles.locationCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <Text style={styles.locationIcon}>{'📍'}</Text>
+              <Icon name="pin" size={18} color={colors.text} />
               <Text style={[styles.locationText, {color: colors.text}]}>
                 {current.location.address ||
                   `${current.location.latitude.toFixed(4)}, ${current.location.longitude.toFixed(4)}`}
@@ -3022,9 +3033,10 @@ export default function ChatScreen() {
           ) : null}
           {translatedTexts[String(current._id)] ? (
             <View style={[styles.translationCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <Text style={[styles.translationLabel, {color: colors.textSecondary}]}>
-                {'🌐'} Translation
-              </Text>
+              <View style={styles.translationLabelRow}>
+                <Icon name="globe" size={12} color={colors.textSecondary} />
+                <Text style={[styles.translationLabel, {color: colors.textSecondary}]}>Translation</Text>
+              </View>
               <Text style={[styles.translationText, {color: colors.text}]}>
                 {translatedTexts[String(current._id)]}
               </Text>
@@ -3032,9 +3044,10 @@ export default function ChatScreen() {
           ) : null}
           {(current as any).transcription ? (
             <View style={[styles.translationCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <Text style={[styles.translationLabel, {color: colors.textSecondary}]}>
-                {'🎙'} Transcription
-              </Text>
+              <View style={styles.translationLabelRow}>
+                <Icon name="mic" size={12} color={colors.textSecondary} />
+                <Text style={[styles.translationLabel, {color: colors.textSecondary}]}>Transcription</Text>
+              </View>
               <Text style={[styles.translationText, {color: colors.text}]}>
                 {(current as any).transcription}
               </Text>
@@ -3051,9 +3064,20 @@ export default function ChatScreen() {
               ) : null}
               <View style={styles.contextCardBody}>
                 <View style={styles.contextCardHeader}>
-                  <Text style={styles.contextCardTypeIcon}>
-                    {card.type === 'place' ? '\uD83D\uDDFA\uFE0F' : card.type === 'film' ? '\uD83C\uDFAC' : card.type === 'person' ? '\uD83D\uDC64' : '\uD83D\uDCD6'}
-                  </Text>
+                  <Icon
+                    name={
+                      card.type === 'place'
+                        ? 'pin'
+                        : card.type === 'film'
+                        ? 'play'
+                        : card.type === 'person'
+                        ? 'person'
+                        : 'book'
+                    }
+                    size={11}
+                    color={colors.primary}
+                    style={styles.contextCardTypeIcon}
+                  />
                   <Text style={[styles.contextCardType, {color: colors.primary}]}>
                     {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
                   </Text>
@@ -3090,7 +3114,12 @@ export default function ChatScreen() {
             <Pressable
               onPress={() => current.lottery.revealedIndex == null && revealLottery(current._id)}
               style={[styles.lotteryCard, {backgroundColor: colors.surface, borderColor: current.lottery.revealedIndex != null ? colors.success : '#F59E0B'}]}>
-              <Text style={styles.lotteryIcon}>{current.lottery.revealedIndex != null ? '\uD83C\uDF89' : '\uD83C\uDFB0'}</Text>
+              <Icon
+                name={current.lottery.revealedIndex != null ? 'sparkles' : 'gift'}
+                size={28}
+                color={current.lottery.revealedIndex != null ? colors.success : '#F59E0B'}
+                style={styles.lotteryIcon}
+              />
               {current.lottery.revealedIndex != null ? (
                 <>
                   <Text style={[styles.lotteryRevealed, {color: colors.success}]}>
@@ -3112,7 +3141,8 @@ export default function ChatScreen() {
           ) : null}
           {current.anonymous ? (
             <View style={styles.anonymousBadge}>
-              <Text style={styles.anonymousText}>{'\uD83D\uDC7B'} Anonymous</Text>
+              <Icon name="ghost" size={12} color="#AF52DE" />
+              <Text style={styles.anonymousText}>Anonymous</Text>
             </View>
           ) : null}
           {current.reactionChain?.length ? (
@@ -3150,7 +3180,7 @@ export default function ChatScreen() {
       <View>
         {burnMode ? (
           <View style={[styles.burnAccessoryBar, {backgroundColor: colors.surface, borderTopColor: colors.warning}]}>
-            <Text style={styles.burnAccessoryIcon}>🔥</Text>
+            <Icon name="flame" size={14} color={colors.warning} style={styles.burnAccessoryIcon} />
             <Text style={styles.burnAccessoryText}>
               Burn after reading ({formatBurnDuration(burnDuration)})
             </Text>
@@ -3195,7 +3225,7 @@ export default function ChatScreen() {
     return (
       <GlassScreen style={styles.container} edges={['top', 'bottom']}>
         <View style={styles.chatLockContainer}>
-          <Text style={styles.chatLockIcon}>{'\uD83D\uDD12'}</Text>
+          <Icon name="lock" size={48} color={colors.text} style={styles.chatLockIcon} />
           <Text style={[styles.chatLockTitle, {color: colors.text}]}>Chat Locked</Text>
           <Text style={[styles.chatLockSubtitle, {color: colors.textSecondary}]}>Enter PIN to access this chat</Text>
           <TextInput
@@ -3243,12 +3273,14 @@ export default function ChatScreen() {
       ) : null}
       {incognitoMode ? (
         <View style={[styles.offlineBanner, {backgroundColor: '#1A1A2E'}]}>
-          <Text style={styles.offlineText}>{'\uD83D\uDD35'} Incognito — no previews, no cache, no read receipts</Text>
+          <Icon name="blocked" size={13} color="#111" />
+          <Text style={styles.offlineText}>Incognito — no previews, no cache, no read receipts</Text>
         </View>
       ) : null}
       {isScreenshotProtectionEnabled() ? (
         <View style={[styles.offlineBanner, {backgroundColor: colors.success}]}>
-          <Text style={styles.offlineText}>{'\uD83D\uDEE1\uFE0F'} Screenshot protection active</Text>
+          <Icon name="shield" size={13} color="#111" />
+          <Text style={styles.offlineText}>Screenshot protection active</Text>
         </View>
       ) : null}
       {isOffline ? (
@@ -3261,17 +3293,17 @@ export default function ChatScreen() {
         // hard-coded to dark ink, so every banner background has to stay light
         // in dark mode too, and no neutral in the palette is light in both.
         <View style={[styles.offlineBanner, {backgroundColor: '#C7CDD6'}]}>
-          <Text style={styles.offlineText}>
-            {'🚫'} {t('chat.recipientDeleted')}
-          </Text>
+          <Icon name="blocked" size={13} color="#111" />
+          <Text style={styles.offlineText}>{t('chat.recipientDeleted')}</Text>
         </View>
       ) : null}
       {peerKeyChanged && !peerDeleted ? (
         <TouchableOpacity
           style={[styles.offlineBanner, {backgroundColor: colors.danger}]}
           onPress={verifyContact}>
+          <Icon name="alertTriangle" size={13} color="#111" />
           <Text style={styles.offlineText}>
-            {'⚠️'} {otherUserName}'s security code changed. Tap to verify.
+            {otherUserName}'s security code changed. Tap to verify.
           </Text>
         </TouchableOpacity>
       ) : null}
@@ -3325,18 +3357,42 @@ export default function ChatScreen() {
       ) : null}
       {SHOW_NATIVE_ONLY_FEATURES && chatPet ? (
         <View style={[styles.petWidget, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
-          <Text style={styles.petAvatar}>
-            {chatPet.species === 'plant' ? '\uD83C\uDF31' : chatPet.species === 'cat' ? '\uD83D\uDC31' : chatPet.species === 'dog' ? '\uD83D\uDC36' : chatPet.species === 'bunny' ? '\uD83D\uDC30' : '\uD83E\uDD8A'}
-          </Text>
+          <Icon
+            name={
+              chatPet.species === 'plant'
+                ? 'seedling'
+                : chatPet.species === 'cat'
+                ? 'cat'
+                : chatPet.species === 'dog'
+                ? 'dog'
+                : chatPet.species === 'bunny'
+                ? 'rabbit'
+                : 'fox'
+            }
+            size={24}
+            color={colors.text}
+            style={styles.petAvatar}
+          />
           <View style={styles.petInfo}>
             <Text style={[styles.petName, {color: colors.text}]}>{chatPet.name} Lv.{chatPet.level}</Text>
             <View style={[styles.petHealthBar, {backgroundColor: colors.border}]}>
               <View style={[styles.petHealthFill, {width: `${Math.max(0, Math.min(100, decayHealth(chatPet)))}%`, backgroundColor: decayHealth(chatPet) > 50 ? colors.success : decayHealth(chatPet) > 20 ? colors.warning : colors.danger}]} />
             </View>
           </View>
-          <Text style={styles.petMood}>
-            {calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'happy' ? '\u2764\uFE0F' : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'neutral' ? '\uD83D\uDE10' : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'sad' ? '\uD83D\uDE22' : '\uD83D\uDCA4'}
-          </Text>
+          <Icon
+            name={
+              calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'happy'
+                ? 'heartFilled'
+                : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'neutral'
+                ? 'faceNeutral'
+                : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'sad'
+                ? 'faceSad'
+                : 'faceSleepy'
+            }
+            size={16}
+            color={colors.text}
+            style={styles.petMood}
+          />
         </View>
       ) : null}
       {msgSelectMode ? (
@@ -3355,7 +3411,10 @@ export default function ChatScreen() {
       ) : null}
       {sharingLocation ? (
         <View style={[styles.locationBanner, {backgroundColor: colors.primary}]}>
-          <Text style={styles.locationBannerText}>{'📍 Sharing your location'}</Text>
+          <View style={styles.locationBannerRow}>
+            <Icon name="pin" size={14} color="#fff" />
+            <Text style={styles.locationBannerText}>Sharing your location</Text>
+          </View>
           <TouchableOpacity onPress={handleStopSharingLocation}>
             <Text style={styles.locationBannerStop}>Stop</Text>
           </TouchableOpacity>
@@ -3370,7 +3429,10 @@ export default function ChatScreen() {
             style={styles.locationPreviewImage}
           />
           <View style={styles.locationPreviewInfo}>
-            <Text style={[styles.locationPreviewTitle, {color: colors.text}]}>{'📍 Live location'}</Text>
+            <View style={styles.locationBannerRow}>
+              <Icon name="pin" size={13} color={colors.text} />
+              <Text style={[styles.locationPreviewTitle, {color: colors.text}]}>Live location</Text>
+            </View>
             <Text style={[styles.locationPreviewCoords, {color: colors.textSecondary}]}>
               {formatCoordinates(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
             </Text>
@@ -3585,7 +3647,7 @@ export default function ChatScreen() {
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>Media</Text>
                 <View style={styles.attachSectionRow}>
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); handlePickMedia(); }}>
-                    <Text style={styles.attachOptionIcon}>{'\uD83D\uDCF7'}</Text>
+                    <Icon name="camera" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>Photo</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); setGifPickerVisible(true); loadTrendingGifs(); }}>
@@ -3593,13 +3655,13 @@ export default function ChatScreen() {
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>GIF</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); dictating ? stopDictation() : startDictation(); }}>
-                    <Text style={styles.attachOptionIcon}>{'\uD83C\uDFA4'}</Text>
+                    <Icon name="mic" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? 'Stop' : 'Voice'}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.attachOption, sharingLocation && {backgroundColor: colors.primary}]}
                     onPress={() => { setAttachSheetVisible(false); sharingLocation ? handleStopSharingLocation() : handleShareLocation(); }}>
-                    <Text style={[styles.attachOptionIcon, sharingLocation && {color: '#fff'}]}>{'\uD83D\uDCCD'}</Text>
+                    <Icon name="pin" size={22} color={sharingLocation ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: sharingLocation ? '#fff' : colors.text}]}>{sharingLocation ? 'Stop' : 'Location'}</Text>
                   </TouchableOpacity>
                 </View>
@@ -3608,11 +3670,11 @@ export default function ChatScreen() {
                   {SHOW_NATIVE_ONLY_FEATURES && (
                     <>
                   <TouchableOpacity style={[styles.attachOption, timeCapsuleMode && {backgroundColor: '#8B5CF6'}]} onPress={() => { setTimeCapsuleMode(prev => !prev); }} onLongPress={() => setCapsulePickerVisible(true)}>
-                    <Text style={[styles.attachOptionIcon, timeCapsuleMode && {color: '#fff'}]}>{'\u23F3'}</Text>
+                    <Icon name="timer" size={22} color={timeCapsuleMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: timeCapsuleMode ? '#fff' : colors.text}]}>Timer</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, invisibleInkMode && {backgroundColor: '#6366F1'}]} onPress={() => setInvisibleInkMode(prev => !prev)}>
-                    <Text style={[styles.attachOptionIcon, invisibleInkMode && {color: '#fff'}]}>{'\uD83D\uDCA7'}</Text>
+                    <Icon name="droplet" size={22} color={invisibleInkMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: invisibleInkMode ? '#fff' : colors.text}]}>Invisible</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: '#EC4899'}]} onPress={() => { setAttachSheetVisible(false); setStylePickerVisible(true); }}>
@@ -3622,11 +3684,11 @@ export default function ChatScreen() {
                     </>
                   )}
                   <TouchableOpacity style={[styles.attachOption, burnMode && {backgroundColor: colors.warning}]} onPress={() => setBurnMode(prev => !prev)} onLongPress={() => setBurnDurationPickerVisible(true)}>
-                    <Text style={[styles.attachOptionIcon, burnMode && {color: colors.textOnPrimary}]}>🔥</Text>
+                    <Icon name="flame" size={22} color={burnMode ? colors.textOnPrimary : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: burnMode ? colors.textOnPrimary : colors.text}]}>Burn</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, viewOnceMode && {backgroundColor: '#10B981'}]} onPress={() => setViewOnceMode(prev => !prev)}>
-                    <Text style={[styles.attachOptionIcon, viewOnceMode && {color: '#fff'}]}>{'👁'}</Text>
+                    <Icon name="eye" size={22} color={viewOnceMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: viewOnceMode ? '#fff' : colors.text}]}>View Once</Text>
                   </TouchableOpacity>
                 </View>
@@ -3752,7 +3814,7 @@ export default function ChatScreen() {
                 setAnonymousMode(prev => !prev);
               }}>
               <Text style={[styles.actionSheetText, {color: anonymousMode ? '#AF52DE' : colors.text}]}>
-                {anonymousMode ? '\uD83D\uDC7B Anonymous ON' : '\uD83D\uDC7B Anonymous'}
+                {anonymousMode ? 'Anonymous ON' : 'Anonymous'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -3762,7 +3824,7 @@ export default function ChatScreen() {
                 setIncognitoMode(prev => !prev);
               }}>
               <Text style={[styles.actionSheetText, {color: incognitoMode ? colors.success : colors.text}]}>
-                {incognitoMode ? '\uD83D\uDD35 Incognito ON' : '\uD83D\uDD35 Incognito'}
+                {incognitoMode ? 'Incognito ON' : 'Incognito'}
               </Text>
             </TouchableOpacity>
             {otherUserId && user ? (
@@ -3772,7 +3834,7 @@ export default function ChatScreen() {
                   setActionsModalVisible(false);
                   verifyContact();
                 }}>
-                <Text style={[styles.actionSheetText, {color: colors.text}]}>{'\uD83D\uDD10'} Verify Contact</Text>
+                <Text style={[styles.actionSheetText, {color: colors.text}]}>Verify Contact</Text>
               </TouchableOpacity>
             ) : null}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Special</Text>
@@ -3981,7 +4043,7 @@ export default function ChatScreen() {
                     {formatBurnDuration(d)}
                   </Text>
                   {burnDuration === d ? (
-                    <Text style={styles.burnPickerCheck}>✓</Text>
+                    <Icon name="check" size={16} color="#FF6B35" />
                   ) : null}
                 </TouchableOpacity>
               ))}
@@ -4227,9 +4289,12 @@ export default function ChatScreen() {
         <Modal visible transparent animationType="fade" onRequestClose={() => setLotteryModalVisible(false)}>
           <Pressable style={styles.burnPickerBackdrop} onPress={() => setLotteryModalVisible(false)}>
             <View style={[styles.summarySheet, {backgroundColor: colors.background}]}>
-              <Text style={[styles.summarySheetTitle, {color: colors.text}]}>
-                {'\uD83C\uDFB0'} Mystery Box
-              </Text>
+              <View style={styles.summarySheetTitleRow}>
+                <Icon name="gift" size={18} color={colors.text} />
+                <Text style={[styles.summarySheetTitle, {color: colors.text, marginBottom: 0}]}>
+                  Mystery Box
+                </Text>
+              </View>
               <Text style={[{color: colors.textSecondary, fontSize: 13, marginBottom: 12}]}>
                 Add 2+ options. The recipient randomly reveals one!
               </Text>
@@ -4287,6 +4352,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   offlineBanner: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
     paddingVertical: 6,
     paddingHorizontal: 12,
     alignItems: 'center',
@@ -4357,8 +4425,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   forwardedLabel: {
-    fontSize: 11,
-    fontWeight: '600',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     marginBottom: 4,
     alignSelf: 'flex-start',
   },
@@ -4897,10 +4966,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
   },
+  sharedListTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
+  },
   sharedListTitle: {
     fontSize: 14,
     fontWeight: '700',
-    marginBottom: 6,
   },
   sharedListItem: {
     flexDirection: 'row',
@@ -4965,10 +5039,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
+  translationLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 3,
+  },
   translationLabel: {
     fontSize: 11,
     fontWeight: '600',
-    marginBottom: 3,
   },
   translationText: {
     fontSize: 14,
@@ -5091,10 +5170,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
   },
+  summarySheetTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginBottom: 12,
+  },
   summarySheetTitle: {
     fontSize: 18,
     fontWeight: '700',
-    marginBottom: 12,
     textAlign: 'center',
   },
   summaryLoading: {
@@ -5221,6 +5306,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
+  locationBannerRow: {flexDirection: 'row', alignItems: 'center', gap: 6},
   locationBannerText: {color: '#fff', fontSize: 14, fontWeight: '600'},
   locationBannerStop: {color: '#fff', fontSize: 14, fontWeight: '700', textDecorationLine: 'underline'},
   locationPreview: {
@@ -5261,6 +5347,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     opacity: 0.9,
   },
+  invisibleInkHintRow: {flexDirection: 'row', alignItems: 'center', gap: 6},
   invisibleInkHint: {color: '#fff', fontWeight: '700', fontSize: 13},
   gestureCard: {
     width: 200,
@@ -5287,6 +5374,9 @@ const styles = StyleSheet.create({
   lotteryRevealed: {fontSize: 18, fontWeight: '800', marginTop: 2},
   lotteryRevealedBy: {fontSize: 11, marginTop: 4},
   anonymousBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 2,

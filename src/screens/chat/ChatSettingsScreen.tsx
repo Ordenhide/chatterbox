@@ -32,6 +32,7 @@ import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache
 import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
+import Icon, {type IconName} from '../../components/Icon';
 import {createChatPet, getChatPet} from '../../services/chatPet';
 import {setChatLockPIN, removeChatLock, isChatLocked} from '../../services/appLock';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
@@ -40,23 +41,23 @@ import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '@react-native-firebase/firestore';
 
 const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
-const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: string}[] = [
-  {id: 'none', label: 'Off', icon: '\uD83D\uDD07'},
-  {id: 'rain', label: 'Rain', icon: '\uD83C\uDF27\uFE0F'},
-  {id: 'ocean', label: 'Ocean', icon: '\uD83C\uDF0A'},
-  {id: 'forest', label: 'Forest', icon: '\uD83C\uDF32'},
-  {id: 'cafe', label: 'Caf\u00E9', icon: '\u2615'},
-  {id: 'campfire', label: 'Fire', icon: '\uD83D\uDD25'},
-  {id: 'lofi', label: 'Lo-fi', icon: '\uD83C\uDFB5'},
-  {id: 'thunder', label: 'Thunder', icon: '\u26A1'},
-  {id: 'wind', label: 'Wind', icon: '\uD83C\uDF2C\uFE0F'},
+const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
+  {id: 'none', label: 'Off', icon: 'muteSpeaker'},
+  {id: 'rain', label: 'Rain', icon: 'rain'},
+  {id: 'ocean', label: 'Ocean', icon: 'oceanWave'},
+  {id: 'forest', label: 'Forest', icon: 'forest'},
+  {id: 'cafe', label: 'Caf\u00E9', icon: 'coffee'},
+  {id: 'campfire', label: 'Fire', icon: 'flame'},
+  {id: 'lofi', label: 'Lo-fi', icon: 'music'},
+  {id: 'thunder', label: 'Thunder', icon: 'lightning'},
+  {id: 'wind', label: 'Wind', icon: 'wind'},
 ];
-const PET_SPECIES: {id: ChatPet['species']; icon: string; label: string}[] = [
-  {id: 'plant', icon: '\uD83C\uDF31', label: 'Plant'},
-  {id: 'cat', icon: '\uD83D\uDC31', label: 'Cat'},
-  {id: 'dog', icon: '\uD83D\uDC36', label: 'Dog'},
-  {id: 'bunny', icon: '\uD83D\uDC30', label: 'Bunny'},
-  {id: 'fox', icon: '\uD83E\uDD8A', label: 'Fox'},
+const PET_SPECIES: {id: ChatPet['species']; icon: IconName; label: string}[] = [
+  {id: 'plant', icon: 'seedling', label: 'Plant'},
+  {id: 'cat', icon: 'cat', label: 'Cat'},
+  {id: 'dog', icon: 'dog', label: 'Dog'},
+  {id: 'bunny', icon: 'rabbit', label: 'Bunny'},
+  {id: 'fox', icon: 'fox', label: 'Fox'},
 ];
 const WALLPAPER_COLORS = [
   null,
@@ -275,7 +276,7 @@ export default function ChatSettingsScreen() {
             idx === 0 && !wallpaper && [styles.themeDotSelected, {borderColor: colors.text}],
           ]}
           onPress={() => handleWallpaperSelect(wp)}>
-          {idx === 0 ? <Text style={{fontSize: 12}}>{'✕'}</Text> : null}
+          {idx === 0 ? <Icon name="close" size={12} color={colors.text} /> : null}
         </TouchableOpacity>
       )),
     [wallpaper, colors.text, colors.border],
@@ -376,7 +377,7 @@ export default function ChatSettingsScreen() {
                   await setDoc(doc(db, 'chats', chatId), {soundscape: s.id}, {merge: true});
                 } catch { /* ignore */ }
               }}>
-              <Text style={{fontSize: 14}}>{s.icon}</Text>
+              <Icon name={s.icon} size={14} color={colors.text} />
             </TouchableOpacity>
           ))}
         </View>
@@ -401,7 +402,7 @@ export default function ChatSettingsScreen() {
                     }},
                   ]);
                 }}>
-                <Text style={{fontSize: 20}}>{p.icon}</Text>
+                <Icon name={p.icon} size={20} color={colors.text} />
               </TouchableOpacity>
             ))}
           </View>
@@ -420,7 +421,7 @@ export default function ChatSettingsScreen() {
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>{'\uD83D\uDD12'} Security</Text>
+        <Text style={[styles.sectionTitle, {color: colors.text}]}>Security</Text>
         {SHOW_NATIVE_ONLY_FEATURES && (
         <TouchableOpacity
           style={styles.row}

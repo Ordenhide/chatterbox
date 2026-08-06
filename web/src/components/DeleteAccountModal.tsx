@@ -4,6 +4,7 @@ import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {deleteAccount, type PasswordChangeError} from '../services/account';
 import Icon from './Icon';
+import PasswordInput from './PasswordInput';
 
 /**
  * Confirmation flow for permanent account deletion.
@@ -102,10 +103,9 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
         <label style={styles.label} htmlFor="delete-account-password">
           {t('account.deleteEnterPassword')}
         </label>
-        <input
+        <PasswordInput
           id="delete-account-password"
           style={styles.input}
-          type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           autoComplete="current-password"

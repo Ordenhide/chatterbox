@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {colors} from '../theme';
 import {useT} from '../i18n';
 import BrandMark from '../components/BrandMark';
+import PasswordInput from '../components/PasswordInput';
 import {signIn, signUp} from '../services/auth';
 import {checkPasswordStrength} from '../services/passwordPolicy';
 
@@ -78,11 +79,10 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
           onChange={e => setEmail(e.target.value)}
           autoComplete="email"
         />
-        <input
+        <PasswordInput
           style={styles.input}
           placeholder={t('login.password')}
           aria-label={t('login.password')}
-          type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}

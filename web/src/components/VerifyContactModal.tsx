@@ -6,10 +6,6 @@ import {computeSafetyNumber} from '../services/e2ee';
 import {fetchPeerPublicKey, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 import Icon from './Icon';
 
-// No dedicated icon in Icon.tsx for this — the 🔒 emoji is already the
-// established marker for E2EE UI elsewhere (the encrypted-message placeholder,
-// the reply-quote fallback), so it's reused here rather than adding an SVG.
-
 /**
  * Out-of-band key verification ("safety number"). This is the only defense
  * the E2EE prototype has against a compromised server substituting a public
@@ -79,7 +75,7 @@ export default function VerifyContactModal({
         onClick={e => e.stopPropagation()}>
         <div style={styles.head}>
           <span style={styles.title}>
-            {'🔒 '}
+            <Icon name="lock" size={16} />
             {t('chat.verifyContact')} — {peerName}
           </span>
           <button style={styles.close} onClick={onClose} aria-label={t('common.close')}>

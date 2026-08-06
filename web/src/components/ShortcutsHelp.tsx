@@ -2,6 +2,7 @@ import {colors} from '../theme';
 import {useT} from '../i18n';
 import {useModal} from '../hooks/useModal';
 import {modifierLabel, SHORTCUT_HELP} from '../services/shortcuts';
+import Icon from './Icon';
 
 /**
  * The `?` overlay listing every binding.
@@ -30,7 +31,7 @@ export default function ShortcutsHelp({onClose}: {onClose: () => void}) {
         <div style={styles.head}>
           <h2 style={styles.title}>{t('shortcuts.title')}</h2>
           <button type="button" onClick={onClose} style={styles.close} aria-label={t('common.close')}>
-            ✕
+            <Icon name="close" size={16} />
           </button>
         </div>
 

@@ -36,7 +36,9 @@
     "accept": "Accept",
     "decline": "Decline",
     "justNow": "Just now",
-    "tapToRetry": "Tap to retry."
+    "tapToRetry": "Tap to retry.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "tabs": {
     "chats": "Chats",

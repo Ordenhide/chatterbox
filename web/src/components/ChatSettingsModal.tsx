@@ -12,7 +12,7 @@ import {
   toggleMuteChat,
 } from '../services/chat';
 import {uploadChatWallpaper} from '../services/storage';
-import {useStoreTheme} from '../hooks/useStoreTheme';
+import {useAccountTheme} from '../context/StoreThemeContext';
 import {resolveAccent} from '../services/storeTheme';
 import {useToast} from '../context/ToastContext';
 import type {ChatRoom} from '../types';
@@ -58,7 +58,7 @@ export default function ChatSettingsModal({
   // Mirrors what ChatPane actually renders, so the highlighted swatch matches
   // the chat on screen even when the colour comes from the account-wide Store
   // theme rather than this chat's own stored value.
-  const storeTheme = useStoreTheme(me.uid);
+  const storeTheme = useAccountTheme();
   const theme = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, THEME_COLORS[0]);
   const wallpaper = chat?.wallpaperBy?.[me.uid] ?? null;
   const expiry = chat?.messageExpiry || 0;

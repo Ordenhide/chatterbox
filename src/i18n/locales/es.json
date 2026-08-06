@@ -24,7 +24,9 @@
     "accept": "Aceptar",
     "decline": "Rechazar",
     "justNow": "Justo ahora",
-    "tapToRetry": "Toca para reintentar."
+    "tapToRetry": "Toca para reintentar.",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña"
   },
   "tabs": {
     "chats": "Chats",

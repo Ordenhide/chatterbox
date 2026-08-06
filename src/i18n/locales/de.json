@@ -24,7 +24,9 @@
     "accept": "Akzeptieren",
     "decline": "Ablehnen",
     "justNow": "Gerade eben",
-    "tapToRetry": "Tippen zum erneuten Versuch."
+    "tapToRetry": "Tippen zum erneuten Versuch.",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort ausblenden"
   },
   "tabs": {
     "chats": "Chats",

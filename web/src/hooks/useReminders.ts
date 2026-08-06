@@ -23,7 +23,7 @@ export function useReminders(uid: string | null): void {
       pending.current.forEach(r => {
         if (r.remindAt > now || fired.current.has(r.id)) return;
         fired.current.add(r.id);
-        showLocalNotification('⏰ ' + (r.messagePreview || 'Reminder'), r.messagePreview || '', r.chatId);
+        showLocalNotification(r.messagePreview || 'Reminder', r.messagePreview || '', r.chatId);
         markReminderSent(uid, r.id).catch(() => fired.current.delete(r.id));
       });
     };

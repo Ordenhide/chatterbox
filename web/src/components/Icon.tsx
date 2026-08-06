@@ -46,7 +46,36 @@ export type IconName =
   | 'calendar'
   | 'list'
   | 'check'
-  | 'smile';
+  | 'smile'
+  | 'lock'
+  | 'key'
+  | 'shield'
+  | 'ghost'
+  | 'blocked'
+  | 'alertTriangle'
+  | 'forward'
+  | 'droplet'
+  | 'wallet'
+  | 'person'
+  | 'book'
+  | 'muteSpeaker'
+  | 'rain'
+  | 'oceanWave'
+  | 'forest'
+  | 'coffee'
+  | 'lightning'
+  | 'wind'
+  | 'gift'
+  | 'square'
+  | 'checkSquare'
+  | 'seedling'
+  | 'cat'
+  | 'dog'
+  | 'rabbit'
+  | 'fox'
+  | 'faceNeutral'
+  | 'faceSad'
+  | 'faceSleepy';
 
 const FILLED = new Set<IconName>(['more', 'heartFilled', 'play', 'pause', 'stop']);
 
@@ -273,6 +302,170 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <circle cx="12" cy="12" r="9" />
       <path d="M8 14s1.5 2 4 2 4-2 4-2" />
       <path d="M9 9h.01M15 9h.01" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </>
+  ),
+  key: (
+    <>
+      <circle cx="8" cy="15" r="4" />
+      <path d="M11 12l9-9M17 6l3 3M14 9l2 2" />
+    </>
+  ),
+  shield: <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" />,
+  ghost: (
+    <>
+      <path d="M6 20V10a6 6 0 0 1 12 0v10l-2.5-2-2 2-1.5-1.5L10.5 20 8 18l-2 2z" />
+      <path d="M9 10h.01M15 10h.01" />
+    </>
+  ),
+  blocked: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <line x1="5.5" y1="5.5" x2="18.5" y2="18.5" />
+    </>
+  ),
+  alertTriangle: (
+    <>
+      <path d="M12 3L2 21h20L12 3z" />
+      <path d="M12 10v5M12 18h.01" />
+    </>
+  ),
+  forward: <path d="M15 17l5-5-5-5M20 12H9a5 5 0 0 0-5 5v2" />,
+  droplet: <path d="M12 3s7 8 7 13a7 7 0 0 1-14 0c0-5 7-13 7-13z" />,
+  wallet: (
+    <>
+      <path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+      <path d="M16 12h2" />
+    </>
+  ),
+  person: (
+    <>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </>
+  ),
+  book: (
+    <>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </>
+  ),
+  muteSpeaker: (
+    <>
+      <path d="M11 5L6 9H3v6h3l5 4V5z" />
+      <line x1="16" y1="9" x2="21" y2="14" />
+      <line x1="21" y1="9" x2="16" y2="14" />
+    </>
+  ),
+  rain: (
+    <>
+      <path d="M17 13a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.5A4 4 0 0 0 7 14h10z" />
+      <path d="M8 18l-1 2M12 18l-1 2M16 18l-1 2" />
+    </>
+  ),
+  oceanWave: (
+    <>
+      <path d="M2 14c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0 3.5 2 5 0" />
+      <path d="M2 19c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0 3.5 2 5 0" />
+    </>
+  ),
+  forest: (
+    <>
+      <path d="M12 2L6 12h3l-4 8h14l-4-8h3L12 2z" />
+      <path d="M12 22v-4" />
+    </>
+  ),
+  coffee: (
+    <>
+      <path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8z" />
+      <path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17" />
+      <path d="M8 3c0 1-1 1-1 2M12 3c0 1-1 1-1 2" />
+    </>
+  ),
+  lightning: <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />,
+  wind: (
+    <>
+      <path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5" />
+      <path d="M3 13h15a2.5 2.5 0 1 1-2.5 2.5" />
+      <path d="M3 18h9a2 2 0 1 0-2-2" />
+    </>
+  ),
+  gift: (
+    <>
+      <rect x="3" y="8" width="18" height="13" rx="1.5" />
+      <path d="M3 12h18M12 8v13" />
+      <path d="M7.5 8a2.5 2.5 0 1 1 4.5-2 2.5 2.5 0 1 1 4.5 2" />
+    </>
+  ),
+  square: <rect x="4" y="4" width="16" height="16" rx="3" />,
+  checkSquare: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <path d="M8 12l2.5 2.5L16 9" />
+    </>
+  ),
+  seedling: (
+    <>
+      <path d="M12 21V10" />
+      <path d="M12 10C12 10 6 10 6 4c6 0 6 6 6 6z" />
+      <path d="M12 14c0 0 6 0 6-6c-6 0-6 6-6 6z" />
+    </>
+  ),
+  cat: (
+    <>
+      <path d="M5 9l2-5 3 3h4l3-3 2 5" />
+      <circle cx="12" cy="13" r="8" />
+      <path d="M9 13h.01M15 13h.01" />
+      <path d="M10 17c.6.5 1.3.5 2 .5s1.4 0 2-.5" />
+    </>
+  ),
+  dog: (
+    <>
+      <circle cx="12" cy="13" r="8" />
+      <path d="M5 9c-2-2-3-1-3 2s2 3 3 2M19 9c2-2 3-1 3 2s-2 3-3 2" />
+      <path d="M9 13h.01M15 13h.01" />
+      <path d="M10 19c.6.4 1.3.4 2 .4s1.4 0 2-.4" />
+    </>
+  ),
+  rabbit: (
+    <>
+      <circle cx="12" cy="15" r="6" />
+      <path d="M9 9C8 4 8 2 9.5 2S11 5 11 9M15 9c1-5 1-7-.5-7S13 5 13 9" />
+      <path d="M10 15h.01M14 15h.01" />
+      <path d="M11 18h2" />
+    </>
+  ),
+  fox: (
+    <>
+      <path d="M4 8l4 2 4-4 4 4 4-2-2 6a6 6 0 0 1-12 0z" />
+      <path d="M10 14h.01M14 14h.01" />
+      <path d="M12 16l-1 1.5h2L12 16z" />
+    </>
+  ),
+  faceNeutral: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 15h8" />
+      <path d="M9 9h.01M15 9h.01" />
+    </>
+  ),
+  faceSad: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 16s1.5-2 4-2 4 2 4 2" />
+      <path d="M9 9h.01M15 9h.01" />
+    </>
+  ),
+  faceSleepy: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 9c.5.5 1.5.5 2 0M14 9c.5.5 1.5.5 2 0" />
+      <path d="M9 15c1 1 5 1 6 0" />
     </>
   ),
 };
