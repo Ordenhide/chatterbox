@@ -11,6 +11,7 @@ import {useReminders} from '../hooks/useReminders';
 import {useIncomingRequests} from '../hooks/useIncomingRequests';
 import {useToast} from '../context/ToastContext';
 import {EntitlementProvider} from '../context/EntitlementContext';
+import {StoreThemeProvider} from '../context/StoreThemeContext';
 import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
 import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
 import {emitShortcut, type ShortcutId} from '../services/shortcuts';
@@ -198,6 +199,7 @@ export default function MainApp({user}: {user: User}) {
 
   return (
     <EntitlementProvider uid={user.uid}>
+    <StoreThemeProvider uid={user.uid}>
     <CallProvider user={me}>
       {isMobile ? (
         <div style={styles.mobileShell}>
@@ -218,9 +220,14 @@ export default function MainApp({user}: {user: User}) {
       ) : (
         <div style={styles.shell}>
           <nav style={styles.rail}>
-            <div style={{marginBottom: 12}}>
+            <button
+              type="button"
+              className="brand-btn"
+              style={styles.brandBtn}
+              title={t('nav.chats')}
+              onClick={() => setTab('chats')}>
               <BrandMark size={40} />
-            </div>
+            </button>
             {TABS.map(t => (
               <button
                 key={t.key}
@@ -241,12 +248,21 @@ export default function MainApp({user}: {user: User}) {
 
       {tourOpen && <TourOverlay onClose={closeTour} />}
     </CallProvider>
+    </StoreThemeProvider>
     </EntitlementProvider>
   );
 }
 
 const styles: Record<string, React.CSSProperties> = {
   shell: {height: '100%', display: 'flex'},
+  brandBtn: {
+    marginBottom: 12,
+    padding: 0,
+    border: 'none',
+    background: 'none',
+    display: 'flex',
+    cursor: 'pointer',
+  },
   tabLoading: {flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'},
   mobileShell: {height: '100%', display: 'flex', flexDirection: 'column'},
   mobileContent: {flex: 1, minHeight: 0, display: 'flex'},

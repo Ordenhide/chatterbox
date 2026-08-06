@@ -64,8 +64,20 @@ export const THEME_CATALOG: StoreTheme[] = [
  * long-standing behaviour) instead of guessing.
  */
 export function isDarkWallpaper(wallpaper: string | null | undefined): boolean {
-  if (!wallpaper || !wallpaper.startsWith('#')) return false;
-  const hex = wallpaper.slice(1);
+  return isDarkColor(wallpaper);
+}
+
+/**
+ * Whether a hex colour is dark enough to need light ink on top.
+ *
+ * Same BT.601 test `isDarkWallpaper` has always used, exposed separately
+ * because accents need it too: a theme's accent becomes a button fill
+ * app-wide, and bright accents (amber, matcha) need dark ink while deep ones
+ * (lavender, rose) need white.
+ */
+export function isDarkColor(color: string | null | undefined): boolean {
+  if (!color || !color.startsWith('#')) return false;
+  const hex = color.slice(1);
   const full =
     hex.length === 3
       ? hex

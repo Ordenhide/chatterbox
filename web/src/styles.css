@@ -103,7 +103,10 @@ body,
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--cb-text);
-  background: var(--cb-canvas);
+  /* Overridden inline (--cb-wallpaper) by StoreThemeContext when the account
+     has an applied Store theme, so it paints app-wide rather than only
+     inside an open chat. Falls back to the normal per-mode canvas color. */
+  background: var(--cb-wallpaper, var(--cb-canvas));
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow: hidden;
@@ -254,6 +257,18 @@ button:focus-visible {
 .chat-item.active {
   background: linear-gradient(135deg, rgba(22, 181, 216, 0.22), rgba(76, 130, 216, 0.12));
   box-shadow: inset 0 0 0 1px rgba(22, 181, 216, 0.3);
+}
+
+/* ---- Rail logo, doubles as a "go to Chats" button ---- */
+.brand-btn {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.brand-btn:hover {
+  transform: scale(1.06);
+}
+.brand-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
 }
 
 /* ---- Nav rail buttons ---- */
