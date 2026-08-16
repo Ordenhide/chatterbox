@@ -31,17 +31,27 @@ This directory is that place.
 | `storage.ts` | Re-export **plus** `uploadFileFromUri`, see below. |
 | `analytics.ts` `crashlytics.ts` `remoteConfig.ts` | Re-exports, each with exactly one consumer — see below. |
 
-## Today they are plain re-exports
+## Both halves now exist
 
-On purpose. Introducing the seam and changing the implementation are two
-separate changes, and doing them together would mean a 45-file refactor whose
-runtime behaviour also moved. Right now every module here forwards to
-`@react-native-firebase/*`, so iOS and Android execute exactly the same code
-they did before — the indirection is free and the diff is reviewable.
+`foo.ts` forwards to `@react-native-firebase/*` — iOS and Android execute the
+same code they always did. `foo.harmony.ts` forwards to `firebase/*`, the pure
+JS SDK. Metro picks between them by platform extension, so no call site knows
+which one it got.
 
-A HarmonyOS implementation lands later as `*.harmony.ts` siblings that forward
-to `firebase/*` instead. Metro resolves platform extensions automatically, so
-no call site changes again.
+Verified by bundling each platform and grepping the output:
+
+| platform | React Native Firebase | Firebase JS SDK |
+| --- | --- | --- |
+| ios | present | absent |
+| android | present | absent |
+| harmony | **absent** | **present** |
+
+`app.harmony.ts` constructs the default `FirebaseApp` from
+`src/firebaseConfig.ts`, because HarmonyOS has no native config file to
+bootstrap from. Every other `*.harmony.ts` imports it, so initialisation
+happens once. They import `./app.harmony` by its full name rather than `./app`:
+TypeScript has no notion of platform extensions, and there is no `app.ts` for
+it to resolve.
 
 ## The three things that are not portable
 
@@ -58,7 +68,34 @@ They are one file each and entirely optional to the product, so `telemetry.ts`
 exposes them behind a narrow interface that a HarmonyOS build can implement as
 no-ops or against AppGallery Connect.
 
-**Messaging (FCM)** is deliberately *not* here. It cannot be made portable at
-any layer: it depends on Google Play Services, which HarmonyOS does not have.
-Push on HarmonyOS is Huawei Push Kit — a different service with its own token
-lifecycle, not a swappable implementation of the same one.
+**Messaging (FCM)** is in `push.ts` / `push.harmony.ts`, and the harmony side
+is empty. It cannot be made portable at any layer: it depends on Google Play
+Services, which HarmonyOS does not have. Push there is Huawei Push Kit — a
+different service with its own token lifecycle, to be built as a feature rather
+than substituted as an implementation. Until then a HarmonyOS build receives no
+notifications while backgrounded; messages still arrive over the Firestore
+listener while the app is open.
+
+**App Check** (`bootstrap.harmony.ts`) is absent for the same kind of reason —
+it attests via Play Integrity / App Attest, OS services with no HarmonyOS
+counterpart. Worth knowing: if App Check is ever set to *enforce* on Firestore,
+Storage or Functions, a HarmonyOS build stops working outright rather than
+degrading.
+
+## Known gaps on HarmonyOS
+
+- **No offline persistence.** The JS SDK's persistent cache is IndexedDB;
+  `firestore.harmony.ts` asks for `memoryLocalCache` explicitly. Messages are
+  separately cached in MMKV, so cold start still shows content.
+- **Long polling** is forced, since Firestore's streaming transport relies on
+  browser XHR behaviour React Native does not reproduce. Costs some update
+  latency; a listener that silently never fires costs more.
+- **Uploads buffer in memory.** `putFile` streamed from a path; the JS SDK has
+  no filesystem, so `uploadFileFromUri` fetches the URI into a Blob first. The
+  app's existing 50MB video / 25MB file limits keep that bounded.
+- **Session persistence is unconfirmed on device.** It relies on
+  `getReactNativePersistence`, reachable only through the package's
+  `react-native` export condition. That symbol *is* present in the harmony
+  bundle, so Metro selects the right build — but it has not been exercised at
+  runtime. If it were missing, the symptom is signing in again after each
+  restart.

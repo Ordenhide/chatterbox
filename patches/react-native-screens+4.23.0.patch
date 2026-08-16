@@ -13,7 +13,7 @@ index 3270127..0868085 100644
  
  #if !defined(RCT_NEW_ARCH_ENABLED)
  // Some RN private method hacking below. Couldn't figure out better way to access image data
-@@ -488,7 +488,7 @@ + (UINavigationBarAppearance *)buildAppearance:(UIViewController *)vc withConfig
+@@ -488,7 +488,7 @@ RNS_IGNORE_SUPER_CALL_END
  #endif
  
      NSString *family = config.titleFontFamily ?: nil;
@@ -22,7 +22,7 @@ index 3270127..0868085 100644
      NSString *weight = config.titleFontWeight ?: nil;
      if (family || weight) {
        attrs[NSFontAttributeName] = [RCTFont updateFont:nil
-@@ -516,7 +516,7 @@ + (UINavigationBarAppearance *)buildAppearance:(UIViewController *)vc withConfig
+@@ -516,7 +516,7 @@ RNS_IGNORE_SUPER_CALL_END
  #endif
  
      NSString *largeFamily = config.largeTitleFontFamily ?: nil;
@@ -31,3 +31,21 @@ index 3270127..0868085 100644
      NSString *largeWeight = config.largeTitleFontWeight ?: nil;
      if (largeFamily || largeWeight) {
        largeAttrs[NSFontAttributeName] = [RCTFont updateFont:nil
+diff --git a/node_modules/react-native-screens/src/native-stack/contexts/GHContext.tsx b/node_modules/react-native-screens/src/native-stack/contexts/GHContext.tsx
+new file mode 100644
+index 0000000..6aadbaf
+--- /dev/null
++++ b/node_modules/react-native-screens/src/native-stack/contexts/GHContext.tsx
+@@ -0,0 +1,12 @@
++/**
++ * Compatibility shim for the pre-v4 GHContext path.
++ *
++ * @react-native-oh-tpl/react-native-screens (based on upstream v3.34, the
++ * newest version with a HarmonyOS port) does a deep import of
++ * 'react-native-screens/src/native-stack/contexts/GHContext'. Our real
++ * react-native-screens is v4.23, where GHContext moved to '../../contexts'
++ * during a refactor — same export, new location. This restores the old path
++ * rather than patching the oh-tpl package, since the oh-tpl source is
++ * upstream-maintained and this is the smaller, more targeted fix.
++ */
++export {GHContext} from '../../contexts';

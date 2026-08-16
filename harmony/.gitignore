@@ -1,0 +1,30 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+# build-profile.json5 is deliberately NOT ignored, unlike the RNOH scaffold's
+# default. It holds real project settings — compatibleSdkVersion,
+# targetSdkVersion — that a fresh clone needs; compatibleSdkVersion in
+# particular was hand-bumped to satisfy react-native-document-picker's
+# harmony port (see harmony/README.md). Ignoring it, as the scaffold does by
+# default, would silently drop that fix on every fresh checkout.
+#
+# Caution if you ever sign the HAP locally through DevEco (File > Project
+# Structure > Signing Configs > Automatically generate signature): that
+# writes your own certificate paths into this file's `signingConfigs` array.
+# Don't commit those — revert that section, or ask before committing if
+# you're unsure what changed.
+
+/local.properties
+/.idea
+**/build
+/.hvigor
+.cxx
+/.clangd
+/.clang-format
+/.clang-tidy
+/oh_modules
+hvigorw
+hvigorw.bat
+hvigor/hvigor-wrapper.js

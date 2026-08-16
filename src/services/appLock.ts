@@ -1,8 +1,6 @@
 import {mmkvStorage} from './storageMMKV';
 import {bytesToHex, secureRandomBytes} from './crypto';
-import ReactNativeBiometrics from 'react-native-biometrics';
-
-const biometrics = new ReactNativeBiometrics();
+import * as biometrics from './biometrics';
 
 // FNV-1a over the concatenated salt+pin, run for `rounds` iterations.
 // Not as strong as PBKDF2 (no native crypto available in Hermes), but with a
@@ -82,10 +80,7 @@ export async function verifyPIN(input: string): Promise<boolean> {
 
 export async function authenticateWithBiometrics(): Promise<boolean> {
   try {
-    const result = await biometrics.simplePrompt({
-      promptMessage: 'Unlock Chatterbox',
-    });
-    return result.success;
+    return await biometrics.simplePrompt('Unlock Chatterbox');
   } catch {
     return false;
   }
@@ -93,8 +88,7 @@ export async function authenticateWithBiometrics(): Promise<boolean> {
 
 export async function isBiometricsAvailable(): Promise<boolean> {
   try {
-    const {available, biometryType} = await biometrics.isSensorAvailable();
-    return available && !!biometryType;
+    return await biometrics.isSensorAvailable();
   } catch {
     return false;
   }

@@ -27,7 +27,6 @@ const noMacosSupport = [
   'react-native-image-resizer',
   'react-native-incall-manager',
   'react-native-screens',
-  'react-native-vector-icons',
   'react-native-video',
   // Its podspec declares macOS, but the RN bridge has no working macOS
   // implementation in any current fork (see the calls-on-macOS research);

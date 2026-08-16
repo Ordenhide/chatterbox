@@ -94,3 +94,10 @@ ios/xcodebuild-sim.log
 ios/buildsettings-cli.txt
 
 .aider*
+
+# HarmonyOS build output (harmony/.gitignore covers build/, .hvigor, oh_modules
+# at its own level; these are the paths it misses).
+/harmony/oh_modules/
+/harmony/entry/oh_modules/
+/harmony/entry/src/main/resources/rawfile/bundle.harmony.js
+/harmony/entry/src/main/resources/rawfile/assets/

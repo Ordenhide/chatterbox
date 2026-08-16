@@ -8,15 +8,8 @@ import {ScrollMotionProvider} from './src/contexts/ScrollMotionContext';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
-import {getApp, getApps, initializeApp} from '@react-native-firebase/app';
-import {ReactNativeFirebaseAppCheckProvider, initializeAppCheck} from '@react-native-firebase/app-check';
-import {
-  getMessaging,
-  getToken,
-  onMessage,
-  onTokenRefresh,
-} from '@react-native-firebase/messaging';
-import {firebaseConfig} from './src/firebaseConfig';
+import {initFirebase} from './src/services/firebase/bootstrap';
+import {getMessaging, getToken, onMessage, onTokenRefresh} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
@@ -157,45 +150,14 @@ function AppContent() {
 function App(): React.JSX.Element {
   useEffect(() => {
     try {
-      if (getApps().length === 0) {
-        initializeApp(firebaseConfig);
-      }
-      const app = getApp();
+      // App init + App Check, behind the platform seam. On HarmonyOS the
+      // Firebase JS SDK is initialised instead and App Check is absent — it
+      // needs Play Integrity / App Attest, which that platform has no
+      // counterpart for. See src/services/firebase/bootstrap.harmony.ts.
+      const appName = initFirebase();
       if (__DEV__) {
-        console.log('[firebase] default app initialized:', app.name);
+        console.log('[firebase] default app initialized:', appName);
       }
-
-      // App Check: attests that requests to Firestore/Storage/Functions come from
-      // this real, unmodified app build, blocking scripted abuse of the backend.
-      // Release builds use Play Integrity (Android) / App Attest (iOS), which
-      // require enabling App Check for this app in the Firebase Console first.
-      //
-      // Debug builds use the Debug provider with a *fixed* token (below) rather
-      // than an auto-generated one. Left auto-generated, the SDK mints a new
-      // random token on every fresh install/data-wipe, and each one has to be
-      // re-registered in Firebase Console > App Check > Manage debug tokens
-      // before App Check-gated calls will work again — including plain
-      // email/password reauth (changePassword and account deletion both call
-      // reauthenticateWithCredential, which Firebase now routes through App
-      // Check too), so this silently breaks on every fresh
-      // emulator/simulator with no error pointing back here. A fixed token only
-      // needs registering once per platform, ever.
-      const DEBUG_APP_CHECK_TOKEN_ANDROID = '6c53c9a1-98b6-432f-96b2-a37aaa69bc30';
-      const DEBUG_APP_CHECK_TOKEN_APPLE = '77904aef-75a2-4069-98a2-00c7bc76e80b';
-      // RNFB 26 dropped the namespaced default export; the provider is now a
-      // directly-constructed class, matching the Firebase JS SDK's shape.
-      const appCheckProvider = new ReactNativeFirebaseAppCheckProvider();
-      appCheckProvider.configure({
-        android: {
-          provider: __DEV__ ? 'debug' : 'playIntegrity',
-          debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_ANDROID : undefined,
-        },
-        apple: {
-          provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
-          debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_APPLE : undefined,
-        },
-      });
-      initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});
     } catch (error) {
       if (__DEV__) {
         console.error('[firebase] default app not initialized:', error);

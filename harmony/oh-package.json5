@@ -1,0 +1,26 @@
+{
+  "name": "chatterbox",
+  "description": "Chatterbox HarmonyOS client",
+  "version": "1.0.0",
+  "modelVersion": "5.0.0",
+  "license": "ISC",
+  "repository": {},
+  "dependencies": {
+    "@rnoh/react-native-openharmony": "file:../node_modules/@react-native-oh/react-native-harmony/react_native_openharmony.har",
+    "@react-native-oh-tpl/react-native-gesture-handler": "file:../node_modules/@react-native-oh-tpl/react-native-gesture-handler/harmony/gesture_handler.har",
+    "@react-native-oh-tpl/react-native-screens": "file:../node_modules/@react-native-oh-tpl/react-native-screens/harmony/screens.har"
+  },
+  "devDependencies": {
+    "@ohos/hypium": "1.0.6",
+  },
+  "overrides": {
+    "@rnoh/react-native-openharmony": "file:../node_modules/@react-native-oh/react-native-harmony/react_native_openharmony.har",
+  },
+}
+
+
+
+
+
+
+

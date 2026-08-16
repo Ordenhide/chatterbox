@@ -10,6 +10,10 @@ const {createHarmonyMetroConfig} = require('@react-native-oh/react-native-harmon
  * fork of React Native itself rather than a library on top of one, which is why
  * this is a resolver-level redirect and not a dependency.
  *
+ * NOTE: `react-native init-harmony` overwrites this file with its own template
+ * and warns "Overwritten ./metro.config.js" as it goes. The template drops the
+ * serializer fix below. If you ever re-run that command, restore this file.
+ *
  * @type {import('metro-config').MetroConfig}
  */
 const defaultConfig = getDefaultConfig(__dirname);
@@ -28,12 +32,12 @@ const harmonyConfig = createHarmonyMetroConfig({
  * replaces an earlier one, so merging RNOH's after the default handed iOS and
  * Android an empty list and InitializeCore stopped running at all.
  *
- * The symptom is worth recording, because it is a long way from the cause: the
- * app bundles and launches fine, then dies on the first module that touches a
- * runtime global — `ReferenceError: Property 'window' doesn't exist`, thrown
- * from React Native's own AnimatedProps reading
- * `window.__REACT_DEVTOOLS_GLOBAL_HOOK__`. Nothing about bundling ever fails,
- * so a successful `react-native bundle` does not catch it.
+ * The symptom is a long way from the cause: the app bundles and launches fine,
+ * then dies on the first module that touches a runtime global —
+ * `ReferenceError: Property 'window' doesn't exist`, thrown from React Native's
+ * own AnimatedProps reading `window.__REACT_DEVTOOLS_GLOBAL_HOOK__`. Nothing
+ * about bundling ever fails, so a successful `react-native bundle` does not
+ * catch it; only launching the app does.
  *
  * Falling back to the default list when RNOH declines is what its empty return
  * was asking for in the first place.
