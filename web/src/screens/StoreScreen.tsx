@@ -10,7 +10,7 @@
  * categories with real content ship — an empty "coming soon" shelf is worse
  * than no shelf.
  */
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import type {User} from 'firebase/auth';
 import {colors} from '../theme';
 import {useT} from '../i18n';
@@ -20,7 +20,6 @@ import {useAccountTheme} from '../context/StoreThemeContext';
 import {createBillingPortalSession, createCheckoutSession, type ProPlan} from '../services/billing';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
 import {applyStoreTheme} from '../services/storeTheme';
-import Icon from '../components/Icon';
 
 export default function StoreScreen({user}: {user: User}) {
   const {t} = useT();
@@ -46,14 +45,25 @@ export default function StoreScreen({user}: {user: User}) {
     }
   };
 
+  // The `window.location.assign` above stays busy on success on the
+  // assumption that navigating away destroys this component — true for a
+  // normal page unload, but the browser can instead freeze this page into
+  // the back-forward cache and restore it verbatim (spinner still spinning)
+  // if the user hits "back" from Stripe instead of completing checkout.
+  // `pageshow`'s `persisted` flag is the standard signal that happened, so
+  // the button doesn't spin forever with no way to retry.
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setBillingBusy(false);
+      }
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
   const applyTheme = useCallback(
     async (theme: StoreTheme) => {
-      // A locked swatch that silently does nothing reads as a bug, so the tap
-      // always produces a response.
-      if (theme.pro && !isPro) {
-        toast.error(t('pro.lockedTheme'));
-        return;
-      }
       setApplyingId(theme.id);
       try {
         const count = await applyStoreTheme(user.uid, theme);
@@ -69,7 +79,7 @@ export default function StoreScreen({user}: {user: User}) {
         setApplyingId(null);
       }
     },
-    [isPro, t, toast, user.uid],
+    [t, toast, user.uid],
   );
 
   const proStatusText = (() => {
@@ -95,7 +105,6 @@ export default function StoreScreen({user}: {user: User}) {
           <p style={styles.heroDesc}>{isPro ? proStatusText : t('pro.pitch')}</p>
           <ul style={styles.heroList}>
             <li>{t('pro.featureAi')}</li>
-            <li>{t('pro.featureThemes')}</li>
           </ul>
           {billingError && <div style={styles.error}>{billingError}</div>}
           {isPro ? (
@@ -132,14 +141,13 @@ export default function StoreScreen({user}: {user: User}) {
           <p style={styles.sectionDesc}>{t('store.themesDesc')}</p>
           <div style={styles.grid}>
             {THEME_CATALOG.map(theme => {
-              const locked = theme.pro && !isPro;
               const selected = applied?.id === theme.id;
               const busy = applyingId === theme.id;
               return (
                 <button
                   key={theme.id}
                   type="button"
-                  aria-label={locked ? `${theme.name} — ${t('pro.locked')}` : theme.name}
+                  aria-label={theme.name}
                   aria-pressed={selected}
                   disabled={busy}
                   onClick={() => applyTheme(theme)}
@@ -147,23 +155,16 @@ export default function StoreScreen({user}: {user: User}) {
                     ...styles.card,
                     borderColor: selected ? theme.accent : colors.border,
                     borderWidth: selected ? 2 : 1,
-                    opacity: locked ? 0.62 : 1,
                   }}>
                   <span
                     style={{
                       ...styles.swatch,
-                      background: theme.wallpaper || colors.inputBg,
+                      background: `linear-gradient(135deg, ${theme.gradientStops.join(', ')})`,
                       borderColor: theme.accent,
                     }}>
                     <span style={{...styles.dot, background: theme.accent}} />
                   </span>
                   <span style={styles.cardName}>{theme.name}</span>
-                  {theme.pro && (
-                    <span style={locked ? styles.lock : styles.owned}>
-                      {locked && <Icon name="lock" size={10} style={{marginRight: 3, verticalAlign: '-1px'}} />}
-                      {t('pro.badge')}
-                    </span>
-                  )}
                   {selected && <span style={styles.appliedTag}>{t('store.appliedTag')}</span>}
                 </button>
               );
@@ -234,7 +235,5 @@ const styles: Record<string, React.CSSProperties> = {
   },
   dot: {width: 14, height: 14, borderRadius: 999},
   cardName: {fontSize: 13.5, fontWeight: 700},
-  lock: {fontSize: 10.5, fontWeight: 800, color: colors.textSecondary, letterSpacing: 0.4},
-  owned: {fontSize: 10.5, fontWeight: 800, color: colors.primary, letterSpacing: 0.4},
   appliedTag: {fontSize: 10.5, fontWeight: 800, color: colors.primary, letterSpacing: 0.4},
 };

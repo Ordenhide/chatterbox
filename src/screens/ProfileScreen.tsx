@@ -23,7 +23,7 @@ import {getBooleanFlag} from '../services/featureFlags';
 import {submitFeedback} from '../services/feedback';
 import {reportError, trackEvent} from '../services/telemetry';
 import {useFocusEffect} from '@react-navigation/native';
-import {doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
+import {doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import GlassView from '../components/GlassView';
 import GlassScreen from '../components/GlassScreen';
 import Icon from '../components/Icon';
@@ -39,12 +39,8 @@ import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import {
   changePassword,
-  confirmPhoneLink,
   deleteAccount,
-  sendPhoneLinkCode,
-  unlinkPhoneNumber,
   type PasswordChangeError,
-  type PhoneLinkError,
 } from '../services/account';
 import {exportUserData} from '../services/dataExport';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
@@ -52,9 +48,6 @@ import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConse
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
 import {shareTextFile} from '../utils/shareFile';
 import {checkPasswordStrength} from '../services/passwordPolicy';
-import {getAuth, FirebaseAuthTypes} from '@react-native-firebase/auth';
-import * as RNLocalize from 'react-native-localize';
-import {COUNTRY_CODES, flagEmoji, toE164, type CountryDialCode} from '../utils/countryCodes';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 
 export default function ProfileScreen() {
@@ -74,29 +67,6 @@ export default function ProfileScreen() {
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [deleting, setDeleting] = useState(false);
-  // Add-phone-number flow: a 2-step modal (password + phone -> OTP code),
-  // mirroring the password-change modal's state/loading/Alert pattern.
-  const [linkedPhoneNumber, setLinkedPhoneNumber] = useState<string | null>(
-    () => getAuth().currentUser?.phoneNumber ?? null,
-  );
-  const [phoneModalVisible, setPhoneModalVisible] = useState(false);
-  const [phoneModalStep, setPhoneModalStep] = useState<'entry' | 'code'>('entry');
-  const [phonePassword, setPhonePassword] = useState('');
-  const [phoneNumberInput, setPhoneNumberInput] = useState('');
-  const [phoneCode, setPhoneCode] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<CountryDialCode>(() => {
-    const deviceCountry = RNLocalize.getLocales()[0]?.countryCode;
-    return (
-      COUNTRY_CODES.find(c => c.iso2 === deviceCountry) ??
-      COUNTRY_CODES.find(c => c.iso2 === 'US')!
-    );
-  });
-  const [countryModalVisible, setCountryModalVisible] = useState(false);
-  const [countrySearch, setCountrySearch] = useState('');
-  const [phoneConfirmation, setPhoneConfirmation] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
-  const [sendingPhoneCode, setSendingPhoneCode] = useState(false);
-  const [verifyingPhoneCode, setVerifyingPhoneCode] = useState(false);
-  const [removingPhone, setRemovingPhone] = useState(false);
   // Backups are encrypted under a passphrase the user chooses; it is never
   // persisted, so losing it means losing the backup.
   const [exportPassphrase, setExportPassphrase] = useState('');
@@ -165,14 +135,6 @@ export default function ProfileScreen() {
         l.code.toLowerCase().includes(q),
     );
   }, [languageSearch]);
-
-  const filteredCountries = useMemo(() => {
-    if (!countrySearch.trim()) return COUNTRY_CODES;
-    const q = countrySearch.toLowerCase().trim();
-    return COUNTRY_CODES.filter(
-      c => c.name.toLowerCase().includes(q) || c.dialCode.includes(q) || c.iso2.toLowerCase().includes(q),
-    );
-  }, [countrySearch]);
 
   const handleLanguageChange = useCallback(
     (code: string) => {
@@ -451,107 +413,6 @@ export default function ProfileScreen() {
     }
   }, [confirmPassword, currentPassword, newPassword, passwordErrorMessage, t]);
 
-  const phoneErrorMessage = useCallback(
-    (reason: PhoneLinkError | undefined) => {
-      switch (reason) {
-        case 'wrong-password':
-          return t('profile.account.wrongPassword');
-        case 'invalid-phone-number':
-          return t('profile.account.phoneInvalid');
-        case 'invalid-verification-code':
-          return t('profile.account.phoneInvalidCode');
-        case 'code-expired':
-          return t('profile.account.phoneCodeExpired');
-        case 'phone-already-in-use':
-          return t('profile.account.phoneAlreadyInUse');
-        case 'too-many-requests':
-          return t('profile.account.tooManyRequests');
-        case 'provider-not-enabled':
-          return t('profile.account.phoneProviderNotEnabled');
-        default:
-          return t('profile.account.genericError');
-      }
-    },
-    [t],
-  );
-
-  const closePhoneModal = useCallback(() => {
-    setPhoneModalVisible(false);
-    setPhoneModalStep('entry');
-    setPhonePassword('');
-    setPhoneNumberInput('');
-    setPhoneCode('');
-    setPhoneConfirmation(null);
-  }, []);
-
-  const openPhoneModal = useCallback(() => {
-    setPhonePassword('');
-    setPhoneNumberInput('');
-    setPhoneCode('');
-    setPhoneConfirmation(null);
-    setPhoneModalStep('entry');
-    setPhoneModalVisible(true);
-  }, []);
-
-  const submitSendPhoneCode = useCallback(async () => {
-    setSendingPhoneCode(true);
-    try {
-      const fullNumber = toE164(selectedCountry.dialCode, phoneNumberInput);
-      const confirmation = await sendPhoneLinkCode(phonePassword, fullNumber);
-      setPhoneConfirmation(confirmation);
-      setPhoneModalStep('code');
-    } catch (error) {
-      Alert.alert(t('profile.account.phoneSendFailedTitle'), phoneErrorMessage((error as any)?.reason));
-    } finally {
-      setSendingPhoneCode(false);
-    }
-  }, [phoneErrorMessage, phoneNumberInput, phonePassword, selectedCountry, t]);
-
-  const submitVerifyPhoneCode = useCallback(async () => {
-    if (!phoneConfirmation) return;
-    setVerifyingPhoneCode(true);
-    try {
-      await confirmPhoneLink(phoneConfirmation, phoneCode);
-      const fullNumber = toE164(selectedCountry.dialCode, phoneNumberInput);
-      setLinkedPhoneNumber(getAuth().currentUser?.phoneNumber ?? fullNumber);
-      closePhoneModal();
-      Alert.alert(t('profile.account.phoneAddedTitle'), t('profile.account.phoneAdded'));
-    } catch (error) {
-      Alert.alert(t('profile.account.phoneVerifyFailedTitle'), phoneErrorMessage((error as any)?.reason));
-    } finally {
-      setVerifyingPhoneCode(false);
-    }
-  }, [closePhoneModal, phoneCode, phoneConfirmation, phoneErrorMessage, phoneNumberInput, selectedCountry, t]);
-
-  const handleRemovePhone = useCallback(() => {
-    Alert.alert(
-      t('profile.account.phoneRemoveConfirmTitle'),
-      t('profile.account.phoneRemoveConfirmBody'),
-      [
-        {text: t('common.cancel'), style: 'cancel'},
-        {
-          text: t('common.remove'),
-          style: 'destructive',
-          onPress: async () => {
-            setRemovingPhone(true);
-            try {
-              await unlinkPhoneNumber();
-              setLinkedPhoneNumber(null);
-              Alert.alert(t('profile.account.phoneRemovedTitle'), t('profile.account.phoneRemoved'));
-            } catch (error) {
-              Alert.alert(
-                t('profile.account.phoneRemoveFailedTitle'),
-                phoneErrorMessage((error as any)?.reason),
-              );
-            } finally {
-              setRemovingPhone(false);
-            }
-          },
-        },
-      ],
-    );
-  }, [phoneErrorMessage, t]);
-
   const runDeletion = useCallback(
     async (password: string) => {
       setDeleting(true);
@@ -780,6 +641,10 @@ export default function ProfileScreen() {
               <Icon name="lock" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutPrivacy')}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'RecoveryPhrase'} as never)}>
+              <Icon name="key" size={24} color={colors.text} style={styles.shortcutIcon} />
+              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutRecovery', 'Recovery Phrase')}</Text>
+            </TouchableOpacity>
           </View>
         </GlassView>
 
@@ -884,30 +749,6 @@ export default function ProfileScreen() {
           <TouchableOpacity style={[styles.focusBtn, {backgroundColor: colors.primary}]} onPress={() => startTutorial()}>
             <Text style={styles.focusBtnText}>{t('tutorial.replay')}</Text>
           </TouchableOpacity>
-        </GlassView>
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            {t('profile.account.phoneTitle')}
-          </Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {linkedPhoneNumber || t('profile.account.phoneNotAdded')}
-          </Text>
-          {linkedPhoneNumber ? (
-            <TouchableOpacity
-              style={[styles.focusBtn, {backgroundColor: colors.danger}, removingPhone && {opacity: 0.5}]}
-              disabled={removingPhone}
-              onPress={handleRemovePhone}>
-              {removingPhone ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.focusBtnText}>{t('profile.account.phoneRemove')}</Text>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={[styles.focusBtn, {backgroundColor: colors.primary}]} onPress={openPhoneModal}>
-              <Text style={styles.focusBtnText}>{t('profile.account.phoneAdd')}</Text>
-            </TouchableOpacity>
-          )}
         </GlassView>
         {SHOW_NATIVE_ONLY_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
@@ -1122,163 +963,6 @@ export default function ProfileScreen() {
               onPress={() => setPasswordVisible(false)}
               disabled={changingPassword}>
               <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </Modal>
-      )}
-
-      {phoneModalVisible && (
-        <Modal visible animationType="slide" transparent onRequestClose={closePhoneModal}>
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>
-              {t('profile.account.phoneAdd')}
-            </Text>
-            {phoneModalStep === 'entry' ? (
-              <>
-                <PasswordInput
-                  style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-                  placeholder={t('profile.account.currentPassword')}
-                  placeholderTextColor={colors.textSecondary}
-                  value={phonePassword}
-                  onChangeText={setPhonePassword}
-                  autoCapitalize="none"
-                />
-                <View style={styles.phoneRow}>
-                  <TouchableOpacity
-                    style={[
-                      styles.countrySelector,
-                      {backgroundColor: colors.surface, borderColor: colors.glassBorder},
-                    ]}
-                    onPress={() => setCountryModalVisible(true)}>
-                    <Text style={{color: colors.text}}>
-                      {flagEmoji(selectedCountry.iso2)} {selectedCountry.dialCode}
-                    </Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    style={[
-                      styles.modalInput,
-                      styles.phoneNumberInput,
-                      {color: colors.text, borderColor: colors.glassBorder, minHeight: 48},
-                    ]}
-                    placeholder={t('profile.account.phonePlaceholder')}
-                    placeholderTextColor={colors.textSecondary}
-                    value={phoneNumberInput}
-                    onChangeText={setPhoneNumberInput}
-                    keyboardType="phone-pad"
-                    autoCapitalize="none"
-                  />
-                </View>
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    {backgroundColor: colors.primary},
-                    (sendingPhoneCode || !phonePassword || !phoneNumberInput) && {opacity: 0.5},
-                  ]}
-                  disabled={sendingPhoneCode || !phonePassword || !phoneNumberInput}
-                  onPress={submitSendPhoneCode}>
-                  {sendingPhoneCode ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.buttonText}>{t('profile.account.phoneSendCode')}</Text>
-                  )}
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TextInput
-                  style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-                  placeholder={t('profile.account.phoneCodePlaceholder')}
-                  placeholderTextColor={colors.textSecondary}
-                  value={phoneCode}
-                  onChangeText={setPhoneCode}
-                  keyboardType="number-pad"
-                  autoCapitalize="none"
-                />
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    {backgroundColor: colors.primary},
-                    (verifyingPhoneCode || !phoneCode) && {opacity: 0.5},
-                  ]}
-                  disabled={verifyingPhoneCode || !phoneCode}
-                  onPress={submitVerifyPhoneCode}>
-                  {verifyingPhoneCode ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.buttonText}>{t('profile.account.phoneVerifyCode')}</Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
-                  disabled={sendingPhoneCode}
-                  onPress={submitSendPhoneCode}>
-                  <Text style={[styles.buttonText, {color: colors.text}]}>
-                    {t('profile.account.phoneResendCode')}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-            <TouchableOpacity
-              style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
-              onPress={closePhoneModal}
-              disabled={sendingPhoneCode || verifyingPhoneCode}>
-              <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </Modal>
-      )}
-
-      {countryModalVisible && (
-        <Modal visible animationType="slide" onRequestClose={() => setCountryModalVisible(false)}>
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.account.phoneCountryTitle')}</Text>
-            <TextInput
-              style={[styles.languageSearchInput, {color: colors.text, borderColor: colors.glassBorder, backgroundColor: colors.surface}]}
-              value={countrySearch}
-              onChangeText={setCountrySearch}
-              placeholder={t('chatList.searchPlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              autoCorrect={false}
-            />
-            <ScrollView style={styles.languageList} showsVerticalScrollIndicator={false}>
-              {filteredCountries.map(country => {
-                const isSelected = country.iso2 === selectedCountry.iso2;
-                return (
-                  <TouchableOpacity
-                    key={country.iso2}
-                    style={[
-                      styles.languageItem,
-                      {
-                        backgroundColor: isSelected ? colors.primary + '18' : 'transparent',
-                        borderColor: isSelected ? colors.primary : colors.border,
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedCountry(country);
-                      setCountryModalVisible(false);
-                      setCountrySearch('');
-                    }}>
-                    <View style={styles.languageItemContent}>
-                      <Text style={[styles.languageItemNative, {color: isSelected ? colors.primary : colors.text}]}>
-                        {flagEmoji(country.iso2)} {country.name}
-                      </Text>
-                      <Text style={[styles.languageItemLabel, {color: colors.textSecondary}]}>
-                        {country.dialCode}
-                      </Text>
-                    </View>
-                    {isSelected ? (
-                      <View style={[styles.languageCheck, {backgroundColor: colors.primary}]}>
-                        <Icon name="check" size={14} color="#fff" />
-                      </View>
-                    ) : null}
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-            <TouchableOpacity
-              style={[styles.modalButton, {backgroundColor: colors.surface, marginTop: 14}]}
-              onPress={() => { setCountryModalVisible(false); setCountrySearch(''); }}>
-              <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.close')}</Text>
             </TouchableOpacity>
           </SafeAreaView>
         </Modal>
@@ -1754,20 +1438,6 @@ const styles = StyleSheet.create({
     padding: 16,
     textAlignVertical: 'top',
     fontSize: 15,
-  },
-  phoneRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  countrySelector: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    justifyContent: 'center',
-    minHeight: 48,
-  },
-  phoneNumberInput: {
-    flex: 1,
   },
   modalHint: {
     fontSize: 13,

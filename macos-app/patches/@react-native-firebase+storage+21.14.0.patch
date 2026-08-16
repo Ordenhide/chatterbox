@@ -1,0 +1,35 @@
+diff --git a/node_modules/@react-native-firebase/storage/RNFBStorage.podspec b/node_modules/@react-native-firebase/storage/RNFBStorage.podspec
+index a6c8bdc..0e38dce 100644
+--- a/node_modules/@react-native-firebase/storage/RNFBStorage.podspec
++++ b/node_modules/@react-native-firebase/storage/RNFBStorage.podspec
+@@ -25,7 +25,11 @@ Pod::Spec.new do |s|
+   s.source              = { :git => "https://github.com/invertase/react-native-firebase.git", :tag => "v#{s.version}" }
+   s.social_media_url    = 'http://twitter.com/invertaseio'
+   s.ios.deployment_target = firebase_ios_target
+-  s.macos.deployment_target = firebase_macos_target
++  # Patched: RNFBStorageModule.m uses PHImageManager asset-data APIs unavailable
++  # on macOS, and has a `pause` selector colliding with AppKit. Out of scope
++  # for the macOS build for now; exclude so CocoaPods skips it for macos
++  # instead of failing to compile.
++  # s.macos.deployment_target = firebase_macos_target
+   s.tvos.deployment_target = firebase_tvos_target
+   s.source_files        = 'ios/**/*.{h,m}'
+ 
+diff --git a/node_modules/@react-native-firebase/storage/ios/RNFBStorage/RNFBStorageCommon.m b/node_modules/@react-native-firebase/storage/ios/RNFBStorage/RNFBStorageCommon.m
+index 0c90d3c..bf1c670 100644
+--- a/node_modules/@react-native-firebase/storage/ios/RNFBStorage/RNFBStorageCommon.m
++++ b/node_modules/@react-native-firebase/storage/ios/RNFBStorage/RNFBStorageCommon.m
+@@ -17,7 +17,13 @@
+  */
+ 
+ #import <Firebase/Firebase.h>
++#if TARGET_OS_OSX
++// macOS has the same UTType C API (UTTypeCopyPreferredTagWithClass etc.) via
++// CoreServices instead of the iOS-only MobileCoreServices umbrella.
++#import <CoreServices/CoreServices.h>
++#else
+ #import <MobileCoreServices/MobileCoreServices.h>
++#endif
+ 
+ #import "RNFBSharedUtils.h"
+ #import "RNFBStorageCommon.h"

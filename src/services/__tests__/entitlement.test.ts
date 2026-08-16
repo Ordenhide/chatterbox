@@ -3,7 +3,7 @@
 // same way account/e2eeKeys/firebaseChat tests already do.
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   onSnapshot: jest.fn(),

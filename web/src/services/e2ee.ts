@@ -167,6 +167,141 @@ export function decryptMessage(
 }
 
 /**
+ * The largest group this seals for.
+ *
+ * A product cap, not a technical ceiling: each member adds one more ciphertext
+ * copy (~2.7KB for a 2,000-character message), so 32 members is roughly 8% of
+ * Firestore's 1MB document limit — comfortable, with room to raise it later
+ * without changing the format.
+ *
+ * Must stay identical to MAX_GROUP_MEMBERS in the mobile app's e2ee.ts: the two
+ * clients seal into the same Firestore documents, so a client with a higher cap
+ * would produce envelopes the other refuses to send but must still be able to read.
+ */
+export const MAX_GROUP_MEMBERS = 32;
+
+export type EnvelopeRecipient = {uid: string; publicKey: Uint8Array};
+
+export type SealedEnvelope = {
+  alg: typeof E2EE_ALG;
+  /**
+   * One independently-decryptable copy per recipient uid.
+   *
+   * Each entry is a complete EncryptedPayload, so it opens with the same
+   * `decryptMessage` a 1:1 message uses — group support adds a distribution
+   * layer, not a second cipher.
+   */
+  copies: Record<string, EncryptedPayload>;
+};
+
+/**
+ * Seals `plaintext` once per recipient — the group encryption model.
+ *
+ * Chosen over sender keys deliberately. Sender keys encrypt once regardless of
+ * group size, but removing a member then requires every remaining member to
+ * rotate and redistribute their sending key; miss any step — including a client
+ * that was offline — and the removed member keeps decrypting new messages with
+ * the key they still hold, with nothing surfaced to anyone. Fan-out has no such
+ * step: removal means the sender stops including that member's copy, so there
+ * is no key to rotate and no silent-failure window. The cost is linear payload
+ * growth, which MAX_GROUP_MEMBERS keeps bounded.
+ *
+ * The sender is not included in `recipients` and does not need to be: X25519 is
+ * symmetric, so they can open any copy by deriving against that copy's
+ * `recipientKey` — which is exactly what decryptMessage already does when it
+ * recognises the sender key as its own.
+ */
+export function sealForRecipients(
+  plaintext: string,
+  senderSecretKey: Uint8Array,
+  recipients: EnvelopeRecipient[],
+  chatId: string,
+): SealedEnvelope {
+  if (recipients.length === 0) {
+    throw new Error('sealForRecipients: no recipients');
+  }
+  if (recipients.length > MAX_GROUP_MEMBERS) {
+    throw new Error(
+      `sealForRecipients: ${recipients.length} recipients exceeds the ${MAX_GROUP_MEMBERS} cap`,
+    );
+  }
+  const copies: Record<string, EncryptedPayload> = {};
+  for (const {uid, publicKey} of recipients) {
+    copies[uid] = encryptMessage(plaintext, senderSecretKey, publicKey, chatId);
+  }
+  return {alg: E2EE_ALG, copies};
+}
+
+/**
+ * Opens the copy addressed to `myUid`, or — when this reader is the sender,
+ * who has no copy of their own — any copy at all.
+ *
+ * That fallback is safe rather than permissive: a reader who is neither the
+ * sender nor an addressed recipient derives the wrong key for every copy, and
+ * XChaCha20-Poly1305's authentication tag rejects each one. Being able to open
+ * a copy *is* the authorisation check; there is no separate one to bypass.
+ */
+export function openEnvelope(
+  envelope: SealedEnvelope,
+  mySecretKey: Uint8Array,
+  myUid: string,
+  chatId: string,
+): string {
+  if (envelope.alg !== E2EE_ALG) {
+    throw new Error(`unsupported e2ee algorithm: ${envelope.alg}`);
+  }
+  const mine = envelope.copies[myUid];
+  if (mine) return decryptMessage(mine, mySecretKey, chatId);
+
+  for (const copy of Object.values(envelope.copies)) {
+    try {
+      return decryptMessage(copy, mySecretKey, chatId);
+    } catch {
+      // Not addressed to us and not ours to read — try the next.
+    }
+  }
+  throw new Error('no readable copy in envelope');
+}
+
+/**
+ * True if a stored value is sealed at all, in either shape.
+ *
+ * Readers should reach for this rather than isEncryptedPayload: both shapes are
+ * in the wild permanently (fan-out envelopes since group support, bare payloads
+ * from before it), and a reader that only recognises one silently renders the
+ * other as an empty message. That failure is cross-platform — a mobile client
+ * sealing envelopes would go blank in a browser still checking only the old shape.
+ */
+export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
+  return isSealedEnvelope(value) || isEncryptedPayload(value);
+}
+
+/**
+ * Opens either shape — the reader half of isSealed.
+ *
+ * `myUid` is only consulted for envelopes, to pick this reader's copy; single
+ * payloads carry both public keys and need no uid at all.
+ */
+export function openSealed(
+  value: unknown,
+  mySecretKey: Uint8Array,
+  myUid: string,
+  chatId: string,
+): string {
+  if (isSealedEnvelope(value)) return openEnvelope(value, mySecretKey, myUid, chatId);
+  if (isEncryptedPayload(value)) return decryptMessage(value, mySecretKey, chatId);
+  throw new Error('value is not sealed');
+}
+
+/** True if a stored value is a fan-out envelope rather than a single payload. */
+export function isSealedEnvelope(value: unknown): value is SealedEnvelope {
+  if (!value || typeof value !== 'object') return false;
+  const e = value as Partial<SealedEnvelope>;
+  if (e.alg !== E2EE_ALG || !e.copies || typeof e.copies !== 'object') return false;
+  return Object.values(e.copies).every(isEncryptedPayload);
+}
+
+/**
  * A human-comparable fingerprint of a key pair, for out-of-band verification
  * ("read this number to your contact / compare screens in person").
  *

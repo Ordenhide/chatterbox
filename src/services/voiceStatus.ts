@@ -1,5 +1,5 @@
-import {doc, getFirestore, setDoc, serverTimestamp} from '@react-native-firebase/firestore';
-import {getStorage, ref, uploadBytes, getDownloadURL, deleteObject} from '@react-native-firebase/storage';
+import {doc, getFirestore, setDoc, serverTimestamp} from './firebase/firestore';
+import {getStorage, ref, uploadBytes, getDownloadURL, deleteObject} from './firebase/storage';
 
 const db = getFirestore();
 const storage = getStorage();

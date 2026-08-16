@@ -1,0 +1,43 @@
+diff --git a/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.d.ts b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.d.ts
+new file mode 100644
+index 0000000..1dd5e0e
+--- /dev/null
++++ b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.d.ts
+@@ -0,0 +1,20 @@
++/**
++ * Copyright (c) JOB TODAY S.A. and its affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ *
++ */
++import React from "react";
++import { ImageSource } from "../../@types";
++declare type Props = {
++    imageSrc: ImageSource;
++    onRequestClose: () => void;
++    onZoom: (scaled: boolean) => void;
++    onLongPress: (image: ImageSource) => void;
++    delayLongPress: number;
++    swipeToCloseEnabled?: boolean;
++    doubleTapToZoomEnabled?: boolean;
++};
++declare const _default: React.MemoExoticComponent<({ imageSrc, onZoom, onRequestClose, onLongPress, delayLongPress, swipeToCloseEnabled, doubleTapToZoomEnabled, }: Props) => JSX.Element>;
++export default _default;
+diff --git a/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.js b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.js
+new file mode 100644
+index 0000000..aa3eda1
+--- /dev/null
++++ b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.harmony.js
+@@ -0,0 +1,11 @@
++/**
++ * HarmonyOS build of ImageItem.
++ *
++ * react-native-image-viewing ships only ImageItem.ios.js and
++ * ImageItem.android.js with no platform-agnostic fallback, so Metro cannot
++ * resolve this import at all on a third platform. The two variants differ only
++ * in how they drive pan/zoom; the iOS one is written entirely against
++ * cross-platform primitives (Animated, ScrollView, Dimensions), so it is the
++ * portable one.
++ */
++export {default} from './ImageItem.ios';

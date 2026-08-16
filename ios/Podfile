@@ -7,16 +7,47 @@ require Pod::Executable.execute_command('node', ['-p',
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
-$FirebaseSDKVersion = '11.15.0'
+# React Native Firebase 26 resolves the Firebase iOS SDK through Swift Package
+# Manager by default. firebase-ios-sdk's SPM products are automatic libraries
+# rather than `type: .dynamic`, so under `use_frameworks! :linkage => :static`
+# every RNFB pod embeds its own copy of Firebase and they collide at link time
+# as duplicate symbols. RNFB detects the combination and refuses to generate
+# the project at all.
+#
+# Of the two escapes it offers — dynamic linkage, or opting out of SPM — this
+# is the conservative one. Switching to dynamic linkage would change how every
+# pod in the project is built and would invalidate the static-linkage
+# workarounds below (the gRPC modulemap handling in particular). Opting out of
+# SPM keeps Firebase resolving through CocoaPods exactly as it did on RNFB 21,
+# so $FirebaseSDKVersion below still governs the version.
+$RNFirebaseDisableSPM = true
+# React Native Firebase 26 is built against firebase-ios-sdk 12.x — its
+# Firestore sources use the Pipeline API (StageBridge), which does not exist in
+# 11.x. Pinning 11.15.0 here is what made RNFBFirestorePipelineBridgeFactory.swift
+# fail with "cannot find type 'StageBridge' in scope".
+$FirebaseSDKVersion = '12.17.0'
 # GoogleAdsOnDeviceConversion (pulled in for ad-ID conversion tracking) has no
 # Mac Catalyst build and fails the link step. This app doesn't run ads, so
 # disabling ad-ID support is a fine trade — it's also a reasonable privacy
 # default from a messaging app anyway.
 $RNFirebaseAnalyticsWithoutAdIdSupport = true
 
-# Disable the New Architecture to avoid runtime crashes from modules that
-# are not yet fully compatible with Fabric/TurboModules.
-ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+# New Architecture (Fabric + TurboModules), matching android/gradle.properties.
+#
+# Set here rather than exported, on purpose: macos/Podfile reads the same
+# variable to decide `fabric_enabled`, and react-native-macos is not part of
+# this migration. Keeping the assignment inside the iOS Podfile means a macOS
+# `pod install` still resolves to the legacy renderer.
+#
+# Turning this on requires `self.dependencyProvider` in AppDelegate.mm — see the
+# comment there. Without it the app builds and boots but renders blank, because
+# every third-party Fabric component silently degrades to its legacy view
+# manager. If this file and that one ever disagree, that is the symptom.
+#
+# Also worth knowing: RN 0.81 wires `bridgelessEnabled` directly to
+# `newArchEnabled` (RCTRootViewFactory.mm), so Fabric-without-bridgeless is not
+# an available fallback if something surfaces later.
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
@@ -83,9 +114,27 @@ target 'ChatterboxTemp' do
     # Align pods to a supported iOS deployment target to silence warnings
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |build_config|
-        build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+        # 15.0, not 14.0: React Native Firebase 26 declares iosTarget 15.0, and
+        # forcing every pod below its own floor is how you get missing-symbol
+        # errors at link time rather than a clear version complaint.
+        build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
         build_config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++20'
         build_config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+        # Required since the React Native 0.84 upgrade.
+        #
+        # React Native Firebase's headers (RNFBAppModule.h and friends) import
+        # React-Core headers like RCTBridgeModule.h with plain #import rather
+        # than through a module. Under `use_frameworks!` each pod is a
+        # framework module, and clang treats a non-modular include inside one
+        # as -Wnon-modular-include-in-framework-module — which Xcode's explicit
+        # module precompilation (the `PrecompileModule ... .scan` build step)
+        # promotes to an error. Ten RNFBApp headers fail this way, which stops
+        # the build before anything links.
+        #
+        # This is React Native Firebase's to fix upstream; until then the
+        # warning has to be allowed, and allowing it is what every
+        # use_frameworks + RNFB project does.
+        build_config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
         other_ldflags = build_config.build_settings['OTHER_LDFLAGS']
         if other_ldflags.is_a?(Array)
           build_config.build_settings['OTHER_LDFLAGS'] = other_ldflags.reject { |flag| flag == '-ld_classic' || flag == '-Wl' }

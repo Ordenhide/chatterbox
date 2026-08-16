@@ -27,7 +27,7 @@ import {
   setDoc,
   where,
   writeBatch,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {themeById, type StoreTheme} from './themeCatalog';
 import {guardDocSnapshot} from './snapshotGuard';
 

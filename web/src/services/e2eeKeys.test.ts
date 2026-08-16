@@ -43,10 +43,17 @@ vi.mock('../firebase', () => ({db: {}}));
 
 import {
   _resetKeypairCache,
+  enrollmentReadiness,
   fetchPeerPublicKeyChecked,
+  getKeyGeneration,
   getOrCreateDeviceKeypair,
+  getRecoveryPhrase,
+  hasRevealedRecoveryPhrase,
+  markRecoveryPhraseRevealed,
   publishPublicKey,
+  restoreDeviceKeypairFromPhrase,
 } from './e2eeKeys';
+import {secretKeyToMnemonic} from './e2eeMnemonic';
 
 const ME = 'me-uid';
 const OTHER_ME = 'someone-else-uid'; // a second account signed into this same browser
@@ -157,5 +164,159 @@ describe('publishPublicKey / fetchPeerPublicKeyChecked', () => {
     const {publicKey} = generateKeypair();
     await publishPublicKey(ME, publicKey);
     expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey).toBe(bytesToBase64(publicKey));
+  });
+});
+
+describe('getRecoveryPhrase', () => {
+  it('encodes this browser\'s actual key, so the phrase can restore it', async () => {
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    expect(await getRecoveryPhrase(ME)).toBe(secretKeyToMnemonic(secretKey));
+  });
+
+  it('enrolls the account if it has no key yet, rather than failing', async () => {
+    const phrase = await getRecoveryPhrase(ME);
+    expect(phrase.split(' ')).toHaveLength(24);
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toBeDefined();
+  });
+});
+
+describe('hasRevealedRecoveryPhrase / markRecoveryPhraseRevealed', () => {
+  it('starts false and flips permanently once marked', () => {
+    expect(hasRevealedRecoveryPhrase(ME)).toBe(false);
+    markRecoveryPhraseRevealed(ME);
+    expect(hasRevealedRecoveryPhrase(ME)).toBe(true);
+  });
+
+  it('tracks each account separately in a shared browser', () => {
+    markRecoveryPhraseRevealed(ME);
+    expect(hasRevealedRecoveryPhrase(OTHER_ME)).toBe(false);
+  });
+});
+
+describe('enrollmentReadiness', () => {
+  it('is safe when nothing is published anywhere — nothing to strand', async () => {
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+  });
+
+  // The case the whole guard exists for: auto-enrolling here would overwrite
+  // the published key and permanently strand history the phrase could restore.
+  it('needs restore when a key is published but this browser has no local copy', async () => {
+    firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
+      publicKey: bytesToBase64(generateKeypair().publicKey),
+    });
+    expect(await enrollmentReadiness(ME)).toBe('needs-restore');
+  });
+
+  it('is safe once this browser holds the key, even after a reload', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+    _resetKeypairCache();
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+  });
+
+  it('is read-only — it must not enroll or publish anything itself', async () => {
+    await enrollmentReadiness(ME);
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toBeUndefined();
+    expect(localStorage.getItem(`e2ee_secret_key_v1:${ME}`)).toBeNull();
+  });
+});
+
+describe('restoreDeviceKeypairFromPhrase', () => {
+  it('restores the original key in a fresh browser profile', async () => {
+    const original = await getOrCreateDeviceKeypair(ME);
+    const phrase = secretKeyToMnemonic(original.secretKey);
+
+    // Wipe local state only — the published key stays, as it would in reality.
+    memoryStorage.clear();
+    _resetKeypairCache();
+
+    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({success: true});
+    const restored = await getOrCreateDeviceKeypair(ME);
+    expect(bytesToBase64(restored.secretKey)).toBe(bytesToBase64(original.secretKey));
+  });
+
+  it('rejects a phrase that is not valid BIP39', async () => {
+    expect(await restoreDeviceKeypairFromPhrase(ME, 'not a real phrase')).toEqual({
+      success: false,
+      reason: 'invalid-phrase',
+    });
+  });
+
+  // A valid phrase for the wrong account would otherwise install a key that
+  // decrypts nothing — stranding the browser exactly as it was trying not to be.
+  it('rejects a valid phrase whose key does not match what is published', async () => {
+    firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
+      publicKey: bytesToBase64(generateKeypair().publicKey),
+    });
+    const strangerPhrase = secretKeyToMnemonic(generateKeypair().secretKey);
+    expect(await restoreDeviceKeypairFromPhrase(ME, strangerPhrase)).toEqual({
+      success: false,
+      reason: 'key-mismatch',
+    });
+  });
+
+  it('accepts a phrase for an account that never finished enrolling', async () => {
+    const phrase = secretKeyToMnemonic(generateKeypair().secretKey);
+    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({success: true});
+  });
+
+  it('leaves local state untouched when the phrase is rejected', async () => {
+    const original = await getOrCreateDeviceKeypair(ME);
+    await restoreDeviceKeypairFromPhrase(ME, 'garbage phrase');
+    const after = await getOrCreateDeviceKeypair(ME);
+    expect(bytesToBase64(after.secretKey)).toBe(bytesToBase64(original.secretKey));
+  });
+
+  // Views cache decrypt results by message id, not by which key decrypted them,
+  // so without a bump a message that failed under the old key stays stuck
+  // showing that failure even after the right key is restored.
+  it('bumps the key generation on success so cached decrypt failures are retried', async () => {
+    // The realistic shape of a restore-over-existing-key: this browser holds a
+    // stale key of its own, while the account's real key — the one the phrase
+    // encodes — was published from the user's phone. Worth pinning because it
+    // is exactly the case markActiveKey does *not* cover: the active account
+    // never changes, so only the explicit bump in restore keeps stale decrypt
+    // failures from sticking.
+    await getOrCreateDeviceKeypair(ME);
+    const real = generateKeypair();
+    firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
+      publicKey: bytesToBase64(real.publicKey),
+    });
+
+    const before = getKeyGeneration();
+    const result = await restoreDeviceKeypairFromPhrase(ME, secretKeyToMnemonic(real.secretKey));
+    expect(result).toEqual({success: true});
+    expect(getKeyGeneration()).toBeGreaterThan(before);
+  });
+
+  // Found by a test that was wrong in an instructive way: this is the exact
+  // disaster enrollmentReadiness exists to prevent. Auto-enrolling a browser
+  // that has lost its local key republishes a brand-new key over the account's
+  // real one, and the recovery phrase the user carefully wrote down is now
+  // permanently useless. The guard must run *before* any getOrCreateDeviceKeypair.
+  it('a phrase stops working if the browser auto-enrolls before restoring', async () => {
+    const original = await getOrCreateDeviceKeypair(ME);
+    const phrase = secretKeyToMnemonic(original.secretKey);
+
+    memoryStorage.clear(); // user cleared site data; published key still stands
+    _resetKeypairCache();
+
+    // enrollmentReadiness would say needs-restore here and stop the app enrolling.
+    expect(await enrollmentReadiness(ME)).toBe('needs-restore');
+
+    // Ignoring it and enrolling anyway overwrites the published key...
+    await getOrCreateDeviceKeypair(ME);
+    // ...and now the real recovery phrase is rejected, forever.
+    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({
+      success: false,
+      reason: 'key-mismatch',
+    });
+  });
+
+  it('does not bump the key generation when a restore is rejected', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    const before = getKeyGeneration();
+    await restoreDeviceKeypairFromPhrase(ME, 'garbage phrase');
+    expect(getKeyGeneration()).toBe(before);
   });
 });

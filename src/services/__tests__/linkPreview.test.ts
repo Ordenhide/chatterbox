@@ -14,6 +14,7 @@ import {
   buildLinkPreviewPatch,
   extractFirstUrl,
   hasPreviewContent,
+  isSafeToFetchDirectly,
   normalizePreview,
   parsePreview,
   serializePreview,
@@ -54,6 +55,51 @@ describe('extractFirstUrl', () => {
   it('ignores schemes the preview fetcher would refuse anyway', () => {
     expect(extractFirstUrl('ftp://example.com/x')).toBeNull();
     expect(extractFirstUrl('javascript:alert(1)')).toBeNull();
+  });
+});
+
+describe('isSafeToFetchDirectly', () => {
+  // Regression coverage for the gap link-preview-js <=4.0.0 leaves open on
+  // its own (GHSA-4gp8-rjrq-ch6q): this must catch the same request shapes
+  // functions/ssrfGuard.js's isPrivateOrReservedIp blocks server-side.
+
+  it('allows an ordinary public https URL', () => {
+    expect(isSafeToFetchDirectly('https://example.com/article')).toBe(true);
+  });
+
+  it.each([
+    ['http://127.0.0.1/admin', 'IPv4 loopback'],
+    ['http://127.5.5.5/', 'IPv4 loopback range'],
+    ['http://0.0.0.0/', 'IPv4 unspecified'],
+    ['http://169.254.169.254/computeMetadata/v1/', 'cloud metadata endpoint'],
+    ['http://10.0.0.5/', 'IPv4 private (10/8)'],
+    ['http://172.16.0.1/', 'IPv4 private (172.16/12)'],
+    ['http://172.31.255.255/', 'IPv4 private (172.16/12) upper bound'],
+    ['http://192.168.1.1/', 'IPv4 private (192.168/16)'],
+    ['http://100.64.0.1/', 'IPv4 CGNAT'],
+    ['http://224.0.0.1/', 'IPv4 multicast/reserved'],
+    ['http://localhost/', 'localhost hostname'],
+    ['http://foo.localhost/', 'subdomain of localhost'],
+    ['http://router.local/', '.local hostname'],
+    ['http://service.internal/', '.internal hostname'],
+    ['http://[::1]/', 'IPv6 loopback'],
+    ['http://[fe80::1]/', 'IPv6 link-local (fe80::/10)'],
+    ['http://[febf::1]/', 'IPv6 link-local (fe80::/10) upper bound'],
+    ['http://[fc00::1]/', 'IPv6 unique-local (fc00::/7)'],
+    ['http://[fd12:3456::1]/', 'IPv6 unique-local (fc00::/7)'],
+    ['http://[::ffff:127.0.0.1]/', 'IPv4-mapped IPv6 loopback'],
+    ['http://[::ffff:169.254.169.254]/', 'IPv4-mapped IPv6 metadata endpoint'],
+  ])('blocks %s (%s)', url => {
+    expect(isSafeToFetchDirectly(url)).toBe(false);
+  });
+
+  it('allows an IPv4-mapped IPv6 address whose embedded address is public', () => {
+    expect(isSafeToFetchDirectly('http://[::ffff:93.184.216.34]/')).toBe(true);
+  });
+
+  it('rejects anything that is not an http(s) URL', () => {
+    expect(isSafeToFetchDirectly('not a url')).toBe(false);
+    expect(isSafeToFetchDirectly('ftp://example.com/x')).toBe(false);
   });
 });
 

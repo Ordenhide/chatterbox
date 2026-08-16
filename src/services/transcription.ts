@@ -1,4 +1,4 @@
-import {getFunctions, httpsCallable} from '@react-native-firebase/functions';
+import {getFunctions, httpsCallable} from './firebase/functions';
 import type {LanguageCode} from '../i18n';
 import {assertAiConsent} from './aiConsent';
 

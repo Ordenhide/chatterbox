@@ -108,7 +108,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     // Firebase BoM for consistent SDK versions (aligned with @react-native-firebase 21.7.x)
-    implementation platform('com.google.firebase:firebase-bom:33.12.0')
+    implementation platform('com.google.firebase:firebase-bom:34.16.0')
     implementation 'com.google.firebase:firebase-database'
 
     // Fresco animated GIF/WebP — must match RN 0.80's Fresco 3.6.0

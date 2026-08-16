@@ -4,11 +4,12 @@ import {NavigationContainer, createNavigationContainerRef} from '@react-navigati
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {AuthProvider} from './src/contexts/AuthContext';
+import {ScrollMotionProvider} from './src/contexts/ScrollMotionContext';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
 import {getApp, getApps, initializeApp} from '@react-native-firebase/app';
-import appCheckModule, {initializeAppCheck} from '@react-native-firebase/app-check';
+import {ReactNativeFirebaseAppCheckProvider, initializeAppCheck} from '@react-native-firebase/app-check';
 import {
   getMessaging,
   getToken,
@@ -166,14 +167,33 @@ function App(): React.JSX.Element {
 
       // App Check: attests that requests to Firestore/Storage/Functions come from
       // this real, unmodified app build, blocking scripted abuse of the backend.
-      // In debug builds this uses the Debug provider, which logs a token on first
-      // run — register that token once in Firebase Console > App Check > Manage
-      // debug tokens. Release builds use Play Integrity (Android) / App Attest (iOS),
-      // which require enabling App Check for this app in the Firebase Console first.
-      const appCheckProvider = appCheckModule(app).newReactNativeFirebaseAppCheckProvider();
+      // Release builds use Play Integrity (Android) / App Attest (iOS), which
+      // require enabling App Check for this app in the Firebase Console first.
+      //
+      // Debug builds use the Debug provider with a *fixed* token (below) rather
+      // than an auto-generated one. Left auto-generated, the SDK mints a new
+      // random token on every fresh install/data-wipe, and each one has to be
+      // re-registered in Firebase Console > App Check > Manage debug tokens
+      // before App Check-gated calls will work again — including plain
+      // email/password reauth (changePassword and account deletion both call
+      // reauthenticateWithCredential, which Firebase now routes through App
+      // Check too), so this silently breaks on every fresh
+      // emulator/simulator with no error pointing back here. A fixed token only
+      // needs registering once per platform, ever.
+      const DEBUG_APP_CHECK_TOKEN_ANDROID = '6c53c9a1-98b6-432f-96b2-a37aaa69bc30';
+      const DEBUG_APP_CHECK_TOKEN_APPLE = '77904aef-75a2-4069-98a2-00c7bc76e80b';
+      // RNFB 26 dropped the namespaced default export; the provider is now a
+      // directly-constructed class, matching the Firebase JS SDK's shape.
+      const appCheckProvider = new ReactNativeFirebaseAppCheckProvider();
       appCheckProvider.configure({
-        android: {provider: __DEV__ ? 'debug' : 'playIntegrity'},
-        apple: {provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback'},
+        android: {
+          provider: __DEV__ ? 'debug' : 'playIntegrity',
+          debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_ANDROID : undefined,
+        },
+        apple: {
+          provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
+          debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_APPLE : undefined,
+        },
       });
       initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});
     } catch (error) {
@@ -204,7 +224,11 @@ function App(): React.JSX.Element {
       <GestureHandlerRootView style={{flex: 1}}>
         <SafeAreaProvider>
           <AuthProvider>
-            <AppContent />
+            {/* Above AppContent so the backdrop and the screens that scroll it
+                share one value — see contexts/ScrollMotionContext. */}
+            <ScrollMotionProvider>
+              <AppContent />
+            </ScrollMotionProvider>
           </AuthProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>

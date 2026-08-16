@@ -1,4 +1,7 @@
 import {
+  arrayRemove,
+  arrayUnion,
+  type QueryConstraint,
   collection,
   deleteField,
   doc,
@@ -16,14 +19,15 @@ import {
   startAfter,
   where,
   writeBatch,
-} from '@react-native-firebase/firestore';
-import {getStorage, getDownloadURL, putFile, ref, refFromURL, deleteObject} from '@react-native-firebase/storage';
+} from './firebase/firestore';
+import {getStorage, getDownloadURL, ref, deleteObject, uploadFileFromUri} from './firebase/storage';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
 import {isStealthMode} from './privacyGuard';
 import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
 import {assertRecipientReachable} from './recipient';
 import {resolveMessageMediaUrls} from './messageMedia';
+import {MAX_GROUP_MEMBERS} from './e2ee';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
 
@@ -152,23 +156,6 @@ export async function setUserFcmToken(userId: string, token: string | null) {
   );
 }
 
-/**
- * Stores the user's linked phone number in the owner-only private
- * subcollection (same rationale as setUserFcmToken: a phone number is more
- * sensitive than what's already on the public /users profile doc, which any
- * signed-in user can read).
- */
-export async function setUserPhoneNumber(userId: string, phoneNumber: string | null) {
-  await setDoc(
-    doc(db, 'users', userId, 'private', 'contact'),
-    {
-      phoneNumber: phoneNumber ?? null,
-      phoneUpdatedAt: serverTimestamp(),
-    },
-    {merge: true},
-  );
-}
-
 export async function getUserByEmail(email: string) {
   // Stored emails are lowercased (see upsertUserProfile); normalize the query
   // so lookups are case-insensitive, matching the web client.
@@ -213,7 +200,7 @@ export async function getUserById(uid: string) {
     return cached;
   }
   const fetchPromise = getDoc(doc(usersRef(), uid))
-    .then(snapshot => (snapshot.exists ? ({uid: snapshot.id, ...(snapshot.data() as User)}) : null))
+    .then(snapshot => (snapshot.exists() ? ({uid: snapshot.id, ...(snapshot.data() as User)}) : null))
     .catch(error => {
       if (isPermissionDenied(error)) {
         const restricted = Promise.resolve<User | null>(null);
@@ -278,7 +265,7 @@ export async function getUsersByIds(userIds: string[]): Promise<Record<string, U
           chunk.map(async id => {
             try {
               const snap = await getDoc(doc(usersRef(), id));
-              const data = snap.exists ? ({uid: snap.id, ...(snap.data() as User)}) : null;
+              const data = snap.exists() ? ({uid: snap.id, ...(snap.data() as User)}) : null;
               results[id] = data;
               userCacheSet(id, Promise.resolve(data));
             } catch (singleError: any) {
@@ -300,7 +287,7 @@ export async function getUsersByIds(userIds: string[]): Promise<Record<string, U
 
 export async function getChat(chatId: string) {
   const snapshot = await getDoc(doc(chatsRef(), chatId));
-  return snapshot.exists ? ({id: snapshot.id, ...(snapshot.data() as ChatRoom)}) : null;
+  return snapshot.exists() ? ({id: snapshot.id, ...(snapshot.data() as ChatRoom)}) : null;
 }
 
 export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[]) => void) {
@@ -358,7 +345,10 @@ export async function getMessagesPage(
   pageSize = 50,
 ) {
   const messagesRef = collection(doc(chatsRef(), chatId), 'messages');
-  const constraints = [orderBy('createdAt', 'desc'), limit(pageSize)];
+  // Typed as QueryConstraint[] explicitly: RNFB 26 gives each helper its own
+  // constraint type (QueryOrderByConstraint, QueryStartAtConstraint, ...), so
+  // an inferred array of two becomes a narrow union that rejects the third.
+  const constraints: QueryConstraint[] = [orderBy('createdAt', 'desc'), limit(pageSize)];
   if (cursor) {
     constraints.splice(1, 0, startAfter(cursor));
   }
@@ -375,7 +365,7 @@ export function listenChat(chatId: string, callback: (chat: ChatRoom | null) => 
   return onSnapshot(
     doc(chatsRef(), chatId),
     snapshot => {
-      if (!snapshot?.exists) {
+      if (!snapshot?.exists()) {
         callback(null);
         return;
       }
@@ -410,6 +400,70 @@ export async function createChat(participants: string[], name?: string) {
   }
 }
 
+export class GroupFullError extends Error {
+  readonly code = 'group-full';
+  constructor(message = `a chat can hold at most ${MAX_GROUP_MEMBERS} members`) {
+    super(message);
+    this.name = 'GroupFullError';
+  }
+}
+
+/**
+ * Adds members to a chat.
+ *
+ * The cap is checked here *and* in firestore.rules. This check exists to give a
+ * usable error before a write is attempted; the rule is what actually enforces
+ * it, since anything client-side can be bypassed. Both read MAX_GROUP_MEMBERS
+ * so they cannot drift apart.
+ *
+ * arrayUnion rather than a read-modify-write of the whole array: two people
+ * adding someone at the same moment would otherwise clobber each other, and one
+ * of the new members would silently never be added — and so would never be
+ * sealed to, making them unable to read anything.
+ */
+export async function addChatMembers(chatId: string, newMemberIds: string[]): Promise<void> {
+  const toAdd = Array.from(new Set(newMemberIds.filter(Boolean)));
+  if (toAdd.length === 0) return;
+  try {
+    const chat = await getChat(chatId);
+    const current = chat?.participants || [];
+    const merged = new Set([...current, ...toAdd]);
+    if (merged.size > MAX_GROUP_MEMBERS) throw new GroupFullError();
+
+    await setDoc(
+      doc(chatsRef(), chatId),
+      {participants: arrayUnion(...toAdd), updatedAt: serverTimestamp()},
+      {merge: true},
+    );
+  } catch (error) {
+    if (!(error instanceof GroupFullError)) logError(error, 'addChatMembers');
+    throw error;
+  }
+}
+
+/**
+ * Removes the signed-in user from a chat.
+ *
+ * Only ever yourself: the security rules reject removing anyone else (there are
+ * no admin roles, so "anyone may remove anyone" would be the only alternative).
+ * Messages already sent stay sealed to the keys they were sealed to — leaving
+ * does not retroactively lock you out of history you could already read, and
+ * equally does not grant access to anything sent after you go, because senders
+ * stop including your copy.
+ */
+export async function leaveChat(chatId: string, myUserId: string): Promise<void> {
+  try {
+    await setDoc(
+      doc(chatsRef(), chatId),
+      {participants: arrayRemove(myUserId), updatedAt: serverTimestamp()},
+      {merge: true},
+    );
+  } catch (error) {
+    logError(error, 'leaveChat');
+    throw error;
+  }
+}
+
 /**
  * Sends a message.
  *
@@ -431,7 +485,7 @@ export async function sendMessage(chatId: string, message: Message) {
   await runTransaction(db, async tx => {
     const chatRef = doc(chatsRef(), chatId);
     const snapshot = await tx.get(chatRef);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const chat = snapshot.data() as ChatRoom;
     const unreadCountBy = {...(chat.unreadCountBy || {})};
     chat.participants.forEach(uid => {
@@ -569,7 +623,7 @@ export async function toggleReaction(
   const ref = doc(collection(doc(chatsRef(), chatId), 'messages'), String(messageId));
   await runTransaction(db, async tx => {
     const snapshot = await tx.get(ref);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const message = snapshot.data() as Message;
     const reactions = message.reactions || {};
     const users = new Set(reactions[emoji] || []);
@@ -587,7 +641,7 @@ export async function togglePinMessage(chatId: string, messageId: string | numbe
   const ref = doc(chatsRef(), chatId);
   await runTransaction(db, async tx => {
     const snapshot = await tx.get(ref);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const chat = snapshot.data() as ChatRoom;
     const pinned = new Set(chat.pinnedMessageIds || []);
     if (pinned.has(messageId)) {
@@ -603,7 +657,7 @@ export async function togglePinChat(chatId: string, userId: string) {
   const ref = doc(chatsRef(), chatId);
   await runTransaction(db, async tx => {
     const snapshot = await tx.get(ref);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const chat = snapshot.data() as ChatRoom;
     const pinnedBy = new Set(chat.pinnedBy || []);
     if (pinnedBy.has(userId)) {
@@ -619,7 +673,7 @@ export async function toggleMuteChat(chatId: string, userId: string) {
   const ref = doc(chatsRef(), chatId);
   await runTransaction(db, async tx => {
     const snapshot = await tx.get(ref);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const chat = snapshot.data() as ChatRoom;
     const mutedBy = new Set(chat.mutedBy || []);
     if (mutedBy.has(userId)) {
@@ -640,7 +694,7 @@ export async function toggleHideChat(chatId: string, userId: string, hidden: boo
   const ref = doc(chatsRef(), chatId);
   await runTransaction(db, async tx => {
     const snapshot = await tx.get(ref);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     const chat = snapshot.data() as ChatRoom;
     const hiddenBy = new Set(chat.hiddenBy || []);
     if (hidden) {
@@ -713,7 +767,7 @@ export function listenCall(
   return onSnapshot(
     doc(callsRef(chatId), callId),
     snapshot => {
-      if (!snapshot?.exists) {
+      if (!snapshot?.exists()) {
         callback(null);
         return;
       }
@@ -855,19 +909,7 @@ export async function uploadFile(
   onProgress?: (percent: number) => void,
 ): Promise<string> {
   const storageRef = ref(storage, `chats/${chatId}/${path}`);
-  const task = putFile(storageRef, uri);
-  if (onProgress) {
-    task.on('state_changed', snapshot => {
-      const total = snapshot.totalBytes || 0;
-      const transferred = snapshot.bytesTransferred || 0;
-      if (total > 0) {
-        const percent = Math.min(100, Math.round((transferred / total) * 100));
-        onProgress(percent);
-      }
-    });
-  }
-  await task;
-  return await getDownloadURL(storageRef);
+  return uploadFileFromUri(storageRef, uri, onProgress);
 }
 
 /**
@@ -877,10 +919,10 @@ export async function uploadFile(
  */
 export async function deleteStorageObjectByUrl(url: string): Promise<boolean> {
   // Inline media (data: URIs) lives inside the Firestore document itself, so
-  // there's no Storage object behind it — and refFromURL() would throw on it.
+  // there's no Storage object behind it — and ref() would throw on it.
   if (!url.startsWith('http')) return false;
   try {
-    await deleteObject(refFromURL(storage, url));
+    await deleteObject(ref(storage, url));
     return true;
   } catch {
     // Already deleted, or the URL doesn't map to an object in this bucket.
@@ -942,7 +984,7 @@ export async function exportAll(userId: string) {
     return {
       // RN Firebase exposes `exists` as a property, not a method (unlike the
       // firebase-js web SDK, where it is `exists()`).
-      users: selfSnap.exists ? [selfSnap.data()] : [],
+      users: selfSnap.exists() ? [selfSnap.data()] : [],
       chats: chatsSnap.docs.map(d => ({id: d.id, ...d.data()})),
       messages,
     };

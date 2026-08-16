@@ -1,4 +1,10 @@
-import {decryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
+import {
+  decryptMessage,
+  isEncryptedPayload,
+  isSealedEnvelope,
+  openEnvelope,
+  type EncryptedPayload,
+} from './e2ee';
 
 /** Which encrypted envelope field decrypts into which plaintext media field. */
 const ENCRYPTED_MEDIA_FIELDS = ['encryptedImage', 'encryptedVideo', 'encryptedAudio', 'encryptedFileUri'] as const;
@@ -30,10 +36,23 @@ export function resolveMessageMediaUrls(
 
   for (const encField of ENCRYPTED_MEDIA_FIELDS) {
     const payload = message[encField];
-    if (!isEncryptedPayload(payload)) continue;
     try {
-      const url = decryptMessage(payload as EncryptedPayload, secretKey, chatId);
-      if (url) urls.push(url);
+      // Two shapes coexist: a fan-out envelope from a group-capable client, and
+      // a bare payload from before group support. Both stay readable forever —
+      // there is no migration.
+      //
+      // The empty uid is deliberate. openEnvelope looks up a copy by uid and,
+      // failing that, tries every copy in turn; passing no uid takes that second
+      // path, which finds this device's copy wherever it is. That is what lets
+      // this keep its signature — callers here (Storage cleanup, data export)
+      // have a secret key but not always the uid it belongs to.
+      if (isSealedEnvelope(payload)) {
+        const url = openEnvelope(payload, secretKey, '', chatId);
+        if (url) urls.push(url);
+      } else if (isEncryptedPayload(payload)) {
+        const url = decryptMessage(payload as EncryptedPayload, secretKey, chatId);
+        if (url) urls.push(url);
+      }
     } catch {
       // Wrong/rotated key, or a payload from before this device enrolled.
     }

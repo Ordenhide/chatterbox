@@ -9,10 +9,9 @@
     "renewsOn": "Renews on {{date}}",
     "endsOn": "Ends on {{date}}",
     "pastDue": "We couldn't process your last payment — update your card on the web to keep Pro.",
-    "pitch": "Unlock AI chat summaries and search, plus the full theme collection.",
+    "pitch": "Unlock AI chat summaries and search.",
     "manageOnWeb": "Subscribe or manage your subscription on the Chatterbox website.",
-    "lockedAiMobile": "AI chat summaries and search are part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock them here.",
-    "lockedTheme": "This theme is part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock it."
+    "lockedAiMobile": "AI chat summaries and search are part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock them here."
   },
   "common": {
     "continue": "Continue",
@@ -165,21 +164,42 @@
     "pin": "Pin",
     "unpin": "Unpin"
   },
+  "call": {
+    "groupUnsupportedTitle": "Group calls aren't available yet",
+    "groupUnsupportedBody": "Calling works in one-to-one chats for now. In a group it would only ring one person, so it's turned off here."
+  },
+  "members": {
+    "title": "Members ({{count}})",
+    "you": " (you)",
+    "add": "+ Add member",
+    "adding": "Adding...",
+    "addPlaceholder": "Add by email",
+    "full": "A chat can hold at most {{max}} people",
+    "leave": "Leave chat",
+    "leaveConfirmTitle": "Leave this chat?",
+    "leaveConfirmBody": "You'll stop receiving new messages. Messages already sent to you stay readable, and new ones won't be. You can be added back later."
+  },
   "newChat": {
     "heading": "Start a Conversation",
-    "subheading": "Enter the email of the person you want to chat with.",
+    "subheading": "Add one person for a direct chat, or several for a group.",
     "recipientEmail": "Recipient Email",
     "emailPlaceholder": "friend@example.com",
     "chatNameLabel": "Chat Name (optional)",
     "chatNamePlaceholder": "Chat name",
     "helpText": "The recipient must have an existing account.",
     "creating": "Creating...",
+    "adding": "Adding...",
+    "addPerson": "+ Add person",
+    "removePerson": "Remove {{name}}",
     "startChat": "Start Chat",
+    "startGroup": "Start Group Chat",
     "errors": {
       "enterEmail": "Please enter an email address",
       "userNotFoundTitle": "User not found",
       "userNotFoundBody": "That email does not exist on this device. Create another account first, then try again.",
       "selfChat": "You cannot start a chat with yourself",
+      "alreadyAdded": "That person is already in this chat",
+      "groupFull": "A chat can hold at most {{max}} people",
       "createFailed": "Failed to create chat"
     }
   },
@@ -195,7 +215,8 @@
       "like": "Like",
       "liked": "Liked",
       "comment": "Comment",
-      "share": "Share"
+      "share": "Share",
+      "viewPhoto": "View photo"
     },
     "visibility": {
       "public": "Public",
@@ -317,6 +338,7 @@
     "shortcutSaved": "Saved",
     "shortcutMemories": "Memories",
     "shortcutPrivacy": "Privacy",
+    "shortcutRecovery": "Recovery Phrase",
     "buttons": {
       "feedback": "Send Feedback",
       "export": "Export Backup",
@@ -344,31 +366,6 @@
       "deleting": "Deleting your data…",
       "deleteFailed": "Could not delete the account. Please try again.",
       "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support.",
-      "phoneTitle": "Phone Number",
-      "phoneCountryTitle": "Select Country",
-      "phoneNotAdded": "Not added",
-      "phoneAdd": "Add phone number",
-      "phoneChange": "Change phone number",
-      "phoneRemove": "Remove phone number",
-      "phoneRemoveConfirmTitle": "Remove phone number?",
-      "phoneRemoveConfirmBody": "You'll need to add and verify it again to use it later.",
-      "phonePlaceholder": "Phone number",
-      "phoneCodePlaceholder": "6-digit code",
-      "phoneSendCode": "Send code",
-      "phoneVerifyCode": "Verify",
-      "phoneResendCode": "Resend code",
-      "phoneAddedTitle": "Phone number added",
-      "phoneAdded": "Your phone number has been verified and added to your account.",
-      "phoneRemovedTitle": "Phone number removed",
-      "phoneRemoved": "Your phone number has been removed from your account.",
-      "phoneSendFailedTitle": "Couldn't send code",
-      "phoneVerifyFailedTitle": "Verification failed",
-      "phoneRemoveFailedTitle": "Couldn't remove phone number",
-      "phoneInvalid": "Enter a valid phone number in international format (e.g. +14155550123)",
-      "phoneInvalidCode": "That code is incorrect",
-      "phoneCodeExpired": "That code has expired. Request a new one.",
-      "phoneAlreadyInUse": "That phone number is already linked to another account.",
-      "phoneProviderNotEnabled": "Phone sign-in isn't turned on for this app yet. This needs to be enabled in the Firebase console (Authentication → Sign-in method) before phone numbers can be added.",
       "downloadDataTitle": "Download my data",
       "downloadDataDesc": "Get a copy of your profile, conversations, and moments as a plain-text file you can keep or inspect — different from Export Backup below, which creates an encrypted file for moving your account to a new device.",
       "downloadDataButton": "Download"

@@ -1,4 +1,5 @@
 import {mmkvStorage} from './storageMMKV';
+import {bytesToHex, secureRandomBytes} from './crypto';
 import ReactNativeBiometrics from 'react-native-biometrics';
 
 const biometrics = new ReactNativeBiometrics();
@@ -27,9 +28,12 @@ function stretchHash(salt: string, pin: string, rounds = 10_000): string {
 }
 
 function randomSalt(): string {
-  const bytes = new Uint8Array(16);
-  for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  // Was Math.random(), which is not a CSPRNG — its output is predictable from
+  // observed values, so salts generated close together were guessable. Salts
+  // need not be secret, but a predictable one gives back exactly the
+  // precomputation resistance the salt exists to provide. secureRandomBytes is
+  // the same CSPRNG the E2EE keys already use.
+  return bytesToHex(secureRandomBytes(16));
 }
 
 // Stored format: "v2:<salt>:<hash>"

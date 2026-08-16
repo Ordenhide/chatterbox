@@ -13,7 +13,7 @@ import {
   getFirestore,
   query,
   where,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {decryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
 
@@ -252,7 +252,7 @@ export async function exportUserData(uid: string): Promise<UserDataExport> {
   let profile: Record<string, unknown> | null = null;
   try {
     const snap = await getDoc(doc(db, 'users', uid));
-    profile = snap.exists ? (sanitizeForExport(snap.data()) as Record<string, unknown>) : null;
+    profile = snap.exists() ? (sanitizeForExport(snap.data()) as Record<string, unknown>) : null;
   } catch (error) {
     report.errors.push(`profile failed: ${String(error)}`);
   }

@@ -2,12 +2,9 @@ import {
   EmailAuthProvider,
   deleteUser,
   getAuth,
-  linkWithPhoneNumber,
   reauthenticateWithCredential,
-  unlink,
   updatePassword,
-  FirebaseAuthTypes,
-} from '@react-native-firebase/auth';
+} from './firebase/auth';
 import {
   arrayRemove,
   collection,
@@ -21,11 +18,11 @@ import {
   updateDoc,
   where,
   writeBatch,
-} from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+} from './firebase/firestore';
+import {deleteObject, getStorage, listAll, ref} from './firebase/storage';
 import {mmkvStorage} from './storageMMKV';
 import {reportError} from './telemetry';
-import {setUserPhoneNumber, deleteStorageObjectByUrl} from './firebaseChat';
+import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
 
@@ -97,98 +94,6 @@ export async function changePassword(
       reason: PasswordChangeError;
     };
     wrapped.reason = describeAuthError(error);
-    throw wrapped;
-  }
-}
-
-export type PhoneLinkError =
-  | 'wrong-password'
-  | 'invalid-phone-number'
-  | 'invalid-verification-code'
-  | 'code-expired'
-  | 'phone-already-in-use'
-  | 'too-many-requests'
-  | 'provider-not-enabled'
-  | 'unknown';
-
-export function describePhoneLinkError(error: unknown): PhoneLinkError {
-  const code = (error as {code?: string})?.code || '';
-  if (
-    code === 'auth/wrong-password' ||
-    code === 'auth/invalid-credential' ||
-    code === 'auth/invalid-login-credentials'
-  ) {
-    return 'wrong-password';
-  }
-  if (code === 'auth/invalid-phone-number') return 'invalid-phone-number';
-  if (code === 'auth/invalid-verification-code') return 'invalid-verification-code';
-  if (code === 'auth/code-expired') return 'code-expired';
-  if (code === 'auth/credential-already-in-use' || code === 'auth/provider-already-linked') {
-    return 'phone-already-in-use';
-  }
-  if (code === 'auth/too-many-requests') return 'too-many-requests';
-  // Thrown when the Phone sign-in provider hasn't been turned on for this
-  // Firebase project yet (Authentication -> Sign-in method, console-only
-  // step, not something this codebase can enable on its own).
-  if (code === 'auth/operation-not-allowed' || code === 'auth/admin-restricted-operation') {
-    return 'provider-not-enabled';
-  }
-  return 'unknown';
-}
-
-/**
- * Starts linking a phone number to the signed-in user's account.
- * Reauthenticates first (same reasoning as changePassword: this is a
- * sensitive operation, and Firebase itself will refuse it on a stale token).
- * Returns the confirmation handle for confirmPhoneLink to complete.
- */
-export async function sendPhoneLinkCode(
-  currentPassword: string,
-  phoneNumber: string,
-): Promise<FirebaseAuthTypes.ConfirmationResult> {
-  const user = getAuth().currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await reauthenticate(currentPassword);
-    return await linkWithPhoneNumber(user, phoneNumber.trim());
-  } catch (error) {
-    const wrapped = new Error('phone link failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(error);
-    wrapped.cause = error;
-    throw wrapped;
-  }
-}
-
-/** Confirms the code sent by sendPhoneLinkCode and finishes linking the phone number. */
-export async function confirmPhoneLink(
-  confirmation: FirebaseAuthTypes.ConfirmationResult,
-  code: string,
-): Promise<void> {
-  const user = getAuth().currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    const credential = await confirmation.confirm(code.trim());
-    const phoneNumber = credential?.user.phoneNumber;
-    await setUserPhoneNumber(user.uid, phoneNumber ?? null);
-  } catch (error) {
-    const wrapped = new Error('phone link confirmation failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(error);
-    wrapped.cause = error;
-    throw wrapped;
-  }
-}
-
-/** Removes the phone number linked to the signed-in user's account. */
-export async function unlinkPhoneNumber(): Promise<void> {
-  const user = getAuth().currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await unlink(user, 'phone');
-    await setUserPhoneNumber(user.uid, null);
-  } catch (error) {
-    const wrapped = new Error('phone unlink failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(error);
-    wrapped.cause = error;
     throw wrapped;
   }
 }
@@ -360,10 +265,14 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
 
   // Moment media is namespaced by uid, so it can be purged wholesale.
   try {
-    const listing = await storage().ref(`moments/${uid}`).listAll();
+    // Modular rather than the namespaced storage().ref() chain: the namespaced
+    // API is React-Native-Firebase-only, and the modular signatures are the
+    // ones the Firebase JS SDK also exposes — which is what lets this run on a
+    // platform with no native Firebase SDK.
+    const listing = await listAll(ref(getStorage(), `moments/${uid}`));
     for (const item of listing.items) {
       try {
-        await item.delete();
+        await deleteObject(item);
         report.storageObjectsDeleted++;
       } catch {
         // already gone

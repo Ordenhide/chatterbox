@@ -1,4 +1,4 @@
-import type {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import type {DocumentSnapshot, QuerySnapshot} from './firebase/firestore';
 import {reportError} from './telemetry';
 
 /**
@@ -74,15 +74,15 @@ function guard<S>(context: string, handler: (snap: S) => void) {
  */
 export function guardDocSnapshot(
   context: string,
-  handler: (snap: FirebaseFirestoreTypes.DocumentSnapshot) => void,
+  handler: (snap: DocumentSnapshot) => void,
 ) {
-  return guard<FirebaseFirestoreTypes.DocumentSnapshot>(context, handler);
+  return guard<DocumentSnapshot>(context, handler);
 }
 
 /** Guard for a collection/query listener. */
 export function guardQuerySnapshot(
   context: string,
-  handler: (snap: FirebaseFirestoreTypes.QuerySnapshot) => void,
+  handler: (snap: QuerySnapshot) => void,
 ) {
-  return guard<FirebaseFirestoreTypes.QuerySnapshot>(context, handler);
+  return guard<QuerySnapshot>(context, handler);
 }

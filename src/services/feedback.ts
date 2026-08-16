@@ -1,5 +1,5 @@
 import {Platform} from 'react-native';
-import {addDoc, collection, getFirestore, serverTimestamp} from '@react-native-firebase/firestore';
+import {addDoc, collection, getFirestore, serverTimestamp} from './firebase/firestore';
 
 const db = getFirestore();
 

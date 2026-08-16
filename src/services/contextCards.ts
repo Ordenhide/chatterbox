@@ -44,12 +44,22 @@ function extractEntities(text: string): string[] {
   if (!text || text.length < 5) return [];
 
   // Capitalized phrase pattern: 2-5 consecutive capitalized words
-  const phraseRegex = /\b([A-Z][a-z]+(?:\s+(?:of|the|and|in|at|de|la|le|el|di|von|van|for)\s+)?[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\b/g;
+  // The `\s+` sits *outside* the optional connector group. It used to be inside
+  // it, which meant a plain two-word name had no space to match on: "House of
+  // Cards" worked (connector present) but "Eiffel Tower" and "Star Wars" — the
+  // examples in this function's own doc comment — never matched at all.
+  const phraseRegex = /\b([A-Z][a-z]+(?:\s+(?:of|the|and|in|at|de|la|le|el|di|von|van|for))?\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\b/g;
   const phrases: string[] = [];
   let match;
   while ((match = phraseRegex.exec(text)) !== null) {
     const phrase = match[1].trim();
-    if (phrase.length >= 4 && !STOP_WORDS.has(phrase.toLowerCase())) {
+    // Reject when *every* word is a stop word ("Thanks Bye Okay"), not just when
+    // the joined phrase happens to be one. The list is a list of words, so
+    // testing only the concatenation let ordinary sentence-initial
+    // capitalisation through and sent it to Wikipedia.
+    const words = phrase.toLowerCase().split(/\s+/);
+    const allStopWords = words.every(w => STOP_WORDS.has(w));
+    if (phrase.length >= 4 && !allStopWords && !STOP_WORDS.has(phrase.toLowerCase())) {
       phrases.push(phrase);
     }
   }

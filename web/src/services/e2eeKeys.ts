@@ -23,9 +23,11 @@ import {x25519} from '@noble/curves/ed25519.js';
 import {db} from '../firebase';
 import {bytesToBase64, base64ToBytes, bytesToHex, hexToBytes} from './crypto';
 import {generateKeypair, type Keypair} from './e2ee';
+import {isValidMnemonic, mnemonicToSecretKey, secretKeyToMnemonic} from './e2eeMnemonic';
 
 const SECRET_KEY_PREFIX = 'e2ee_secret_key_v1';
 const PEER_KEY_PREFIX = 'e2ee_peer_key_v1';
+const RECOVERY_REVEALED_PREFIX = 'e2ee_recovery_revealed_v1';
 
 function readLocal(key: string): string | null {
   try {
@@ -46,25 +48,52 @@ function writeLocal(key: string, value: string): void {
 
 const cached = new Map<string, Keypair>();
 
+// Bumped whenever the key this tab is decrypting with changes identity, so
+// views that cache per-message decrypt results (keyed by message id, not by
+// which key decrypted them) know to discard that cache and retry — otherwise
+// a message that failed under the previous key stays stuck showing that
+// failure forever. Mirrors mobile's src/services/e2eeKeys.ts.
+//
+// Mobile bumps this on recovery-phrase restore, which the web client doesn't
+// offer; here the trigger is switching accounts within one tab, since a
+// browser (unlike the app) routinely signs into more than one account.
+let keyGeneration = 0;
+let activeKeyUserId: string | null = null;
+
+export function getKeyGeneration(): number {
+  return keyGeneration;
+}
+
+function markActiveKey(userId: string): void {
+  if (activeKeyUserId === userId) return;
+  activeKeyUserId = userId;
+  keyGeneration += 1;
+}
+
 /**
  * Returns this browser's keypair for `userId`, generating and publishing one
  * on first call. Cached in-memory per account for the life of the tab.
  */
 export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair> {
   const hit = cached.get(userId);
-  if (hit) return hit;
+  if (hit) {
+    markActiveKey(userId);
+    return hit;
+  }
 
   const storedHex = readLocal(`${SECRET_KEY_PREFIX}:${userId}`);
   if (storedHex) {
     const secretKey = hexToBytes(storedHex);
     const keypair = keypairFromSecret(secretKey);
     cached.set(userId, keypair);
+    markActiveKey(userId);
     return keypair;
   }
 
   const keypair = generateKeypair();
   writeLocal(`${SECRET_KEY_PREFIX}:${userId}`, bytesToHex(keypair.secretKey));
   cached.set(userId, keypair);
+  markActiveKey(userId);
   await publishPublicKey(userId, keypair.publicKey);
   return keypair;
 }
@@ -99,15 +128,63 @@ export async function publishPublicKey(userId: string, publicKey: Uint8Array): P
  */
 export async function fetchPeerPublicKey(peerUserId: string): Promise<Uint8Array | null> {
   try {
-    const snap = await getDoc(doc(db, 'users', peerUserId, 'publicKeys', 'e2ee'));
-    const key = snap.exists() ? (snap.data()?.publicKey as string | undefined) : undefined;
-    return key ? base64ToBytes(key) : null;
+    return await fetchPublishedKeyOrThrow(peerUserId);
   } catch (error) {
     // A permission error here is expected until rules allow it; treat it as
     // "peer not enrolled" so messaging degrades to plaintext rather than
     // breaking entirely.
     console.warn('e2ee fetch peer public key failed:', error);
     return null;
+  }
+}
+
+/**
+ * The same read without the "treat any failure as unenrolled" fallback.
+ *
+ * That fallback is right for messaging (degrade to plaintext rather than
+ * break) but wrong anywhere the *absence* of a key is itself a decision — a
+ * network blip would be silently read as "this account has no key", which is
+ * exactly the condition callers like restoreDeviceKeypairFromPhrase use to
+ * waive their safety checks. Callers that can't tolerate that ambiguity use
+ * this and handle the error explicitly.
+ */
+async function fetchPublishedKeyOrThrow(userId: string): Promise<Uint8Array | null> {
+  const snap = await getDoc(doc(db, 'users', userId, 'publicKeys', 'e2ee'));
+  const key = snap.exists() ? (snap.data()?.publicKey as string | undefined) : undefined;
+  return key ? base64ToBytes(key) : null;
+}
+
+export type EnrollmentReadiness =
+  /** This browser already holds this account's key, or no key exists anywhere. */
+  | 'safe'
+  /** The account has a key published elsewhere that this browser doesn't hold. */
+  | 'needs-restore'
+  /** Couldn't find out — treat as "don't touch anything yet". */
+  | 'unknown';
+
+/**
+ * Whether it's safe to let an *automatic* trigger enroll this browser.
+ *
+ * A plain getOrCreateDeviceKeypair call mints and publishes a new keypair
+ * whenever this browser has no local key. If the account already published one
+ * from a phone or another browser, that silently overwrites it and permanently
+ * strands any history still recoverable from the saved recovery phrase — and
+ * it would happen within milliseconds of sign-in, long before the user could
+ * reach the restore UI.
+ *
+ * `unknown` is deliberately not folded into `safe`: that's how a network blip
+ * would turn into an overwrite. Holding off costs nothing — the browser simply
+ * stays unenrolled, messaging degrades to plaintext exactly as it does before
+ * first enrollment, and the next sign-in tries again.
+ */
+export async function enrollmentReadiness(userId: string): Promise<EnrollmentReadiness> {
+  if (cached.has(userId)) return 'safe';
+  if (readLocal(`${SECRET_KEY_PREFIX}:${userId}`)) return 'safe';
+  try {
+    return (await fetchPublishedKeyOrThrow(userId)) === null ? 'safe' : 'needs-restore';
+  } catch (error) {
+    console.warn('e2ee enrollment readiness failed:', error);
+    return 'unknown';
   }
 }
 
@@ -159,7 +236,114 @@ export async function fetchPeerPublicKeyChecked(
   return {key, status: 'changed'};
 }
 
+/**
+ * The device secret key, encoded as a 24-word recovery phrase the user can
+ * write down and later type back in via restoreDeviceKeypairFromPhrase to
+ * regain decryption in a fresh browser profile. Generates the keypair first if
+ * this browser doesn't have one yet.
+ *
+ * This matters more on web than on mobile: clearing site data is a routine,
+ * one-click action that a browser will also do on its own under storage
+ * pressure or in private mode. Without a phrase written down, that silently and
+ * permanently destroys every encrypted message this account can read — the
+ * secret key exists nowhere else, by design.
+ */
+export async function getRecoveryPhrase(userId: string): Promise<string> {
+  const {secretKey} = await getOrCreateDeviceKeypair(userId);
+  return secretKeyToMnemonic(secretKey);
+}
+
+/**
+ * Whether this browser has ever shown the user their recovery phrase. The
+ * reveal UI is offered once — after that this flips permanently true, the same
+ * "shown once, then never again" pattern as a cloud provider's secret access
+ * key. The phrase itself keeps living in localStorage either way; this flag
+ * only gates whether the app volunteers to display it again.
+ */
+export function hasRevealedRecoveryPhrase(userId: string): boolean {
+  return readLocal(`${RECOVERY_REVEALED_PREFIX}:${userId}`) === '1';
+}
+
+export function markRecoveryPhraseRevealed(userId: string): void {
+  writeLocal(`${RECOVERY_REVEALED_PREFIX}:${userId}`, '1');
+}
+
+export type RestoreKeypairResult =
+  | {success: true}
+  | {
+      success: false;
+      reason:
+        | 'invalid-phrase'
+        | 'key-mismatch'
+        /** Couldn't reach the server to check the phrase, so nothing changed. */
+        | 'verification-unavailable'
+        /** Phrase was right, but publishing it failed; nothing changed. */
+        | 'publish-failed';
+    };
+
+/**
+ * Imports a previously-revealed recovery phrase as this browser's keypair, so
+ * it can decrypt history that was sealed to that key.
+ *
+ * The derived public key must match what's currently published for this
+ * account before it's accepted — otherwise a mistyped or stale phrase would
+ * silently install the wrong key and strand this browser exactly the way it was
+ * trying to un-strand itself. `unenrolled` (nothing published yet) is accepted
+ * too, so restoring still works for an account that never finished enrolling.
+ *
+ * All-or-nothing: the new key is published *before* any local state changes, so
+ * a failure at any step leaves this browser exactly as it was rather than
+ * switching it to a key whose public half never made it out — which would
+ * strand it silently, with nothing to retry (getOrCreateDeviceKeypair only
+ * publishes on first generation, never for an already-stored key).
+ */
+export async function restoreDeviceKeypairFromPhrase(
+  userId: string,
+  phrase: string,
+): Promise<RestoreKeypairResult> {
+  if (!isValidMnemonic(phrase)) {
+    return {success: false, reason: 'invalid-phrase'};
+  }
+
+  const secretKey = mnemonicToSecretKey(phrase);
+  const publicKey = x25519.getPublicKey(secretKey);
+
+  let publishedKey: Uint8Array | null;
+  try {
+    publishedKey = await fetchPublishedKeyOrThrow(userId);
+  } catch (error) {
+    // Deliberately not treated as "unenrolled": that would waive the mismatch
+    // check below and let a wrong phrase through on a bad connection, which is
+    // the precise failure this check exists to stop.
+    console.warn('e2ee restore verification failed:', error);
+    return {success: false, reason: 'verification-unavailable'};
+  }
+
+  if (publishedKey && bytesToBase64(publishedKey) !== bytesToBase64(publicKey)) {
+    return {success: false, reason: 'key-mismatch'};
+  }
+
+  try {
+    await publishPublicKey(userId, publicKey);
+  } catch {
+    // Already logged by publishPublicKey. No local state has been touched yet,
+    // so the browser keeps working with its existing key and the user can retry.
+    return {success: false, reason: 'publish-failed'};
+  }
+
+  writeLocal(`${SECRET_KEY_PREFIX}:${userId}`, bytesToHex(secretKey));
+  cached.set(userId, {secretKey, publicKey});
+  // Bumped explicitly rather than via markActiveKey: a restore replaces the key
+  // for the account that is *already* active, so markActiveKey would see no
+  // change of user and skip the bump — leaving views still showing decrypt
+  // failures from the old key, which is the whole reason this counter exists.
+  activeKeyUserId = userId;
+  keyGeneration += 1;
+  return {success: true};
+}
+
 /** Test seam — drops the in-memory keypair cache. */
 export function _resetKeypairCache(): void {
   cached.clear();
+  activeKeyUserId = null;
 }

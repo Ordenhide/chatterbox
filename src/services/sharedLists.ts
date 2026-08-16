@@ -5,7 +5,7 @@ import {
   onSnapshot,
   setDoc,
   serverTimestamp,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {SharedListItem} from '../types';
 
 const db = getFirestore();
@@ -65,7 +65,7 @@ export function listenSharedList(
   return onSnapshot(
     doc(listsRef(chatId), listId),
     snapshot => {
-      if (!snapshot.exists) {
+      if (!snapshot.exists()) {
         callback(null);
         return;
       }

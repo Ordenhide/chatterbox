@@ -7,11 +7,23 @@ require 'pathname'
 # thing.
 ENV['CHATTERBOX_MACOS'] = '1'
 
-ws_dir = Pathname.new(__dir__)
-ws_dir = ws_dir.parent until
-  File.exist?("#{ws_dir}/node_modules/react-native-macos/scripts/react_native_pods.rb") ||
-  ws_dir.expand_path.to_s == '/'
-require "#{ws_dir}/node_modules/react-native-macos/scripts/react_native_pods.rb"
+# Resolved against *this* package only — deliberately not the old walk up to
+# the filesystem root.
+#
+# macOS is now its own package pinned to React Native 0.81, while the app one
+# directory up pins a different version for HarmonyOS (see ../README.md). An
+# unbounded upward search would happily skip past this package's node_modules
+# when it is not installed yet and link against the mobile app's React Native
+# instead — producing a build that appears to succeed and fails at runtime, far
+# from the cause. Failing loudly with "run npm install here" is the better
+# outcome.
+ws_dir = Pathname.new(__dir__).parent
+rn_macos_script = "#{ws_dir}/node_modules/react-native-macos/scripts/react_native_pods.rb"
+unless File.exist?(rn_macos_script)
+  raise "react-native-macos not found in #{ws_dir}/node_modules. " \
+        'Run `npm install` inside macos-app/ — this package has its own dependency tree.'
+end
+require rn_macos_script
 
 prepare_react_native_project!
 

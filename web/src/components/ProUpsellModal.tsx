@@ -33,7 +33,6 @@ export default function ProUpsellModal({onClose}: {onClose: () => void}) {
 
         <ul style={styles.list}>
           <li>{t('pro.featureAi')}</li>
-          <li>{t('pro.featureThemes')}</li>
         </ul>
 
         <button type="button" className="btn btn-primary" style={styles.primary} onClick={openStore}>

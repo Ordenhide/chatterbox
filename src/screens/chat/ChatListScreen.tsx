@@ -33,6 +33,8 @@ import {reportError} from '../../services/telemetry';
 import {isDecoyMode} from '../../services/appLock';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
+import {enrollmentReadiness, hasRevealedRecoveryPhrase} from '../../services/e2eeKeys';
+import RecoveryPhraseRevealModal from '../../components/RecoveryPhraseRevealModal';
 
 type ChatListItemProps = {
   id: string;
@@ -149,6 +151,46 @@ export default function ChatListScreen() {
   const {isOffline} = useNetworkStatus();
   const cacheWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingCacheRef = useRef<ChatRoom[] | null>(null);
+  const [recoveryModalVisible, setRecoveryModalVisible] = useState(false);
+
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    // The "save your recovery phrase" modal reveals the phrase via
+    // getRecoveryPhrase, which *enrolls* this device if it has no key yet.
+    // So it may only be opened when enrolling is known to be safe: on a new
+    // install for an account that already has a key elsewhere, opening it
+    // would mint and publish a fresh keypair and permanently overwrite the
+    // key the user might still be able to restore. Offer restore instead.
+    // On 'unknown' (couldn't check) do nothing at all rather than guess —
+    // this re-runs on the next sign-in.
+    enrollmentReadiness(user.uid)
+      .then(readiness => {
+        if (!active || readiness === 'unknown') return;
+        if (readiness === 'needs-restore') {
+          Alert.alert(
+            'Restore your message history?',
+            'This looks like a new device for an account that already has an encryption key. ' +
+              'Restore your recovery phrase to keep reading old messages, or continue and start fresh.',
+            [
+              {text: 'Not now', style: 'cancel'},
+              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase' as never)},
+            ],
+          );
+          return;
+        }
+        hasRevealedRecoveryPhrase(user.uid)
+          .then(revealed => {
+            if (active && !revealed) setRecoveryModalVisible(true);
+          })
+          .catch(() => undefined);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [user, navigation]);
 
   const scheduleChatCacheWrite = useCallback(
     (nextChats: ChatRoom[]) => {
@@ -270,6 +312,7 @@ export default function ChatListScreen() {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     if (!user) return;
@@ -503,6 +546,13 @@ export default function ChatListScreen() {
           </Text>
         }
       />
+      {user && (
+        <RecoveryPhraseRevealModal
+          visible={recoveryModalVisible}
+          userId={user.uid}
+          onDone={() => setRecoveryModalVisible(false)}
+        />
+      )}
     </GlassScreen>
   );
 }
@@ -549,7 +599,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   searchInput: {
-    flex: 1,
+    // No `flex: 1` here. This is a fixed-height field in a *column*, so flex
+    // would fight the height below rather than complement it. Legacy Yoga let
+    // the explicit height win; Fabric gives the flex line priority, and the
+    // field grew to fill the whole screen between the header and the list.
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,

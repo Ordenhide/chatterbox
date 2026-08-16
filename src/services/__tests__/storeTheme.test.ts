@@ -11,7 +11,7 @@ const mockState: {
   setDocCalls: {path: string; data: Record<string, unknown>}[];
 } = {chatIds: [], batches: [], setDocCalls: []};
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   collection: (..._args: unknown[]) => ({}),
   doc: (_parent: unknown, id: string) => ({path: id}),
   getDocs: jest.fn(async () => ({docs: mockState.chatIds.map(id => ({id}))})),
@@ -235,11 +235,21 @@ describe('catalog integrity', () => {
     expect(invisible.map(t => t.id)).toEqual([]);
   });
 
-  it('keeps free themes light and Pro themes dark', () => {
+  it('keeps the original light/dark split intact', () => {
+    // Every theme is free now, but the visual split predates that and is
+    // still deliberate variety, not an accident worth losing track of.
+    const historicallyDark = new Set([
+      'midnight',
+      'sunset',
+      'matcha',
+      'lavender',
+      'ember',
+      'arctic',
+    ]);
     for (const theme of THEME_CATALOG) {
       expect({id: theme.id, dark: isDarkWallpaper(theme.wallpaper)}).toEqual({
         id: theme.id,
-        dark: theme.pro,
+        dark: historicallyDark.has(theme.id),
       });
     }
   });
@@ -254,20 +264,33 @@ describe('catalog integrity', () => {
     expect(new Set(accents).size).toBe(accents.length);
   });
 
-  it('keeps mobile and web catalogs in lockstep on ids and pro flags', () => {
-    expect(THEME_CATALOG.map(t => `${t.id}:${t.pro}`)).toEqual([
-      'classic:false',
-      'sky:false',
-      'forest:false',
-      'amber:false',
-      'rose:false',
-      'slate:false',
-      'midnight:true',
-      'sunset:true',
-      'matcha:true',
-      'lavender:true',
-      'ember:true',
-      'arctic:true',
+  it('keeps the catalog id list stable and complete', () => {
+    expect(THEME_CATALOG.map(t => t.id)).toEqual([
+      'classic',
+      'sky',
+      'forest',
+      'amber',
+      'rose',
+      'slate',
+      'midnight',
+      'sunset',
+      'matcha',
+      'lavender',
+      'ember',
+      'arctic',
     ]);
+  });
+
+  it('anchors every gradient to end at the theme\'s own wallpaper', () => {
+    for (const t of THEME_CATALOG) {
+      expect(t.gradientStops[t.gradientStops.length - 1]).toBe(t.wallpaper);
+    }
+  });
+
+  it('keeps particle density within the ambient-texture cap', () => {
+    for (const t of THEME_CATALOG) {
+      expect(t.particles.density).toBeGreaterThanOrEqual(8);
+      expect(t.particles.density).toBeLessThanOrEqual(14);
+    }
   });
 });

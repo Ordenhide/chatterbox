@@ -135,6 +135,23 @@ body::before {
       var(--cb-grid-line) 0 1px,
       transparent 1px var(--cb-grid-size)
     );
+  /* Parallax. One position per background layer, in the order declared above:
+     the two glows lag well behind scroll, the grid tracks it more closely, and
+     the difference between those rates is what reads as depth.
+
+     Both vars are set from JS by hooks/useBackdropParallax, which is also
+     where the rates live — keeping them there rather than here means the
+     mobile client can share the same numbers (see web/src/motion.ts). Absent
+     that JS they fall back to 0 and the backdrop is simply static.
+
+     Only the horizontal grid lines respond to a Y offset; the vertical ones
+     are infinite in Y, so shifting them does nothing. That is fine — the
+     horizontal lines sliding is the visible half of the effect. */
+  background-position:
+    0 var(--cb-parallax-glow, 0px),
+    0 var(--cb-parallax-glow, 0px),
+    0 var(--cb-parallax-grid, 0px),
+    0 var(--cb-parallax-grid, 0px);
   /* Fades the grid out toward the bottom-right so it frames rather than
      competes with content. */
   -webkit-mask-image: radial-gradient(120% 120% at 30% 0%, #000 40%, transparent 100%);
@@ -188,7 +205,16 @@ button:focus-visible {
   font-weight: 650;
   letter-spacing: 0.01em;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+  /* Transform released on the house spring so a button rebounds past its
+     resting size and settles, rather than sliding back linearly. */
+  transition: transform 0.24s var(--cb-spring), box-shadow 0.15s ease, background 0.15s ease,
+    opacity 0.15s ease;
+}
+/* Every button compresses under the pointer. This is the one press convention
+   in the app — .tab-btn, .brand-btn and .cb-send all reuse the same token. */
+.btn:active:not(:disabled) {
+  transform: scale(var(--cb-press-scale));
+  transition: transform var(--cb-press-in);
 }
 .btn:disabled {
   opacity: 0.5;
@@ -267,7 +293,7 @@ button:focus-visible {
   transform: scale(1.06);
 }
 .brand-btn:active {
-  transform: scale(0.96);
+  transform: scale(var(--cb-press-scale));
   opacity: 0.9;
 }
 
@@ -334,7 +360,7 @@ button:focus-visible {
   justify-content: center;
   gap: 3px;
   padding: 9px 0 11px;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, transform 0.24s var(--cb-spring);
 }
 .tab-btn span {
   font-size: 11px;
@@ -343,8 +369,11 @@ button:focus-visible {
 .tab-btn.active {
   color: var(--cb-primary-soft);
 }
+/* Compresses rather than fading. A tab that dims on press reads as switching
+   off; one that gives under the finger reads as being pushed. */
 .tab-btn:active {
-  opacity: 0.6;
+  transform: scale(var(--cb-press-scale));
+  transition: transform var(--cb-press-in);
 }
 
 /* ---- Scrollbars ---- */
@@ -480,7 +509,9 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   padding: 32px;
-  animation: fadeIn 0.18s ease;
+  /* The fade is framer's now (see context/LightboxContext) so that it can also
+     run in reverse on close, which a CSS mount animation cannot. Declaring one
+     here too would leave the two fighting over opacity on open. */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -625,6 +656,13 @@ button:focus-visible {
 :root {
   --cb-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --cb-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* How far a control compresses when pressed. Matches PRESS_SCALE in the
+     mobile app's utils/motion.ts, so a button gives the same amount under a
+     finger on either client. Small on purpose: felt, not watched. */
+  --cb-press-scale: 0.96;
+  /* Press tracks the finger; only the release gets the spring. A press that
+     eases in feels laggy no matter how good the curve is. */
+  --cb-press-in: 0.07s ease-out;
 }
 
 /* Visually hidden, still announced. Used where an animation replaces text
@@ -776,7 +814,8 @@ button:focus-visible {
   filter: brightness(1.08);
 }
 .cb-send:active:not(:disabled) {
-  transform: scale(0.94);
+  transform: scale(var(--cb-press-scale));
+  transition: transform var(--cb-press-in);
 }
 .cb-send.cb-launch {
   animation: cbLaunch 0.45s var(--cb-spring);
@@ -798,9 +837,14 @@ button:focus-visible {
 
    An earlier pass had these at 7-10% opacity, which was invisible in practice
    — technically animating, visually nothing. These are strong enough to
-   actually read as a living surface. Still single-hue (derived from the chat
-   accent, per the palette note at the top of this file): the intensity comes
-   from opacity and movement, not from adding hues the design rejects.
+   actually read as a living surface. Originally single-hue by design; each
+   theme now curates up to 3 gradient stops (THEME_CATALOG, effectForAccent)
+   because one hue can't reproduce a deliberate multi-stop mood like Sunset's
+   orange-to-pink-to-purple. Each individual blob below still draws from just
+   one stop, so it stays legible — the multi-hue read comes from different
+   blobs carrying different stops, not from mixing hues within one blob.
+   --cb-anim-accent-2/-3 fall back to --cb-anim-accent when a caller (or an
+   accent outside the catalog) only supplies one colour.
 
    Two layers on different clocks (23s and 31s, deliberately coprime) so the
    pattern doesn't visibly loop. */
@@ -824,19 +868,90 @@ button:focus-visible {
 .cb-aurora::before {
   background-image:
     radial-gradient(40% 34% at 22% 26%, color-mix(in srgb, var(--cb-anim-accent) 55%, transparent), transparent 62%),
-    radial-gradient(34% 30% at 78% 30%, color-mix(in srgb, var(--cb-anim-accent) 42%, transparent), transparent 60%),
-    radial-gradient(44% 38% at 50% 84%, color-mix(in srgb, var(--cb-anim-accent) 48%, transparent), transparent 64%);
+    radial-gradient(34% 30% at 78% 30%, color-mix(in srgb, var(--cb-anim-accent-2, var(--cb-anim-accent)) 42%, transparent), transparent 60%),
+    radial-gradient(44% 38% at 50% 84%, color-mix(in srgb, var(--cb-anim-accent-3, var(--cb-anim-accent)) 48%, transparent), transparent 64%);
   filter: blur(46px);
   opacity: 0.5;
   animation: cbBlobDrift 23s ease-in-out infinite alternate;
 }
 .cb-aurora::after {
   background-image:
-    radial-gradient(36% 30% at 68% 66%, color-mix(in srgb, var(--cb-anim-accent) 40%, transparent), transparent 60%),
-    radial-gradient(30% 26% at 26% 72%, color-mix(in srgb, var(--cb-anim-accent) 34%, transparent), transparent 58%);
+    radial-gradient(36% 30% at 68% 66%, color-mix(in srgb, var(--cb-anim-accent-2, var(--cb-anim-accent)) 40%, transparent), transparent 60%),
+    radial-gradient(30% 26% at 26% 72%, color-mix(in srgb, var(--cb-anim-accent-3, var(--cb-anim-accent)) 34%, transparent), transparent 58%);
   filter: blur(58px);
   opacity: 0.42;
   animation: cbBlobDrift2 31s ease-in-out infinite alternate;
+}
+
+/* ---- Theme particles ----
+   A light layer that drifts upward on top of the aurora, themed per catalog
+   entry (density/style from effectForAccent). Only `transform`/`opacity`
+   animate, matching this file's compositor-only rule throughout. Each
+   particle's horizontal position and timing are set inline per-instance
+   (ChatPane.tsx) via index-based math, not real randomness — same
+   deliberately-uneven-multiplier trick as cbBlobDrift/cbBlobDrift2, so the
+   loop doesn't look mechanically synchronized. */
+.cb-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.cb-particle {
+  position: absolute;
+  bottom: -16px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cb-anim-accent) 70%, transparent);
+  opacity: 0;
+  animation-name: cbParticleFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.cb-particles-spark .cb-particle {
+  width: 4px;
+  height: 4px;
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--cb-anim-accent) 80%, transparent);
+}
+.cb-particles-confetti .cb-particle {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  animation-name: cbParticleFloatSpin;
+}
+@keyframes cbParticleFloat {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.75;
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(0, -128px, 0);
+    opacity: 0;
+  }
+}
+@keyframes cbParticleFloatSpin {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.8;
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(0, -128px, 0) rotate(180deg);
+    opacity: 0;
+  }
 }
 @keyframes cbBlobDrift {
   0% {
@@ -973,6 +1088,9 @@ button:focus-visible {
     scroll-behavior: auto !important;
   }
   .cb-aurora {
+    animation: none !important;
+  }
+  .cb-particle {
     animation: none !important;
   }
 }

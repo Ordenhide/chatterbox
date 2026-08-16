@@ -8,17 +8,17 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   updateProfile,
-  FirebaseAuthTypes,
-} from '@react-native-firebase/auth';
-import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
+  type User as FirebaseUser,
+} from '../services/firebase/auth';
+import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import {User} from '../types';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
 import {reportError, setTelemetryUser, trackEvent} from '../services/telemetry';
 import {clearSessionId, getSessionId, rotateSessionId} from '../services/session';
 import {getDeviceInfo} from '../services/deviceInfo';
-import {getFunctions, httpsCallable} from '@react-native-firebase/functions';
+import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
-import {getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {_resetKeypairCache, enrollmentReadiness, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
@@ -138,7 +138,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       checkTokenRevocation().catch(() => undefined);
     }, TOKEN_CHECK_INTERVAL_MS);
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseAuthTypes.User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         const profile: User = {
           uid: firebaseUser.uid,
@@ -160,9 +160,23 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         // public half, so peers can encrypt to this user. Fire-and-forget:
         // messaging still works as plaintext if this hasn't completed yet —
         // see e2eeMessages.ts, which falls back when a peer key is missing.
-        getOrCreateDeviceKeypair(firebaseUser.uid).catch(error => {
-          reportError(error, 'e2ee_enroll_failed');
-        });
+        //
+        // Enrolls only when that's known to be safe. On a reinstall/new
+        // device for an account that already published a key elsewhere,
+        // enrolling here would happen within milliseconds of login — long
+        // before the user could reach Settings to restore — and would
+        // silently overwrite the very key restore needs to match against.
+        // Held off, this device just stays unenrolled (the same
+        // plaintext-fallback state as before first-ever enrollment) until
+        // the user restores or explicitly sends a message.
+        (async () => {
+          try {
+            if ((await enrollmentReadiness(firebaseUser.uid)) !== 'safe') return;
+            await getOrCreateDeviceKeypair(firebaseUser.uid);
+          } catch (error) {
+            reportError(error, 'e2ee_enroll_failed');
+          }
+        })();
       } else {
         setUser(null);
         setTelemetryUser(null);
@@ -553,6 +567,10 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       sessionIdRef.current = null;
       await clearSessionId().catch(() => undefined);
       await firebaseSignOut(auth).catch(error => reportError(error, 'signout_auth'));
+      // Defense in depth: getOrCreateDeviceKeypair already scopes its cache by
+      // uid, but drop it anyway so a signed-out account's secret key doesn't
+      // linger in memory longer than it needs to.
+      _resetKeypairCache();
     } finally {
       signingOutRef.current = false;
     }

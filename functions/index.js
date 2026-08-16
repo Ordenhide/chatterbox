@@ -18,6 +18,16 @@ const {
 admin.initializeApp();
 
 const db = admin.firestore();
+// Modular import rather than the legacy admin.firestore.FieldValue /
+// admin.firestore.Timestamp namespace getters: those rebuild their return
+// value from scratch on every property access (see firebase-admin's
+// firebase-namespace.js), and that getter has been observed to come back
+// without FieldValue attached when invoked through the Cloud Functions
+// emulator's runtime wrapper — reproducible as a crash on any transaction
+// that reaches the `tx.update(... FieldValue.increment ...)` branch, i.e.
+// any call after the first within a rate-limit window. The submodule import
+// is a stable reference, not a getter, and isn't affected.
+const {FieldValue, Timestamp} = require('firebase-admin/firestore');
 const speechClient = new SpeechClient();
 const translateClient = new Translate();
 // Cloudflare Workers AI (free tier, no billing-enablement trap the way
@@ -116,7 +126,7 @@ async function checkRateLimit(uid, key, {maxCalls, windowMs}) {
         'Rate limit exceeded. Please slow down and try again shortly.',
       );
     }
-    tx.update(ref, {count: admin.firestore.FieldValue.increment(1)});
+    tx.update(ref, {count: FieldValue.increment(1)});
   });
 }
 
@@ -220,8 +230,8 @@ exports.claimSession = functions.https.onCall(async (data, context) => {
     // and sign itself out automatically.
     const sessionData = {
       activeSessionId: sessionId,
-      sessionUpdatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      sessionClaimedAt: admin.firestore.FieldValue.serverTimestamp(),
+      sessionUpdatedAt: FieldValue.serverTimestamp(),
+      sessionClaimedAt: FieldValue.serverTimestamp(),
       deviceInfo: {
         platform: deviceInfo.platform || 'unknown',
         deviceId: deviceInfo.deviceId || null,
@@ -289,7 +299,7 @@ exports.sessionHeartbeat = functions.https.onCall(async (data, context) => {
 
     // Update heartbeat timestamp
     await admin.firestore().doc(`users/${uid}`).set({
-      sessionHeartbeatAt: admin.firestore.FieldValue.serverTimestamp(),
+      sessionHeartbeatAt: FieldValue.serverTimestamp(),
     }, {merge: true});
     
     return {ok: true};
@@ -360,7 +370,7 @@ exports.processScheduledMessages = functions.pubsub
           const {scheduledFor: _sf, sent: _s, ...messageData} = data;
           await msgRef.set({
             ...messageData,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
           });
           const chatSnap = await chatRef.get();
           const chat = chatSnap.data();
@@ -374,8 +384,8 @@ exports.processScheduledMessages = functions.pubsub
               }
             });
             await chatRef.set({
-              lastMessage: {text: data.text || '', createdAt: admin.firestore.FieldValue.serverTimestamp()},
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              lastMessage: {text: data.text || '', createdAt: FieldValue.serverTimestamp()},
+              updatedAt: FieldValue.serverTimestamp(),
               unreadCountBy,
             }, {merge: true});
           }
@@ -664,7 +674,7 @@ exports.autoReplyFocusMode = functions.firestore
           await db.doc(`chats/${chatId}/messages/${replyId}`).set({
             _id: replyId,
             text: `[Auto-Reply] ${autoReply}`,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
             user: {
               _id: recipientId,
               name: userData.displayName || userData.email || 'User',
@@ -673,9 +683,9 @@ exports.autoReplyFocusMode = functions.firestore
           await db.doc(`chats/${chatId}`).set({
             lastMessage: {
               text: `[Auto-Reply] ${autoReply}`,
-              createdAt: admin.firestore.FieldValue.serverTimestamp(),
+              createdAt: FieldValue.serverTimestamp(),
             },
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
           }, {merge: true});
         } catch (e) {
           functions.logger.error(`Auto-reply failed for recipient ${recipientId}`, e);
@@ -753,7 +763,7 @@ exports.markViewOnceViewed = functions.https.onCall(async (data, context) => {
   const viewedBy = [...(msg.viewOnceViewedBy || []), context.auth.uid];
   await msgRef.update({
     viewOnceViewedBy: viewedBy,
-    viewOnceOpenedAt: admin.firestore.FieldValue.serverTimestamp(),
+    viewOnceOpenedAt: FieldValue.serverTimestamp(),
   });
   const allParticipants = (await db.doc(`chats/${chatId}`).get()).data()?.participants || [];
   const otherParticipants = allParticipants.filter(uid => uid !== msg.user?._id);
@@ -909,7 +919,7 @@ async function postMissedCallNotice(chatId, callId, call) {
   await msgRef.set({
     _id: messageId,
     text,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: FieldValue.serverTimestamp(),
     user: {
       _id: callerId,
       name: caller?.displayName || caller?.email || 'User',
@@ -924,8 +934,8 @@ async function postMissedCallNotice(chatId, callId, call) {
   });
   await chatRef.set(
     {
-      lastMessage: {text, createdAt: admin.firestore.FieldValue.serverTimestamp()},
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastMessage: {text, createdAt: FieldValue.serverTimestamp()},
+      updatedAt: FieldValue.serverTimestamp(),
       unreadCountBy,
     },
     {merge: true},
@@ -961,7 +971,7 @@ exports.sweepStaleCalls = functions.pubsub
   .schedule('every 1 minutes')
   .onRun(async () => {
     try {
-      const cutoff = admin.firestore.Timestamp.fromMillis(Date.now() - RING_TIMEOUT_MS);
+      const cutoff = Timestamp.fromMillis(Date.now() - RING_TIMEOUT_MS);
       const snap = await db
         .collectionGroup('calls')
         .where('status', '==', 'ringing')
@@ -978,8 +988,8 @@ exports.sweepStaleCalls = functions.pubsub
           await callDoc.ref.set(
             {
               status: 'ended',
-              endedAt: admin.firestore.FieldValue.serverTimestamp(),
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              endedAt: FieldValue.serverTimestamp(),
+              updatedAt: FieldValue.serverTimestamp(),
             },
             {merge: true},
           );

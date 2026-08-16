@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
+import React, {useContext, useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   Platform,
   Pressable,
   TextInput,
+  Keyboard,
   Linking,
   useColorScheme,
   FlatList,
@@ -18,10 +19,19 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import {GiftedChat, IMessage, MessageImage, Bubble, Time, Send} from 'react-native-gifted-chat';
+import {GiftedChat, IMessage, MessageImage, Bubble, Time} from 'react-native-gifted-chat';
 import MessageEntrance from '../../components/MessageEntrance';
 import TypingDots from '../../components/TypingDots';
 import ReactionBurst, {useReactionBurst} from '../../components/ReactionBurst';
+import CipherText from '../../components/CipherText';
+import Disintegrate from '../../components/Disintegrate';
+import ReactionArc from '../../components/ReactionArc';
+import ChatComposer from '../../components/ChatComposer';
+import ChatInputToolbar from '../../components/ChatInputToolbar';
+import ActionSheet, {type SheetAction} from '../../components/ActionSheet';
+import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
+import FanOutBloom, {useFanOutBloom} from '../../components/FanOutBloom';
+import ThemeBackdrop from '../../components/ThemeBackdrop';
 import Icon from '../../components/Icon';
 import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -43,9 +53,9 @@ import AudioRecorderPlayer, {
   AudioSet,
 } from 'react-native-audio-recorder-player';
 import {getLinkPreview} from 'link-preview-js';
-import HapticFeedback from 'react-native-haptic-feedback';
-import {Swipeable} from 'react-native-gesture-handler';
+import {fire as haptic} from '../../utils/haptics';
 import ImageViewing from 'react-native-image-viewing';
+import SwipeToReply from '../../components/SwipeToReply';
 import {getDraft, setDraft} from '../../services/drafts';
 import {
   listenLiveLocation,
@@ -62,6 +72,7 @@ import {isAiConsentError} from '../../services/aiConsent';
 import {promptAiConsent} from '../../utils/aiConsentPrompt';
 import {safeExternalUrl} from '../../utils/safeUrl';
 import type {StoreTheme} from '../../services/themeCatalog';
+import type {Edge} from 'react-native-safe-area-context';
 import {getCurrentPosition, watchMyPosition, LocationError} from '../../utils/geolocation';
 import {formatCoordinates, staticMapTileUrl} from '../../utils/mapTile';
 import {
@@ -94,19 +105,21 @@ import {
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
-import {computeSafetyNumber, decryptMessage, encryptMessage, isEncryptedPayload} from '../../services/e2ee';
+import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
   extractFirstUrl,
   hasPreviewContent,
+  isSafeToFetchDirectly,
   normalizePreview,
   parsePreview,
   type LinkPreviewData,
 } from '../../services/linkPreview';
 import {
-  fetchPeerPublicKey,
   fetchPeerPublicKeyChecked,
+  getDeviceKeypairIfEnrolled,
+  getKeyGeneration,
   getOrCreateDeviceKeypair,
 } from '../../services/e2eeKeys';
 import {
@@ -129,19 +142,27 @@ import {addBookmark} from '../../services/bookmarks';
 import {addToQuoteWall} from '../../services/quoteWall';
 import {searchGifs, getTrendingGifs} from '../../services/gifSearch';
 import {getContextCards} from '../../services/contextCards';
-import {listenChatPet, feedPet, calculatePetMood, decayHealth} from '../../services/chatPet';
+import {listenChatPet, feedPet, calculatePetMood, decayHealth, didPetJustEat} from '../../services/chatPet';
+import PetAvatar from '../../components/PetAvatar';
 import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {isScreenshotProtectionEnabled, isLinkPreviewEnabled, isStealthMode, generateWatermark, isExifStrippingEnabled} from '../../services/privacyGuard';
 import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
+import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
 // below) — unlike web's Opus recordings, AAC's sample rate isn't a fixed
 // codec property, so transcribeVoiceMessage needs the real value sent
 // alongside the clip rather than assuming one server-side.
+/** Shared by the long-press menu and the magnetic arc, so the two cannot drift. */
+const EMOJI_OPTIONS = ['😀', '😍', '😢', '😡', '🎉', '🔥', '👏'];
+
 const VOICE_SAMPLE_RATE_HERTZ = 24000;
 const VOICE_CHANNEL_COUNT = 1;
+
+/** Module-level so the identity is stable: GlassScreen is memoized, and a fresh
+ * array literal each render would defeat that for the whole screen. */
+const NO_SAFE_AREA_EDGES: Edge[] = [];
 
 export default function ChatScreen() {
   const {t, i18n} = useTranslation();
@@ -152,6 +173,72 @@ export default function ChatScreen() {
   const [pendingMessages, setPendingMessages] = useState<IMessage[]>([]);
   const [uploading, setUploading] = useState<{label: string; progress: number} | null>(null);
   const [inputText, setInputText] = useState('');
+  // The composer is uncontrolled (see components/ChatComposer for why). These
+  // two exist so the rare programmatic *writes* still work: bumping the
+  // generation remounts the field with a fresh defaultValue.
+  const [composerGeneration, setComposerGeneration] = useState(0);
+  const composerSeedRef = useRef('');
+  // The live text, tracked alongside state. Callbacks that need to *read* what
+  // is currently typed must use this rather than the `inputText` closure: the
+  // composer no longer round-trips through state on every keystroke, so a
+  // memoised callback's captured copy can be several characters behind.
+  const inputTextRef = useRef('');
+  const handleComposerChange = useCallback((value: string) => {
+    inputTextRef.current = value;
+    setInputText(value);
+  }, []);
+  const composerRef = useRef<TextInput>(null);
+
+  // Keyboard avoidance without KeyboardAvoidingView.
+  //
+  // KAV's `behavior="padding"` drives its padding change through
+  // LayoutAnimation. On Fabric that left the message list rendered from a
+  // stale rasterised snapshot — visibly blurred and faded, and it stayed that
+  // way after the keyboard closed. Plain state-driven padding produces the
+  // same layout with no animation anywhere near the thread.
+  //
+  // iOS only: Android's windowSoftInputMode=adjustResize already resizes the
+  // window, so adding padding there would double-count the keyboard.
+  const tabBarHeight = useContext(BottomTabBarHeightContext) ?? 0;
+  const [keyboardInset, setKeyboardInset] = useState(0);
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const show = Keyboard.addListener('keyboardWillChangeFrame', e => {
+      // The keyboard's height overlaps the tab bar, which is already below us.
+      //
+      // Rounded to whole points, and that rounding is the entire point of this
+      // line. GiftedChat's thread is an *inverted* FlatList, which React Native
+      // implements by applying `transform: [{scaleY: -1}]` to the scroll view
+      // and to every cell — so the whole thread is a GPU-composited layer,
+      // and it is the only part of this screen that is.
+      //
+      // A transformed layer that lands on a fractional offset gets resampled
+      // bilinearly, which softens everything inside it. Keyboard heights on a
+      // 3x device are thirds (336.6667), so an unrounded inset put the thread
+      // on a half-pixel boundary for exactly as long as the keyboard was up:
+      // the messages blurred while you typed and sharpened when it closed.
+      // Whole points are always pixel-aligned, so this cannot recur.
+      setKeyboardInset(Math.round(Math.max(0, e.endCoordinates.height - tabBarHeight)));
+    });
+    const hide = Keyboard.addListener('keyboardWillHide', () => setKeyboardInset(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [tabBarHeight]);
+  const setComposerText = useCallback((value: string) => {
+    composerSeedRef.current = value;
+    inputTextRef.current = value;
+    setInputText(value);
+    if (value === '') {
+      // Clearing after a send goes through the imperative API so the field
+      // keeps focus. Remounting here would close the keyboard every time you
+      // sent a message, which is worse than the bug this all fixes.
+      composerRef.current?.clear();
+      return;
+    }
+    setComposerGeneration(g => g + 1);
+  }, []);
   const [replyTo, setReplyTo] = useState<IMessage | null>(null);
   const [preview, setPreview] = useState<{uri: string; type: 'image' | 'video'} | null>(
     null,
@@ -169,6 +256,10 @@ export default function ChatScreen() {
   const [customName, setCustomName] = useState<string>('');
   const [nameModalVisible, setNameModalVisible] = useState(false);
   const [otherUserId, setOtherUserId] = useState<string | null>(null);
+  // Every member except me — the fan-out recipient set. Distinct from
+  // otherUserId, which is only the *first* other member and still drives the
+  // 1:1-shaped header, safety number and recipient checks.
+  const [otherUserIds, setOtherUserIds] = useState<string[]>([]);
   const [otherUser, setOtherUser] = useState<User | null>(null);
   // Set when e2eeKeys detects the peer's public key changed after this device
   // had already trusted one for them — could be a substitution attack, could
@@ -225,6 +316,16 @@ export default function ChatScreen() {
   const [dictationSeconds, setDictationSeconds] = useState(0);
   const [contextCards, setContextCards] = useState<Record<string, ContextCard[]>>({});
   const [chatPet, setChatPet] = useState<ChatPet | null>(null);
+  // Bumped whenever didPetJustEat sees a feed go through, so PetAvatar can
+  // retrigger its celebration on every feed, not just the first one.
+  const [petFeedPulse, setPetFeedPulse] = useState(0);
+  // Same idea for arrivals: bumped when a message lands from the other side, so
+  // the pet can lean toward it.
+  const [petArrivalPulse, setPetArrivalPulse] = useState(0);
+  // The message currently having a reaction picked for it, or null.
+  const [arcTarget, setArcTarget] = useState<IMessage | null>(null);
+  const prevChatPetRef = useRef<ChatPet | null>(null);
+  const petWidgetRef = useRef<View>(null);
   const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('none');
   const [invisibleInkMode, setInvisibleInkMode] = useState(false);
   const [revealedMessages, setRevealedMessages] = useState<Set<string>>(new Set());
@@ -243,6 +344,23 @@ export default function ChatScreen() {
   const [chatPinInput, setChatPinInput] = useState('');
   const [incognitoMode, setIncognitoMode] = useState(false);
   const [attachSheetVisible, setAttachSheetVisible] = useState(false);
+  // Anything the attach sheet launches that presents its own native UI —
+  // the photo library, the camera, the document picker — has to wait until
+  // this sheet is *fully* dismissed.
+  //
+  // iOS allows only one presented view controller at a time. Calling
+  // setAttachSheetVisible(false) and launching the picker in the same handler
+  // does not close the sheet first: the state update is async, so the picker
+  // tries to present while the RN <Modal> is still on screen and mid-dismiss.
+  // UIKit refuses, silently — no error, no picker, and the only visible effect
+  // is the sheet disappearing. That is the "menu vanishes and nothing happens"
+  // symptom.
+  //
+  // Modal's onDismiss (iOS-only) fires after the dismissal animation actually
+  // completes, which is the earliest moment a second presentation is legal.
+  // Deferring through it is exact, unlike a setTimeout guess that breaks on a
+  // slow device or when animations are disabled.
+  const pendingAttachActionRef = useRef<(() => void) | null>(null);
   const [msgSelectMode, setMsgSelectMode] = useState(false);
   const [msgSelected, setMsgSelected] = useState<Set<string>>(new Set());
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
@@ -284,11 +402,32 @@ export default function ChatScreen() {
   // Link previews decrypt to a JSON blob rather than a URL, so this cache
   // holds the parsed card (or null when the payload is unreadable/invalid).
   const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
+  // Tracks which device-key "generation" the caches above were decrypted
+  // under, so a recovery-phrase restore (which changes the key without
+  // remounting this screen) invalidates them instead of leaving messages
+  // stuck showing a stale "Unable to decrypt".
+  const decryptKeyGenerationRef = useRef<number>(getKeyGeneration());
+  // Set when at least one message in this chat failed to decrypt *because it
+  // was sealed to a key this device doesn't hold* — the recoverable failure,
+  // as opposed to a damaged ciphertext. Drives the restore banner below.
+  // Cleared per chat, not per snapshot: once you've seen one such message the
+  // offer stays relevant for as long as you're in the thread.
+  const [sealedToOtherDevice, setSealedToOtherDevice] = useState(false);
+  // Android's action menus. null when closed; setting it while one is open
+  // swaps the contents, which is how a menu opens a submenu without the
+  // dismiss/present race a second Modal would cause. iOS uses ActionSheetIOS
+  // and never touches this.
+  const [sheet, setSheet] = useState<{
+    title?: string;
+    message?: string;
+    actions: SheetAction[];
+  } | null>(null);
 
   // Reaction confetti. Reactions are chosen from an action sheet here rather
   // than tapped in place, so there is no pointer position to spawn from — the
   // burst starts where the sheet was, just below centre.
   const {bursts, burst, done: burstDone} = useReactionBurst();
+  const {blooms, bloom, done: bloomDone} = useFanOutBloom();
   const burstAtSheet = useCallback(
     (emoji: string) => {
       const {width, height} = Dimensions.get('window');
@@ -318,14 +457,33 @@ export default function ChatScreen() {
    */
   const encryptOutgoingMessage = useCallback(
     async (data: ChatMessage): Promise<ChatMessage> => {
-      if (!user || !otherUserId || !chatId) return data;
+      if (!user || !chatId || otherUserIds.length === 0) return data;
       try {
-        const {key: peerPublicKey, status} = await fetchPeerPublicKeyChecked(otherUserId);
-        if (status === 'changed') setPeerKeyChanged(true);
-        if (!peerPublicKey) return data;
+        // One sealed copy per member — a 1:1 chat is just the single-recipient
+        // case, so there is no separate direct-message path. See
+        // sealForRecipients in services/e2ee.ts for why fan-out over sender keys.
+        const recipients: EnvelopeRecipient[] = [];
+        for (const uid of otherUserIds) {
+          const {key, status} = await fetchPeerPublicKeyChecked(uid);
+          if (status === 'changed') setPeerKeyChanged(true);
+          // Not knowing whether a peer has a key is not the same as knowing
+          // they have none, and only the second one may be answered with
+          // plaintext. Throwing hands the message to the outbox, which retries
+          // it — so a dropped connection delays the message instead of
+          // stripping its encryption.
+          if (status === 'unavailable') {
+            throw new Error(`e2ee: peer key unavailable for ${uid}`);
+          }
+          // All-or-nothing: a message sealed for only some members would be
+          // blank for the rest, which is worse than one everyone can read.
+          // Reached only on a definite 'unenrolled', never on a failed lookup.
+          if (!key) return data;
+          recipients.push({uid, publicKey: key});
+        }
 
         const {secretKey} = await getOrCreateDeviceKeypair(user.uid);
-        const seal = (plaintext: string) => encryptMessage(plaintext, secretKey, peerPublicKey, chatId);
+        const seal = (plaintext: string) =>
+          sealForRecipients(plaintext, secretKey, recipients, chatId);
         const next: ChatMessage = {...data};
 
         if (next.text) {
@@ -350,11 +508,56 @@ export default function ChatScreen() {
         }
         return next;
       } catch (e2eeError) {
+        // Rethrow rather than returning `data`, which would have sent the
+        // message in clear. Returning the plaintext here meant that anything
+        // going wrong between "the peer has a key" and "the message is sealed"
+        // — a failed key fetch, a keypair publish that couldn't reach the
+        // server — silently produced an unencrypted message that looked
+        // identical to an encrypted one.
+        //
+        // Safe to fail closed because every error reachable here is transient:
+        // both callers queue to the outbox and retry, and the one permanent
+        // failure sealForRecipients can raise (over MAX_GROUP_MEMBERS) cannot
+        // occur, since the cap is enforced at chat creation, on member-add,
+        // and again in firebaseChat's GroupFullError.
         reportError(e2eeError, 'e2ee_send_failed');
-        return data;
+        throw e2eeError;
       }
     },
-    [user, otherUserId, chatId],
+    [user, otherUserIds, chatId],
+  );
+
+  /**
+   * Encrypt-then-send for the media paths, reporting failure instead of
+   * losing it.
+   *
+   * Text messages go through onSend, which queues to the outbox and retries.
+   * Media can't take that route — the file is already uploaded and the message
+   * only references it — so the requirement here is simply that a failure is
+   * *seen*. Previously these call sites had no error handling at all and
+   * relied on encryptOutgoingMessage swallowing its own errors, so a message
+   * that couldn't be sealed was either sent in clear or disappeared with the
+   * rejected promise, leaving the UI mid-send with nothing on screen.
+   *
+   * Returns whether it sent, so callers can hold on to the reply context and
+   * the recording rather than clearing state after a send that didn't happen.
+   */
+  const sendEncrypted = useCallback(
+    async (messageData: ChatMessage): Promise<boolean> => {
+      if (!chatId) return false;
+      try {
+        await sendMessage(chatId, await encryptOutgoingMessage(messageData));
+        return true;
+      } catch (error) {
+        reportError(error, 'e2ee_media_send_failed');
+        Alert.alert(
+          'Not sent',
+          "This message couldn't be encrypted, so it wasn't sent. Check your connection and try again.",
+        );
+        return false;
+      }
+    },
+    [chatId, encryptOutgoingMessage],
   );
 
   // Voice-grade AAC. At 128 kbps a clip outgrew the inline budget after ~30s;
@@ -462,6 +665,21 @@ export default function ChatScreen() {
     useCallback(() => {
       if (!chatId || !user) return;
 
+      const currentKeyGeneration = getKeyGeneration();
+      if (currentKeyGeneration !== decryptKeyGenerationRef.current) {
+        decryptKeyGenerationRef.current = currentKeyGeneration;
+        decryptedTextRef.current.clear();
+        decryptedImageRef.current.clear();
+        decryptedVideoRef.current.clear();
+        decryptedAudioRef.current.clear();
+        decryptedFileUriRef.current.clear();
+        decryptedPreviewRef.current.clear();
+        // The restore this banner was offering has happened. Retract the offer
+        // and let the re-decrypt below decide whether it's still warranted —
+        // if the restored key opens everything, it never comes back.
+        setSealedToOtherDevice(false);
+      }
+
       let active = true;
       const loadCached = async () => {
         const cached = await getCachedMessages(chatId);
@@ -511,31 +729,36 @@ export default function ChatScreen() {
             // and a "🔒 …" placeholder stands in via `text`. Each encryptedX
             // field is carried through so the decrypt pass below can find it
             // again without re-reading the original snapshot.
-            ...(isEncryptedPayload((msg as any).encrypted)
+            ...(isSealed((msg as any).encrypted)
               ? {
                   text: decryptedTextRef.current.get(String(msg._id)) ?? '🔒 …',
                   encrypted: (msg as any).encrypted,
+                  // Marks the placeholder above as not-yet-real text. CipherText
+                  // resolves a message exactly once, so without this it would
+                  // spend that one pass scrambling "🔒 …" and then swap the
+                  // decrypted text in with no animation at all.
+                  awaitingDecryption: !decryptedTextRef.current.has(String(msg._id)),
                 }
               : null),
-            ...(isEncryptedPayload((msg as any).encryptedImage)
+            ...(isSealed((msg as any).encryptedImage)
               ? {
                   image: decryptedImageRef.current.get(String(msg._id)) || undefined,
                   encryptedImage: (msg as any).encryptedImage,
                 }
               : null),
-            ...(isEncryptedPayload((msg as any).encryptedVideo)
+            ...(isSealed((msg as any).encryptedVideo)
               ? {
                   video: decryptedVideoRef.current.get(String(msg._id)) || undefined,
                   encryptedVideo: (msg as any).encryptedVideo,
                 }
               : null),
-            ...(isEncryptedPayload((msg as any).encryptedAudio)
+            ...(isSealed((msg as any).encryptedAudio)
               ? {
                   audio: decryptedAudioRef.current.get(String(msg._id)) || undefined,
                   encryptedAudio: (msg as any).encryptedAudio,
                 }
               : null),
-            ...(isEncryptedPayload((msg as any).encryptedFileUri)
+            ...(isSealed((msg as any).encryptedFileUri)
               ? {
                   file: decryptedFileUriRef.current.has(String(msg._id))
                     ? {...msg.file, uri: decryptedFileUriRef.current.get(String(msg._id))!}
@@ -543,7 +766,7 @@ export default function ChatScreen() {
                   encryptedFileUri: (msg as any).encryptedFileUri,
                 }
               : null),
-            ...(isEncryptedPayload((msg as any).encryptedLinkPreview)
+            ...(isSealed((msg as any).encryptedLinkPreview)
               ? {
                   linkPreview: decryptedPreviewRef.current.get(String(msg._id)) ?? undefined,
                   encryptedLinkPreview: (msg as any).encryptedLinkPreview,
@@ -552,11 +775,11 @@ export default function ChatScreen() {
             // A media message has empty `text` from the sender; show the same
             // lock placeholder there until its own field (above) resolves, so
             // the bubble isn't just blank while decryption is in flight.
-            ...(!isEncryptedPayload((msg as any).encrypted) &&
-            (isEncryptedPayload((msg as any).encryptedImage) ||
-              isEncryptedPayload((msg as any).encryptedVideo) ||
-              isEncryptedPayload((msg as any).encryptedAudio) ||
-              isEncryptedPayload((msg as any).encryptedFileUri)) &&
+            ...(!isSealed((msg as any).encrypted) &&
+            (isSealed((msg as any).encryptedImage) ||
+              isSealed((msg as any).encryptedVideo) ||
+              isSealed((msg as any).encryptedAudio) ||
+              isSealed((msg as any).encryptedFileUri)) &&
             !decryptedImageRef.current.has(String(msg._id)) &&
             !decryptedVideoRef.current.has(String(msg._id)) &&
             !decryptedAudioRef.current.has(String(msg._id)) &&
@@ -594,34 +817,111 @@ export default function ChatScreen() {
           const em = m as any;
           const id = String(m._id);
           return (
-            (isEncryptedPayload(em.encrypted) && !decryptedTextRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedImage) && !decryptedImageRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
-            (isEncryptedPayload(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
+            (isSealed(em.encrypted) && !decryptedTextRef.current.has(id)) ||
+            (isSealed(em.encryptedImage) && !decryptedImageRef.current.has(id)) ||
+            (isSealed(em.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
+            (isSealed(em.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
+            (isSealed(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
+            (isSealed(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
           );
         };
         const toDecrypt = merged.filter(needsDecrypt);
         if (toDecrypt.length) {
           (async () => {
             try {
-              const {secretKey} = await getOrCreateDeviceKeypair(user.uid);
+              // Deliberately the non-enrolling read. This used to call
+              // getOrCreateDeviceKeypair, which publishes on first call — so
+              // simply *opening* a chat containing sealed messages was enough
+              // for a newly-installed second device to mint a key and
+              // overwrite the account's published one, orphaning every message
+              // sealed to the original. Reading must never enroll.
+              const keypair = await getDeviceKeypairIfEnrolled(user.uid);
               if (!active) return;
+              if (!keypair) {
+                // No key on this device, but sealed messages in the thread —
+                // so by definition they were sealed to a key held elsewhere.
+                // No need to ask diagnoseSealed; there is no key to diagnose
+                // against.
+                setSealedToOtherDevice(true);
+                toDecrypt.forEach(m => {
+                  const em = m as any;
+                  const id = String(m._id);
+                  // Every cache is filled, including the media ones, so these
+                  // messages stop matching needsDecrypt. Left unfilled they
+                  // would re-enter this block on every single snapshot. A
+                  // successful restore bumps the key generation, which clears
+                  // all of them and re-runs this for real.
+                  const sealedMedia =
+                    isSealed(em.encryptedImage) ||
+                    isSealed(em.encryptedVideo) ||
+                    isSealed(em.encryptedAudio) ||
+                    isSealed(em.encryptedFileUri);
+                  if (isSealed(em.encryptedImage)) decryptedImageRef.current.set(id, '');
+                  if (isSealed(em.encryptedVideo)) decryptedVideoRef.current.set(id, '');
+                  if (isSealed(em.encryptedAudio)) decryptedAudioRef.current.set(id, '');
+                  if (isSealed(em.encryptedFileUri)) decryptedFileUriRef.current.set(id, '');
+                  if (isSealed(em.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
+                  // A message whose only sealed field is its link preview keeps
+                  // its real text — losing the card is not worth overwriting a
+                  // perfectly readable message with a padlock.
+                  if (isSealed(em.encrypted) || sealedMedia) {
+                    decryptedTextRef.current.set(id, '🔒 Sealed to another device');
+                  }
+                });
+                setMessages(prev =>
+                  prev.map(item => {
+                    const text = decryptedTextRef.current.get(String(item._id));
+                    return text ? {...item, text} : item;
+                  }),
+                );
+                return;
+              }
+              const {secretKey, publicKey} = keypair;
+              // Whether anything in this batch failed the *recoverable* way.
+              // Accumulated across the batch and committed once, rather than
+              // calling setState from inside the loop.
+              let anyWrongKey = false;
+              /**
+               * The user-facing text for a failure, and a note of whether it
+               * is the recoverable kind.
+               *
+               * "Unable to decrypt" was true but useless: it reads as data
+               * loss, when the overwhelmingly common cause is simply that the
+               * message was sealed to this account's *other* device — which
+               * the recovery phrase fixes. diagnoseSealed can tell those apart
+               * from the addressing alone, so the placeholder says which one
+               * happened instead of making the user guess.
+               */
+              const failureText = (payload: unknown): string => {
+                const reason = diagnoseSealed(payload, publicKey, user.uid);
+                if (reason === 'wrong-key') {
+                  anyWrongKey = true;
+                  return '🔒 Sealed to another device';
+                }
+                if (reason === 'unsupported-algorithm') {
+                  return '🔒 Update the app to read this';
+                }
+                return '🔒 Unable to decrypt';
+              };
+
               toDecrypt.forEach(m => {
                 const em = m as any;
                 const id = String(m._id);
                 let mediaFailed = false;
+                // The payload blamed when a *media* field fails: media has no
+                // `encrypted` text of its own to diagnose, so the first field
+                // that failed stands in for the message.
+                let failedPayload: unknown = null;
 
-                if (isEncryptedPayload(em.encrypted) && !decryptedTextRef.current.has(id)) {
+                if (isSealed(em.encrypted) && !decryptedTextRef.current.has(id)) {
                   try {
-                    decryptedTextRef.current.set(id, decryptMessage(em.encrypted, secretKey, chatId));
+                    decryptedTextRef.current.set(id, openSealed(em.encrypted, secretKey, user.uid, chatId));
                   } catch (decryptError) {
                     // Wrong/rotated key, or a payload from before this device
                     // enrolled — distinct from "still loading" so it doesn't
                     // spin on the placeholder forever.
                     reportError(decryptError, 'e2ee_decrypt_failed');
-                    decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                    decryptedTextRef.current.set(id, failureText(em.encrypted));
                   }
                 }
 
@@ -629,13 +929,14 @@ export default function ChatScreen() {
                   payload: unknown,
                   cache: React.MutableRefObject<Map<string, string>>,
                 ) => {
-                  if (!isEncryptedPayload(payload) || cache.current.has(id)) return;
+                  if (!isSealed(payload) || cache.current.has(id)) return;
                   try {
-                    cache.current.set(id, decryptMessage(payload as any, secretKey, chatId));
+                    cache.current.set(id, openSealed(payload, secretKey, user.uid, chatId));
                   } catch (decryptError) {
                     reportError(decryptError, 'e2ee_decrypt_failed');
                     cache.current.set(id, '');
                     mediaFailed = true;
+                    if (failedPayload === null) failedPayload = payload;
                   }
                 };
                 mediaField(em.encryptedImage, decryptedImageRef);
@@ -648,13 +949,13 @@ export default function ChatScreen() {
                 // and a missing card is a far smaller loss than an unreadable
                 // message, so it deliberately doesn't count as mediaFailed.
                 if (
-                  isEncryptedPayload(em.encryptedLinkPreview) &&
+                  isSealed(em.encryptedLinkPreview) &&
                   !decryptedPreviewRef.current.has(id)
                 ) {
                   try {
                     decryptedPreviewRef.current.set(
                       id,
-                      parsePreview(decryptMessage(em.encryptedLinkPreview, secretKey, chatId)),
+                      parsePreview(openSealed(em.encryptedLinkPreview, secretKey, user.uid, chatId)),
                     );
                   } catch {
                     decryptedPreviewRef.current.set(id, null);
@@ -664,10 +965,14 @@ export default function ChatScreen() {
                 // A media message has no `encrypted` text of its own to carry
                 // a failure message, so surface it the same way a text
                 // decrypt failure does.
-                if (mediaFailed && !isEncryptedPayload(em.encrypted)) {
-                  decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                if (mediaFailed && !isSealed(em.encrypted)) {
+                  decryptedTextRef.current.set(id, failureText(failedPayload));
                 }
               });
+              // One state write per batch. Latches on: a later snapshot that
+              // happens to contain only readable messages must not retract an
+              // offer the user may be halfway through acting on.
+              if (active && anyWrongKey) setSealedToOtherDevice(true);
               if (active) {
                 setMessages(prev =>
                   prev.map(item => {
@@ -744,6 +1049,21 @@ export default function ChatScreen() {
     if (!chatId) return;
     return listenChatPet(chatId, setChatPet);
   }, [chatId]);
+
+  // Detects a feed via the Firestore round-trip (feedPet's writer runs
+  // fire-and-forget below, and this listens for its result coming back
+  // through listenChatPet above), rather than pulsing on the send itself —
+  // that way the celebration reflects what actually got written, not an
+  // optimistic guess that might not match if the write failed.
+  useEffect(() => {
+    if (didPetJustEat(prevChatPetRef.current, chatPet)) {
+      setPetFeedPulse(p => p + 1);
+      petWidgetRef.current?.measureInWindow((x, y, width, height) => {
+        burst('❤️', x + width / 2, y + height / 2);
+      });
+    }
+    prevChatPetRef.current = chatPet;
+  }, [chatPet, burst]);
 
   useEffect(() => {
     if (!messages.length) { setSmartReplies([]); return; }
@@ -841,10 +1161,10 @@ export default function ChatScreen() {
     if (!chatId || !user) return;
     const loadDraft = async () => {
       const draft = await getDraft(user.uid, chatId);
-      setInputText(draft);
+      setComposerText(draft);
     };
     loadDraft();
-  }, [chatId, user]);
+  }, [chatId, user, setComposerText]);
 
   useEffect(() => {
     if (!chatId || !user || !isOnline) return;
@@ -984,11 +1304,22 @@ export default function ChatScreen() {
         // participant means the other person deleted their account.
         setPeerMissingFromChat(hasLostPeer(chat.participants, user.uid));
 
+        setOtherUserIds(chat.participants.filter((id: string) => id !== user.uid));
+
         const otherId = chat.participants.find(id => id !== user.uid);
         if (otherId) {
           const otherUser = await getUserById(otherId);
           const customName = chat.nameBy?.[user.uid] || '';
-          const name = customName || otherUser?.displayName || otherUser?.email || 'Chat';
+          // A group titled after whichever member happens to be first in the
+          // array reads as a 1:1 with the wrong person, so groups fall back to
+          // the chat's own name (set at creation from the member list) and then
+          // to a plain count — never to a single member's name.
+          const isGroup = chat.participants.length > 2;
+          const name = isGroup
+            ? customName ||
+              chat.name ||
+              t('members.title', {count: chat.participants.length})
+            : customName || otherUser?.displayName || otherUser?.email || 'Chat';
           setOtherUserName(name);
           setOtherUser(otherUser);
           setCustomName(customName);
@@ -1038,6 +1369,15 @@ export default function ChatScreen() {
   const startCall = async (type: CallType) => {
     if (!chatId || !user) {
       Alert.alert('Error', 'Unable to start a call right now.');
+      return;
+    }
+    // The call stack is 1:1 — it rings a single callee. In a group it would
+    // silently ring whichever member sits first in `participants`: a call to
+    // one person that nobody else sees, and that the caller believes went to
+    // the group. Refusing is the honest outcome until multi-party signalling
+    // exists.
+    if (otherUserIds.length > 1) {
+      Alert.alert(t('call.groupUnsupportedTitle'), t('call.groupUnsupportedBody'));
       return;
     }
     try {
@@ -1133,8 +1473,8 @@ export default function ChatScreen() {
       };
       if (!user) return;
       try {
-        const {httpsCallable} = require('@react-native-firebase/functions');
-        const {getFunctions} = require('@react-native-firebase/functions');
+        const {httpsCallable} = require('../../services/firebase/functions');
+        const {getFunctions} = require('../../services/firebase/functions');
         const fn = httpsCallable(getFunctions(), 'fetchLinkPreview');
         const result = await fn({url});
         const preview = (result as any)?.data?.preview;
@@ -1142,7 +1482,11 @@ export default function ChatScreen() {
       } catch {
         // The callable is rate-limited and refuses private/blocked hosts, so
         // fall back to fetching from the device directly — which reveals the
-        // link to nobody but the site itself.
+        // link to nobody but the site itself. That fetch goes through
+        // link-preview-js with no SSRF protection of its own, so the same
+        // check the callable would have done is repeated here first — see
+        // isSafeToFetchDirectly.
+        if (!isSafeToFetchDirectly(url)) return;
         try {
           const data: any = await getLinkPreview(url);
           await persist({
@@ -1300,10 +1644,10 @@ export default function ChatScreen() {
       user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
     };
     await scheduleMessage(chatId, messageData, scheduledFor);
-    setInputText('');
+    setComposerText('');
     setSchedulePickerVisible(false);
     Alert.alert('Scheduled', `Message will be sent in ${mins} minute${mins > 1 ? 's' : ''}.`);
-  }, [chatId, user, inputText, scheduleMinutes]);
+  }, [chatId, user, inputText, scheduleMinutes, setComposerText]);
 
   const handleCreateList = useCallback(async () => {
     if (!chatId || !user) return;
@@ -1483,7 +1827,7 @@ export default function ChatScreen() {
               ? message.createdAt
               : Date.now(),
         });
-        HapticFeedback.trigger('notificationSuccess');
+        haptic('confirm');
         Alert.alert('Bookmarked', 'Message saved to your bookmarks.');
       } catch {
         Alert.alert('Error', 'Failed to bookmark message.');
@@ -1509,7 +1853,7 @@ export default function ChatScreen() {
               ? message.createdAt
               : Date.now(),
         });
-        HapticFeedback.trigger('notificationSuccess');
+        haptic('confirm');
         Alert.alert('Saved', 'Message added to the Quote Wall.');
       } catch {
         Alert.alert('Error', 'Failed to save to Quote Wall.');
@@ -1571,7 +1915,7 @@ export default function ChatScreen() {
       };
       try {
         await sendMessage(chatId, messageData as any);
-        HapticFeedback.trigger('impactLight');
+        haptic('commit');
       } catch {
         Alert.alert('Error', 'Failed to send GIF.');
       }
@@ -1648,7 +1992,9 @@ export default function ChatScreen() {
           VOICE_CHANNEL_COUNT,
         );
         if (transcription) {
-          setInputText(prev => prev ? `${prev} ${transcription}` : transcription);
+          setComposerText(
+            inputTextRef.current ? `${inputTextRef.current} ${transcription}` : transcription,
+          );
         }
       } catch {
         Alert.alert('Info', 'Voice recorded but transcription failed. The voice message was sent.');
@@ -1689,10 +2035,22 @@ export default function ChatScreen() {
   const verifyContact = useCallback(async () => {
     if (!otherUserId || !user) return;
     try {
-      const [{publicKey: myPublicKey}, peerPublicKey] = await Promise.all([
+      const [{publicKey: myPublicKey}, peer] = await Promise.all([
         getOrCreateDeviceKeypair(user.uid),
-        fetchPeerPublicKey(otherUserId),
+        fetchPeerPublicKeyChecked(otherUserId),
       ]);
+      // "Couldn't look it up" is not "they haven't enrolled". Reporting the
+      // second when the first happened tells the user something false about
+      // their contact's security, on the one screen whose entire job is
+      // telling them the truth about it.
+      if (peer.status === 'unavailable') {
+        Alert.alert(
+          'Verify Contact',
+          "We couldn't fetch your contact's key just now. Check your connection and try again.",
+        );
+        return;
+      }
+      const peerPublicKey = peer.key;
       if (!peerPublicKey) {
         Alert.alert(
           'Verify Contact',
@@ -1721,6 +2079,13 @@ export default function ChatScreen() {
 
       const message = newMessages[0];
       if (!message?.text?.trim()) return;
+
+      // Fired here, at the moment of sending, rather than after the write
+      // lands: the bloom is showing that the message is being sealed once per
+      // member, and that fan-out happens on this device before anything is
+      // uploaded. No-ops for a 1:1 chat, where there is nothing to fan out.
+      bloom(otherUserIds.length);
+
       const mentions = extractMentions(message.text);
       const messageData: ChatMessage = {
         _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
@@ -1779,8 +2144,8 @@ export default function ChatScreen() {
       setPendingMessages(prev => [pendingMessage, ...prev]);
       setMessages(prev => GiftedChat.append(prev, [pendingMessage]));
       setReplyTo(null);
-      setInputText('');
-      HapticFeedback.trigger('impactLight');
+      setComposerText('');
+      haptic('commit');
 
       if (!isOnline) {
         await enqueueOutboxMessage(user.uid, {
@@ -1803,7 +2168,7 @@ export default function ChatScreen() {
         if (isRecipientUnreachable(error)) {
           removePendingMessage(String(messageData._id));
           setMessages(prev => prev.filter(m => String(m._id) !== String(messageData._id)));
-          setInputText(message.text || '');
+          setComposerText(message.text || '');
           Alert.alert(t('chat.recipientDeleted'), t('chat.recipientDeletedComposer'));
           return;
         }
@@ -1842,6 +2207,12 @@ export default function ChatScreen() {
       chatPet,
       encryptOutgoingMessage,
       t,
+      // Both feed the fan-out bloom. otherUserIds.length in particular has to
+      // be a dependency: memoising it away would keep blooming the member count
+      // the room had when this callback was created, so a send right after
+      // someone joined would show the wrong number of sealed copies.
+      bloom,
+      otherUserIds.length,
     ],
   );
 
@@ -2002,9 +2373,8 @@ export default function ChatScreen() {
     };
 
     if (viewOnceMode) setViewOnceMode(false);
-    await sendMessage(chatId, await encryptOutgoingMessage(messageData));
-    setReplyTo(null);
-  }, [chatId, user, replyTo, isOnline, viewOnceMode, encryptOutgoingMessage]);
+    if (await sendEncrypted(messageData)) setReplyTo(null);
+  }, [chatId, user, replyTo, isOnline, viewOnceMode, sendEncrypted]);
 
   const handlePickFile = useCallback(async () => {
     if (!chatId || !user) return;
@@ -2058,15 +2428,19 @@ export default function ChatScreen() {
         },
       };
 
-      await sendMessage(chatId, await encryptOutgoingMessage(messageData));
-      setReplyTo(null);
-      HapticFeedback.trigger('impactLight');
+      // sendEncrypted reports its own failures, and reports them accurately —
+      // reaching the catch below would have blamed the file picker for what is
+      // actually a send failure.
+      if (await sendEncrypted(messageData)) {
+        setReplyTo(null);
+        haptic('commit');
+      }
     } catch (error: any) {
       if (!DocumentPicker.isCancel(error)) {
         Alert.alert('Error', 'Unable to pick file');
       }
     }
-  }, [chatId, user, replyTo, isOnline, encryptOutgoingMessage]);
+  }, [chatId, user, replyTo, isOnline, sendEncrypted]);
 
   const startRecording = async () => {
     try {
@@ -2132,13 +2506,16 @@ export default function ChatScreen() {
         avatar: user.photoURL,
       },
     };
-    await sendMessage(chatId, await encryptOutgoingMessage(messageData));
+    // Everything below discards the recording, so it is all gated on the send
+    // actually happening — a failed send used to wipe the clip anyway, leaving
+    // nothing to retry with.
+    if (!(await sendEncrypted(messageData))) return;
     setReplyTo(null);
     setRecordModalVisible(false);
     setRecordedUri(null);
     setRecordedDuration(null);
     setVoiceFilter('none');
-    HapticFeedback.trigger('impactLight');
+    haptic('commit');
   }, [
     recordedUri,
     recordedDuration,
@@ -2149,7 +2526,7 @@ export default function ChatScreen() {
     voiceFilter,
     prepareAudioForSend,
     t,
-    encryptOutgoingMessage,
+    sendEncrypted,
   ]);
 
   const playAudio = async (messageId: string | number, uri: string) => {
@@ -2557,7 +2934,7 @@ export default function ChatScreen() {
       const extraStyle = current.messageStyle ? styleMap[current.messageStyle] || {} : {};
 
       const parts = text.split(/(@[a-zA-Z0-9_]+)/g);
-      return (
+      const body = (
         <Text style={[styles.messageText, {color: baseColor}, extraStyle]}>
           {parts.map((part: string, index: number) =>
             part.startsWith('@') ? (
@@ -2570,8 +2947,38 @@ export default function ChatScreen() {
           )}
         </Text>
       );
+
+      // Incoming only — for a message you received, resolving out of ciphertext
+      // is literally what happened. CipherText decides for itself whether this
+      // message is new enough to animate, and only ever plays once.
+      // A burn-after-reading message whose countdown has run out. Wrapped
+      // before the CipherText branch below because a message can only be doing
+      // one of these at a time, and expiring outranks arriving.
+      if (current.burnAfterReading?.burnStartedAt && burnCountdowns[msgId] === 0) {
+        return (
+          <Disintegrate
+            text={text}
+            active
+            style={[styles.messageText, {color: baseColor}, extraStyle]}
+            tint={colors.warning}>
+            {body}
+          </Disintegrate>
+        );
+      }
+
+      if (isOutgoing || current.awaitingDecryption) return body;
+      return (
+        <CipherText
+          text={text}
+          messageId={msgId}
+          createdAt={current.createdAt}
+          style={[styles.messageText, {color: baseColor}, extraStyle]}
+          sealedColor={colors.primary}>
+          {body}
+        </CipherText>
+      );
     },
-    [colors.primary, colors.text, colors.textOnPrimary, colors.warning, revealedMessages],
+    [colors.primary, colors.text, colors.textOnPrimary, colors.warning, revealedMessages, burnCountdowns],
   );
 
   // ---- Multi-select delete --------------------------------------------------
@@ -2627,12 +3034,11 @@ export default function ChatScreen() {
       return;
     }
     if (!user || !chatId) return;
-    const emojiOptions = ['😀', '😍', '😢', '😡', '🎉', '🔥', '👏'];
     const hasAudio = !!(message as any).audio;
-    const actions = [
+    const actions: SheetAction[] = [
       {label: 'Reply', onPress: () => setReplyTo(message)},
       {label: 'Select Messages', onPress: () => enterMsgSelect(String(message._id))},
-      {label: 'Delete Message', onPress: () => handleDeleteSingle(message._id)},
+      {label: 'Delete Message', destructive: true, onPress: () => handleDeleteSingle(message._id)},
       {
         label: pinnedMessageIds.includes(message._id) ? 'Unpin Message' : 'Pin Message',
         onPress: () => togglePinMessage(chatId, message._id),
@@ -2649,12 +3055,16 @@ export default function ChatScreen() {
               },
             );
           } else {
-            Alert.alert('Remind Me', 'When?', [
-              {text: '5 min', onPress: () => handleSetReminder(message, 5)},
-              {text: '30 min', onPress: () => handleSetReminder(message, 30)},
-              {text: '1 hour', onPress: () => handleSetReminder(message, 60)},
-              {text: 'Cancel', style: 'cancel'},
-            ]);
+            // Four buttons — one past Android's Alert cap, so "1 hour" never
+            // rendered. Now the same four options iOS gets.
+            setSheet({
+              title: 'Remind Me',
+              message: 'When?',
+              actions: [5, 30, 60, 180].map(mins => ({
+                label: mins < 60 ? `${mins} min` : `${mins / 60} hour${mins > 60 ? 's' : ''}`,
+                onPress: () => handleSetReminder(message, mins),
+              })),
+            });
           }
         },
       },
@@ -2674,47 +3084,17 @@ export default function ChatScreen() {
         : []),
       {
         label: 'More Reactions',
-        onPress: () => {
-          if (Platform.OS === 'ios') {
-            ActionSheetIOS.showActionSheetWithOptions(
-              {
-                options: ['Cancel', ...emojiOptions],
-                cancelButtonIndex: 0,
-              },
-              index => {
-                if (index > 0) {
-                  toggleReaction(chatId, message._id, emojiOptions[index - 1], user.uid);
-                  HapticFeedback.trigger('impactLight');
-                }
-              },
-            );
-            return;
-          }
-
-          Alert.alert(
-            'React',
-            '',
-            [
-              ...emojiOptions.map(emoji => ({
-                text: emoji,
-                onPress: () => {
-                  toggleReaction(chatId, message._id, emoji, user.uid);
-                  burstAtSheet(emoji);
-                  HapticFeedback.trigger('impactLight');
-                },
-              })),
-              {text: 'Cancel', style: 'cancel'},
-            ],
-            {cancelable: true},
-          );
-        },
+        // Opens the magnetic arc (components/ReactionArc) rather than a platform
+        // action sheet. Same options; the difference is that they are pickable
+        // by feel instead of read as a list of emoji rendered as text.
+        onPress: () => setArcTarget(message),
       },
       {
         label: 'React 👍',
         onPress: () => {
           toggleReaction(chatId, message._id, '👍', user.uid);
           burstAtSheet('👍');
-          HapticFeedback.trigger('impactLight');
+          haptic('commit');
         },
       },
       {
@@ -2722,7 +3102,7 @@ export default function ChatScreen() {
         onPress: () => {
           toggleReaction(chatId, message._id, '❤️', user.uid);
           burstAtSheet('❤️');
-          HapticFeedback.trigger('impactLight');
+          haptic('commit');
         },
       },
       {
@@ -2730,7 +3110,7 @@ export default function ChatScreen() {
         onPress: () => {
           toggleReaction(chatId, message._id, '😂', user.uid);
           burstAtSheet('😂');
-          HapticFeedback.trigger('impactLight');
+          haptic('commit');
         },
       },
       {
@@ -2749,13 +3129,20 @@ export default function ChatScreen() {
               },
             );
           } else {
-            Alert.alert('Reaction Story', 'Pick an emoji to add', [
-              ...chainEmojis.slice(0, 6).map(e => ({text: e, onPress: () => {
-                const current = (message as any).reactionChain || [];
-                updateMessage(chatId, message._id, {reactionChain: [...current, e]}).catch(() => {});
-              }})),
-              {text: 'Cancel', style: 'cancel' as const},
-            ]);
+            // Was capped to six and then silently truncated to three. The
+            // sheet scrolls, so all ten are offered — same list as iOS, rather
+            // than a different (and broken) one per platform.
+            setSheet({
+              title: 'Reaction Story',
+              message: 'Pick an emoji to add',
+              actions: chainEmojis.map(e => ({
+                label: e,
+                onPress: () => {
+                  const current = (message as any).reactionChain || [];
+                  updateMessage(chatId, message._id, {reactionChain: [...current, e]}).catch(() => {});
+                },
+              })),
+            });
           }
         },
       },
@@ -2774,10 +3161,7 @@ export default function ChatScreen() {
       return;
     }
 
-    Alert.alert('Message Actions', '', [
-      ...actions.map(a => ({text: a.label, onPress: a.onPress})),
-      {text: 'Cancel', style: 'cancel'},
-    ]);
+    setSheet({title: 'Message Actions', actions});
   };
 
   const formatBurnDuration = useCallback((seconds: number) => {
@@ -2810,6 +3194,24 @@ export default function ChatScreen() {
     },
     [chatId, startBurnCountdown],
   );
+
+  // The pet reacts to messages arriving from the other side. Deliberately not
+  // on mount: opening a chat is not an arrival, and a pet that lurched every
+  // time you opened a thread would read as a glitch rather than as attention.
+  const lastArrivalIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    const newest = messages[0];
+    if (!newest) return;
+    const id = String(newest._id);
+    if (lastArrivalIdRef.current === null) {
+      lastArrivalIdRef.current = id;
+      return;
+    }
+    if (id === lastArrivalIdRef.current) return;
+    lastArrivalIdRef.current = id;
+    if (user && String(newest.user?._id) === user.uid) return;
+    setPetArrivalPulse(p => p + 1);
+  }, [messages, user]);
 
   useEffect(() => {
     messages.forEach(msg => {
@@ -2877,14 +3279,7 @@ export default function ChatScreen() {
     }
 
     return (
-      <Swipeable
-        renderRightActions={() => (
-          <View style={styles.swipeReply}>
-            <Text style={[styles.swipeReplyText, {color: colors.primary}]}>Reply</Text>
-          </View>
-        )}
-        onSwipeableOpen={() => setReplyTo(current)}
-      >
+      <SwipeToReply onReply={() => setReplyTo(current)} tintColor={colors.primary}>
         <View style={styles.bubbleWrapper}>
           {current.replyTo ? (
             <Pressable
@@ -3168,12 +3563,20 @@ export default function ChatScreen() {
             <Text style={[styles.seenText, {color: colors.textSecondary}]}>Seen</Text>
           ) : null}
         </View>
-      </Swipeable>
+      </SwipeToReply>
     );
   }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, themeColor, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected]);
 
+  // GiftedChat keys the accessory bar off whether this *prop is passed*, not off
+  // what it returns: InputToolbar renders a fixed 44dp <View> around it, and
+  // GiftedChat doubles minInputToolbarHeight (see calculateInputToolbarHeight).
+  // Passing it unconditionally therefore parks an empty 44dp bar under the
+  // composer forever. Gate at the call site instead — the guard below only
+  // covers the render, not the reserved space.
+  const hasAccessory = !!replyTo || burnMode;
+
   const renderAccessory = () => {
-    if (!replyTo && !burnMode) {
+    if (!hasAccessory) {
       return null;
     }
     return (
@@ -3223,7 +3626,7 @@ export default function ChatScreen() {
 
   if (!chatUnlocked) {
     return (
-      <GlassScreen style={styles.container} edges={['top', 'bottom']}>
+      <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES}>
         <View style={styles.chatLockContainer}>
           <Icon name="lock" size={48} color={colors.text} style={styles.chatLockIcon} />
           <Text style={[styles.chatLockTitle, {color: colors.text}]}>Chat Locked</Text>
@@ -3255,8 +3658,27 @@ export default function ChatScreen() {
     );
   }
 
+  /** Closes the attach sheet, then runs `action` once it is safely gone. */
+  const closeAttachSheetThen = (action: () => void) => {
+    if (Platform.OS === 'ios') {
+      pendingAttachActionRef.current = action;
+      setAttachSheetVisible(false);
+      return;
+    }
+    // Android has no such presentation restriction, and its Modal never fires
+    // onDismiss — deferring there would strand the action forever.
+    setAttachSheetVisible(false);
+    action();
+  };
+
   return (
-    <GlassScreen style={styles.container} edges={['top', 'bottom']}>
+    // No safe-area edges: this screen sits between a native stack header and
+    // the tab bar, and both already consume their inset. Neither React
+    // Navigation stack nor bottom-tabs narrows SafeAreaInsetsContext for screen
+    // content, so a SafeAreaView in here reads the *full* device inset and pads
+    // a second time — which is what left a dead strip of backdrop between the
+    // composer and the tab bar.
+    <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES}>
       {chatWallpaper ? (
         // Custom wallpapers are Storage download URLs (always start with
         // "http"); preset wallpapers are hex colors — same field
@@ -3268,7 +3690,7 @@ export default function ChatScreen() {
             resizeMode="cover"
           />
         ) : (
-          <View style={[StyleSheet.absoluteFill, {backgroundColor: chatWallpaper, opacity: 0.15}]} />
+          <ThemeBackdrop accent={themeColor} tint={chatWallpaper} />
         )
       ) : null}
       {incognitoMode ? (
@@ -3307,15 +3729,22 @@ export default function ChatScreen() {
           </Text>
         </TouchableOpacity>
       ) : null}
-      {uploading ? (
-        <View style={[styles.uploadBanner, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}>
-          <Text style={[styles.uploadText, {color: colors.text}]}>
-            {uploading.label} ({uploading.progress}%)
+      {sealedToOtherDevice && !peerDeleted ? (
+        // The other half of "🔒 Sealed to another device". The bubble says what
+        // happened; this says what to do about it. Deliberately not an Alert:
+        // this is a standing condition for the whole thread, not an event, and
+        // a modal over a conversation you cannot read is just a second thing
+        // in the way.
+        <TouchableOpacity
+          style={[styles.offlineBanner, {backgroundColor: colors.warning}]}
+          accessibilityRole="button"
+          accessibilityLabel="Restore your encrypted message history"
+          onPress={() => navigation.navigate('RecoveryPhrase' as never)}>
+          <Icon name="lock" size={13} color="#111" />
+          <Text style={styles.offlineText}>
+            Some messages were sealed on another device. Tap to restore with your recovery phrase.
           </Text>
-          <View style={[styles.uploadBar, {backgroundColor: colors.border}]}>
-            <View style={[styles.uploadBarFill, {width: `${uploading.progress}%`, backgroundColor: colors.primary}]} />
-          </View>
-        </View>
+        </TouchableOpacity>
       ) : null}
       {pinnedMessageIds.length ? (
         <Pressable
@@ -3355,20 +3784,18 @@ export default function ChatScreen() {
           ) : null}
         </View>
       ) : null}
-      {SHOW_NATIVE_ONLY_FEATURES && chatPet ? (
-        <View style={[styles.petWidget, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
-          <Icon
-            name={
-              chatPet.species === 'plant'
-                ? 'seedling'
-                : chatPet.species === 'cat'
-                ? 'cat'
-                : chatPet.species === 'dog'
-                ? 'dog'
-                : chatPet.species === 'bunny'
-                ? 'rabbit'
-                : 'fox'
-            }
+      {SHOW_CHAT_PET && chatPet ? (() => {
+        // Computed once here rather than three times inline below: health
+        // decays continuously (see decayHealth), so re-deriving mood per icon
+        // risked each one reading a subtly different instant.
+        const livePetMood = calculatePetMood({...chatPet, health: decayHealth(chatPet)});
+        return (
+        <View ref={petWidgetRef} style={[styles.petWidget, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
+          <PetAvatar
+            species={chatPet.species}
+            mood={livePetMood}
+            feedPulse={petFeedPulse}
+            arrivalPulse={petArrivalPulse}
             size={24}
             color={colors.text}
             style={styles.petAvatar}
@@ -3381,11 +3808,11 @@ export default function ChatScreen() {
           </View>
           <Icon
             name={
-              calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'happy'
+              livePetMood === 'happy'
                 ? 'heartFilled'
-                : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'neutral'
+                : livePetMood === 'neutral'
                 ? 'faceNeutral'
-                : calculatePetMood({...chatPet, health: decayHealth(chatPet)}) === 'sad'
+                : livePetMood === 'sad'
                 ? 'faceSad'
                 : 'faceSleepy'
             }
@@ -3394,7 +3821,8 @@ export default function ChatScreen() {
             style={styles.petMood}
           />
         </View>
-      ) : null}
+        );
+      })() : null}
       {msgSelectMode ? (
         <View style={[styles.msgSelectBar, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}>
           <TouchableOpacity onPress={exitMsgSelect} style={styles.msgSelectCancel}>
@@ -3442,7 +3870,18 @@ export default function ChatScreen() {
           </View>
         </TouchableOpacity>
       ) : null}
-      {smartReplies.length > 0 && !inputText ? (
+      {/* Not gated on `inputText`, deliberately.
+          Hiding this row while you typed unmounted it, and removing a view from
+          this subtree made GiftedChat's thread resample: React Native renders
+          an `inverted` FlatList as `transform: [{scaleY: -1}]`, so the thread is
+          a GPU-composited layer, and re-compositing it left every message soft
+          and washed out for exactly as long as you were typing — precisely when
+          you most need to read the conversation you are replying to.
+          Verified by bisection: keeping this row mounted, and separately
+          dropping the transform with `inverted={false}`, each cleared it. This
+          is the cheaper of the two — `inverted` also governs message order,
+          scroll-to-bottom and loadEarlier paging. */}
+      {smartReplies.length > 0 ? (
         <View style={styles.smartReplyRow}>
           {smartReplies.map((reply, i) => (
             <TouchableOpacity
@@ -3454,6 +3893,36 @@ export default function ChatScreen() {
           ))}
         </View>
       ) : null}
+      {/* Keyboard avoidance: plain padding from `keyboardInset` (see above).
+          GiftedChat's own handling is disabled via isKeyboardInternallyHandled
+          below, and its input toolbar is not rendered at all — the composer is
+          the sibling further down. */}
+      <View style={[styles.chatFlex, keyboardInset ? {paddingBottom: keyboardInset} : null]}>
+      {/* An overlay, not a flex sibling — and that is the point.
+          The other banners above describe standing states (offline, incognito,
+          a peer's key changing) and earning a row of their own is correct for
+          them. Upload progress is transient and appears mid-conversation,
+          typically while you carry on typing. As a sibling, its mount and
+          unmount resized the thread, and resizing that subtree is exactly what
+          made it resample and go soft — the same mechanism as the smart-reply
+          row above, which is the bug you reported. Floating it over the thread
+          leaves the thread's frame untouched for the whole upload, so there is
+          nothing to re-composite. */}
+      {uploading ? (
+        <View
+          pointerEvents="none"
+          style={[
+            styles.uploadBanner,
+            {backgroundColor: colors.surface, borderBottomColor: colors.border},
+          ]}>
+          <Text style={[styles.uploadText, {color: colors.text}]}>
+            {uploading.label} ({uploading.progress}%)
+          </Text>
+          <View style={[styles.uploadBar, {backgroundColor: colors.border}]}>
+            <View style={[styles.uploadBarFill, {width: `${uploading.progress}%`, backgroundColor: colors.primary}]} />
+          </View>
+        </View>
+      ) : null}
       <GiftedChat
         messages={filteredMessages}
         onSend={onSend}
@@ -3462,27 +3931,19 @@ export default function ChatScreen() {
         isLoadingEarlier={isLoadingEarlier}
         user={giftedUser}
         text={inputText}
-        onInputTextChanged={setInputText}
+        onInputTextChanged={handleComposerChange}
         // Replaces the composer outright rather than disabling it. A greyed-out
         // input still invites you to type something you can't send; a plain
         // statement of why the conversation is over does not. Returning null
         // from renderInputToolbar would leave a bare screen with no explanation.
-        renderInputToolbar={
-          peerDeleted
-            ? () => (
-                <View
-                  style={[
-                    styles.deletedComposer,
-                    {backgroundColor: colors.surface, borderTopColor: colors.border},
-                  ]}>
-                  <Text style={[styles.deletedComposerText, {color: colors.textSecondary}]}>
-                    {t('chat.recipientDeletedComposer')}
-                  </Text>
-                </View>
-              )
-            : undefined
-        }
-        renderActions={renderActions}
+        // GiftedChat renders the thread only; the composer lives outside it now.
+        //
+        // Bisection established that a plain TextInput placed directly in this
+        // screen types perfectly (single-line *and* multiline), while the same
+        // input inside GiftedChat's toolbar is dead. Rather than keep shaving
+        // props off it, the composer is moved to the configuration that is
+        // known to work: an ordinary child of this screen.
+        renderInputToolbar={() => null}
         renderMessageImage={renderMessageImage}
         renderMessageVideo={renderMessageVideo}
         renderMessageAudio={renderMessageAudio}
@@ -3505,7 +3966,7 @@ export default function ChatScreen() {
             {renderBubble(props)}
           </MessageEntrance>
         )}
-        renderAccessory={renderAccessory}
+        renderAccessory={hasAccessory ? renderAccessory : undefined}
         onLongPress={handleLongPress}
         onPress={(_: any, message: IMessage) => {
           if (msgSelectMode) toggleMsgSelect(String(message._id));
@@ -3522,20 +3983,105 @@ export default function ChatScreen() {
               }
             : undefined
         }
+        // GiftedChat's own keyboard handling is a legacy-era hand-roll: it
+        // listens for keyboardWillShow and drives the message container's
+        // height through component state, then wraps everything in a
+        // KeyboardAvoidingView with no `behavior` — which on iOS does nothing
+        // at all. That state churn lands in the middle of the keyboard
+        // transition, and UIKit's text-insertion request goes unanswered
+        // ("Result accumulator timeout: 0.250000, exceeded"), so keystrokes
+        // reach the keyboard but never reach the field.
+        //
+        // Turning it off hands the job to the platform's KeyboardAvoidingView
+        // below, which measures its own frame and therefore accounts for the
+        // tab bar without being told about it.
+        isKeyboardInternallyHandled={false}
         listViewProps={listViewProps}
         placeholder={t('chat.composerPlaceholder')}
         showUserAvatar
         alwaysShowSend
-        renderSend={(props: any) => <Send {...props} label={t('common.send')} />}
         textInputProps={{
           autoCorrect: !incognitoMode,
           autoComplete: incognitoMode ? 'off' : undefined,
           spellCheck: !incognitoMode,
         }}
       />
+        {peerDeleted ? (
+          <View
+            style={[
+              styles.deletedComposer,
+              {backgroundColor: colors.surface, borderTopColor: colors.border},
+            ]}>
+            <Text style={[styles.deletedComposerText, {color: colors.textSecondary}]}>
+              {t('chat.recipientDeletedComposer')}
+            </Text>
+          </View>
+        ) : (
+          <ChatInputToolbar
+            surfaceColor={colors.surfaceStrong}
+            baseColor={colors.backdrop}
+            borderColor={colors.border}
+            renderAccessory={hasAccessory ? renderAccessory : undefined}
+            renderActions={renderActions}
+            renderComposer={() => (
+              <ChatComposer
+                ref={composerRef}
+                generation={composerGeneration}
+                defaultValue={composerSeedRef.current}
+                onChangeText={handleComposerChange}
+                placeholder={t('chat.composerPlaceholder')}
+                placeholderTextColor={colors.textSecondary}
+                textInputStyle={{color: colors.text}}
+              />
+            )}
+            renderSend={() => (
+              <TouchableOpacity
+                style={styles.ownSend}
+                disabled={!inputText.trim()}
+                onPress={() =>
+                  onSend([
+                    {
+                      _id: Date.now(),
+                      text: inputText,
+                      createdAt: new Date(),
+                      user: {_id: user?.uid || ''},
+                    } as IMessage,
+                  ])
+                }>
+                <Text
+                  style={[
+                    styles.ownSendText,
+                    {color: inputText.trim() ? colors.primary : colors.textSecondary},
+                  ]}>
+                  {t('common.send')}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </View>
       {/* Overlays the whole screen, so particles aren't clipped by the
           message list the way an in-bubble animation would be. */}
       <ReactionBurst bursts={bursts} onDone={burstDone} />
+      <FanOutBloom blooms={blooms} onDone={bloomDone} color={colors.primary} />
+      <ReactionArc
+        visible={!!arcTarget}
+        emojis={EMOJI_OPTIONS}
+        surfaceColor={colors.surfaceStrong}
+        onSelect={emoji => {
+          if (!chatId || !user || !arcTarget) return;
+          toggleReaction(chatId, arcTarget._id, emoji, user.uid);
+          burstAtSheet(emoji);
+        }}
+        onClose={() => setArcTarget(null)}
+      />
+      <ActionSheet
+        visible={!!sheet}
+        title={sheet?.title}
+        message={sheet?.message}
+        actions={sheet?.actions ?? []}
+        onClose={() => setSheet(null)}
+      />
       {recordModalVisible && (
         <Modal
           visible
@@ -3638,7 +4184,16 @@ export default function ChatScreen() {
       </Modal>
       )}
       {attachSheetVisible && (
-        <Modal visible transparent animationType="slide" onRequestClose={() => setAttachSheetVisible(false)}>
+        <Modal
+          visible
+          transparent
+          animationType="slide"
+          onRequestClose={() => setAttachSheetVisible(false)}
+          onDismiss={() => {
+            const action = pendingAttachActionRef.current;
+            pendingAttachActionRef.current = null;
+            action?.();
+          }}>
           <Pressable style={styles.actionSheetBackdrop} onPress={() => setAttachSheetVisible(false)}>
             <Pressable style={[styles.attachSheet, {backgroundColor: colors.background}]} onPress={e => e.stopPropagation()}>
               <View style={[styles.attachSheetHandle, {backgroundColor: colors.border}]} />
@@ -3646,21 +4201,21 @@ export default function ChatScreen() {
               <ScrollView style={styles.attachSheetScroll} showsVerticalScrollIndicator={false}>
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>Media</Text>
                 <View style={styles.attachSectionRow}>
-                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); handlePickMedia(); }}>
+                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(handlePickMedia)}>
                     <Icon name="camera" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>Photo</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); setGifPickerVisible(true); loadTrendingGifs(); }}>
+                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { setGifPickerVisible(true); loadTrendingGifs(); })}>
                     <Text style={styles.attachOptionIcon}>GIF</Text>
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>GIF</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => { setAttachSheetVisible(false); dictating ? stopDictation() : startDictation(); }}>
+                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { dictating ? stopDictation() : startDictation(); })}>
                     <Icon name="mic" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? 'Stop' : 'Voice'}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.attachOption, sharingLocation && {backgroundColor: colors.primary}]}
-                    onPress={() => { setAttachSheetVisible(false); sharingLocation ? handleStopSharingLocation() : handleShareLocation(); }}>
+                    onPress={() => closeAttachSheetThen(() => { sharingLocation ? handleStopSharingLocation() : handleShareLocation(); })}>
                     <Icon name="pin" size={22} color={sharingLocation ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: sharingLocation ? '#fff' : colors.text}]}>{sharingLocation ? 'Stop' : 'Location'}</Text>
                   </TouchableOpacity>
@@ -3677,7 +4232,7 @@ export default function ChatScreen() {
                     <Icon name="droplet" size={22} color={invisibleInkMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: invisibleInkMode ? '#fff' : colors.text}]}>Invisible</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: '#EC4899'}]} onPress={() => { setAttachSheetVisible(false); setStylePickerVisible(true); }}>
+                  <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: '#EC4899'}]} onPress={() => closeAttachSheetThen(() => setStylePickerVisible(true))}>
                     <Text style={[styles.attachOptionIcon, messageStyle !== 'none' && {color: '#fff'}]}>Aa</Text>
                     <Text style={[styles.attachOptionText, {color: messageStyle !== 'none' ? '#fff' : colors.text}]}>Style</Text>
                   </TouchableOpacity>
@@ -4327,6 +4882,9 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+  chatFlex: {flex: 1},
+  ownSend: {paddingHorizontal: 16, paddingVertical: 12, justifyContent: 'center'},
+  ownSendText: {fontSize: 16, fontWeight: '700'},
   container: {
     flex: 1,
   },
@@ -4379,6 +4937,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderBottomWidth: 1,
+    // Floats over the top of the thread. With an inverted list the newest
+    // messages sit at the *bottom*, so this covers the oldest rows on screen
+    // rather than the ones being written — and only for the length of an
+    // upload. zIndex because it is declared before the list it covers.
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
   },
   uploadText: {
     fontSize: 12,
@@ -4489,16 +5056,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   unreadTextBar: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  swipeReply: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 64,
-    marginLeft: 8,
-  },
-  swipeReplyText: {
     fontSize: 12,
     fontWeight: '600',
   },
@@ -5324,6 +5881,21 @@ const styles = StyleSheet.create({
   locationPreviewTitle: {fontSize: 13.5, fontWeight: '700'},
   locationPreviewCoords: {fontSize: 12.5, marginTop: 1},
   locationPreviewMeta: {fontSize: 11.5, marginTop: 2},
+  // Every vertical measurement here is a whole number on purpose, and it is
+  // load-bearing rather than tidiness.
+  //
+  // This row unmounts the moment you start typing, which shifts everything
+  // below it — including GiftedChat's thread. That thread is an *inverted*
+  // FlatList, which React Native implements with `transform: [{scaleY: -1}]`,
+  // so it is a GPU-composited layer and the only one on this screen. Shift a
+  // transformed layer onto a fractional offset and it gets resampled
+  // bilinearly: the whole thread turns soft and washed out, for exactly as
+  // long as you are typing.
+  //
+  // Left to content sizing the chips were fractional (13pt text ≈ 15.6pt line
+  // box, plus hairline borders), so the shift was fractional too. A fixed
+  // integral chip height with integral padding and gap keeps the row's height
+  // whole however it wraps, so the shift never lands mid-pixel.
   smartReplyRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',

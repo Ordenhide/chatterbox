@@ -20,9 +20,10 @@ import {
 } from 'firebase/firestore';
 import {db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
+import {MAX_GROUP_MEMBERS} from './e2ee';
 import {assertRecipientReachable} from './recipient';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
-import type {ChatMessage, ChatRoom, EncryptedField, UserProfile} from '../types';
+import type {ChatMessage, ChatRoom, EncryptedField, SealedEnvelopeField, UserProfile} from '../types';
 
 export const MESSAGE_PAGE_SIZE = 30;
 
@@ -71,6 +72,58 @@ export async function createChat(participants: string[], name?: string): Promise
     mutedBy: [],
   });
   return ref.id;
+}
+
+export class GroupFullError extends Error {
+  readonly code = 'group-full';
+  constructor(message = `a chat can hold at most ${MAX_GROUP_MEMBERS} members`) {
+    super(message);
+    this.name = 'GroupFullError';
+  }
+}
+
+/**
+ * Adds members to a chat. Mirrors the mobile app's addChatMembers.
+ *
+ * The cap is checked here *and* in firestore.rules. This check exists to give a
+ * usable error before a write is attempted; the rule is what actually enforces
+ * it, since anything client-side can be bypassed.
+ *
+ * arrayUnion rather than a read-modify-write of the whole array: two people
+ * adding someone at the same moment would otherwise clobber each other, and one
+ * of the new members would silently never be added — and so never be sealed to,
+ * leaving them unable to read anything with nothing to indicate why.
+ */
+export async function addChatMembers(chatId: string, newMemberIds: string[]): Promise<void> {
+  const toAdd = Array.from(new Set(newMemberIds.filter(Boolean)));
+  if (toAdd.length === 0) return;
+
+  const snap = await getDoc(doc(db, 'chats', chatId));
+  const current = (snap.data()?.participants as string[]) || [];
+  if (new Set([...current, ...toAdd]).size > MAX_GROUP_MEMBERS) throw new GroupFullError();
+
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {participants: arrayUnion(...toAdd), updatedAt: serverTimestamp()},
+    {merge: true},
+  );
+}
+
+/**
+ * Removes the signed-in user from a chat.
+ *
+ * Only ever yourself: the rules reject removing anyone else, since there are no
+ * admin roles and "anyone may remove anyone" would be the only alternative.
+ * Messages already sent stay sealed to the keys they were sealed to, so leaving
+ * neither revokes history you could already read nor grants access to anything
+ * sent afterwards — senders simply stop including your copy.
+ */
+export async function leaveChat(chatId: string, myUserId: string): Promise<void> {
+  await setDoc(
+    doc(db, 'chats', chatId),
+    {participants: arrayRemove(myUserId), updatedAt: serverTimestamp()},
+    {merge: true},
+  );
 }
 
 /** Find an existing 1:1 chat with the other user, or create one. */
@@ -180,10 +233,10 @@ export interface OutgoingMedia {
   // E2EE — set by ChatPane's encryptOutgoingMessage in place of the plain
   // field it seals (see services/e2ee.ts). sendMessage below only persists
   // whatever it's given; it has no key material and does no sealing itself.
-  encrypted?: EncryptedField;
-  encryptedImage?: EncryptedField;
-  encryptedAudio?: EncryptedField;
-  encryptedFileUri?: EncryptedField;
+  encrypted?: EncryptedField | SealedEnvelopeField;
+  encryptedImage?: EncryptedField | SealedEnvelopeField;
+  encryptedAudio?: EncryptedField | SealedEnvelopeField;
+  encryptedFileUri?: EncryptedField | SealedEnvelopeField;
 }
 
 /**

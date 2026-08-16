@@ -1,9 +1,4 @@
-import {
-  fetchAndActivate,
-  getRemoteConfig,
-  getValue,
-  setDefaults,
-} from '@react-native-firebase/remote-config';
+import {fetchAndActivate, getRemoteConfig, getValue} from './firebase/remoteConfig';
 
 const remoteConfig = getRemoteConfig();
 let initialized = false;
@@ -14,12 +9,18 @@ export async function initFeatureFlags() {
     initialized = true;
     return;
   }
-  await setDefaults(remoteConfig, {
+  // A property in RNFB 26, matching the Firebase JS SDK — the setDefaults()
+  // function was removed.
+  remoteConfig.defaultConfig = {
     feedback_enabled: true,
     login_experiment_variant: 'control',
-  });
+  };
   remoteConfig.settings = {
     minimumFetchIntervalMillis: 60 * 60 * 1000,
+    // Required by RemoteConfigSettings in RNFB 26. One minute is the Firebase
+    // JS SDK's own default; flags are non-blocking here (see the catch below),
+    // so a slow fetch must not hold up app start.
+    fetchTimeoutMillis: 60 * 1000,
   };
   try {
     await fetchAndActivate(remoteConfig);

@@ -4,28 +4,71 @@ pluginManagement {
     google()
     mavenCentral()
   }
-  includeBuild("../node_modules/@react-native/gradle-plugin")
+  // Resolved through Node rather than hardcoded to
+  // ../node_modules/@react-native/gradle-plugin.
+  //
+  // npm only hoists a package to the top level when nothing conflicts. Adding
+  // RNOH — which vendors its own copies of several @react-native/* packages at
+  // the same version — was enough to change that calculation, and npm nested
+  // the gradle plugin under node_modules/react-native/node_modules/ instead.
+  // The hardcoded path then pointed at nothing and Gradle failed before it
+  // could read a single line of build config:
+  //
+  //   Included build '.../node_modules/@react-native/gradle-plugin' does not exist
+  //
+  // Asking Node where the package actually is works wherever npm decides to
+  // put it. Resolution starts from react-native's own location, so it finds
+  // the copy that belongs to the React Native being built.
+  def gradlePluginDir = providers.exec {
+    commandLine("node", "--print",
+      "require('path').dirname(require.resolve('@react-native/gradle-plugin/package.json', " +
+      "{paths: [require.resolve('react-native/package.json', {paths: ['" + rootDir.getParentFile().absolutePath + "']})]}))")
+  }.standardOutput.asText.get().trim()
+  includeBuild(gradlePluginDir)
 }
 
 plugins {
   id("com.facebook.react.settings")
 }
 
-// Resolve npx path so Gradle (e.g. from Android Studio) can find it when PATH is minimal.
-def nodeDirs = ["/usr/local/bin", "/opt/homebrew/bin"]
-def nvmVersionsDir = new File("${System.getProperty('user.home')}/.nvm/versions/node")
-if (nvmVersionsDir.exists()) {
-  nvmVersionsDir.listFiles()?.each { d -> nodeDirs << "${d}/bin" }
-}
-def npxPath = null
-for (d in nodeDirs) {
-  def f = new File("${d}/npx")
-  if (f.exists()) { npxPath = f.absolutePath; break }
-}
-if (npxPath == null) npxPath = "npx"
+/**
+ * Robustly resolve the absolute path to 'npx'.
+ * Necessary for IDE-launched Gradle daemons where PATH may be restricted.
+ */
+static def resolveNpxPath() {
+  def npxName = System.getProperty("os.name").toLowerCase().contains("windows") ? "npx.cmd" : "npx"
 
-extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
-  ex.autolinkLibrariesFromCommand([npxPath, "@react-native-community/cli", "config"])
+  // 1. Prioritize environment PATH
+  def envPath = System.getenv("PATH")
+  if (envPath) {
+    def found = envPath.split(File.pathSeparator).find { new File(it, npxName).exists() }
+    if (found) return new File(found, npxName).absolutePath
+  }
+
+  // 2. Search common directories
+  def searchDirs = []
+  def homeDir = System.getProperty("user.home")
+
+  // NVM versions (prefer NVM over system node)
+  def nvmDir = new File(homeDir, ".nvm/versions/node")
+  if (nvmDir.exists()) {
+    nvmDir.listFiles()?.each { searchDirs << new File(it, "bin").absolutePath }
+  }
+
+  // Homebrew and system paths
+  searchDirs << "/opt/homebrew/bin"
+  searchDirs << "/usr/local/bin"
+
+  def foundDir = searchDirs.find { new File(it, npxName).exists() }
+  return foundDir ? new File(foundDir, npxName).absolutePath : npxName
+}
+
+def npxPath = resolveNpxPath()
+
+// Configure React Native autolinking.
+// Using the class literal improves IDE type resolution and autocompletion.
+extensions.configure(com.facebook.react.ReactSettingsExtension) {
+  it.autolinkLibrariesFromCommand([npxPath, "@react-native-community/cli", "config"])
 }
 
 rootProject.name = 'ChatterboxTemp'

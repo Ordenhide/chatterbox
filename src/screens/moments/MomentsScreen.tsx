@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Animated,
   FlatList,
   Modal,
   TextInput,
@@ -14,6 +15,10 @@ import {
   Platform,
 } from 'react-native';
 import GlassScreen from '../../components/GlassScreen';
+import RevealOnScroll from '../../components/RevealOnScroll';
+import PressableScale from '../../components/PressableScale';
+import ExpandingImage from '../../components/ExpandingImage';
+import {useParallaxScroll} from '../../contexts/ScrollMotionContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -46,7 +51,7 @@ import {
   getFirestore,
   query,
   where,
-} from '@react-native-firebase/firestore';
+} from '../../services/firebase/firestore';
 
 type MediaDraft = {uri: string; type: 'image' | 'video'; isRemote?: boolean};
 
@@ -55,6 +60,7 @@ export default function MomentsScreen() {
   const navigation = useNavigation();
   const colors = getColors(useColorScheme());
   const {t} = useTranslation();
+  const {onScroll, scrollEventThrottle} = useParallaxScroll();
   const [feedMoments, setFeedMoments] = useState<Moment[]>([]);
   const [selfMoments, setSelfMoments] = useState<Moment[]>([]);
   const [authorById, setAuthorById] = useState<Record<string, User | null>>({});
@@ -532,6 +538,7 @@ export default function MomentsScreen() {
     const liked = likeInfo?.liked ?? false;
     const commentCount = item.commentCount ?? 0;
     return (
+      <RevealOnScroll>
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
         <View style={styles.cardHeader}>
           <Text style={[styles.cardTitle, {color: colors.text}]}>{authorName}</Text>
@@ -541,11 +548,11 @@ export default function MomentsScreen() {
         </View>
         <Text style={[styles.cardText, {color: colors.text}]}>{item.text || ''}</Text>
         {item.mediaUrl && item.mediaType === 'image' ? (
-          <Image
-            source={{uri: item.mediaUrl}}
+          <ExpandingImage
+            uri={item.mediaUrl}
             style={styles.media}
             resizeMode="cover"
-            resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+            accessibilityLabel={t('moments.actions.viewPhoto')}
           />
         ) : null}
         {item.mediaUrl && item.mediaType === 'video' ? (
@@ -555,7 +562,7 @@ export default function MomentsScreen() {
               {t('moments.visibilityLabel', {visibility: t(`moments.visibility.${item.visibility}`)})}
             </Text>
         <View style={styles.actionRow}>
-          <TouchableOpacity
+          <PressableScale
             style={[
               styles.actionPill,
               {backgroundColor: liked ? colors.primary : colors.surface, borderColor: colors.glassBorder},
@@ -565,19 +572,19 @@ export default function MomentsScreen() {
                   {liked ? t('moments.actions.liked') : t('moments.actions.like')}{' '}
                   {likeCount > 0 ? `· ${likeCount}` : ''}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </PressableScale>
+          <PressableScale
             style={[styles.actionPill, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}
             onPress={() => openComments(item)}>
             <Text style={[styles.actionText, {color: colors.text}]}>
                   {t('moments.actions.comment')} {commentCount > 0 ? `· ${commentCount}` : ''}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </PressableScale>
+          <PressableScale
             style={[styles.actionPill, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}
             onPress={() => openShare(item)}>
                 <Text style={[styles.actionText, {color: colors.text}]}>{t('moments.actions.share')}</Text>
-          </TouchableOpacity>
+          </PressableScale>
         </View>
         {item.authorId === user?.uid ? (
           <View style={styles.cardActions}>
@@ -594,6 +601,7 @@ export default function MomentsScreen() {
           </View>
         ) : null}
       </GlassView>
+      </RevealOnScroll>
     );
   };
 
@@ -631,10 +639,14 @@ export default function MomentsScreen() {
 
   return (
     <GlassScreen style={styles.container}>
-      <FlatList
+      <Animated.FlatList
         data={moments}
-        keyExtractor={item => item.id}
+        keyExtractor={(item: Moment) => item.id}
         renderItem={renderItem}
+        // Publishes scroll offset to the app backdrop and to each card's
+        // reveal — see contexts/ScrollMotionContext.
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"

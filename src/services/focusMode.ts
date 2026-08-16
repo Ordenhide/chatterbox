@@ -1,4 +1,4 @@
-import {doc, getFirestore, setDoc, serverTimestamp} from '@react-native-firebase/firestore';
+import {doc, getFirestore, setDoc, serverTimestamp} from './firebase/firestore';
 
 const db = getFirestore();
 
@@ -22,7 +22,7 @@ export async function enableFocusMode(
 }
 
 export async function disableFocusMode(userId: string) {
-  const {deleteField} = require('@react-native-firebase/firestore');
+  const {deleteField} = require('./firebase/firestore');
   await setDoc(
     doc(db, 'users', userId),
     {

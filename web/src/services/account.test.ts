@@ -39,12 +39,7 @@ function mockClauseMatches(data: Record<string, unknown>, clause: {field: string
 vi.mock('firebase/auth', () => ({
   EmailAuthProvider: {credential: (email: string, password: string) => ({email, password})},
   deleteUser: vi.fn(async () => undefined),
-  linkWithPhoneNumber: vi.fn(async () => ({
-    verificationId: 'verification-id',
-    confirm: vi.fn(async () => ({user: {phoneNumber: '+14155550123'}})),
-  })),
   reauthenticateWithCredential: vi.fn(async () => undefined),
-  unlink: vi.fn(async () => undefined),
   updatePassword: vi.fn(async () => undefined),
 }));
 vi.mock('firebase/firestore', () => ({
@@ -67,8 +62,6 @@ vi.mock('firebase/firestore', () => ({
     ...ref,
     clauses: [...(ref.clauses || []), ...clauses.filter(c => c && 'field' in c)],
   }),
-  serverTimestamp: () => ({}),
-  setDoc: vi.fn(async () => undefined),
   updateDoc: vi.fn(async () => undefined),
   where: (field: string, op: string, value: unknown) => ({field, op, value}),
 }));
@@ -82,16 +75,7 @@ vi.mock('./storage', () => ({storage: {}, deleteStorageObjectByUrl: vi.fn(async 
 vi.mock('./firestoreBatch', () => ({deleteQueryInChunks: vi.fn(async () => 0)}));
 vi.mock('./e2eeKeys', () => ({getOrCreateDeviceKeypair: vi.fn()}));
 
-import {auth} from '../firebase';
-import {
-  clearLocalData,
-  confirmPhoneLink,
-  describeAuthError,
-  describePhoneLinkError,
-  purgeUserData,
-  sendPhoneLinkCode,
-  unlinkPhoneNumber,
-} from './account';
+import {clearLocalData, describeAuthError, purgeUserData} from './account';
 import {encryptMessage, generateKeypair} from './e2ee';
 
 beforeEach(() => {
@@ -183,107 +167,6 @@ describe('clearLocalData', () => {
   });
 });
 
-describe('describePhoneLinkError', () => {
-  it('maps every credential-rejection spelling to wrong-password, same as describeAuthError', () => {
-    for (const code of [
-      'auth/wrong-password',
-      'auth/invalid-credential',
-      'auth/invalid-login-credentials',
-    ]) {
-      expect(describePhoneLinkError({code})).toBe('wrong-password');
-    }
-  });
-
-  it('distinguishes phone-specific failures', () => {
-    expect(describePhoneLinkError({code: 'auth/invalid-phone-number'})).toBe('invalid-phone-number');
-    expect(describePhoneLinkError({code: 'auth/invalid-verification-code'})).toBe(
-      'invalid-verification-code',
-    );
-    expect(describePhoneLinkError({code: 'auth/code-expired'})).toBe('code-expired');
-    expect(describePhoneLinkError({code: 'auth/too-many-requests'})).toBe('too-many-requests');
-  });
-
-  it('collapses both spellings Firebase uses for an already-linked phone number', () => {
-    expect(describePhoneLinkError({code: 'auth/credential-already-in-use'})).toBe(
-      'phone-already-in-use',
-    );
-    expect(describePhoneLinkError({code: 'auth/provider-already-linked'})).toBe(
-      'phone-already-in-use',
-    );
-  });
-
-  it('reports provider-not-enabled when the Phone sign-in provider is off in the Firebase console', () => {
-    expect(describePhoneLinkError({code: 'auth/operation-not-allowed'})).toBe('provider-not-enabled');
-    expect(describePhoneLinkError({code: 'auth/admin-restricted-operation'})).toBe(
-      'provider-not-enabled',
-    );
-  });
-
-  it('falls back to unknown rather than mislabelling an unexpected failure', () => {
-    expect(describePhoneLinkError({code: 'auth/network-request-failed'})).toBe('unknown');
-    expect(describePhoneLinkError(null)).toBe('unknown');
-  });
-});
-
-describe('phone linking', () => {
-  const fakeVerifier = {type: 'recaptcha', verify: vi.fn(async () => 'token')};
-
-  beforeEach(() => {
-    (auth as {currentUser: unknown}).currentUser = {
-      uid: 'uid1',
-      email: 'a@b.com',
-      phoneNumber: null,
-    };
-  });
-
-  it('rejects sendPhoneLinkCode when nobody is signed in', async () => {
-    (auth as {currentUser: unknown}).currentUser = null;
-    await expect(sendPhoneLinkCode('pw', '+14155550123', fakeVerifier)).rejects.toThrow(
-      'not signed in',
-    );
-  });
-
-  it('sendPhoneLinkCode reauthenticates before starting verification', async () => {
-    const confirmation = await sendPhoneLinkCode('pw', '+14155550123', fakeVerifier);
-    expect(confirmation.verificationId).toBe('verification-id');
-  });
-
-  it('wraps a reauth failure with reason wrong-password', async () => {
-    const {reauthenticateWithCredential} = await import('firebase/auth');
-    vi.mocked(reauthenticateWithCredential).mockRejectedValueOnce({code: 'auth/wrong-password'});
-    await expect(sendPhoneLinkCode('bad-pw', '+14155550123', fakeVerifier)).rejects.toMatchObject({
-      reason: 'wrong-password',
-    });
-  });
-
-  it('confirmPhoneLink writes the verified phone number to the private doc', async () => {
-    const {setDoc} = await import('firebase/firestore');
-    const confirmation = {
-      verificationId: 'verification-id',
-      confirm: vi.fn(async () => ({user: {phoneNumber: '+14155550123'}})),
-    };
-    await confirmPhoneLink(confirmation as never, '123456');
-    expect(confirmation.confirm).toHaveBeenCalledWith('123456');
-    expect(vi.mocked(setDoc)).toHaveBeenCalledWith(
-      {path: 'users/uid1/private/contact'},
-      expect.objectContaining({phoneNumber: '+14155550123'}),
-      {merge: true},
-    );
-  });
-
-  it('unlinkPhoneNumber clears the private doc after unlinking', async () => {
-    const {unlink} = await import('firebase/auth');
-    const {setDoc} = await import('firebase/firestore');
-    await unlinkPhoneNumber();
-    expect(unlink).toHaveBeenCalledWith(expect.anything(), 'phone');
-    expect(vi.mocked(setDoc)).toHaveBeenCalledWith(
-      {path: 'users/uid1/private/contact'},
-      expect.objectContaining({phoneNumber: null}),
-      {merge: true},
-    );
-  });
-});
-
 describe('purgeUserData media cleanup', () => {
   const CHAT_ID = 'chat1';
 
@@ -333,28 +216,5 @@ describe('purgeUserData media cleanup', () => {
     expect(deletedUrls).toEqual(['https://storage.example/plain.jpg']);
     expect(report.storageObjectsDeleted).toBe(1);
     expect(report.errors.some(e => e.includes('device key unavailable'))).toBe(true);
-  });
-});
-
-describe('describePhoneLinkError — reCAPTCHA failures', () => {
-  // These used to fall through to 'unknown', which showed a generic "something
-  // went wrong" for what is really a retryable robot-check failure. The
-  // password and phone number were valid; only the single-use captcha token
-  // was not, which is also what a double-submit produces.
-  it('maps invalid-app-credential to a retryable captcha failure', () => {
-    expect(describePhoneLinkError({code: 'auth/invalid-app-credential'})).toBe('recaptcha-failed');
-  });
-
-  it('maps the other captcha error codes the same way', () => {
-    expect(describePhoneLinkError({code: 'auth/captcha-check-failed'})).toBe('recaptcha-failed');
-    expect(describePhoneLinkError({code: 'auth/missing-app-credential'})).toBe('recaptcha-failed');
-  });
-
-  it('still distinguishes a disabled provider from a captcha failure', () => {
-    expect(describePhoneLinkError({code: 'auth/operation-not-allowed'})).toBe('provider-not-enabled');
-  });
-
-  it('leaves genuinely unrecognised codes as unknown', () => {
-    expect(describePhoneLinkError({code: 'auth/internal-error'})).toBe('unknown');
   });
 });

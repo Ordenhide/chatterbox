@@ -48,6 +48,65 @@ export function hasPreviewContent(preview: LinkPreviewData | null | undefined): 
   return !!(preview && (preview.title || preview.description || preview.image));
 }
 
+/**
+ * Blocks the obvious SSRF targets before ChatScreen's client-side fallback
+ * fetches a URL directly with the `link-preview-js` package. That fallback
+ * only runs when the safe path — the rate-limited `fetchLinkPreview` Cloud
+ * Function, which resolves DNS, checks the resolved IP against
+ * functions/ssrfGuard.js, and connects to that validated IP rather than the
+ * hostname — is unreachable, so it's this device doing the fetch instead.
+ *
+ * Necessarily weaker than the server check: React Native's fetch resolves
+ * DNS internally with no hook to validate the IP before connecting, so a
+ * hostname that only resolves to a private address at request time (DNS
+ * rebinding) isn't caught here. What this does catch — a URL whose host is
+ * *literally* a loopback, private, link-local, or reserved IP, or a
+ * well-known internal-only name — is the shape of attempt this fallback
+ * would otherwise hand straight to the vulnerable library with no check at
+ * all (link-preview-js <=4.0.0 has no SSRF protection of its own — see
+ * GHSA-4gp8-rjrq-ch6q).
+ */
+export function isSafeToFetchDirectly(url: string): boolean {
+  const match = /^https?:\/\/(\[[^\]]+\]|[^/:?#]+)/i.exec(url);
+  if (!match) return false;
+  let host = match[1].toLowerCase();
+  if (host.startsWith('[') && host.endsWith(']')) host = host.slice(1, -1);
+
+  if (
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.local') ||
+    host.endsWith('.internal')
+  ) {
+    return false;
+  }
+
+  const ipv4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+  if (ipv4) {
+    const a = Number(ipv4[1]);
+    const b = Number(ipv4[2]);
+    if (a === 10 || a === 127 || a === 0) return false;
+    if (a === 169 && b === 254) return false; // link-local / cloud metadata
+    if (a === 172 && b >= 16 && b <= 31) return false;
+    if (a === 192 && b === 168) return false;
+    if (a === 100 && b >= 64 && b <= 127) return false; // CGNAT
+    if (a >= 224) return false; // multicast / reserved
+    return true;
+  }
+
+  if (host.includes(':')) {
+    // IPv6 literal — mirrors functions/ssrfGuard.js's prefix checks.
+    if (host === '::1' || host === '::') return false;
+    if (/^fe[89ab]/.test(host)) return false; // fe80::/10 link-local
+    if (host.startsWith('fc') || host.startsWith('fd')) return false; // fc00::/7 ULA
+    if (host.startsWith('::ffff:')) {
+      return isSafeToFetchDirectly(`http://${host.slice('::ffff:'.length)}`);
+    }
+  }
+
+  return true;
+}
+
 export function serializePreview(preview: LinkPreviewData): string {
   return JSON.stringify({
     url: preview.url,

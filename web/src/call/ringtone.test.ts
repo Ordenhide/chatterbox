@@ -37,7 +37,13 @@ function fakeAudioContext(opts: {resumesTo: AudioContextState}) {
 }
 
 function install(ctx: unknown) {
-  (window as unknown as {AudioContext: unknown}).AudioContext = vi.fn(() => ctx);
+  // A real function expression, not an arrow function: ringtone.ts calls
+  // `new Ctor()`, and only a real function is constructable — an arrow-
+  // function implementation throws "is not a constructor" once wrapped in
+  // vi.fn() (vitest 4 forwards `new` to the implementation itself).
+  (window as unknown as {AudioContext: unknown}).AudioContext = vi.fn(function () {
+    return ctx;
+  });
 }
 
 afterEach(() => {

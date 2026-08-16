@@ -19,7 +19,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 ios/.xcode.env.local
-macos/.xcode.env.local
+macos-app/macos/.xcode.env.local
 
 # Android/IntelliJ
 build/
@@ -48,7 +48,9 @@ yarn-error.log
 
 # CocoaPods
 /ios/Pods/
-/macos/Pods/
+/macos-app/macos/Pods/
+/macos-app/macos/build/
+/macos-app/node_modules/
 
 # Expo
 .expo/
