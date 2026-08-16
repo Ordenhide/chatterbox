@@ -66,6 +66,28 @@ use_frameworks! :linkage => linkage.to_sym
 target 'ChatterboxTemp' do
   config = use_native_modules!
 
+  # Every autolinked third-party module's podspec calls install_modules_dependencies(s)
+  # (react-native/scripts/react_native_pods.rb), which — in this project/environment,
+  # confirmed by instrumenting the helper directly — resolves
+  # ReactNativeDependenciesUtils.build_react_native_deps_from_source() to true for
+  # third-party modules even though the app otherwise correctly links the prebuilt
+  # ReactNativeDependencies tarball. That takes the old source-mode branch and asks
+  # for RCT-Folly plus its siblings (glog, boost, DoubleConversion, fast_float, fmt)
+  # by name — specs nothing else registers a source for once the rest of the graph
+  # resolves through the tarball. Registering all six explicitly here, pointing at
+  # RN's own bundled copies, gives CocoaPods somewhere to find them; nothing else in
+  # the graph ends up using them.
+  #
+  # RCT-Folly needs its `Fabric` subspec too — folly/synchronization/*.h (needed by
+  # SanitizeThread.cpp, which the Default subspec compiles) is only declared under
+  # Fabric, not Default. install_modules_dependencies itself adds this same subspec
+  # when RCT_NEW_ARCH_ENABLED is set (it is, above) — we're just replicating that.
+  %w[glog boost DoubleConversion fast_float fmt].each do |dep|
+    pod dep, :podspec => "#{config[:reactNativePath]}/third-party-podspecs/#{dep}.podspec"
+  end
+  pod 'RCT-Folly', :podspec => "#{config[:reactNativePath]}/third-party-podspecs/RCT-Folly.podspec"
+  pod 'RCT-Folly/Fabric', :podspec => "#{config[:reactNativePath]}/third-party-podspecs/RCT-Folly.podspec"
+
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => true,
