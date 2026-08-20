@@ -14,7 +14,7 @@ import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
 import LiquidGlassBackground from './src/components/LiquidGlassBackground';
-import i18n from './src/i18n';
+import ColdOpen, {coldOpenPending} from './src/components/ColdOpen';
 import {flushReadReceipts} from './src/services/readReceipts';
 import {clearOldImageCache} from './src/services/imageCache';
 import ErrorBoundary from './src/components/ErrorBoundary';
@@ -31,6 +31,10 @@ function AppContent() {
   const routeNameRef = useRef<string | undefined>(undefined);
   const scheme = useColorScheme();
   const [tutorialVisible, setTutorialVisible] = useState(false);
+  // Seeded from the module-scope flag in ColdOpen rather than `true`, so only
+  // a genuine cold start waits on the sequence. A remount — signing out and
+  // back in, a fast refresh — reads it as already played and skips the hold.
+  const [coldOpenDone, setColdOpenDone] = useState(() => !coldOpenPending());
 
   // Guided tour: auto-runs once after first sign-in, and re-runs on demand
   // (Profile → "Replay tutorial", which fires TUTORIAL_EVENT).
@@ -80,13 +84,11 @@ function AppContent() {
     };
   }, [user, loading]);
 
-  if (loading) {
-    return null;
-  }
-
-  return (
-    <View style={styles.appRoot}>
-      <LiquidGlassBackground />
+  // Still gated on `loading` — rendering the navigator before the auth check
+  // resolves would mount AuthNavigator for a moment and then swap it for
+  // MainNavigator, which is the flash the old early-return existed to avoid.
+  const appTree = loading ? null : (
+    <>
       <NavigationContainer
         ref={navigationRef}
         onReady={() => {
@@ -136,6 +138,19 @@ function AppContent() {
           }}
         />
       )}
+    </>
+  );
+
+  // The cold open overlays the app rather than replacing it, and is mounted in
+  // exactly one place. Both of those matter: ColdOpen's last act is to fade
+  // itself out, so the real UI has to already be behind it to fade out *to* —
+  // and rendering it from two branches would unmount/remount it as `loading`
+  // flips, restarting the sequence from its first frame.
+  return (
+    <View style={styles.appRoot}>
+      <LiquidGlassBackground />
+      {appTree}
+      {!coldOpenDone && <ColdOpen onDone={() => setColdOpenDone(true)} />}
     </View>
   );
 }

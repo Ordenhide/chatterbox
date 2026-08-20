@@ -434,6 +434,91 @@ export function scrambleFrame(
 }
 
 /* ------------------------------------------------------------------------ *
+ * Cold open
+ *
+ * The launch sequence, and the one place the app gets to introduce itself.
+ * Same honesty rule as CipherText above: the wordmark resolves out of
+ * ciphertext because that is what this app does to messages, not because
+ * scrambling text looks technical. It plays over the auth-state check that
+ * genuinely is happening at that moment (App.tsx renders nothing while
+ * `loading`), so it occupies real waiting time rather than inventing some.
+ *
+ * Three phases rather than one long tween, because they are doing different
+ * jobs: `seal` establishes the wordmark as ciphertext, `resolve` is the
+ * reveal, and `settle` is the beat that keeps the reveal from being cut off
+ * by the app arriving on top of it.
+ * ------------------------------------------------------------------------ */
+
+export const COLD_OPEN_SEAL_MS = 620;
+export const COLD_OPEN_RESOLVE_MS = 900;
+export const COLD_OPEN_SETTLE_MS = 420;
+export const COLD_OPEN_TOTAL_MS =
+  COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS;
+
+export type ColdOpenPhase = 'seal' | 'resolve' | 'settle' | 'done';
+
+export interface ColdOpenFrame {
+  phase: ColdOpenPhase;
+  /** 0→1 *within the current phase*, not across the whole sequence. */
+  progress: number;
+}
+
+/**
+ * Which phase the cold open is in at `elapsed` ms, and how far through it.
+ *
+ * Per-phase progress rather than one global 0→1 so each phase can use its own
+ * curve without every consumer re-deriving the same boundaries — and so the
+ * durations above can be retuned without touching the component.
+ *
+ * Negative or non-finite input reads as the very start rather than throwing:
+ * this is driven by a clock, and a bad clock reading should cost a frame, not
+ * the launch screen.
+ */
+export function coldOpenFrame(elapsed: number): ColdOpenFrame {
+  if (!Number.isFinite(elapsed) || elapsed <= 0) return {phase: 'seal', progress: 0};
+  if (elapsed < COLD_OPEN_SEAL_MS) {
+    return {phase: 'seal', progress: elapsed / COLD_OPEN_SEAL_MS};
+  }
+  const afterSeal = elapsed - COLD_OPEN_SEAL_MS;
+  if (afterSeal < COLD_OPEN_RESOLVE_MS) {
+    return {phase: 'resolve', progress: afterSeal / COLD_OPEN_RESOLVE_MS};
+  }
+  const afterResolve = afterSeal - COLD_OPEN_RESOLVE_MS;
+  if (afterResolve < COLD_OPEN_SETTLE_MS) {
+    return {phase: 'settle', progress: afterResolve / COLD_OPEN_SETTLE_MS};
+  }
+  return {phase: 'done', progress: 1};
+}
+
+/* ------------------------------------------------------------------------ *
+ * Entrance cascade
+ *
+ * Distinct from staggerDelay above, which paces list rows at 28ms — a rate
+ * tuned to stay out of the way while you scroll. A cascade is the opposite
+ * situation: a handful of elements on a screen you have just arrived at, with
+ * nothing competing for attention, so the step is long enough to read as a
+ * sequence rather than as one block easing in slightly unevenly.
+ * ------------------------------------------------------------------------ */
+
+export const CASCADE_STEP_MS = 85;
+
+/**
+ * Capped for the same reason staggerDelay is, but much lower: past half a
+ * dozen elements a cascade stops reading as choreography and starts reading
+ * as the screen being slow.
+ */
+export const CASCADE_MAX_STEPS = 6;
+
+export function cascadeDelay(index: number): number {
+  if (!Number.isFinite(index) || index < 0) return 0;
+  return Math.min(Math.floor(index), CASCADE_MAX_STEPS) * CASCADE_STEP_MS;
+}
+
+/** How far a cascading element travels on its way in, in points. */
+export const CASCADE_TRAVEL = 22;
+export const CASCADE_SCALE = 0.94;
+
+/* ------------------------------------------------------------------------ *
  * Fan-out bloom
  * ------------------------------------------------------------------------ */
 

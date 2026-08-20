@@ -19,6 +19,7 @@ import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
+import Cascade from '../../components/Cascade';
 import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
@@ -71,11 +72,14 @@ export default function SignUpScreen() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           bounces={false}>
-          <Text style={[styles.title, {color: colors.text}]}>{t('auth.signup.title')}</Text>
-          <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
-            {t('auth.signup.subtitle')}
-          </Text>
+          <Cascade index={0}>
+            <Text style={[styles.title, {color: colors.text}]}>{t('auth.signup.title')}</Text>
+            <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
+              {t('auth.signup.subtitle')}
+            </Text>
+          </Cascade>
 
+          <Cascade index={1}>
           <GlassView style={[styles.panel, {borderColor: colors.glassBorder}]}>
           <TextInput
             style={[
@@ -130,25 +134,30 @@ export default function SignUpScreen() {
             )}
           </TouchableOpacity>
         </GlassView>
+        </Cascade>
 
-        <SocialSignInButtons />
+        <Cascade index={2}>
+          <SocialSignInButtons />
+        </Cascade>
 
-        <TouchableOpacity
-          style={styles.linkButton}
-          onPress={() => navigation.goBack()}>
-          <Text style={[styles.linkText, {color: colors.textSecondary}]}>
-            {t('auth.signup.hasAccount')}{' '}
-            <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('common.signIn')}</Text>
+        <Cascade index={3}>
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => navigation.goBack()}>
+            <Text style={[styles.linkText, {color: colors.textSecondary}]}>
+              {t('auth.signup.hasAccount')}{' '}
+              <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('common.signIn')}</Text>
+            </Text>
+          </TouchableOpacity>
+          <Text style={[styles.termsText, {color: colors.textSecondary}]}>
+            By creating an account you agree to our{' '}
+            <Text
+              style={[styles.termsLink, {color: colors.primary}]}
+              onPress={() => (navigation as any).navigate('PrivacyPolicy')}>
+              Privacy Policy
+            </Text>
           </Text>
-        </TouchableOpacity>
-        <Text style={[styles.termsText, {color: colors.textSecondary}]}>
-          By creating an account you agree to our{' '}
-          <Text
-            style={[styles.termsLink, {color: colors.primary}]}
-            onPress={() => (navigation as any).navigate('PrivacyPolicy')}>
-            Privacy Policy
-          </Text>
-        </Text>
+        </Cascade>
         </ScrollView>
       </KeyboardAvoidingView>
     </GlassScreen>

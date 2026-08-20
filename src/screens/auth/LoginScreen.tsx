@@ -21,6 +21,7 @@ import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
+import Cascade from '../../components/Cascade';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -90,13 +91,16 @@ export default function LoginScreen() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           bounces={false}>
-          <Text style={[styles.title, {color: colors.text}]}>{t('app.name')}</Text>
-          <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
-            {loginVariant === 'variant_a'
-              ? t('auth.login.subtitleVariant')
-              : t('auth.login.subtitleDefault')}
-          </Text>
+          <Cascade index={0}>
+            <Text style={[styles.title, {color: colors.text}]}>{t('app.name')}</Text>
+            <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
+              {loginVariant === 'variant_a'
+                ? t('auth.login.subtitleVariant')
+                : t('auth.login.subtitleDefault')}
+            </Text>
+          </Cascade>
 
+          <Cascade index={1}>
           <GlassView style={[styles.panel, {borderColor: colors.glassBorder}]}>
           <TextInput
             style={[
@@ -141,24 +145,29 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
         </GlassView>
+        </Cascade>
 
-        <SocialSignInButtons />
+        <Cascade index={2}>
+          <SocialSignInButtons />
+        </Cascade>
 
-        <TouchableOpacity style={styles.linkButton} onPress={handleResetPassword}>
-          <Text style={[styles.linkText, {color: colors.textSecondary}]}>
-            {t('auth.login.forgotPassword')}{' '}
-            <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('auth.login.reset')}</Text>
-          </Text>
-        </TouchableOpacity>
+        <Cascade index={3}>
+          <TouchableOpacity style={styles.linkButton} onPress={handleResetPassword}>
+            <Text style={[styles.linkText, {color: colors.textSecondary}]}>
+              {t('auth.login.forgotPassword')}{' '}
+              <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('auth.login.reset')}</Text>
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.linkButton}
-          onPress={() => navigation.navigate('SignUp' as never)}>
-          <Text style={[styles.linkText, {color: colors.textSecondary}]}>
-            {t('auth.login.noAccount')}{' '}
-            <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('common.signUp')}</Text>
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => navigation.navigate('SignUp' as never)}>
+            <Text style={[styles.linkText, {color: colors.textSecondary}]}>
+              {t('auth.login.noAccount')}{' '}
+              <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('common.signUp')}</Text>
+            </Text>
+          </TouchableOpacity>
+        </Cascade>
         </ScrollView>
       </KeyboardAvoidingView>
     </GlassScreen>

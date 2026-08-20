@@ -1,5 +1,6 @@
 import React, {memo, useCallback, useMemo, useRef, useState, useEffect} from 'react';
 import ListEntrance from '../../components/ListEntrance';
+import Cascade from '../../components/Cascade';
 import {
   View,
   Text,
@@ -541,9 +542,14 @@ export default function ChatListScreen() {
           </ListEntrance>
         )}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
-            {isOffline ? t('chatList.offlineEmpty') : t('chatList.empty')}
-          </Text>
+          // The first screen a new account lands on, and for a while the only
+          // one — the cascade is doing more work here than anywhere else in
+          // the app, since there is no content to carry it.
+          <Cascade index={0}>
+            <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+              {isOffline ? t('chatList.offlineEmpty') : t('chatList.empty')}
+            </Text>
+          </Cascade>
         }
       />
       {user && (

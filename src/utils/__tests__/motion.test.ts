@@ -1,6 +1,14 @@
 import {
   BURST_COUNT,
   ARC_MAGNET_RADIUS,
+  CASCADE_MAX_STEPS,
+  CASCADE_STEP_MS,
+  COLD_OPEN_RESOLVE_MS,
+  COLD_OPEN_SEAL_MS,
+  COLD_OPEN_SETTLE_MS,
+  COLD_OPEN_TOTAL_MS,
+  cascadeDelay,
+  coldOpenFrame,
   arcMagnetism,
   nearestArcSlot,
   reactionArcSlots,
@@ -337,6 +345,73 @@ describe('scrambleDuration', () => {
     expect(scrambleDuration(100000)).toBe(SCRAMBLE_MAX_MS);
     expect(scrambleDuration(0)).toBe(SCRAMBLE_MIN_MS);
     expect(scrambleDuration(NaN)).toBe(SCRAMBLE_MIN_MS);
+  });
+});
+
+describe('coldOpenFrame', () => {
+  it('walks seal -> resolve -> settle -> done in order', () => {
+    expect(coldOpenFrame(0).phase).toBe('seal');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS / 2).phase).toBe('seal');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS).phase).toBe('resolve');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS).phase).toBe('settle');
+    expect(coldOpenFrame(COLD_OPEN_TOTAL_MS).phase).toBe('done');
+    // Still done long after — the sequence must not wrap round to seal.
+    expect(coldOpenFrame(COLD_OPEN_TOTAL_MS * 10).phase).toBe('done');
+  });
+
+  it('reports progress within the current phase, not across the whole run', () => {
+    // Halfway through resolve is 0.5, despite being much further than that
+    // through the sequence overall.
+    const midResolve = coldOpenFrame(COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS / 2);
+    expect(midResolve.phase).toBe('resolve');
+    expect(midResolve.progress).toBeCloseTo(0.5);
+
+    const midSettle = coldOpenFrame(
+      COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS / 2,
+    );
+    expect(midSettle.phase).toBe('settle');
+    expect(midSettle.progress).toBeCloseTo(0.5);
+  });
+
+  it('never leaves progress outside 0..1', () => {
+    for (let t = -500; t <= COLD_OPEN_TOTAL_MS + 500; t += 37) {
+      const {progress} = coldOpenFrame(t);
+      expect(progress).toBeGreaterThanOrEqual(0);
+      expect(progress).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('reads a bad clock as the start rather than throwing', () => {
+    // Driven by Date.now() deltas; a bad reading should cost a frame, not the
+    // whole launch screen.
+    expect(coldOpenFrame(NaN)).toEqual({phase: 'seal', progress: 0});
+    expect(coldOpenFrame(-1)).toEqual({phase: 'seal', progress: 0});
+    expect(coldOpenFrame(Infinity).phase).toBe('seal');
+  });
+});
+
+describe('cascadeDelay', () => {
+  it('steps each element back by one interval', () => {
+    expect(cascadeDelay(0)).toBe(0);
+    expect(cascadeDelay(1)).toBe(CASCADE_STEP_MS);
+    expect(cascadeDelay(3)).toBe(3 * CASCADE_STEP_MS);
+  });
+
+  it('caps so a cascade never reads as the screen being slow', () => {
+    const ceiling = CASCADE_MAX_STEPS * CASCADE_STEP_MS;
+    expect(cascadeDelay(CASCADE_MAX_STEPS)).toBe(ceiling);
+    expect(cascadeDelay(CASCADE_MAX_STEPS + 50)).toBe(ceiling);
+  });
+
+  it('is slower than the list-row stagger it is distinct from', () => {
+    // The two exist precisely because they are paced differently; if this ever
+    // stops holding, one of them is redundant.
+    expect(CASCADE_STEP_MS).toBeGreaterThan(STAGGER_STEP_MS);
+  });
+
+  it('treats nonsense positions as first', () => {
+    expect(cascadeDelay(-3)).toBe(0);
+    expect(cascadeDelay(NaN)).toBe(0);
   });
 });
 
