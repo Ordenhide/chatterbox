@@ -20,6 +20,7 @@ import {trackEvent} from '../../services/telemetry';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
+import SocialSignInButtons from '../../components/SocialSignInButtons';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -140,6 +141,8 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
         </GlassView>
+
+        <SocialSignInButtons />
 
         <TouchableOpacity style={styles.linkButton} onPress={handleResetPassword}>
           <Text style={[styles.linkText, {color: colors.textSecondary}]}>

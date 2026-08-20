@@ -2,6 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
+import PhoneAuthScreen from '../screens/auth/PhoneAuthScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 
 const Stack = createNativeStackNavigator();
@@ -14,6 +15,7 @@ export default function AuthNavigator() {
       }}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen name="PhoneAuth" component={PhoneAuthScreen} />
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}

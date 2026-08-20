@@ -9,7 +9,19 @@
  */
 import {getApp, getApps, initializeApp} from '@react-native-firebase/app';
 import {ReactNativeFirebaseAppCheckProvider, initializeAppCheck} from '@react-native-firebase/app-check';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {firebaseConfig} from '../../firebaseConfig';
+
+/**
+ * The project's OAuth 2.0 *web* client ID (type 3) — shared across platforms,
+ * not per-app. Needed for GoogleSignin to return a Firebase-usable idToken at
+ * all — without it, `GoogleSignin.signIn()` still opens the picker but
+ * idToken comes back null. See `client[].oauth_client[].client_id` for the
+ * `client_type: 3` entry in android/app/google-services.json if this project
+ * is ever moved to a different Firebase project and needs regenerating.
+ */
+const GOOGLE_WEB_CLIENT_ID =
+  '916000207469-i1ot1ll5qlelh5aka3st788ns8ph5ue7.apps.googleusercontent.com';
 
 /**
  * Fixed rather than auto-generated debug tokens.
@@ -51,6 +63,8 @@ export function initFirebase(): string {
     },
   });
   initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});
+
+  GoogleSignin.configure({webClientId: GOOGLE_WEB_CLIENT_ID});
 
   return app.name;
 }

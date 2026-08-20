@@ -18,6 +18,7 @@ import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
+import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
@@ -129,6 +130,8 @@ export default function SignUpScreen() {
             )}
           </TouchableOpacity>
         </GlassView>
+
+        <SocialSignInButtons />
 
         <TouchableOpacity
           style={styles.linkButton}

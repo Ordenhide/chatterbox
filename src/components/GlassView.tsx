@@ -31,7 +31,10 @@ type GlassViewProps = {
 
 const NativeGlassBlurView =
   Platform.OS === 'ios'
-    ? requireNativeComponent<{style?: ViewStyle}>('GlassBlurView')
+    ? requireNativeComponent<{
+        style?: StyleProp<ViewStyle>;
+        pointerEvents?: ViewProps['pointerEvents'];
+      }>('GlassBlurView')
     : null;
 
 /**

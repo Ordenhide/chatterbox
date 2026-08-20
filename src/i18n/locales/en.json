@@ -77,6 +77,27 @@
       "reset": "Reset",
       "noAccount": "Don't have an account?"
     },
+    "social": {
+      "divider": "or continue with",
+      "google": "Continue with Google",
+      "phone": "Continue with Phone"
+    },
+    "phone": {
+      "title": "Sign in with Phone",
+      "subtitle": "We'll text you a code to verify it's you.",
+      "phonePlaceholder": "+1 555 123 4567",
+      "sendCode": "Send Code",
+      "codeTitle": "Enter Code",
+      "codeSubtitle": "Enter the 6-digit code we sent to {{phoneNumber}}",
+      "codePlaceholder": "123456",
+      "verify": "Verify",
+      "resendCode": "Resend code",
+      "changeNumber": "Change phone number",
+      "errors": {
+        "invalidPhone": "Enter a valid phone number, including country code (e.g. +1 555 123 4567)",
+        "invalidCode": "Enter the 6-digit code"
+      }
+    },
     "signup": {
       "title": "Create Account",
       "subtitle": "Sign up to get started",
@@ -100,7 +121,10 @@
       "emailInUse": "An account with this email already exists",
       "weakPassword": "Password is too weak",
       "networkError": "Network error. Please check your connection",
-      "tooManyRequests": "Too many attempts. Please try again later"
+      "tooManyRequests": "Too many attempts. Please try again later",
+      "invalidVerificationCode": "That code isn't right. Please check and try again",
+      "invalidPhoneNumber": "That doesn't look like a valid phone number",
+      "accountExistsDifferentCredential": "An account already exists with this email, signed in a different way. Try signing in with that method instead."
     },
     "reset": {
       "title": "Reset Password",

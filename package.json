@@ -33,6 +33,7 @@
     "@react-native-firebase/messaging": "26.2.0",
     "@react-native-firebase/remote-config": "26.2.0",
     "@react-native-firebase/storage": "26.2.0",
+    "@react-native-google-signin/google-signin": "^16.1.4",
     "@react-native-oh-tpl/async-storage": "^1.21.0-0.2.2",
     "@react-native-oh-tpl/clipboard": "^1.13.2-0.0.9",
     "@react-native-oh-tpl/flash-list": "^1.6.3-0.2.8",
