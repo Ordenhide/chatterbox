@@ -365,7 +365,7 @@ export async function uploadMomentMedia(
           0,
           undefined,
           false,
-          {mode: 'none', onlyScaleDown: true},
+          {mode: 'contain', onlyScaleDown: true},
         );
         uploadUri = resized.uri || uri;
       } catch {

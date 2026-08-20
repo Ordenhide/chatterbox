@@ -200,7 +200,7 @@ export async function getUserById(uid: string) {
     return cached;
   }
   const fetchPromise = getDoc(doc(usersRef(), uid))
-    .then(snapshot => (snapshot.exists() ? ({uid: snapshot.id, ...(snapshot.data() as User)}) : null))
+    .then(snapshot => (snapshot.exists() ? ({...(snapshot.data() as User), uid: snapshot.id}) : null))
     .catch(error => {
       if (isPermissionDenied(error)) {
         const restricted = Promise.resolve<User | null>(null);
@@ -245,7 +245,7 @@ export async function getUsersByIds(userIds: string[]): Promise<Record<string, U
         const snapshot = await getDocs(query(usersRef(), where('__name__', 'in', chunk)));
         const found = new Set<string>();
         snapshot.docs.forEach(docSnap => {
-          const data = {uid: docSnap.id, ...(docSnap.data() as User)};
+          const data = {...(docSnap.data() as User), uid: docSnap.id};
           results[docSnap.id] = data;
           userCacheSet(docSnap.id, Promise.resolve(data));
           found.add(docSnap.id);
@@ -265,7 +265,7 @@ export async function getUsersByIds(userIds: string[]): Promise<Record<string, U
           chunk.map(async id => {
             try {
               const snap = await getDoc(doc(usersRef(), id));
-              const data = snap.exists() ? ({uid: snap.id, ...(snap.data() as User)}) : null;
+              const data = snap.exists() ? ({...(snap.data() as User), uid: snap.id}) : null;
               results[id] = data;
               userCacheSet(id, Promise.resolve(data));
             } catch (singleError: any) {
@@ -287,7 +287,7 @@ export async function getUsersByIds(userIds: string[]): Promise<Record<string, U
 
 export async function getChat(chatId: string) {
   const snapshot = await getDoc(doc(chatsRef(), chatId));
-  return snapshot.exists() ? ({id: snapshot.id, ...(snapshot.data() as ChatRoom)}) : null;
+  return snapshot.exists() ? ({...(snapshot.data() as ChatRoom), id: snapshot.id}) : null;
 }
 
 export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[]) => void) {
@@ -313,7 +313,7 @@ export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[])
 
 export async function getChatsForUser(userId: string) {
   const snapshot = await getDocs(query(chatsRef(), where('participants', 'array-contains', userId)));
-  return snapshot.docs.map(docSnap => ({id: docSnap.id, ...(docSnap.data() as ChatRoom)}));
+  return snapshot.docs.map(docSnap => ({...(docSnap.data() as ChatRoom), id: docSnap.id}));
 }
 
 export function listenMessages(chatId: string, callback: (messages: Message[]) => void) {
@@ -369,7 +369,7 @@ export function listenChat(chatId: string, callback: (chat: ChatRoom | null) => 
         callback(null);
         return;
       }
-      callback({id: snapshot.id, ...(snapshot.data() as ChatRoom)});
+      callback({...(snapshot.data() as ChatRoom), id: snapshot.id});
     },
     error => {
       logListenerError(error, 'listenChat');
@@ -771,7 +771,7 @@ export function listenCall(
         callback(null);
         return;
       }
-      callback({id: snapshot.id, ...(snapshot.data() as CallSession)});
+      callback({...(snapshot.data() as CallSession), id: snapshot.id});
     },
     error => {
       logListenerError(error, 'listenCall');
@@ -792,7 +792,7 @@ export function listenLatestCall(
         return;
       }
       const docSnap = snapshot.docs[0];
-      callback({id: docSnap.id, ...(docSnap.data() as CallSession)});
+      callback({...(docSnap.data() as CallSession), id: docSnap.id});
     },
     error => {
       logListenerError(error, 'listenLatestCall');

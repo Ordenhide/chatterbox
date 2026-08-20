@@ -123,7 +123,7 @@ export interface Message {
     image?: string;
     video?: string;
     user?: {
-      _id: string;
+      _id: string | number;
       name?: string;
     };
   };

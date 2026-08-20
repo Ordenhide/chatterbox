@@ -74,7 +74,7 @@ const WALLPAPER_COLORS = [
 
 export default function ChatSettingsScreen() {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const {t} = useTranslation();
   const chatId = (route.params as any)?.chatId as string;
   const {user} = useAuth();
@@ -401,7 +401,7 @@ export default function ChatSettingsScreen() {
         <View style={styles.themeRow}>{themeDots}</View>
         <TouchableOpacity
           accessibilityRole="button"
-          onPress={() => navigation.navigate('Store' as never)}>
+          onPress={() => navigation.navigate('Store')}>
           <Text style={[styles.storeHint, {color: colors.primary}]}>
             {`${t('store.themeMovedHint')} ${t('store.openStore')} →`}
           </Text>
@@ -546,7 +546,7 @@ export default function ChatSettingsScreen() {
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>
         <TouchableOpacity
           style={styles.row}
-          onPress={() => navigation.navigate('Whiteboard' as never, {chatId} as never)}>
+          onPress={() => navigation.navigate('Whiteboard', {chatId})}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>Whiteboard</Text>
         </TouchableOpacity>
       </GlassView>

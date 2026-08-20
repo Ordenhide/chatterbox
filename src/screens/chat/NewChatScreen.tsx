@@ -24,7 +24,7 @@ import GlassView from '../../components/GlassView';
 export default function NewChatScreen() {
   const {t} = useTranslation();
   const {user} = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [email, setEmail] = useState('');
   const [chatName, setChatName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -100,10 +100,10 @@ export default function NewChatScreen() {
         });
 
         if (existing) {
-          navigation.navigate('Chat' as never, {
+          navigation.navigate('Chat', {
             chatId: existing.id,
             chatName: existing.name,
-          } as never);
+          });
           return;
         }
       }
@@ -119,10 +119,10 @@ export default function NewChatScreen() {
         displayName,
       );
 
-      navigation.navigate('Chat' as never, {
+      navigation.navigate('Chat', {
         chatId,
         chatName: displayName,
-      } as never);
+      });
     } catch (error: any) {
       reportError(error, 'create_chat_failed');
       if (__DEV__) {

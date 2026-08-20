@@ -143,7 +143,7 @@ export default function ChatListScreen() {
   // Hidden chats live in a separate view of this same list.
   const [viewingHidden, setViewingHidden] = useState(false);
   const {user} = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const colors = getColors(useColorScheme());
   const {t} = useTranslation();
   const rawChatsRef = useRef<ChatRoom[]>([]);
@@ -175,7 +175,7 @@ export default function ChatListScreen() {
               'Restore your recovery phrase to keep reading old messages, or continue and start fresh.',
             [
               {text: 'Not now', style: 'cancel'},
-              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase' as never)},
+              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase')},
             ],
           );
           return;
@@ -354,7 +354,7 @@ export default function ChatListScreen() {
   );
 
   const createNewChat = () => {
-    navigation.navigate('NewChat' as never);
+    navigation.navigate('NewChat');
   };
 
   const onLongPress = (chat: ChatRoom) => {
@@ -525,10 +525,10 @@ export default function ChatListScreen() {
             avatarText={getInitials(item.displayName || item.name)}
             avatarColor={getAvatarColor(item.displayName || item.name || item.id)}
             onPress={() =>
-              navigation.navigate('Chat' as never, {
+              navigation.navigate('Chat', {
                 chatId: item.id,
                 chatName: item.displayName || item.name,
-              } as never)
+              })
             }
             onLongPress={() => onLongPress(item)}
             textColor={colors.text}

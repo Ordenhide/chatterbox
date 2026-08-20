@@ -160,6 +160,12 @@ const EMOJI_OPTIONS = ['😀', '😍', '😢', '😡', '🎉', '🔥', '👏'];
 const VOICE_SAMPLE_RATE_HERTZ = 24000;
 const VOICE_CHANNEL_COUNT = 1;
 
+/** IMessage#createdAt is Date | number (gifted-chat); sort comparators need a
+ * plain number from either. */
+function toCreatedAtMillis(createdAt: Date | number): number {
+  return createdAt instanceof Date ? createdAt.getTime() : createdAt;
+}
+
 /** Module-level so the identity is stable: GlassScreen is memoized, and a fresh
  * array literal each render would defeat that for the whole screen. */
 const NO_SAFE_AREA_EDGES: Edge[] = [];
@@ -373,7 +379,7 @@ export default function ChatScreen() {
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const route = useRoute();
   const chatId = (route.params as any)?.chatId;
   // Seals shared-list contents to this pair — see services/e2eeArtifacts.ts.
@@ -803,7 +809,7 @@ export default function ChatScreen() {
             }
           });
           return Array.from(byId.values()).sort(
-            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+            (a, b) => toCreatedAtMillis(b.createdAt) - toCreatedAtMillis(a.createdAt),
           );
         })();
         setMessages(merged);
@@ -1123,7 +1129,7 @@ export default function ChatScreen() {
         const byId = new Map(prev.map(item => [String(item._id), item]));
         formattedOlder.forEach(item => byId.set(String(item._id), item));
         return Array.from(byId.values()).sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+          (a, b) => toCreatedAtMillis(b.createdAt) - toCreatedAtMillis(a.createdAt),
         );
       });
     } finally {
@@ -1393,12 +1399,12 @@ export default function ChatScreen() {
         return;
       }
       const callId = await createCall(chatId, user.uid, targetUserId, type);
-      navigation.navigate('Call' as never, {
+      navigation.navigate('Call', {
         chatId,
         callId,
         isCaller: true,
         type,
-      } as never);
+      });
     } catch (error) {
       reportError(error, 'start_call_failed');
       if (__DEV__) {
@@ -2128,7 +2134,7 @@ export default function ChatScreen() {
         feedPet(chatId).catch(() => {});
       }
 
-      const pendingMessage: IMessage = {
+      const pendingMessage: IMessage & {burnAfterReading?: ChatMessage['burnAfterReading']} = {
         _id: String(messageData._id),
         text: messageData.text || '',
         createdAt: new Date(),
@@ -2317,8 +2323,11 @@ export default function ChatScreen() {
             70,
             0,
             undefined,
-            false,
-            {mode: stripExif ? 'none' : 'copy', onlyScaleDown: true},
+            // keepMeta: EXIF (including GPS) survives the resize unless
+            // stripping is enabled. Previously hardcoded to false — EXIF was
+            // always stripped regardless of this setting.
+            !stripExif,
+            {mode: 'contain', onlyScaleDown: true},
           );
           uploadUri = resized.uri || asset.uri;
           fileName = resized.name || fileName;
@@ -2405,9 +2414,9 @@ export default function ChatScreen() {
         createdAt: new Date(),
         file: {
           uri: remoteUrl,
-          name: file.name,
-          type: file.type,
-          size: file.size,
+          name: file.name ?? undefined,
+          type: file.type ?? undefined,
+          size: file.size ?? undefined,
         },
         replyTo: replyTo
           ? {
@@ -2881,7 +2890,7 @@ export default function ChatScreen() {
     return (
       <Pressable
         style={[styles.momentCard, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}
-        onPress={() => navigation.navigate('MomentsTab' as never)}
+        onPress={() => navigation.navigate('MomentsTab')}
       >
         <Text style={[styles.momentTitle, {color: colors.text}]}>Shared a moment</Text>
         {moment.text ? (
@@ -3227,7 +3236,7 @@ export default function ChatScreen() {
     const {key: _key, ...bubbleProps} = props || {};
     const current = props?.currentMessage || {};
     const burn = current.burnAfterReading;
-    const reactions = current.reactions || {};
+    const reactions: Record<string, string[]> = current.reactions || {};
     const reactionList = Object.entries(reactions).filter(([, users]) => users?.length);
     const isLastOutgoing =
       lastOutgoingMessageId && String(current._id) === String(lastOutgoingMessageId);
@@ -3739,7 +3748,7 @@ export default function ChatScreen() {
           style={[styles.offlineBanner, {backgroundColor: colors.warning}]}
           accessibilityRole="button"
           accessibilityLabel="Restore your encrypted message history"
-          onPress={() => navigation.navigate('RecoveryPhrase' as never)}>
+          onPress={() => navigation.navigate('RecoveryPhrase')}>
           <Icon name="lock" size={13} color="#111" />
           <Text style={styles.offlineText}>
             Some messages were sealed on another device. Tap to restore with your recovery phrase.
@@ -4277,7 +4286,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('ChatMedia' as never, {chatId} as never);
+                navigation.navigate('ChatMedia', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Gallery</Text>
             </TouchableOpacity>
@@ -4339,7 +4348,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('Whiteboard' as never, {chatId} as never);
+                navigation.navigate('Whiteboard', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Whiteboard</Text>
             </TouchableOpacity>
@@ -4347,7 +4356,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('Playlist' as never, {chatId} as never);
+                navigation.navigate('Playlist', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Playlist</Text>
             </TouchableOpacity>
@@ -4355,7 +4364,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('Countdown' as never, {chatId} as never);
+                navigation.navigate('Countdown', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Countdowns</Text>
             </TouchableOpacity>
@@ -4416,7 +4425,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('RecentlyDeleted' as never, {chatId} as never);
+                navigation.navigate('RecentlyDeleted', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('trash.title')}</Text>
             </TouchableOpacity>
@@ -4424,7 +4433,7 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('ChatSettings' as never, {chatId} as never);
+                navigation.navigate('ChatSettings', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Chat Settings</Text>
             </TouchableOpacity>

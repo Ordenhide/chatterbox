@@ -49,7 +49,10 @@ function AppContent() {
 
     const setupMessaging = async () => {
       const messaging = getMessaging();
-      if (Platform.Version >= 33) {
+      // Platform.Version is number | string in RN's types (string on iOS),
+      // but the enclosing effect already returned early unless Platform.OS
+      // === 'android', where it's always the numeric API level.
+      if ((Platform.Version as number) >= 33) {
         await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
       }
       const token = await getToken(messaging);
@@ -66,9 +69,11 @@ function AppContent() {
           return;
         }
         const title = remoteMessage.notification?.title || i18n.t('notifications.newMessageTitle');
+        const dataText =
+          typeof remoteMessage.data?.text === 'string' ? remoteMessage.data.text : undefined;
         const body =
           remoteMessage.notification?.body ||
-          remoteMessage.data?.text ||
+          dataText ||
           i18n.t('notifications.newMessageBody');
         Alert.alert(title, body);
       });

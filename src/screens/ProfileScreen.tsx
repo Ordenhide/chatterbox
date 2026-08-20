@@ -107,7 +107,7 @@ export default function ProfileScreen() {
   const [vsModalVisible, setVsModalVisible] = useState(false);
   const vsRecorderRef = useRef(new AudioRecorderPlayer());
   const db = useMemo(() => getFirestore(), []);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const visibilityOptions = useMemo(() => ['public', 'friends', 'private'] as const, []);
 
   useEffect(() => {
@@ -629,19 +629,22 @@ export default function ProfileScreen() {
         <GlassView style={[styles.shortcutsCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.shortcutsTitle, {color: colors.textSecondary}]}>{t('profile.shortcutsTitle')}</Text>
           <View style={styles.shortcutsRow}>
-            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Bookmarks'} as never)}>
+            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats', {screen: 'Bookmarks'})}>
               <Icon name="bookmark" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutSaved')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'Memories'} as never)}>
+            {/* Shortcuts to a personal moments-history screen and a privacy
+                settings dashboard used to live here, but no such screens were
+                ever registered in the navigator — tapping either threw a
+                "not handled by any navigator" error at runtime. "Memories"
+                now goes to the existing Moments tab, the closest real
+                equivalent; the privacy shortcut is removed until a real
+                privacy-settings screen exists to link to. */}
+            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('MomentsTab')}>
               <Icon name="camera" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutMemories')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'PrivacyDashboard'} as never)}>
-              <Icon name="lock" size={24} color={colors.text} style={styles.shortcutIcon} />
-              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutPrivacy')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats' as never, {screen: 'RecoveryPhrase'} as never)}>
+            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats', {screen: 'RecoveryPhrase'})}>
               <Icon name="key" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutRecovery', 'Recovery Phrase')}</Text>
             </TouchableOpacity>
@@ -881,7 +884,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
-          onPress={() => navigation.navigate('Chats' as never, {screen: 'PrivacyPolicy'} as never)}>
+          onPress={() => navigation.navigate('Chats', {screen: 'PrivacyPolicy'})}>
           <Text style={[styles.buttonText, {color: colors.text}]}>Privacy Policy</Text>
         </TouchableOpacity>
         <TouchableOpacity
