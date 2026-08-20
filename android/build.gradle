@@ -1,15 +1,12 @@
 buildscript {
-    // Use first existing node path so codegen works from IDE (PATH often missing /opt/homebrew/bin or /usr/local/bin).
-    def discoveredNodePath = "node"
-    def nvmDefault = new File("${System.getProperty('user.home')}/.nvm/alias/default")
-    def nvmCandidates = []
-    if (nvmDefault.exists()) {
-        def nvmVersionDirs = new File("${System.getProperty('user.home')}/.nvm/versions/node").listFiles()
-        if (nvmVersionDirs != null) { nvmVersionDirs.each { d -> nvmCandidates << "${d}/bin/node" } }
-    }
-    (["/opt/homebrew/bin/node", "/usr/local/bin/node"] + nvmCandidates).each { p ->
-        if (new File(p).exists()) { discoveredNodePath = p }
-    }
+    // Robustly resolve 'node' path for IDE-launched daemons.
+    def nodeName = System.getProperty("os.name").toLowerCase().contains("windows") ? "node.exe" : "node"
+    def discoveredNodePath = (
+        (System.getenv("PATH")?.split(File.pathSeparator) as List ?: []) +
+        (new File(System.getProperty("user.home"), ".nvm/versions/node").listFiles()?.collect { new File(it, "bin").absolutePath } ?: []) +
+        ["/opt/homebrew/bin", "/usr/local/bin"]
+    ).find { it && new File(it.toString(), nodeName).exists() }
+    discoveredNodePath = discoveredNodePath ? new File(discoveredNodePath.toString(), nodeName).absolutePath : nodeName
 
     ext {
         buildToolsVersion = "36.0.0"
@@ -40,23 +37,14 @@ plugins {
     id("com.facebook.react.rootproject")
 }
 
-// buildscript's ext {} above only sets buildscript.ext, not project.ext, so
-// autolinked native modules reading rootProject.ext.* (e.g. async-storage's
-// getKotlinVersion(), or app/build.gradle's rootProject.ext.NODE_BINARY)
-// never see it and fall back to their own defaults, pulling in a separate
-// Kotlin Gradle Plugin classpath/classloader than the one used here. Mirror
-// the same values on project.ext to keep every module on one Kotlin version
-// and classloader.
-def projectDiscoveredNodePath = "node"
-def projectNvmDefault = new File("${System.getProperty('user.home')}/.nvm/alias/default")
-def projectNvmCandidates = []
-if (projectNvmDefault.exists()) {
-    def nvmVersionDirs = new File("${System.getProperty('user.home')}/.nvm/versions/node").listFiles()
-    if (nvmVersionDirs != null) { nvmVersionDirs.each { d -> projectNvmCandidates << "${d}/bin/node" } }
-}
-(["/opt/homebrew/bin/node", "/usr/local/bin/node"] + projectNvmCandidates).each { p ->
-    if (new File(p).exists()) { projectDiscoveredNodePath = p }
-}
+// project.ext should match buildscript.ext for consistency across modules.
+def nodeNameForProject = System.getProperty("os.name").toLowerCase().contains("windows") ? "node.exe" : "node"
+def projectDiscoveredNodePath = (
+    (System.getenv("PATH")?.split(File.pathSeparator) as List ?: []) +
+    (new File(System.getProperty("user.home"), ".nvm/versions/node").listFiles()?.collect { new File(it, "bin").absolutePath } ?: []) +
+    ["/opt/homebrew/bin", "/usr/local/bin"]
+).find { it && new File(it.toString(), nodeNameForProject).exists() }
+projectDiscoveredNodePath = projectDiscoveredNodePath ? new File(projectDiscoveredNodePath.toString(), nodeNameForProject).absolutePath : "node"
 
 ext {
     buildToolsVersion = "36.0.0"

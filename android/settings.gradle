@@ -4,6 +4,15 @@ pluginManagement {
     google()
     mavenCentral()
   }
+  // Robustly resolve 'node' path for IDE-launched daemons.
+  def nodeName = System.getProperty("os.name").toLowerCase().contains("windows") ? "node.exe" : "node"
+  def nodePath = (
+    (System.getenv("PATH")?.split(File.pathSeparator) as List ?: []) +
+    (new File(System.getProperty("user.home"), ".nvm/versions/node").listFiles()?.collect { new File(it, "bin").absolutePath } ?: []) +
+    ["/opt/homebrew/bin", "/usr/local/bin"]
+  ).find { it && new File(it.toString(), nodeName).exists() }
+  nodePath = nodePath ? new File(nodePath.toString(), nodeName).absolutePath : nodeName
+
   // Resolved through Node rather than hardcoded to
   // ../node_modules/@react-native/gradle-plugin.
   //
@@ -20,7 +29,7 @@ pluginManagement {
   // put it. Resolution starts from react-native's own location, so it finds
   // the copy that belongs to the React Native being built.
   def gradlePluginDir = providers.exec {
-    commandLine("node", "--print",
+    commandLine(nodePath, "--print",
       "require('path').dirname(require.resolve('@react-native/gradle-plugin/package.json', " +
       "{paths: [require.resolve('react-native/package.json', {paths: ['" + rootDir.getParentFile().absolutePath + "']})]}))")
   }.standardOutput.asText.get().trim()
@@ -71,5 +80,5 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) {
   it.autolinkLibrariesFromCommand([npxPath, "@react-native-community/cli", "config"])
 }
 
-rootProject.name = 'ChatterboxTemp'
+rootProject.name = 'Chatterbox'
 include ':app'
