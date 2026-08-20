@@ -8,7 +8,7 @@ import {
   onSnapshot,
   orderBy,
   query,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {SharedCountdown} from '../types';
 
 const db = getFirestore();

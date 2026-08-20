@@ -100,7 +100,24 @@ service cloud.firestore {
       // field the query doesn't filter (profileVisibility) — so a visibility-
       // gated rule makes email lookup fail with permission-denied. It also lets
       // a request recipient read the (not-yet-friend) sender's name.
-      allow read: if isSignedIn();
+      //
+      // Reading *your own* profile deliberately requires only authentication,
+      // not a current session. isSignedIn() folds in hasCurrentSession(), so a
+      // displaced client — one whose session was claimed by a newer sign-in —
+      // fails every rule in this file, including this one. That locked it out of
+      // the single document that would tell it it had been displaced:
+      // listenForSessionTakeover (services/session.ts) exists to notice exactly
+      // that and sign the user out with an explanation, and it was being denied
+      // by the rule it was trying to observe. The user saw a wall of
+      // permission-denied errors and an app that looked broken instead.
+      //
+      // The carve-out leaks nothing: it is your own document, readable only by
+      // you, and the fields it exposes (activeSessionId, sessionClaimedAt) are
+      // precisely what a displaced client needs to conclude it has been
+      // displaced. Writes still require a current session, so a stale client
+      // cannot reclaim itself by writing.
+      allow read: if isSignedIn() ||
+        (request.auth != null && request.auth.uid == userId);
       allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
@@ -179,11 +196,49 @@ service cloud.firestore {
     }
 
     match /chats/{chatId} {
+      // Mirrors MAX_GROUP_MEMBERS in services/e2ee.ts. Enforced here as well as
+      // in the client because the client-side cap is a product guardrail, not a
+      // security boundary — anyone can write to Firestore directly.
+      function withinMemberCap(members) {
+        return members.size() <= 32;
+      }
+
+      // Who this update drops from the member list.
+      function removedMembers() {
+        return resource.data.participants.toSet()
+          .difference(request.resource.data.participants.toSet());
+      }
+
+      /**
+       * Membership may grow freely, but the only person you can remove is
+       * yourself.
+       *
+       * Without this, any participant could rewrite `participants` outright —
+       * removing everyone else, or adding a stranger who then decrypts every
+       * subsequent message (the sender fans out to whoever is listed here, so
+       * this array *is* the access-control list for the encryption).
+       *
+       * Removing others is left out deliberately rather than forgotten: there
+       * are no admin roles yet, so "anyone may remove anyone" would be the only
+       * available policy and it invites kick-wars. Leaving is always allowed,
+       * which is also what account deletion relies on (see services/account.ts,
+       * which arrayRemoves the departing user from every chat).
+       */
+      function membershipChangeAllowed() {
+        return removedMembers().size() == 0 ||
+          removedMembers() == [request.auth.uid].toSet();
+      }
+
       allow create: if isSignedIn() &&
-        request.auth.uid in request.resource.data.participants;
+        request.auth.uid in request.resource.data.participants &&
+        withinMemberCap(request.resource.data.participants);
       allow read: if isSignedIn() &&
         request.auth.uid in resource.data.participants;
-      allow update, delete: if isSignedIn() &&
+      allow update: if isSignedIn() &&
+        request.auth.uid in resource.data.participants &&
+        withinMemberCap(request.resource.data.participants) &&
+        membershipChangeAllowed();
+      allow delete: if isSignedIn() &&
         request.auth.uid in resource.data.participants;
 
       // Recently-deleted messages, pending permanent removal.

@@ -20,7 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 export default function BookmarksScreen() {
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [bookmarks, setBookmarks] = useState<BookmarkedMessage[]>([]);
 
   useEffect(() => {
@@ -45,10 +45,10 @@ export default function BookmarksScreen() {
 
   const handleNavigateToChat = useCallback(
     (chatId: string) => {
-      navigation.navigate('Chats' as never, {
+      navigation.navigate('Chats', {
         screen: 'Chat',
         params: {chatId},
-      } as never);
+      });
     },
     [navigation],
   );

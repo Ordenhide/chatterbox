@@ -7,7 +7,7 @@
  */
 export const firebaseConfig = {
   apiKey: 'AIzaSyAnDnGSww6_zdLEszsVM9tlpxZTDftBxi0',
-  appId: '1:916000207469:ios:5b98744019cfb032dd0564',
+  appId: '1:916000207469:ios:19de25af55ea4026dd0564',
   projectId: 'chatterbox-e5d10',
   storageBucket: 'chatterbox-e5d10.firebasestorage.app',
   messagingSenderId: '916000207469',

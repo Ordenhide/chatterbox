@@ -28,6 +28,7 @@ const PlaylistScreen = lazyLoad(() => import('../screens/chat/PlaylistScreen'));
 const CountdownScreen = lazyLoad(() => import('../screens/chat/CountdownScreen'));
 const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
 const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScreen'));
+const RecoveryPhraseScreen = lazyLoad(() => import('../screens/RecoveryPhraseScreen'));
 import {useAuth} from '../contexts/AuthContext';
 import {listenFriends, listenFriendRequests} from '../services/friends';
 import {listenMomentsForAuthors} from '../services/moments';
@@ -170,17 +171,24 @@ export default function MainNavigator() {
     () => <GlassView pointerEvents="none" blur={false} style={styles.tabBarGlass} />,
     [],
   );
+  // Android's bottom inset was hardcoded to 28, which happens to be about the
+  // gesture-pill inset and so looked right on gesture-nav devices — but a
+  // three-button nav bar is roughly 48dp, and the system bar then sat on top of
+  // the tab labels. Taking the larger of the two keeps the gesture-nav look
+  // byte-identical while giving three-button devices the room they need.
+  const tabBarInset =
+    Platform.OS === 'ios' ? insets.bottom : Math.max(insets.bottom, 28);
   const tabBarStyle = useMemo(
     () => [
       styles.tabBar,
       {
         backgroundColor: 'transparent' as const,
         borderTopColor: colors.glassBorder,
-        height: Platform.OS === 'ios' ? 88 + insets.bottom : 88,
-        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 28,
+        height: (Platform.OS === 'ios' ? 88 : 60) + tabBarInset,
+        paddingBottom: tabBarInset,
       },
     ],
-    [colors.glassBorder, insets.bottom],
+    [colors.glassBorder, tabBarInset],
   );
   const chatIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="chats" color={color} />, []);
   const momentsIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="moments" color={color} />, []);
@@ -252,6 +260,11 @@ export default function MainNavigator() {
             name="PrivacyPolicy"
             component={PrivacyPolicyScreen}
             options={{title: 'Privacy Policy'}}
+          />
+          <Stack.Screen
+            name="RecoveryPhrase"
+            component={RecoveryPhraseScreen}
+            options={{title: 'Recovery Phrase'}}
           />
         </Stack.Navigator>
       );

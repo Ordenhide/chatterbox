@@ -8,7 +8,7 @@ import {
   setDoc,
   deleteDoc,
   where,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {Message} from '../types';
 import {guardQuerySnapshot} from './snapshotGuard';
 

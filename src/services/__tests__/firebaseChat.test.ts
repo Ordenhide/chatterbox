@@ -12,14 +12,14 @@ const mockPurgeExpiredTrash = jest.fn();
 const mockBatchDelete = jest.fn();
 const mockBatchCommit = jest.fn(async () => undefined);
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   collection: (..._args: unknown[]) => ({}),
   deleteField: () => ({}),
   doc: (_parent: unknown, id: string) => ({path: id}),
   deleteDoc: jest.fn(async () => undefined),
   getDoc: async (ref: {path: string}) => {
     const data = mockDocs.data.get(ref.path);
-    return {exists: !!data, data: () => data};
+    return {exists: () => !!data, data: () => data};
   },
   getDocs: jest.fn(async () => ({docs: [], empty: true})),
   getFirestore: () => ({}),
@@ -38,7 +38,7 @@ jest.mock('@react-native-firebase/firestore', () => ({
   }),
 }));
 
-jest.mock('@react-native-firebase/storage', () => ({
+jest.mock('../firebase/storage', () => ({
   getStorage: () => ({}),
   getDownloadURL: jest.fn(),
   putFile: jest.fn(),

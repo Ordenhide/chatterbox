@@ -19,7 +19,7 @@ function mockClauseMatches(data: Record<string, unknown>, clause: {field: string
 
 const mockGetOrCreateDeviceKeypair = jest.fn();
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   collection: (_db: unknown, ...segments: string[]) => ({path: segments.join('/'), clauses: []}),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   where: (field: string, op: string, value: unknown) => ({field, op, value}),
@@ -37,7 +37,7 @@ jest.mock('@react-native-firebase/firestore', () => ({
       throw new Error(`mock getDoc failure: ${ref.path}`);
     }
     const found = mockFixtures.docs.get(ref.path);
-    return {exists: !!found, data: () => found};
+    return {exists: () => !!found, data: () => found};
   },
   getFirestore: () => ({}),
 }));

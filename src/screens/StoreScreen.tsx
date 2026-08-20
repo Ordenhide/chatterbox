@@ -7,8 +7,9 @@
  *
  * Unlike the web Store, this one does **not** sell. Apple and Google require
  * their own in-app purchase for digital goods sold inside an app, so mobile
- * reports Pro status and points to the web to subscribe. Themes already owned
- * still apply from here — reading an entitlement is not selling one.
+ * reports Pro status and points to the web to subscribe. The Pro card here is
+ * about the subscription (AI features, gated server-side) — themes
+ * themselves are free for everyone and carry no lock of their own.
  *
  * Sections are laid out so adding a category later (sticker packs, chat
  * effects) means adding a section, not restructuring this file.
@@ -24,10 +25,10 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
-import Icon from '../components/Icon';
 import {useAuth} from '../contexts/AuthContext';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
@@ -65,12 +66,6 @@ export default function StoreScreen() {
   const onApply = useCallback(
     async (theme: StoreTheme) => {
       if (!user) return;
-      // A locked swatch that silently does nothing reads as a bug, so the tap
-      // always produces a response.
-      if (theme.pro && !isPro) {
-        Alert.alert(t('pro.title'), t('pro.lockedTheme'));
-        return;
-      }
       setApplyingId(theme.id);
       try {
         const count = await applyStoreTheme(user.uid, theme);
@@ -85,7 +80,7 @@ export default function StoreScreen() {
         setApplyingId(null);
       }
     },
-    [isPro, t, user],
+    [t, user],
   );
 
   return (
@@ -106,14 +101,13 @@ export default function StoreScreen() {
 
       <View style={styles.grid}>
         {THEME_CATALOG.map(theme => {
-          const locked = theme.pro && !isPro;
           const selected = applied?.id === theme.id;
           const busy = applyingId === theme.id;
           return (
             <TouchableOpacity
               key={theme.id}
               accessibilityRole="button"
-              accessibilityLabel={locked ? `${theme.name} — ${t('pro.title')}` : theme.name}
+              accessibilityLabel={theme.name}
               accessibilityState={{selected, disabled: busy}}
               disabled={busy}
               onPress={() => onApply(theme)}
@@ -121,32 +115,17 @@ export default function StoreScreen() {
                 styles.themeCard,
                 {borderColor: selected ? theme.accent : colors.glassBorder},
                 selected && styles.themeCardSelected,
-                locked && styles.themeCardLocked,
               ]}>
-              <View
-                style={[
-                  styles.swatch,
-                  {backgroundColor: theme.wallpaper || colors.surface, borderColor: theme.accent},
-                ]}>
+              <LinearGradient
+                colors={theme.gradientStops}
+                style={[styles.swatch, {borderColor: theme.accent}]}>
                 {busy ? (
                   <ActivityIndicator color={theme.accent} />
                 ) : (
                   <View style={[styles.dot, {backgroundColor: theme.accent}]} />
                 )}
-              </View>
+              </LinearGradient>
               <Text style={[styles.themeName, {color: colors.text}]}>{theme.name}</Text>
-              {theme.pro ? (
-                locked ? (
-                  <View style={styles.themeTagRow}>
-                    <Icon name="lock" size={10} color={colors.textSecondary} />
-                    <Text style={[styles.themeTag, {color: colors.textSecondary, marginTop: 0}]}>
-                      {t('pro.badge')}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={[styles.themeTag, {color: colors.primary}]}>{t('pro.badge')}</Text>
-                )
-              ) : null}
               {selected ? (
                 <Text style={[styles.themeTag, {color: colors.primary}]}>{t('store.appliedTag')}</Text>
               ) : null}
@@ -179,7 +158,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   themeCardSelected: {borderWidth: 2},
-  themeCardLocked: {opacity: 0.62},
   swatch: {
     width: 46,
     height: 46,
@@ -191,6 +169,5 @@ const styles = StyleSheet.create({
   },
   dot: {width: 14, height: 14, borderRadius: 999},
   themeName: {fontSize: 13, fontWeight: '700'},
-  themeTagRow: {flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2},
   themeTag: {fontSize: 10.5, fontWeight: '800', letterSpacing: 0.4, marginTop: 2},
 });

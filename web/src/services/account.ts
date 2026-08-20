@@ -1,12 +1,8 @@
 import {
   EmailAuthProvider,
   deleteUser,
-  linkWithPhoneNumber,
   reauthenticateWithCredential,
-  unlink,
   updatePassword,
-  type ApplicationVerifier,
-  type ConfirmationResult,
 } from 'firebase/auth';
 import {
   arrayRemove,
@@ -17,8 +13,6 @@ import {
   limit,
   orderBy,
   query,
-  serverTimestamp,
-  setDoc,
   updateDoc,
   where,
   type Query,
@@ -107,117 +101,6 @@ export async function changePassword(currentPassword: string, newPassword: strin
   } catch (err) {
     const wrapped = new Error('password change failed') as Error & {reason: PasswordChangeError};
     wrapped.reason = describeAuthError(err);
-    throw wrapped;
-  }
-}
-
-export type PhoneLinkError =
-  | 'wrong-password'
-  | 'invalid-phone-number'
-  | 'invalid-verification-code'
-  | 'code-expired'
-  | 'phone-already-in-use'
-  | 'too-many-requests'
-  | 'provider-not-enabled'
-  | 'recaptcha-failed'
-  | 'unknown';
-
-export function describePhoneLinkError(err: unknown): PhoneLinkError {
-  const code = (err as {code?: string})?.code || '';
-  if (
-    code === 'auth/wrong-password' ||
-    code === 'auth/invalid-credential' ||
-    code === 'auth/invalid-login-credentials'
-  ) {
-    return 'wrong-password';
-  }
-  if (code === 'auth/invalid-phone-number') return 'invalid-phone-number';
-  if (code === 'auth/invalid-verification-code') return 'invalid-verification-code';
-  if (code === 'auth/code-expired') return 'code-expired';
-  if (code === 'auth/credential-already-in-use' || code === 'auth/provider-already-linked') {
-    return 'phone-already-in-use';
-  }
-  if (code === 'auth/too-many-requests') return 'too-many-requests';
-  // Thrown when the Phone sign-in provider hasn't been turned on for this
-  // Firebase project yet (Authentication -> Sign-in method, console-only
-  // step, not something this codebase can enable on its own).
-  if (code === 'auth/operation-not-allowed' || code === 'auth/admin-restricted-operation') {
-    return 'provider-not-enabled';
-  }
-  // The reCAPTCHA token was missing, expired, or rejected — the widget is
-  // single-use, so this is also what a double-submit looks like. Distinct from
-  // 'unknown' because the fix is "try again", not "something is broken":
-  // the account, password and phone number were all fine.
-  if (
-    code === 'auth/invalid-app-credential' ||
-    code === 'auth/captcha-check-failed' ||
-    code === 'auth/missing-app-credential'
-  ) {
-    return 'recaptcha-failed';
-  }
-  return 'unknown';
-}
-
-/** Writes the linked phone number to the owner-only private subcollection — same rationale as
- * services/push.ts's fcmToken write: this is more sensitive than the public /users profile doc,
- * which any signed-in user can read. */
-async function setUserPhoneNumber(uid: string, phoneNumber: string | null): Promise<void> {
-  await setDoc(
-    doc(db, 'users', uid, 'private', 'contact'),
-    {phoneNumber: phoneNumber ?? null, phoneUpdatedAt: serverTimestamp()},
-    {merge: true},
-  );
-}
-
-/**
- * Starts linking a phone number to the signed-in user's account. Reauthenticates first (same
- * "sensitive operation" reasoning as changePassword). `appVerifier` is a RecaptchaVerifier the
- * caller creates and mounts to a DOM node — the web SDK requires it; mobile does not.
- */
-export async function sendPhoneLinkCode(
-  currentPassword: string,
-  phoneNumber: string,
-  appVerifier: ApplicationVerifier,
-): Promise<ConfirmationResult> {
-  const user = auth.currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await reauthenticate(currentPassword);
-    return await linkWithPhoneNumber(user, phoneNumber.trim(), appVerifier);
-  } catch (err) {
-    const wrapped = new Error('phone link failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(err);
-    wrapped.cause = err;
-    throw wrapped;
-  }
-}
-
-/** Confirms the code sent by sendPhoneLinkCode and finishes linking the phone number. */
-export async function confirmPhoneLink(confirmation: ConfirmationResult, code: string): Promise<void> {
-  const user = auth.currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    const credential = await confirmation.confirm(code.trim());
-    await setUserPhoneNumber(user.uid, credential.user.phoneNumber ?? null);
-  } catch (err) {
-    const wrapped = new Error('phone link confirmation failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(err);
-    wrapped.cause = err;
-    throw wrapped;
-  }
-}
-
-/** Removes the phone number linked to the signed-in user's account. */
-export async function unlinkPhoneNumber(): Promise<void> {
-  const user = auth.currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await unlink(user, 'phone');
-    await setUserPhoneNumber(user.uid, null);
-  } catch (err) {
-    const wrapped = new Error('phone unlink failed') as Error & {reason: PhoneLinkError; cause?: unknown};
-    wrapped.reason = describePhoneLinkError(err);
-    wrapped.cause = err;
     throw wrapped;
   }
 }

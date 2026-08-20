@@ -1,0 +1,18 @@
+diff --git a/node_modules/@react-native-firebase/messaging/RNFBMessaging.podspec b/node_modules/@react-native-firebase/messaging/RNFBMessaging.podspec
+index 37c6d29..13abbf7 100644
+--- a/node_modules/@react-native-firebase/messaging/RNFBMessaging.podspec
++++ b/node_modules/@react-native-firebase/messaging/RNFBMessaging.podspec
+@@ -24,7 +24,12 @@ Pod::Spec.new do |s|
+   s.source              = { :git => "https://github.com/invertase/react-native-firebase.git", :tag => "v#{s.version}" }
+   s.social_media_url    = 'http://twitter.com/invertaseio'
+   s.ios.deployment_target = firebase_ios_target
+-  s.macos.deployment_target = firebase_macos_target
++  # Patched: source (RNFBMessaging+AppDelegate.h) is built entirely on
++  # UIApplicationDelegate/UIBackgroundFetchResult, which has no macOS
++  # equivalent. Push notifications are out of scope for the macOS build for
++  # now; exclude this pod so CocoaPods skips it for the macos target instead
++  # of failing to compile.
++  # s.macos.deployment_target = firebase_macos_target
+   s.source_files        = 'ios/**/*.{h,m}'
+ 
+   # React Native dependencies

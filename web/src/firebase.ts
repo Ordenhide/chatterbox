@@ -61,32 +61,6 @@ if (recaptchaKey) {
 export {app};
 export const auth = getAuth(app);
 
-/**
- * Local-only escape hatch for exercising the phone-linking flow.
- *
- * Phone auth on the web needs a reCAPTCHA token. This project has no reCAPTCHA
- * Enterprise config for PHONE_PROVIDER, so the SDK falls back to reCAPTCHA v2
- * ("Failed to initialize reCAPTCHA Enterprise config" in the console) and the
- * backend rejects that token with auth/invalid-app-credential. That makes the
- * flow impossible to drive locally or from a test browser, which reCAPTCHA
- * treats as a bot and escalates to an image challenge.
- *
- * With this on, the SDK skips app verification, so the *fictional* numbers
- * registered under Authentication → Sign-in method → Phone → "Numbers for
- * testing" work end to end. It grants nothing for real numbers: the backend
- * still refuses to send an SMS to anything that isn't whitelisted.
- *
- * Double-gated on DEV **and** an explicit opt-in, and `import.meta.env.DEV` is
- * statically false in a production build, so this whole block is dropped at
- * build time and can never ship enabled.
- */
-if (import.meta.env.DEV && import.meta.env.VITE_AUTH_DISABLE_APP_VERIFICATION === 'true') {
-  auth.settings.appVerificationDisabledForTesting = true;
-  console.warn(
-    '[dev] appVerificationDisabledForTesting is ON — phone auth accepts only the ' +
-      'test numbers configured in the Firebase console. Never set this outside local dev.',
-  );
-}
 // No region override — matches the mobile client's getFunctions() default,
 // which resolves to the functions' actual deployed region (us-central1).
 export const functions = getFunctions(app);
@@ -106,8 +80,7 @@ export const functions = getFunctions(app);
  *
  * Double-gated on DEV **and** an explicit opt-in, and `import.meta.env.DEV`
  * is statically false in a production build, so this whole block is dropped
- * at build time and can never ship enabled — same pattern as the phone-auth
- * escape hatch above.
+ * at build time and can never ship enabled.
  */
 const USE_EMULATORS = import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true';
 if (USE_EMULATORS) {

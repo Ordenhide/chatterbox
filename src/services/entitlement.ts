@@ -16,7 +16,7 @@
  * own in-app purchase for digital goods sold inside a mobile app, so this
  * app deliberately reads entitlement here without ever selling it.
  */
-import {doc, getFirestore, onSnapshot} from '@react-native-firebase/firestore';
+import {doc, getFirestore, onSnapshot} from './firebase/firestore';
 import {guardDocSnapshot} from './snapshotGuard';
 
 const db = getFirestore();
@@ -66,7 +66,7 @@ export function listenEntitlement(
   return onSnapshot(
     doc(db, 'entitlements', uid),
     guardDocSnapshot('listen_entitlement', snapshot =>
-      callback(snapshot.exists ? (snapshot.data() as Entitlement) : null),
+      callback(snapshot.exists() ? (snapshot.data() as Entitlement) : null),
     ),
     () => callback(null), // never hard-fail the app over a billing read
   );

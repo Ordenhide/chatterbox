@@ -3,7 +3,7 @@ import {
   getDoc,
   getDocFromServer,
   getFirestore,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 
 /**
  * Detects whether the person on the other end of a 1:1 chat still has an
@@ -81,7 +81,7 @@ export function hasLostPeer(participants: unknown, myUid: string): boolean {
 export async function isProfileDeleted(peerUid: string): Promise<boolean> {
   try {
     const snap = await getDocFromServer(doc(db, 'users', peerUid));
-    return !snap.exists;
+    return !snap.exists();
   } catch {
     // Offline, or the read failed. Unknown is not deleted.
     return false;
@@ -123,7 +123,7 @@ export async function assertRecipientReachable(chatId: string, myUid: string): P
   let participants: unknown;
   try {
     const snap = await getDoc(doc(db, 'chats', chatId));
-    if (!snap.exists) return;
+    if (!snap.exists()) return;
     participants = snap.data()?.participants;
   } catch {
     return;

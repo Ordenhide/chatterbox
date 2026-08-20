@@ -46,6 +46,9 @@ cd chatterbox
 ```bash
 npm install
 ```
+`.npmrc` sets `legacy-peer-deps=true` for you — one HarmonyOS dependency
+declares a stale peer range on `react-native-gesture-handler` (see
+`harmony/README.md`), otherwise plain `npm install` fails.
 
 3. For iOS, install CocoaPods dependencies:
 ```bash

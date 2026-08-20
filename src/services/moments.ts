@@ -1,9 +1,10 @@
-import firestore, {
+import {
   collection,
   deleteDoc,
   doc,
   getDocs,
   getFirestore,
+  increment,
   onSnapshot,
   orderBy,
   query,
@@ -11,8 +12,8 @@ import firestore, {
   serverTimestamp,
   setDoc,
   where,
-} from '@react-native-firebase/firestore';
-import {deleteObject, getDownloadURL, getStorage, putFile, ref} from '@react-native-firebase/storage';
+} from './firebase/firestore';
+import {deleteObject, getDownloadURL, getStorage, ref, uploadFileFromUri} from './firebase/storage';
 import {Moment, MomentComment, MomentVisibility} from '../types';
 import {reportError} from './telemetry';
 import {isExifStrippingEnabled} from './privacyGuard';
@@ -223,9 +224,9 @@ export async function likeMoment(momentId: string, userId: string) {
   try {
     await runTransaction(db, async tx => {
     const likeSnap = await tx.get(likeRef);
-    if (likeSnap.exists) return;
+    if (likeSnap.exists()) return;
     tx.set(likeRef, {createdAt: serverTimestamp()});
-    tx.set(doc(momentsRef(), momentId), {likeCount: firestore.FieldValue.increment(1)}, {merge: true});
+    tx.set(doc(momentsRef(), momentId), {likeCount: increment(1)}, {merge: true});
   });
   } catch (error) {
     logError(error, 'likeMoment');
@@ -238,9 +239,9 @@ export async function unlikeMoment(momentId: string, userId: string) {
   try {
     await runTransaction(db, async tx => {
     const likeSnap = await tx.get(likeRef);
-    if (!likeSnap.exists) return;
+    if (!likeSnap.exists()) return;
     tx.delete(likeRef);
-    tx.set(doc(momentsRef(), momentId), {likeCount: firestore.FieldValue.increment(-1)}, {merge: true});
+    tx.set(doc(momentsRef(), momentId), {likeCount: increment(-1)}, {merge: true});
   });
   } catch (error) {
     logError(error, 'unlikeMoment');
@@ -290,7 +291,7 @@ export async function addMomentComment(
       mentions,
       createdAt: serverTimestamp(),
     });
-    tx.set(doc(momentsRef(), momentId), {commentCount: firestore.FieldValue.increment(1)}, {merge: true});
+    tx.set(doc(momentsRef(), momentId), {commentCount: increment(1)}, {merge: true});
   });
     return commentRef.id;
   } catch (error) {
@@ -305,9 +306,9 @@ export async function deleteMomentComment(momentId: string, commentId: string) {
   try {
     await runTransaction(db, async tx => {
     const snapshot = await tx.get(commentRef);
-    if (!snapshot.exists) return;
+    if (!snapshot.exists()) return;
     tx.delete(commentRef);
-    tx.set(doc(momentsRef(), momentId), {commentCount: firestore.FieldValue.increment(-1)}, {merge: true});
+    tx.set(doc(momentsRef(), momentId), {commentCount: increment(-1)}, {merge: true});
   });
   } catch (error) {
     logError(error, 'deleteMomentComment');
@@ -364,25 +365,14 @@ export async function uploadMomentMedia(
           0,
           undefined,
           false,
-          {mode: 'none', onlyScaleDown: true},
+          {mode: 'contain', onlyScaleDown: true},
         );
         uploadUri = resized.uri || uri;
       } catch {
         // Fall back to original URI if stripping fails
       }
     }
-    const task = putFile(storageRef, uploadUri);
-    if (onProgress) {
-      task.on('state_changed', snapshot => {
-        const total = snapshot.totalBytes || 0;
-        const transferred = snapshot.bytesTransferred || 0;
-        if (total > 0) {
-          onProgress(Math.min(100, Math.round((transferred / total) * 100)));
-        }
-      });
-    }
-    await task;
-    return getDownloadURL(storageRef);
+    return uploadFileFromUri(storageRef, uploadUri, onProgress);
   } catch (error) {
     logError(error, 'uploadMomentMedia');
     throw error;

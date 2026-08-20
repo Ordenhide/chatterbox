@@ -6,7 +6,7 @@ import {
   setDoc,
   arrayUnion,
   serverTimestamp,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {WhiteboardStroke} from '../types';
 import {guardDocSnapshot} from './snapshotGuard';
 

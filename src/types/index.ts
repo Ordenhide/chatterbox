@@ -96,6 +96,19 @@ export interface EncryptedField {
   recipientKey: string;
 }
 
+/**
+ * A fan-out envelope: one independently-decryptable copy per recipient uid —
+ * see sealForRecipients in services/e2ee.ts.
+ *
+ * Messages written before group support carry a bare EncryptedField instead, so
+ * anything reading `Message.encrypted` has to handle both shapes. `isSealedEnvelope`
+ * distinguishes them; there is no migration and old messages stay readable.
+ */
+export interface SealedEnvelopeField {
+  alg: string;
+  copies: Record<string, EncryptedField>;
+}
+
 export interface Message {
   _id: string | number;
   text: string;
@@ -110,7 +123,7 @@ export interface Message {
     image?: string;
     video?: string;
     user?: {
-      _id: string;
+      _id: string | number;
       name?: string;
     };
   };
@@ -196,10 +209,13 @@ export interface Message {
   lottery?: LotteryMessage;
   /**
    * E2EE envelope. When present, `text` is empty on the wire and the real body
-   * lives here, decryptable only by the two participants' devices.
-   * See services/e2ee.ts — prototype, not yet enabled by default.
+   * lives here, decryptable only by the chat members' devices.
+   *
+   * Two shapes: a bare EncryptedField for messages sealed before group support,
+   * and a SealedEnvelopeField (one copy per recipient) for everything since.
+   * resolveMessageText handles both — see services/e2eeMessages.ts.
    */
-  encrypted?: EncryptedField;
+  encrypted?: EncryptedField | SealedEnvelopeField;
   /**
    * Same envelope shape, applied to media: when present, the corresponding
    * plaintext field (image/video/audio, or file.uri) is empty on the wire.
@@ -209,10 +225,10 @@ export interface Message {
    * every photo/video/voice message. The bytes at that URL, and file
    * name/type/size, are still plaintext — see e2ee.ts's documented limits.
    */
-  encryptedImage?: EncryptedField;
-  encryptedVideo?: EncryptedField;
-  encryptedAudio?: EncryptedField;
-  encryptedFileUri?: EncryptedField;
+  encryptedImage?: EncryptedField | SealedEnvelopeField;
+  encryptedVideo?: EncryptedField | SealedEnvelopeField;
+  encryptedAudio?: EncryptedField | SealedEnvelopeField;
+  encryptedFileUri?: EncryptedField | SealedEnvelopeField;
   /**
    * The sealed form of `linkPreview` above (a JSON-encoded preview — see
    * services/linkPreview.ts). When present the plaintext field is absent; the

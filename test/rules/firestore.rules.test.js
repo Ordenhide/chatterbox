@@ -102,6 +102,40 @@ describe('session currency (isSignedIn / hasCurrentSession) — enforced central
     await assertFails(getDoc(doc(asUser('bob', anHourAgo), 'users/alice')));
   });
 
+  // The carve-out that makes a displaced session recoverable. Without it,
+  // isSignedIn() denied this read too, so listenForSessionTakeover could not
+  // read the one document that would tell it it had been displaced — the app
+  // just showed a wall of permission-denied instead of signing the user out.
+  it('a displaced device can still read its OWN profile, so it can discover it was displaced', async () => {
+    await seed(db => setDoc(doc(db, 'users/bob'), {sessionClaimedAt: Timestamp.fromMillis(NOW_MS)}));
+    const anHourAgo = Math.floor((NOW_MS - 60 * 60 * 1000) / 1000);
+    await assertSucceeds(getDoc(doc(asUser('bob', anHourAgo), 'users/bob')));
+  });
+
+  it('the carve-out is read-only — a displaced device cannot reclaim itself by writing', async () => {
+    await seed(db => setDoc(doc(db, 'users/bob'), {sessionClaimedAt: Timestamp.fromMillis(NOW_MS)}));
+    const anHourAgo = Math.floor((NOW_MS - 60 * 60 * 1000) / 1000);
+    await assertFails(
+      updateDoc(doc(asUser('bob', anHourAgo), 'users/bob'), {
+        sessionClaimedAt: Timestamp.fromMillis(NOW_MS + 60_000),
+      }),
+    );
+  });
+
+  it('the carve-out is your own doc only — it does not reopen other profiles', async () => {
+    await seed(async db => {
+      await setDoc(doc(db, 'users/alice'), {email: 'alice@example.com'});
+      await setDoc(doc(db, 'users/bob'), {sessionClaimedAt: Timestamp.fromMillis(NOW_MS)});
+    });
+    const anHourAgo = Math.floor((NOW_MS - 60 * 60 * 1000) / 1000);
+    await assertFails(getDoc(doc(asUser('bob', anHourAgo), 'users/alice')));
+  });
+
+  it('an unauthenticated client gets nothing from the carve-out', async () => {
+    await seed(db => setDoc(doc(db, 'users/bob'), {sessionClaimedAt: Timestamp.fromMillis(NOW_MS)}));
+    await assertFails(getDoc(doc(anon(), 'users/bob')));
+  });
+
   it('an account that has never claimed a session is not enforced — fail-open by design (no retroactive lockout on deploy)', async () => {
     await seed(db => setDoc(doc(db, 'users/alice'), {email: 'alice@example.com'}));
     // bob has no users/bob doc at all — the "predates this feature entirely"
@@ -387,6 +421,73 @@ describe('chats/{chatId}', () => {
     await assertFails(getDoc(doc(asUser('mallory'), 'chats/c1')));
     await assertFails(updateDoc(doc(asUser('mallory'), 'chats/c1'), {pinnedBy: ['mallory']}));
     await assertSucceeds(updateDoc(doc(asUser('alice'), 'chats/c1'), {pinnedBy: ['alice']}));
+  });
+
+  // `participants` is the access-control list for the fan-out encryption: the
+  // sender seals one copy per uid listed here, so whoever can edit this array
+  // controls who can read every future message in the chat.
+  describe('group membership', () => {
+    beforeEach(async () => {
+      await seed(db => setDoc(doc(db, 'chats/g1'), {participants: ['alice', 'bob']}));
+    });
+
+    it('lets a member add someone to the group', async () => {
+      await assertSucceeds(
+        updateDoc(doc(asUser('alice'), 'chats/g1'), {participants: ['alice', 'bob', 'carol']}),
+      );
+    });
+
+    it('lets a member leave by removing only themself', async () => {
+      await assertSucceeds(
+        updateDoc(doc(asUser('bob'), 'chats/g1'), {participants: ['alice']}),
+      );
+    });
+
+    // No admin roles exist yet, so "anyone may remove anyone" would be the only
+    // available policy — which invites kick-wars and lets one member silently
+    // cut everyone else out of a conversation.
+    it('denies removing another member', async () => {
+      await assertFails(
+        updateDoc(doc(asUser('alice'), 'chats/g1'), {participants: ['alice']}),
+      );
+    });
+
+    it('denies emptying the member list', async () => {
+      await assertFails(updateDoc(doc(asUser('alice'), 'chats/g1'), {participants: []}));
+    });
+
+    it('denies swapping the whole group out in one write', async () => {
+      await assertFails(
+        updateDoc(doc(asUser('alice'), 'chats/g1'), {participants: ['alice', 'mallory']}),
+      );
+    });
+
+    it('denies a non-member adding themself', async () => {
+      await assertFails(
+        updateDoc(doc(asUser('mallory'), 'chats/g1'), {
+          participants: ['alice', 'bob', 'mallory'],
+        }),
+      );
+    });
+
+    // The client caps this too, but a client-side cap is a product guardrail,
+    // not a security boundary — anyone can write to Firestore directly.
+    it('enforces the 32-member cap on update', async () => {
+      const tooMany = ['alice', 'bob', ...Array.from({length: 31}, (_, i) => `u${i}`)];
+      expect(tooMany.length).toBeGreaterThan(32);
+      await assertFails(updateDoc(doc(asUser('alice'), 'chats/g1'), {participants: tooMany}));
+    });
+
+    it('enforces the 32-member cap on create', async () => {
+      const tooMany = ['alice', ...Array.from({length: 32}, (_, i) => `u${i}`)];
+      await assertFails(setDoc(doc(asUser('alice'), 'chats/g2'), {participants: tooMany}));
+    });
+
+    it('allows a group exactly at the cap', async () => {
+      const exactly32 = ['alice', ...Array.from({length: 31}, (_, i) => `u${i}`)];
+      expect(exactly32.length).toBe(32);
+      await assertSucceeds(setDoc(doc(asUser('alice'), 'chats/g3'), {participants: exactly32}));
+    });
   });
 });
 

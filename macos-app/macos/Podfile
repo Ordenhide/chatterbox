@@ -1,0 +1,146 @@
+require 'pathname'
+
+# Tells react-native.config.js this is the macOS install, so packages whose iOS
+# sources can't compile against AppKit (currently react-native-webrtc, which
+# imports UIKit) are dropped from autolinking. Set here rather than expected
+# from the environment so `pod install` in this directory always does the right
+# thing.
+ENV['CHATTERBOX_MACOS'] = '1'
+
+# Resolved against *this* package only — deliberately not the old walk up to
+# the filesystem root.
+#
+# macOS is now its own package pinned to React Native 0.81, while the app one
+# directory up pins a different version for HarmonyOS (see ../README.md). An
+# unbounded upward search would happily skip past this package's node_modules
+# when it is not installed yet and link against the mobile app's React Native
+# instead — producing a build that appears to succeed and fails at runtime, far
+# from the cause. Failing loudly with "run npm install here" is the better
+# outcome.
+ws_dir = Pathname.new(__dir__).parent
+rn_macos_script = "#{ws_dir}/node_modules/react-native-macos/scripts/react_native_pods.rb"
+unless File.exist?(rn_macos_script)
+  raise "react-native-macos not found in #{ws_dir}/node_modules. " \
+        'Run `npm install` inside macos-app/ — this package has its own dependency tree.'
+end
+require rn_macos_script
+
+prepare_react_native_project!
+
+target 'chatterbox-macOS' do
+  platform :macos, '14.0'
+
+  # Matches ios/Podfile — without this, Swift pods (FirebaseAuth etc.) don't
+  # reliably generate/expose their -Swift.h interop headers to other pod
+  # targets that transitively import them (e.g. RNFBStorage/RNFBRemoteConfig
+  # via the shared Firebase.h umbrella), causing "file not found" errors.
+  use_frameworks! :linkage => :static
+
+  # Scoped (not global `use_modular_headers!`) — that also forces module maps
+  # onto React's own internal pods (React-jsitooling, React-RuntimeHermes,
+  # etc.), which already define their own modules and then collide with
+  # ("Redefinition of module 'react_runtime'"). Only these specific
+  # non-Swift pods that several Firebase Swift pods depend on need it.
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseCoreExtension', :modular_headers => true
+  pod 'FirebaseAppCheckInterop', :modular_headers => true
+  pod 'FirebaseAuthInterop', :modular_headers => true
+  pod 'FirebaseMessagingInterop', :modular_headers => true
+  pod 'FirebaseInstallations', :modular_headers => true
+  pod 'GoogleDataTransport', :modular_headers => true
+  pod 'nanopb', :modular_headers => true
+  pod 'FirebaseFirestoreInternal', :modular_headers => true
+  pod 'FirebaseABTesting', :modular_headers => true
+
+  use_native_modules!
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => '../node_modules/react-native-macos',
+    :fabric_enabled => ENV['RCT_NEW_ARCH_ENABLED'] == '1',
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  post_install do |installer|
+    react_native_post_install(installer)
+
+    # React-graphics keeps its platform-specific headers under
+    # `platform/<os>/`. There is no `platform/macos`, so the react-native-macos
+    # patch in patches/ scopes macOS to the generic `platform/cxx` fallback —
+    # but the header search paths react-native-macos generates still hardcode
+    # `platform/ios`. The result is that every Fabric target that includes
+    # <react/renderer/graphics/Float.h> (via Point.h, primitives.h, …) fails
+    # with "file not found", because the directory it's told to look in isn't
+    # the one the framework actually shipped.
+    #
+    # Repoint those entries at the cxx headers that macOS really builds.
+    #
+    # Done by rewriting the generated .xcconfig files rather than each target's
+    # build_settings: CocoaPods writes these paths into "Target Support Files"
+    # from the podspec, and editing the pbxproj layer leaves the xcconfig (which
+    # is what the compiler actually reads) untouched.
+    # Each ReactCommon module ships a different mix of platform directories, so
+    # a single substitution isn't enough:
+    #
+    #   components/view          android, cxx, macos   -> macos (real macOS impl)
+    #   graphics                 android, cxx, ios     -> cxx   (no macOS impl)
+    #   imagemanager             android, cxx, ios     -> cxx
+    #   textlayoutmanager        android, cxx, ios     -> cxx
+    #   components/textinput     android, ios          -> ios   (nothing better)
+    #
+    # Rule: prefer platform/macos when it exists, fall back to platform/cxx,
+    # and otherwise leave the path alone. Derived from what's actually on disk
+    # rather than hardcoded, so it stays correct across react-native-macos
+    # upgrades that add or drop a platform implementation.
+    rncommon = File.expand_path('../node_modules/react-native-macos/ReactCommon', __dir__)
+    rewritten = 0
+    Dir.glob("#{installer.sandbox.root}/Target Support Files/**/*.xcconfig").each do |path|
+      contents = File.read(path)
+      updated = contents.gsub(%r{(react/renderer/(?:[\w.-]+/)*?[\w.-]+)/platform/(\w+)}) do
+        mod = Regexp.last_match(1)
+        original = Regexp.last_match(2)
+        base = File.join(rncommon, mod, 'platform')
+        pick = %w[macos cxx].find { |candidate| Dir.exist?(File.join(base, candidate)) } || original
+        "#{mod}/platform/#{pick}"
+      end
+      next if updated == contents
+      File.write(path, updated)
+      rewritten += 1
+    end
+    Pod::UI.puts "ReactCommon: resolved platform header paths for macOS in #{rewritten} xcconfig file(s)".green
+
+    # Same gRPC-Core/gRPC-C++ modulemap fix as ios/Podfile — Firestore/Functions
+    # pull in gRPC, which needs an explicit modulemap path and C++20 or the
+    # macOS build fails with "module map file ... not found".
+    installer.pods_project.targets.each do |target|
+      if ['gRPC-Core', 'gRPC-C++', 'gRPC'].include?(target.name)
+        target.build_configurations.each do |build_config|
+          build_config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++20'
+          build_config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+          build_config.build_settings['OTHER_CPLUSPLUSFLAGS'] = '$(inherited) -std=c++20'
+          build_config.build_settings['MODULEMAP_FILE'] = '$(PODS_ROOT)/Target Support Files/gRPC-Core/gRPC-Core.modulemap'
+        end
+      end
+    end
+
+    begin
+      require 'fileutils'
+      modulemap_src = "#{installer.sandbox.root}/Target Support Files/gRPC-Core/gRPC-Core.modulemap"
+      # Only the lowercase 'grpc' dir — on a case-insensitive filesystem (the
+      # macOS default) a second 'gRPC' variant is the same path and just
+      # raises a spurious "identical file" error on the second copy.
+      dir = "#{installer.sandbox.root}/Headers/Private/grpc"
+      dst = File.join(dir, 'gRPC-Core.modulemap')
+      if File.exist?(modulemap_src) && !File.exist?(dst)
+        FileUtils.mkdir_p(dir)
+        FileUtils.ln_sf(modulemap_src, dst)
+      end
+    rescue => e
+      Pod::UI.puts "gRPC modulemap copy skipped: #{e}"
+    end
+  end
+end

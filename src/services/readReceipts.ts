@@ -4,7 +4,7 @@
  * Similar to WeChat's approach: update read receipts in batches
  */
 
-import {doc, getFirestore, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
+import {doc, getFirestore, serverTimestamp, setDoc} from './firebase/firestore';
 
 const db = getFirestore();
 const BATCH_INTERVAL_MS = 2000; // Batch updates every 2 seconds

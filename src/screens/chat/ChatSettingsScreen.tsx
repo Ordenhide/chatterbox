@@ -25,7 +25,13 @@ import {
   setChatWallpaper,
   getChat,
   uploadFile,
+  addChatMembers,
+  leaveChat,
+  getUserByEmail,
+  getUsersByIds,
+  GroupFullError,
 } from '../../services/firebaseChat';
+import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
 import {getColors} from '../../theme/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache';
@@ -33,12 +39,12 @@ import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import Icon, {type IconName} from '../../components/Icon';
-import {createChatPet, getChatPet} from '../../services/chatPet';
+import {changePetSpecies, createChatPet, getChatPet} from '../../services/chatPet';
 import {setChatLockPIN, removeChatLock, isChatLocked} from '../../services/appLock';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
 import {ChatPet, SoundscapeId} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
-import {doc, getFirestore, setDoc} from '@react-native-firebase/firestore';
+import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
+import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
 
 const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
 const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
@@ -68,7 +74,7 @@ const WALLPAPER_COLORS = [
 
 export default function ChatSettingsScreen() {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const {t} = useTranslation();
   const chatId = (route.params as any)?.chatId as string;
   const {user} = useAuth();
@@ -84,7 +90,11 @@ export default function ChatSettingsScreen() {
   const [wallpaper, setWallpaper] = useState<string | null>(null);
   const [uploadingWallpaper, setUploadingWallpaper] = useState(false);
   const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
-  const [hasPet, setHasPet] = useState(false);
+  const [pet, setPet] = useState<ChatPet | null>(null);
+  const [members, setMembers] = useState<string[]>([]);
+  const [memberNames, setMemberNames] = useState<Record<string, string>>({});
+  const [memberEmail, setMemberEmail] = useState('');
+  const [addingMember, setAddingMember] = useState(false);
   const [chatLocked, setChatLocked] = useState(false);
   const [expiryHours, setExpiryHours] = useState(0);
 
@@ -100,8 +110,19 @@ export default function ChatSettingsScreen() {
         setSoundscape((chat as any)?.soundscape || 'none');
         setExpiryHours((chat as any)?.messageExpiry || 0);
         setChatLocked(isChatLocked(chatId));
-        const pet = await getChatPet(chatId);
-        setHasPet(!!pet);
+        setPet(await getChatPet(chatId));
+
+        const participants = chat?.participants || [];
+        setMembers(participants);
+        const profiles = await getUsersByIds(participants);
+        setMemberNames(
+          Object.fromEntries(
+            participants.map(uid => [
+              uid,
+              profiles[uid]?.displayName || profiles[uid]?.email || uid.slice(0, 6),
+            ]),
+          ),
+        );
       } catch (err) {
         if (__DEV__) {
           console.warn('ChatSettingsScreen: failed to load chat', err);
@@ -307,6 +328,62 @@ export default function ChatSettingsScreen() {
     [themeColor, colors.text],
   );
 
+  const handleAddMember = async () => {
+    const email = memberEmail.trim().toLowerCase();
+    if (!email) return;
+    if (members.length >= MAX_GROUP_MEMBERS) {
+      Alert.alert(t('common.error'), t('members.full', {max: MAX_GROUP_MEMBERS}));
+      return;
+    }
+    setAddingMember(true);
+    try {
+      const person = await getUserByEmail(email);
+      if (!person) {
+        Alert.alert(t('common.error'), t('newChat.errors.userNotFoundBody'));
+        return;
+      }
+      if (members.includes(person.uid)) {
+        Alert.alert(t('common.error'), t('newChat.errors.alreadyAdded'));
+        return;
+      }
+      await addChatMembers(chatId, [person.uid]);
+      setMembers(prev => [...prev, person.uid]);
+      setMemberNames(prev => ({
+        ...prev,
+        [person.uid]: person.displayName || person.email || person.uid.slice(0, 6),
+      }));
+      setMemberEmail('');
+    } catch (error) {
+      Alert.alert(
+        t('common.error'),
+        error instanceof GroupFullError
+          ? t('members.full', {max: MAX_GROUP_MEMBERS})
+          : t('newChat.errors.createFailed'),
+      );
+    } finally {
+      setAddingMember(false);
+    }
+  };
+
+  const handleLeaveChat = () => {
+    if (!user) return;
+    Alert.alert(t('members.leaveConfirmTitle'), t('members.leaveConfirmBody'), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('members.leave'),
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await leaveChat(chatId, user.uid);
+            navigation.goBack();
+          } catch {
+            Alert.alert(t('common.error'), t('newChat.errors.createFailed'));
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <GlassScreen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -324,7 +401,7 @@ export default function ChatSettingsScreen() {
         <View style={styles.themeRow}>{themeDots}</View>
         <TouchableOpacity
           accessibilityRole="button"
-          onPress={() => navigation.navigate('Store' as never)}>
+          onPress={() => navigation.navigate('Store')}>
           <Text style={[styles.storeHint, {color: colors.primary}]}>
             {`${t('store.themeMovedHint')} ${t('store.openStore')} →`}
           </Text>
@@ -358,7 +435,6 @@ export default function ChatSettingsScreen() {
       </GlassView>
 
       {SHOW_NATIVE_ONLY_FEATURES && (
-      <>
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Soundscape</Text>
         <View style={styles.wallpaperRow}>
@@ -382,40 +458,95 @@ export default function ChatSettingsScreen() {
           ))}
         </View>
       </GlassView>
+      )}
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
+        <Text style={[styles.sectionTitle, {color: colors.text}]}>
+          {t('members.title', {count: members.length})}
+        </Text>
+        {members.map(uid => (
+          <View key={uid} style={styles.row}>
+            <Text style={[styles.rowLabel, {color: colors.text}]}>
+              {memberNames[uid] || uid.slice(0, 6)}
+              {uid === user?.uid ? t('members.you') : ''}
+            </Text>
+          </View>
+        ))}
+
+        <TextInput
+          style={[styles.input, {color: colors.text, borderColor: colors.glassBorder}]}
+          placeholder={t('members.addPlaceholder')}
+          placeholderTextColor={colors.textSecondary}
+          value={memberEmail}
+          onChangeText={setMemberEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TouchableOpacity
+          style={[styles.row, addingMember && {opacity: 0.5}]}
+          disabled={addingMember}
+          onPress={handleAddMember}>
+          <Text style={[styles.rowLabel, {color: colors.primary}]}>
+            {addingMember ? t('members.adding') : t('members.add')}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Only yourself — the rules reject removing anyone else, since there
+            are no admin roles yet. */}
+        <TouchableOpacity style={styles.row} onPress={handleLeaveChat}>
+          <Text style={[styles.rowLabel, {color: colors.danger}]}>{t('members.leave')}</Text>
+        </TouchableOpacity>
+      </GlassView>
+
+      {SHOW_CHAT_PET && (
+      <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Chat Pet</Text>
-        {hasPet ? (
-          <Text style={[styles.rowLabel, {color: colors.textSecondary}]}>Your chat already has a pet! Check the chat screen.</Text>
-        ) : (
-          <View style={styles.wallpaperRow}>
-            {PET_SPECIES.map(p => (
-              <TouchableOpacity
-                key={p.id}
-                style={[styles.themeDot, {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border}]}
-                onPress={() => {
+        <Text style={[styles.rowLabel, {color: colors.textSecondary}]}>
+          {pet ? `${pet.name} · Lv.${pet.level} — tap a species to change it, anytime` : 'Adopt a pet for this chat'}
+        </Text>
+        <View style={styles.wallpaperRow}>
+          {PET_SPECIES.map(p => {
+            const isCurrent = pet?.species === p.id;
+            return (
+            <TouchableOpacity
+              key={p.id}
+              style={[
+                styles.themeDot,
+                {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border},
+                isCurrent && [styles.themeDotSelected, {borderColor: colors.primary}],
+              ]}
+              onPress={() => {
+                if (isCurrent) return;
+                if (!pet) {
                   Alert.alert('Adopt a Pet', `Adopt a ${p.label} for this chat?`, [
                     {text: 'Cancel', style: 'cancel'},
                     {text: 'Adopt!', onPress: async () => {
-                      await createChatPet(chatId, p.id, p.label);
-                      setHasPet(true);
+                      setPet(await createChatPet(chatId, p.id, p.label));
                     }},
                   ]);
-                }}>
-                <Icon name={p.icon} size={20} color={colors.text} />
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
+                  return;
+                }
+                Alert.alert('Change Pet', `Change your pet to a ${p.label}? It keeps its level and progress.`, [
+                  {text: 'Cancel', style: 'cancel'},
+                  {text: 'Change', onPress: async () => {
+                    await changePetSpecies(chatId, p.id, p.label);
+                    setPet(prev => (prev ? {...prev, species: p.id, name: p.label} : prev));
+                  }},
+                ]);
+              }}>
+              <Icon name={p.icon} size={20} color={colors.text} />
+            </TouchableOpacity>
+            );
+          })}
+        </View>
       </GlassView>
-      </>
       )}
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>
         <TouchableOpacity
           style={styles.row}
-          onPress={() => navigation.navigate('Whiteboard' as never, {chatId} as never)}>
+          onPress={() => navigation.navigate('Whiteboard', {chatId})}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>Whiteboard</Text>
         </TouchableOpacity>
       </GlassView>
@@ -667,6 +798,14 @@ const styles = StyleSheet.create({
   },
   clearNameText: {
     fontSize: 13,
+  },
+  input: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 15,
+    marginTop: 10,
   },
 });
 

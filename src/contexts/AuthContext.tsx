@@ -3,22 +3,27 @@ import {Alert, AppState} from 'react-native';
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  GoogleAuthProvider,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  signInWithCredential,
   signInWithEmailAndPassword,
+  signInWithPhoneNumber,
   signOut as firebaseSignOut,
   updateProfile,
-  FirebaseAuthTypes,
-} from '@react-native-firebase/auth';
-import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
+  type ConfirmationResult,
+  type User as FirebaseUser,
+} from '../services/firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import {User} from '../types';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
 import {reportError, setTelemetryUser, trackEvent} from '../services/telemetry';
 import {clearSessionId, getSessionId, rotateSessionId} from '../services/session';
 import {getDeviceInfo} from '../services/deviceInfo';
-import {getFunctions, httpsCallable} from '@react-native-firebase/functions';
+import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
-import {getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {_resetKeypairCache, enrollmentReadiness, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
@@ -46,6 +51,11 @@ function getAuthErrorMessage(error: any): string {
     'auth/weak-password': i18n.t('auth.errors.weakPassword'),
     'auth/network-request-failed': i18n.t('auth.errors.networkError'),
     'auth/too-many-requests': i18n.t('auth.errors.tooManyRequests'),
+    'auth/invalid-verification-code': i18n.t('auth.errors.invalidVerificationCode'),
+    'auth/invalid-phone-number': i18n.t('auth.errors.invalidPhoneNumber'),
+    'auth/account-exists-with-different-credential': i18n.t(
+      'auth.errors.accountExistsDifferentCredential',
+    ),
   };
   return map[code] || error?.message || i18n.t('auth.errors.generic');
 }
@@ -55,6 +65,9 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  sendPhoneCode: (phoneNumber: string) => Promise<ConfirmationResult>;
+  confirmPhoneCode: (confirmation: ConfirmationResult, code: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -138,7 +151,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       checkTokenRevocation().catch(() => undefined);
     }, TOKEN_CHECK_INTERVAL_MS);
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseAuthTypes.User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         const profile: User = {
           uid: firebaseUser.uid,
@@ -160,9 +173,23 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         // public half, so peers can encrypt to this user. Fire-and-forget:
         // messaging still works as plaintext if this hasn't completed yet —
         // see e2eeMessages.ts, which falls back when a peer key is missing.
-        getOrCreateDeviceKeypair(firebaseUser.uid).catch(error => {
-          reportError(error, 'e2ee_enroll_failed');
-        });
+        //
+        // Enrolls only when that's known to be safe. On a reinstall/new
+        // device for an account that already published a key elsewhere,
+        // enrolling here would happen within milliseconds of login — long
+        // before the user could reach Settings to restore — and would
+        // silently overwrite the very key restore needs to match against.
+        // Held off, this device just stays unenrolled (the same
+        // plaintext-fallback state as before first-ever enrollment) until
+        // the user restores or explicitly sends a message.
+        (async () => {
+          try {
+            if ((await enrollmentReadiness(firebaseUser.uid)) !== 'safe') return;
+            await getOrCreateDeviceKeypair(firebaseUser.uid);
+          } catch (error) {
+            reportError(error, 'e2ee_enroll_failed');
+          }
+        })();
       } else {
         setUser(null);
         setTelemetryUser(null);
@@ -540,6 +567,135 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }
   }, [auth, db]);
 
+  // Shared by signInWithGoogle and confirmPhoneCode: both are single-step
+  // credential exchanges that can either sign in an existing account or
+  // silently create a new one, unlike email/password where sign-in and
+  // sign-up are separate user-driven actions. Claims the session the same
+  // way signIn/signUp do, and — only for brand-new accounts — bootstraps the
+  // Firestore profile doc the same way signUp does.
+  const completeCredentialSignIn = useCallback(
+    async (firebaseUser: FirebaseUser, nextSessionId: string, isNewUser: boolean, method: string) => {
+      await claimNewSession(firebaseUser.uid, nextSessionId);
+      await waitForSessionConfirmed(firebaseUser.uid, nextSessionId);
+      if (isNewUser) {
+        await setDoc(
+          doc(db, 'users', firebaseUser.uid),
+          {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email || null,
+            displayName: firebaseUser.displayName || null,
+            photoURL: firebaseUser.photoURL || null,
+            profileVisibility: 'public',
+            defaultMomentVisibility: 'friends',
+            updatedAt: serverTimestamp(),
+          },
+          {merge: true},
+        );
+        trackEvent('sign_up', {method}).catch(() => undefined);
+      } else {
+        trackEvent('login', {method}).catch(() => undefined);
+      }
+    },
+    [db],
+  );
+
+  const signInWithGoogle = useCallback(async () => {
+    setSessionReady(false);
+    claimInProgressRef.current = true;
+    let success = false;
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      const response = await GoogleSignin.signIn();
+      if (response.type !== 'success') {
+        // User backed out of the picker — not an error, nothing was claimed yet.
+        return;
+      }
+      const {idToken} = response.data;
+      if (!idToken) {
+        throw new Error(i18n.t('auth.errors.generic'));
+      }
+      const nextSessionId = await rotateSessionId();
+      sessionIdRef.current = nextSessionId;
+      const credential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(auth, credential);
+      await completeCredentialSignIn(
+        userCredential.user,
+        nextSessionId,
+        !!userCredential.additionalUserInfo?.isNewUser,
+        'google',
+      );
+      success = true;
+    } catch (error) {
+      sessionIdRef.current = null;
+      try {
+        await clearSessionId();
+        await firebaseSignOut(auth);
+      } catch {
+        // ignore cleanup failures
+      }
+      const friendlyError = new Error(getAuthErrorMessage(error));
+      (friendlyError as any).code = (error as any)?.code;
+      throw friendlyError;
+    } finally {
+      claimInProgressRef.current = false;
+      if (!success) {
+        setSessionReady(true);
+      }
+    }
+  }, [auth, completeCredentialSignIn]);
+
+  // Step 1 of phone sign-in: sends the SMS code and hands back RNFB's
+  // confirmation object. The calling screen holds onto it across the
+  // user-driven pause until they type the code in, then passes it to
+  // confirmPhoneCode below — this can't be a single call the way Google
+  // sign-in is, since there's no way to synchronously wait for an SMS.
+  const sendPhoneCode = useCallback(async (phoneNumber: string): Promise<ConfirmationResult> => {
+    try {
+      return await signInWithPhoneNumber(auth, phoneNumber);
+    } catch (error) {
+      const friendlyError = new Error(getAuthErrorMessage(error));
+      (friendlyError as any).code = (error as any)?.code;
+      throw friendlyError;
+    }
+  }, [auth]);
+
+  const confirmPhoneCode = useCallback(
+    async (confirmation: ConfirmationResult, code: string) => {
+      setSessionReady(false);
+      claimInProgressRef.current = true;
+      let success = false;
+      try {
+        const nextSessionId = await rotateSessionId();
+        sessionIdRef.current = nextSessionId;
+        const userCredential = await confirmation.confirm(code);
+        await completeCredentialSignIn(
+          userCredential.user,
+          nextSessionId,
+          !!userCredential.additionalUserInfo?.isNewUser,
+          'phone',
+        );
+        success = true;
+      } catch (error) {
+        sessionIdRef.current = null;
+        try {
+          await clearSessionId();
+          await firebaseSignOut(auth);
+        } catch {
+          // ignore cleanup failures
+        }
+        const friendlyError = new Error(getAuthErrorMessage(error));
+        (friendlyError as any).code = (error as any)?.code;
+        throw friendlyError;
+      } finally {
+        claimInProgressRef.current = false;
+        if (!success) {
+          setSessionReady(true);
+        }
+      }
+    },
+    [auth, completeCredentialSignIn],
+  );
+
   const resetPassword = useCallback(async (email: string) => {
     await sendPasswordResetEmail(auth, email.trim().toLowerCase());
   }, [auth]);
@@ -553,14 +709,39 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       sessionIdRef.current = null;
       await clearSessionId().catch(() => undefined);
       await firebaseSignOut(auth).catch(error => reportError(error, 'signout_auth'));
+      // Defense in depth: getOrCreateDeviceKeypair already scopes its cache by
+      // uid, but drop it anyway so a signed-out account's secret key doesn't
+      // linger in memory longer than it needs to.
+      _resetKeypairCache();
     } finally {
       signingOutRef.current = false;
     }
   }, [auth]);
 
   const contextValue = useMemo(
-    () => ({user, loading: loading || !sessionReady, signIn, signUp, resetPassword, signOut}),
-    [user, loading, sessionReady, signIn, signUp, resetPassword, signOut],
+    () => ({
+      user,
+      loading: loading || !sessionReady,
+      signIn,
+      signUp,
+      signInWithGoogle,
+      sendPhoneCode,
+      confirmPhoneCode,
+      resetPassword,
+      signOut,
+    }),
+    [
+      user,
+      loading,
+      sessionReady,
+      signIn,
+      signUp,
+      signInWithGoogle,
+      sendPhoneCode,
+      confirmPhoneCode,
+      resetPassword,
+      signOut,
+    ],
   );
 
   return (

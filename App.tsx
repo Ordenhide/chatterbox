@@ -4,18 +4,12 @@ import {NavigationContainer, createNavigationContainerRef} from '@react-navigati
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {AuthProvider} from './src/contexts/AuthContext';
+import {ScrollMotionProvider} from './src/contexts/ScrollMotionContext';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
-import {getApp, getApps, initializeApp} from '@react-native-firebase/app';
-import appCheckModule, {initializeAppCheck} from '@react-native-firebase/app-check';
-import {
-  getMessaging,
-  getToken,
-  onMessage,
-  onTokenRefresh,
-} from '@react-native-firebase/messaging';
-import {firebaseConfig} from './src/firebaseConfig';
+import {initFirebase} from './src/services/firebase/bootstrap';
+import {getMessaging, getToken, onMessage, onTokenRefresh} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
@@ -55,7 +49,10 @@ function AppContent() {
 
     const setupMessaging = async () => {
       const messaging = getMessaging();
-      if (Platform.Version >= 33) {
+      // Platform.Version is number | string in RN's types (string on iOS),
+      // but the enclosing effect already returned early unless Platform.OS
+      // === 'android', where it's always the numeric API level.
+      if ((Platform.Version as number) >= 33) {
         await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
       }
       const token = await getToken(messaging);
@@ -72,9 +69,11 @@ function AppContent() {
           return;
         }
         const title = remoteMessage.notification?.title || i18n.t('notifications.newMessageTitle');
+        const dataText =
+          typeof remoteMessage.data?.text === 'string' ? remoteMessage.data.text : undefined;
         const body =
           remoteMessage.notification?.body ||
-          remoteMessage.data?.text ||
+          dataText ||
           i18n.t('notifications.newMessageBody');
         Alert.alert(title, body);
       });
@@ -156,26 +155,14 @@ function AppContent() {
 function App(): React.JSX.Element {
   useEffect(() => {
     try {
-      if (getApps().length === 0) {
-        initializeApp(firebaseConfig);
-      }
-      const app = getApp();
+      // App init + App Check, behind the platform seam. On HarmonyOS the
+      // Firebase JS SDK is initialised instead and App Check is absent — it
+      // needs Play Integrity / App Attest, which that platform has no
+      // counterpart for. See src/services/firebase/bootstrap.harmony.ts.
+      const appName = initFirebase();
       if (__DEV__) {
-        console.log('[firebase] default app initialized:', app.name);
+        console.log('[firebase] default app initialized:', appName);
       }
-
-      // App Check: attests that requests to Firestore/Storage/Functions come from
-      // this real, unmodified app build, blocking scripted abuse of the backend.
-      // In debug builds this uses the Debug provider, which logs a token on first
-      // run — register that token once in Firebase Console > App Check > Manage
-      // debug tokens. Release builds use Play Integrity (Android) / App Attest (iOS),
-      // which require enabling App Check for this app in the Firebase Console first.
-      const appCheckProvider = appCheckModule(app).newReactNativeFirebaseAppCheckProvider();
-      appCheckProvider.configure({
-        android: {provider: __DEV__ ? 'debug' : 'playIntegrity'},
-        apple: {provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback'},
-      });
-      initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});
     } catch (error) {
       if (__DEV__) {
         console.error('[firebase] default app not initialized:', error);
@@ -204,7 +191,11 @@ function App(): React.JSX.Element {
       <GestureHandlerRootView style={{flex: 1}}>
         <SafeAreaProvider>
           <AuthProvider>
-            <AppContent />
+            {/* Above AppContent so the backdrop and the screens that scroll it
+                share one value — see contexts/ScrollMotionContext. */}
+            <ScrollMotionProvider>
+              <AppContent />
+            </ScrollMotionProvider>
           </AuthProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>

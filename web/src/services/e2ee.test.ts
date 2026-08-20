@@ -6,6 +6,12 @@ import {
   E2EE_ALG,
   generateKeypair,
   isEncryptedPayload,
+  isSealed,
+  isSealedEnvelope,
+  MAX_GROUP_MEMBERS,
+  openSealed,
+  openEnvelope,
+  sealForRecipients,
 } from './e2ee';
 import {base64ToBytes, bytesToBase64, KEY_BYTES, NONCE_BYTES} from './crypto';
 
@@ -205,5 +211,120 @@ describe('mobile/web interop', () => {
     expect(E2EE_ALG).toBe('x25519-xchacha20poly1305-v1');
     expect(KEY_BYTES).toBe(32);
     expect(NONCE_BYTES).toBe(24);
+  });
+});
+
+describe('sealForRecipients / openEnvelope (group fan-out)', () => {
+  const CHAT = 'group-chat-1';
+
+  function member(uid: string) {
+    const keypair = generateKeypair();
+    return {uid, keypair, recipient: {uid, publicKey: keypair.publicKey}};
+  }
+
+  it('lets every addressed member read the message', () => {
+    const sender = member('alice');
+    const bob = member('bob');
+    const carol = member('carol');
+    const envelope = sealForRecipients(
+      'dinner at 8?',
+      sender.keypair.secretKey,
+      [bob.recipient, carol.recipient],
+      CHAT,
+    );
+    expect(openEnvelope(envelope, bob.keypair.secretKey, 'bob', CHAT)).toBe('dinner at 8?');
+    expect(openEnvelope(envelope, carol.keypair.secretKey, 'carol', CHAT)).toBe('dinner at 8?');
+  });
+
+  it('lets the sender read their own message despite having no copy', () => {
+    const sender = member('alice');
+    const bob = member('bob');
+    const envelope = sealForRecipients('hi', sender.keypair.secretKey, [bob.recipient], CHAT);
+    expect(envelope.copies.alice).toBeUndefined();
+    expect(openEnvelope(envelope, sender.keypair.secretKey, 'alice', CHAT)).toBe('hi');
+  });
+
+  // The property the entire fan-out design rests on: removal is just not
+  // addressing someone, so there is no key rotation to get wrong.
+  it('makes a removed member unable to read anything sealed after removal', () => {
+    const sender = member('alice');
+    const bob = member('bob');
+    const removed = member('mallory');
+    const envelope = sealForRecipients('secret plans', sender.keypair.secretKey, [bob.recipient], CHAT);
+    expect(() => openEnvelope(envelope, removed.keypair.secretKey, 'mallory', CHAT)).toThrow();
+  });
+
+  it('does not let an outsider read by guessing another member uid', () => {
+    const sender = member('alice');
+    const bob = member('bob');
+    const outsider = member('eve');
+    const envelope = sealForRecipients('hi', sender.keypair.secretKey, [bob.recipient], CHAT);
+    expect(() => openEnvelope(envelope, outsider.keypair.secretKey, 'bob', CHAT)).toThrow();
+  });
+
+  it('binds ciphertext to the chat, so a copy lifted into another chat fails', () => {
+    const sender = member('alice');
+    const bob = member('bob');
+    const envelope = sealForRecipients('hi', sender.keypair.secretKey, [bob.recipient], CHAT);
+    expect(() => openEnvelope(envelope, bob.keypair.secretKey, 'bob', 'other-chat')).toThrow();
+  });
+
+  // Must match mobile exactly: both clients seal into the same documents, so a
+  // client with a higher cap would produce envelopes the other refuses to send.
+  it('enforces the same member cap as mobile', () => {
+    const sender = member('alice');
+    const tooMany = Array.from({length: MAX_GROUP_MEMBERS + 1}, (_, i) => member(`u${i}`).recipient);
+    expect(() => sealForRecipients('x', sender.keypair.secretKey, tooMany, CHAT)).toThrow(
+      /exceeds the 32 cap/,
+    );
+  });
+
+  it('rejects an empty recipient list instead of sealing an unreadable message', () => {
+    expect(() => sealForRecipients('x', generateKeypair().secretKey, [], CHAT)).toThrow();
+  });
+});
+
+describe('isSealedEnvelope', () => {
+  // Both shapes coexist in Firestore during and after the 1:1 rollout, so the
+  // reader has to tell them apart without guessing.
+  it('recognises a real envelope but not a single 1:1 payload', () => {
+    const sender = generateKeypair();
+    const bob = generateKeypair();
+    const envelope = sealForRecipients('x', sender.secretKey, [{uid: 'bob', publicKey: bob.publicKey}], 'c');
+    expect(isSealedEnvelope(envelope)).toBe(true);
+    expect(isSealedEnvelope(encryptMessage('x', sender.secretKey, bob.publicKey, 'c'))).toBe(false);
+  });
+
+  it('rejects plaintext, null and malformed copies', () => {
+    expect(isSealedEnvelope(null)).toBe(false);
+    expect(isSealedEnvelope('hello')).toBe(false);
+    expect(isSealedEnvelope({alg: E2EE_ALG, copies: {bob: {nope: 1}}})).toBe(false);
+  });
+});
+
+describe('isSealed / openSealed (shape-agnostic reader)', () => {
+  const C = 'c1';
+
+  // A reader recognising only one shape renders the other as an empty message.
+  // That failure is cross-platform: mobile seals envelopes, so a browser still
+  // checking only the pre-group shape would silently blank every group message.
+  it('reads both the pre-group payload and the fan-out envelope', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+
+    const legacy = encryptMessage('old', alice.secretKey, bob.publicKey, C);
+    const envelope = sealForRecipients('new', alice.secretKey, [{uid: 'bob', publicKey: bob.publicKey}], C);
+
+    expect(isSealed(legacy)).toBe(true);
+    expect(isSealed(envelope)).toBe(true);
+    expect(openSealed(legacy, bob.secretKey, 'bob', C)).toBe('old');
+    expect(openSealed(envelope, bob.secretKey, 'bob', C)).toBe('new');
+  });
+
+  it('rejects plaintext rather than treating it as sealed', () => {
+    expect(isSealed('plain text')).toBe(false);
+    expect(isSealed(null)).toBe(false);
+    expect(isSealed({})).toBe(false);
+    expect(() => openSealed('plain', generateKeypair().secretKey, 'me', C)).toThrow(/not sealed/);
   });
 });

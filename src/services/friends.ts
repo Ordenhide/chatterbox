@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   setDoc,
   where,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {Friend, FriendRequest} from '../types';
 import {reportError} from './telemetry';
 
@@ -48,11 +48,11 @@ export async function sendFriendRequest(fromId: string, toId: string): Promise<S
   try {
     return await runTransaction<SendRequestResult>(db, async tx => {
       const friendSnap = await tx.get(friendRef);
-      if (friendSnap.exists) {
+      if (friendSnap.exists()) {
         return 'friends';
       }
       const requestSnap = await tx.get(requestRef);
-      if (requestSnap.exists) {
+      if (requestSnap.exists()) {
         return 'exists';
       }
       tx.set(requestRef, {
@@ -74,7 +74,7 @@ export async function acceptFriendRequest(requestId: string, userId: string) {
     const requestRef = doc(friendRequestsRef(), requestId);
     await runTransaction(db, async tx => {
       const requestSnap = await tx.get(requestRef);
-      if (!requestSnap.exists) {
+      if (!requestSnap.exists()) {
         return;
       }
       const request = requestSnap.data() as FriendRequest;
@@ -99,7 +99,7 @@ export async function declineFriendRequest(requestId: string, userId: string) {
   const requestRef = doc(friendRequestsRef(), requestId);
   try {
     const requestSnap = await getDoc(requestRef);
-    if (!requestSnap.exists) {
+    if (!requestSnap.exists()) {
       return;
     }
     const request = requestSnap.data() as FriendRequest;

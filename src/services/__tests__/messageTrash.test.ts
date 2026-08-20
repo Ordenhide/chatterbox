@@ -17,7 +17,7 @@ const mockDeleteObject = jest.fn(async (_url: string) => undefined);
 const mockResolveMedia = jest.fn(() => [] as string[]);
 const mockGetKeypair = jest.fn();
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),
   collection: (parent: {path?: string} | undefined, ...segments: string[]) => ({
     path: parent?.path ? `${parent.path}/${segments.join('/')}` : segments.join('/'),
@@ -29,7 +29,7 @@ jest.mock('@react-native-firebase/firestore', () => ({
     const data = ref.path.includes('/trash/')
       ? mockStore.trash.get(ref.path)
       : mockStore.messages.get(ref.path);
-    return {exists: !!data, data: () => data, ref};
+    return {exists: () => !!data, data: () => data, ref};
   },
   getDocs: jest.fn(async () => ({
     docs: [...mockStore.trash.entries()].map(([path, data]) => ({
@@ -58,9 +58,10 @@ jest.mock('@react-native-firebase/firestore', () => ({
     commit: async () => undefined,
   }),
 }));
-jest.mock('@react-native-firebase/storage', () => ({
+jest.mock('../firebase/storage', () => ({
   getStorage: () => ({}),
-  refFromURL: (_s: unknown, url: string) => url,
+  // refFromURL was removed in RNFB 26; ref() takes the URL directly.
+  ref: (_s: unknown, url: string) => url,
   deleteObject: (url: string) => mockDeleteObject(url),
 }));
 jest.mock('../messageMedia', () => ({

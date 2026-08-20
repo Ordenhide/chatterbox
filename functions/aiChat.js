@@ -28,6 +28,7 @@ function buildPrompt(messages, question) {
       'Reference or quote the specific messages that support your answer.',
       'If the conversation does not contain relevant information, say so',
       'plainly rather than guessing.',
+      'Respond in the same language as the conversation.',
       '',
       '--- Conversation ---',
       transcript,
@@ -40,6 +41,7 @@ function buildPrompt(messages, question) {
   return [
     'The following is a transcript of a private chat conversation.',
     'Summarize the key points and topics discussed, concisely.',
+    'Respond in the same language as the conversation.',
     '',
     '--- Conversation ---',
     transcript,

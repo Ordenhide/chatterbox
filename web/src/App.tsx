@@ -4,6 +4,7 @@ import {auth} from './firebase';
 import {colors} from './theme';
 import {useT} from './i18n';
 import {listenForSessionTakeover, verifyOrAdoptSession} from './services/session';
+import {useBackdropParallax} from './hooks/useBackdropParallax';
 import BrandMark from './components/BrandMark';
 import ConnectionBanner from './components/ConnectionBanner';
 import LoginScreen from './screens/LoginScreen';
@@ -29,6 +30,10 @@ export default function App() {
   // authenticated UI never flashes for a session that has been displaced.
   const [sessionReady, setSessionReady] = useState(false);
   const [displaced, setDisplaced] = useState(false);
+
+  // Drifts body::before against whichever screen is scrolling. Mounted here
+  // because the backdrop is global — it outlives every screen below it.
+  useBackdropParallax();
 
   useEffect(() => {
     return onAuthStateChanged(auth, u => {

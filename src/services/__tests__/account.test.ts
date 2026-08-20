@@ -1,16 +1,12 @@
 // Jest hoists jest.mock() factories above imports and only lets them close
 // over variables prefixed with `mock` (case-insensitive).
-const mockLinkWithPhoneNumber = jest.fn();
 const mockReauthenticateWithCredential = jest.fn();
-const mockUnlink = jest.fn();
-const mockSetUserPhoneNumber = jest.fn();
 const mockDeleteStorageObjectByUrl = jest.fn();
 const mockGetOrCreateDeviceKeypair = jest.fn();
 
-let mockCurrentUser: {uid: string; email: string | null; phoneNumber: string | null} | null = {
+let mockCurrentUser: {uid: string; email: string | null} | null = {
   uid: 'uid1',
   email: 'a@b.com',
-  phoneNumber: null,
 };
 
 const mockFixtures: {
@@ -24,7 +20,7 @@ function mockClauseMatches(data: Record<string, unknown>, clause: {field: string
   return true;
 }
 
-jest.mock('@react-native-firebase/auth', () => ({
+jest.mock('../firebase/auth', () => ({
   EmailAuthProvider: {credential: (email: string, password: string) => ({email, password})},
   deleteUser: jest.fn(async () => undefined),
   getAuth: () => ({
@@ -32,13 +28,11 @@ jest.mock('@react-native-firebase/auth', () => ({
       return mockCurrentUser;
     },
   }),
-  linkWithPhoneNumber: (...args: unknown[]) => mockLinkWithPhoneNumber(...args),
   reauthenticateWithCredential: (...args: unknown[]) => mockReauthenticateWithCredential(...args),
-  unlink: (...args: unknown[]) => mockUnlink(...args),
   updatePassword: jest.fn(async () => undefined),
 }));
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   arrayRemove: (v: unknown) => v,
   collection: (_db: unknown, ...segments: string[]) => ({path: segments.join('/'), clauses: []}),
   deleteDoc: jest.fn(async () => undefined),
@@ -64,142 +58,32 @@ jest.mock('@react-native-firebase/firestore', () => ({
   writeBatch: () => ({delete: jest.fn(), commit: jest.fn(async () => undefined)}),
 }));
 
-jest.mock('@react-native-firebase/storage', () => () => ({
-  ref: () => ({listAll: jest.fn(async () => ({items: [], prefixes: []}))}),
+// Modular shape, matching the call site — and matching what the Firebase JS
+// SDK exposes, so this mock stays valid on a platform with no native SDK.
+jest.mock('../firebase/storage', () => ({
+  getStorage: () => ({}),
+  ref: (_storage: unknown, path: string) => ({path}),
+  listAll: jest.fn(async () => ({items: [], prefixes: []})),
+  deleteObject: jest.fn(async () => undefined),
 }));
 jest.mock('../storageMMKV', () => ({mmkvStorage: {clear: jest.fn(async () => undefined)}}));
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({
-  setUserPhoneNumber: (...args: unknown[]) => mockSetUserPhoneNumber(...args),
   deleteStorageObjectByUrl: (...args: unknown[]) => mockDeleteStorageObjectByUrl(...args),
 }));
 jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {
-  confirmPhoneLink,
-  describePhoneLinkError,
-  purgeUserData,
-  sendPhoneLinkCode,
-  unlinkPhoneNumber,
-} from '../account';
+import {purgeUserData} from '../account';
 import {encryptMessage, generateKeypair} from '../e2ee';
 
 beforeEach(() => {
-  mockCurrentUser = {uid: 'uid1', email: 'a@b.com', phoneNumber: null};
-  mockLinkWithPhoneNumber.mockReset().mockResolvedValue({
-    verificationId: 'verification-id',
-    confirm: jest.fn(async (code: string) => ({user: {phoneNumber: '+14155550123'}})),
-  });
+  mockCurrentUser = {uid: 'uid1', email: 'a@b.com'};
   mockReauthenticateWithCredential.mockReset().mockResolvedValue(undefined);
-  mockUnlink.mockReset().mockResolvedValue(undefined);
-  mockSetUserPhoneNumber.mockReset().mockResolvedValue(undefined);
   mockDeleteStorageObjectByUrl.mockReset().mockResolvedValue(true);
   mockGetOrCreateDeviceKeypair.mockReset();
   mockFixtures.collections = new Map();
-});
-
-describe('describePhoneLinkError', () => {
-  it('maps every credential-rejection spelling to wrong-password, same as describeAuthError', () => {
-    for (const code of [
-      'auth/wrong-password',
-      'auth/invalid-credential',
-      'auth/invalid-login-credentials',
-    ]) {
-      expect(describePhoneLinkError({code})).toBe('wrong-password');
-    }
-  });
-
-  it('distinguishes phone-specific failures', () => {
-    expect(describePhoneLinkError({code: 'auth/invalid-phone-number'})).toBe('invalid-phone-number');
-    expect(describePhoneLinkError({code: 'auth/invalid-verification-code'})).toBe(
-      'invalid-verification-code',
-    );
-    expect(describePhoneLinkError({code: 'auth/code-expired'})).toBe('code-expired');
-    expect(describePhoneLinkError({code: 'auth/too-many-requests'})).toBe('too-many-requests');
-  });
-
-  it('collapses both spellings Firebase uses for an already-linked phone number', () => {
-    expect(describePhoneLinkError({code: 'auth/credential-already-in-use'})).toBe(
-      'phone-already-in-use',
-    );
-    expect(describePhoneLinkError({code: 'auth/provider-already-linked'})).toBe(
-      'phone-already-in-use',
-    );
-  });
-
-  it('reports provider-not-enabled when the Phone sign-in provider is off in the Firebase console', () => {
-    expect(describePhoneLinkError({code: 'auth/operation-not-allowed'})).toBe('provider-not-enabled');
-    expect(describePhoneLinkError({code: 'auth/admin-restricted-operation'})).toBe(
-      'provider-not-enabled',
-    );
-  });
-
-  it('falls back to unknown rather than mislabelling an unexpected failure', () => {
-    expect(describePhoneLinkError({code: 'auth/network-request-failed'})).toBe('unknown');
-    expect(describePhoneLinkError(null)).toBe('unknown');
-  });
-});
-
-describe('sendPhoneLinkCode', () => {
-  it('rejects when nobody is signed in', async () => {
-    mockCurrentUser = null;
-    await expect(sendPhoneLinkCode('pw', '+14155550123')).rejects.toThrow('not signed in');
-  });
-
-  it('reauthenticates before starting phone verification', async () => {
-    const confirmation = await sendPhoneLinkCode('pw', '+14155550123');
-    expect(mockReauthenticateWithCredential).toHaveBeenCalled();
-    expect(mockLinkWithPhoneNumber).toHaveBeenCalledWith(mockCurrentUser, '+14155550123');
-    expect(confirmation.verificationId).toBe('verification-id');
-  });
-
-  it('wraps a reauth failure with reason wrong-password', async () => {
-    mockReauthenticateWithCredential.mockRejectedValueOnce({code: 'auth/wrong-password'});
-    await expect(sendPhoneLinkCode('bad-pw', '+14155550123')).rejects.toMatchObject({
-      reason: 'wrong-password',
-    });
-    expect(mockLinkWithPhoneNumber).not.toHaveBeenCalled();
-  });
-});
-
-describe('confirmPhoneLink', () => {
-  it('confirms the code and writes the verified phone number to the private doc', async () => {
-    const confirmation = {
-      verificationId: 'verification-id',
-      confirm: jest.fn(async () => ({user: {phoneNumber: '+14155550123'}})),
-    };
-    await confirmPhoneLink(confirmation as never, '123456');
-    expect(confirmation.confirm).toHaveBeenCalledWith('123456');
-    expect(mockSetUserPhoneNumber).toHaveBeenCalledWith('uid1', '+14155550123');
-  });
-
-  it('wraps an invalid code with reason invalid-verification-code', async () => {
-    const confirmation = {
-      verificationId: 'verification-id',
-      confirm: jest.fn(async () => {
-        throw {code: 'auth/invalid-verification-code'};
-      }),
-    };
-    await expect(confirmPhoneLink(confirmation as never, 'bad-code')).rejects.toMatchObject({
-      reason: 'invalid-verification-code',
-    });
-    expect(mockSetUserPhoneNumber).not.toHaveBeenCalled();
-  });
-});
-
-describe('unlinkPhoneNumber', () => {
-  it('unlinks the phone provider then clears the private doc', async () => {
-    await unlinkPhoneNumber();
-    expect(mockUnlink).toHaveBeenCalledWith(mockCurrentUser, 'phone');
-    expect(mockSetUserPhoneNumber).toHaveBeenCalledWith('uid1', null);
-  });
-
-  it('rejects when nobody is signed in', async () => {
-    mockCurrentUser = null;
-    await expect(unlinkPhoneNumber()).rejects.toThrow('not signed in');
-  });
 });
 
 describe('purgeUserData media cleanup', () => {

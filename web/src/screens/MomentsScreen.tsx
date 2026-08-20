@@ -10,7 +10,9 @@ import {uploadMomentImage} from '../services/storage';
 import type {Moment, MomentVisibility, UserProfile} from '../types';
 import FriendsModal from '../components/FriendsModal';
 import MomentComments from '../components/MomentComments';
+import RevealOnScroll from '../components/RevealOnScroll';
 import Icon from '../components/Icon';
+import {motion} from 'framer-motion';
 
 export default function MomentsScreen({user, requestCount = 0}: {user: User; requestCount?: number}) {
   const {t} = useT();
@@ -253,7 +255,8 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
           <div style={styles.info}>{t('moments.empty')}</div>
         ) : (
           shownMoments.map(m => (
-            <article key={m.id} className="cv-card" style={styles.card}>
+            <RevealOnScroll key={m.id}>
+            <article className="cv-card" style={styles.card}>
               <header style={styles.cardHead}>
                 <div style={{...styles.avatar, background: avatarColor(m.authorId)}}>
                   {authorName(m.authorId).charAt(0).toUpperCase()}
@@ -272,12 +275,17 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
               </header>
               {m.text && <p style={styles.body}>{m.text}</p>}
               {m.mediaUrl && m.mediaType === 'image' && (
-                <img
+                // layoutId pairs this thumbnail with the lightbox photo, so
+                // tapping grows it out of here instead of fading in over it.
+                // Keyed by moment id rather than URL: the same image posted
+                // twice would otherwise give two elements the same id.
+                <motion.img
+                  layoutId={`moment-photo-${m.id}`}
                   src={m.mediaUrl}
                   alt=""
                   style={styles.cardImage}
                   loading="lazy"
-                  onClick={() => lightbox.open(m.mediaUrl!)}
+                  onClick={() => lightbox.open(m.mediaUrl!, `moment-photo-${m.id}`)}
                 />
               )}
               <div style={styles.actions}>
@@ -310,6 +318,7 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
               </div>
               {openComments.has(m.id) && <MomentComments momentId={m.id} myUid={user.uid} />}
             </article>
+            </RevealOnScroll>
           ))
         )}
       </div>

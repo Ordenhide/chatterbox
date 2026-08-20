@@ -5,10 +5,10 @@ const mockDeleteDoc = jest.fn(async (..._args: unknown[]) => undefined);
 const mockFetchPeerPublicKeyChecked = jest.fn();
 const mockGetOrCreateDeviceKeypair = jest.fn();
 
-type MockSnapshotHandler = (snapshot: {exists: boolean; data: () => Record<string, unknown>}) => void;
+type MockSnapshotHandler = (snapshot: {exists: () => boolean; data: () => Record<string, unknown>}) => void;
 const mockOnSnapshotHandlers: MockSnapshotHandler[] = [];
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   setDoc: (...args: unknown[]) => mockSetDoc(...args),
@@ -134,7 +134,7 @@ describe('stopSharingLocation', () => {
 });
 
 describe('listenLiveLocation', () => {
-  function emit(snapshot: {exists: boolean; data: () => Record<string, unknown>}) {
+  function emit(snapshot: {exists: () => boolean; data: () => Record<string, unknown>}) {
     mockOnSnapshotHandlers[0](snapshot);
   }
 
@@ -146,7 +146,7 @@ describe('listenLiveLocation', () => {
 
     listenLiveLocation(CHAT_ID, PEER, me.secretKey, callback);
     emit({
-      exists: true,
+      exists: () => true,
       data: () => ({encryptedPosition: payload, expiresAt: Date.now() + 60_000, updatedAt: {toMillis: () => 12345}}),
     });
 
@@ -161,7 +161,7 @@ describe('listenLiveLocation', () => {
   it('reports null when there is no doc', () => {
     const callback = jest.fn();
     listenLiveLocation(CHAT_ID, PEER, generateKeypair().secretKey, callback);
-    emit({exists: false, data: () => ({})});
+    emit({exists: () => false, data: () => ({})});
     expect(callback).toHaveBeenCalledWith(null);
   });
 
@@ -172,7 +172,7 @@ describe('listenLiveLocation', () => {
     const callback = jest.fn();
 
     listenLiveLocation(CHAT_ID, PEER, me.secretKey, callback);
-    emit({exists: true, data: () => ({encryptedPosition: payload, expiresAt: Date.now() - 1000, updatedAt: {}})});
+    emit({exists: () => true, data: () => ({encryptedPosition: payload, expiresAt: Date.now() - 1000, updatedAt: {}})});
 
     expect(callback).toHaveBeenCalledWith(null);
   });
@@ -187,7 +187,7 @@ describe('listenLiveLocation', () => {
 
     listenLiveLocation(CHAT_ID, PEER, me.secretKey, callback);
     expect(() =>
-      emit({exists: true, data: () => ({encryptedPosition: payload, expiresAt: Date.now() + 60_000, updatedAt: {}})}),
+      emit({exists: () => true, data: () => ({encryptedPosition: payload, expiresAt: Date.now() + 60_000, updatedAt: {}})}),
     ).not.toThrow();
 
     expect(callback).toHaveBeenCalledWith(expect.objectContaining({uid: PEER, position: null}));

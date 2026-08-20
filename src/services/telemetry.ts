@@ -2,13 +2,13 @@ import {
   getAnalytics,
   logEvent,
   setUserId as setAnalyticsUserId,
-} from '@react-native-firebase/analytics';
+} from './firebase/analytics';
 import {
   getCrashlytics,
   log as crashLog,
   recordError,
   setUserId as setCrashlyticsUserId,
-} from '@react-native-firebase/crashlytics';
+} from './firebase/crashlytics';
 
 const telemetryEnabled = !__DEV__;
 const analytics = telemetryEnabled ? getAnalytics() : null;

@@ -31,9 +31,9 @@ import {
   setDoc,
   where,
   writeBatch,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {resolveMessageMediaUrls} from './messageMedia';
-import {getStorage, deleteObject, refFromURL} from '@react-native-firebase/storage';
+import {deleteObject, getStorage, ref} from './firebase/storage';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
 
 const storage = getStorage();
@@ -44,10 +44,10 @@ const storage = getStorage();
  */
 async function deleteStorageObjectByUrl(url: string): Promise<boolean> {
   // Inline media (data: URIs) lives inside the Firestore document itself, so
-  // there is no Storage object behind it — and refFromURL() would throw.
+  // there is no Storage object behind it — and ref() would throw.
   if (!url.startsWith('http')) return false;
   try {
-    await deleteObject(refFromURL(storage, url));
+    await deleteObject(ref(storage, url));
     return true;
   } catch {
     return false;
@@ -114,7 +114,7 @@ export async function trashMessages(
 
   for (const id of ids) {
     const snap = await getDoc(msgRef(chatId, id)).catch(() => null);
-    if (!snap?.exists) continue;
+    if (!snap?.exists()) continue;
     // Copy first, delete second: if the copy fails the message is still in the
     // thread, which is a far better failure than losing it entirely.
     await setDoc(doc(trashRef(chatId), id), {
@@ -136,7 +136,7 @@ export async function trashMessages(
 /** Puts a trashed message back into the thread, unchanged. */
 export async function recoverMessage(chatId: string, messageId: string): Promise<boolean> {
   const snap = await getDoc(doc(trashRef(chatId), messageId));
-  if (!snap.exists) return false;
+  if (!snap.exists()) return false;
   const data = snap.data() as {payload?: Record<string, unknown>; deletedAt?: number};
   if (!data.payload || isTrashExpired(Number(data.deletedAt))) return false;
 

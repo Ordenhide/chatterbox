@@ -8,7 +8,7 @@
 const mockGetDoc = jest.fn();
 const mockGetDocFromServer = jest.fn();
 
-jest.mock('@react-native-firebase/firestore', () => ({
+jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   getDoc: (...args: unknown[]) => mockGetDoc(...args),
@@ -34,7 +34,7 @@ const PEER = 'peer-uid';
  * getting it wrong makes every document look like it exists.
  */
 const snapshot = (data: Record<string, unknown> | null) => ({
-  exists: data !== null,
+  exists: () => data !== null,
   data: () => data,
 });
 

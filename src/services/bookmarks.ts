@@ -8,7 +8,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {BookmarkedMessage} from '../types';
 import {guardQuerySnapshot} from './snapshotGuard';
 

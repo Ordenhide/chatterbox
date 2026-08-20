@@ -232,11 +232,21 @@ describe('catalog integrity', () => {
     expect(invisible.map(t => t.id)).toEqual([]);
   });
 
-  it('keeps free themes light and Pro themes dark', () => {
+  it('keeps the original light/dark split intact', () => {
+    // Every theme is free now, but the visual split predates that and is
+    // still deliberate variety, not an accident worth losing track of.
+    const historicallyDark = new Set([
+      'midnight',
+      'sunset',
+      'matcha',
+      'lavender',
+      'ember',
+      'arctic',
+    ]);
     for (const theme of THEME_CATALOG) {
       expect({id: theme.id, dark: isDarkWallpaper(theme.wallpaper)}).toEqual({
         id: theme.id,
-        dark: theme.pro,
+        dark: historicallyDark.has(theme.id),
       });
     }
   });

@@ -83,17 +83,30 @@ export interface ChatMessage {
   // image/audio/file.uri) is populated once decryption succeeds and is what
   // the rest of the UI renders, so no separate "encrypted" code path exists
   // outside ChatPane's decrypt effect.
-  encrypted?: EncryptedField | null;
-  encryptedImage?: EncryptedField | null;
-  encryptedVideo?: EncryptedField | null;
-  encryptedAudio?: EncryptedField | null;
-  encryptedFileUri?: EncryptedField | null;
+  encrypted?: EncryptedField | SealedEnvelopeField | null;
+  encryptedImage?: EncryptedField | SealedEnvelopeField | null;
+  encryptedVideo?: EncryptedField | SealedEnvelopeField | null;
+  encryptedAudio?: EncryptedField | SealedEnvelopeField | null;
+  encryptedFileUri?: EncryptedField | SealedEnvelopeField | null;
   // Link preview, resolved once by the sender and sealed the same way (see
   // services/linkPreview.ts). `linkPreview` is the legacy plaintext field the
   // mobile client wrote before this, and the fallback when there's no peer key
   // to encrypt to; ChatPane's decrypt pass fills it in from the sealed copy.
   linkPreview?: {url: string; title?: string | null; description?: string | null; image?: string | null} | null;
   encryptedLinkPreview?: EncryptedField | null;
+}
+
+/**
+ * A fan-out envelope: one independently-decryptable copy per recipient uid —
+ * see sealForRecipients in services/e2ee.ts.
+ *
+ * Messages written before group support carry a bare EncryptedField instead, so
+ * readers must handle both shapes. `isSealed`/`openSealed` do; there is no
+ * migration and old messages stay readable indefinitely.
+ */
+export interface SealedEnvelopeField {
+  alg: string;
+  copies: Record<string, EncryptedField>;
 }
 
 export interface EncryptedField {
@@ -219,4 +232,26 @@ export interface Moment {
   commentCount?: number;
   // "Burn after time-up": epoch ms after which the moment auto-disappears.
   expiresAt?: number | null;
+}
+
+export interface QuoteWallEntry {
+  id: string;
+  messageId: string | number;
+  text: string;
+  senderName?: string;
+  senderId: string;
+  pinnedBy: string;
+  pinnedByName?: string;
+  createdAt: number;
+  pinnedAt: number;
+}
+
+export interface ContextCard {
+  id: string;
+  entity: string;
+  type: 'place' | 'film' | 'person' | 'topic';
+  title: string;
+  description: string;
+  image?: string;
+  url?: string;
 }

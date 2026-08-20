@@ -8,7 +8,7 @@ import {
   serverTimestamp,
   setDoc,
   where,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {BlockRecord} from '../types';
 import {reportError} from './telemetry';
 

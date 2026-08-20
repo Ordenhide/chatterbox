@@ -7,7 +7,7 @@ import {
   setDoc,
   deleteDoc,
   writeBatch,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {mmkvStorage} from './storageMMKV';
 
 const db = getFirestore();

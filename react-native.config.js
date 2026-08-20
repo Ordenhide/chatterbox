@@ -1,69 +1,40 @@
-// Native modules with no macOS support (confirmed via each package's podspec —
-// none declare an `:osx`/macos platform, or their React Native bridge doesn't
-// have a macOS implementation). Autolinking is disabled for `macos` only;
-// iOS/Android are unaffected. JS call sites for these must be feature-flagged
-// out (or given a macOS-specific fallback) for the macos platform.
-const noMacosSupport = [
-  '@react-native-firebase/analytics',
-  '@react-native-firebase/app',
-  '@react-native-firebase/app-check',
-  '@react-native-firebase/auth',
-  '@react-native-firebase/crashlytics',
-  '@react-native-firebase/firestore',
-  '@react-native-firebase/functions',
-  '@react-native-firebase/messaging',
-  '@react-native-firebase/remote-config',
-  '@react-native-firebase/storage',
-  'react-native-audio-recorder-player',
-  'react-native-biometrics',
-  'react-native-document-picker',
-  'react-native-haptic-feedback',
-  'react-native-image-picker',
-  'react-native-image-resizer',
-  'react-native-incall-manager',
-  'react-native-screens',
-  'react-native-vector-icons',
-  'react-native-video',
-  // Its podspec declares macOS, but the RN bridge has no working macOS
-  // implementation in any current fork (see the calls-on-macOS research);
-  // calls are out of scope for the macOS build for now.
-  'react-native-webrtc',
-];
+/**
+ * Autolinking for the mobile app: iOS, Android, and (once RNOH lands)
+ * HarmonyOS.
+ *
+ * The macOS rules that used to live here have moved to
+ * macos-app/react-native.config.js. macOS is now a separate package pinned to
+ * React Native 0.81, because react-native-macos has no 0.82+ release and RNOH
+ * pins React Native exactly — see macos-app/README.md. Keeping its ~22
+ * "no macOS support" exclusions and the Mac Catalyst switch in the shared root
+ * meant every mobile build parsed rules for a platform it cannot build.
+ */
+const pkg = require('./package.json');
 
-// Mac Catalyst shares the "ios" autolinking bucket (there is no separate
-// "catalyst" platform key), yet react-native-webrtc's precompiled JitsiWebRTC
-// binary has no Catalyst slice and its bridge source won't compile for
-// Catalyst. So we must fully drop webrtc (module + JitsiWebRTC framework link)
-// from the iOS bucket *when building the Catalyst variant*, while keeping it
-// for real iOS device/simulator builds where calling must work.
+// @react-native-oh-tpl/* packages are HarmonyOS-only ports. Several of them
+// (confirmed so far: react-native-get-random-values, react-native-audio-
+// recorder-player, react-native-localize, react-native-haptic-feedback) ship
+// a full copy of the original package's ios/ folder and podspec, reusing the
+// same pod/module name as the real upstream package. Autolinking has no
+// concept of "harmony only" — it discovers every dependency with a podspec
+// or build.gradle and links whichever one it processes last for a given pod
+// name, so leaving these unexcluded silently swaps the real iOS/Android
+// module for an untested HarmonyOS fork. Caught via
+// react-native-get-random-values, which backs crypto/E2EE — a
+// security-sensitive module to have silently swapped.
 //
-//   • iOS / Android (default):     leave CHATTERBOX_CATALYST unset  -> webrtc linked, calls work
-//   • Mac Catalyst:                CHATTERBOX_CATALYST=1 pod install --project-directory=ios
-//                                  then build the "Mac Catalyst" destination
-//
-// Re-run `pod install` after flipping this env var, since it changes which
-// pods are integrated.
-const buildingCatalyst = process.env.CHATTERBOX_CATALYST === '1';
-
-// The macOS target autolinks from the **ios** bucket — no package in this tree
-// declares a `macos` platform, so the `macos: null` entries above are inert and
-// what actually gets linked is whatever iOS podspec also declares `:osx`.
-//
-// That is why webrtc has to be dropped from `ios` here, not `macos`:
-// react-native-webrtc 124's podspec declares `:osx => '10.13'` (111's did not),
-// so upgrading it silently pulled the pod into the macOS build, where its
-// sources `#import <UIKit/UIKit.h>` and fail to compile — exactly the "no
-// working macOS implementation" case noted above.
-//
-// macos/Podfile sets this automatically, so no one has to remember the env var.
-const buildingMacos = process.env.CHATTERBOX_MACOS === '1';
-
-const dependencies = Object.fromEntries(
-  noMacosSupport.map(name => [name, {platforms: {macos: null}}]),
+// Harmony itself doesn't use this autolinking path at all: RNOH's Metro
+// resolver redirects JS imports via each port's `harmony.alias` field, and
+// hvigor has its own separate autolinking (see harmony/README.md) for
+// whatever ships a `.har`. So excluding these here costs harmony nothing —
+// derived from package.json rather than hardcoded so a future oh-tpl
+// addition can't reintroduce this bug by omission.
+const harmonyOnlyPackages = Object.keys(pkg.dependencies || {}).filter(name =>
+  name.startsWith('@react-native-oh-tpl/'),
 );
 
-if (buildingCatalyst || buildingMacos) {
-  dependencies['react-native-webrtc'] = {platforms: {ios: null, macos: null}};
-}
-
-module.exports = {dependencies};
+module.exports = {
+  dependencies: Object.fromEntries(
+    harmonyOnlyPackages.map(name => [name, {platforms: {ios: null, android: null}}]),
+  ),
+};

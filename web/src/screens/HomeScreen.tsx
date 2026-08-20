@@ -65,7 +65,14 @@ export default function HomeScreen({
       const custom = chat.nameBy?.[user.uid];
       const otherUid = chat.participants.find(p => p !== user.uid) || chat.id;
       const other = otherUid ? userCache[otherUid] : undefined;
-      const title = custom || other?.displayName || other?.email || chat.name || 'Chat';
+      // A group titled after whichever member happens to be first in the array
+      // reads as a 1:1 with the wrong person, so groups use the chat's own name
+      // (set at creation from the member list) and then a plain count — never a
+      // single member's name. Mirrors the mobile header.
+      const isGroup = chat.participants.length > 2;
+      const title = isGroup
+        ? custom || chat.name || `${chat.participants.length} members`
+        : custom || other?.displayName || other?.email || chat.name || 'Chat';
       return {title, seed: otherUid};
     },
     [user.uid, userCache],

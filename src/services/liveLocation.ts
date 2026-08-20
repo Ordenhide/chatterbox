@@ -15,7 +15,7 @@
  * `watchMyPosition` (src/utils/geolocation.ts), which the chat screen tears
  * down on blur/unmount.
  */
-import {deleteDoc, doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '@react-native-firebase/firestore';
+import {deleteDoc, doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from './firebase/firestore';
 import {decryptMessage, encryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
 import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
 
@@ -104,7 +104,7 @@ export function listenLiveLocation(
   return onSnapshot(
     liveLocationDoc(chatId, peerUid),
     snapshot => {
-      if (!snapshot.exists) {
+      if (!snapshot.exists()) {
         callback(null);
         return;
       }

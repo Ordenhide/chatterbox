@@ -8,7 +8,7 @@ import {
   query,
   where,
   orderBy,
-} from '@react-native-firebase/firestore';
+} from './firebase/firestore';
 import {Reminder} from '../types';
 
 const db = getFirestore();

@@ -37,8 +37,12 @@ import {
 } from '../services/storage';
 import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
-import {decryptMessage, encryptMessage, isEncryptedPayload} from '../services/e2ee';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
+import {
+  fetchPeerPublicKeyChecked,
+  getKeyGeneration,
+  getOrCreateDeviceKeypair,
+} from '../services/e2eeKeys';
 import {makeArtifactCrypto} from '../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -60,7 +64,7 @@ import {
 import {useEntitlement} from '../context/EntitlementContext';
 import {useAccountTheme} from '../context/StoreThemeContext';
 import {resolveAccent, resolveWallpaper} from '../services/storeTheme';
-import {isDarkWallpaper} from '../services/themeCatalog';
+import {effectForAccent, isDarkWallpaper} from '../services/themeCatalog';
 import {safeExternalUrl} from '../utils/safeUrl';
 import {formatDayLabel, isSameDay} from '../utils/messageDay';
 import ProUpsellModal from './ProUpsellModal';
@@ -95,6 +99,10 @@ import Icon from './Icon';
 import AudioMessage from './AudioMessage';
 import WhiteboardModal from './WhiteboardModal';
 import GifPicker from './GifPicker';
+import GroupMembersModal from './GroupMembersModal';
+import ChatLockModal from './ChatLockModal';
+import {isChatLocked} from '../services/appLock';
+import {useDismissOnOutside} from '../hooks/useDismissOnOutside';
 import ChatSettingsModal from './ChatSettingsModal';
 import ChatMediaModal from './ChatMediaModal';
 import PlaylistModal from './PlaylistModal';
@@ -153,6 +161,12 @@ export default function ChatPane({
   const inFlightTextRef = useRef<string | null>(null);
   const [activeMsg, setActiveMsg] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [showLockSettings, setShowLockSettings] = useState(false);
+  // Gate state is per-mount and keyed by chat: switching to a locked chat must
+  // re-challenge rather than inherit the previous chat's unlocked state.
+  const [unlockedChatId, setUnlockedChatId] = useState<string | null>(null);
+  const menuWrapRef = useDismissOnOutside<HTMLDivElement>(menuOpen, () => setMenuOpen(false));
   const [summary, setSummary] = useState<string | null>(null);
   const [summarizing, setSummarizing] = useState(false);
   const [summaryQuestion, setSummaryQuestion] = useState('');
@@ -247,6 +261,11 @@ export default function ChatPane({
   // Link previews decrypt to a JSON blob rather than a URL, so this cache
   // holds the parsed card (or null when the payload is unreadable/invalid).
   const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
+  // The caches above are keyed by message id, not by the key that decrypted
+  // them, so they'd survive a key change and keep serving results (including
+  // "couldn't decrypt" placeholders) produced under the old key. Tracking the
+  // generation lets the decrypt pass below drop them when the key changes.
+  const decryptKeyGenerationRef = useRef<number>(getKeyGeneration());
 
   /**
    * Substitutes decrypted (or placeholder) content for any encrypted field a
@@ -257,11 +276,11 @@ export default function ChatPane({
    * async decrypt pass below actually running.
    */
   const withDecryptedPlaceholders = useCallback((m: ChatMessage): ChatMessage => {
-    const hasEncryptedImage = isEncryptedPayload(m.encryptedImage);
-    const hasEncryptedVideo = isEncryptedPayload(m.encryptedVideo);
-    const hasEncryptedAudio = isEncryptedPayload(m.encryptedAudio);
-    const hasEncryptedFile = isEncryptedPayload(m.encryptedFileUri);
-    const hasEncryptedText = isEncryptedPayload(m.encrypted);
+    const hasEncryptedImage = isSealed(m.encryptedImage);
+    const hasEncryptedVideo = isSealed(m.encryptedVideo);
+    const hasEncryptedAudio = isSealed(m.encryptedAudio);
+    const hasEncryptedFile = isSealed(m.encryptedFileUri);
+    const hasEncryptedText = isSealed(m.encrypted);
     if (!hasEncryptedText && !hasEncryptedImage && !hasEncryptedVideo && !hasEncryptedAudio && !hasEncryptedFile) {
       return m;
     }
@@ -496,15 +515,26 @@ export default function ChatPane({
    * exits immediately, so this converges rather than looping.
    */
   useEffect(() => {
+    const currentKeyGeneration = getKeyGeneration();
+    if (currentKeyGeneration !== decryptKeyGenerationRef.current) {
+      decryptKeyGenerationRef.current = currentKeyGeneration;
+      decryptedTextRef.current.clear();
+      decryptedImageRef.current.clear();
+      decryptedVideoRef.current.clear();
+      decryptedAudioRef.current.clear();
+      decryptedFileUriRef.current.clear();
+      decryptedPreviewRef.current.clear();
+    }
+
     const needsDecrypt = (m: ChatMessage) => {
       const id = m._id;
       return (
-        (isEncryptedPayload(m.encrypted) && !decryptedTextRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedImage) && !decryptedImageRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
-        (isEncryptedPayload(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
+        (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) ||
+        (isSealed(m.encryptedImage) && !decryptedImageRef.current.has(id)) ||
+        (isSealed(m.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
+        (isSealed(m.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
+        (isSealed(m.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
+        (isSealed(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
       );
     };
     const toDecrypt = messages.filter(needsDecrypt);
@@ -520,9 +550,9 @@ export default function ChatPane({
           const id = m._id;
           let mediaFailed = false;
 
-          if (isEncryptedPayload(m.encrypted) && !decryptedTextRef.current.has(id)) {
+          if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
             try {
-              decryptedTextRef.current.set(id, decryptMessage(m.encrypted, secretKey, chatId));
+              decryptedTextRef.current.set(id, openSealed(m.encrypted, secretKey, me.uid, chatId));
             } catch (err) {
               // Wrong/rotated key, or a payload from before this device
               // enrolled — distinct from "still loading" so it doesn't spin
@@ -533,9 +563,9 @@ export default function ChatPane({
           }
 
           const mediaField = (payload: unknown, cache: React.MutableRefObject<Map<string, string>>) => {
-            if (!isEncryptedPayload(payload) || cache.current.has(id)) return;
+            if (!isSealed(payload) || cache.current.has(id)) return;
             try {
-              cache.current.set(id, decryptMessage(payload, secretKey, chatId));
+              cache.current.set(id, openSealed(payload, secretKey, me.uid, chatId));
             } catch (err) {
               console.warn('e2ee decrypt failed:', err);
               cache.current.set(id, '');
@@ -551,11 +581,11 @@ export default function ChatPane({
           // absent, so this doesn't retry it on every render — and a missing
           // card is a far smaller loss than an unreadable message, so it
           // deliberately doesn't count towards mediaFailed.
-          if (isEncryptedPayload(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id)) {
+          if (isSealed(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id)) {
             try {
               decryptedPreviewRef.current.set(
                 id,
-                parsePreview(decryptMessage(m.encryptedLinkPreview, secretKey, chatId)),
+                parsePreview(openSealed(m.encryptedLinkPreview, secretKey, me.uid, chatId)),
               );
             } catch {
               decryptedPreviewRef.current.set(id, null);
@@ -565,7 +595,7 @@ export default function ChatPane({
           // A media-only message has no `encrypted` text of its own to carry
           // a failure message, so surface it the same way a text decrypt
           // failure does.
-          if (mediaFailed && !isEncryptedPayload(m.encrypted)) {
+          if (mediaFailed && !isSealed(m.encrypted)) {
             decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
           }
         });
@@ -814,10 +844,11 @@ export default function ChatPane({
   const storeTheme = useAccountTheme();
   const themeColor = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, colors.primary);
   const wallpaper = resolveWallpaper(chat?.wallpaperBy?.[me.uid], storeTheme?.wallpaper);
+  const themeEffect = effectForAccent(themeColor);
   // Message text is a fixed dark colour, which vanishes against a dark
-  // wallpaper. Every Pro theme is dark, so the thread flips to light ink.
-  // A 1:1 thread doesn't need sender names — the side a bubble sits on says
-  // who wrote it. Group chats still label each speaker.
+  // wallpaper. Half the catalog is dark, so this is a common case, not an
+  // edge one. A 1:1 thread doesn't need sender names — the side a bubble
+  // sits on says who wrote it. Group chats still label each speaker.
   const isGroupChat = (chat?.participants?.length || 0) > 2;
   const darkWallpaper = isDarkWallpaper(wallpaper);
   const threadText = darkWallpaper ? '#E8EEF7' : colors.text;
@@ -868,14 +899,24 @@ export default function ChatPane({
    * none of the temporal-dead-zone risk the effects above have to avoid.
    */
   const encryptOutgoingMessage = async (data: OutgoingMedia): Promise<OutgoingMedia> => {
-    if (!otherUid || !chatId) return data;
+    const memberUids = (chat?.participants || []).filter(p => p !== me.uid);
+    if (memberUids.length === 0 || !chatId) return data;
     try {
-      const {key: peerPublicKey, status} = await fetchPeerPublicKeyChecked(me.uid, otherUid);
-      if (status === 'changed') setPeerKeyChanged(true);
-      if (!peerPublicKey) return data; // peer hasn't enrolled — send stays plaintext
+      // One sealed copy per member — a 1:1 chat is just the single-recipient
+      // case, so there is no separate direct-message path. See sealForRecipients
+      // in services/e2ee.ts for why fan-out rather than sender keys.
+      const recipients: EnvelopeRecipient[] = [];
+      for (const uid of memberUids) {
+        const {key, status} = await fetchPeerPublicKeyChecked(me.uid, uid);
+        if (status === 'changed') setPeerKeyChanged(true);
+        // All-or-nothing: a message sealed for only some members would be blank
+        // for the rest, which is worse than one everyone can read.
+        if (!key) return data;
+        recipients.push({uid, publicKey: key});
+      }
 
       const {secretKey} = await getOrCreateDeviceKeypair(me.uid);
-      const seal = (plaintext: string) => encryptMessage(plaintext, secretKey, peerPublicKey, chatId);
+      const seal = (plaintext: string) => sealForRecipients(plaintext, secretKey, recipients, chatId);
       const next: OutgoingMedia = {...data};
 
       if (next.text) {
@@ -1299,7 +1340,14 @@ export default function ChatPane({
   // Calls are pointless once the account is gone: there is no device left to
   // ring. `otherUid` already goes undefined when the peer leaves participants,
   // but not in the partial-purge case where only the profile is deleted.
-  const canCall = !!otherUid && !peerDeleted;
+  //
+  // Groups are excluded because the call stack is 1:1 (startCall takes a single
+  // callee). Without this the button would silently ring whichever member
+  // happens to sit first in `participants` — a call to one person that everyone
+  // else in the group never sees, and that the caller believes went to the group.
+  // Better to offer nothing than something that misleads; group calling needs
+  // real multi-party signalling, not a reused 1:1 path.
+  const canCall = !!otherUid && !peerDeleted && !isGroupChat;
   const startVoice = () => canCall && startCall(chatId, otherUid!, title, 'voice');
   const startVideo = () => canCall && startCall(chatId, otherUid!, title, 'video');
 
@@ -1467,6 +1515,25 @@ export default function ChatPane({
   };
 
   // ---- Render ---------------------------------------------------------------
+
+  // A locked chat renders *only* the PIN gate. Returning early rather than
+  // overlaying the real pane matters: an overlay still mounts the thread, so
+  // the messages would be in the DOM (and briefly on screen before paint) for
+  // anyone who inspected or screenshotted it — which is exactly what the lock
+  // is meant to prevent.
+  if (isChatLocked(chatId) && unlockedChatId !== chatId) {
+    return (
+      <div style={styles.pane}>
+        <ChatLockModal
+          chatId={chatId}
+          mode="unlock"
+          onClose={() => onBack?.()}
+          onUnlocked={() => setUnlockedChatId(chatId)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={styles.pane} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
       {dragging && <div className="drop-hint">{t('chat.dropToSend')}</div>}
@@ -1517,8 +1584,15 @@ export default function ChatPane({
             onClick={startVideo}>
             <Icon name="video" size={18} />
           </button>
-          <div style={{position: 'relative'}}>
-            <button style={styles.menuBtn} title="More" onClick={() => setMenuOpen(o => !o)}>
+          {/* Ref wraps the trigger as well as the menu: see useDismissOnOutside
+              for why excluding the button would leave the menu stuck open. */}
+          <div ref={menuWrapRef} style={{position: 'relative'}}>
+            <button
+              style={styles.menuBtn}
+              title="More"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(o => !o)}>
               <Icon name="more" size={20} />
             </button>
             {menuOpen && (
@@ -1535,8 +1609,24 @@ export default function ChatPane({
                 <button style={styles.menuItemRow} onClick={() => enterSelect()}>
                   <Icon name="check" size={15} /> {t('chat.selectMessages')}
                 </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setShowMembers(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="person" size={15} /> Members ({chat?.participants?.length || 0})
+                </button>
                 <button style={styles.menuItem} onClick={() => togglePinChat(chatId, me.uid, isPinned)}>
                   {isPinned ? t('chat.unpin') : t('chat.pin')}
+                </button>
+                <button
+                  style={styles.menuItemRow}
+                  onClick={() => {
+                    setShowLockSettings(true);
+                    setMenuOpen(false);
+                  }}>
+                  <Icon name="lock" size={15} /> {isChatLocked(chatId) ? 'Chat lock' : 'Lock chat'}
                 </button>
                 <button style={styles.menuItem} onClick={() => toggleMuteChat(chatId, me.uid, isMuted)}>
                   {isMuted ? t('chat.unmute') : t('chat.mute')}
@@ -1815,17 +1905,49 @@ export default function ChatPane({
         </button>
       )}
 
-      {/* Living backdrop behind the thread. Only when the chat has no
-          wallpaper of its own — a chosen wallpaper must win outright rather
-          than get an uninvited gradient laid over it. Rendered as a sibling of
-          the scroll container, not inside it, so it stays put while you
-          scroll. */}
-      {!wallpaper && (
-        <div
-          className="cb-aurora"
-          aria-hidden="true"
-          style={{'--cb-anim-accent': themeColor} as React.CSSProperties}
-        />
+      {/* Living backdrop behind the thread. Suppressed only by a genuine
+          custom-photo wallpaper (always an http URL) — a chosen photo must
+          win outright rather than get an uninvited gradient laid over it. A
+          theme's own flat-colour wallpaper no longer suppresses this: every
+          catalog theme already sets one, so the old `!wallpaper` check meant
+          the backdrop never showed once any theme was applied. Rendered as a
+          sibling of the scroll container, not inside it, so it stays put
+          while you scroll. */}
+      {(!wallpaper || !wallpaper.startsWith('http')) && (
+        <>
+          <div
+            className="cb-aurora"
+            aria-hidden="true"
+            style={
+              {
+                '--cb-anim-accent': themeEffect.gradientStops[0],
+                '--cb-anim-accent-2': themeEffect.gradientStops[1],
+                '--cb-anim-accent-3':
+                  themeEffect.gradientStops[2] ?? themeEffect.gradientStops[1],
+              } as React.CSSProperties
+            }
+          />
+          <div className={`cb-particles cb-particles-${themeEffect.particles.style}`} aria-hidden="true">
+            {Array.from({length: themeEffect.particles.density}, (_, i) => (
+              <span
+                key={i}
+                className="cb-particle"
+                style={
+                  {
+                    '--cb-anim-accent': themeEffect.gradientStops[0],
+                    // Coprime-ish multipliers spread particles across the
+                    // width and stagger their timing without needing actual
+                    // randomness — same trick cbBlobDrift/cbBlobDrift2 use so
+                    // the loop doesn't look mechanically synchronized.
+                    left: `${(i * 37) % 100}%`,
+                    animationDelay: `${(i * 613) % 4000}ms`,
+                    animationDuration: `${7000 + ((i * 911) % 5000)}ms`,
+                  } as React.CSSProperties
+                }
+              />
+            ))}
+          </div>
+        </>
       )}
 
       <div
@@ -2538,6 +2660,23 @@ export default function ChatPane({
         <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
       )}
       {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
+      {showLockSettings && (
+        <ChatLockModal chatId={chatId} mode="manage" onClose={() => setShowLockSettings(false)} />
+      )}
+      {showMembers && chat && (
+        <GroupMembersModal
+          chatId={chatId}
+          myUid={me.uid}
+          participants={chat.participants || []}
+          onClose={() => setShowMembers(false)}
+          // Leaving revokes read access, so staying on the thread would just
+          // show permission errors — send them back to the chat list.
+          onLeft={() => {
+            setShowMembers(false);
+            onBack?.();
+          }}
+        />
+      )}
       {proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
       {shareLocationModalOpen && (
         <ShareLocationModal onClose={() => setShareLocationModalOpen(false)} onChoose={beginSharingLocation} />
