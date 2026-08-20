@@ -3337,7 +3337,7 @@ export default function ChatScreen() {
               {...bubbleProps}
               wrapperStyle={{
                 right: {backgroundColor: isSelected ? colors.primary : themeColor},
-                left: isSelected ? {backgroundColor: colors.primaryLight} : undefined,
+                left: {backgroundColor: isSelected ? colors.primaryLight : colors.surface},
               }}
             />
           )}
