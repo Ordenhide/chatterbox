@@ -711,7 +711,7 @@ exports.notifyNewMessage = functions.firestore
   .onCreate(async (snap, context) => {
     try {
       const message = snap.data();
-      const {chatId} = context.params;
+      const {chatId, messageId} = context.params;
       if (!message?.user?._id) return null;
       const senderId = message.user._id;
 
@@ -736,13 +736,31 @@ exports.notifyNewMessage = functions.firestore
           if (!token) continue;
           await admin.messaging().send({
             token,
-            notification: {
-              title: senderName,
-              body: 'Sent you a message',
-            },
+            // No top-level `notification` -- Android would otherwise
+            // auto-display this with whatever's here, bypassing the
+            // background handler that decrypts the real text on-device (see
+            // src/services/firebase/push.ts). `apns` below restores an
+            // equivalent alert for iOS, which doesn't yet have that
+            // decrypt-on-device path.
             data: {
               type: 'chat_message',
               chatId,
+              messageId,
+              senderName,
+            },
+            android: {
+              priority: 'high',
+            },
+            apns: {
+              payload: {
+                aps: {
+                  alert: {
+                    title: senderName,
+                    body: 'Sent you a message',
+                  },
+                  sound: 'default',
+                },
+              },
             },
           });
         } catch (e) {

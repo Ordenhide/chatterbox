@@ -290,6 +290,13 @@ export async function getChat(chatId: string) {
   return snapshot.exists() ? ({...(snapshot.data() as ChatRoom), id: snapshot.id}) : null;
 }
 
+/** One-off fetch for contexts with no listener, e.g. the FCM background
+ * handler decrypting a single message to build a local notification. */
+export async function getMessageById(chatId: string, messageId: string) {
+  const snapshot = await getDoc(doc(collection(doc(chatsRef(), chatId), 'messages'), messageId));
+  return snapshot.exists() ? (snapshot.data() as Message) : null;
+}
+
 export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[]) => void) {
   return onSnapshot(
     query(chatsRef(), where('participants', 'array-contains', userId), orderBy('updatedAt', 'desc')),
