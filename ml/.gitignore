@@ -1,0 +1,19 @@
+# Python envs
+.venv/
+.venv-convert/
+
+# API keys for optional teacher models (e.g. DEEPSEEK_API_KEY) -- never commit
+.env
+
+# Downloaded/converted/fine-tuned model weights -- large binaries, and
+# reproducible from scripts/ + data/ (base model download + LoRA training +
+# conversion), so there's nothing here worth tracking in git.
+models/
+adapters/
+
+# Full llama.cpp clone, only kept around for convert_hf_to_gguf.py -- see
+# scripts/convert_for_deployment.sh for why.
+llama.cpp-src/
+
+__pycache__/
+*.pyc

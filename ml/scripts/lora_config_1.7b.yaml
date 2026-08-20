@@ -1,0 +1,33 @@
+# LoRA fine-tune of Qwen3-1.7B -- see ml/README.md for the full pipeline.
+#
+# Dataset grew again: 344 -> 1744 examples (1396 train) after a big DeepSeek
+# batch (full 40-scenario coverage across all 15 languages, plus an extra
+# ja/ko/hi reinforcement pass). iters rescaled to match: batch_size=4 ->
+# 349 steps/epoch, iters=1000 is ~2.9 epochs, same ~3-epoch target used at
+# every previous dataset size. steps_per_eval/save_every=25 keeps ~40 eval
+# points across the run -- still fine-grained enough to find the true
+# optimum rather than trusting a fixed iters guess (the lesson from the
+# very first 0.6B run, which overfit badly at a coarse schedule).
+
+model: "ml/models/qwen3-1.7b-mlx"
+train: true
+data: "ml/data"
+fine_tune_type: lora
+
+# Adapting the upper half of the network (16 of Qwen3-1.7B's 28 layers) --
+# deeper layers hold more task-general language ability we want to keep
+# untouched.
+num_layers: 16
+mask_prompt: true
+
+batch_size: 4
+iters: 1000
+learning_rate: 1.0e-5
+val_batches: -1
+steps_per_report: 25
+steps_per_eval: 25
+save_every: 25
+max_seq_length: 2048
+
+adapter_path: "ml/adapters/qwen3-1.7b-summarizer"
+seed: 42

@@ -1,0 +1,67 @@
+# LoRA fine-tune of Qwen3-4B -- see ml/README.md ("4B: two divergences,
+# then a real result") for the full story. Two prior attempts diverged --
+# attempt 1 at lr=1.0e-5 (good to iter 75, exploded to 11+ by iter 125),
+# attempt 2 at lr=5.0e-6 (stable but then diverged again on a resume, 1.09
+# at iter 10 of the resume up to 9.7+ by iter 90). Diverging twice under
+# different learning rates, from different starting points, points at a
+# structural instability rather than one bad LR guess -- most likely noisy
+# gradients from a small real batch size (4) occasionally taking a step
+# large enough to destabilize Adam's accumulated moment estimates, which
+# then compounds over subsequent steps. mlx_lm's lora trainer has no
+# gradient-clipping flag, so the fix is to reduce gradient noise directly
+# and add regularization:
+#
+#   - grad_accumulation_steps: 4 -- effective batch size 16 instead of 4,
+#     without changing per-step memory (still 4 examples in memory at a
+#     time). Smooths the gradient estimate directly, the most likely fix
+#     for noisy-batch-triggered blowups.
+#   - optimizer: adamw -- decoupled weight decay (mlx's default 0.01)
+#     regularizes weight growth, standard practice for LoRA stability that
+#     plain adam (both prior attempts) doesn't have.
+#   - learning_rate: 3.0e-6 -- below both prior attempts as an extra
+#     margin, now that gradient noise is also being addressed directly
+#     rather than relying on LR alone to compensate for it.
+#
+# Also: this M5 Max has 48GB RAM (not 64GB -- that's the separate Intel
+# deployment target). Attempt 1 alone (no grad accumulation) already hit
+# "Peak mem 68.493 GB", well over physical RAM, and the machine was
+# observed mid-run swapping heavily (15.9 of 17.4GB swap in use) -- the GPU
+# was very likely starved waiting on disk I/O rather than running at
+# anywhere near its 40-core potential, on top of whatever the LR/batch-noise
+# issue was. grad_accumulation_steps=4 above would make this worse, not
+# better, by holding more state across accumulated steps. grad_checkpoint
+# trades some recompute for a large activation-memory reduction and should
+# eliminate the swapping.
+#
+# iters rescaled for the new effective batch size: batch_size=4 *
+# grad_accumulation_steps=4 = 16 examples/iter, 1396 train examples ->
+# ~87 iters/epoch, iters=300 is ~3.4 epochs, matching the ~3-epoch target
+# used at every other size/dataset combination in this project.
+#
+# Starting from scratch, not resuming from either prior attempt's
+# checkpoint: --resume-adapter-file only restores model weights, not
+# optimizer state, so both divergences happened independent of starting
+# point -- resuming again wouldn't route around a structural issue.
+
+model: "ml/models/qwen3-4b-mlx"
+train: true
+data: "ml/data"
+fine_tune_type: lora
+optimizer: adamw
+grad_checkpoint: true
+
+num_layers: 20
+mask_prompt: true
+
+batch_size: 4
+grad_accumulation_steps: 4
+iters: 300
+learning_rate: 3.0e-6
+val_batches: -1
+steps_per_report: 10
+steps_per_eval: 10
+save_every: 10
+max_seq_length: 2048
+
+adapter_path: "ml/adapters/qwen3-4b-summarizer"
+seed: 42

@@ -1,0 +1,42 @@
+# LoRA fine-tune of Qwen3-0.6B for chat summarization only (the "Catch Up"
+# feature) -- see ml/README.md for the full pipeline this fits into.
+#
+# Dataset grew from 96 examples (76 train) to 344 (276 train) after adding
+# DeepSeek as a second teacher (see README) -- iters/eval cadence rescaled
+# below accordingly, same fine-grained-eval lesson applied from the start.
+#
+# The original iters=300 run (on the smaller 96-example set) badly overfit:
+# val loss bottomed out at iter 25 (1.053) and rose monotonically after,
+# while train loss collapsed toward 0 -- textbook memorization, not
+# learning. Don't trust a fixed iters guess on a small dataset -- watch the
+# curve. iters=200 here is ~3 epochs over the new 276-example train set
+# (batch_size=4 -> 69 steps/epoch); steps_per_eval=10/save_every=10 keeps
+# the curve fine-grained enough to actually find where it turns, with a
+# checkpoint at every eval point to pick from.
+
+model: "ml/models/qwen3-0.6b-mlx"
+train: true
+data: "ml/data"
+fine_tune_type: lora
+
+# Adapting the upper half of the network is the usual default for a task
+# this narrow (16 of Qwen3-0.6B's 28 layers) -- deeper layers hold more
+# task-general language ability we want to keep untouched.
+num_layers: 16
+
+# Only train on the assistant's completion, not the (long) instruction +
+# transcript prompt -- otherwise the model spends capacity learning to
+# reproduce the prompt template instead of the summarization behavior.
+mask_prompt: true
+
+batch_size: 4
+iters: 200
+learning_rate: 1.0e-5
+val_batches: -1          # evaluate on the full validation set, it's small
+steps_per_report: 10
+steps_per_eval: 10
+save_every: 10
+max_seq_length: 2048     # conversations here run 6-28 messages; generous headroom
+
+adapter_path: "ml/adapters/qwen3-0.6b-summarizer"
+seed: 42

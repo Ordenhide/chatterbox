@@ -1,0 +1,52 @@
+# LoRA fine-tune of Qwen3-14B -- see ml/README.md ("4B: two divergences,
+# then a real result" and "8B: the fix transfers") for the stability
+# recipe applied here from the start.
+#
+# Different from 4B/8B in one respect: trains against a 4-bit-quantized
+# copy of the base model (ml/models/qwen3-14b-mlx-q4), not the bf16 one.
+# Reason: 14B's frozen bf16 weights alone are ~28GB, and 8B's training
+# already used ~33.7GB total (16GB weights + ~18GB overhead from
+# activations/optimizer state even with grad_checkpoint) on this 48GB
+# machine. Scaling that up put full-bf16 14B training right at or over the
+# RAM ceiling -- not a small margin, a real risk of hitting swap again.
+# Training against the 4-bit copy (7.8GB weights, 4.5 bits/weight) instead
+# keeps the same ~18-20GB overhead pattern but starting from a much
+# smaller base, comfortably under 48GB.
+#
+# The bf16 copy (ml/models/qwen3-14b-mlx) is kept for deployment: fuse the
+# adapter trained here onto the FULL-PRECISION base, not the quantized
+# training copy, so the final GGUF isn't compounding two quantization
+# passes. This is standard QLoRA practice -- the adapter is a small
+# correction that transfers between the quantized and full-precision
+# versions of the same base without needing to be retrained.
+# scripts/convert_for_deployment.sh 14b picks up ml/models/qwen3-14b-mlx
+# (bf16) automatically, no changes needed there.
+#
+# 40 layers deep (vs 36 for 4B/8B) -- num_layers: 23 keeps the same ~57%
+# "upper portion" ratio used at every other size.
+#
+# Same stability recipe as 4B attempt 3 / 8B (both clean, zero-instability
+# runs): adamw, grad_checkpoint, grad_accumulation_steps=4, lr=3e-6.
+
+model: "ml/models/qwen3-14b-mlx-q4"
+train: true
+data: "ml/data"
+fine_tune_type: lora
+optimizer: adamw
+grad_checkpoint: true
+
+num_layers: 23
+mask_prompt: true
+
+batch_size: 4
+grad_accumulation_steps: 4
+iters: 300
+learning_rate: 3.0e-6
+val_batches: -1
+steps_per_report: 10
+steps_per_eval: 10
+save_every: 10
+max_seq_length: 2048
+
+adapter_path: "ml/adapters/qwen3-14b-summarizer"
+seed: 42
