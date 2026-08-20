@@ -36,6 +36,14 @@ jobs:
       - name: Decode release keystore
         run: echo "${{ secrets.CHATTERBOX_KEYSTORE_BASE64 }}" | base64 --decode > android/app/chatterbox-release.keystore
 
+      # google-services.json is gitignored (never committed), so the
+      # com.google.gms.google-services plugin has nothing to read from a
+      # fresh checkout without this -- it's required by that plugin, not
+      # optional, and its absence fails processReleaseGoogleServices before
+      # any actual compilation.
+      - name: Decode google-services.json
+        run: echo "${{ secrets.CHATTERBOX_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+
       - name: Build release APK
         working-directory: android
         env:
@@ -47,7 +55,7 @@ jobs:
 
       - name: Remove decoded keystore
         if: always()
-        run: rm -f android/app/chatterbox-release.keystore
+        run: rm -f android/app/chatterbox-release.keystore android/app/google-services.json
 
       - name: Upload APK as build artifact
         uses: actions/upload-artifact@v4
