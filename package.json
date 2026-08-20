@@ -128,7 +128,8 @@
       "<rootDir>/macos-app/",
       "<rootDir>/harmony/",
       "<rootDir>/functions/",
-      "<rootDir>/test/rules/"
+      "<rootDir>/test/rules/",
+      "<rootDir>/ml/"
     ]
   }
 }
