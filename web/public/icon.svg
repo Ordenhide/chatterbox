@@ -1,11 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7C6BFF"/>
-      <stop offset="0.55" stop-color="#9B5CFF"/>
-      <stop offset="1" stop-color="#28D6EE"/>
+    <linearGradient id="bg" x1="160" y1="0" x2="160" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
     </linearGradient>
+    <linearGradient id="ring" x1="95" y1="107" x2="225" y2="107" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34D399"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="card" x1="65" y1="187" x2="255" y2="187" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white"/>
+      <stop offset="1" stop-color="#E0E7FF"/>
+    </linearGradient>
+    <filter id="cardShadow" x="49" y="108" width="222" height="166" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="4"/>
+      <feGaussianBlur stdDeviation="4"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.14902 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#g)"/>
-  <path d="M150 190h212M150 256h160M150 322h112" stroke="#fff" stroke-width="34" stroke-linecap="round"/>
+  <rect width="320" height="320" fill="url(#bg)"/>
+  <path d="M160 63C189.823 63 214 87.1766 214 117V151H106V117C106 87.1766 130.177 63 160 63Z" fill="none" stroke="url(#ring)" stroke-width="22"/>
+  <g filter="url(#cardShadow)">
+    <rect x="65" y="112" width="190" height="150" rx="44" fill="url(#card)" shape-rendering="crispEdges"/>
+    <circle cx="136" cy="187" r="7" fill="#4F46E5"/>
+    <circle cx="160" cy="187" r="7" fill="#10B981"/>
+    <circle cx="184" cy="187" r="7" fill="#4F46E5"/>
+  </g>
+  <path d="M108.745 248.324L106.027 279.383L80.489 261.5L108.745 248.324Z" fill="#E0E7FF"/>
 </svg>

@@ -15,8 +15,8 @@ npm install
 3. Create a **Cloud Firestore** database (start in test mode for local use)
 4. Enable **Firebase Storage**
 5. Add iOS and Android apps:
-   - iOS bundle id: `com.chatterboxtemp`
-   - Android package name: `com.chatterboxtemp`
+   - iOS bundle id: `com.chatterbox`
+   - Android package name: `com.chatterbox.app`
 6. Download config files:
    - `GoogleService-Info.plist` → place in `ios/ChatterboxTemp/`
    - `google-services.json` → place in `android/app/`

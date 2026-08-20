@@ -483,7 +483,7 @@
 					"$(inherited)",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chatterboxtemp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatterboxTemp.app/ChatterboxTemp";
 			};
@@ -514,7 +514,7 @@
 					"$(inherited)",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chatterboxtemp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatterboxTemp.app/ChatterboxTemp";
 			};
@@ -548,8 +548,8 @@
 					"-lc++",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chatterboxtemp;
-				PRODUCT_NAME = ChatterboxTemp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
+				PRODUCT_NAME = Chatterbox;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -585,8 +585,8 @@
 					"-lc++",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chatterboxtemp;
-				PRODUCT_NAME = ChatterboxTemp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
+				PRODUCT_NAME = Chatterbox;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
