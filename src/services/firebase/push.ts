@@ -16,6 +16,7 @@ import {getMessaging, setBackgroundMessageHandler} from '@react-native-firebase/
 import {getAuth} from './auth';
 import {getMessageById} from '../firebaseChat';
 import {resolveMessageText} from '../e2eeMessages';
+import {isNotificationContentHidden} from '../privacyGuard';
 
 const MESSAGES_CHANNEL_ID = 'messages';
 
@@ -61,6 +62,10 @@ export function registerBackgroundMessageHandler(): void {
     const {type, chatId, messageId, senderName} = remoteMessage.data ?? {};
     const title = typeof senderName === 'string' && senderName ? senderName : 'New message';
     if (type !== 'chat_message' || typeof chatId !== 'string' || typeof messageId !== 'string') {
+      return;
+    }
+    if (isNotificationContentHidden()) {
+      await showMessageNotification(title, 'Sent you a message');
       return;
     }
     try {

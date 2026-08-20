@@ -367,9 +367,9 @@ export const PARALLAX_GLOW = 0.15;
  * line keeps roughly the shape of the sentence underneath it. */
 export const CIPHER_GLYPHS = 'ABCDEF0123456789/+=%$#@&*<>{}[]^~';
 
-export const SCRAMBLE_MIN_MS = 180;
-export const SCRAMBLE_MAX_MS = 600;
-export const SCRAMBLE_MS_PER_CHAR = 9;
+export const SCRAMBLE_MIN_MS = 360;
+export const SCRAMBLE_MAX_MS = 1200;
+export const SCRAMBLE_MS_PER_CHAR = 18;
 
 /**
  * How many characters shimmer at the resolving edge at once.

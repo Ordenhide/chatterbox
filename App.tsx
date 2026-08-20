@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, AppState, DeviceEventEmitter, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import {AppState, DeviceEventEmitter, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {NavigationContainer, createNavigationContainerRef} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -9,7 +9,7 @@ import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
 import {initFirebase} from './src/services/firebase/bootstrap';
-import {getMessaging, getToken, onMessage, onTokenRefresh} from './src/services/firebase/push';
+import {getMessaging, getToken, onTokenRefresh} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
@@ -45,7 +45,6 @@ function AppContent() {
     if (!user || loading || Platform.OS !== 'android') return;
     let active = true;
     let unsubscribeToken: (() => void) | null = null;
-    let unsubscribeOnMessage: (() => void) | null = null;
 
     const setupMessaging = async () => {
       const messaging = getMessaging();
@@ -62,21 +61,11 @@ function AppContent() {
       unsubscribeToken = onTokenRefresh(messaging, nextToken => {
         setUserFcmToken(user.uid, nextToken);
       });
-      unsubscribeOnMessage = onMessage(messaging, async remoteMessage => {
-        const {isNotificationContentHidden} = require('./src/services/privacyGuard');
-        if (isNotificationContentHidden()) {
-          Alert.alert(i18n.t('notifications.newMessageTitle'), i18n.t('notifications.newMessageBody'));
-          return;
-        }
-        const title = remoteMessage.notification?.title || i18n.t('notifications.newMessageTitle');
-        const dataText =
-          typeof remoteMessage.data?.text === 'string' ? remoteMessage.data.text : undefined;
-        const body =
-          remoteMessage.notification?.body ||
-          dataText ||
-          i18n.t('notifications.newMessageBody');
-        Alert.alert(title, body);
-      });
+      // No foreground handler: a message that arrives while the app is open
+      // already shows up live via the Firestore listener the chat screen and
+      // chat list already hold open, so a popup on top of it would just be
+      // announcing something already on screen. Background/killed-app
+      // delivery is unaffected -- see src/services/firebase/push.ts.
     };
 
     setupMessaging().catch(error => {
@@ -88,7 +77,6 @@ function AppContent() {
     return () => {
       active = false;
       if (unsubscribeToken) unsubscribeToken();
-      if (unsubscribeOnMessage) unsubscribeOnMessage();
     };
   }, [user, loading]);
 
