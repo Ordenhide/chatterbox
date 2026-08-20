@@ -697,6 +697,64 @@ exports.autoReplyFocusMode = functions.firestore
     return null;
   });
 
+// ─── New Message Push Notification ──────────────────────────────────────────
+// A separate function on the same trigger as autoReplyFocusMode above rather
+// than folded into it -- unrelated concerns (auto-reply vs. delivery
+// notification), and neither should be able to fail because the other did.
+//
+// Messages are end-to-end encrypted, so the server has no readable content to
+// put in the notification even if it wanted to -- title is just the sender's
+// name, body is a fixed generic string, matching the privacy boundary
+// elsewhere in this app (see src/services/aiConsent.ts on the client).
+exports.notifyNewMessage = functions.firestore
+  .document('chats/{chatId}/messages/{messageId}')
+  .onCreate(async (snap, context) => {
+    try {
+      const message = snap.data();
+      const {chatId} = context.params;
+      if (!message?.user?._id) return null;
+      const senderId = message.user._id;
+
+      const chatSnap = await db.doc(`chats/${chatId}`).get();
+      if (!chatSnap.exists) return null;
+      const chat = chatSnap.data();
+      const mutedBy = new Set(chat.mutedBy || []);
+      const recipients = (chat.participants || []).filter(
+        uid => uid !== senderId && !mutedBy.has(uid),
+      );
+      if (recipients.length === 0) return null;
+
+      const senderSnap = await db.doc(`users/${senderId}`).get();
+      const senderData = senderSnap.data();
+      const senderName = senderData?.displayName || senderData?.email || 'Someone';
+
+      for (const recipientId of recipients) {
+        try {
+          const pushSnap = await db.doc(`users/${recipientId}/private/push`).get();
+          const pushData = pushSnap.data();
+          const token = pushData?.fcmToken || pushData?.fcmTokens?.[0];
+          if (!token) continue;
+          await admin.messaging().send({
+            token,
+            notification: {
+              title: senderName,
+              body: 'Sent you a message',
+            },
+            data: {
+              type: 'chat_message',
+              chatId,
+            },
+          });
+        } catch (e) {
+          functions.logger.warn(`Failed to notify recipient ${recipientId}`, e);
+        }
+      }
+    } catch (error) {
+      functions.logger.error('notifyNewMessage failed', error);
+    }
+    return null;
+  });
+
 // ─── Disappearing Messages ──────────────────────────────────────────────────
 exports.processExpiredMessages = functions.pubsub
   .schedule('every 5 minutes')
