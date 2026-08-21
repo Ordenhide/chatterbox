@@ -27,6 +27,13 @@ jobs:
           cd functions
           npm ci
 
+      # Not a secret, and deliberately a literal rather than one: without
+      # CHATTERBOX_ENABLE_SCHEDULED the six pubsub functions strip themselves
+      # from `exports` during discovery, so a deploy from here would *delete*
+      # them from production — including processExpiredMessages, which is what
+      # actually expires disappearing messages. See the note beside
+      # SCHEDULED_ENABLED in functions/index.js.
+      #
       # functions/.env is gitignored, so the checkout above never contains it
       # and every process.env lookup in index.js would be undefined in
       # production — Stripe billing would deploy but permanently answer
@@ -46,6 +53,7 @@ jobs:
           APP_BASE_URL=${{ secrets.APP_BASE_URL }}
           CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CHATTERBOX_ENABLE_SCHEDULED=true
           EOF
 
       # `FirebaseExtended/action-hosting-deploy` (the previous step here) only

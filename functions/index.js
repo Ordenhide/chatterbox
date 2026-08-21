@@ -95,8 +95,37 @@ function isAllowedReturnUrl(url) {
 // codebase-wide). We define them normally but strip them from `exports` at the
 // bottom of this file unless CHATTERBOX_ENABLE_SCHEDULED=true, so the rest of
 // the functions can still deploy. To ship the scheduled ones once billing is on:
-//   CHATTERBOX_ENABLE_SCHEDULED=true npx firebase deploy --only functions
-const SCHEDULED_ENABLED = process.env.CHATTERBOX_ENABLE_SCHEDULED === 'true';
+//   CHATTERBOX_ENABLE_SCHEDULED=true firebase deploy --only functions
+//
+// The flag has to be read from the file as well as from process.env, and that
+// is not belt-and-braces — process.env alone cannot work here.
+//
+// Deploying happens in two passes. First the CLI loads this module in a local
+// subprocess to discover what `exports` contains; only then does it upload,
+// applying functions/.env to the *deployed* runtime. The `delete exports[...]`
+// at the bottom therefore runs during discovery, where .env has not been
+// applied to process.env and an inherited shell variable does not survive into
+// the subprocess either. Both spellings of the documented invocation left the
+// flag undefined at exactly the moment it decides anything, so these six
+// functions silently never deployed — which is why disappearing messages never
+// expired in production.
+function scheduledFlagFromEnvFile() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const raw = fs.readFileSync(path.join(__dirname, '.env'), 'utf8');
+    const line = raw
+      .split('\n')
+      .map(l => l.trim())
+      .find(l => !l.startsWith('#') && l.startsWith('CHATTERBOX_ENABLE_SCHEDULED='));
+    return line ? line.slice(line.indexOf('=') + 1).trim() : undefined;
+  } catch {
+    // No .env (CI before it writes one, or a fresh clone) — absent, not false.
+    return undefined;
+  }
+}
+const SCHEDULED_ENABLED =
+  (process.env.CHATTERBOX_ENABLE_SCHEDULED ?? scheduledFlagFromEnvFile()) === 'true';
 const SCHEDULED_FUNCTIONS = [
   'processScheduledMessages',
   'processReminders',
