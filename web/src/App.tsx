@@ -6,6 +6,7 @@ import {useT} from './i18n';
 import {listenForSessionTakeover, verifyOrAdoptSession} from './services/session';
 import {useBackdropParallax} from './hooks/useBackdropParallax';
 import BrandMark from './components/BrandMark';
+import CipherTexture from './components/CipherTexture';
 import ConnectionBanner from './components/ConnectionBanner';
 import LoginScreen from './screens/LoginScreen';
 import ColdOpen, {coldOpenPending} from './components/ColdOpen';
@@ -91,6 +92,7 @@ export default function App() {
 
   return (
     <>
+      <CipherTexture />
       <ConnectionBanner />
       {loading ? (
         <FullscreenLoader />

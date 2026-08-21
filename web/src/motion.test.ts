@@ -10,15 +10,19 @@ import {
   PARALLAX_BACKDROP,
   PARALLAX_GLOW,
   REVEAL_ENTER_RATIO,
+  CIPHER_GLYPHS,
   SCRAMBLE_MAX_MS,
   SCRAMBLE_MIN_MS,
   SCRAMBLE_WINDOW,
   cascadeDelay,
+  cipherTexture,
   coldOpenFrame,
+  hashSeed,
   parallaxOffset,
   revealProgress,
   scrambleDuration,
   scrambleFrame,
+  seededRandom,
 } from './motion';
 
 const VIEWPORT = 800;
@@ -134,6 +138,71 @@ describe('scrambleFrame', () => {
     expect(scrambleFrame('', 0.5)).toBe('');
     expect(scrambleFrame(TEXT, NaN)).toBe(TEXT);
     expect(scrambleFrame(TEXT, -1, fixed(0))).not.toBe(TEXT);
+  });
+});
+
+describe('cipherTexture', () => {
+  it('is stable for a seed, so a screen keeps the same sealed field', () => {
+    expect(cipherTexture(200, 12345)).toBe(cipherTexture(200, 12345));
+  });
+
+  it('gives different screens different fields', () => {
+    expect(cipherTexture(200, 1)).not.toBe(cipherTexture(200, 2));
+  });
+
+  it('emits only cipher glyphs and spaces', () => {
+    const out = cipherTexture(600, 99);
+    for (const char of out) {
+      if (char === ' ') continue;
+      expect(CIPHER_GLYPHS).toContain(char);
+    }
+  });
+
+  it('breaks into runs rather than one unbroken wall', () => {
+    const out = cipherTexture(600, 7);
+    expect(out).toContain(' ');
+    const spaces = out.split(' ').length - 1;
+    expect(spaces).toBeLessThan(out.length / 3);
+  });
+
+  it('produces exactly the requested length, and nothing for a bad one', () => {
+    expect(cipherTexture(50, 3)).toHaveLength(50);
+    expect(cipherTexture(0, 3)).toBe('');
+    expect(cipherTexture(-10, 3)).toBe('');
+    expect(cipherTexture(NaN, 3)).toBe('');
+  });
+});
+
+describe('hashSeed', () => {
+  it('is stable and distinguishes similar ids', () => {
+    expect(hashSeed('chat-abc')).toBe(hashSeed('chat-abc'));
+    expect(hashSeed('chat-abc')).not.toBe(hashSeed('chat-abd'));
+  });
+
+  it('stays a usable unsigned 32-bit seed, including for empty input', () => {
+    for (const id of ['', 'a', 'chat-abc', 'x'.repeat(500)]) {
+      const seed = hashSeed(id);
+      expect(Number.isInteger(seed)).toBe(true);
+      expect(seed).toBeGreaterThanOrEqual(0);
+      expect(seed).toBeLessThan(2 ** 32);
+    }
+  });
+});
+
+describe('seededRandom', () => {
+  it('replays the same sequence for the same seed', () => {
+    const a = seededRandom(42);
+    const b = seededRandom(42);
+    expect([a(), a(), a()]).toEqual([b(), b(), b()]);
+  });
+
+  it('stays in [0, 1)', () => {
+    const next = seededRandom(1);
+    for (let i = 0; i < 500; i++) {
+      const value = next();
+      expect(value).toBeGreaterThanOrEqual(0);
+      expect(value).toBeLessThan(1);
+    }
   });
 });
 

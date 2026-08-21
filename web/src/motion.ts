@@ -124,6 +124,62 @@ export function scrambleFrame(text: string, progress: number, random: () => numb
 }
 
 /* ------------------------------------------------------------------------ *
+ * Cipher texture
+ *
+ * Twin of cipherTexture/hashSeed/seededRandom in src/utils/motion.ts on
+ * mobile — the ambient field every screen sits on there (see
+ * components/CipherTexture.tsx). Ported for the same reason as Seal &
+ * Resolve above: the same seed should draw the same field on both clients.
+ * ------------------------------------------------------------------------ */
+
+/** Deterministic PRNG (mulberry32) so a given seed always draws the same field. */
+export function seededRandom(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Stable 32-bit hash of an id, for seeding the texture below. */
+export function hashSeed(value: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+/**
+ * A block of `length` cipher glyphs, stable for a given `seed`.
+ *
+ * Whitespace is inserted at irregular intervals rather than never: an
+ * unbroken wall of glyphs reads as a texture fill, while broken runs read as
+ * sealed *content* — which is what this is standing in for.
+ */
+export function cipherTexture(length: number, seed: number): string {
+  if (!Number.isFinite(length) || length <= 0) return '';
+  const random = seededRandom(seed);
+  let out = '';
+  let sinceBreak = 0;
+  for (let i = 0; i < length; i++) {
+    // Runs of 3–11 glyphs, so the field never settles into a visible column.
+    if (sinceBreak > 2 && random() < 0.14) {
+      out += ' ';
+      sinceBreak = 0;
+      continue;
+    }
+    out += CIPHER_GLYPHS[Math.floor(random() * CIPHER_GLYPHS.length) % CIPHER_GLYPHS.length];
+    sinceBreak++;
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------------ *
  * Cold open
  *
  * The launch sequence — twin of ColdOpen.tsx on mobile, same three phases and
