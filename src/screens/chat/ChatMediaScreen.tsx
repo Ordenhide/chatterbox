@@ -55,7 +55,7 @@ export default function ChatMediaScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       <FlatList
         data={media}
         numColumns={3}

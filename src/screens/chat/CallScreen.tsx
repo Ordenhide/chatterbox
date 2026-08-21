@@ -425,7 +425,7 @@ export default function CallScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       <Text style={[styles.status, {color: colors.textSecondary}]}>
         {status === 'ringing' ? t('call.connecting') : status === 'active' ? t('call.active') : t('call.ended')}
       </Text>

@@ -136,7 +136,7 @@ export default function NewChatScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="new-chat">
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

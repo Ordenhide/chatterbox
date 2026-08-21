@@ -102,7 +102,7 @@ export default function WhiteboardScreen() {
   const canvasHeight = height - 180;
 
   return (
-    <GlassScreen>
+    <GlassScreen textureSeed={chatId}>
       <View style={styles.container}>
         <View style={[styles.toolbar, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
           <View style={styles.colorRow}>

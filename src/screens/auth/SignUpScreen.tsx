@@ -64,7 +64,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="signup">
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

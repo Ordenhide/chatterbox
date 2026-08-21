@@ -450,7 +450,7 @@ export default function ChatListScreen() {
   }
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="chat-list">
       <View style={styles.header}>
         <Text style={[styles.title, {color: colors.text}]}>
           {viewingHidden ? t('chats.hiddenTitle') : t('chatList.title')}

@@ -2,12 +2,26 @@ import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle, useColorScheme} from 'react-native';
 import {SafeAreaView, Edge} from 'react-native-safe-area-context';
 import {getColors} from '../theme/colors';
+import CipherTexture from './CipherTexture';
 
 type GlassScreenProps = {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   edges?: Edge[];
   pointerEvents?: 'auto' | 'none' | 'box-none' | 'box-only';
+  /**
+   * Identity for this screen's cipher field — see CipherTexture. A chat id
+   * for a conversation, a fixed route name for everything else. Every
+   * GlassScreen gets a field either way; this only controls which one.
+   */
+  textureSeed?: string;
+  /**
+   * Chat screens paint a custom wallpaper as their first child and need the
+   * field to sit *above* that, not below it — so they render their own
+   * CipherTexture in the right place and pass false here rather than get a
+   * second copy that would just be hidden underneath.
+   */
+  showTexture?: boolean;
 };
 
 function GlassScreen({
@@ -15,6 +29,8 @@ function GlassScreen({
   style,
   edges = ['top', 'bottom'],
   pointerEvents = 'box-none',
+  textureSeed = 'chatterbox',
+  showTexture = true,
 }: GlassScreenProps) {
   const colors = getColors(useColorScheme());
   return (
@@ -26,6 +42,7 @@ function GlassScreen({
       <View pointerEvents="none" style={[styles.blob, {backgroundColor: colors.glassTint1}]} />
       <View pointerEvents="none" style={[styles.blobTwo, {backgroundColor: colors.glassTint2}]} />
       <View pointerEvents="none" style={[styles.blobThree, {backgroundColor: colors.glassTint3}]} />
+      {showTexture ? <CipherTexture seed={textureSeed} color={colors.primary} /> : null}
       {children}
     </SafeAreaView>
   );

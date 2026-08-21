@@ -141,7 +141,7 @@ export default function PlaylistScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       <FlatList
         data={sorted}
         keyExtractor={item => item.id}

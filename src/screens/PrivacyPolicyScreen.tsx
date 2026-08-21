@@ -11,7 +11,7 @@ export default function PrivacyPolicyScreen() {
   const colors = getColors(useColorScheme());
 
   return (
-    <GlassScreen>
+    <GlassScreen textureSeed="privacy-policy">
       <SafeAreaView style={styles.safe} edges={['bottom']}>
         <ScrollView
           style={styles.scroll}

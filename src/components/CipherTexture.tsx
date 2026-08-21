@@ -4,19 +4,22 @@ import {cipherTexture, hashSeed} from '../utils/motion';
 import {fonts} from '../theme/typography';
 
 /**
- * The sealed field a conversation sits on.
+ * The sealed field every screen sits on.
  *
  * Every message in this app really is ciphertext until a key opens it
  * (services/e2ee.ts), and CipherText.tsx already animates that moment on
  * arrival. This is the other half of the same idea, held still: the material
- * the thread was decrypted *out of*, left visible underneath it.
+ * a screen's content was decrypted *out of*, left visible underneath it.
+ * Rendered once from GlassScreen, which is why every screen in the app has
+ * one now rather than just an open chat.
  *
  * Static by design — see the note on cipherTexture in utils/motion.ts. The
  * resolve animation churns because it is about to stop; a background doing
  * that permanently would be unreadable to sit beside all day.
  *
- * Seeded from the chat id, so a conversation's field is its own and is the
- * same every time you open it.
+ * Seeded from whatever identity the caller passes — a chat id for a
+ * conversation, a fixed route name for everything else — so a given screen's
+ * field is its own and is the same every time you open it.
  */
 
 const FONT_SIZE = 10;
@@ -36,7 +39,7 @@ const CHAR_WIDTH = 5.8;
  * messages on top of it. Tuned against the darkest surface, where it shows most. */
 const OPACITY = 0.05;
 
-function CipherTexture({chatId, color}: {chatId: string; color: string}) {
+function CipherTexture({seed, color}: {seed: string; color: string}) {
   const {width, height} = useWindowDimensions();
 
   const text = useMemo(() => {
@@ -44,8 +47,8 @@ function CipherTexture({chatId, color}: {chatId: string; color: string}) {
     const lines = Math.ceil(height / LINE_HEIGHT);
     // +2 lines of slack so a rotation or a keyboard dismissal can't reveal an
     // unfilled edge before the next render.
-    return cipherTexture(perLine * (lines + 2), hashSeed(chatId || 'chatterbox'));
-  }, [width, height, chatId]);
+    return cipherTexture(perLine * (lines + 2), hashSeed(seed || 'chatterbox'));
+  }, [width, height, seed]);
 
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.root]}>
@@ -64,7 +67,7 @@ function CipherTexture({chatId, color}: {chatId: string; color: string}) {
   );
 }
 
-/** Memoised on chatId/color: the texture is static, so re-rendering it as
+/** Memoised on seed/color: the texture is static, so re-rendering it as
  * messages arrive is pure waste behind a list that updates constantly. */
 export default React.memo(CipherTexture);
 

@@ -401,7 +401,7 @@ export default function FriendsScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="friends">
       <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.addFriend')}</Text>
       <View style={styles.row}>
         <TextInput

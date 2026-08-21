@@ -104,7 +104,7 @@ export default function RecoveryPhraseScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="recovery-phrase">
       <ScrollView contentContainerStyle={styles.content}>
         <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.sectionTitle, {color: colors.text}]}>Your recovery phrase</Text>

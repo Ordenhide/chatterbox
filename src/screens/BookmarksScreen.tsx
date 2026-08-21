@@ -93,7 +93,7 @@ export default function BookmarksScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="bookmarks">
       {bookmarks.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>

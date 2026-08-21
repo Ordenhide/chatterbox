@@ -385,7 +385,7 @@ export default function ChatSettingsScreen() {
   };
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.notifications')}</Text>

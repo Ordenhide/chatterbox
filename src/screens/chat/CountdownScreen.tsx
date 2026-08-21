@@ -195,7 +195,7 @@ export default function CountdownScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       {countdowns.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyIcon}>{'\u{1F570}\uFE0F'}</Text>

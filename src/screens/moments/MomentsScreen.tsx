@@ -638,7 +638,7 @@ export default function MomentsScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="moments">
       <Animated.FlatList
         data={moments}
         keyExtractor={(item: Moment) => item.id}

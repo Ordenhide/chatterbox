@@ -108,7 +108,7 @@ export default function RecentlyDeletedScreen() {
   );
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed={chatId}>
       <Text style={[styles.desc, {color: colors.textSecondary}]}>{t('trash.desc')}</Text>
       <FlatList
         data={items}

@@ -579,7 +579,7 @@ export default function ProfileScreen() {
   }, [feedbackText, user?.email, user?.uid, t]);
 
   return (
-    <GlassScreen style={styles.container}>
+    <GlassScreen style={styles.container} textureSeed="profile">
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       <GlassView style={[styles.profileCard, {borderColor: colors.glassBorder}]}>
         <View style={[styles.profileSection, {borderBottomColor: colors.border}]}>

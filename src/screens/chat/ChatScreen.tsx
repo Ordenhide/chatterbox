@@ -3660,7 +3660,7 @@ export default function ChatScreen() {
 
   if (!chatUnlocked) {
     return (
-      <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES}>
+      <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES} textureSeed={chatId}>
         <View style={styles.chatLockContainer}>
           <Icon name="lock" size={48} color={colors.text} style={styles.chatLockIcon} />
           <Text style={[styles.chatLockTitle, {color: colors.text}]}>Chat Locked</Text>
@@ -3712,7 +3712,7 @@ export default function ChatScreen() {
     // content, so a SafeAreaView in here reads the *full* device inset and pads
     // a second time — which is what left a dead strip of backdrop between the
     // composer and the tab bar.
-    <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES}>
+    <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES} showTexture={false}>
       {chatWallpaper ? (
         // Custom wallpapers are Storage download URLs (always start with
         // "http"); preset wallpapers are hex colors — same field
@@ -3729,7 +3729,7 @@ export default function ChatScreen() {
       ) : null}
       {/* Above the wallpaper, below everything else: the sealed field this
           conversation was decrypted out of. See components/CipherTexture.tsx. */}
-      <CipherTexture chatId={chatId} color={colors.primary} />
+      <CipherTexture seed={chatId} color={colors.primary} />
       {/* The count is real — copies in the newest envelope, not a participant
           tally — so it stays honest when the two disagree. Hidden entirely
           when nothing is sealed rather than shown as "0 keys", which would
