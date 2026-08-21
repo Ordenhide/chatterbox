@@ -434,6 +434,79 @@ export function scrambleFrame(
 }
 
 /* ------------------------------------------------------------------------ *
+ * Cipher texture
+ *
+ * The ambient layer behind a conversation: the sealed form of the thread,
+ * sitting under the messages that have been opened out of it. Same alphabet
+ * as scrambleFrame, so the texture and the resolve animation are visibly the
+ * same material rather than two effects that happen to share a look.
+ *
+ * Deliberately *static*. scrambleFrame churns because it is mid-transition
+ * and about to stop; a background that never stopped churning would be
+ * unreadable to sit next to all day, and would burn a frame budget behind a
+ * scrolling list forever.
+ *
+ * Seeded rather than Math.random so a given chat's texture is stable — it does
+ * not reshuffle on every re-render, and returning to a conversation shows the
+ * same sealed field you left. Two different chats get different fields, which
+ * is the honest reading: different conversation, different ciphertext.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * mulberry32 — a small, fast, well-distributed 32-bit PRNG.
+ *
+ * Needed because the texture must be reproducible from a chat id, and
+ * Math.random cannot be seeded. Quality only has to be good enough that the
+ * glyphs do not visibly band or repeat; this clears that easily and is five
+ * lines, which beats taking a dependency for it.
+ */
+export function seededRandom(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Stable 32-bit hash of a chat id, for seeding the texture above. */
+export function hashSeed(value: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+/**
+ * A block of `length` cipher glyphs, stable for a given `seed`.
+ *
+ * Whitespace is inserted at irregular intervals rather than never: an
+ * unbroken wall of glyphs reads as a texture fill, while broken runs read as
+ * sealed *content* — which is what this is standing in for.
+ */
+export function cipherTexture(length: number, seed: number): string {
+  if (!Number.isFinite(length) || length <= 0) return '';
+  const random = seededRandom(seed);
+  let out = '';
+  let sinceBreak = 0;
+  for (let i = 0; i < length; i++) {
+    // Runs of 3–11 glyphs, so the field never settles into a visible column.
+    if (sinceBreak > 2 && random() < 0.14) {
+      out += ' ';
+      sinceBreak = 0;
+      continue;
+    }
+    out += CIPHER_GLYPHS[Math.floor(random() * CIPHER_GLYPHS.length) % CIPHER_GLYPHS.length];
+    sinceBreak++;
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------------ *
  * Cold open
  *
  * The launch sequence, and the one place the app gets to introduce itself.

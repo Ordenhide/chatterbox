@@ -32,6 +32,7 @@ import ActionSheet, {type SheetAction} from '../../components/ActionSheet';
 import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
 import FanOutBloom, {useFanOutBloom} from '../../components/FanOutBloom';
 import ThemeBackdrop from '../../components/ThemeBackdrop';
+import CipherTexture from '../../components/CipherTexture';
 import Icon from '../../components/Icon';
 import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -106,6 +107,7 @@ import {
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
 import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
+import {sealedKeyCount} from '../../services/e2eeMessages';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -1520,6 +1522,28 @@ export default function ChatScreen() {
     const query = searchQuery.toLowerCase();
     return messages.filter(message => (message.text || '').toLowerCase().includes(query));
   }, [messages, searchQuery]);
+
+  /**
+   * The fan-out width of the most recent sealed message, or null when nothing
+   * in this thread is sealed (a peer who has not enrolled a key yet — see
+   * collectRecipients in services/e2eeMessages.ts, which falls back to
+   * plaintext rather than sending something only some members can read).
+   *
+   * Read off the newest message rather than the participant list because the
+   * envelope is the honest source: it says how many keys this conversation is
+   * *actually* being sealed to right now, which is what changes when someone
+   * joins, leaves, or re-enrols on a new device.
+   *
+   * `messages` is newest-first (the thread is an inverted list), so the first
+   * match is the latest.
+   */
+  const sealedKeys = useMemo(() => {
+    for (const message of messages) {
+      const count = sealedKeyCount(message as unknown as ChatMessage);
+      if (count !== null) return count;
+    }
+    return null;
+  }, [messages]);
 
   const scrollToMessageId = useCallback((messageId: string | number) => {
     const index = filteredMessages.findIndex(m => String(m._id) === String(messageId));
@@ -3702,6 +3726,21 @@ export default function ChatScreen() {
           <ThemeBackdrop accent={themeColor} tint={chatWallpaper} />
         )
       ) : null}
+      {/* Above the wallpaper, below everything else: the sealed field this
+          conversation was decrypted out of. See components/CipherTexture.tsx. */}
+      <CipherTexture chatId={chatId} color={colors.primary} />
+      {/* The count is real — copies in the newest envelope, not a participant
+          tally — so it stays honest when the two disagree. Hidden entirely
+          when nothing is sealed rather than shown as "0 keys", which would
+          read as a broken feature instead of an un-enrolled peer. */}
+      {sealedKeys !== null ? (
+        <View style={[styles.sealPill, {borderColor: colors.primary}]}>
+          <Icon name="lock" size={9} color={colors.primary} />
+          <Text style={[styles.sealPillText, {color: colors.primary}]}>
+            {t('chat.sealedToKeys', {count: sealedKeys})}
+          </Text>
+        </View>
+      ) : null}
       {incognitoMode ? (
         <View style={[styles.offlineBanner, {backgroundColor: '#1A1A2E'}]}>
           <Icon name="blocked" size={13} color="#111" />
@@ -4925,6 +4964,27 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     alignItems: 'center',
+  },
+  // Deliberately not an offlineBanner: those are full-width, filled, and
+  // demand attention because each reports something wrong. This reports
+  // something *right*, so it sits quietly — a hairline pill, self-sized,
+  // stating the fan-out width rather than warning about it.
+  sealPill: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 3,
+    paddingHorizontal: 9,
+    marginTop: 6,
+    borderRadius: 4,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  sealPillText: {
+    fontFamily: Platform.select({ios: 'Menlo', android: 'monospace'}),
+    fontSize: 9.5,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
   },
   offlineText: {
     color: '#111',

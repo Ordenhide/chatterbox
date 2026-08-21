@@ -12,7 +12,7 @@ jest.mock('../e2eeKeys', () => ({
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 
 import {encryptMessage, generateKeypair, type Keypair} from '../e2ee';
-import {isMessageEncrypted, resolveMessageText, sendTextMessage} from '../e2eeMessages';
+import {isMessageEncrypted, resolveMessageText, sealedKeyCount, sendTextMessage} from '../e2eeMessages';
 import type {Message} from '../../types';
 
 const CHAT = 'chat-1';
@@ -146,6 +146,32 @@ describe('isMessageEncrypted', () => {
 
   it('is false for a plaintext message', () => {
     expect(isMessageEncrypted(msg('hello'))).toBe(false);
+  });
+});
+
+describe('sealedKeyCount', () => {
+  // Drives the "Sealed · N keys" pill in ChatScreen, so the number has to be
+  // the real fan-out width rather than a participant tally.
+  it('counts one copy per recipient in the envelope', async () => {
+    await sendTextMessage(CHAT, msg('x'), ME, ['bob', 'carol']);
+    expect(sealedKeyCount(sent())).toBe(2);
+
+    await sendTextMessage(CHAT, msg('y'), ME, ['bob']);
+    expect(sealedKeyCount(sent())).toBe(1);
+  });
+
+  it('reports a pre-group payload as the single copy it is', () => {
+    const legacy = {
+      ...msg(''),
+      encrypted: encryptMessage('x', me.secretKey, bob.publicKey, CHAT),
+    } as Message;
+    expect(sealedKeyCount(legacy)).toBe(1);
+  });
+
+  // Null rather than 0 so the pill can hide entirely: "0 keys" would read as a
+  // broken feature, when it actually means the peer has not enrolled yet.
+  it('is null for a plaintext message', () => {
+    expect(sealedKeyCount(msg('hello'))).toBeNull();
   });
 });
 

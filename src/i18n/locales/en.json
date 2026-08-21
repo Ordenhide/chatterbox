@@ -475,6 +475,8 @@
     "more": "More",
     "attach": "Attach",
     "composerPlaceholder": "Type a message...",
+    "sealedToKeys": "Sealed · {{count}} key",
+    "sealedToKeys_plural": "Sealed · {{count}} keys",
     "recipientDeleted": "This account has been deleted.",
     "recipientDeletedComposer": "You can't send messages to a deleted account. Your existing conversation is still here to read.",
     "replyPreview": {

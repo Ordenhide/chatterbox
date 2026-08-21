@@ -129,3 +129,22 @@ export async function resolveMessageText(
 export function isMessageEncrypted(message: Message): boolean {
   return isSealedEnvelope(message.encrypted) || isEncryptedPayload(message.encrypted);
 }
+
+/**
+ * How many independently-decryptable copies a message was sealed into — the
+ * real width of the fan-out described in sealForRecipients.
+ *
+ * Counted from the envelope rather than from the participant list, because
+ * those are not always the same number and the envelope is the one that is
+ * true: a member who joined after this message was sent has no copy in it and
+ * cannot read it, which is exactly what the count should say.
+ *
+ * Pre-group messages carry a bare payload rather than an envelope, so they
+ * report 1 — one copy, which is what they are. Null for anything unsealed.
+ */
+export function sealedKeyCount(message: Message): number | null {
+  const sealed = message.encrypted;
+  if (isSealedEnvelope(sealed)) return Object.keys(sealed.copies).length;
+  if (isEncryptedPayload(sealed)) return 1;
+  return null;
+}
