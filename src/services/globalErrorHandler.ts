@@ -46,29 +46,6 @@ type HermesShape = {
   enablePromiseRejectionTracker?: (options: RejectionOptions) => void;
 };
 
-/**
- * React Native's own tracker options, or undefined if unavailable.
- *
- * Reaching into `react-native/Libraries/...` is reaching into internals, hence
- * the try/catch: if a future version moves or renames this, the delegation
- * quietly stops and reporting carries on, rather than the whole handler
- * throwing during startup.
- */
-function reactNativeRejectionOptions(): RejectionOptions | undefined {
-  try {
-    // Deep import with no top-level equivalent: React Native does not
-    // re-export its rejection-tracking options, and this is the only way to
-    // hand the redbox back its behaviour after our tracker replaces it. The
-    // lint rule is right in general, which is why the require is isolated to
-    // this one function and guarded.
-    // eslint-disable-next-line @react-native/no-deep-imports
-    const mod = require('react-native/Libraries/promiseRejectionTrackingOptions');
-    return (mod?.default ?? mod) as RejectionOptions;
-  } catch {
-    return undefined;
-  }
-}
-
 export function installGlobalErrorHandler(): void {
   if (installed) return;
   installed = true;
@@ -94,27 +71,40 @@ export function installGlobalErrorHandler(): void {
     .HermesInternal;
   if (!hermes?.enablePromiseRejectionTracker) return;
 
-  // Only present in dev — see the note above. Undefined in release, where our
-  // handler is the only one and there is nothing to delegate to.
-  const rnOptions = __DEV__ ? reactNativeRejectionOptions() : undefined;
-
   hermes.enablePromiseRejectionTracker({
     // Matches React Native's own setting: report every rejection that reaches
     // the end of a turn without a handler, not only those that never get one.
     allRejections: true,
     onUnhandled: (id, rejection) => {
       reportError(rejection, 'unhandled_rejection');
-      if (rnOptions?.onUnhandled) {
-        // Restores the redbox, which our tracker just displaced.
-        rnOptions.onUnhandled(id, rejection);
-      } else if (__DEV__) {
-        // Delegation unavailable (internals moved): say so loudly rather than
-        // leaving a developer with a rejection and no visible sign of it.
-        console.warn(`Unhandled promise rejection (id: ${id})`, rejection);
+
+      // Installing a tracker replaces React Native's, so its redbox is gone
+      // and this is the only thing left that will tell a developer anything.
+      //
+      // What it prints matters more than that it prints. React Native's own
+      // handler wraps the rejection in a *new* Error created inside
+      // promiseRejectionTrackingOptions.js, so the stack it shows is the
+      // tracker's own frames -- which is why a permission-denied here read as
+      // "ExceptionsManager.handleException" and named nothing in this codebase.
+      // The rejection itself still carries the stack from where it was thrown,
+      // so print that instead: it points at the actual failing call.
+      if (__DEV__) {
+        const stack = (rejection as {stack?: string} | null)?.stack;
+        console.error(
+          `Unhandled promise rejection (id: ${id}): ${String(
+            (rejection as {message?: string} | null)?.message ?? rejection,
+          )}`,
+          stack ? `\n${stack}` : '(no stack on the rejected value)',
+        );
       }
     },
     onHandled: id => {
-      rnOptions?.onHandled?.(id);
+      if (__DEV__) {
+        console.warn(
+          `Promise rejection handled late (id: ${id}) -- the earlier report for ` +
+            'this id was premature and can be ignored.',
+        );
+      }
     },
   });
 }
@@ -123,3 +113,4 @@ export function installGlobalErrorHandler(): void {
 export function __resetGlobalErrorHandler(): void {
   installed = false;
 }
+

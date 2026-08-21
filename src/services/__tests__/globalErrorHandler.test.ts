@@ -106,18 +106,37 @@ describe('unhandled promise rejections', () => {
     expect(mockReportError).toHaveBeenCalledWith(reason, 'unhandled_rejection');
   });
 
-  it('still delegates so the dev redbox survives being displaced', () => {
+  // The bug this replaced: React Native wraps the rejection in a *new* Error
+  // inside its own tracker, so the printed stack was the tracker's frames and
+  // named nothing in this codebase. The rejection's own stack is the useful one.
+  it('prints the rejection\'s own stack, not the tracker\'s', () => {
     const fake = fakeHermes();
     globalAny.HermesInternal = fake.hermes;
     globalAny.ErrorUtils = undefined;
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     installGlobalErrorHandler();
-    const reason = new Error('boom');
-    fake.options().onUnhandled(1, reason);
+    const reason = new Error('[firestore/permission-denied] denied');
+    reason.stack = 'Error: denied\n    at listenChatsForUser (firebaseChat.ts:301:9)';
+    fake.options().onUnhandled(3, reason);
 
-    // __DEV__ is true under Jest, so RN's real options module is delegated to.
-    expect(mockReportError).toHaveBeenCalledWith(reason, 'unhandled_rejection');
-    expect(() => fake.options().onHandled(1)).not.toThrow();
+    const printed = spy.mock.calls[0].join(' ');
+    expect(printed).toContain('listenChatsForUser');
+    expect(printed).not.toContain('promiseRejectionTrackingOptions');
+    spy.mockRestore();
+  });
+
+  it('says so explicitly when the rejected value carries no stack', () => {
+    const fake = fakeHermes();
+    globalAny.HermesInternal = fake.hermes;
+    globalAny.ErrorUtils = undefined;
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    installGlobalErrorHandler();
+    fake.options().onUnhandled(4, 'a bare string');
+
+    expect(spy.mock.calls[0].join(' ')).toContain('no stack');
+    spy.mockRestore();
   });
 
   it('does nothing when Hermes has no tracker rather than throwing', () => {
