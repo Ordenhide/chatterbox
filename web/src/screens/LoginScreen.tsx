@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {colors} from '../theme';
 import {useT} from '../i18n';
 import BrandMark from '../components/BrandMark';
+import Cascade from '../components/Cascade';
 import PasswordInput from '../components/PasswordInput';
 import {signIn, signUp} from '../services/auth';
 import {checkPasswordStrength} from '../services/passwordPolicy';
@@ -52,63 +53,69 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
   return (
     <div style={styles.container} role="main">
       <form onSubmit={submit} style={styles.card}>
-        <div style={{display: 'flex', justifyContent: 'center', marginBottom: 18}}>
-          <BrandMark size={56} />
-        </div>
-        <h1 style={styles.title}>Chatterbox</h1>
-        <p style={styles.subtitle}>
-          {mode === 'signin' ? t('login.signInToContinue') : t('login.createAccount')}
-        </p>
+        <Cascade index={0}>
+          <div style={{display: 'flex', justifyContent: 'center', marginBottom: 18}}>
+            <BrandMark size={56} />
+          </div>
+          <h1 style={styles.title}>Chatterbox</h1>
+          <p style={styles.subtitle}>
+            {mode === 'signin' ? t('login.signInToContinue') : t('login.createAccount')}
+          </p>
+        </Cascade>
 
-        {mode === 'signup' && (
+        <Cascade index={1}>
+          {mode === 'signup' && (
+            <input
+              style={styles.input}
+              placeholder={t('login.displayName')}
+              aria-label={t('login.displayName')}
+              value={displayName}
+              onChange={e => setDisplayName(e.target.value)}
+              autoComplete="name"
+            />
+          )}
           <input
             style={styles.input}
-            placeholder={t('login.displayName')}
-            aria-label={t('login.displayName')}
-            value={displayName}
-            onChange={e => setDisplayName(e.target.value)}
-            autoComplete="name"
+            placeholder={t('login.email')}
+            aria-label={t('login.email')}
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            autoComplete="email"
           />
-        )}
-        <input
-          style={styles.input}
-          placeholder={t('login.email')}
-          aria-label={t('login.email')}
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          autoComplete="email"
-        />
-        <PasswordInput
-          style={styles.input}
-          placeholder={t('login.password')}
-          aria-label={t('login.password')}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-        />
+          <PasswordInput
+            style={styles.input}
+            placeholder={t('login.password')}
+            aria-label={t('login.password')}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+          />
 
-        {/* Explains an involuntary sign-out, so being kicked out mid-session
-            doesn't look like a bug or an expired login. */}
-        {displaced && !error && <div style={styles.notice}>{t('login.displaced')}</div>}
-        {error && <div style={styles.error}>{error}</div>}
+          {/* Explains an involuntary sign-out, so being kicked out mid-session
+              doesn't look like a bug or an expired login. */}
+          {displaced && !error && <div style={styles.notice}>{t('login.displaced')}</div>}
+          {error && <div style={styles.error}>{error}</div>}
 
-        <button type="submit" className="btn btn-primary" style={styles.primaryBtn} disabled={busy}>
-          {busy ? <span className="spinner" /> : mode === 'signin' ? t('login.signIn') : t('login.signUp')}
-        </button>
-
-        <div style={styles.switchRow}>
-          {mode === 'signin' ? t('login.noAccount') : t('login.haveAccount')}{' '}
-          <button
-            type="button"
-            style={styles.link}
-            onClick={() => {
-              setMode(mode === 'signin' ? 'signup' : 'signin');
-              setError(null);
-            }}>
-            {mode === 'signin' ? t('login.signUp') : t('login.signIn')}
+          <button type="submit" className="btn btn-primary" style={styles.primaryBtn} disabled={busy}>
+            {busy ? <span className="spinner" /> : mode === 'signin' ? t('login.signIn') : t('login.signUp')}
           </button>
-        </div>
+        </Cascade>
+
+        <Cascade index={2}>
+          <div style={styles.switchRow}>
+            {mode === 'signin' ? t('login.noAccount') : t('login.haveAccount')}{' '}
+            <button
+              type="button"
+              style={styles.link}
+              onClick={() => {
+                setMode(mode === 'signin' ? 'signup' : 'signin');
+                setError(null);
+              }}>
+              {mode === 'signin' ? t('login.signUp') : t('login.signIn')}
+            </button>
+          </div>
+        </Cascade>
       </form>
     </div>
   );

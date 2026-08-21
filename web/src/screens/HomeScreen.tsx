@@ -7,6 +7,7 @@ import {partitionChats, unreadTotal} from '../services/hiddenChats';
 import {useToast} from '../context/ToastContext';
 import {useIsMobile} from '../hooks/useIsMobile';
 import type {ChatRoom, UserProfile} from '../types';
+import Cascade from '../components/Cascade';
 import ChatPane from '../components/ChatPane';
 import NewChatModal from '../components/NewChatModal';
 import Icon from '../components/Icon';
@@ -201,9 +202,11 @@ export default function HomeScreen({
 
         <div className="scroll" style={styles.chatList}>
           {orderedChats.length === 0 ? (
-            <div style={styles.emptyList}>
-              {search ? t('chat.noMatch') : viewingHidden ? t('chats.hiddenEmpty') : t('chats.empty')}
-            </div>
+            <Cascade index={0}>
+              <div style={styles.emptyList}>
+                {search ? t('chat.noMatch') : viewingHidden ? t('chats.hiddenEmpty') : t('chats.empty')}
+              </div>
+            </Cascade>
           ) : (
             orderedChats.map((chat, i) => {
               const {title, seed} = chatMeta(chat);

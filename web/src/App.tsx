@@ -8,6 +8,7 @@ import {useBackdropParallax} from './hooks/useBackdropParallax';
 import BrandMark from './components/BrandMark';
 import ConnectionBanner from './components/ConnectionBanner';
 import LoginScreen from './screens/LoginScreen';
+import ColdOpen, {coldOpenPending} from './components/ColdOpen';
 
 // Code-split the authenticated app: the whole chat/moments/calls surface (and
 // its Firestore/Storage/WebRTC code) loads only after sign-in.
@@ -30,6 +31,10 @@ export default function App() {
   // authenticated UI never flashes for a session that has been displaced.
   const [sessionReady, setSessionReady] = useState(false);
   const [displaced, setDisplaced] = useState(false);
+  // Seeded from ColdOpen's module-scope flag rather than `true`, so only a
+  // genuine first load waits on the sequence — a fast refresh or remount
+  // reads it as already played and skips straight to the app.
+  const [coldOpenDone, setColdOpenDone] = useState(() => !coldOpenPending());
 
   // Drifts body::before against whichever screen is scrolling. Mounted here
   // because the backdrop is global — it outlives every screen below it.
@@ -84,12 +89,12 @@ export default function App() {
     if (user) setDisplaced(false);
   }, [user]);
 
-  if (loading) return <FullscreenLoader />;
-
   return (
     <>
       <ConnectionBanner />
-      {user ? (
+      {loading ? (
+        <FullscreenLoader />
+      ) : user ? (
         sessionReady ? (
           <Suspense fallback={<FullscreenLoader />}>
             <MainApp user={user} />
@@ -100,6 +105,12 @@ export default function App() {
       ) : (
         <LoginScreen displaced={displaced} />
       )}
+      {/* Overlays whatever's above rather than gating it, so its closing fade
+          reveals the real page instead of cutting from a blank screen to it.
+          Mounted once, here, for the same reason: gating loading/login/main
+          each with their own cold open would remount it as the branch above
+          switches, restarting the sequence. */}
+      {!coldOpenDone && <ColdOpen onDone={() => setColdOpenDone(true)} />}
     </>
   );
 }

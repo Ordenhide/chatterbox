@@ -64,3 +64,116 @@ export function parallaxOffset(scrollTop: number, rate: number, limit = Infinity
   if (!Number.isFinite(scrollTop) || scrollTop <= 0) return 0;
   return -Math.min(scrollTop, limit) * rate;
 }
+
+/* ------------------------------------------------------------------------ *
+ * Seal & Resolve
+ *
+ * New on the web client — the mobile app's signature effect (see the Seal &
+ * Resolve note in src/utils/motion.ts on that side) had no web counterpart.
+ * Ported here rather than reinvented, same constants and same algorithm, so a
+ * message resolving on one client and the same message resolving on the
+ * other are the same animation, not two effects that happen to look similar.
+ * ------------------------------------------------------------------------ */
+
+export const CIPHER_GLYPHS = 'ABCDEF0123456789/+=%$#@&*<>{}[]^~';
+
+export const SCRAMBLE_MIN_MS = 360;
+export const SCRAMBLE_MAX_MS = 1200;
+export const SCRAMBLE_MS_PER_CHAR = 18;
+
+/** How long a message takes to resolve: proportional to length, clamped so a
+ * two-word reply doesn't feel broken and a paragraph doesn't outlast reading it. */
+export function scrambleDuration(length: number): number {
+  if (!Number.isFinite(length) || length <= 0) return SCRAMBLE_MIN_MS;
+  return Math.min(SCRAMBLE_MAX_MS, SCRAMBLE_MIN_MS + length * SCRAMBLE_MS_PER_CHAR);
+}
+
+/**
+ * How many characters shimmer at the resolving edge at once — the cost cap
+ * that keeps a long message's per-frame work bounded, and reads as a wave of
+ * legibility travelling through the text rather than the whole block twitching.
+ */
+export const SCRAMBLE_WINDOW = 48;
+
+/**
+ * One frame of the scramble: `text` with the first `progress` share resolved
+ * and the rest still ciphertext. Whitespace is never scrambled, so line breaks
+ * hold still and the element doesn't reflow mid-animation.
+ */
+export function scrambleFrame(text: string, progress: number, random: () => number = Math.random): string {
+  if (typeof text !== 'string' || text.length === 0) return '';
+  if (!Number.isFinite(progress)) return text;
+  if (progress >= 1) return text;
+
+  const clamped = Math.max(0, progress);
+  const resolved = Math.floor(clamped * text.length);
+  let out = '';
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (i < resolved || /\s/.test(char)) {
+      out += char;
+    } else if (i < resolved + SCRAMBLE_WINDOW) {
+      out += CIPHER_GLYPHS[Math.floor(random() * CIPHER_GLYPHS.length) % CIPHER_GLYPHS.length];
+    } else {
+      // Beyond the shimmer window the glyph is a function of its index, so it
+      // stays put instead of flickering — reads as sealed rather than noise.
+      out += CIPHER_GLYPHS[i % CIPHER_GLYPHS.length];
+    }
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Cold open
+ *
+ * The launch sequence — twin of ColdOpen.tsx on mobile, same three phases and
+ * same durations, so the two clients introduce the product identically. See
+ * that file for why it's three phases rather than one tween.
+ * ------------------------------------------------------------------------ */
+
+export const COLD_OPEN_SEAL_MS = 620;
+export const COLD_OPEN_RESOLVE_MS = 900;
+export const COLD_OPEN_SETTLE_MS = 420;
+export const COLD_OPEN_TOTAL_MS = COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS;
+
+export type ColdOpenPhase = 'seal' | 'resolve' | 'settle' | 'done';
+
+export interface ColdOpenFrame {
+  phase: ColdOpenPhase;
+  /** 0→1 *within the current phase*, not across the whole sequence. */
+  progress: number;
+}
+
+/** Which phase the cold open is in at `elapsed` ms, and how far through it. */
+export function coldOpenFrame(elapsed: number): ColdOpenFrame {
+  if (!Number.isFinite(elapsed) || elapsed <= 0) return {phase: 'seal', progress: 0};
+  if (elapsed < COLD_OPEN_SEAL_MS) {
+    return {phase: 'seal', progress: elapsed / COLD_OPEN_SEAL_MS};
+  }
+  const afterSeal = elapsed - COLD_OPEN_SEAL_MS;
+  if (afterSeal < COLD_OPEN_RESOLVE_MS) {
+    return {phase: 'resolve', progress: afterSeal / COLD_OPEN_RESOLVE_MS};
+  }
+  const afterResolve = afterSeal - COLD_OPEN_RESOLVE_MS;
+  if (afterResolve < COLD_OPEN_SETTLE_MS) {
+    return {phase: 'settle', progress: afterResolve / COLD_OPEN_SETTLE_MS};
+  }
+  return {phase: 'done', progress: 1};
+}
+
+/* ------------------------------------------------------------------------ *
+ * Entrance cascade
+ *
+ * Twin of cascadeDelay on mobile. Distinct from the row-by-row reveal above:
+ * this is for a handful of elements on a screen you've just arrived at, with
+ * nothing competing for attention, so the step is long enough to read as
+ * choreography.
+ * ------------------------------------------------------------------------ */
+
+export const CASCADE_STEP_MS = 85;
+export const CASCADE_MAX_STEPS = 6;
+
+export function cascadeDelay(index: number): number {
+  if (!Number.isFinite(index) || index < 0) return 0;
+  return Math.min(Math.floor(index), CASCADE_MAX_STEPS) * CASCADE_STEP_MS;
+}

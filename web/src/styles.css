@@ -1074,6 +1074,61 @@ button:focus-visible {
   }
 }
 
+/* ---- Cascade ----
+   A screen's-worth of elements arriving in sequence — see cascadeDelay in
+   motion.ts, which supplies the per-element --cb-cascade-delay this reads.
+   More travel and more overshoot than .fade-in: that class covers content
+   that fades in on its own (a panel swap, a toast); this is for a handful of
+   elements on a screen you've just arrived at, choreographed as a set. */
+.cb-cascade-in {
+  animation: cbCascadeIn 0.5s var(--cb-spring) both;
+  animation-delay: var(--cb-cascade-delay, 0ms);
+}
+@keyframes cbCascadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Cold open ----
+   The launch sequence — see ColdOpen.tsx. The wordmark's own scramble-to-text
+   is JS-driven (the content changes every frame, which no keyframe can do);
+   these two classes are just the container's arrival and the underline
+   growing in under it once the reveal lands. */
+.cb-cold-open {
+  animation: cbColdOpenIn 0.42s var(--cb-ease-out) both;
+}
+@keyframes cbColdOpenIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cb-cold-open-exit {
+  animation: cbColdOpenOut 0.26s ease both;
+}
+@keyframes cbColdOpenOut {
+  to {
+    opacity: 0;
+  }
+}
+.cb-cold-open-rule {
+  transform: scaleX(0);
+  transition: transform 0.42s var(--cb-ease-out);
+}
+.cb-cold-open-rule.cb-cold-open-rule-shown {
+  transform: none;
+}
+
 /* ---- Reduced motion ----
    Everything above becomes an instant state change. Kept as one blanket rule
    rather than per-effect overrides so a new animation can never quietly skip

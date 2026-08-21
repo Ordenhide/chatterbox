@@ -1,11 +1,24 @@
 import {describe, expect, it} from 'vitest';
 import {
+  CASCADE_MAX_STEPS,
+  CASCADE_STEP_MS,
+  COLD_OPEN_RESOLVE_MS,
+  COLD_OPEN_SEAL_MS,
+  COLD_OPEN_SETTLE_MS,
+  COLD_OPEN_TOTAL_MS,
   GLOW_DRIFT_LIMIT,
   PARALLAX_BACKDROP,
   PARALLAX_GLOW,
   REVEAL_ENTER_RATIO,
+  SCRAMBLE_MAX_MS,
+  SCRAMBLE_MIN_MS,
+  SCRAMBLE_WINDOW,
+  cascadeDelay,
+  coldOpenFrame,
   parallaxOffset,
   revealProgress,
+  scrambleDuration,
+  scrambleFrame,
 } from './motion';
 
 const VIEWPORT = 800;
@@ -68,5 +81,106 @@ describe('parallaxOffset', () => {
   it('stays put at or above the top, including on overscroll', () => {
     expect(parallaxOffset(0, PARALLAX_BACKDROP)).toBe(0);
     expect(parallaxOffset(-200, PARALLAX_BACKDROP)).toBe(0);
+  });
+});
+
+describe('scrambleDuration', () => {
+  it('takes longer for longer messages', () => {
+    expect(scrambleDuration(40)).toBeGreaterThan(scrambleDuration(4));
+  });
+
+  it('never resolves faster than the floor or slower than the ceiling', () => {
+    expect(scrambleDuration(1)).toBeGreaterThanOrEqual(SCRAMBLE_MIN_MS);
+    expect(scrambleDuration(100000)).toBe(SCRAMBLE_MAX_MS);
+    expect(scrambleDuration(0)).toBe(SCRAMBLE_MIN_MS);
+    expect(scrambleDuration(NaN)).toBe(SCRAMBLE_MIN_MS);
+  });
+});
+
+describe('scrambleFrame', () => {
+  const TEXT = 'Meet me at the pier at six';
+  const fixed = (n: number) => () => n;
+
+  it('resolves nothing at progress 0 and everything at 1', () => {
+    expect(scrambleFrame(TEXT, 0, fixed(0))).not.toBe(TEXT);
+    expect(scrambleFrame(TEXT, 1)).toBe(TEXT);
+  });
+
+  it('never scrambles whitespace, so line breaks hold still', () => {
+    const frame = scrambleFrame(TEXT, 0, fixed(0));
+    for (let i = 0; i < TEXT.length; i++) {
+      if (/\s/.test(TEXT[i])) expect(frame[i]).toBe(TEXT[i]);
+    }
+  });
+
+  it('resolves left to right as progress advances', () => {
+    const frame = scrambleFrame(TEXT, 0.5, fixed(0));
+    const resolvedCount = Math.floor(0.5 * TEXT.length);
+    expect(frame.slice(0, resolvedCount).replace(/\s/g, '')).toBe(
+      TEXT.slice(0, resolvedCount).replace(/\s/g, ''),
+    );
+  });
+
+  it('caps the shimmer window rather than scrambling the whole tail', () => {
+    const long = 'x'.repeat(200);
+    const frame = scrambleFrame(long, 0, fixed(0));
+    // Well past the shimmer window, the glyph is fixed by index rather than
+    // random — running twice with different "random" fns must agree there.
+    const frame2 = scrambleFrame(long, 0, fixed(0.99));
+    expect(frame.slice(SCRAMBLE_WINDOW + 10)).toBe(frame2.slice(SCRAMBLE_WINDOW + 10));
+  });
+
+  it('handles empty input and out-of-range progress without throwing', () => {
+    expect(scrambleFrame('', 0.5)).toBe('');
+    expect(scrambleFrame(TEXT, NaN)).toBe(TEXT);
+    expect(scrambleFrame(TEXT, -1, fixed(0))).not.toBe(TEXT);
+  });
+});
+
+describe('coldOpenFrame', () => {
+  it('walks seal -> resolve -> settle -> done in order', () => {
+    expect(coldOpenFrame(0).phase).toBe('seal');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS / 2).phase).toBe('seal');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS).phase).toBe('resolve');
+    expect(coldOpenFrame(COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS).phase).toBe('settle');
+    expect(coldOpenFrame(COLD_OPEN_TOTAL_MS).phase).toBe('done');
+    expect(coldOpenFrame(COLD_OPEN_TOTAL_MS * 10).phase).toBe('done');
+  });
+
+  it('reports progress within the current phase, not across the whole run', () => {
+    const midResolve = coldOpenFrame(COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS / 2);
+    expect(midResolve.phase).toBe('resolve');
+    expect(midResolve.progress).toBeCloseTo(0.5);
+
+    const midSettle = coldOpenFrame(
+      COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS / 2,
+    );
+    expect(midSettle.phase).toBe('settle');
+    expect(midSettle.progress).toBeCloseTo(0.5);
+  });
+
+  it('reads a bad clock as the start rather than throwing', () => {
+    expect(coldOpenFrame(NaN)).toEqual({phase: 'seal', progress: 0});
+    expect(coldOpenFrame(-1)).toEqual({phase: 'seal', progress: 0});
+    expect(coldOpenFrame(Infinity).phase).toBe('seal');
+  });
+});
+
+describe('cascadeDelay', () => {
+  it('steps each element back by one interval', () => {
+    expect(cascadeDelay(0)).toBe(0);
+    expect(cascadeDelay(1)).toBe(CASCADE_STEP_MS);
+    expect(cascadeDelay(3)).toBe(3 * CASCADE_STEP_MS);
+  });
+
+  it('caps so a cascade never reads as the screen being slow', () => {
+    const ceiling = CASCADE_MAX_STEPS * CASCADE_STEP_MS;
+    expect(cascadeDelay(CASCADE_MAX_STEPS)).toBe(ceiling);
+    expect(cascadeDelay(CASCADE_MAX_STEPS + 50)).toBe(ceiling);
+  });
+
+  it('treats nonsense positions as first', () => {
+    expect(cascadeDelay(-3)).toBe(0);
+    expect(cascadeDelay(NaN)).toBe(0);
   });
 });
