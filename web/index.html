@@ -15,6 +15,18 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Chatterbox" />
+    <!-- The three faces the mobile app ships as linked assets (see
+         src/theme/typography.ts there). Loaded from Google Fonts rather than
+         self-hosted because this client has no bundler step for binary assets
+         and the mobile app is the one that must work offline. `display=swap`
+         so a slow font never blocks first paint — the fallback stacks in
+         styles.css are ordered to keep the layout close while it loads. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    />
   </head>
   <body>
     <div id="root"></div>

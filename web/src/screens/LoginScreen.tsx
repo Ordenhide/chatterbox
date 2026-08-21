@@ -157,9 +157,10 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: '0 30px 60px -30px rgba(20,30,60,0.25)',
   },
   title: {
+    fontFamily: 'var(--cb-display)',
     fontSize: 34,
-    fontWeight: 800,
-    letterSpacing: '-1px',
+    fontWeight: 700,
+    letterSpacing: '-0.5px',
     textAlign: 'center',
     margin: '0 0 6px',
     color: colors.text,

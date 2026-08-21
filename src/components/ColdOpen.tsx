@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, Text, useColorScheme} from 'react-native';
 import {getColors} from '../theme/colors';
 import {coldOpenFrame, scrambleFrame, useReduceMotion} from '../utils/motion';
+import {fonts} from '../theme/typography';
 
 /**
  * The launch sequence: the wordmark arrives sealed and resolves into itself.
@@ -162,12 +163,19 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   wordmark: {
-    fontSize: 34,
-    fontWeight: '800',
+    // Mono, not the display face, and for a reason that outranks branding:
+    // this text is *ciphertext* for most of its life, re-randomising every
+    // frame. In any proportional face the line would change width on each
+    // frame and visibly jitter — `tabular-nums` does not save it, since that
+    // only equalises digits and this alphabet is mostly letters and symbols.
+    // A fixed advance makes the resolve land dead still.
+    //
+    // It also happens to be the honest reading: the machine half of the app
+    // speaks in mono (see CipherTexture and the seal pill), and this is the
+    // machine handing the name over.
+    fontFamily: fonts.mono.medium,
+    fontSize: 30,
     letterSpacing: 2,
-    // Fixed-width digits/glyphs keep the line from reflowing as the scramble
-    // swaps characters underneath it.
-    fontVariant: ['tabular-nums'],
     textAlign: 'center',
   },
   rule: {

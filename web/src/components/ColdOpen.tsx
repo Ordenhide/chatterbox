@@ -114,12 +114,17 @@ const styles: Record<string, React.CSSProperties> = {
     minWidth: 220,
   },
   wordmark: {
-    fontSize: 34,
-    fontWeight: 800,
+    // Mono for the same reason as the mobile twin: this is ciphertext for most
+    // of its life, re-randomising every frame, and any proportional face would
+    // change width per frame and visibly jitter. tabular-nums cannot save it —
+    // that only equalises digits, and this alphabet is mostly letters and
+    // symbols. A fixed advance makes the resolve land dead still.
+    fontFamily: 'var(--cb-mono)',
+    fontSize: 30,
+    fontWeight: 500,
     letterSpacing: '2px',
     textAlign: 'center',
     color: colors.text,
-    fontVariantNumeric: 'tabular-nums',
   },
   rule: {
     height: 2,

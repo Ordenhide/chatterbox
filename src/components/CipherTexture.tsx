@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
-import {Platform, StyleSheet, Text, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, Text, View, useWindowDimensions} from 'react-native';
 import {cipherTexture, hashSeed} from '../utils/motion';
+import {fonts} from '../theme/typography';
 
 /**
  * The sealed field a conversation sits on.
@@ -18,12 +19,18 @@ import {cipherTexture, hashSeed} from '../utils/motion';
  * same every time you open it.
  */
 
-/** Monospace metrics at FONT_SIZE, used to work out how many glyphs fill the
- * screen. Approximate on purpose: overshooting costs a few characters in a
- * string, undershooting would leave a visible bare corner. */
 const FONT_SIZE = 10;
 const LINE_HEIGHT = 17;
-const CHAR_WIDTH = 6.1;
+/**
+ * IBM Plex Mono advances exactly 0.6em, so 6.0px at FONT_SIZE — deliberately
+ * under-stated here.
+ *
+ * The estimate divides into the width to get glyphs-per-line, so a value that
+ * is too *large* yields too few glyphs and can leave a bare strip at the
+ * bottom of the screen; too small merely generates a few characters that wrap
+ * off the end and cost nothing. The error is only safe in one direction.
+ */
+const CHAR_WIDTH = 5.8;
 
 /** Low enough to read as paper texture rather than content competing with the
  * messages on top of it. Tuned against the darkest surface, where it shows most. */
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   glyphs: {
-    fontFamily: Platform.select({ios: 'Menlo', android: 'monospace'}),
+    fontFamily: fonts.mono.regular,
     fontSize: FONT_SIZE,
     lineHeight: LINE_HEIGHT,
   },

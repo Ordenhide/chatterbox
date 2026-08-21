@@ -108,6 +108,7 @@ import {
 import {reportError} from '../../services/telemetry';
 import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {sealedKeyCount} from '../../services/e2eeMessages';
+import {fonts} from '../../theme/typography';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -4027,7 +4028,17 @@ export default function ChatScreen() {
                 // the timestamp lines up with the message above it instead of
                 // sitting on GiftedChat's narrower default margin.
                 const inset = {marginLeft: 14, marginRight: 14, marginBottom: 6};
-                return <Time {...timeProps} containerStyle={{left: inset, right: inset}} />;
+                // Mono for the clock, matching the seal pill and the web
+                // client's --cb-mono rule: technical metadata sets in mono, so
+                // timestamps stop drifting in width between :11 and :44.
+                const timeText = {left: styles.timeText, right: styles.timeText};
+                return (
+                  <Time
+                    {...timeProps}
+                    containerStyle={{left: inset, right: inset}}
+                    timeTextStyle={timeText}
+                  />
+                );
               }
             : undefined
         }
@@ -4980,8 +4991,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: StyleSheet.hairlineWidth,
   },
+  timeText: {
+    fontFamily: fonts.mono.regular,
+  },
   sealPillText: {
-    fontFamily: Platform.select({ios: 'Menlo', android: 'monospace'}),
+    fontFamily: fonts.mono.medium,
     fontSize: 9.5,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
@@ -5184,6 +5198,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   messageText: {
+    fontFamily: fonts.body.regular,
     fontSize: 16,
     lineHeight: 22,
     // GiftedChat's stock MessageText supplies its own inset, but a custom

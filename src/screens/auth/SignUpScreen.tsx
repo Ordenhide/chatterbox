@@ -20,6 +20,7 @@ import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import Cascade from '../../components/Cascade';
+import {fonts} from '../../theme/typography';
 import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
@@ -175,8 +176,10 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   title: {
-    fontSize: 36,
-    fontWeight: '800',
+    // Display face. No fontWeight beside it -- the weight lives in the
+    // file (see theme/typography.ts).
+    fontFamily: fonts.display.bold,
+    fontSize: 34,
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: -0.5,

@@ -1,5 +1,6 @@
 import React from 'react';
 import {NativeSyntheticEvent, Platform, StyleSheet, TextInput, TextInputContentSizeChangeEventData} from 'react-native';
+import {fonts} from '../theme/typography';
 
 /**
  * The message input, deliberately *uncontrolled*.
@@ -92,6 +93,9 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     marginLeft: 10,
+    // Matches styles.messageText in ChatScreen: what you type should be set in
+    // the same face it will be read in.
+    fontFamily: fonts.body.regular,
     fontSize: 16,
     lineHeight: 16,
     marginTop: Platform.select({ios: 6, android: 0}),

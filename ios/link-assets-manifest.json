@@ -1,0 +1,37 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/ChakraPetch-Bold.ttf",
+      "sha1": "182532dbca1dfa814452a488401e0f3b3c79b079"
+    },
+    {
+      "path": "src/assets/fonts/ChakraPetch-SemiBold.ttf",
+      "sha1": "d0602bc6e3a83ee6c2e97e317bb7ef8e5145c02b"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexMono-Medium.ttf",
+      "sha1": "1c911f685c78098d488ea378f14bd64ab36f4ec2"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexMono-Regular.ttf",
+      "sha1": "bfdbfbc2fae12a3faadee40dbfc56017f1806c0c"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexSans-Bold.ttf",
+      "sha1": "cba9b3a7e84e2a4fd0a2028299143978f35009a9"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexSans-Medium.ttf",
+      "sha1": "abc71ed4f93b8d4814f7a9cf7543375b3a07eb78"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexSans-Regular.ttf",
+      "sha1": "7254ac11e47b53022a452bc4c3727d394e25e493"
+    },
+    {
+      "path": "src/assets/fonts/IBMPlexSans-SemiBold.ttf",
+      "sha1": "cade310bd2965eca4fecaa942fba35d03fbe5115"
+    }
+  ]
+}

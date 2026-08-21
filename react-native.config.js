@@ -37,4 +37,11 @@ module.exports = {
   dependencies: Object.fromEntries(
     harmonyOnlyPackages.map(name => [name, {platforms: {ios: null, android: null}}]),
   ),
+  // Fonts are linked as assets rather than loaded at runtime: React Native has
+  // no runtime font loader, so the files have to be copied into the iOS bundle
+  // (plus UIAppFonts in Info.plist) and android/app/src/main/assets/fonts by
+  // `npx react-native-asset`. See src/theme/typography.ts for how they are
+  // referenced, and note that adding a face here needs that command re-run and
+  // a native rebuild — a JS reload will not pick it up.
+  assets: ['./src/assets/fonts'],
 };

@@ -44,8 +44,13 @@
   --cb-scroll-thumb: rgba(130, 173, 219, 0.18);
   --cb-scroll-thumb-hover: rgba(130, 173, 219, 0.3);
 
-  /* Technical metadata (timestamps, ids, status, counts) sets in mono. */
-  --cb-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  /* The three faces, matching the mobile app's theme/typography.ts. Technical
+     metadata (timestamps, ids, status, counts) sets in mono. Each keeps a
+     fallback stack with similar metrics, so a slow webfont shifts the layout
+     as little as possible under display=swap. */
+  --cb-display: 'Chakra Petch', 'IBM Plex Sans', system-ui, sans-serif;
+  --cb-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cb-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 :root[data-theme='light'] {
@@ -86,7 +91,12 @@
   --cb-scroll-thumb: rgba(15, 33, 60, 0.2);
   --cb-scroll-thumb-hover: rgba(15, 33, 60, 0.32);
 
-  --cb-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  /* The three faces, matching the mobile app's theme/typography.ts. Each
+     keeps a fallback stack with similar metrics, so a slow webfont shifts
+     the layout as little as possible under display=swap. */
+  --cb-display: 'Chakra Petch', 'IBM Plex Sans', system-ui, sans-serif;
+  --cb-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cb-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 * {
@@ -101,7 +111,7 @@ body,
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--cb-body);
   color: var(--cb-text);
   /* Overridden inline (--cb-wallpaper) by StoreThemeContext when the account
      has an applied Store theme, so it paints app-wide rather than only
