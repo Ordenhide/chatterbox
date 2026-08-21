@@ -123,7 +123,7 @@ export function encryptMessage(
   return {
     alg: E2EE_ALG,
     body: encryptWithKey(plaintext, key),
-    senderKey: bytesToBase64(x25519.getPublicKey(senderSecretKey)),
+    senderKey: myPublicKeyFor(senderSecretKey),
     recipientKey: bytesToBase64(recipientPublicKey),
   };
 }
@@ -136,6 +136,40 @@ export function encryptMessage(
  * key, which is why the envelope records both and this picks the one that
  * isn't mine.
  */
+/**
+ * `x25519.getPublicKey(secretKey)` by reference to the secret key it was
+ * derived from.
+ *
+ * Every decrypt call was doing this scalar multiplication from scratch just
+ * to answer "is the sender or the recipient field mine?" — a question with
+ * the same answer for as long as the device keypair does not change.
+ * e2eeKeys.ts already memoizes that keypair in-process (see `cached` there),
+ * so every decrypt in a session, and every message in a batch, was passing
+ * the *same* secretKey reference and redoing this anyway: one full EC scalar
+ * multiplication per message purely to re-derive a value already known,
+ * roughly doubling the real cryptographic cost (the actual ECDH in
+ * deriveMessageKey below is the other, unavoidable one). Opening a chat with
+ * many newly-arrived sealed messages decrypts the whole batch synchronously
+ * in one JS-thread tick (see the decrypt loop in ChatScreen.tsx) — this is
+ * why that could visibly stall, and only for chats with enough undecrypted
+ * messages to make the redundancy add up.
+ *
+ * A WeakMap keyed on the secretKey object needs no call-site changes: every
+ * caller already reuses the same in-memory keypair, so the identity check a
+ * WeakMap does for free is exactly the reuse that already happens. It also
+ * releases itself — nothing pins a Uint8Array here past the keypair's own
+ * lifetime, which matters for a key material cache.
+ */
+const publicKeyCache = new WeakMap<Uint8Array, string>();
+
+function myPublicKeyFor(secretKey: Uint8Array): string {
+  const cached = publicKeyCache.get(secretKey);
+  if (cached) return cached;
+  const derived = bytesToBase64(x25519.getPublicKey(secretKey));
+  publicKeyCache.set(secretKey, derived);
+  return derived;
+}
+
 export function decryptMessage(
   payload: EncryptedPayload,
   mySecretKey: Uint8Array,
@@ -144,7 +178,7 @@ export function decryptMessage(
   if (payload.alg !== E2EE_ALG) {
     throw new Error(`unsupported e2ee algorithm: ${payload.alg}`);
   }
-  const myPublicKey = bytesToBase64(x25519.getPublicKey(mySecretKey));
+  const myPublicKey = myPublicKeyFor(mySecretKey);
   const peerKey = payload.senderKey === myPublicKey ? payload.recipientKey : payload.senderKey;
   if (!peerKey) {
     throw new Error('payload is missing the counterparty public key');

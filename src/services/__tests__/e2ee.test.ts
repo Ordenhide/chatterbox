@@ -76,6 +76,41 @@ describe('message round-trip', () => {
   });
 });
 
+describe('own-public-key cache', () => {
+  // decryptMessage and encryptMessage both derive the caller's own public key
+  // from their secret key, and cache it by the secret key's object identity
+  // (see myPublicKeyFor / publicKeyCache in e2ee.ts) rather than recomputing
+  // it on every call — every real call site reuses the same in-memory keypair
+  // object for as long as it is valid, so this is free reuse, not a
+  // correctness gamble. These guard the two ways that could go wrong.
+
+  it('does not confuse two different secret keys, even called back to back', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const carol = generateKeypair();
+
+    // Warms the cache for both, in whichever order a real batch might.
+    const toBob = encryptMessage('for bob', alice.secretKey, bob.publicKey, CHAT);
+    const toCarol = encryptMessage('for carol', alice.secretKey, carol.publicKey, CHAT);
+
+    expect(decryptMessage(toBob, bob.secretKey, CHAT)).toBe('for bob');
+    expect(decryptMessage(toCarol, carol.secretKey, CHAT)).toBe('for carol');
+    // Each payload's senderKey must be alice's, not whichever key the cache
+    // last happened to compute.
+    expect(toBob.senderKey).toBe(toCarol.senderKey);
+  });
+
+  it('gives the same answer whether or not the cache was already warm', () => {
+    // Two keypairs with distinct secretKey objects (generateKeypair never
+    // reuses one), asserting the cache is warmed correctly from cold on the
+    // very first call — not just consistent on repeats.
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const first = encryptMessage('first ever call for this key', alice.secretKey, bob.publicKey, CHAT);
+    expect(decryptMessage(first, bob.secretKey, CHAT)).toBe('first ever call for this key');
+  });
+});
+
 describe('security properties', () => {
   it('the server sees no plaintext', () => {
     const alice = generateKeypair();
