@@ -28,9 +28,13 @@ vi.stubGlobal('localStorage', memoryStorage);
 /** Stand-in for Firestore, keyed by the doc path "users/{uid}/publicKeys/e2ee". */
 const firestoreDocs = new Map<string, {publicKey?: string}>();
 
+/** Makes the next getDoc reject, standing in for a network/permission failure. */
+let firestoreUnreachable = false;
+
 vi.mock('firebase/firestore', () => ({
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   getDoc: async (ref: {path: string}) => {
+    if (firestoreUnreachable) throw new Error('network unreachable');
     const data = firestoreDocs.get(ref.path);
     return {exists: () => !!data, data: () => data};
   },
@@ -66,6 +70,7 @@ function publishPeerKey(publicKey: Uint8Array) {
 beforeEach(() => {
   firestoreDocs.clear();
   memoryStorage.clear();
+  firestoreUnreachable = false;
   _resetKeypairCache();
 });
 
@@ -102,6 +107,30 @@ describe('publishPublicKey / fetchPeerPublicKeyChecked', () => {
     const {status, key} = await fetchPeerPublicKeyChecked(ME, PEER);
     expect(status).toBe('unenrolled');
     expect(key).toBeNull();
+  });
+
+  it('reports unavailable — NOT unenrolled — when the lookup fails', async () => {
+    // The distinction is a plaintext leak if lost. Callers answer 'unenrolled'
+    // with a cleartext send (the peer genuinely has no key to seal to); a
+    // failed lookup is not that answer, it is no answer, and must never be
+    // read as permission to send in clear. This previously came back as
+    // 'unenrolled', so any network blip silently disabled encryption.
+    firestoreUnreachable = true;
+    const {status, key} = await fetchPeerPublicKeyChecked(ME, PEER);
+    expect(status).toBe('unavailable');
+    expect(key).toBeNull();
+  });
+
+  it('does not poison the trust cache when the lookup fails', async () => {
+    // A failed fetch must not be recorded as "the key this account has seen",
+    // or the next real key would look like a substitution.
+    publishPeerKey(generateKeypair().publicKey);
+    await fetchPeerPublicKeyChecked(ME, PEER); // first-contact, caches it
+    firestoreUnreachable = true;
+    await fetchPeerPublicKeyChecked(ME, PEER); // unavailable
+    firestoreUnreachable = false;
+    const {status} = await fetchPeerPublicKeyChecked(ME, PEER);
+    expect(status).toBe('unchanged');
   });
 
   it('reports first-contact the first time this account sees the key, not changed', async () => {

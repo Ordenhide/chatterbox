@@ -12,7 +12,12 @@
  * peer.
  */
 import {sendMessage} from './chat';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {
+  EncryptionUnavailableError,
+  fetchPeerPublicKeyChecked,
+  getOrCreateDeviceKeypair,
+  isEncryptionUnavailable,
+} from './e2eeKeys';
 import {sealForRecipients, type EnvelopeRecipient} from './e2ee';
 
 export async function sealAndSendText(
@@ -29,9 +34,15 @@ export async function sealAndSendText(
   try {
     const recipients: EnvelopeRecipient[] = [];
     for (const uid of recipientUids) {
-      const {key} = await fetchPeerPublicKeyChecked(me.uid, uid);
+      const {key, status} = await fetchPeerPublicKeyChecked(me.uid, uid);
+      // Not knowing whether a peer has a key is not the same as knowing they
+      // have none, and only the second may be answered with plaintext.
+      if (status === 'unavailable') {
+        throw new EncryptionUnavailableError(`peer key unavailable for ${uid}`);
+      }
       // All-or-nothing, same reasoning as ChatPane's encryptOutgoingMessage:
       // a message sealed for only some members would be blank for the rest.
+      // Reached only on a definite 'unenrolled'.
       if (!key) {
         await sendMessage(chatId, {text}, me);
         return;
@@ -42,7 +53,11 @@ export async function sealAndSendText(
     const envelope = sealForRecipients(text, secretKey, recipients, chatId);
     await sendMessage(chatId, {text: '', encrypted: envelope}, me);
   } catch (err) {
+    // Fails closed rather than forwarding in clear. A forward is a *copy* of
+    // something the sender chose to send encrypted, so silently relaying it
+    // unsealed into a different conversation is the worst version of this bug.
+    // The caller (ChatPane's handleForwardPick) already catches and toasts.
     console.warn('e2ee forward failed:', err);
-    await sendMessage(chatId, {text}, me);
+    throw isEncryptionUnavailable(err) ? err : new EncryptionUnavailableError();
   }
 }

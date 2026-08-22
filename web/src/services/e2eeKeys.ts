@@ -29,6 +29,30 @@ const SECRET_KEY_PREFIX = 'e2ee_secret_key_v1';
 const PEER_KEY_PREFIX = 'e2ee_peer_key_v1';
 const RECOVERY_REVEALED_PREFIX = 'e2ee_recovery_revealed_v1';
 
+/**
+ * A message could not be sealed, so it was not sent.
+ *
+ * Thrown rather than resolved-with-plaintext: every failure that reaches this
+ * point is transient (a failed key lookup, an unreachable server), and the
+ * caller retrying is the correct outcome. Sending in clear instead would
+ * produce a message indistinguishable from an encrypted one in the UI, which
+ * is the failure mode this whole distinction exists to prevent.
+ *
+ * Carries a `code` so callers can identify it without matching on message
+ * text — same convention as RecipientUnreachableError in services/recipient.
+ */
+export class EncryptionUnavailableError extends Error {
+  readonly code = 'e2ee-unavailable';
+  constructor(message = 'could not seal this message; not sending it in clear') {
+    super(message);
+    this.name = 'EncryptionUnavailableError';
+  }
+}
+
+export function isEncryptionUnavailable(error: unknown): boolean {
+  return (error as {code?: string})?.code === 'e2ee-unavailable';
+}
+
 function readLocal(key: string): string | null {
   try {
     return localStorage.getItem(key);
@@ -193,13 +217,30 @@ function peerKeyCacheKey(myUserId: string, peerUserId: string): string {
 }
 
 export type PeerKeyStatus =
-  /** Peer hasn't published a key — caller falls back to plaintext. */
+  /**
+   * Peer hasn't published a key — caller falls back to plaintext.
+   *
+   * This is a *positive* answer from the server, not an absence of one. Only
+   * this status licenses sending in clear; see 'unavailable'.
+   */
   | 'unenrolled'
   /** First time this account has ever seen a key for this peer. */
   | 'first-contact'
   | 'unchanged'
   /** The key differs from what this account saw last time — see below. */
-  | 'changed';
+  | 'changed'
+  /**
+   * Couldn't reach the server, so whether this peer has a key is unknown.
+   *
+   * Distinct from 'unenrolled' because conflating the two is a plaintext leak.
+   * This used to come back as 'unenrolled', which callers read as "no key,
+   * send in clear" — so any network or permission failure silently disabled
+   * encryption for that message, and a sustained one (a captive portal, a
+   * blocked region) disabled it for every message, with nothing shown to the
+   * user. Callers must treat this as "try again later", never as "send it
+   * unsealed". Matches the mobile client's status of the same name.
+   */
+  | 'unavailable';
 
 /**
  * Fetches a peer's public key and compares it against what `myUserId` saw
@@ -218,7 +259,16 @@ export async function fetchPeerPublicKeyChecked(
   myUserId: string,
   peerUserId: string,
 ): Promise<{key: Uint8Array | null; status: PeerKeyStatus}> {
-  const key = await fetchPeerPublicKey(peerUserId);
+  // Deliberately the throwing read, not fetchPeerPublicKey. That one maps every
+  // failure onto null, which is indistinguishable from "this peer has no key" —
+  // and the caller acts on that difference by sending in clear.
+  let key: Uint8Array | null;
+  try {
+    key = await fetchPublishedKeyOrThrow(peerUserId);
+  } catch (error) {
+    console.warn('e2ee fetch peer public key failed:', error);
+    return {key: null, status: 'unavailable'};
+  }
   if (!key) return {key: null, status: 'unenrolled'};
 
   const keyBase64 = bytesToBase64(key);

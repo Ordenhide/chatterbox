@@ -40,9 +40,11 @@ import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
 import {isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
 import {
+  EncryptionUnavailableError,
   fetchPeerPublicKeyChecked,
   getKeyGeneration,
   getOrCreateDeviceKeypair,
+  isEncryptionUnavailable,
 } from '../services/e2eeKeys';
 import {makeArtifactCrypto} from '../services/e2eeArtifacts';
 import {sealAndSendText} from '../services/e2eeMessages';
@@ -916,8 +918,17 @@ export default function ChatPane({
       for (const uid of memberUids) {
         const {key, status} = await fetchPeerPublicKeyChecked(me.uid, uid);
         if (status === 'changed') setPeerKeyChanged(true);
+        // Not knowing whether a peer has a key is not the same as knowing they
+        // have none, and only the second may be answered with plaintext.
+        // Throwing hands the failure to the caller, which restores the
+        // composer and shows an error — so a dropped connection delays the
+        // message instead of stripping its encryption.
+        if (status === 'unavailable') {
+          throw new EncryptionUnavailableError(`peer key unavailable for ${uid}`);
+        }
         // All-or-nothing: a message sealed for only some members would be blank
-        // for the rest, which is worse than one everyone can read.
+        // for the rest, which is worse than one everyone can read. Reached only
+        // on a definite 'unenrolled' — a positive "this peer has no key".
         if (!key) return data;
         recipients.push({uid, publicKey: key});
       }
@@ -944,8 +955,17 @@ export default function ChatPane({
       }
       return next;
     } catch (err) {
+      // Rethrow rather than returning `data`, which sent the message in clear.
+      // Returning the plaintext here meant anything going wrong between "the
+      // peer has a key" and "the message is sealed" — a failed key fetch, a
+      // keypair that couldn't be published — silently produced an unencrypted
+      // message that looked identical to an encrypted one in the thread.
+      //
+      // Safe to fail closed because every error reachable here is transient,
+      // and all five call sites already catch, surface a toast, and (for text)
+      // restore the composer. Matches the mobile client's encryptOutgoingMessage.
       console.warn('e2ee send failed:', err);
-      return data;
+      throw isEncryptionUnavailable(err) ? err : new EncryptionUnavailableError();
     }
   };
 
@@ -985,7 +1005,14 @@ export default function ChatPane({
    * that as a generic "message failed to send" would invite retrying forever.
    */
   const sendErrorKey = (err: unknown, fallback: TKey): TKey =>
-    isRecipientUnreachable(err) ? 'chat.recipientDeletedToast' : fallback;
+    isRecipientUnreachable(err)
+      ? 'chat.recipientDeletedToast'
+      : // Distinct from a generic send failure on purpose: the message was
+        // withheld *because* it could not be encrypted, and saying so is the
+        // difference between "retry in a moment" and "something is broken".
+        isEncryptionUnavailable(err)
+        ? 'chat.encryptionUnavailable'
+        : fallback;
 
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1173,7 +1200,7 @@ export default function ChatPane({
       toast.success(t('chat.forwarded'));
     } catch (err) {
       console.warn('forward message failed:', err);
-      toast.error(t('chat.forwardFailed'));
+      toast.error(t(sendErrorKey(err, 'chat.forwardFailed')));
     }
   };
 
