@@ -276,11 +276,6 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
                 onChange={e => setPassword(e.target.value)}
                 autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
               />
-              {mode === 'signin' && (
-                <button type="button" style={styles.forgotBtn} onClick={handleForgotPassword} disabled={busy}>
-                  {t('login.forgotPassword')} <span style={styles.forgotBtnBold}>{t('login.reset')}</span>
-                </button>
-              )}
             </>
           )}
 
@@ -304,6 +299,15 @@ export default function LoginScreen({displaced = false}: {displaced?: boolean}) 
               t('login.signUp')
             )}
           </button>
+
+          {mode === 'signin' && (
+            <div style={styles.forgotRow}>
+              {t('login.forgotPassword')}{' '}
+              <button type="button" style={styles.link} onClick={handleForgotPassword} disabled={busy}>
+                {t('login.reset')}
+              </button>
+            </div>
+          )}
 
           {mode === 'phone' &&
             (confirmation ? (
@@ -469,19 +473,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 16,
     minHeight: 50,
   },
-  forgotBtn: {
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    margin: '-4px 0 12px',
+  forgotRow: {
+    marginTop: 14,
+    textAlign: 'center',
     fontSize: 13,
     color: colors.textSecondary,
-    textAlign: 'right',
-    alignSelf: 'flex-end',
-  },
-  forgotBtnBold: {
-    color: colors.primary,
-    fontWeight: 700,
   },
   phoneLinkRow: {
     display: 'flex',
