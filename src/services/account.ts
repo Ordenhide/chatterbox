@@ -24,7 +24,7 @@ import {mmkvStorage} from './storageMMKV';
 import {reportError} from './telemetry';
 import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {clearDeviceKeypair, getOrCreateDeviceKeypair} from './e2eeKeys';
 
 /**
  * Account-level operations: changing a password, and permanently deleting an
@@ -302,8 +302,19 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
  * MMKV is wiped wholesale rather than key-by-key because this app is
  * single-account per device — there is no second user's data to preserve, and
  * an allowlist would silently miss keys added by future features.
+ *
+ * That wholesale wipe stopped being sufficient once the secret key moved into
+ * the OS key store, which lives outside MMKV entirely — hence the explicit
+ * clearDeviceKeypair. Without it, deleting your account would leave your
+ * identity key in the Keychain indefinitely: the one thing this function
+ * exists to prevent.
  */
-export async function clearLocalData(): Promise<void> {
+export async function clearLocalData(userId: string): Promise<void> {
+  try {
+    await clearDeviceKeypair(userId);
+  } catch (error) {
+    reportError(error, 'account_clear_keystore_failed');
+  }
   try {
     await mmkvStorage.clear();
   } catch (error) {
@@ -334,6 +345,6 @@ export async function deleteAccount(currentPassword: string): Promise<PurgeRepor
 
   const report = await purgeUserData(uid);
   await deleteUser(user);
-  await clearLocalData();
+  await clearLocalData(uid);
   return report;
 }

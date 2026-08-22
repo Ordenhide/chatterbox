@@ -17,6 +17,13 @@ import {bytesToBase64, base64ToBytes, bytesToHex, hexToBytes} from './crypto';
 import {generateKeypair, type Keypair} from './e2ee';
 import {isValidMnemonic, mnemonicToSecretKey, secretKeyToMnemonic} from './e2eeMnemonic';
 import {mmkvStorage} from './storageMMKV';
+import {
+  getSecret,
+  isSecureStoreAvailable,
+  removeSecret,
+  secretKeyService,
+  setSecretVerified,
+} from './secureKeyStore';
 import {reportError} from './telemetry';
 
 // Scoped per account: this device can see more than one account across a
@@ -29,6 +36,80 @@ const RECOVERY_REVEALED_STORAGE_PREFIX = 'e2ee_recovery_revealed_v1_';
 const LEGACY_SECRET_KEY_STORAGE = 'e2ee_secret_key_v1';
 
 const db = getFirestore();
+
+/**
+ * Reads this account's secret key, preferring the OS key store and migrating
+ * into it opportunistically.
+ *
+ * The ordering is the safety property. A device that has never run a build
+ * with the Keychain linked has its key in MMKV; one that has, has it in the
+ * Keychain; and one mid-migration may briefly have both. Reading the Keychain
+ * first and MMKV second covers all three without needing to know which.
+ *
+ * Migration only ever *adds* a copy. The MMKV copy is deleted only after
+ * setSecretVerified has read the value back out of the key store — never on
+ * the strength of a write having resolved. If anything about the secure store
+ * is broken or absent, every step degrades to "leave MMKV alone", which is
+ * exactly today's behaviour. The one thing this must never do is destroy the
+ * only copy of a user's identity key, since losing it means losing every
+ * message they can decrypt, recoverable only from a phrase most users will
+ * not have written down.
+ */
+async function readSecretKeyHex(storageKey: string, userId: string): Promise<string | null> {
+  const service = secretKeyService(userId);
+
+  if (isSecureStoreAvailable()) {
+    const fromKeychain = await getSecret(service);
+    if (fromKeychain) return fromKeychain;
+  }
+
+  const fromMmkv = await mmkvStorage.getItem(storageKey);
+  if (!fromMmkv) return null;
+
+  // Present in MMKV but not the key store: either this build just gained the
+  // native module, or a previous migration attempt failed. Either way, try
+  // again — and only drop the MMKV copy once the new one reads back.
+  if (isSecureStoreAvailable() && (await setSecretVerified(service, fromMmkv))) {
+    await mmkvStorage.removeItem(storageKey);
+  }
+  return fromMmkv;
+}
+
+/**
+ * Writes a newly generated secret key, preferring the OS key store.
+ *
+ * Falls back to MMKV when the store is unavailable *or* when the write can't
+ * be read back, so a key is never generated with nowhere durable to live.
+ */
+async function writeSecretKeyHex(
+  storageKey: string,
+  userId: string,
+  secretHex: string,
+): Promise<void> {
+  if (isSecureStoreAvailable() && (await setSecretVerified(secretKeyService(userId), secretHex))) {
+    // Clear any older MMKV copy for this account so the weaker location does
+    // not keep a stale key around after a restore overwrites it.
+    await mmkvStorage.removeItem(storageKey);
+    return;
+  }
+  await mmkvStorage.setItem(storageKey, secretHex);
+}
+
+/**
+ * Removes this account's secret key from wherever it lives.
+ *
+ * Exported for account deletion (services/account.ts). Before the key store
+ * existed, wiping MMKV was enough to erase it — with the key now in the
+ * Keychain/Keystore, an MMKV-only wipe would leave the user's identity key on
+ * the device forever after they deleted their account, which is the opposite
+ * of what deletion promises. Clears both locations rather than assuming which
+ * one this build used.
+ */
+export async function clearDeviceKeypair(userId: string): Promise<void> {
+  await removeSecret(secretKeyService(userId));
+  await mmkvStorage.removeItem(SECRET_KEY_STORAGE_PREFIX + userId);
+  cached = null;
+}
 
 let cached: {userId: string; keypair: Keypair} | null = null;
 
@@ -71,7 +152,7 @@ export type EnrollmentReadiness =
  */
 export async function enrollmentReadiness(userId: string): Promise<EnrollmentReadiness> {
   if (cached && cached.userId === userId) return 'safe';
-  if (await mmkvStorage.getItem(SECRET_KEY_STORAGE_PREFIX + userId)) return 'safe';
+  if (await readSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId)) return 'safe';
   if (await mmkvStorage.getItem(LEGACY_SECRET_KEY_STORAGE)) return 'safe';
   try {
     return (await fetchPublishedKeyOrThrow(userId)) === null ? 'safe' : 'needs-restore';
@@ -100,7 +181,7 @@ export async function getDeviceKeypairIfEnrolled(userId: string): Promise<Keypai
   if (cached && cached.userId === userId) return cached.keypair;
 
   const storedHex =
-    (await mmkvStorage.getItem(SECRET_KEY_STORAGE_PREFIX + userId)) ??
+    (await readSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId)) ??
     // The legacy key counts as enrolled, but is deliberately not *consumed*
     // here — migration stays the sole responsibility of the writer path, so
     // there is exactly one place that can move it.
@@ -124,7 +205,9 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
   if (cached && cached.userId === userId) return cached.keypair;
 
   const storageKey = SECRET_KEY_STORAGE_PREFIX + userId;
-  let storedHex = await mmkvStorage.getItem(storageKey);
+  // Reads the key store first and migrates the MMKV copy into it if that is
+  // where the key still lives — see readSecretKeyHex.
+  let storedHex = await readSecretKeyHex(storageKey, userId);
 
   if (!storedHex) {
     // One-time migration from the pre-scoping, device-wide key: covers the
@@ -133,10 +216,14 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
     // key on first launch after this fix. Consumed and deleted immediately,
     // so it can only ever be claimed by the first account that asks for it —
     // a second account on this device always gets its own fresh keypair.
+    //
+    // Order matters: the scoped copy is written (to the key store, or MMKV if
+    // that isn't available) *before* the legacy one is deleted, so a failure
+    // between the two leaves the key still readable rather than nowhere.
     const legacyHex = await mmkvStorage.getItem(LEGACY_SECRET_KEY_STORAGE);
     if (legacyHex) {
+      await writeSecretKeyHex(storageKey, userId, legacyHex);
       await mmkvStorage.removeItem(LEGACY_SECRET_KEY_STORAGE);
-      await mmkvStorage.setItem(storageKey, legacyHex);
       storedHex = legacyHex;
     }
   }
@@ -149,7 +236,7 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
   }
 
   const keypair = generateKeypair();
-  await mmkvStorage.setItem(storageKey, bytesToHex(keypair.secretKey));
+  await writeSecretKeyHex(storageKey, userId, bytesToHex(keypair.secretKey));
   cached = {userId, keypair};
   await publishPublicKey(userId, keypair.publicKey);
   return keypair;
@@ -407,7 +494,7 @@ export async function restoreDeviceKeypairFromPhrase(
     return {success: false, reason: 'publish-failed'};
   }
 
-  await mmkvStorage.setItem(SECRET_KEY_STORAGE_PREFIX + userId, bytesToHex(secretKey));
+  await writeSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId, bytesToHex(secretKey));
   cached = {userId, keypair: {secretKey, publicKey}};
   keyGeneration += 1;
   return {success: true};

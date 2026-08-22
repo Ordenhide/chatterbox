@@ -44,6 +44,32 @@ jest.mock('../storageMMKV', () => ({
   },
 }));
 
+/**
+ * Stand-in for the OS key store. `available` flips it between a build with
+ * the native module linked and one without, and `writeSucceeds` simulates the
+ * case that matters most: a store that accepts a write but cannot read it
+ * back, where migrating must NOT delete the only surviving copy of the key.
+ */
+const mockKeychain = {
+  available: false,
+  writeSucceeds: true,
+  store: new Map<string, string>(),
+};
+jest.mock('../secureKeyStore', () => ({
+  secretKeyService: (userId: string) => `svc.${userId}`,
+  isSecureStoreAvailable: () => mockKeychain.available,
+  getSecret: async (service: string) =>
+    mockKeychain.available ? mockKeychain.store.get(service) ?? null : null,
+  setSecretVerified: async (service: string, secret: string) => {
+    if (!mockKeychain.available || !mockKeychain.writeSucceeds) return false;
+    mockKeychain.store.set(service, secret);
+    return true;
+  },
+  removeSecret: async (service: string) => {
+    mockKeychain.store.delete(service);
+  },
+}));
+
 // telemetry.ts pulls in @react-native-firebase/analytics, an ESM-only package
 // outside this project's transformIgnorePatterns; e2eeKeys.ts only needs
 // reportError() as a no-op here.
@@ -54,6 +80,7 @@ import {generateKeypair} from '../e2ee';
 import {secretKeyToMnemonic} from '../e2eeMnemonic';
 import {
   _resetKeypairCache,
+  clearDeviceKeypair,
   fetchPeerPublicKeyChecked,
   getDeviceKeypairIfEnrolled,
   getKeyGeneration,
@@ -78,7 +105,123 @@ beforeEach(() => {
   mockMmkvStore.clear();
   mockOutage.read = false;
   mockOutage.write = false;
+  mockKeychain.available = false;
+  mockKeychain.writeSucceeds = true;
+  mockKeychain.store.clear();
   _resetKeypairCache();
+});
+
+describe('secret key storage / OS key store migration', () => {
+  const ME = 'me-uid';
+  const MMKV_KEY = `e2ee_secret_key_v1_${ME}`;
+  const SERVICE = `svc.${ME}`;
+
+  it('keeps using MMKV when the key store is unavailable', async () => {
+    // The pre-Keychain build, and the HarmonyOS/unlinked case. Must behave
+    // exactly as before rather than failing to enrol.
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    expect(mockMmkvStore.get(MMKV_KEY)).toBe(bytesToHex(secretKey));
+    expect(mockKeychain.store.size).toBe(0);
+  });
+
+  it('puts a newly generated key in the key store, not MMKV', async () => {
+    mockKeychain.available = true;
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    expect(mockKeychain.store.get(SERVICE)).toBe(bytesToHex(secretKey));
+    expect(mockMmkvStore.has(MMKV_KEY)).toBe(false);
+  });
+
+  it('migrates an existing MMKV key into the key store and drops the weaker copy', async () => {
+    const existing = bytesToHex(generateKeypair().secretKey);
+    mockMmkvStore.set(MMKV_KEY, existing);
+    mockKeychain.available = true;
+
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+
+    // Same identity, moved — not a re-enrolment, which would silently orphan
+    // every message this account can currently decrypt.
+    expect(bytesToHex(secretKey)).toBe(existing);
+    expect(mockKeychain.store.get(SERVICE)).toBe(existing);
+    expect(mockMmkvStore.has(MMKV_KEY)).toBe(false);
+  });
+
+  it('KEEPS the MMKV copy when the key store cannot read the value back', async () => {
+    // The property the whole migration hinges on. A store that accepts a
+    // write but returns nothing on read must never cause the only surviving
+    // copy of the user's identity key to be deleted — losing it means losing
+    // every message they can decrypt, recoverable only from a phrase most
+    // users will not have written down.
+    const existing = bytesToHex(generateKeypair().secretKey);
+    mockMmkvStore.set(MMKV_KEY, existing);
+    mockKeychain.available = true;
+    mockKeychain.writeSucceeds = false;
+
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+
+    expect(bytesToHex(secretKey)).toBe(existing);
+    expect(mockMmkvStore.get(MMKV_KEY)).toBe(existing);
+  });
+
+  it('still enrols into MMKV when a brand-new key cannot be stored securely', async () => {
+    // A key with nowhere durable to live would be regenerated on every launch,
+    // breaking decryption for everything sent in between.
+    mockKeychain.available = true;
+    mockKeychain.writeSucceeds = false;
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    expect(mockMmkvStore.get(MMKV_KEY)).toBe(bytesToHex(secretKey));
+  });
+
+  it('prefers the key store over a stale MMKV copy', async () => {
+    const inStore = bytesToHex(generateKeypair().secretKey);
+    const stale = bytesToHex(generateKeypair().secretKey);
+    mockKeychain.available = true;
+    mockKeychain.store.set(SERVICE, inStore);
+    mockMmkvStore.set(MMKV_KEY, stale);
+
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    expect(bytesToHex(secretKey)).toBe(inStore);
+  });
+
+  it('reports an enrolled account as safe when its key is only in the key store', async () => {
+    // enrollmentReadiness gates the "restore your key" prompt — reading only
+    // MMKV would tell a migrated user they had lost a key they still have.
+    mockKeychain.available = true;
+    mockKeychain.store.set(SERVICE, bytesToHex(generateKeypair().secretKey));
+    _resetKeypairCache();
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+  });
+
+  it('finds a key-store key from getDeviceKeypairIfEnrolled', async () => {
+    const existing = generateKeypair();
+    mockKeychain.available = true;
+    mockKeychain.store.set(SERVICE, bytesToHex(existing.secretKey));
+    _resetKeypairCache();
+    const found = await getDeviceKeypairIfEnrolled(ME);
+    expect(found && bytesToHex(found.secretKey)).toBe(bytesToHex(existing.secretKey));
+  });
+
+  it('clearDeviceKeypair erases both locations', async () => {
+    // Account deletion wipes MMKV wholesale, which no longer reaches the key
+    // store — without this the identity key would outlive the account.
+    mockKeychain.available = true;
+    mockMmkvStore.set(MMKV_KEY, 'aa');
+    mockKeychain.store.set(SERVICE, 'bb');
+    await clearDeviceKeypair(ME);
+    expect(mockMmkvStore.has(MMKV_KEY)).toBe(false);
+    expect(mockKeychain.store.has(SERVICE)).toBe(false);
+  });
+
+  it('migrates the pre-scoping legacy key without ever leaving it nowhere', async () => {
+    const legacy = bytesToHex(generateKeypair().secretKey);
+    mockMmkvStore.set('e2ee_secret_key_v1', legacy);
+    mockKeychain.available = true;
+
+    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+
+    expect(bytesToHex(secretKey)).toBe(legacy);
+    expect(mockKeychain.store.get(SERVICE)).toBe(legacy);
+    expect(mockMmkvStore.has('e2ee_secret_key_v1')).toBe(false);
+  });
 });
 
 describe('fetchPeerPublicKeyChecked', () => {

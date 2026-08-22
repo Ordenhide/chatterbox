@@ -79,6 +79,7 @@
     "react-native-image-resizer": "^1.4.5",
     "react-native-image-viewing": "^0.2.2",
     "react-native-incall-manager": "^4.2.1",
+    "react-native-keychain": "^10.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-localize": "^3.0.3",
     "react-native-mmkv": "^4.1.1",
