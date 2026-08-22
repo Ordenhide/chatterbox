@@ -95,6 +95,7 @@ import {cycleBurnDuration, formatBurnDuration} from '../utils/ephemeral';
 import LinkPreviewCard from './LinkPreviewCard';
 import {celebrate, useReactionBurst} from './ReactionBurst';
 import MessageMotion from './MessageMotion';
+import CipherText from './CipherText';
 import Icon from './Icon';
 import AudioMessage from './AudioMessage';
 import WhiteboardModal from './WhiteboardModal';
@@ -2204,7 +2205,23 @@ export default function ChatPane({
                                 </div>
                               );
                             })()}
-                          {m.text && <span style={styles.msgText}>{renderMentions(m.text, mentionNames)}</span>}
+                          {m.text &&
+                            // Own messages, and the "🔒 …" placeholder shown
+                            // ahead of decryption, never animate — see
+                            // CipherText for why outgoing is excluded, and
+                            // withDecryptedPlaceholders above for the marker.
+                            (mine || m.text.startsWith('🔒') ? (
+                              <span style={styles.msgText}>{renderMentions(m.text, mentionNames)}</span>
+                            ) : (
+                              <CipherText
+                                text={m.text}
+                                messageId={m._id}
+                                createdAtMs={m.createdAt?.toMillis?.()}
+                                sealedColor={colors.primary}
+                                style={styles.msgText}>
+                                <span style={styles.msgText}>{renderMentions(m.text, mentionNames)}</span>
+                              </CipherText>
+                            ))}
                           {(countdown != null || m.editedAt) && (
                             <span style={styles.inlineMeta}>
                               {countdown != null && (
