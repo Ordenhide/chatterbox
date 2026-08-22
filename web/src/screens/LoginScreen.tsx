@@ -469,6 +469,8 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '0 0 14px',
   },
   primaryBtn: {
+    width: '100%',
+    boxSizing: 'border-box',
     marginTop: 6,
     padding: '13px 16px',
     borderRadius: 14,
