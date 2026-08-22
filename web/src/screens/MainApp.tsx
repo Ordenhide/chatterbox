@@ -16,6 +16,7 @@ import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
 import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
 import {emitShortcut, type ShortcutId} from '../services/shortcuts';
 import ShortcutsHelp from '../components/ShortcutsHelp';
+import QuickSwitcher from '../components/QuickSwitcher';
 import HomeScreen from './HomeScreen';
 import CallProvider from '../call/CallProvider';
 import TourOverlay from '../components/TourOverlay';
@@ -97,6 +98,7 @@ export default function MainApp({user}: {user: User}) {
 
   // ---- Keyboard shortcuts ---------------------------------------------------
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [quickSwitcherOpen, setQuickSwitcherOpen] = useState(false);
 
   const onShortcut = useCallback(
     (id: ShortcutId) => {
@@ -104,12 +106,21 @@ export default function MainApp({user}: {user: User}) {
       // '?' toggles it back off (as its own hint promises) and Escape closes
       // it, but Ctrl+K must not yank focus to a search box hidden behind it.
       // An earlier version disabled the whole hook instead, which also killed
-      // the '?' that was supposed to close it.
+      // the '?' that was supposed to close it. QuickSwitcher gets the same
+      // gate for the same reason — Cmd+2 shouldn't switch tabs underneath it.
       if (shortcutsOpen && id !== 'help' && id !== 'closeOrClear') return;
+      if (quickSwitcherOpen && id !== 'closeOrClear') return;
 
       switch (id) {
         case 'help':
           setShortcutsOpen(open => !open);
+          return;
+        case 'search':
+          // Cmd+K used to just focus HomeScreen's inline search box, which
+          // meant it silently did nothing from any tab but Chats — that box,
+          // and its shortcut listener, only exist while HomeScreen is
+          // mounted. QuickSwitcher is its own overlay, so it works everywhere.
+          setQuickSwitcherOpen(true);
           return;
         case 'tabChats':
           navigate({tab: 'chats', chatId: undefined});
@@ -128,6 +139,7 @@ export default function MainApp({user}: {user: User}) {
           // handles its own Escape in the capture phase and stops propagation,
           // so this never runs for them.
           setShortcutsOpen(false);
+          setQuickSwitcherOpen(false);
           emitShortcut(id);
           return;
         default:
@@ -137,7 +149,7 @@ export default function MainApp({user}: {user: User}) {
           emitShortcut(id);
       }
     },
-    [navigate, route.tab, shortcutsOpen],
+    [navigate, route.tab, shortcutsOpen, quickSwitcherOpen],
   );
 
   useKeyboardShortcuts(onShortcut);
@@ -191,6 +203,13 @@ export default function MainApp({user}: {user: User}) {
         />
       )}
       {shortcutsOpen && <ShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
+      {quickSwitcherOpen && (
+        <QuickSwitcher
+          myUid={user.uid}
+          onClose={() => setQuickSwitcherOpen(false)}
+          onSelect={chatId => navigate({tab: 'chats', chatId})}
+        />
+      )}
       {tab === 'moments' && <MomentsScreen user={user} requestCount={requestCount} />}
       {tab === 'store' && <StoreScreen user={user} />}
       {tab === 'profile' && <ProfileScreen user={user} />}

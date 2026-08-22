@@ -2,11 +2,13 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import type {User} from 'firebase/auth';
 import {avatarColor, colors} from '../theme';
 import {useT} from '../i18n';
-import {getUserById, listenChatsForUser, toggleHideChat} from '../services/chat';
+import {listenChatsForUser, toggleHideChat} from '../services/chat';
 import {partitionChats, unreadTotal} from '../services/hiddenChats';
 import {useToast} from '../context/ToastContext';
 import {useIsMobile} from '../hooks/useIsMobile';
-import type {ChatRoom, UserProfile} from '../types';
+import {useChatUserCache} from '../hooks/useChatUserCache';
+import {resolveChatMeta} from '../utils/chatMeta';
+import type {ChatRoom} from '../types';
 import Cascade from '../components/Cascade';
 import ChatPane from '../components/ChatPane';
 import NewChatModal from '../components/NewChatModal';
@@ -24,7 +26,7 @@ export default function HomeScreen({
 }) {
   const {t} = useT();
   const [chats, setChats] = useState<ChatRoom[]>([]);
-  const [userCache, setUserCache] = useState<Record<string, UserProfile>>({});
+  const userCache = useChatUserCache(chats, user.uid);
   const [showNewChat, setShowNewChat] = useState(false);
   const [search, setSearch] = useState('');
   // The hidden list is a separate view of the same sidebar rather than a
@@ -37,45 +39,8 @@ export default function HomeScreen({
 
   useEffect(() => listenChatsForUser(user.uid, setChats), [user.uid]);
 
-  useEffect(() => {
-    const missing = new Set<string>();
-    chats.forEach(c =>
-      c.participants.forEach(uid => {
-        if (uid !== user.uid && !userCache[uid]) missing.add(uid);
-      }),
-    );
-    if (missing.size === 0) return;
-    let active = true;
-    Promise.all(Array.from(missing).map(uid => getUserById(uid).then(p => [uid, p] as const))).then(
-      pairs => {
-        if (!active) return;
-        setUserCache(prev => {
-          const next = {...prev};
-          for (const [uid, p] of pairs) if (p) next[uid] = p;
-          return next;
-        });
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, [chats, user.uid, userCache]);
-
   const chatMeta = useMemo(
-    () => (chat: ChatRoom) => {
-      const custom = chat.nameBy?.[user.uid];
-      const otherUid = chat.participants.find(p => p !== user.uid) || chat.id;
-      const other = otherUid ? userCache[otherUid] : undefined;
-      // A group titled after whichever member happens to be first in the array
-      // reads as a 1:1 with the wrong person, so groups use the chat's own name
-      // (set at creation from the member list) and then a plain count — never a
-      // single member's name. Mirrors the mobile header.
-      const isGroup = chat.participants.length > 2;
-      const title = isGroup
-        ? custom || chat.name || `${chat.participants.length} members`
-        : custom || other?.displayName || other?.email || chat.name || 'Chat';
-      return {title, seed: otherUid};
-    },
+    () => (chat: ChatRoom) => resolveChatMeta(chat, user.uid, userCache),
     [user.uid, userCache],
   );
 
@@ -104,11 +69,6 @@ export default function HomeScreen({
   useEffect(() => {
     const onShortcut = (e: Event) => {
       const id = (e as CustomEvent<ShortcutId>).detail;
-      if (id === 'search') {
-        searchRef.current?.focus();
-        searchRef.current?.select();
-        return;
-      }
       if (id === 'newChat') {
         setShowNewChat(true);
         return;
