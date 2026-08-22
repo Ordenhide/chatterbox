@@ -18,6 +18,7 @@ export type IconName =
   | 'micOff'
   | 'camera'
   | 'cameraOff'
+  | 'screenShare'
   | 'close'
   | 'search'
   | 'plus'
@@ -182,6 +183,15 @@ const PATHS: Record<IconName, React.ReactNode> = {
     <>
       <line x1="2" y1="2" x2="22" y2="22" />
       <path d="M16 16H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1M9.5 5H15a2 2 0 0 1 2 2v3.5M23 7l-7 5" />
+    </>
+  ),
+  // A display with an upward arrow — the arrow is what separates it from a
+  // plain monitor/window icon and reads as "send this outward".
+  screenShare: (
+    <>
+      <rect x="2" y="4" width="20" height="13" rx="2" />
+      <path d="M8 21h8M12 17v4" strokeLinecap="round" />
+      <path d="M12 13V8m0 0L9.5 10.5M12 8l2.5 2.5" strokeLinecap="round" strokeLinejoin="round" />
     </>
   ),
   close: <path d="M18 6L6 18M6 6l12 12" />,

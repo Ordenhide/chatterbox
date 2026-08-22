@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {colors} from '../theme';
 import {
   addCallCandidate,
@@ -42,10 +42,20 @@ export default function CallModal({
   );
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(type === 'video' && initialCamOn);
+  const [sharing, setSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  /** The display-capture stream while sharing, so it can be stopped on the way
+   * out — its tracks are not part of localStream and cleanup would miss them,
+   * leaving the browser's "sharing your screen" indicator up after the call. */
+  const screenStreamRef = useRef<MediaStream | null>(null);
+  /** The camera track displaced by a screen share, kept to restore on stop.
+   * Deliberately not stopped while sharing: a stopped track cannot be revived,
+   * so ending the share would need a fresh getUserMedia (and a second camera
+   * permission prompt on some browsers) instead of just swapping back. */
+  const cameraTrackRef = useRef<MediaStreamTrack | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const remoteDescSet = useRef(false);
@@ -187,6 +197,14 @@ export default function CallModal({
       unsubCall?.();
       unsubCandidates?.();
       localStreamRef.current?.getTracks().forEach(t => t.stop());
+      // Display-capture tracks live outside localStream, so the line above
+      // misses them — without this the browser keeps showing "sharing your
+      // screen" after the call has ended.
+      screenStreamRef.current?.getTracks().forEach(track => track.stop());
+      screenStreamRef.current = null;
+      // The camera track is only held here while a share has displaced it; it
+      // belongs to localStream, which the line above already stopped.
+      cameraTrackRef.current = null;
       pcRef.current?.close();
     }
 
@@ -230,6 +248,68 @@ export default function CallModal({
     }
   };
 
+  /**
+   * Swaps the outgoing video track between the camera and a display capture.
+   *
+   * replaceTrack rather than addTrack, and that is the whole reason this works
+   * here: replacing the track on an existing sender needs no renegotiation,
+   * while adding one does — and the signaling in this file is a single
+   * offer/answer exchange with no path to re-offer (see the listenCall handler
+   * above, which sets a remote description exactly once and guards on
+   * remoteDescSet). Adding a track would fire negotiationneeded and then
+   * silently never reach the far side.
+   *
+   * That constraint is also why the button only exists on a video call: a
+   * voice call has no video sender to replace, so sharing there would require
+   * the renegotiation this cannot do.
+   */
+  const stopSharing = useCallback(() => {
+    const pc = pcRef.current;
+    screenStreamRef.current?.getTracks().forEach(track => track.stop());
+    screenStreamRef.current = null;
+    const camera = cameraTrackRef.current;
+    cameraTrackRef.current = null;
+    setSharing(false);
+    if (!pc || !camera) return;
+    const sender = pc.getSenders().find(s => s.track?.kind === 'video');
+    sender?.replaceTrack(camera).catch(() => undefined);
+    if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
+  }, []);
+
+  const startSharing = async () => {
+    const pc = pcRef.current;
+    const sender = pc?.getSenders().find(s => s.track?.kind === 'video');
+    if (!pc || !sender) return;
+    let display: MediaStream;
+    try {
+      display = await navigator.mediaDevices.getDisplayMedia({video: true});
+    } catch {
+      // Cancelling the picker rejects, and that is not an error worth showing.
+      return;
+    }
+    const screenTrack = display.getVideoTracks()[0];
+    if (!screenTrack) {
+      display.getTracks().forEach(track => track.stop());
+      return;
+    }
+    cameraTrackRef.current = sender.track ?? null;
+    screenStreamRef.current = display;
+    // The browser's own "Stop sharing" affordance ends the track without
+    // telling this component, so listen for that rather than leaving the UI
+    // claiming to share a track that has already ended.
+    screenTrack.addEventListener('ended', stopSharing, {once: true});
+    try {
+      await sender.replaceTrack(screenTrack);
+    } catch {
+      display.getTracks().forEach(track => track.stop());
+      screenStreamRef.current = null;
+      cameraTrackRef.current = null;
+      return;
+    }
+    setSharing(true);
+    if (localVideoRef.current) localVideoRef.current.srcObject = display;
+  };
+
   const connected = status === 'active';
 
   const statusLabel = error
@@ -254,9 +334,16 @@ export default function CallModal({
               autoPlay
               playsInline
               muted
-              style={connected ? styles.localVideo : styles.localVideoStage}
+              style={{
+                ...(connected ? styles.localVideo : styles.localVideoStage),
+                // The mirror is right for a camera and wrong for a screen —
+                // it would render every bit of shared text backwards. Also
+                // contain rather than cover, so a wide desktop isn't cropped
+                // to the preview's aspect ratio.
+                ...(sharing ? {transform: 'none', objectFit: 'contain'} : null),
+              }}
             />
-            {!camOn && (
+            {!camOn && !sharing && (
               <div style={connected ? styles.localVideoOff : styles.localVideoOffStage}>
                 {t('call.cameraOff')}
               </div>
@@ -287,6 +374,17 @@ export default function CallModal({
               onClick={toggleCam}
               title={camOn ? 'Camera off' : 'Camera on'}>
               <Icon name={camOn ? 'camera' : 'cameraOff'} size={22} />
+            </button>
+          )}
+          {/* Video calls only — see the note on startSharing: a voice call has
+              no video sender to replace, and adding one needs a renegotiation
+              this signaling cannot perform. */}
+          {type === 'video' && (
+            <button
+              style={{...styles.ctrl, background: sharing ? colors.primary : 'rgba(255,255,255,0.12)'}}
+              onClick={sharing ? stopSharing : startSharing}
+              title={sharing ? t('call.stopSharing') : t('call.shareScreen')}>
+              <Icon name="screenShare" size={22} />
             </button>
           )}
           <button style={{...styles.ctrl, ...styles.hangup}} onClick={hangUp} title="Hang up">
