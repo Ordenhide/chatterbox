@@ -1,16 +1,24 @@
 /**
- * End-to-end encryption for 1:1 text messages — PROTOTYPE.
+ * End-to-end encryption for message bodies and chat artifacts — PROTOTYPE.
  *
  * Design (deliberately the simplest thing that is actually end-to-end):
  *
  *   - Each device generates an X25519 keypair on first use. The secret key is
- *     written to the MMKV store (itself encrypted at rest with a CSPRNG key);
+ *     written to the MMKV store (itself encrypted at rest with a CSPRNG key,
+ *     which is held in an *unencrypted* bootstrap store — see storageMMKV.ts;
+ *     moving it into the Keychain/Keystore is tracked separately);
  *     the public key is published on the user's profile doc.
  *   - To send, the sender does X25519(theirSecret, recipientPublic) to get a
  *     shared secret, runs it through HKDF-SHA256 with a per-conversation salt,
  *     and seals the body with XChaCha20-Poly1305.
+ *   - Sealing is always fan-out (sealForRecipients): one independently
+ *     decryptable copy per recipient, so a 1:1 chat is just the
+ *     single-recipient case and there is no separate group path.
  *   - The server stores only {alg, nonce, ciphertext}. Firestore never sees the
  *     plaintext, so "the operator can read your messages" stops being true.
+ *   - The same primitives cover media access pointers (encryptedImage and
+ *     friends) and chat artifacts — playlists, shared lists, countdowns — via
+ *     e2eeArtifacts.ts, rather than a second crypto path.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * WHAT THIS PROTOTYPE DOES NOT DO — read before shipping:
@@ -34,13 +42,21 @@
  *      overwrites the published one, breaking decryption on the first.
  *   4. NO BACKFILL. Existing plaintext messages stay plaintext.
  *   5. METADATA IS STILL VISIBLE. Who talks to whom, when, and how often is
- *      all readable server-side, as are the `lastMessage` chat previews and
- *      push notification bodies. Media file name/type/size stay visible too —
+ *      all readable server-side. Media file name/type/size stay visible too —
  *      only the access pointer (image/video/audio/file.uri) is sealed, not
- *      those fields. GIFs, gestures, lottery, and shared-list content are not
- *      sealed at all: GIFs are public third-party content with nothing to
- *      protect, and the others live in their own subcollections regardless of
- *      what the message preview text says.
+ *      those fields. GIFs, gestures and lottery content are not sealed: GIFs
+ *      are public third-party content with nothing to protect, and the others
+ *      carry no text of their own.
+ *
+ * Keep this list honest. Everything above is checked against the code as of
+ * the last edit, because a caveat that has quietly become false is worse than
+ * no caveat — it is read as a live warning and reasoned from. Two entries here
+ * had gone stale exactly that way and were removed: `lastMessage` previews
+ * (firebaseChat.ts stores "🔒 Encrypted message" for a sealed message, not the
+ * body) and push notification bodies (functions/index.js notifyNewMessage
+ * sends data-only with a generic APNs line, precisely so there is no plaintext
+ * to leak; Android reconstructs the text on-device). A third claimed shared
+ * lists were unsealed, which e2eeArtifacts.ts has since made untrue.
  *
  * It is a working demonstration of the shape, not a security guarantee.
  * ─────────────────────────────────────────────────────────────────────────────

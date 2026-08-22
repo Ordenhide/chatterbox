@@ -3,7 +3,7 @@ import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {computeSafetyNumber} from '../services/e2ee';
-import {fetchPeerPublicKey, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 import Icon from './Icon';
 
 /**
@@ -35,11 +35,22 @@ export default function VerifyContactModal({
     let active = true;
     (async () => {
       try {
-        const [{publicKey: myPublicKey}, peerPublicKey] = await Promise.all([
+        const [{publicKey: myPublicKey}, peer] = await Promise.all([
           getOrCreateDeviceKeypair(myUid),
-          fetchPeerPublicKey(peerUid),
+          fetchPeerPublicKeyChecked(myUid, peerUid),
         ]);
         if (!active) return;
+        // The checked read, not fetchPeerPublicKey: that one maps a failed
+        // lookup onto null, which this screen would render as "this contact
+        // hasn't set up encryption". Saying that because the network blipped
+        // is a bad answer anywhere, and an actively harmful one *here* — this
+        // dialog exists to tell the user whether their key material is sound,
+        // so it must never report a transient failure as a fact about the peer.
+        if (peer.status === 'unavailable') {
+          setState('error');
+          return;
+        }
+        const peerPublicKey = peer.key;
         if (!peerPublicKey) {
           setState('no-key');
           return;
