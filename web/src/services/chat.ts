@@ -370,6 +370,13 @@ export async function markChatRead(chatId: string, uid: string): Promise<void> {
   );
 }
 
+/** One-off fetch for contexts with no listener, e.g. looking up a forward
+ * target's current members right before sealing a message for them. */
+export async function getChat(chatId: string): Promise<ChatRoom | null> {
+  const snapshot = await getDoc(doc(db, 'chats', chatId));
+  return snapshot.exists() ? ({id: snapshot.id, ...(snapshot.data() as Omit<ChatRoom, 'id'>)}) : null;
+}
+
 /** Live chat doc — used for typing indicator, read receipts, pin/mute state. */
 export function listenChat(chatId: string, cb: (chat: ChatRoom | null) => void) {
   return onSnapshot(doc(db, 'chats', chatId), s =>

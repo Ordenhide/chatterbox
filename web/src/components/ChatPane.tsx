@@ -8,6 +8,7 @@ import {
   editMessage,
   EXPIRY_OPTIONS,
   fetchOlderMessages,
+  getChat,
   getInitialUnread,
   listenChat,
   listenMessages,
@@ -44,6 +45,7 @@ import {
   getOrCreateDeviceKeypair,
 } from '../services/e2eeKeys';
 import {makeArtifactCrypto} from '../services/e2eeArtifacts';
+import {sealAndSendText} from '../services/e2eeMessages';
 import {
   buildLinkPreviewPatch,
   extractFirstUrl,
@@ -96,6 +98,7 @@ import LinkPreviewCard from './LinkPreviewCard';
 import {celebrate, useReactionBurst} from './ReactionBurst';
 import MessageMotion from './MessageMotion';
 import CipherText from './CipherText';
+import QuickSwitcher from './QuickSwitcher';
 import Icon from './Icon';
 import AudioMessage from './AudioMessage';
 import WhiteboardModal from './WhiteboardModal';
@@ -192,6 +195,9 @@ export default function ChatPane({
   const [whiteboardOpen, setWhiteboardOpen] = useState(false);
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const [replyTarget, setReplyTarget] = useState<ChatMessage | null>(null);
+  // The message currently being forwarded — set while the destination-chat
+  // picker (QuickSwitcher, reused) is open, null otherwise.
+  const [forwardTarget, setForwardTarget] = useState<ChatMessage | null>(null);
   const [gifOpen, setGifOpen] = useState(false);
   const [transcribing, setTranscribing] = useState<Set<string>>(new Set());
   const [scheduled, setScheduled] = useState<ScheduledMessage[]>([]);
@@ -1145,6 +1151,30 @@ export default function ChatPane({
       .then(() => toast.success(t('chat.save')))
       .catch(() => undefined);
     setActiveMsg(null);
+  };
+
+  /**
+   * Sends forwardTarget's text into a different chat, freshly sealed for
+   * *that* chat's current members — never the original envelope, which was
+   * sealed for this chat's members and would be unreadable elsewhere.
+   * sealAndSendText does the recipient lookup + seal + send for an arbitrary
+   * target chat; ChatPane's own encryptOutgoingMessage above can't be reused
+   * here since it's closed over *this* chat's participants specifically.
+   */
+  const handleForwardPick = async (targetChatId: string) => {
+    const target = forwardTarget;
+    setForwardTarget(null);
+    const forwardText = (target?.text || '').trim();
+    if (!forwardText) return;
+    try {
+      const targetChat = await getChat(targetChatId);
+      const recipientUids = (targetChat?.participants || []).filter(uid => uid !== me.uid);
+      await sealAndSendText(targetChatId, forwardText, me, recipientUids);
+      toast.success(t('chat.forwarded'));
+    } catch (err) {
+      console.warn('forward message failed:', err);
+      toast.error(t('chat.forwardFailed'));
+    }
   };
 
   const onGifPick = async (g: GifResult) => {
@@ -2318,6 +2348,17 @@ export default function ChatPane({
                             <Icon name="reply" size={15} />
                           </button>
                         )}
+                        {!contentHidden && m.text && (
+                          <button
+                            style={styles.smallAction}
+                            title={t('chat.forward')}
+                            onClick={() => {
+                              setForwardTarget(m);
+                              setActiveMsg(null);
+                            }}>
+                            <Icon name="forward" size={15} />
+                          </button>
+                        )}
                         {!contentHidden && (
                           <button
                             style={styles.smallAction}
@@ -2677,6 +2718,16 @@ export default function ChatPane({
         <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
       )}
       {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
+      {forwardTarget && (
+        <QuickSwitcher
+          myUid={me.uid}
+          title={t('chat.forwardTo')}
+          placeholder={t('chat.forwardTo')}
+          excludeChatId={chatId}
+          onSelect={handleForwardPick}
+          onClose={() => setForwardTarget(null)}
+        />
+      )}
       {showLockSettings && (
         <ChatLockModal chatId={chatId} mode="manage" onClose={() => setShowLockSettings(false)} />
       )}

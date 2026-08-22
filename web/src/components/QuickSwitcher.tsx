@@ -32,10 +32,21 @@ export default function QuickSwitcher({
   myUid,
   onClose,
   onSelect,
+  title,
+  placeholder,
+  excludeChatId,
 }: {
   myUid: string;
   onClose: () => void;
   onSelect: (chatId: string) => void;
+  /** Overrides the dialog's accessible name and placeholder — same picker,
+   * reused for message forwarding (see ChatPane's handleForwardPick), which
+   * needs different copy than "jump to a chat" but not different behavior. */
+  title?: string;
+  placeholder?: string;
+  /** Left out of the results entirely — forwarding into the chat a message
+   * already came from is a no-op, not a real destination. */
+  excludeChatId?: string;
 }) {
   const {t} = useT();
   const dialogRef = useModal<HTMLDivElement>(onClose);
@@ -43,20 +54,23 @@ export default function QuickSwitcher({
   const userCache = useChatUserCache(chats, myUid);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
+  const dialogTitle = title ?? t('quickSwitcher.title');
+  const dialogPlaceholder = placeholder ?? t('quickSwitcher.placeholder');
 
   useEffect(() => listenChatsForUser(myUid, setChats), [myUid]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
+    const pool = excludeChatId ? chats.filter(c => c.id !== excludeChatId) : chats;
     const matches = q
-      ? chats.filter(
+      ? pool.filter(
           c =>
             resolveChatMeta(c, myUid, userCache).title.toLowerCase().includes(q) ||
             (c.lastMessage?.text || '').toLowerCase().includes(q),
         )
-      : chats;
+      : pool;
     return matches.slice(0, MAX_RESULTS);
-  }, [chats, query, myUid, userCache]);
+  }, [chats, query, myUid, userCache, excludeChatId]);
 
   // Typing (which changes what's at each index) or running out of rows both
   // invalidate wherever the highlight was — always land back on the top hit.
@@ -89,15 +103,15 @@ export default function QuickSwitcher({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={t('quickSwitcher.title')}
+        aria-label={dialogTitle}
         style={styles.panel}
         onClick={e => e.stopPropagation()}>
         <div style={styles.searchRow}>
           <Icon name="search" size={17} style={{color: colors.textTertiary}} />
           <input
             style={styles.input}
-            placeholder={t('quickSwitcher.placeholder')}
-            aria-label={t('quickSwitcher.title')}
+            placeholder={dialogPlaceholder}
+            aria-label={dialogTitle}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
@@ -112,7 +126,7 @@ export default function QuickSwitcher({
             </div>
           ) : (
             results.map((chat, i) => {
-              const {title, seed} = resolveChatMeta(chat, myUid, userCache);
+              const {title: chatTitle, seed} = resolveChatMeta(chat, myUid, userCache);
               return (
                 <button
                   key={chat.id}
@@ -122,10 +136,10 @@ export default function QuickSwitcher({
                   onMouseEnter={() => setActiveIndex(i)}
                   onClick={() => select(chat.id)}>
                   <div style={{...styles.avatar, background: avatarColor(seed)}}>
-                    {title.charAt(0).toUpperCase()}
+                    {chatTitle.charAt(0).toUpperCase()}
                   </div>
                   <div style={{flex: 1, minWidth: 0}}>
-                    <div style={styles.rowTitle}>{title}</div>
+                    <div style={styles.rowTitle}>{chatTitle}</div>
                     <div style={styles.rowPreview}>{chat.lastMessage?.text || t('chat.empty')}</div>
                   </div>
                 </button>
