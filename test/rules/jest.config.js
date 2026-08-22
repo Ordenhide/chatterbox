@@ -7,6 +7,13 @@ module.exports = {
   rootDir: '../..',
   testEnvironment: 'node',
   testMatch: ['<rootDir>/test/rules/**/*.test.js'],
+  // testMatch alone controls which files *run*, but Jest still crawls rootDir
+  // to report obsolete snapshots — which walked into harmony/oh_modules and
+  // found 9 vendored Hermes parser fixtures, making the suite exit non-zero
+  // even with every test passing. A security suite that always "fails" is one
+  // people stop reading. These tests are self-contained, so confining the
+  // crawl to their own directory is both correct and enough.
+  roots: ['<rootDir>/test/rules'],
   testTimeout: 20000,
   // Every test file talks to the *same* running emulator instance (one
   // Firestore/Storage pair, started once by `emulators:exec`), and

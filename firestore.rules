@@ -282,7 +282,86 @@ service cloud.firestore {
               get(/databases/$(database)/documents/chats/$(chatId)).data.participants
           )
         );
-        allow update, delete: if isChatParticipant(chatId);
+
+        function authorUid() {
+          return resource.data.get('user', {}).get('_id', '');
+        }
+
+        function changedKeys() {
+          return request.resource.data.diff(resource.data).affectedKeys();
+        }
+
+        // Reactions are the one field every participant writes on someone
+        // else's message as a matter of course.
+        function isReactionChange() {
+          return changedKeys().hasOnly(['reactions']);
+        }
+
+        /**
+         * Burn-after-reading is recipient-driven by construction: the person
+         * the message was sent to is the one who reveals it (stamping
+         * burnStartedAt) and then wipes it. Both clients' burnMessage() clear
+         * the content fields listed here.
+         *
+         * Gated on the message *already* carrying burnAfterReading — which is
+         * written at send time, never later — so this cannot become a general
+         * way to blank out an ordinary message. The encrypted* siblings are
+         * listed because clearing them on burn is the obvious next fix (today
+         * both clients leave the ciphertext behind, so a "burned" E2EE message
+         * still sits on the server intact); the rule should not be what blocks
+         * it.
+         */
+        function isBurnProgress() {
+          return 'burnAfterReading' in resource.data &&
+            changedKeys().hasOnly([
+              'burnAfterReading',
+              'text', 'image', 'video', 'videoDuration', 'audio', 'audioDuration',
+              'file', 'linkPreview', 'moment',
+              'encrypted', 'encryptedImage', 'encryptedVideo', 'encryptedAudio',
+              'encryptedFileUri', 'encryptedLinkPreview',
+            ]);
+        }
+
+        // Same shape: only the recipient marks a view-once message viewed, and
+        // only on a message actually sent as view-once.
+        function isViewOnceMark() {
+          return resource.data.get('viewOnce', false) == true &&
+            changedKeys().hasOnly([
+              'viewOnceViewedBy', 'viewOnceExpired', 'viewOnceOpenedAt',
+            ]);
+        }
+
+        /**
+         * Everything above `create` goes to real trouble to stop you from
+         * publishing a message authored as someone else. This rule used to be
+         * `if isChatParticipant(chatId)`, which handed that straight back: any
+         * member could edit any other member's message afterwards, and the
+         * document still named the original author.
+         *
+         * E2EE does not cover this. A sealed message is opened with the
+         * *sender's* public key, so a re-sealed forgery would fail to decrypt —
+         * but the clients fall back to the plaintext `text` field whenever no
+         * envelope is present (ChatScreen.tsx's isSealed() branch), so
+         * overwriting a sealed message with plaintext renders it as the
+         * victim's own words.
+         *
+         * So: the author may change their message however they like; everyone
+         * else is limited to the three collaborative cases above.
+         */
+        allow update: if isChatParticipant(chatId) && (
+          authorUid() == request.auth.uid ||
+          isReactionChange() ||
+          isBurnProgress() ||
+          isViewOnceMark()
+        );
+
+        // Deliberately still open to any participant: "Delete Message" is
+        // offered on every message in both clients and worded "for everyone",
+        // so restricting this to the author is a product decision rather than
+        // a rules fix, and would break a shipped action. Worth revisiting —
+        // only the deleter can recover from trash, so one member can destroy
+        // another's message irrecoverably-for-them.
+        allow delete: if isChatParticipant(chatId);
       }
 
       match /calls/{callId} {

@@ -560,6 +560,134 @@ describe('chats/{chatId}/messages/{messageId}', () => {
     await assertFails(deleteDoc(doc(asUser('mallory'), 'chats/c1/messages/msg1')));
     await assertSucceeds(updateDoc(doc(asUser('bob'), 'chats/c1/messages/msg1'), {reactions: {'👍': ['bob']}}));
   });
+
+  describe('editing someone else\'s message — the same forgery boundary, after the fact', () => {
+    const aliceSaid = {text: 'hi', user: {_id: 'alice'}};
+
+    beforeEach(async () => {
+      await seed(db => setDoc(doc(db, 'chats/c1/messages/msg1'), aliceSaid));
+    });
+
+    it('denies bob rewriting the text of a message authored by alice', async () => {
+      // The create rule refuses to let bob publish as alice. Without this, he
+      // could publish as himself and then edit — or, as here, edit hers.
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/msg1'), {text: 'something alice never said'}),
+      );
+    });
+
+    it('denies overwriting a sealed message with attacker-chosen plaintext', async () => {
+      // The attack E2EE does not stop: a re-sealed forgery fails to decrypt
+      // (it is opened with the *sender's* key), but the clients fall back to
+      // the plaintext `text` field when no envelope is present, so a plaintext
+      // overwrite renders as the victim's own words.
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/sealed1'), {
+          text: '',
+          encrypted: {v: 1, recipients: {}},
+          user: {_id: 'alice'},
+        }),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/sealed1'), {
+          text: 'plaintext put in alice\'s mouth',
+          encrypted: null,
+        }),
+      );
+    });
+
+    it('denies smuggling an edit alongside a legitimate reaction', async () => {
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/msg1'), {
+          reactions: {'👍': ['bob']},
+          text: 'edited',
+        }),
+      );
+    });
+
+    it('denies reassigning authorship of an existing message', async () => {
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/msg1'), {user: {_id: 'bob'}}),
+      );
+    });
+
+    it('still lets alice edit her own message', async () => {
+      await assertSucceeds(
+        updateDoc(doc(asUser('alice'), 'chats/c1/messages/msg1'), {text: 'hi (edited)', editedAt: 1}),
+      );
+    });
+  });
+
+  describe('the recipient-driven carve-outs stay open', () => {
+    it('lets the recipient reveal and then burn a burn-after-reading message', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/burn1'), {
+          text: 'secret',
+          user: {_id: 'alice'},
+          burnAfterReading: {duration: 10},
+        }),
+      );
+      // reveal (starts the countdown)
+      await assertSucceeds(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/burn1'), {
+          burnAfterReading: {duration: 10, burnStartedAt: 1},
+        }),
+      );
+      // wipe, exactly as both clients' burnMessage() does
+      await assertSucceeds(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/burn1'), {
+          text: '',
+          image: null,
+          video: null,
+          audio: null,
+          audioDuration: null,
+          file: null,
+          burnAfterReading: {burned: true},
+        }),
+      );
+    });
+
+    it('does not let the burn carve-out blank an ordinary message', async () => {
+      // The gate is that the message was *sent* as burn-after-reading. Without
+      // it, "set burned:true and clear the text" would be a way to destroy
+      // anyone's message.
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/normal1'), {text: 'hi', user: {_id: 'alice'}}),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/normal1'), {
+          text: '',
+          burnAfterReading: {burned: true},
+        }),
+      );
+    });
+
+    it('lets the recipient mark a view-once message viewed', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/vo1'), {
+          image: 'https://example.invalid/x.jpg',
+          user: {_id: 'alice'},
+          viewOnce: true,
+        }),
+      );
+      await assertSucceeds(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/vo1'), {
+          viewOnceViewedBy: ['bob'],
+          viewOnceExpired: true,
+          viewOnceOpenedAt: 1,
+        }),
+      );
+    });
+
+    it('does not let the view-once carve-out apply to a message that is not view-once', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/normal2'), {text: 'hi', user: {_id: 'alice'}}),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'chats/c1/messages/normal2'), {viewOnceExpired: true}),
+      );
+    });
+  });
 });
 
 describe('chat subcollections gated only by isChatParticipant', () => {
