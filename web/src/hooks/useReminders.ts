@@ -23,7 +23,11 @@ export function useReminders(uid: string | null): void {
       pending.current.forEach(r => {
         if (r.remindAt > now || fired.current.has(r.id)) return;
         fired.current.add(r.id);
-        showLocalNotification(r.messagePreview || 'Reminder', r.messagePreview || '', r.chatId);
+        // messagePreview is deliberately empty for reminders set on sealed
+        // messages (see ChatPane's setReminder) — the title carries the whole
+        // notification in that case rather than showing a blank body.
+        const preview = r.messagePreview || 'Message reminder';
+        showLocalNotification(preview, r.messagePreview || '', r.chatId);
         markReminderSent(uid, r.id).catch(() => fired.current.delete(r.id));
       });
     };

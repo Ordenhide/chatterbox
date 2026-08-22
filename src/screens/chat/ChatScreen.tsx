@@ -1728,7 +1728,16 @@ export default function ChatScreen() {
         userId: user.uid,
         chatId: chatId || '',
         messageId: message._id,
-        messagePreview: (message.text || '[media]').substring(0, 100),
+        // A sealed message contributes no preview. `message.text` here is the
+        // *decrypted* body (the decrypt pass filled it in for display), and
+        // this doc is written to Firestore and read back by processReminders,
+        // which sends it as a push notification body — so copying it here
+        // would put the plaintext of an end-to-end encrypted message on the
+        // server and across FCM/APNs in clear. The server already falls back
+        // to a generic line when this is empty.
+        messagePreview: isSealed((message as any).encrypted)
+          ? ''
+          : (message.text || '[media]').substring(0, 100),
         remindAt: Date.now() + minutes * 60 * 1000,
         createdAt: Date.now(),
       };

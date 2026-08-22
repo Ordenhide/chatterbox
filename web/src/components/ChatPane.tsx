@@ -1291,7 +1291,18 @@ export default function ChatPane({
       toast.error(t('reminder.future'));
       return;
     }
-    const raw = reminderFor.text || (reminderFor.gif ? '[GIF]' : reminderFor.image ? '[Photo]' : '');
+    // A sealed message contributes no preview. `reminderFor.text` here is the
+    // *decrypted* body (withDecryptedPlaceholders filled it in for display),
+    // and this doc is written to Firestore and read back by the server, which
+    // sends it as a push notification body — so copying it here would put the
+    // plaintext of an end-to-end encrypted message on the server and across
+    // FCM/APNs in clear. The reminder still fires; it just names itself
+    // instead of quoting the message, the same trade the chat notification
+    // already makes on iOS.
+    const sealed = isSealed(reminderFor.encrypted);
+    const raw = sealed
+      ? ''
+      : reminderFor.text || (reminderFor.gif ? '[GIF]' : reminderFor.image ? '[Photo]' : '');
     const preview = raw ? raw.slice(0, 80) : t('reminder.default');
     const reminder: Reminder = {
       id: `${chatId}_${reminderFor._id}_${remindAt}`,
