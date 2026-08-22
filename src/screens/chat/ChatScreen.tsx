@@ -107,7 +107,8 @@ import {
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
 import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
-import {sealedKeyCount} from '../../services/e2eeMessages';
+import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
+import ChatPickerModal from '../../components/ChatPickerModal';
 import {fonts} from '../../theme/typography';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
@@ -333,6 +334,9 @@ export default function ChatScreen() {
   const [petArrivalPulse, setPetArrivalPulse] = useState(0);
   // The message currently having a reaction picked for it, or null.
   const [arcTarget, setArcTarget] = useState<IMessage | null>(null);
+  // The message currently being forwarded — set while the destination-chat
+  // picker (ChatPickerModal) is open, null otherwise.
+  const [forwardTarget, setForwardTarget] = useState<IMessage | null>(null);
   const prevChatPetRef = useRef<ChatPet | null>(null);
   const petWidgetRef = useRef<View>(null);
   const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('none');
@@ -3062,6 +3066,44 @@ export default function ChatScreen() {
     ]);
   };
 
+  /**
+   * Sends forwardTarget's text into a different chat, freshly sealed for
+   * *that* chat's recipients — never the original envelope, which was sealed
+   * for this chat's members and would be unreadable (or worse, silently
+   * unsealable in a way that looks like a bug) to anyone else. sendTextMessage
+   * already does exactly this key lookup + seal + send for an arbitrary
+   * target chat, so forwarding is that call with a fresh message id, not a
+   * copy of ChatScreen's own encryptOutgoingMessage (which is closed over
+   * *this* chat's recipients specifically).
+   */
+  const handleForwardPick = async (targetChatId: string) => {
+    const target = forwardTarget;
+    if (!target || !user) return;
+    const text = String(target.text || '').trim();
+    setForwardTarget(null);
+    if (!text) return;
+    try {
+      const targetChat = await getChat(targetChatId);
+      const recipientUids = (targetChat?.participants || []).filter(id => id !== user.uid);
+      await sendTextMessage(
+        targetChatId,
+        {
+          _id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+          text,
+          createdAt: new Date(),
+          user: {_id: user.uid, name: user.displayName || user.email || 'Me', avatar: user.photoURL || undefined},
+        },
+        user.uid,
+        recipientUids,
+      );
+      haptic('confirm');
+      Alert.alert('Forwarded', 'Message forwarded.');
+    } catch (error) {
+      reportError(error, 'forward_message');
+      Alert.alert('Error', 'Could not forward the message. Please try again.');
+    }
+  };
+
   const handleLongPress = (_: any, message: IMessage) => {
     if (msgSelectMode) {
       toggleMsgSelect(String(message._id));
@@ -3071,6 +3113,7 @@ export default function ChatScreen() {
     const hasAudio = !!(message as any).audio;
     const actions: SheetAction[] = [
       {label: 'Reply', onPress: () => setReplyTo(message)},
+      ...(message.text ? [{label: 'Forward', onPress: () => setForwardTarget(message)}] : []),
       {label: 'Select Messages', onPress: () => enterMsgSelect(String(message._id))},
       {label: 'Delete Message', destructive: true, onPress: () => handleDeleteSingle(message._id)},
       {
@@ -4141,6 +4184,14 @@ export default function ChatScreen() {
         actions={sheet?.actions ?? []}
         onClose={() => setSheet(null)}
       />
+      {forwardTarget && user && (
+        <ChatPickerModal
+          myUid={user.uid}
+          title="Forward to..."
+          onPick={handleForwardPick}
+          onClose={() => setForwardTarget(null)}
+        />
+      )}
       {recordModalVisible && (
         <Modal
           visible
