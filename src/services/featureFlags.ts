@@ -14,6 +14,12 @@ export async function initFeatureFlags() {
   remoteConfig.defaultConfig = {
     feedback_enabled: true,
     login_experiment_variant: 'control',
+    // Empty means "no TURN server configured" — config/rtc.ts falls back to
+    // STUN only. Declared here so getValue has a known key rather than
+    // depending on the console having been filled in.
+    turn_url: '',
+    turn_username: '',
+    turn_credential: '',
   };
   remoteConfig.settings = {
     minimumFetchIntervalMillis: 60 * 60 * 1000,

@@ -22,7 +22,7 @@ import {
   cleanupCallCandidates,
 } from '../../services/firebaseChat';
 import {CallType} from '../../types';
-import {ICE_SERVERS} from '../../config/rtc';
+import {getIceServers} from '../../config/rtc';
 import {reportError} from '../../services/telemetry';
 import GlassScreen from '../../components/GlassScreen';
 
@@ -135,7 +135,13 @@ export default function CallScreen() {
         (InCallManager as any).setForceSpeakerphoneOn(callType === 'video' ? 1 : 0);
       }
 
-      const pc = new RTCPeerConnection({iceServers: ICE_SERVERS});
+      // Awaited before the peer connection exists: ICE servers can only be
+      // supplied at construction, so a list that arrived later would not apply
+      // to this call. Resolves from Remote Config's local cache after the
+      // first fetch, and falls back to STUN rather than rejecting.
+      const iceServers = await getIceServers();
+      if (!isMounted) return;
+      const pc = new RTCPeerConnection({iceServers});
       pcRef.current = pc;
 
       // Ensure both sides negotiate send/receive for audio/video.

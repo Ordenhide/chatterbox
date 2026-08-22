@@ -11,21 +11,34 @@ import {
 import {db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
 
-// STUN gets calls working on the same network / friendly NATs. For reliable
-// connectivity across strict/symmetric NATs, configure a TURN server via env
-// (VITE_TURN_URL / VITE_TURN_USERNAME / VITE_TURN_CREDENTIAL); it's appended to
-// the ICE server list when present. Matches the mobile app's STUN defaults.
-const TURN_URL = import.meta.env.VITE_TURN_URL;
+// STUN only gets calls working on the same network or behind friendly NATs.
+// Between two symmetric NATs neither peer is directly reachable and the call
+// fails with no obvious cause, so TURN is what makes calling work off a shared
+// network rather than an optimisation. Configure it via env (VITE_TURN_URL /
+// VITE_TURN_USERNAME / VITE_TURN_CREDENTIAL).
+//
+// Read at build time, so rotating credentials needs a rebuild and redeploy —
+// acceptable here, where that's a static-site push. The mobile client reads
+// the same three values from Firebase Remote Config instead (config/rtc.ts),
+// since rotating them there would otherwise mean a store release.
+const TURN_URLS = (import.meta.env.VITE_TURN_URL || '')
+  .split(',')
+  .map((u: string) => u.trim())
+  .filter(Boolean);
+const TURN_USERNAME = import.meta.env.VITE_TURN_USERNAME;
+const TURN_CREDENTIAL = import.meta.env.VITE_TURN_CREDENTIAL;
 
 export const ICE_SERVERS: RTCIceServer[] = [
   {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302']},
-  ...(TURN_URL
+  ...(TURN_URLS.length > 0
     ? [
-        {
-          urls: TURN_URL.split(',').map(u => u.trim()),
-          username: import.meta.env.VITE_TURN_USERNAME,
-          credential: import.meta.env.VITE_TURN_CREDENTIAL,
-        } as RTCIceServer,
+        // Username/credential are omitted rather than passed through as
+        // undefined when unset: a TURN server rejects blank credentials, and
+        // an entry that always fails auth is worse than no entry, since ICE
+        // spends time on it before giving up.
+        TURN_USERNAME && TURN_CREDENTIAL
+          ? ({urls: TURN_URLS, username: TURN_USERNAME, credential: TURN_CREDENTIAL} as RTCIceServer)
+          : ({urls: TURN_URLS} as RTCIceServer),
       ]
     : []),
 ];
