@@ -468,6 +468,14 @@
     "seconds": "{{count}}s"
   },
   "chat": {
+    "reportReason": {
+      "spam": "Spam",
+      "harassment": "Harassment",
+      "threat": "Threat or violence",
+      "sexual-content": "Sexual content",
+      "impersonation": "Impersonation",
+      "other": "Something else"
+    },
     "unsafeLink": "That link was blocked because it isn't a safe web address.",
     "isTyping": "{{name}} is typing...",
     "search": "Search",

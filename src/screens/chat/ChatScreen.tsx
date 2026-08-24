@@ -106,6 +106,7 @@ import {
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
+import {REPORT_REASONS, reportMessage} from '../../services/reports';
 import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
@@ -642,8 +643,8 @@ export default function ChatScreen() {
       const elapsed = Math.floor((Date.now() - startedAt) / 1000);
       const remaining = Math.max(0, duration - elapsed);
       if (remaining <= 0) {
-        if (chatId) {
-          burnMessage(chatId, key).catch(() => {});
+        if (chatId && user) {
+          burnMessage(chatId, key, user.uid).catch(() => {});
         }
         return;
       }
@@ -654,8 +655,8 @@ export default function ChatScreen() {
           if (left <= 0) {
             clearInterval(burnTimersRef.current[key]);
             delete burnTimersRef.current[key];
-            if (chatId) {
-              burnMessage(chatId, key).catch(() => {});
+            if (chatId && user) {
+              burnMessage(chatId, key, user.uid).catch(() => {});
             }
             const {[key]: _, ...rest} = prev;
             return rest;
@@ -664,7 +665,7 @@ export default function ChatScreen() {
         });
       }, 1000);
     },
-    [chatId],
+    [chatId, user],
   );
 
   useEffect(() => {
@@ -3045,11 +3046,29 @@ export default function ChatScreen() {
     setMsgSelected(new Set());
   };
   const handleDeleteSelectedMsgs = () => {
-    const ids = [...msgSelected];
-    if (!chatId || !user || ids.length === 0) return;
+    if (!chatId || !user) return;
+    // Only your own messages are deletable (firestore.rules). A mixed
+    // selection silently dropping the others would be worse than saying so:
+    // the user would believe a message was gone when it was not.
+    const selected = [...msgSelected];
+    const ownIds = new Set(
+      messages.filter(m => String(m.user?._id) === user.uid).map(m => String(m._id)),
+    );
+    const ids = selected.filter(id => ownIds.has(id));
+    const skipped = selected.length - ids.length;
+    if (ids.length === 0) {
+      Alert.alert(
+        'Nothing to delete',
+        'You can only delete your own messages. Report a message instead if you object to it.',
+      );
+      return;
+    }
     Alert.alert(
       'Delete messages',
-      `Permanently delete ${ids.length} message${ids.length > 1 ? 's' : ''} for everyone? This cannot be undone.`,
+      `Permanently delete ${ids.length} message${ids.length > 1 ? 's' : ''} for everyone? This cannot be undone.` +
+        (skipped > 0
+          ? `\n\n${skipped} message${skipped > 1 ? 's were' : ' was'} left out — you can only delete your own.`
+          : ''),
       [
         {text: 'Cancel', style: 'cancel'},
         {
@@ -3113,6 +3132,62 @@ export default function ChatScreen() {
     }
   };
 
+  /**
+   * Reports someone else's message.
+   *
+   * Two-step on purpose. The reason picker is the first step; the second is a
+   * confirmation that says, in words, that the message's text will be sent to
+   * the moderators. In an end-to-end encrypted app that disclosure is the
+   * whole point of the confirmation — the server cannot read the message, so
+   * reporting is the one action that deliberately hands one message's
+   * plaintext out of the conversation, and the user should not discover that
+   * afterwards.
+   */
+  const handleReportMessage = (message: IMessage) => {
+    if (!user || !chatId) return;
+    const authorUid = String(message.user?._id ?? '');
+    const reportText = typeof message.text === 'string' ? message.text : '';
+
+    Alert.alert('Report message', 'Why are you reporting this?', [
+      ...REPORT_REASONS.map(reason => ({
+        text: t(`chat.reportReason.${reason}`, {defaultValue: reason}),
+        onPress: () => {
+          Alert.alert(
+            'Send report?',
+            reportText
+              ? 'This message\'s text will be sent to the moderators along with your report. The rest of this conversation stays encrypted and is not included.'
+              : 'Your report will be sent to the moderators. This message has no text to include.',
+            [
+              {text: 'Cancel', style: 'cancel'},
+              {
+                text: 'Send report',
+                style: 'destructive',
+                onPress: async () => {
+                  try {
+                    await reportMessage({
+                      chatId,
+                      messageId: String(message._id),
+                      authorUid,
+                      reporterUid: user.uid,
+                      reason,
+                      ...(reportText ? {content: reportText} : null),
+                    });
+                    haptic('confirm');
+                    Alert.alert('Reported', 'Thanks — the report has been sent.');
+                  } catch (error) {
+                    reportError(error, 'report_message');
+                    Alert.alert('Error', 'Could not send the report. Please try again.');
+                  }
+                },
+              },
+            ],
+          );
+        },
+      })),
+      {text: 'Cancel', style: 'cancel' as const},
+    ]);
+  };
+
   const handleLongPress = (_: any, message: IMessage) => {
     if (msgSelectMode) {
       toggleMsgSelect(String(message._id));
@@ -3120,11 +3195,18 @@ export default function ChatScreen() {
     }
     if (!user || !chatId) return;
     const hasAudio = !!(message as any).audio;
+    // Deleting is the author's own action (firestore.rules enforces it, since
+    // only the deleter can restore from trash). Someone else's message is
+    // reported instead — offering a Delete that the server would refuse would
+    // just be a button that fails.
+    const isOwnMessage = String(message.user?._id) === user.uid;
     const actions: SheetAction[] = [
       {label: 'Reply', onPress: () => setReplyTo(message)},
       ...(message.text ? [{label: 'Forward', onPress: () => setForwardTarget(message)}] : []),
       {label: 'Select Messages', onPress: () => enterMsgSelect(String(message._id))},
-      {label: 'Delete Message', destructive: true, onPress: () => handleDeleteSingle(message._id)},
+      ...(isOwnMessage
+        ? [{label: 'Delete Message', destructive: true, onPress: () => handleDeleteSingle(message._id)}]
+        : [{label: 'Report Message', destructive: true, onPress: () => handleReportMessage(message)}]),
       {
         label: pinnedMessageIds.includes(message._id) ? 'Unpin Message' : 'Pin Message',
         onPress: () => togglePinMessage(chatId, message._id),

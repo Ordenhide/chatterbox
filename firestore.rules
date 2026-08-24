@@ -195,6 +195,37 @@ service cloud.firestore {
       allow create: if isSignedIn();
     }
 
+    /**
+     * Abuse reports, the counterpart to deletion being author-only: you
+     * cannot erase someone else's message, but you can report it.
+     *
+     * Write-only from the client, like /feedback. A report names another
+     * user, so letting clients read this collection would turn it into a way
+     * to discover who has been reported — and letting them update or delete
+     * would let a reported user erase the report about them.
+     *
+     * The content field is the reporter's *decrypted* copy of what they saw.
+     * That is unavoidable rather than careless: the server holds only
+     * ciphertext it has no key for, so a report carrying nothing but a message
+     * id would be unactionable. It is a real disclosure, so the client asks
+     * for explicit confirmation and says so plainly before sending — see
+     * reportMessage() in services/reports.ts.
+     *
+     * The reporter must be a participant of the chat they are reporting from,
+     * which stops the collection from being used to file reports about
+     * conversations the reporter cannot see.
+     */
+    match /messageReports/{reportId} {
+      allow create: if isSignedIn() &&
+        request.resource.data.reporterUid == request.auth.uid &&
+        isChatParticipant(request.resource.data.chatId) &&
+        request.resource.data.reason is string &&
+        request.resource.data.reason.size() <= 40 &&
+        request.resource.data.get('content', '') is string &&
+        request.resource.data.get('content', '').size() <= 4000;
+      allow read, update, delete: if false;
+    }
+
     match /chats/{chatId} {
       // Mirrors MAX_GROUP_MEMBERS in services/e2ee.ts. Enforced here as well as
       // in the client because the client-side cap is a product guardrail, not a
@@ -355,13 +386,25 @@ service cloud.firestore {
           isViewOnceMark()
         );
 
-        // Deliberately still open to any participant: "Delete Message" is
-        // offered on every message in both clients and worded "for everyone",
-        // so restricting this to the author is a product decision rather than
-        // a rules fix, and would break a shipped action. Worth revisiting —
-        // only the deleter can recover from trash, so one member can destroy
-        // another's message irrecoverably-for-them.
-        allow delete: if isChatParticipant(chatId);
+        /**
+         * Only the author may delete their own message.
+         *
+         * This was open to every participant, which meant one member of a
+         * 32-person chat could destroy anyone's message — and irrecoverably
+         * for its author, since only the *deleter* can restore from trash
+         * (see the /trash rule above). The counterpart to narrowing it is the
+         * report path below: the answer to someone else's message is to
+         * report it, not to erase it.
+         *
+         * The system missed-call notice is the one message a non-author
+         * legitimately removes, mirroring the create carve-out: it may be
+         * written by the recipient on the caller's behalf, so it must be
+         * removable by them too when the chat is cleared.
+         */
+        allow delete: if isChatParticipant(chatId) && (
+          authorUid() == request.auth.uid ||
+          (resource.data.get('system', false) == true && messageId.matches('missed_.*'))
+        );
       }
 
       match /calls/{callId} {

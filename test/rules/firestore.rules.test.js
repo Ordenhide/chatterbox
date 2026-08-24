@@ -553,12 +553,50 @@ describe('chats/{chatId}/messages/{messageId}', () => {
     }
   });
 
-  it('lets a participant update/delete, denies a non-participant', async () => {
+  it('lets a participant react, denies a non-participant', async () => {
     await seed(db =>
       setDoc(doc(db, 'chats/c1/messages/msg1'), {text: 'hi', user: {_id: 'alice'}}),
     );
     await assertFails(deleteDoc(doc(asUser('mallory'), 'chats/c1/messages/msg1')));
     await assertSucceeds(updateDoc(doc(asUser('bob'), 'chats/c1/messages/msg1'), {reactions: {'👍': ['bob']}}));
+  });
+
+  describe('deletion is the author\'s alone', () => {
+    beforeEach(async () => {
+      await seed(db => setDoc(doc(db, 'chats/c1/messages/msg1'), {text: 'hi', user: {_id: 'alice'}}));
+    });
+
+    it('denies bob deleting a message authored by alice', async () => {
+      // Irrecoverable for alice specifically: only the deleter can restore
+      // from trash, so bob deleting her message removes it from her reach.
+      await assertFails(deleteDoc(doc(asUser('bob'), 'chats/c1/messages/msg1')));
+    });
+
+    it('lets alice delete her own', async () => {
+      await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/messages/msg1')));
+    });
+
+    it('still lets either side clear the system missed-call notice', async () => {
+      // Mirrors the create carve-out: the recipient writes this one on the
+      // caller's behalf, so they must be able to remove it too.
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/missed_call1'), {
+          system: true,
+          call: {type: 'voice', outcome: 'missed'},
+          user: {_id: 'alice'},
+        }),
+      );
+      await assertSucceeds(deleteDoc(doc(asUser('bob'), 'chats/c1/messages/missed_call1')));
+    });
+
+    it('does not let the system carve-out generalize', async () => {
+      // A normal message flagged system, or a system message without the
+      // deterministic id, must not become deletable by a non-author.
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/messages/sys_but_not_missed'), {system: true, user: {_id: 'alice'}}),
+      );
+      await assertFails(deleteDoc(doc(asUser('bob'), 'chats/c1/messages/sys_but_not_missed')));
+    });
   });
 
   describe('editing someone else\'s message — the same forgery boundary, after the fact', () => {
@@ -848,5 +886,64 @@ describe('chats/{chatId}/trash/{messageId} — recently deleted messages', () =>
   it('denies unauthenticated access', async () => {
     await seed(db => setDoc(doc(db, 'chats/c1/trash/m1'), trashed('alice')));
     await assertFails(getDoc(doc(anon(), 'chats/c1/trash/m1')));
+  });
+});
+
+describe('messageReports/{reportId} — the counterpart to author-only deletion', () => {
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']}));
+  });
+
+  const report = (over = {}) => ({
+    reporterUid: 'bob',
+    chatId: 'c1',
+    messageId: 'msg1',
+    authorUid: 'alice',
+    reason: 'harassment',
+    content: 'the message bob saw',
+    createdAt: 1,
+    ...over,
+  });
+
+  it('lets a participant file a report', async () => {
+    await assertSucceeds(setDoc(doc(asUser('bob'), 'messageReports/r1'), report()));
+  });
+
+  it('denies filing a report under someone else\'s name', async () => {
+    await assertFails(
+      setDoc(doc(asUser('bob'), 'messageReports/r1'), report({reporterUid: 'alice'})),
+    );
+  });
+
+  it('denies reporting from a chat the reporter is not in', async () => {
+    // Otherwise the collection becomes a way to file reports about
+    // conversations the reporter cannot even see.
+    await assertFails(setDoc(doc(asUser('mallory'), 'messageReports/r1'), report({reporterUid: 'mallory'})));
+  });
+
+  it('is write-only: nobody can read, edit, or delete a report', async () => {
+    await seed(db => setDoc(doc(db, 'messageReports/r1'), report()));
+    // Readable would leak who has been reported; editable or deletable would
+    // let a reported user erase the report about them.
+    await assertFails(getDoc(doc(asUser('bob'), 'messageReports/r1')));
+    await assertFails(getDoc(doc(asUser('alice'), 'messageReports/r1')));
+    await assertFails(updateDoc(doc(asUser('alice'), 'messageReports/r1'), {reason: 'nothing'}));
+    await assertFails(deleteDoc(doc(asUser('alice'), 'messageReports/r1')));
+  });
+
+  it('bounds the attached content so a report cannot be used as free storage', async () => {
+    await assertFails(
+      setDoc(doc(asUser('bob'), 'messageReports/r1'), report({content: 'x'.repeat(4001)})),
+    );
+    await assertFails(
+      setDoc(doc(asUser('bob'), 'messageReports/r2'), report({reason: 'y'.repeat(41)})),
+    );
+  });
+
+  it('accepts a report with no attached content', async () => {
+    // Sending the decrypted copy is a real disclosure, so declining it must
+    // still leave the report filable.
+    const {content: _omitted, ...withoutContent} = report();
+    await assertSucceeds(setDoc(doc(asUser('bob'), 'messageReports/r3'), withoutContent));
   });
 });

@@ -3,13 +3,19 @@ import {bytesToHex, deriveKeyFromPassphrase, hexToBytes, secureRandomBytes} from
 /**
  * PIN locks for individual chats, and for the app as a whole.
  *
- * Deliberately *not* a port of the mobile hashing scheme. The mobile version
- * hand-rolls an FNV-1a stretch because, as its own comment says, Hermes has no
- * native crypto — a constraint browsers don't share. Here the PIN goes through
- * the same memory-hard scrypt already used for encrypted backups (crypto.ts),
- * which is markedly harder to brute-force than an FNV loop.
+ * The PIN goes through the same memory-hard scrypt used for encrypted backups
+ * (crypto.ts). Mobile now does the same.
  *
- * Diverging is safe because a PIN never leaves the device it was set on: it
+ * It did not always: mobile hand-rolled an FNV-1a stretch, and this file used
+ * to explain the divergence by repeating mobile's own comment — that Hermes
+ * had no native crypto, a constraint browsers don't share. That claim was
+ * simply false (scrypt from @noble/hashes is pure JS and was already a
+ * dependency on both sides), and taking it at face value here is what let it
+ * stand unexamined for as long as it did. Worth remembering: a comment
+ * explaining why another module is weaker is a claim to check, not to quote.
+ *
+ * The stored formats still differ, and that is safe, because a PIN never
+ * leaves the device it was set on: it
  * lives in localStorage here and in MMKV there, is never synced, and nothing
  * cross-platform reads it. There is no stored format the two clients have to
  * agree on, so each can use the strongest primitive its runtime offers.

@@ -107,6 +107,7 @@ import WhiteboardModal from './WhiteboardModal';
 import GifPicker from './GifPicker';
 import GroupMembersModal from './GroupMembersModal';
 import ChatLockModal from './ChatLockModal';
+import ReportMessageModal from './ReportMessageModal';
 import {isChatLocked} from '../services/appLock';
 import {useDismissOnOutside} from '../hooks/useDismissOnOutside';
 import ChatSettingsModal from './ChatSettingsModal';
@@ -200,6 +201,11 @@ export default function ChatPane({
   // The message currently being forwarded — set while the destination-chat
   // picker (QuickSwitcher, reused) is open, null otherwise.
   const [forwardTarget, setForwardTarget] = useState<ChatMessage | null>(null);
+  const [reportTarget, setReportTarget] = useState<{
+    messageId: string;
+    authorUid: string;
+    content: string;
+  } | null>(null);
   const [gifOpen, setGifOpen] = useState(false);
   const [transcribing, setTranscribing] = useState<Set<string>>(new Set());
   const [scheduled, setScheduled] = useState<ScheduledMessage[]>([]);
@@ -470,7 +476,7 @@ export default function ChatPane({
       const elapsed = Math.floor((Date.now() - startedAt) / 1000);
       const remaining = Math.max(0, duration - elapsed);
       if (remaining <= 0) {
-        burnMessage(chatId, key).catch(() => undefined);
+        burnMessage(chatId, key, me.uid).catch(() => undefined);
         return;
       }
       setBurnCountdowns(prev => ({...prev, [key]: remaining}));
@@ -480,7 +486,7 @@ export default function ChatPane({
           if (left <= 0) {
             clearInterval(burnTimersRef.current[key]);
             delete burnTimersRef.current[key];
-            burnMessage(chatId, key).catch(() => undefined);
+            burnMessage(chatId, key, me.uid).catch(() => undefined);
             const {[key]: _removed, ...rest} = prev;
             return rest;
           }
@@ -488,7 +494,7 @@ export default function ChatPane({
         });
       }, 1000);
     },
-    [chatId],
+    [chatId, me.uid],
   );
 
   // Resume countdowns for any already-revealed (but not burned) burn messages —
@@ -1349,12 +1355,26 @@ export default function ChatPane({
       return next;
     });
   const deleteSelected = async () => {
-    const ids = [...selected];
-    if (ids.length === 0) return;
+    // Only your own messages are deletable (firestore.rules). Dropping the
+    // others silently would leave the user believing a message was gone when
+    // it was not, so say how many were left out.
+    const chosen = [...selected];
+    const ownIds = new Set(messages.filter(m => String(m.user?._id) === me.uid).map(m => m._id));
+    const ids = chosen.filter(id => ownIds.has(id));
+    const skipped = chosen.length - ids.length;
+    if (ids.length === 0) {
+      toast.error('You can only delete your own messages.');
+      exitSelect();
+      return;
+    }
     if (!window.confirm(t('chat.confirmDeleteSelected'))) return;
     try {
       await deleteMessages(chatId, ids, me.uid);
-      toast.success(t('chat.deletedCount'));
+      toast.success(
+        skipped > 0
+          ? `Deleted ${ids.length}. ${skipped} left out — you can only delete your own.`
+          : t('chat.deletedCount'),
+      );
     } catch {
       toast.error(t('common.error'));
     }
@@ -2445,7 +2465,7 @@ export default function ChatPane({
                           onClick={() => enterSelect(m._id)}>
                           <Icon name="check" size={15} />
                         </button>
-                        {mine && (
+                        {mine ? (
                           <button
                             style={styles.smallAction}
                             title={t('common.delete')}
@@ -2454,6 +2474,22 @@ export default function ChatPane({
                               setActiveMsg(null);
                             }}>
                             <Icon name="trash" size={15} />
+                          </button>
+                        ) : (
+                          // Deleting is author-only (firestore.rules), so the
+                          // action on someone else's message is to report it.
+                          <button
+                            style={styles.smallAction}
+                            title="Report"
+                            onClick={() => {
+                              setReportTarget({
+                                messageId: m._id,
+                                authorUid: String(m.user?._id ?? ''),
+                                content: typeof m.text === 'string' ? m.text : '',
+                              });
+                              setActiveMsg(null);
+                            }}>
+                            <Icon name="alertTriangle" size={15} />
                           </button>
                         )}
                         </div>
@@ -2756,6 +2792,16 @@ export default function ChatPane({
         <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
       )}
       {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
+      {reportTarget && (
+        <ReportMessageModal
+          chatId={chatId}
+          messageId={reportTarget.messageId}
+          authorUid={reportTarget.authorUid}
+          content={reportTarget.content}
+          me={me}
+          onClose={() => setReportTarget(null)}
+        />
+      )}
       {forwardTarget && (
         <QuickSwitcher
           myUid={me.uid}
