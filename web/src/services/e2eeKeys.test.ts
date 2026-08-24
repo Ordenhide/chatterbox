@@ -26,7 +26,7 @@ const memoryStorage = (() => {
 vi.stubGlobal('localStorage', memoryStorage);
 
 /** Stand-in for Firestore, keyed by the doc path "users/{uid}/publicKeys/e2ee". */
-const firestoreDocs = new Map<string, {publicKey?: string}>();
+const firestoreDocs = new Map<string, {publicKey?: string; caps?: string[]}>();
 
 /** Makes the next getDoc reject, standing in for a network/permission failure. */
 let firestoreUnreachable = false;
