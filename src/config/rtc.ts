@@ -53,6 +53,38 @@ export const STUN_SERVERS: IceServer[] = [
  * NATs, but one that throws here fails to start at all.
  */
 export async function getIceServers(): Promise<IceServer[]> {
+  return (await describeIceServers()).servers;
+}
+
+/**
+ * What TURN configuration this call will actually use.
+ *
+ * Exists because the failure this module was written to prevent is silent
+ * from every angle: with no TURN entry, two phones on separate mobile
+ * networks simply fail to connect, and the call reports a generic timeout.
+ * Nothing distinguishes "TURN is misconfigured" from "the other person has
+ * bad signal", so the project can sit unprovisioned indefinitely with calls
+ * that work in the office and fail everywhere else.
+ *
+ * `status` names the state so a caller can say so — see the diagnostics
+ * surface in CALLING.md. Reporting it is the caller's job; this stays pure so
+ * that starting a call never depends on telemetry succeeding.
+ */
+export type IceStatus =
+  /** A TURN server with credentials. The configuration calls work best on. */
+  | 'turn'
+  /**
+   * A TURN URL with no credentials. Valid only for a server that does not
+   * require auth, which almost none do — far more often a half-finished
+   * setup where the URL was added and the credentials were not.
+   */
+  | 'turn-anonymous'
+  /** No TURN at all. Calls across two symmetric NATs will not connect. */
+  | 'stun-only';
+
+export type IceDescription = {servers: IceServer[]; status: IceStatus};
+
+export async function describeIceServers(): Promise<IceDescription> {
   try {
     const [url, username, credential] = await Promise.all([
       getStringFlag('turn_url'),
@@ -63,13 +95,17 @@ export async function getIceServers(): Promise<IceServer[]> {
       .split(',')
       .map(u => u.trim())
       .filter(Boolean);
-    if (urls.length === 0) return STUN_SERVERS;
+    if (urls.length === 0) return {servers: STUN_SERVERS, status: 'stun-only'};
     // Username/credential are omitted rather than sent empty: a TURN server
     // rejects blank credentials, and an entry that always fails auth is worse
     // than no entry, since ICE spends time on it before giving up.
-    const turn: IceServer = username && credential ? {urls, username, credential} : {urls};
-    return [...STUN_SERVERS, turn];
+    const authenticated = !!username && !!credential;
+    const turn: IceServer = authenticated ? {urls, username, credential} : {urls};
+    return {
+      servers: [...STUN_SERVERS, turn],
+      status: authenticated ? 'turn' : 'turn-anonymous',
+    };
   } catch {
-    return STUN_SERVERS;
+    return {servers: STUN_SERVERS, status: 'stun-only'};
   }
 }

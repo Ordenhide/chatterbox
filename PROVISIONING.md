@@ -1,0 +1,154 @@
+# Provisioning and device verification
+
+Everything here needs credentials, hardware, or an account that a repository
+does not have. Each entry says what breaks without it and how you would know —
+because most of these fail *silently*, which is what makes them easy to leave
+undone indefinitely.
+
+---
+
+## 1. GitHub Actions secrets
+
+Set at **Settings → Secrets and variables → Actions**. Five of thirteen are
+configured; the table marks the rest.
+
+### Blocking — the workflow fails without it
+
+| Secret | Used by | Without it |
+|---|---|---|
+| `FIREBASE_SERVICE_ACCOUNT` | `deploy-functions`, `deploy-rules` | **Missing.** No function or rules deploy runs at all. |
+
+A service account for project `chatterbox-e5d10` with **Cloud Functions
+Admin**, **Service Account User**, and **Cloud Build Editor**; store the entire
+JSON key as the secret value.
+
+Both workflows now check for this before doing anything and fail with that
+instruction. Previously they failed inside `google-github-actions/auth` with a
+malformed-credentials error that never mentioned the secret.
+
+### Non-blocking — the deploy succeeds with the feature turned off
+
+These are feature switches in `functions/index.js`, and a deploy without them
+is a deliberate, supported state: the app ships with billing disabled rather
+than not shipping. The workflow now prints a warning and a job-summary line
+naming exactly which are missing, so it is visible rather than assumed.
+
+| Secret | Without it |
+|---|---|
+| `STRIPE_SECRET_KEY` | **Missing.** Subscriptions cannot be created or charged. |
+| `STRIPE_WEBHOOK_SECRET` | **Missing.** Stripe events are rejected, so entitlements never update after payment. |
+| `STRIPE_PRICE_MONTHLY` | **Missing.** Monthly plan unavailable. |
+| `STRIPE_PRICE_YEARLY` | **Missing.** Yearly plan unavailable. |
+| `APP_BASE_URL` | **Missing.** Checkout return links point nowhere. |
+| `CLOUDFLARE_ACCOUNT_ID` | **Missing.** Media transforms disabled. |
+| `CLOUDFLARE_API_TOKEN` | **Missing.** Media transforms disabled. |
+
+### Already configured
+
+`CHATTERBOX_KEYSTORE_BASE64`, `CHATTERBOX_KEY_ALIAS`, `CHATTERBOX_KEY_PASSWORD`,
+`CHATTERBOX_STORE_PASSWORD`, `CHATTERBOX_GOOGLE_SERVICES_JSON_BASE64` — the
+Android release-signing set. `release-apk.yml` works.
+
+---
+
+## 2. TURN server
+
+**Not provisioned.** Calls currently run STUN-only.
+
+This is the entry most worth doing, because its failure mode is the most
+deceptive: STUN alone works whenever one peer is directly reachable, so calls
+succeed on shared Wi-Fi and in every test you are likely to run by hand. They
+fail between two phones on separate mobile networks — two symmetric NATs,
+neither reachable — which is the ordinary case in production. Users report it
+as "calls don't work sometimes".
+
+Set three keys in **Firebase Console → Remote Config**:
+
+```
+turn_url          turn:host:3478?transport=udp,turns:host:5349?transport=tcp
+turn_username
+turn_credential
+```
+
+`src/config/rtc.ts` reads them at call setup — deliberately from Remote Config
+rather than the bundle, since TURN credentials are usually short-lived and a
+baked-in value can only change with a store release.
+
+**How you will know it worked.** Every call now reports its ICE configuration
+as a `call_ice_config` analytics event with `status` of `turn`,
+`turn-anonymous`, or `stun-only`. Before provisioning, expect 100% `stun-only`.
+After, expect `turn`. `turn-anonymous` means the URL was set and the
+credentials were not — a half-finished setup, not a working one.
+
+Verify properly on **two devices on different mobile networks with Wi-Fi off**.
+Any test on one network proves nothing about the thing TURN fixes.
+
+---
+
+## 3. Keychain migration — needs a device with an existing install
+
+Landed in `d998696`; **never verified on hardware**. It cannot be checked on a
+fresh install, because the entire point is what happens to a key that is
+already in MMKV.
+
+The design is fail-safe by construction: migration only ever *adds* a copy, and
+the MMKV copy is deleted only after the value has been read back out of the
+Keychain (`readSecretKeyHex` in `e2eeKeys.ts`). The risk being checked is not
+the logic but the platform — that `react-native-keychain` behaves as assumed
+across an app upgrade.
+
+The stake is the highest in the app: losing this key means losing every message
+the user can decrypt, recoverable only from a phrase most users never wrote
+down.
+
+**Procedure** — the order matters, and step 1 must be a build *without* the
+Keychain module:
+
+- [ ] Install a pre-Keychain build. Sign in, send and receive an encrypted
+      message in a 1:1 chat. Confirm the key is in MMKV, not the Keychain.
+- [ ] Upgrade in place to the current build — **upgrade, not reinstall**. A
+      reinstall clears app storage and tests nothing.
+- [ ] Open the chat. **Old messages must still decrypt.** This is the whole
+      test; a failure here is data loss.
+- [ ] Force-quit and reopen. Messages still decrypt (proves the migrated copy
+      is what is being read, not a cache).
+- [ ] Send a new message and confirm the other device reads it (proves the
+      identity key still matches the published public key).
+- [ ] Delete the account. Confirm the Keychain entry
+      `com.chatterbox.e2ee.secretKey.<uid>` is gone — an MMKV-only wipe would
+      leave the identity key on the device forever after deletion.
+- [ ] Repeat on Android, where the Keystore is a different implementation.
+
+---
+
+## 4. Forward secrecy and encrypted media — needs two devices
+
+Phases 2a–2e and the attachment encryption are covered by 851 tests but have
+**never run on real hardware**. The tests use in-memory doubles for Firestore
+and the key store, so they prove the logic and nothing about the platform.
+
+- [ ] **First message between two upgraded devices** establishes a session and
+      decrypts. This is the X3DH handshake — the step with the most moving
+      parts.
+- [ ] Reply in both directions several times; all readable.
+- [ ] **Offline group member**: with device C offline, have A send to a group,
+      then bring C back online. C must be able to read A's messages. This is
+      the path where a design flaw was found and fixed during phase 2d, and it
+      failed *silently and permanently* before the fix.
+- [ ] Remove a member; remaining members' messages stay readable and the
+      removed member's device stops being able to read new ones.
+- [ ] **Send a photo, a video, a voice message, and a document.** Each must
+      display or play on the receiving device.
+- [ ] Confirm in the Firebase Storage console that the uploaded object is
+      **not** a viewable image — it should be opaque bytes with a random name.
+- [ ] Mixed versions: one device on an older build. Attachments must still
+      arrive, unencrypted, rather than appearing broken.
+- [ ] Sign out and confirm decrypted attachments are gone from the app's cache
+      directory.
+
+---
+
+## 5. Sign in with Apple
+
+See `SIGN_IN_WITH_APPLE.md`. Code is in place; the dependency has never been
+installed, and the Apple Developer and Firebase Console steps remain.

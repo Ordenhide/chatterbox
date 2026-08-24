@@ -43,6 +43,54 @@ jobs:
       # → Actions). Missing secrets write as empty, which degrades that one
       # feature rather than failing the deploy — matching how index.js treats
       # them. See functions/.env.example for what each value is.
+      # A missing FIREBASE_SERVICE_ACCOUNT fails two steps later inside
+      # google-github-actions/auth, with a message about malformed credentials
+      # that never mentions the repo secret you actually have to set. Checking
+      # here costs nothing and turns twenty minutes of confusion into one line.
+      #
+      # The optional secrets below are deliberately *not* fatal: index.js
+      # treats each as a feature switch, so a deploy without them ships an app
+      # with billing disabled rather than no app at all. They are reported so
+      # that state is a decision rather than a surprise.
+      - name: Check required secrets
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_PRICE_MONTHLY: ${{ secrets.STRIPE_PRICE_MONTHLY }}
+          STRIPE_PRICE_YEARLY: ${{ secrets.STRIPE_PRICE_YEARLY }}
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT is not set. Create a service account for" \
+                 "project chatterbox-e5d10 with Cloud Functions Admin, Service Account User," \
+                 "and Cloud Build Editor, then store the whole JSON key as this repo secret." \
+                 "See DEPLOYING.md."
+            exit 1
+          fi
+
+          missing=""
+          for name in STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET STRIPE_PRICE_MONTHLY \
+                      STRIPE_PRICE_YEARLY APP_BASE_URL CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN; do
+            eval "value=\${$name}"
+            # An `if` rather than `[ ... ] && ...`: steps run under `bash -e`,
+            # where a trailing AND-list that evaluates false is one shell-option
+            # change away from aborting the step in exactly the case where
+            # everything is correctly configured.
+            if [ -z "$value" ]; then
+              missing="$missing $name"
+            fi
+          done
+
+          if [ -n "$missing" ]; then
+            echo "::warning::Deploying without:$missing — billing and media-transform" \
+                 "features will be disabled in the deployed functions. See DEPLOYING.md."
+            echo "### Deployed with features disabled" >> "$GITHUB_STEP_SUMMARY"
+            echo "Missing secrets:$missing" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Write functions/.env from repo secrets
         run: |
           cat > functions/.env <<'EOF'

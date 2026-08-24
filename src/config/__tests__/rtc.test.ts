@@ -1,4 +1,4 @@
-import {getIceServers, STUN_SERVERS} from '../rtc';
+import {describeIceServers, getIceServers, STUN_SERVERS} from '../rtc';
 import {getStringFlag} from '../../services/featureFlags';
 
 jest.mock('../../services/featureFlags', () => ({
@@ -71,5 +71,54 @@ describe('getIceServers', () => {
     // throws here fails to start at all.
     mockFlags.mockRejectedValue(new Error('remote config unavailable'));
     expect(await getIceServers()).toEqual(STUN_SERVERS);
+  });
+});
+
+describe('describeIceServers', () => {
+  it('reports stun-only when nothing is configured', async () => {
+    // The state the project is in until TURN is provisioned. It is
+    // indistinguishable from a working setup right up until two people on
+    // different mobile networks try to call each other, which is why it is
+    // worth naming rather than inferring.
+    withFlags({});
+    expect(await describeIceServers()).toEqual({servers: STUN_SERVERS, status: 'stun-only'});
+  });
+
+  it('reports turn when a server and credentials are configured', async () => {
+    withFlags({
+      turn_url: 'turn:relay.example.com:3478',
+      turn_username: 'user',
+      turn_credential: 'secret',
+    });
+    expect((await describeIceServers()).status).toBe('turn');
+  });
+
+  it('distinguishes a TURN url with no credentials from a working one', async () => {
+    // Almost always a half-finished setup rather than a deliberate choice:
+    // the url was pasted in and the credentials never were. Reported as its
+    // own state so it does not read as success.
+    withFlags({turn_url: 'turn:relay.example.com:3478'});
+    expect((await describeIceServers()).status).toBe('turn-anonymous');
+  });
+
+  it('treats a username without a credential as anonymous, not authenticated', async () => {
+    withFlags({turn_url: 'turn:relay.example.com:3478', turn_username: 'user'});
+    const described = await describeIceServers();
+    expect(described.status).toBe('turn-anonymous');
+    expect(described.servers[1]).not.toHaveProperty('username');
+  });
+
+  it('reports stun-only when the flag lookup fails', async () => {
+    mockFlags.mockRejectedValue(new Error('remote config unavailable'));
+    expect((await describeIceServers()).status).toBe('stun-only');
+  });
+
+  it('agrees with getIceServers, which is a thin wrapper over it', async () => {
+    withFlags({
+      turn_url: 'turn:relay.example.com:3478',
+      turn_username: 'user',
+      turn_credential: 'secret',
+    });
+    expect(await getIceServers()).toEqual((await describeIceServers()).servers);
   });
 });

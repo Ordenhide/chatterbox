@@ -63,6 +63,19 @@ jobs:
       # service account for project chatterbox-e5d10 with at least "Firebase
       # Rules Admin" (or the broader "Firebase Admin"), with its JSON key
       # stored as the FIREBASE_SERVICE_ACCOUNT repo secret.
+      # Same reasoning as deploy-functions.yml: without this secret the auth
+      # action fails on malformed credentials and never names the secret.
+      - name: Check required secrets
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT is not set, so the rules cannot be" \
+                 "deployed. The rules *tests* above ran against the emulator and do not" \
+                 "need it. See DEPLOYING.md."
+            exit 1
+          fi
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
