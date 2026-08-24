@@ -19,9 +19,13 @@
  *     services/ratchetMessages.ts and services/groupRatchetMessages.ts.
  *   - The server stores only {alg, nonce, ciphertext}. Firestore never sees the
  *     plaintext, so "the operator can read your messages" stops being true.
- *   - The same primitives cover media access pointers (encryptedImage and
- *     friends) and chat artifacts — playlists, shared lists, countdowns — via
- *     e2eeArtifacts.ts, rather than a second crypto path.
+ *   - The same primitives cover chat artifacts — playlists, shared lists,
+ *     countdowns — via e2eeArtifacts.ts, rather than a second crypto path,
+ *     and still cover media access pointers (encryptedImage and friends) for
+ *     recipients too old to decrypt attachment bytes. Where all recipients
+ *     can, the object itself is encrypted instead and its key travels inside
+ *     the body — see services/mediaCrypto.ts; those messages carry no
+ *     encryptedImage at all.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * WHAT THIS PROTOTYPE DOES NOT DO — read before shipping:
@@ -34,8 +38,10 @@
  *      per message, and group messages go through
  *      services/groupRatchetMessages.ts, which ratchets a per-sender chain.
  *      What still lands here is any chat where some member has not published
- *      a prekey bundle, and everything other than message text — media
- *      pointers and chat artifacts. Read messageProtection()
+ *      a prekey bundle, plus chat artifacts and the media pointers sent to
+ *      recipients on older clients. Attachments to *upgraded* recipients
+ *      carry their content key inside the body, so they take whichever
+ *      forward-secret path the body takes. Read messageProtection()
  *      in e2eeMessages.ts for which path a given message actually took —
  *      guessing from the presence of encryption is exactly the mistake this
  *      distinction exists to prevent.
@@ -55,11 +61,15 @@
  *      overwrites the published one, breaking decryption on the first.
  *   4. NO BACKFILL. Existing plaintext messages stay plaintext.
  *   5. METADATA IS STILL VISIBLE. Who talks to whom, when, and how often is
- *      all readable server-side. Media file name/type/size stay visible too —
- *      only the access pointer (image/video/audio/file.uri) is sealed, not
- *      those fields. GIFs, gestures and lottery content are not sealed: GIFs
- *      are public third-party content with nothing to protect, and the others
- *      carry no text of their own.
+ *      all readable server-side. For an attachment the *bytes* are encrypted
+ *      (services/mediaCrypto.ts) but its declared name, type and size are
+ *      stored in the message document in the clear, as is the fact that a
+ *      message has one at all; the ciphertext's length also bounds the
+ *      original's. Only the upload's object name is randomised, so the
+ *      filename does not additionally leak to anyone listing the bucket.
+ *      GIFs, gestures and lottery content are not sealed: GIFs are public
+ *      third-party content with nothing to protect, and the others carry no
+ *      text of their own.
  *
  * Keep this list honest. Everything above is checked against the code as of
  * the last edit, because a caveat that has quietly become false is worse than

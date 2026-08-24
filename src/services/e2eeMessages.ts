@@ -15,6 +15,7 @@ import {sendMessage} from './firebaseChat';
 import {
   decryptMessage,
   isEncryptedPayload,
+  isGroupSealed,
   isSealedEnvelope,
   openEnvelope,
   sealForRecipients,
@@ -40,7 +41,7 @@ import {reportError} from './telemetry';
  * secrecy is the same class of failure as quietly losing encryption, and the
  * only difference is how hard it is to notice.
  */
-export type MessageProtection = 'ratchet' | 'static' | 'none';
+export type MessageProtection = 'ratchet' | 'sender-key' | 'static' | 'none';
 
 export type SendResult = {encrypted: boolean; protection: MessageProtection};
 
@@ -183,6 +184,11 @@ export function isMessageEncrypted(message: Message): boolean {
  */
 export function messageProtection(message: Message): MessageProtection {
   if (isRatchetEnvelope(message.encrypted)) return 'ratchet';
+  // Group messages sealed with sender keys. Omitting this reported them as
+  // 'none' — an unqualified claim that a forward-secret message had no
+  // protection at all, from the one function that exists to answer that
+  // question honestly.
+  if (isGroupSealed(message.encrypted)) return 'sender-key';
   if (isSealedEnvelope(message.encrypted) || isEncryptedPayload(message.encrypted)) return 'static';
   return 'none';
 }
@@ -203,6 +209,11 @@ export function sealedKeyCount(message: Message): number | null {
   const sealed = message.encrypted;
   // A ratchet message is sealed to exactly one recipient by construction.
   if (isRatchetEnvelope(sealed)) return 1;
+  // So is a sender-key message, in the sense this counts: one ciphertext for
+  // the whole chat, not one per member. The number of people who can open it
+  // is the size of the sender's chain distribution, which is not in the
+  // message and deliberately not guessed at here.
+  if (isGroupSealed(sealed)) return 1;
   if (isSealedEnvelope(sealed)) return Object.keys(sealed.copies).length;
   if (isEncryptedPayload(sealed)) return 1;
   return null;
