@@ -1,5 +1,6 @@
 import {createMMKV} from 'react-native-mmkv';
-import {generateKeyHex} from './crypto';
+import {sha256} from '@noble/hashes/sha2.js';
+import {bytesToHex, generateKeyHex, utf8ToBytes} from './crypto';
 import {reportError} from './telemetry';
 
 const logError = (context: string, error: unknown) => {
@@ -21,21 +22,25 @@ const ENC_KEY_STORAGE = 'enc_key';
  * (e.g. the native RNGetRandomValues module isn't linked into this build).
  * Weaker than a real CSPRNG, but this only runs on that failure path — see the
  * try/catch below — and reportError() surfaces it so the gap doesn't go
- * unnoticed. Mixing several independent Math.random() draws with a high-
- * resolution timestamp is meaningfully harder to predict than a single call,
- * even though it is still not cryptographically secure.
+ * unnoticed.
+ *
+ * The condensing step used to be `.replace(/\D/g, '')` on a decimal string,
+ * padded with '0' to 64 characters. That produced a "64-hex-character key"
+ * containing only the digits 0-9 and a tail of zero padding — throwing away
+ * most of the little entropy that had been gathered, and roughly two thirds of
+ * the nominal key space, on top of the weak source. SHA-256 is the right tool
+ * for condensing entropy into a fixed-length key, it is pure JS (no native
+ * module, which is the whole constraint on this path), and it is already a
+ * dependency used by e2ee.ts.
+ *
+ * This does not make the result cryptographically secure — you cannot hash
+ * your way to entropy that was never collected — but it does stop the
+ * condensing step from destroying what little there was.
  */
 function fallbackWeakKeyHex(): string {
-  let mixed = `${Date.now()}:${Math.random()}`;
-  for (let i = 0; i < 8; i++) mixed += `:${Math.random()}:${Date.now()}`;
-  let hash1 = 0;
-  let hash2 = 0;
-  for (let i = 0; i < mixed.length; i++) {
-    hash1 = (Math.imul(hash1, 31) + mixed.charCodeAt(i)) | 0;
-    hash2 = (Math.imul(hash2, 131) + mixed.charCodeAt(mixed.length - 1 - i)) | 0;
-  }
-  const seed = `${hash1 >>> 0}${hash2 >>> 0}${Date.now()}${Math.random()}`.replace(/\D/g, '');
-  return seed.padEnd(64, '0').slice(0, 64);
+  const draws: string[] = [`${Date.now()}`, `${globalThis.performance?.now?.() ?? 0}`];
+  for (let i = 0; i < 32; i++) draws.push(`${Math.random()}`, `${Date.now()}`);
+  return bytesToHex(sha256(utf8ToBytes(draws.join(':'))));
 }
 
 function getOrCreateEncryptionKey(): string {
