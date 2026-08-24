@@ -13,7 +13,7 @@
  */
 const {assertFails, assertSucceeds} = require('@firebase/rules-unit-testing');
 const {doc, setDoc, Timestamp} = require('firebase/firestore');
-const {getBytes, ref, uploadBytes} = require('firebase/storage');
+const {deleteObject, getBytes, ref, uploadBytes} = require('firebase/storage');
 const {makeTestEnv} = require('./helpers');
 
 let testEnv;
@@ -179,5 +179,102 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const freshAuthTime = Math.floor(NOW_MS / 1000);
     await assertSucceeds(uploadBytes(ref(asUser('alice', freshAuthTime), 'moments/alice/photo1.jpg'), BYTES));
+  });
+});
+
+describe('upload ceilings', () => {
+  const authTime = () => Math.floor(NOW_MS / 1000);
+
+  async function participant() {
+    await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
+    await seedChat('c1', ['alice', 'bob']);
+    return asUser('alice', authTime());
+  }
+
+  it('accepts a normally-sized upload', async () => {
+    const alice = await participant();
+    await assertSucceeds(
+      uploadBytes(ref(alice, 'chats/c1/photo.jpg'), new Uint8Array(64 * 1024), {
+        contentType: 'image/jpeg',
+      }),
+    );
+  });
+
+  it('rejects an upload past the ceiling', async () => {
+    // Nothing capped size before this, so one participant could push
+    // arbitrarily large objects into the bucket. Exercised against the
+    // moments ceiling (25 MB) rather than the chat one (200 MB) purely so the
+    // test moves a buffer the emulator can handle quickly — it is the same
+    // withinSize() check on both paths.
+    await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
+    const alice = asUser('alice', authTime());
+    const overCap = new Uint8Array(25 * 1024 * 1024 + 1024);
+    await assertFails(
+      uploadBytes(ref(alice, 'moments/alice/huge.jpg'), overCap, {contentType: 'image/jpeg'}),
+    );
+  });
+
+  it('rejects content types a browser would execute', async () => {
+    const alice = await participant();
+    for (const contentType of [
+      'text/html',
+      'text/html; charset=utf-8',
+      'image/svg+xml',
+      'application/xhtml+xml',
+      'text/javascript',
+      'application/javascript',
+    ]) {
+      await assertFails(
+        uploadBytes(ref(alice, `chats/c1/x-${contentType.replace(/\W/g, '')}`), BYTES, {contentType}),
+      );
+    }
+  });
+
+  it('still accepts the ordinary media and document types the app sends', async () => {
+    // A denylist, not an allowlist: sending arbitrary documents is a feature,
+    // so an unusual type must not be what breaks file sharing.
+    const alice = await participant();
+    for (const contentType of [
+      'image/jpeg',
+      'image/png',
+      'image/heic',
+      'video/mp4',
+      'video/quicktime',
+      'audio/mp4',
+      'audio/mpeg',
+      'application/pdf',
+      'application/zip',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/octet-stream',
+    ]) {
+      await assertSucceeds(
+        uploadBytes(ref(alice, `chats/c1/ok-${contentType.replace(/\W/g, '')}`), BYTES, {contentType}),
+      );
+    }
+  });
+
+  it('allows an upload with no declared content type', async () => {
+    const alice = await participant();
+    await assertSucceeds(uploadBytes(ref(alice, 'chats/c1/untyped'), BYTES));
+  });
+
+  it('still allows deleting, where request.resource is null', async () => {
+    // Every ceiling check reads request.resource, which does not exist on a
+    // delete. Without the null guard this would deny all deletion — including
+    // the Storage cleanup burnMessage and account deletion depend on.
+    const alice = await participant();
+    await assertSucceeds(uploadBytes(ref(alice, 'chats/c1/gone.jpg'), BYTES, {contentType: 'image/jpeg'}));
+    await assertSucceeds(deleteObject(ref(alice, 'chats/c1/gone.jpg')));
+  });
+
+  it('applies the ceiling to moments as well', async () => {
+    await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
+    const alice = asUser('alice', authTime());
+    await assertFails(
+      uploadBytes(ref(alice, 'moments/alice/evil.svg'), BYTES, {contentType: 'image/svg+xml'}),
+    );
+    await assertSucceeds(
+      uploadBytes(ref(alice, 'moments/alice/ok.jpg'), BYTES, {contentType: 'image/jpeg'}),
+    );
   });
 });

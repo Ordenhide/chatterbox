@@ -29,13 +29,61 @@ service firebase.storage {
       return chat != null && request.auth.uid in chat.data.participants;
     }
 
+    /**
+     * Ceilings, not policy. Nothing here limited upload size at all, so one
+     * authenticated participant could push arbitrarily many arbitrarily large
+     * objects into the bucket — a billing and quota problem rather than a
+     * confidentiality one, but the cheapest kind of abuse to carry out.
+     *
+     * Deliberately generous: chat media is uploaded without server-side
+     * transcoding (a phone video goes up as recorded), so a tight cap would
+     * reject real messages. These are sized to stop the abuse case, not to
+     * enforce a product limit — that belongs in the client, where it can
+     * explain itself to the user instead of failing with permission-denied.
+     */
+    function withinSize(maxBytes) {
+      return request.resource.size <= maxBytes;
+    }
+
+    /**
+     * Blocks content types a browser would *execute* rather than display.
+     *
+     * A denylist rather than an allowlist on purpose: sending arbitrary
+     * documents is a feature, so enumerating permitted types would break file
+     * sharing the first time someone sent an unusual one. These four are the
+     * ones that turn a storage bucket into a place to host script under a
+     * URL the app itself hands out. An absent contentType is allowed — some
+     * clients omit it — since without one nothing will execute either.
+     */
+    function isActiveContent() {
+      return request.resource.contentType != null && (
+        request.resource.contentType.matches('text/html.*') ||
+        request.resource.contentType.matches('image/svg.*') ||
+        request.resource.contentType.matches('application/xhtml.*') ||
+        request.resource.contentType.matches('.*(javascript|ecmascript).*')
+      );
+    }
+
+    // `request.resource` is null on a delete, and every check above reads it.
+    // Guarding on that keeps deletion working without needing this ruleset to
+    // depend on whether Storage supports granular create/update/delete verbs.
+    function uploadAllowed(maxBytes) {
+      return request.resource == null || (withinSize(maxBytes) && !isActiveContent());
+    }
+
     match /moments/{userId}/{allPaths=**} {
       allow read: if hasActiveSession();
-      allow write: if hasActiveSession() && request.auth.uid == userId;
+      // Images only, and downscaled by the client before upload.
+      allow write: if hasActiveSession() && request.auth.uid == userId &&
+        uploadAllowed(25 * 1024 * 1024);
     }
 
     match /chats/{chatId}/{allPaths=**} {
-      allow read, write: if hasActiveSession() && isChatParticipant(chatId);
+      allow read: if hasActiveSession() && isChatParticipant(chatId);
+      // Higher than moments because this path also carries video and
+      // arbitrary documents.
+      allow write: if hasActiveSession() && isChatParticipant(chatId) &&
+        uploadAllowed(200 * 1024 * 1024);
     }
   }
 }
