@@ -328,3 +328,23 @@ describe('isSealed / openSealed (shape-agnostic reader)', () => {
     expect(() => openSealed('plain', generateKeypair().secretKey, 'me', C)).toThrow(/not sealed/);
   });
 });
+
+describe('cross-client safety number compatibility', () => {
+  /**
+   * Shared with src/services/__tests__/e2ee.test.ts on mobile. Both clients
+   * must produce this exact string for these keys, or a mobile user and a web
+   * user comparing numbers in person would see a mismatch and conclude —
+   * reasonably, and wrongly — that they are being attacked.
+   */
+  const KEY_A = new Uint8Array(32).fill(0x11);
+  const KEY_B = new Uint8Array(32).fill(0x22);
+  const SHARED_VECTOR = '48183 52358 23701 53617 59640';
+
+  it('matches the mobile client', () => {
+    expect(computeSafetyNumber(KEY_A, KEY_B)).toBe(SHARED_VECTOR);
+  });
+
+  it('is order-independent, as the mobile side also asserts', () => {
+    expect(computeSafetyNumber(KEY_B, KEY_A)).toBe(SHARED_VECTOR);
+  });
+});

@@ -46,6 +46,7 @@ import {
   fetchPeerPreKeyBundle,
   getOrCreateRatchetIdentity,
   preKeySecretsForResponding,
+  type PeerRatchetStatus,
 } from './ratchetKeys';
 import {withSession} from './ratchetSessionStore';
 import {base64ToBytes, bytesToBase64, utf8ToBytes} from './crypto';
@@ -111,7 +112,18 @@ function decodeInitial(initial: SerializedInitial): InitialMessageKeys {
 }
 
 export type SealOutcome =
-  | {protection: 'ratchet'; envelope: RatchetEnvelope}
+  | {
+      protection: 'ratchet';
+      envelope: RatchetEnvelope;
+      /**
+       * Set only when this send established a new session, because that is the
+       * only moment the peer's identity is consulted. 'changed' means their
+       * ratchet identity is not the one this device trusted before — a
+       * reinstall, or a substitution. Undefined on sends that reused an
+       * existing session, which touch no identity at all.
+       */
+      identityStatus?: PeerRatchetStatus;
+    }
   /** The peer has not published a bundle — an older client. */
   | {protection: 'unavailable'};
 
@@ -143,8 +155,9 @@ export async function sealText(
     }
 
     // No session yet: establish one against the peer's published bundle.
-    const bundle = await fetchPeerPreKeyBundle(peerUid);
-    if (!bundle) return {session: null, result: {protection: 'unavailable'}};
+    const fetched = await fetchPeerPreKeyBundle(myUid, peerUid);
+    if (!fetched) return {session: null, result: {protection: 'unavailable'}};
+    const {bundle, identityStatus} = fetched;
 
     const identity = await getOrCreateRatchetIdentity(myUid);
     const {sharedSecret, initial} = initiateX3DH(identity, bundle);
@@ -155,6 +168,7 @@ export async function sealText(
       session: sent.session,
       result: {
         protection: 'ratchet',
+        identityStatus,
         envelope: {
           alg: RATCHET_ENVELOPE_ALG,
           from: myUid,

@@ -23,9 +23,16 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * WHAT THIS PROTOTYPE DOES NOT DO — read before shipping:
  *
- *   1. NO FORWARD SECRECY. Keys are long-lived. Signal ratchets per message so
- *      that compromising a key doesn't expose history; this does not. That is
- *      the single biggest gap between this and a real secure messenger.
+ *   1. NO FORWARD SECRECY *ON THIS PATH*. Everything sealed by this module uses
+ *      a long-lived key, so compromising it exposes every message it ever
+ *      protected. That is still true here and always will be — but it is no
+ *      longer true of the app as a whole: 1:1 messages between two upgraded
+ *      clients go through services/ratchetMessages.ts instead, which ratchets
+ *      per message. What still lands here is group messages, and 1:1 with a
+ *      client that has not published a prekey bundle. Read messageProtection()
+ *      in e2eeMessages.ts for which path a given message actually took —
+ *      guessing from the presence of encryption is exactly the mistake this
+ *      distinction exists to prevent.
  *   2. TRUST ON FIRST USE, NOT VERIFICATION. Public keys are trusted the first
  *      time they're seen, and the server hands them out — so whoever controls
  *      Firestore can serve a key they hold on first contact and read
@@ -384,8 +391,43 @@ export function isSealedEnvelope(value: unknown): value is SealedEnvelope {
  * "verification code" that could never detect a substituted key, because it
  * didn't depend on the keys at all.
  */
-export function computeSafetyNumber(myPublicKey: Uint8Array, peerPublicKey: Uint8Array): string {
-  const [a, b] = [bytesToHex(myPublicKey), bytesToHex(peerPublicKey)].sort();
+/**
+ * The keys a safety number covers for one party.
+ *
+ * Two, because there are now two independent identities: the long-lived X25519
+ * key this module seals with, and the Ed25519 ratchet identity that
+ * authenticates the forward-secret path (services/ratchet/x3dh.ts). Verifying
+ * only the first would leave the newer path — the one users are told to trust
+ * more — covered by nothing.
+ */
+export type VerificationKeys = {
+  /** X25519 message-encryption key. Present for any enrolled device. */
+  encryptionKey: Uint8Array;
+  /** Ed25519 ratchet identity, absent on clients that do not implement it. */
+  ratchetIdentity?: Uint8Array;
+};
+
+/**
+ * A number both parties can compare out of band to detect a substituted key.
+ *
+ * The ratchet identities are folded in only when *both* sides have one. That
+ * condition is not a convenience: if one side included a key the other could
+ * not see, the two devices would compute different numbers and every
+ * comparison would fail, teaching users that a mismatch is normal — which is
+ * the one lesson that would make the whole ceremony worthless. Both sides can
+ * evaluate the condition identically, because both hold both parties' keys.
+ *
+ * A consequence worth stating: when a peer upgrades and publishes a ratchet
+ * identity, the number changes. That is correct — there is genuinely new key
+ * material to verify — and the UI says so rather than leaving the user to
+ * conclude they have been attacked.
+ */
+export function computeSafetyNumber(mine: VerificationKeys, theirs: VerificationKeys): string {
+  const both = !!mine.ratchetIdentity && !!theirs.ratchetIdentity;
+  const encode = (k: VerificationKeys) =>
+    both ? `${bytesToHex(k.encryptionKey)}:${bytesToHex(k.ratchetIdentity!)}` : bytesToHex(k.encryptionKey);
+
+  const [a, b] = [encode(mine), encode(theirs)].sort();
   const digest = sha256(utf8ToBytes(a + b));
   const groups: string[] = [];
   for (let i = 0; i < 5; i++) {

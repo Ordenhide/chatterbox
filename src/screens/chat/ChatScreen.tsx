@@ -109,6 +109,8 @@ import {reportError} from '../../services/telemetry';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
 import {computeSafetyNumber, diagnoseSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {openEnvelope as openRatchetEnvelope} from '../../services/ratchetMessages';
+import {fetchPeerRatchetIdentity, getOrCreateRatchetIdentity} from '../../services/ratchetKeys';
+import {sealText} from '../../services/ratchetMessages';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import {fonts} from '../../theme/typography';
@@ -478,6 +480,28 @@ export default function ChatScreen() {
     async (data: ChatMessage): Promise<ChatMessage> => {
       if (!user || !chatId || otherUserIds.length === 0) return data;
       try {
+        /**
+         * Text in a 1:1 chat goes through the ratchet, which is what makes the
+         * conversation forward-secret. Everything else — group messages, and
+         * the media pointers below — stays on the fan-out path.
+         *
+         * Media is a deliberate gap, not an oversight: each pointer would need
+         * its own ratchet message and its own await on the receive side, and
+         * the media *bytes* were never end-to-end encrypted to begin with (only
+         * the URL is sealed; Storage rules are what protect the object). Sealing
+         * the pointer better while the bytes sit behind an access rule would be
+         * a poor use of the next hour. messageProtection() reports what the
+         * body actually got, so nothing here overstates it.
+         */
+        if (data.text && otherUserIds.length === 1 && !data.image && !data.video && !data.audio && !data.file) {
+          const outcome = await sealText(user.uid, chatId, otherUserIds[0], data.text);
+          if (outcome.protection === 'ratchet') {
+            if (outcome.identityStatus === 'changed') setPeerSessionReset(true);
+            return {...data, text: '', encrypted: outcome.envelope} as ChatMessage;
+          }
+          // 'unavailable' — peer runs an older client. Fall through to fan-out.
+        }
+
         // One sealed copy per member — a 1:1 chat is just the single-recipient
         // case, so there is no separate direct-message path. See
         // sealForRecipients in services/e2ee.ts for why fan-out over sender keys.
@@ -2144,14 +2168,36 @@ export default function ChatScreen() {
         );
         return;
       }
-      // Computed from the actual encryption keys, not identities — if a
-      // compromised server substituted either key, the two devices would
-      // show different numbers here. See computeSafetyNumber().
-      const sn = computeSafetyNumber(myPublicKey, peerPublicKey);
+      // Both identities, when both sides have one: the X25519 key this chat's
+      // older messages are sealed with, and the Ed25519 ratchet identity that
+      // authenticates the forward-secret path. Verifying only the first would
+      // leave the path users are told to trust more covered by nothing.
+      //
+      // Read-only — deliberately not the bundle fetch, which claims a one-time
+      // prekey. Opening this screen must not drain a peer's supply.
+      const [myRatchet, peerRatchet] = await Promise.all([
+        getOrCreateRatchetIdentity(user.uid).catch(() => null),
+        fetchPeerRatchetIdentity(user.uid, otherUserId).catch(() => ({
+          identityKey: null,
+          status: 'unavailable' as const,
+        })),
+      ]);
+
+      const sn = computeSafetyNumber(
+        {encryptionKey: myPublicKey, ratchetIdentity: myRatchet?.publicKey},
+        {encryptionKey: peerPublicKey, ratchetIdentity: peerRatchet.identityKey ?? undefined},
+      );
       setPeerKeyChanged(false);
+      setPeerSessionReset(false);
+
+      const covers = myRatchet && peerRatchet.identityKey ? 'both keys' : 'their message key';
+      const changedNote =
+        peerRatchet.status === 'changed'
+          ? "\n\n⚠️ Their forward-secrecy identity changed since you last checked. Usually a reinstall — but if they didn't reinstall, do not trust this chat until you've confirmed the number in person."
+          : '';
       Alert.alert(
         'Safety Number',
-        `${sn}\n\nCompare this with your contact in person or over a trusted channel. If it matches on both devices, this chat is encrypted directly between you two.`,
+        `${sn}\n\nCovers ${covers}. Compare it with your contact in person or over a trusted channel. If it matches on both devices, this chat is encrypted directly between you two.${changedNote}`,
       );
     } catch (error) {
       reportError(error, 'safety_number_failed');

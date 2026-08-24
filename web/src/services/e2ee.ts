@@ -314,6 +314,21 @@ export function isSealedEnvelope(value: unknown): value is SealedEnvelope {
  * public key (the MITM this prototype cannot otherwise prevent — see the
  * module doc above), the two sides' numbers would visibly disagree.
  */
+/**
+ * Deliberately still takes bare encryption keys, unlike the mobile version.
+ *
+ * Mobile now folds an Ed25519 ratchet identity into the number as well — but
+ * only when *both* parties have one. This client does not implement the
+ * ratchet and retracts any published bundle when it enrolls (see
+ * publishPublicKey in e2eeKeys.ts), so a pair involving this client never
+ * satisfies that condition and mobile falls back to exactly the computation
+ * below. The two clients therefore agree without this file changing.
+ *
+ * That agreement is load-bearing and invisible from here, so it is pinned by a
+ * shared test vector present in both test suites. If you change this
+ * computation, that vector fails on this side and mobile's fails on the other
+ * — which is the intended way to find out.
+ */
 export function computeSafetyNumber(myPublicKey: Uint8Array, peerPublicKey: Uint8Array): string {
   const [a, b] = [bytesToHex(myPublicKey), bytesToHex(peerPublicKey)].sort();
   const digest = sha256(utf8ToBytes(a + b));

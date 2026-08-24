@@ -106,6 +106,7 @@ import {
   clearRatchetKeys,
   ensureRatchetKeysPublished,
   fetchPeerPreKeyBundle,
+  fetchPeerRatchetIdentity,
   getOrCreateRatchetIdentity,
   loadPreKeySecrets,
   publishRatchetKeys,
@@ -268,7 +269,7 @@ describe('fetching a peer bundle', () => {
   it('returns null when the peer has not published a ratchet identity', async () => {
     // An old client, not an error — this is what tells the caller to use the
     // existing static-DH path.
-    expect(await fetchPeerPreKeyBundle(PEER)).toBeNull();
+    expect(await fetchPeerPreKeyBundle(ME, PEER)).toBeNull();
   });
 
   it('throws rather than reporting "no ratchet" when the lookup fails', async () => {
@@ -277,31 +278,31 @@ describe('fetching a peer bundle', () => {
     // downgrade.
     await publishRatchetKeys(PEER);
     mockOutage.read = true;
-    await expect(fetchPeerPreKeyBundle(PEER)).rejects.toThrow(PreKeyBundleUnavailableError);
+    await expect(fetchPeerPreKeyBundle(ME, PEER)).rejects.toThrow(PreKeyBundleUnavailableError);
   });
 
   it('returns a usable bundle including a claimed one-time prekey', async () => {
     await publishRatchetKeys(PEER);
-    const bundle = await fetchPeerPreKeyBundle(PEER);
+    const bundle = await fetchPeerPreKeyBundle(ME, PEER);
     expect(bundle).not.toBeNull();
-    expect(bundle!.oneTimePreKey).toBeDefined();
-    expect(mockDocs.get(`users/${PEER}/oneTimePreKeys/${bundle!.oneTimePreKey!.id}`)?.claimed).toBe(true);
+    expect(bundle!.bundle.oneTimePreKey).toBeDefined();
+    expect(mockDocs.get(`users/${PEER}/oneTimePreKeys/${bundle!.bundle.oneTimePreKey!.id}`)?.claimed).toBe(true);
   });
 
   it('records that a prekey was claimed but never by whom', async () => {
     // A claimedBy field would hand the server a log of who started talking to
     // whom, for no benefit — the owner finds the secret by id locally.
     await publishRatchetKeys(PEER);
-    const bundle = await fetchPeerPreKeyBundle(PEER);
-    const claimed = mockDocs.get(`users/${PEER}/oneTimePreKeys/${bundle!.oneTimePreKey!.id}`)!;
+    const bundle = await fetchPeerPreKeyBundle(ME, PEER);
+    const claimed = mockDocs.get(`users/${PEER}/oneTimePreKeys/${bundle!.bundle.oneTimePreKey!.id}`)!;
     expect(Object.keys(claimed)).not.toContain('claimedBy');
   });
 
   it('hands two callers different one-time prekeys', async () => {
     await publishRatchetKeys(PEER);
-    const a = await fetchPeerPreKeyBundle(PEER);
-    const b = await fetchPeerPreKeyBundle(PEER);
-    expect(a!.oneTimePreKey!.id).not.toBe(b!.oneTimePreKey!.id);
+    const a = await fetchPeerPreKeyBundle(ME, PEER);
+    const b = await fetchPeerPreKeyBundle(ME, PEER);
+    expect(a!.bundle.oneTimePreKey!.id).not.toBe(b!.bundle.oneTimePreKey!.id);
   });
 
   it('still returns a bundle when the batch is exhausted', async () => {
@@ -312,9 +313,9 @@ describe('fetching a peer bundle', () => {
     for (const path of [...mockDocs.keys()].filter(p => p.startsWith(`users/${PEER}/oneTimePreKeys/`))) {
       mockDocs.delete(path);
     }
-    const bundle = await fetchPeerPreKeyBundle(PEER);
+    const bundle = await fetchPeerPreKeyBundle(ME, PEER);
     expect(bundle).not.toBeNull();
-    expect(bundle!.oneTimePreKey).toBeUndefined();
+    expect(bundle!.bundle.oneTimePreKey).toBeUndefined();
   });
 
   it('gives up the contested key rather than handing out a claimed one', async () => {
@@ -322,9 +323,9 @@ describe('fetching a peer bundle', () => {
     // both sides holding the same one-time prekey.
     await publishRatchetKeys(PEER);
     mockRace.claimUnderneath = true;
-    const bundle = await fetchPeerPreKeyBundle(PEER);
+    const bundle = await fetchPeerPreKeyBundle(ME, PEER);
     expect(bundle).not.toBeNull();
-    expect(bundle!.oneTimePreKey).toBeUndefined();
+    expect(bundle!.bundle.oneTimePreKey).toBeUndefined();
   });
 
   it('rejects a bundle whose signed prekey was substituted', async () => {
@@ -335,7 +336,7 @@ describe('fetching a peer bundle', () => {
       ...published,
       signedPreKey: bytesToBase64(new Uint8Array(32).fill(7)),
     });
-    await expect(fetchPeerPreKeyBundle(PEER)).rejects.toThrow(PreKeyBundleUnavailableError);
+    await expect(fetchPeerPreKeyBundle(ME, PEER)).rejects.toThrow(PreKeyBundleUnavailableError);
   });
 });
 
@@ -349,9 +350,9 @@ describe('end to end against the crypto core', () => {
 
     _resetRatchetIdentityCache();
     const myIdentity = await getOrCreateRatchetIdentity(ME);
-    const bundle = await fetchPeerPreKeyBundle(PEER);
+    const bundle = await fetchPeerPreKeyBundle(ME, PEER);
 
-    const {sharedSecret, initial} = initiateX3DH(myIdentity, bundle!);
+    const {sharedSecret, initial} = initiateX3DH(myIdentity, bundle!.bundle);
     const peerSecrets = await preKeySecretsForResponding(PEER, initial.signedPreKeyId);
     const theirs = respondX3DH(peerIdentity, peerSecrets!, initial);
     expect(bytesToBase64(theirs)).toBe(bytesToBase64(sharedSecret));
@@ -370,8 +371,8 @@ describe('end to end against the crypto core', () => {
       _resetRatchetIdentityCache();
       const myIdentity = await getOrCreateRatchetIdentity(ME);
 
-      const bundle = await fetchPeerPreKeyBundle(PEER);
-      const {sharedSecret, initial} = initiateX3DH(myIdentity, bundle!);
+      const bundle = await fetchPeerPreKeyBundle(ME, PEER);
+      const {sharedSecret, initial} = initiateX3DH(myIdentity, bundle!.bundle);
 
       // ...rotation lands before the message is processed.
       _resetRatchetIdentityCache();
@@ -447,5 +448,58 @@ describe('clearRatchetKeys', () => {
     expect([...mockMmkvStore.keys()].filter(k => k.startsWith('ratchet_'))).toEqual([]);
     _resetRatchetIdentityCache();
     expect(await loadPreKeySecrets(ME)).toBeNull();
+  });
+});
+
+describe('trust-on-first-use for the ratchet identity', () => {
+  it('reports first contact, then unchanged', async () => {
+    await publishRatchetKeys(PEER);
+    expect((await fetchPeerRatchetIdentity(ME, PEER)).status).toBe('first-contact');
+    expect((await fetchPeerRatchetIdentity(ME, PEER)).status).toBe('unchanged');
+  });
+
+  it('reports a substituted identity as changed', async () => {
+    // The attack the bundle signature does NOT catch: a server that swaps the
+    // identity *and* the prekey it signs passes verification cleanly. Noticing
+    // the identity moved is the only thing standing against it.
+    await publishRatchetKeys(PEER);
+    await fetchPeerRatchetIdentity(ME, PEER);
+
+    const published = mockDocs.get(`users/${PEER}/publicKeys/ratchet`)!;
+    mockDocs.set(`users/${PEER}/publicKeys/ratchet`, {
+      ...published,
+      identityKey: bytesToBase64(new Uint8Array(32).fill(9)),
+    });
+    expect((await fetchPeerRatchetIdentity(ME, PEER)).status).toBe('changed');
+  });
+
+  it('reports unavailable on a failed lookup, never unenrolled', async () => {
+    await publishRatchetKeys(PEER);
+    mockOutage.read = true;
+    expect((await fetchPeerRatchetIdentity(ME, PEER)).status).toBe('unavailable');
+  });
+
+  it('does not claim a one-time prekey just to read the identity', async () => {
+    // A safety-number screen the user can reopen must not drain a peer's
+    // batch. This is why the read is separate from the bundle fetch.
+    await publishRatchetKeys(PEER);
+    const before = (await ratchetKeyStatus(PEER)).unclaimedPreKeys;
+    await fetchPeerRatchetIdentity(ME, PEER);
+    await fetchPeerRatchetIdentity(ME, PEER);
+    expect((await ratchetKeyStatus(PEER)).unclaimedPreKeys).toBe(before);
+  });
+
+  it('surfaces the identity status alongside the bundle', async () => {
+    await publishRatchetKeys(PEER);
+    expect((await fetchPeerPreKeyBundle(ME, PEER))!.identityStatus).toBe('first-contact');
+    expect((await fetchPeerPreKeyBundle(ME, PEER))!.identityStatus).toBe('unchanged');
+  });
+
+  it('keeps trust per local account', async () => {
+    // A shared device signed into two accounts must not let one inherit the
+    // other's trust history for the same contact.
+    await publishRatchetKeys(PEER);
+    await fetchPeerRatchetIdentity(ME, PEER);
+    expect((await fetchPeerRatchetIdentity('other-account', PEER)).status).toBe('first-contact');
   });
 });

@@ -14,7 +14,7 @@ import {
   openEnvelope,
   sealForRecipients,
 } from '../e2ee';
-import {base64ToBytes, bytesToBase64} from '../crypto';
+import {base64ToBytes, bytesToBase64, secureRandomBytes} from '../crypto';
 
 const CHAT = 'chat-abc123';
 
@@ -200,8 +200,8 @@ describe('computeSafetyNumber', () => {
   it('both participants derive the same number regardless of argument order', () => {
     const alice = generateKeypair();
     const bob = generateKeypair();
-    expect(computeSafetyNumber(alice.publicKey, bob.publicKey)).toBe(
-      computeSafetyNumber(bob.publicKey, alice.publicKey),
+    expect(computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey})).toBe(
+      computeSafetyNumber({encryptionKey: bob.publicKey}, {encryptionKey: alice.publicKey}),
     );
   });
 
@@ -209,16 +209,16 @@ describe('computeSafetyNumber', () => {
     const alice = generateKeypair();
     const bob = generateKeypair();
     const eve = generateKeypair();
-    const real = computeSafetyNumber(alice.publicKey, bob.publicKey);
-    const tampered = computeSafetyNumber(alice.publicKey, eve.publicKey);
+    const real = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey});
+    const tampered = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: eve.publicKey});
     expect(tampered).not.toBe(real);
   });
 
   it('is deterministic for the same key pair', () => {
     const alice = generateKeypair();
     const bob = generateKeypair();
-    expect(computeSafetyNumber(alice.publicKey, bob.publicKey)).toBe(
-      computeSafetyNumber(alice.publicKey, bob.publicKey),
+    expect(computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey})).toBe(
+      computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey}),
     );
   });
 
@@ -229,15 +229,15 @@ describe('computeSafetyNumber', () => {
     const alice = generateKeypair();
     const bobKey1 = generateKeypair();
     const bobKey2 = generateKeypair(); // e.g. bob reinstalled and got a new keypair
-    expect(computeSafetyNumber(alice.publicKey, bobKey1.publicKey)).not.toBe(
-      computeSafetyNumber(alice.publicKey, bobKey2.publicKey),
+    expect(computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bobKey1.publicKey})).not.toBe(
+      computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bobKey2.publicKey}),
     );
   });
 
   it('formats as five space-separated 5-digit groups', () => {
     const alice = generateKeypair();
     const bob = generateKeypair();
-    const sn = computeSafetyNumber(alice.publicKey, bob.publicKey);
+    const sn = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey});
     expect(sn).toMatch(/^\d{5} \d{5} \d{5} \d{5} \d{5}$/);
   });
 });
@@ -528,5 +528,108 @@ describe('recognising forward-secret envelopes', () => {
     for (const bad of [null, undefined, 'x', 7, {}, {alg: 'chatterbox-ratchet-envelope-v1'}, {alg: 'other', from: 'a', message: {}}]) {
       expect(isRatchetSealed(bad)).toBe(false);
     }
+  });
+});
+
+describe('computeSafetyNumber covering the ratchet identity', () => {
+  const ed = () => secureRandomBytes(32);
+
+  it('is unchanged from the encryption-key-only number when neither side has one', () => {
+    // Pairs who already verified must not see their number move for no reason.
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const before = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey});
+    expect(
+      computeSafetyNumber(
+        {encryptionKey: alice.publicKey, ratchetIdentity: undefined},
+        {encryptionKey: bob.publicKey, ratchetIdentity: undefined},
+      ),
+    ).toBe(before);
+  });
+
+  it('covers the ratchet identity when both sides have one', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const plain = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey});
+    const withRatchet = computeSafetyNumber(
+      {encryptionKey: alice.publicKey, ratchetIdentity: ed()},
+      {encryptionKey: bob.publicKey, ratchetIdentity: ed()},
+    );
+    expect(withRatchet).not.toBe(plain);
+  });
+
+  it('detects a substituted ratchet identity', () => {
+    // The whole point: without this, the forward-secret path is authenticated
+    // by an identity no ceremony ever checks.
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const aliceRatchet = ed();
+    const bobRatchet = ed();
+    const real = computeSafetyNumber(
+      {encryptionKey: alice.publicKey, ratchetIdentity: aliceRatchet},
+      {encryptionKey: bob.publicKey, ratchetIdentity: bobRatchet},
+    );
+    const mitm = computeSafetyNumber(
+      {encryptionKey: alice.publicKey, ratchetIdentity: aliceRatchet},
+      {encryptionKey: bob.publicKey, ratchetIdentity: ed()},
+    );
+    expect(mitm).not.toBe(real);
+  });
+
+  it('agrees regardless of argument order, with ratchet identities present', () => {
+    const alice = {encryptionKey: generateKeypair().publicKey, ratchetIdentity: ed()};
+    const bob = {encryptionKey: generateKeypair().publicKey, ratchetIdentity: ed()};
+    expect(computeSafetyNumber(alice, bob)).toBe(computeSafetyNumber(bob, alice));
+  });
+
+  it('falls back to the shared number when only one side has a ratchet identity', () => {
+    // Both devices must compute the same value. If one folded in a key the
+    // other could not see, every comparison would mismatch — teaching users
+    // that a mismatch is normal, which is the one lesson that would make the
+    // ceremony worthless.
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const plain = computeSafetyNumber({encryptionKey: alice.publicKey}, {encryptionKey: bob.publicKey});
+
+    // Alice has upgraded; Bob has not. Each side computes from what it sees.
+    const aliceSees = computeSafetyNumber(
+      {encryptionKey: alice.publicKey, ratchetIdentity: ed()},
+      {encryptionKey: bob.publicKey},
+    );
+    const bobSees = computeSafetyNumber(
+      {encryptionKey: bob.publicKey},
+      {encryptionKey: alice.publicKey, ratchetIdentity: ed()},
+    );
+    expect(aliceSees).toBe(plain);
+    expect(bobSees).toBe(plain);
+  });
+});
+
+describe('cross-client safety number compatibility', () => {
+  /**
+   * Shared with web/src/services/e2ee.test.ts. Both clients must produce this
+   * exact string for these keys, or a mobile user and a web user comparing
+   * numbers in person would see a mismatch and conclude — reasonably, and
+   * wrongly — that they are being attacked.
+   *
+   * Web takes bare keys and has no ratchet identity, so it always computes the
+   * fallback form. This asserts mobile's fallback is byte-for-byte the same.
+   */
+  const KEY_A = new Uint8Array(32).fill(0x11);
+  const KEY_B = new Uint8Array(32).fill(0x22);
+  const SHARED_VECTOR = '48183 52358 23701 53617 59640';
+
+  it('matches the web client for the encryption-key-only form', () => {
+    expect(computeSafetyNumber({encryptionKey: KEY_A}, {encryptionKey: KEY_B})).toBe(SHARED_VECTOR);
+  });
+
+  it('still matches when only one side has a ratchet identity', () => {
+    // The realistic mobile-to-web pair.
+    expect(
+      computeSafetyNumber(
+        {encryptionKey: KEY_A, ratchetIdentity: new Uint8Array(32).fill(0x33)},
+        {encryptionKey: KEY_B},
+      ),
+    ).toBe(SHARED_VECTOR);
   });
 });

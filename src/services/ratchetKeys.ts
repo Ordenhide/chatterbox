@@ -478,6 +478,55 @@ export async function clearRatchetKeys(userId: string): Promise<void> {
 
 // ---- fetching a peer's bundle ----------------------------------------------
 
+const PEER_IDENTITY_CACHE_PREFIX = 'ratchet_peer_identity_v1_';
+
+/** Mirrors PeerKeyStatus in e2eeKeys.ts, for the ratchet identity. */
+export type PeerRatchetStatus = 'unenrolled' | 'first-contact' | 'unchanged' | 'changed' | 'unavailable';
+
+/**
+ * The peer's ratchet identity, read without claiming a one-time prekey.
+ *
+ * Separate from fetchPeerPreKeyBundle because claiming has a cost: showing a
+ * safety number, or checking whether an identity changed, must not consume a
+ * prekey from someone's batch. Doing that would let a screen the user opens
+ * repeatedly drain a peer's supply.
+ *
+ * Trust-on-first-use, the same shape e2eeKeys.ts already applies to the X25519
+ * key — and necessary for the same reason. The signature check inside the
+ * bundle proves the signed prekey belongs to the identity in that bundle; it
+ * proves nothing about whether that identity is the peer's. A server that
+ * substitutes *both* passes verification cleanly, so the only thing standing
+ * against identity substitution is noticing that it changed.
+ */
+export async function fetchPeerRatchetIdentity(
+  myUserId: string,
+  peerUserId: string,
+): Promise<{identityKey: Uint8Array | null; status: PeerRatchetStatus}> {
+  let snap;
+  try {
+    snap = await getDoc(
+      doc(collection(doc(collection(db, 'users'), peerUserId), 'publicKeys'), RATCHET_KEY_DOC),
+    );
+  } catch (error) {
+    reportError(error, 'ratchet_fetch_identity');
+    return {identityKey: null, status: 'unavailable'};
+  }
+  const raw = snap.exists() ? (snap.data()?.identityKey as string | undefined) : undefined;
+  if (!raw) return {identityKey: null, status: 'unenrolled'};
+
+  const identityKey = base64ToBytes(raw);
+  const cacheKey = `${PEER_IDENTITY_CACHE_PREFIX}${myUserId}_${peerUserId}`;
+  const cached = await mmkvStorage.getItem(cacheKey);
+
+  if (!cached) {
+    await mmkvStorage.setItem(cacheKey, raw);
+    return {identityKey, status: 'first-contact'};
+  }
+  if (cached === raw) return {identityKey, status: 'unchanged'};
+  await mmkvStorage.setItem(cacheKey, raw);
+  return {identityKey, status: 'changed'};
+}
+
 export class PreKeyBundleUnavailableError extends Error {
   readonly code = 'prekey-bundle-unavailable';
   constructor(message = 'could not retrieve the peer prekey bundle') {
@@ -536,7 +585,19 @@ async function claimOneTimePreKey(
  * unreachable server as "peer has no ratchet" is precisely the silent
  * downgrade this project has already had to fix once elsewhere.
  */
-export async function fetchPeerPreKeyBundle(peerUserId: string): Promise<PreKeyBundle | null> {
+export async function fetchPeerPreKeyBundle(
+  myUserId: string,
+  peerUserId: string,
+): Promise<{bundle: PreKeyBundle; identityStatus: PeerRatchetStatus} | null> {
+  // Trust-on-first-use on the identity, before anything is claimed. The
+  // signature inside the bundle proves the signed prekey belongs to the
+  // identity in that bundle — it proves nothing about whether that identity is
+  // the peer's, and a server substituting both passes verification cleanly.
+  // Noticing the identity changed is the only defence against that.
+  const identity = await fetchPeerRatchetIdentity(myUserId, peerUserId);
+  if (identity.status === 'unavailable') throw new PreKeyBundleUnavailableError();
+  if (identity.status === 'unenrolled') return null;
+
   let snap;
   try {
     snap = await getDoc(
@@ -576,11 +637,14 @@ export async function fetchPeerPreKeyBundle(peerUserId: string): Promise<PreKeyB
   const oneTimePreKey = await claimOneTimePreKey(peerUserId).catch(() => null);
 
   return {
-    identityKey,
-    signedPreKey,
-    signedPreKeySignature,
-    signedPreKeyId: data.signedPreKeyId,
-    ...(oneTimePreKey ? {oneTimePreKey} : null),
+    bundle: {
+      identityKey,
+      signedPreKey,
+      signedPreKeySignature,
+      signedPreKeyId: data.signedPreKeyId,
+      ...(oneTimePreKey ? {oneTimePreKey} : null),
+    },
+    identityStatus: identity.status,
   };
 }
 
