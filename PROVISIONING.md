@@ -121,6 +121,30 @@ Keychain module:
 
 ---
 
+## 3b. MMKV key migration — also needs an existing install
+
+The store encryption key moved from an unencrypted file into the Keychain.
+Verified by 25 tests against a mock that models encryption (a store opened with
+the wrong key reads nothing), but never on hardware.
+
+The migration is designed to have no interruptible window: the *existing* key
+is copied into the key store unchanged, so there is never a moment when the
+recorded key is not the store's key. Nothing is re-encrypted. What needs
+checking on a device is the platform behaviour around that, not the logic.
+
+- [ ] Install a build from before this change. Sign in, open some chats so
+      messages are cached, change a setting (e.g. screenshot protection on).
+- [ ] Upgrade in place — **not a reinstall**.
+- [ ] **Cached messages are still there** when opening a chat offline.
+- [ ] **The changed setting survived.** Preferences move to a separate store,
+      so this is the migration most likely to be silently lost.
+- [ ] Force-quit and reopen; both still hold.
+- [ ] Sign out and back in. The store must still work — a deleted key would
+      leave a file on disk nothing can open.
+- [ ] Repeat on Android.
+
+---
+
 ## 4. Forward secrecy and encrypted media — needs two devices
 
 Phases 2a–2e and the attachment encryption are covered by 851 tests but have

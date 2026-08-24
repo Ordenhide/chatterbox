@@ -13,6 +13,7 @@ import {getMessaging, getToken, onTokenRefresh} from './src/services/firebase/pu
 import {setUserFcmToken} from './src/services/firebaseChat';
 import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
+import {warmSecureStorage} from './src/services/storageMMKV';
 import LiquidGlassBackground from './src/components/LiquidGlassBackground';
 import ColdOpen, {coldOpenPending} from './src/components/ColdOpen';
 import {flushReadReceipts} from './src/services/readReceipts';
@@ -172,6 +173,12 @@ function App(): React.JSX.Element {
       }
     }
     initFeatureFlags().catch(() => undefined);
+
+    // Opens the encrypted store, whose key now comes from the OS key store and
+    // so costs one async round trip. Purely a warm-up — every async accessor
+    // awaits the same open — but doing it here means the first chat to load
+    // cached messages is not the one that pays for it.
+    warmSecureStorage().catch(() => undefined);
     
     // Cleanup old image cache on startup
     clearOldImageCache().catch(() => undefined);

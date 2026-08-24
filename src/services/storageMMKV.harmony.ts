@@ -147,6 +147,16 @@ function persistAsync(key: string, value: string) {
     });
 }
 
+/**
+ * Matches the interface of the primary implementation, which uses this to
+ * open its encrypted store ahead of first use. Here the equivalent work is
+ * already in flight from module load, so this just waits for it. Never
+ * throws: `ready` already absorbs its own failures.
+ */
+export async function warmSecureStorage(): Promise<void> {
+  await ready;
+}
+
 export const mmkvStorage = {
   getItem: async (key: string): Promise<string | null> => {
     try {
