@@ -25,6 +25,8 @@ import {reportError} from './telemetry';
 import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {clearDeviceKeypair, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {clearRatchetKeys} from './ratchetKeys';
+import {clearRatchetSessions} from './ratchetSessionStore';
 
 /**
  * Account-level operations: changing a password, and permanently deleting an
@@ -308,12 +310,25 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
  * clearDeviceKeypair. Without it, deleting your account would leave your
  * identity key in the Keychain indefinitely: the one thing this function
  * exists to prevent.
+ *
+ * Every key-store user has to be named here for the same reason, which is why
+ * the ratchet's three are listed explicitly rather than assumed to fall under
+ * the MMKV wipe: its identity, its prekey secrets, and the key that encrypts
+ * stored sessions all live in the key store too. Each is wrapped separately so
+ * one failure does not skip the rest.
  */
 export async function clearLocalData(userId: string): Promise<void> {
-  try {
-    await clearDeviceKeypair(userId);
-  } catch (error) {
-    reportError(error, 'account_clear_keystore_failed');
+  const steps: [string, () => Promise<void>][] = [
+    ['account_clear_keystore_failed', () => clearDeviceKeypair(userId)],
+    ['account_clear_ratchet_keys_failed', () => clearRatchetKeys(userId)],
+    ['account_clear_ratchet_sessions_failed', () => clearRatchetSessions(userId)],
+  ];
+  for (const [context, step] of steps) {
+    try {
+      await step();
+    } catch (error) {
+      reportError(error, context);
+    }
   }
   try {
     await mmkvStorage.clear();

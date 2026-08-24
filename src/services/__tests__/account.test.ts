@@ -66,16 +66,27 @@ jest.mock('../firebase/storage', () => ({
   listAll: jest.fn(async () => ({items: [], prefixes: []})),
   deleteObject: jest.fn(async () => undefined),
 }));
-jest.mock('../storageMMKV', () => ({mmkvStorage: {clear: jest.fn(async () => undefined)}}));
+const mockMmkvClear = jest.fn();
+jest.mock('../storageMMKV', () => ({mmkvStorage: {clear: (...a: unknown[]) => mockMmkvClear(...a)}}));
+const mockClearDeviceKeypair = jest.fn();
+const mockClearRatchetKeys = jest.fn();
+const mockClearRatchetSessions = jest.fn();
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({
   deleteStorageObjectByUrl: (...args: unknown[]) => mockDeleteStorageObjectByUrl(...args),
 }));
 jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
+  clearDeviceKeypair: (...args: unknown[]) => mockClearDeviceKeypair(...args),
+}));
+jest.mock('../ratchetKeys', () => ({
+  clearRatchetKeys: (...args: unknown[]) => mockClearRatchetKeys(...args),
+}));
+jest.mock('../ratchetSessionStore', () => ({
+  clearRatchetSessions: (...args: unknown[]) => mockClearRatchetSessions(...args),
 }));
 
-import {purgeUserData} from '../account';
+import {clearLocalData, purgeUserData} from '../account';
 import {encryptMessage, generateKeypair} from '../e2ee';
 
 beforeEach(() => {
@@ -83,6 +94,10 @@ beforeEach(() => {
   mockReauthenticateWithCredential.mockReset().mockResolvedValue(undefined);
   mockDeleteStorageObjectByUrl.mockReset().mockResolvedValue(true);
   mockGetOrCreateDeviceKeypair.mockReset();
+  mockMmkvClear.mockReset().mockResolvedValue(undefined);
+  mockClearDeviceKeypair.mockReset().mockResolvedValue(undefined);
+  mockClearRatchetKeys.mockReset().mockResolvedValue(undefined);
+  mockClearRatchetSessions.mockReset().mockResolvedValue(undefined);
   mockFixtures.collections = new Map();
 });
 
@@ -133,5 +148,28 @@ describe('purgeUserData media cleanup', () => {
     expect(deletedUrls).toEqual(['https://storage.example/plain.jpg']);
     expect(report.storageObjectsDeleted).toBe(1);
     expect(report.errors.some(e => e.includes('device key unavailable'))).toBe(true);
+  });
+});
+
+describe('clearLocalData', () => {
+  // Every secret that lives in the OS key store has to be named here: the
+  // wholesale MMKV wipe does not reach it, so anything omitted outlives the
+  // deleted account. That already happened once with the E2EE identity key.
+  it('clears every key-store secret, not just MMKV', async () => {
+    await clearLocalData('uid1');
+    expect(mockClearDeviceKeypair).toHaveBeenCalledWith('uid1');
+    expect(mockClearRatchetKeys).toHaveBeenCalledWith('uid1');
+    expect(mockClearRatchetSessions).toHaveBeenCalledWith('uid1');
+    expect(mockMmkvClear).toHaveBeenCalled();
+  });
+
+  it('still clears the rest when one step fails', async () => {
+    // Otherwise a single failing key-store call silently leaves everything
+    // after it behind.
+    mockClearDeviceKeypair.mockRejectedValue(new Error('keychain unavailable'));
+    await clearLocalData('uid1');
+    expect(mockClearRatchetKeys).toHaveBeenCalledWith('uid1');
+    expect(mockClearRatchetSessions).toHaveBeenCalledWith('uid1');
+    expect(mockMmkvClear).toHaveBeenCalled();
   });
 });
