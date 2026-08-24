@@ -23,6 +23,9 @@ import {deleteQueryInChunks} from './firestoreBatch';
 import {MAX_GROUP_MEMBERS} from './e2ee';
 import {assertRecipientReachable} from './recipient';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
+import {resolveMessageMediaUrls} from './messageMedia';
+import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {deleteStorageObjectByUrl} from './storage';
 import type {ChatMessage, ChatRoom, EncryptedField, SealedEnvelopeField, UserProfile} from '../types';
 
 export const MESSAGE_PAGE_SIZE = 30;
@@ -542,21 +545,61 @@ export async function revealBurnMessage(
   );
 }
 
-/** Wipes a burn message's content and flags it burned (matches mobile `burnMessage`). */
-export async function burnMessage(chatId: string, messageId: string): Promise<void> {
+/**
+ * Wipes a burn message's content and flags it burned (matches mobile
+ * `burnMessage`).
+ *
+ * Clears the `encrypted*` siblings as well as the plaintext fields. Clearing
+ * only the plaintext ones destroyed almost nothing in the case the feature
+ * exists for: in an encrypted chat those fields are *already* empty and the
+ * content lives in the envelope, so a "burned" message stayed on the server
+ * intact and openable by every recipient's device key.
+ *
+ * Media is deleted from Storage too — the bytes outlive the document, and
+ * anyone who saw the message still holds the URL. Best-effort, and after the
+ * Firestore write: orphaned bytes are recoverable, a live message pointing at
+ * deleted media is not.
+ */
+export async function burnMessage(chatId: string, messageId: string, uid: string): Promise<void> {
+  const msgRef = doc(db, 'chats', chatId, 'messages', messageId);
+
+  // Resolve media before clearing the fields that name it.
+  let mediaUrls: string[] = [];
+  try {
+    const snap = await getDoc(msgRef);
+    if (snap.exists()) {
+      const {secretKey} = await getOrCreateDeviceKeypair(uid);
+      mediaUrls = resolveMessageMediaUrls(snap.data() as Record<string, unknown>, secretKey, chatId);
+    }
+  } catch {
+    // No key, unreadable pointer, or the message is already gone. The clearing
+    // below has to happen regardless.
+  }
+
   await setDoc(
-    doc(db, 'chats', chatId, 'messages', messageId),
+    msgRef,
     {
       text: '',
       image: null,
       video: null,
+      videoDuration: null,
       audio: null,
       audioDuration: null,
       file: null,
+      linkPreview: null,
+      moment: null,
+      encrypted: null,
+      encryptedImage: null,
+      encryptedVideo: null,
+      encryptedAudio: null,
+      encryptedFileUri: null,
+      encryptedLinkPreview: null,
       burnAfterReading: {burned: true},
     },
     {merge: true},
   );
+
+  await Promise.all(mediaUrls.map(url => deleteStorageObjectByUrl(url).catch(() => false)));
 }
 
 /** Marks a view-once media message as viewed by `uid` and expired. */

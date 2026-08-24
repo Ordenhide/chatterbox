@@ -33,6 +33,15 @@ vi.mock('../firebase', () => ({db: {}}));
 vi.mock('./firestoreBatch', () => ({deleteQueryInChunks: vi.fn()}));
 vi.mock('./recipient', () => ({assertRecipientReachable: vi.fn()}));
 vi.mock('./messageTrash', () => ({purgeExpiredTrash: vi.fn(), trashMessages: vi.fn()}));
+// burnMessage purges Storage media, so chat.ts now reaches these directly
+// rather than only through messageTrash. Stubbed for the same reason as the
+// rest: this file tests membership logic, and ./storage initializes Firebase
+// at module scope.
+vi.mock('./storage', () => ({deleteStorageObjectByUrl: vi.fn(async () => true)}));
+vi.mock('./messageMedia', () => ({resolveMessageMediaUrls: () => []}));
+vi.mock('./e2eeKeys', () => ({
+  getOrCreateDeviceKeypair: vi.fn(async () => ({secretKey: new Uint8Array(32)})),
+}));
 
 import {addChatMembers, GroupFullError, leaveChat} from './chat';
 

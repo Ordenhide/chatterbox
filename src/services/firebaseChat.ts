@@ -601,8 +601,39 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
   );
 }
 
-export async function burnMessage(chatId: string, messageId: string | number) {
+/**
+ * Destroys a burn-after-reading message's content once it has been read.
+ *
+ * This used to clear only the plaintext fields, which meant it destroyed
+ * almost nothing in the case the feature exists for. In an encrypted chat the
+ * plaintext fields are *already* empty — the content lives in the `encrypted*`
+ * siblings — so "burning" an E2EE message left the ciphertext sitting in
+ * Firestore intact, still openable by every recipient's device key, while the
+ * UI reported it as burned. The clearing has to cover both shapes.
+ *
+ * Media is deleted from Storage too, for the same reason one layer down: the
+ * bytes outlive the message document, and anyone who saw the message before it
+ * burned still holds the URL. Best-effort and deliberately after the Firestore
+ * write — a Storage failure must not leave a live message pointing at media
+ * that is already gone, and the reverse (orphaned bytes) is the recoverable
+ * direction.
+ */
+export async function burnMessage(chatId: string, messageId: string | number, uid: string) {
   const msgRef = doc(collection(doc(chatsRef(), chatId), 'messages'), String(messageId));
+
+  // Resolve media before the fields naming it are cleared.
+  let mediaUrls: string[] = [];
+  try {
+    const snap = await getDoc(msgRef);
+    if (snap.exists()) {
+      const {secretKey} = await getOrCreateDeviceKeypair(uid);
+      mediaUrls = resolveMessageMediaUrls(snap.data() as Record<string, unknown>, secretKey, chatId);
+    }
+  } catch {
+    // No key, an unreadable pointer, or the message already gone. The content
+    // clearing below is the part that must happen regardless.
+  }
+
   await setDoc(
     msgRef,
     {
@@ -615,10 +646,18 @@ export async function burnMessage(chatId: string, messageId: string | number) {
       file: null,
       linkPreview: null,
       moment: null,
+      encrypted: null,
+      encryptedImage: null,
+      encryptedVideo: null,
+      encryptedAudio: null,
+      encryptedFileUri: null,
+      encryptedLinkPreview: null,
       burnAfterReading: {burned: true},
     },
     {merge: true},
   );
+
+  await Promise.all(mediaUrls.map(url => deleteStorageObjectByUrl(url).catch(() => false)));
 }
 
 export async function toggleReaction(

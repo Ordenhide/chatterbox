@@ -40,8 +40,11 @@ vi.mock('./messageTrash', () => ({
   purgeExpiredTrash: vi.fn(async () => 0),
 }));
 
-import {deleteMessage, deleteMessages} from './chat';
+import {burnMessage, deleteMessage, deleteMessages} from './chat';
 import {deleteStorageObjectByUrl} from './storage';
+import {setDoc} from 'firebase/firestore';
+import {resolveMessageMediaUrls} from './messageMedia';
+import {getOrCreateDeviceKeypair} from './e2eeKeys';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
 
 const CHAT_ID = 'chat1';
@@ -53,6 +56,11 @@ beforeEach(() => {
   vi.mocked(deleteStorageObjectByUrl).mockReset().mockResolvedValue(true);
   vi.mocked(trashMessages).mockReset().mockResolvedValue([]);
   vi.mocked(purgeExpiredTrash).mockReset().mockResolvedValue(0);
+  vi.mocked(resolveMessageMediaUrls).mockReset().mockReturnValue([]);
+  vi.mocked(getOrCreateDeviceKeypair).mockReset().mockResolvedValue({
+    secretKey: new Uint8Array(32),
+    publicKey: new Uint8Array(32),
+  } as never);
 });
 
 describe('deleteMessages', () => {
@@ -88,5 +96,66 @@ describe('deleteMessage', () => {
   it('delegates to deleteMessages with a single-element array', async () => {
     await deleteMessage(CHAT_ID, 'm1', 'uid1');
     expect(trashMessages).toHaveBeenCalledWith(CHAT_ID, ['m1'], 'uid1');
+  });
+});
+
+describe('burnMessage', () => {
+
+  it('clears the encrypted payload, not just the plaintext fields', async () => {
+    // The bug this covers: in an encrypted chat the plaintext fields are
+    // already empty and the content lives in `encrypted`. Clearing only the
+    // plaintext ones destroyed nothing — the ciphertext stayed on the server,
+    // still openable by every recipient's device key, while the UI said
+    // "burned".
+    mockDocs.data.set('m1', {
+      text: '',
+      encrypted: {v: 1, recipients: {}},
+      user: {_id: 'alice'},
+      burnAfterReading: {duration: 10},
+    });
+
+    await burnMessage(CHAT_ID, 'm1', 'uid1');
+
+    const calls = vi.mocked(setDoc).mock.calls;
+    const patch = calls[calls.length - 1]?.[1] as Record<string, unknown>;
+    expect(patch.encrypted).toBeNull();
+    expect(patch.encryptedImage).toBeNull();
+    expect(patch.encryptedVideo).toBeNull();
+    expect(patch.encryptedAudio).toBeNull();
+    expect(patch.encryptedFileUri).toBeNull();
+    expect(patch.encryptedLinkPreview).toBeNull();
+    expect(patch.text).toBe('');
+    expect(patch.burnAfterReading).toEqual({burned: true});
+  });
+
+  it('deletes the media the message pointed at', async () => {
+    // The same bug one layer down: the bytes outlive the document, and anyone
+    // who saw the message before it burned still holds the URL.
+    mockDocs.data.set('m1', {encryptedImage: {v: 1}, user: {_id: 'alice'}});
+    vi.mocked(resolveMessageMediaUrls).mockReturnValue([
+      'https://example.invalid/a.jpg',
+      'https://example.invalid/b.mp4',
+    ]);
+
+    await burnMessage(CHAT_ID, 'm1', 'uid1');
+
+    expect(vi.mocked(deleteStorageObjectByUrl).mock.calls.map(([u]) => u)).toEqual([
+      'https://example.invalid/a.jpg',
+      'https://example.invalid/b.mp4',
+    ]);
+  });
+
+  it('still clears the content when the media cannot be resolved', async () => {
+    // No key, a rotated key, or a corrupt pointer must not leave the message
+    // readable — clearing is the part that has to happen regardless.
+    mockDocs.data.set('m1', {encrypted: {v: 1}, user: {_id: 'alice'}});
+    vi.mocked(getOrCreateDeviceKeypair).mockRejectedValue(new Error('no key'));
+
+    await burnMessage(CHAT_ID, 'm1', 'uid1');
+
+    const calls = vi.mocked(setDoc).mock.calls;
+    const patch = calls[calls.length - 1]?.[1] as Record<string, unknown>;
+    expect(patch.encrypted).toBeNull();
+    expect(patch.burnAfterReading).toEqual({burned: true});
   });
 });
