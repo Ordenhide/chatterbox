@@ -11,9 +11,12 @@
  *   - To send, the sender does X25519(theirSecret, recipientPublic) to get a
  *     shared secret, runs it through HKDF-SHA256 with a per-conversation salt,
  *     and seals the body with XChaCha20-Poly1305.
- *   - Sealing is always fan-out (sealForRecipients): one independently
+ *   - Sealing here is always fan-out (sealForRecipients): one independently
  *     decryptable copy per recipient, so a 1:1 chat is just the
- *     single-recipient case and there is no separate group path.
+ *     single-recipient case and there is no separate group path *in this
+ *     module*. The forward-secret paths added since do have separate 1:1 and
+ *     group implementations, and neither goes through here — see
+ *     services/ratchetMessages.ts and services/groupRatchetMessages.ts.
  *   - The server stores only {alg, nonce, ciphertext}. Firestore never sees the
  *     plaintext, so "the operator can read your messages" stops being true.
  *   - The same primitives cover media access pointers (encryptedImage and
@@ -28,8 +31,11 @@
  *      protected. That is still true here and always will be — but it is no
  *      longer true of the app as a whole: 1:1 messages between two upgraded
  *      clients go through services/ratchetMessages.ts instead, which ratchets
- *      per message. What still lands here is group messages, and 1:1 with a
- *      client that has not published a prekey bundle. Read messageProtection()
+ *      per message, and group messages go through
+ *      services/groupRatchetMessages.ts, which ratchets a per-sender chain.
+ *      What still lands here is any chat where some member has not published
+ *      a prekey bundle, and everything other than message text — media
+ *      pointers and chat artifacts. Read messageProtection()
  *      in e2eeMessages.ts for which path a given message actually took —
  *      guessing from the presence of encryption is exactly the mistake this
  *      distinction exists to prevent.
@@ -324,7 +330,30 @@ export function openEnvelope(
  * hence `isRatchetSealed`, so callers can tell which opener to use.
  */
 export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
-  return isSealedEnvelope(value) || isEncryptedPayload(value) || isRatchetSealed(value);
+  return (
+    isSealedEnvelope(value) ||
+    isEncryptedPayload(value) ||
+    isRatchetSealed(value) ||
+    isGroupSealed(value)
+  );
+}
+
+/**
+ * True for a forward-secret *group* envelope (sender keys).
+ *
+ * Same reasoning as isRatchetSealed, and the same routing consequence: it is
+ * opened from stored chain state, asynchronously, by
+ * services/groupRatchetMessages.ts — not from a key pair.
+ */
+export function isGroupSealed(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false;
+  const e = value as {alg?: unknown; from?: unknown; message?: unknown};
+  return (
+    e.alg === 'chatterbox-group-envelope-v1' &&
+    typeof e.from === 'string' &&
+    !!e.message &&
+    typeof e.message === 'object'
+  );
 }
 
 /**
@@ -362,6 +391,9 @@ export function openSealed(
   // a routing error rather than a corrupt payload.
   if (isRatchetSealed(value)) {
     throw new Error('ratchet envelope: open with services/ratchetMessages.ts, not openSealed');
+  }
+  if (isGroupSealed(value)) {
+    throw new Error('group envelope: open with services/groupRatchetMessages.ts, not openSealed');
   }
   throw new Error('value is not sealed');
 }

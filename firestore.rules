@@ -407,6 +407,38 @@ service cloud.firestore {
         );
       }
 
+      /**
+       * Group sender-key distributions (services/groupRatchetMessages.ts).
+       *
+       * One document per (sender, recipient) pair, holding the sender's chain
+       * key sealed with that pair's 1:1 ratchet session — so the payload is
+       * ciphertext the server cannot read even though it stores it.
+       *
+       * Readable ONLY by the member it is addressed to. A chain key opens
+       * every group message that sender goes on to write, so a rule allowing
+       * any participant to read any distribution would hand a removed-then-
+       * readded member, or anyone who briefly joined, the keys of everyone
+       * else. Writable only by the sender it claims to be from, or a member
+       * could plant a chain key of their own and have their messages accepted
+       * as somebody else's.
+       */
+      match /senderKeys/{distributionId} {
+        // The addressee, or the sender reading back their own. The second is
+        // safe because they authored the contents — it is how a sender checks
+        // whether a member already holds the current chain before re-sealing
+        // it, and how rotation finds what to clean up. It grants no access to
+        // anyone else's chain key.
+        allow read: if isChatParticipant(chatId) && (
+          resource.data.to == request.auth.uid ||
+          resource.data.from == request.auth.uid
+        );
+        allow create, update: if isChatParticipant(chatId) &&
+          request.resource.data.from == request.auth.uid &&
+          request.resource.data.to is string;
+        // Deleted on rotation, by the sender that wrote it.
+        allow delete: if isChatParticipant(chatId) && resource.data.from == request.auth.uid;
+      }
+
       match /calls/{callId} {
         allow read, write: if isChatParticipant(chatId);
 

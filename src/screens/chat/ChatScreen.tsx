@@ -107,10 +107,16 @@ import {
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
-import {computeSafetyNumber, diagnoseSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
+import {computeSafetyNumber, diagnoseSealed, isGroupSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {openEnvelope as openRatchetEnvelope} from '../../services/ratchetMessages';
 import {fetchPeerRatchetIdentity, getOrCreateRatchetIdentity} from '../../services/ratchetKeys';
 import {sealText} from '../../services/ratchetMessages';
+import {
+  handleMembershipChange,
+  isGroupEnvelope,
+  openGroupEnvelope,
+  sealGroupText,
+} from '../../services/groupRatchetMessages';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import {fonts} from '../../theme/typography';
@@ -387,6 +393,9 @@ export default function ChatScreen() {
   const lastLocationSentAtRef = useRef<number | null>(null);
   const dictationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const burnTimersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
+  // Last member list this device saw, so a removal can be detected. Null until
+  // the first snapshot — the initial list is not a change and must not rotate.
+  const knownMembersRef = useRef<string[] | null>(null);
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
@@ -493,13 +502,28 @@ export default function ChatScreen() {
          * a poor use of the next hour. messageProtection() reports what the
          * body actually got, so nothing here overstates it.
          */
-        if (data.text && otherUserIds.length === 1 && !data.image && !data.video && !data.audio && !data.file) {
+        const textOnly = !!data.text && !data.image && !data.video && !data.audio && !data.file;
+        if (textOnly && otherUserIds.length === 1) {
           const outcome = await sealText(user.uid, chatId, otherUserIds[0], data.text);
           if (outcome.protection === 'ratchet') {
             if (outcome.identityStatus === 'changed') setPeerSessionReset(true);
             return {...data, text: '', encrypted: outcome.envelope} as ChatMessage;
           }
           // 'unavailable' — peer runs an older client. Fall through to fan-out.
+        } else if (textOnly && otherUserIds.length > 1) {
+          // Groups use sender keys: one ciphertext, distributed over the
+          // pairwise sessions. All-or-nothing — one member without a ratchet
+          // identity sends the whole chat back to fan-out, because a message
+          // some members cannot read is worse than one everybody can.
+          const outcome = await sealGroupText(
+            user.uid,
+            chatId,
+            [user.uid, ...otherUserIds],
+            data.text,
+          );
+          if (outcome.protection === 'sender-key') {
+            return {...data, text: '', encrypted: outcome.envelope} as ChatMessage;
+          }
         }
 
         // One sealed copy per member — a 1:1 chat is just the single-recipient
@@ -963,6 +987,7 @@ export default function ChatScreen() {
                 if (
                   isSealed(em.encrypted) &&
                   !isRatchetSealed(em.encrypted) &&
+                  !isGroupSealed(em.encrypted) &&
                   !decryptedTextRef.current.has(id)
                 ) {
                   try {
@@ -1034,7 +1059,18 @@ export default function ChatScreen() {
                 if (!active) break;
                 const em = m as any;
                 const id = String(m._id);
-                if (!isRatchetSealed(em.encrypted) || decryptedTextRef.current.has(id)) continue;
+                if (decryptedTextRef.current.has(id)) continue;
+
+                if (isGroupEnvelope(em.encrypted)) {
+                  const opened = await openGroupEnvelope(em.encrypted, user.uid, chatId);
+                  decryptedTextRef.current.set(
+                    id,
+                    opened.status === 'ok' ? opened.text : '🔒 Unable to decrypt',
+                  );
+                  continue;
+                }
+
+                if (!isRatchetSealed(em.encrypted)) continue;
                 const outcome = await openRatchetEnvelope(em.encrypted, user.uid, chatId);
                 if (outcome.status === 'ok') {
                   decryptedTextRef.current.set(id, outcome.text);
@@ -1382,6 +1418,25 @@ export default function ChatScreen() {
         // and createChat writes both uids at once, so a 1:1 chat down to one
         // participant means the other person deleted their account.
         setPeerMissingFromChat(hasLostPeer(chat.participants, user.uid));
+
+        /**
+         * Rotate this device's group chain when somebody has left.
+         *
+         * Driven by observing the member list rather than by whoever performed
+         * the removal, because every remaining member has to rotate their own
+         * chain — the departing member holds a copy of each, and can advance
+         * any of them unaided. One member forgetting is one member still
+         * readable.
+         *
+         * Only removals rotate; the check is inside handleMembershipChange.
+         */
+        const previousMembers = knownMembersRef.current;
+        knownMembersRef.current = chat.participants;
+        if (previousMembers && chat.participants.length > 2) {
+          handleMembershipChange(user.uid, chatId, previousMembers, chat.participants).catch(
+            error => reportError(error, 'group_rotation_failed'),
+          );
+        }
 
         setOtherUserIds(chat.participants.filter((id: string) => id !== user.uid));
 

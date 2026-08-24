@@ -1010,3 +1010,62 @@ describe('users/{userId}/oneTimePreKeys/{preKeyId} — forward-secrecy handshake
     await assertFails(updateDoc(doc(anon(), 'users/alice/oneTimePreKeys/k1'), {claimed: true}));
   });
 });
+
+describe('chats/{chatId}/senderKeys/{id} — group forward-secrecy distributions', () => {
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob', 'carol']}));
+  });
+
+  const dist = (from, to) => ({from, to, chainId: 'chain1', envelope: {alg: 'x'}, updatedAt: 1});
+
+  it('lets a member publish a distribution addressed from themselves', async () => {
+    await assertSucceeds(
+      setDoc(doc(asUser('alice'), 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')),
+    );
+  });
+
+  it('denies publishing one that claims to be from someone else', async () => {
+    // Otherwise a member could plant a chain key of their own and have their
+    // messages accepted as another member's.
+    await assertFails(
+      setDoc(doc(asUser('bob'), 'chats/c1/senderKeys/alice__carol'), dist('alice', 'carol')),
+    );
+  });
+
+  it('lets only the addressee read a distribution', async () => {
+    // A chain key opens every group message that sender goes on to write, so
+    // a rule letting any participant read any distribution would hand one
+    // member everyone else's keys.
+    await seed(db => setDoc(doc(db, 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')));
+    await assertSucceeds(getDoc(doc(asUser('bob'), 'chats/c1/senderKeys/alice__bob')));
+    await assertFails(getDoc(doc(asUser('carol'), 'chats/c1/senderKeys/alice__bob')));
+  });
+
+  it('lets the sender read back their own, to check what a member already holds', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')));
+    await assertSucceeds(getDoc(doc(asUser('alice'), 'chats/c1/senderKeys/alice__bob')));
+  });
+
+  it('denies a non-participant entirely', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')));
+    await assertFails(getDoc(doc(asUser('mallory'), 'chats/c1/senderKeys/alice__bob')));
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'chats/c1/senderKeys/mallory__bob'), dist('mallory', 'bob')),
+    );
+  });
+
+  it('lets only the sender delete, which is what rotation does', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')));
+    await assertFails(deleteDoc(doc(asUser('bob'), 'chats/c1/senderKeys/alice__bob')));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/senderKeys/alice__bob')));
+  });
+
+  it('denies a member overwriting a distribution addressed to them', async () => {
+    // Rewriting the envelope they were sent would let a member swap in a
+    // chain key they control and attribute messages to the sender.
+    await seed(db => setDoc(doc(db, 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')));
+    await assertFails(
+      setDoc(doc(asUser('bob'), 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')),
+    );
+  });
+});

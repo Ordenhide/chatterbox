@@ -130,8 +130,24 @@ export interface RatchetEnvelopeField {
   };
 }
 
+/**
+ * A forward-secret *group* message — see services/groupRatchetMessages.ts.
+ *
+ * One ciphertext for the whole chat, opened from the sender's chain rather
+ * than per-recipient copies. `isGroupSealed` distinguishes it.
+ */
+export interface GroupEnvelopeField {
+  alg: string;
+  from: string;
+  message: {alg: string; chainId: string; index: number; body: string; signature: string};
+}
+
 /** Every shape `Message.encrypted` can hold. */
-export type SealedField = EncryptedField | SealedEnvelopeField | RatchetEnvelopeField;
+export type SealedField =
+  | EncryptedField
+  | SealedEnvelopeField
+  | RatchetEnvelopeField
+  | GroupEnvelopeField;
 
 export interface Message {
   _id: string | number;

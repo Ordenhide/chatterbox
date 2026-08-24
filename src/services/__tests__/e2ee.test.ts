@@ -6,6 +6,7 @@ import {
   E2EE_ALG,
   generateKeypair,
   isEncryptedPayload,
+  isGroupSealed,
   isRatchetSealed,
   isSealed,
   isSealedEnvelope,
@@ -631,5 +632,51 @@ describe('cross-client safety number compatibility', () => {
         {encryptionKey: KEY_B},
       ),
     ).toBe(SHARED_VECTOR);
+  });
+});
+
+describe('recognising forward-secret group envelopes', () => {
+  const groupEnvelope = {
+    alg: 'chatterbox-group-envelope-v1',
+    from: 'alice',
+    message: {
+      alg: 'chatterbox-sender-key-v1',
+      chainId: 'c1',
+      index: 0,
+      body: 'ct',
+      signature: 'sig',
+    },
+  };
+
+  it('counts a group envelope as sealed', () => {
+    // Same blank-bubble hazard as the 1:1 shape: if this answered "not
+    // sealed", the UI would render the empty plaintext field instead.
+    expect(isSealed(groupEnvelope)).toBe(true);
+    expect(isGroupSealed(groupEnvelope)).toBe(true);
+  });
+
+  it('keeps the two forward-secret shapes distinct', () => {
+    // They are opened by different modules from different state; confusing
+    // them would route a message to an opener that cannot possibly succeed.
+    expect(isRatchetSealed(groupEnvelope)).toBe(false);
+    const pairwise = {
+      alg: 'chatterbox-ratchet-envelope-v1',
+      from: 'alice',
+      message: {alg: 'chatterbox-double-ratchet-v1', header: {dh: 'x', pn: 0, n: 0}, body: 'ct'},
+    };
+    expect(isGroupSealed(pairwise)).toBe(false);
+  });
+
+  it('refuses to open one through openSealed, naming the right module', () => {
+    const keys = generateKeypair();
+    expect(() => openSealed(groupEnvelope, keys.secretKey, 'bob', 'chat1')).toThrow(
+      /groupRatchetMessages/,
+    );
+  });
+
+  it('rejects things that merely look like one', () => {
+    for (const bad of [null, undefined, 'x', 7, {}, {alg: 'chatterbox-group-envelope-v1'}]) {
+      expect(isGroupSealed(bad)).toBe(false);
+    }
   });
 });
