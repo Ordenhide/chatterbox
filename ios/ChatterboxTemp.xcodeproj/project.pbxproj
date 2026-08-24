@@ -588,6 +588,7 @@
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 7M8ZL97P5L;
 				ENABLE_BITCODE = NO;
+				CODE_SIGN_ENTITLEMENTS = ChatterboxTemp/ChatterboxTemp.entitlements;
 				INFOPLIST_FILE = ChatterboxTemp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -625,6 +626,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 7M8ZL97P5L;
+				CODE_SIGN_ENTITLEMENTS = ChatterboxTemp/ChatterboxTemp.entitlements;
 				INFOPLIST_FILE = ChatterboxTemp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

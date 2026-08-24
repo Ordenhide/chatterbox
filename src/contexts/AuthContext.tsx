@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
+  OAuthProvider,
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithCredential,
@@ -15,6 +16,7 @@ import {
   type User as FirebaseUser,
 } from '../services/firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {requestAppleCredential} from '../services/appleAuth';
 import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import {User} from '../types';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
@@ -66,6 +68,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
   sendPhoneCode: (phoneNumber: string) => Promise<ConfirmationResult>;
   confirmPhoneCode: (confirmation: ConfirmationResult, code: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -644,6 +647,69 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }
   }, [auth, completeCredentialSignIn]);
 
+  /**
+   * Sign in with Apple.
+   *
+   * Structurally the same as Google above — a single credential exchange that
+   * signs in or silently creates — with two differences that are easy to get
+   * wrong and impossible to notice later.
+   *
+   * The raw nonce goes to Firebase while only its hash went to Apple; see
+   * services/appleAuth.ts for why that ordering is the whole replay defence.
+   *
+   * And the display name is written **only on the first sign-in**. Apple sends
+   * a name once per app/account pair and null forever after, so a later
+   * sign-in that wrote what Apple sent would overwrite a real name with
+   * nothing. `isNewUser` is exactly the "first time" signal, so the write is
+   * gated on it and on Apple actually having sent something.
+   */
+  const signInWithApple = useCallback(async () => {
+    setSessionReady(false);
+    claimInProgressRef.current = true;
+    let success = false;
+    try {
+      const apple = await requestAppleCredential();
+      if (!apple) {
+        // Sheet dismissed. Nothing was claimed, so there is nothing to undo.
+        return;
+      }
+      const nextSessionId = await rotateSessionId();
+      sessionIdRef.current = nextSessionId;
+      const credential = new OAuthProvider('apple.com').credential({
+        idToken: apple.identityToken,
+        rawNonce: apple.rawNonce,
+      });
+      const userCredential = await signInWithCredential(auth, credential);
+      const isNewUser = !!userCredential.additionalUserInfo?.isNewUser;
+
+      // Before completeCredentialSignIn, which copies displayName into the
+      // Firestore profile — doing it after would store null and need a second
+      // write to correct.
+      if (isNewUser && apple.fullName && !userCredential.user.displayName) {
+        await updateProfile(userCredential.user, {displayName: apple.fullName});
+      }
+
+      await completeCredentialSignIn(userCredential.user, nextSessionId, isNewUser, 'apple');
+      success = true;
+    } catch (error) {
+      sessionIdRef.current = null;
+      try {
+        await clearSessionId();
+        await firebaseSignOut(auth);
+      } catch {
+        // ignore cleanup failures
+      }
+      const friendlyError = new Error(getAuthErrorMessage(error));
+      (friendlyError as any).code = (error as any)?.code;
+      throw friendlyError;
+    } finally {
+      claimInProgressRef.current = false;
+      if (!success) {
+        setSessionReady(true);
+      }
+    }
+  }, [auth, completeCredentialSignIn]);
+
   // Step 1 of phone sign-in: sends the SMS code and hands back RNFB's
   // confirmation object. The calling screen holds onto it across the
   // user-driven pause until they type the code in, then passes it to
@@ -725,6 +791,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       signIn,
       signUp,
       signInWithGoogle,
+      signInWithApple,
       sendPhoneCode,
       confirmPhoneCode,
       resetPassword,
@@ -737,6 +804,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       signIn,
       signUp,
       signInWithGoogle,
+      signInWithApple,
       sendPhoneCode,
       confirmPhoneCode,
       resetPassword,

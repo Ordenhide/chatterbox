@@ -79,6 +79,7 @@
     },
     "social": {
       "divider": "or continue with",
+      "apple": "Sign in with Apple",
       "google": "Continue with Google",
       "phone": "Continue with Phone"
     },

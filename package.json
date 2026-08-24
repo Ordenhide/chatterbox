@@ -16,6 +16,7 @@
     "test:rules": "firebase emulators:exec --only firestore,storage --project demo-chatterbox-rules-test \"jest --config test/rules/jest.config.js\""
   },
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.5.1",
     "@noble/ciphers": "^2.2.0",
     "@noble/curves": "^2.2.0",
     "@noble/hashes": "^2.2.0",
