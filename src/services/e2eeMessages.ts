@@ -21,9 +21,28 @@ import {
   type EnvelopeRecipient,
 } from './e2ee';
 import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {
+  isRatchetEnvelope,
+  openEnvelope as openRatchetEnvelope,
+  sealText,
+} from './ratchetMessages';
 import {reportError} from './telemetry';
 
-export type SendResult = {encrypted: boolean};
+/**
+ * `protection` is reported so a downgrade is never silent.
+ *
+ *   'ratchet' — forward-secret (services/ratchetMessages.ts)
+ *   'static'  — sealed, but under the long-lived static-DH key: readable
+ *               retroactively if that key is ever compromised
+ *   'none'    — not sealed at all
+ *
+ * The caller surfaces the distinction. A conversation quietly losing forward
+ * secrecy is the same class of failure as quietly losing encryption, and the
+ * only difference is how hard it is to notice.
+ */
+export type MessageProtection = 'ratchet' | 'static' | 'none';
+
+export type SendResult = {encrypted: boolean; protection: MessageProtection};
 
 /**
  * Collects the public key of every recipient, or null if any of them has not
@@ -69,14 +88,27 @@ export async function sendTextMessage(
 ): Promise<SendResult> {
   if (!message.text || recipientUids.length === 0) {
     await sendMessage(chatId, message);
-    return {encrypted: false};
+    return {encrypted: false, protection: 'none'};
   }
 
   try {
+    // 1:1 only for now. Groups keep the fan-out path until sender keys are
+    // wired up; the ratchet is a two-party protocol and has no meaning across
+    // 32 members.
+    if (recipientUids.length === 1) {
+      const outcome = await sealText(myUserId, chatId, recipientUids[0], message.text);
+      if (outcome.protection === 'ratchet') {
+        await sendMessage(chatId, {...message, text: '', encrypted: outcome.envelope});
+        return {encrypted: true, protection: 'ratchet'};
+      }
+      // Peer has published no bundle — an older client. Fall through to the
+      // static path, and say so in the result.
+    }
+
     const recipients = await collectRecipients(recipientUids);
     if (!recipients) {
       await sendMessage(chatId, message);
-      return {encrypted: false};
+      return {encrypted: false, protection: 'none'};
     }
 
     const {secretKey} = await getOrCreateDeviceKeypair(myUserId);
@@ -86,7 +118,7 @@ export async function sendTextMessage(
     // derives lastMessage.text from it, so the chat-list preview becomes empty
     // rather than leaking the body — a placeholder belongs in the UI layer.
     await sendMessage(chatId, {...message, text: '', encrypted: envelope});
-    return {encrypted: true};
+    return {encrypted: true, protection: 'static'};
   } catch (error) {
     // Never silently downgrade to plaintext on a crypto failure: the caller
     // asked for encryption, so surface it instead of quietly sending in clear.
@@ -109,6 +141,14 @@ export async function resolveMessageText(
   const sealed = message.encrypted;
   if (!sealed) return message.text ?? '';
 
+  // Checked before the static shapes: a ratchet envelope carries its own
+  // session state and must never be handed to the static-DH opener, which
+  // would fail and report the message as undecryptable.
+  if (isRatchetEnvelope(sealed)) {
+    const outcome = await openRatchetEnvelope(sealed, myUserId, chatId);
+    return outcome.status === 'ok' ? outcome.text : null;
+  }
+
   try {
     const {secretKey} = await getOrCreateDeviceKeypair(myUserId);
     if (isSealedEnvelope(sealed)) {
@@ -127,7 +167,24 @@ export async function resolveMessageText(
 
 /** True if this message was delivered under E2EE (for a lock badge in the UI). */
 export function isMessageEncrypted(message: Message): boolean {
-  return isSealedEnvelope(message.encrypted) || isEncryptedPayload(message.encrypted);
+  return (
+    isRatchetEnvelope(message.encrypted) ||
+    isSealedEnvelope(message.encrypted) ||
+    isEncryptedPayload(message.encrypted)
+  );
+}
+
+/**
+ * Which protection a *received* message was actually delivered under.
+ *
+ * Read from the envelope shape rather than a flag the sender wrote, so it
+ * cannot be overstated: a message claiming forward secrecy it does not have
+ * would be worse than no indicator at all.
+ */
+export function messageProtection(message: Message): MessageProtection {
+  if (isRatchetEnvelope(message.encrypted)) return 'ratchet';
+  if (isSealedEnvelope(message.encrypted) || isEncryptedPayload(message.encrypted)) return 'static';
+  return 'none';
 }
 
 /**
@@ -144,6 +201,8 @@ export function isMessageEncrypted(message: Message): boolean {
  */
 export function sealedKeyCount(message: Message): number | null {
   const sealed = message.encrypted;
+  // A ratchet message is sealed to exactly one recipient by construction.
+  if (isRatchetEnvelope(sealed)) return 1;
   if (isSealedEnvelope(sealed)) return Object.keys(sealed.copies).length;
   if (isEncryptedPayload(sealed)) return 1;
   return null;

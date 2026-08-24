@@ -1,4 +1,6 @@
 const mockSendMessage = jest.fn();
+const mockSealText = jest.fn();
+const mockOpenRatchetEnvelope = jest.fn();
 const mockFetchPeerPublicKeyChecked = jest.fn();
 const mockGetOrCreateDeviceKeypair = jest.fn();
 
@@ -8,6 +10,16 @@ jest.mock('../firebaseChat', () => ({
 jest.mock('../e2eeKeys', () => ({
   fetchPeerPublicKeyChecked: (...args: unknown[]) => mockFetchPeerPublicKeyChecked(...args),
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
+}));
+// Mocked at this boundary because ratchetMessages reaches Firestore through
+// ratchetKeys; the dispatch logic under test here is which path is chosen, not
+// the ratchet itself (covered in ratchetMessages.test.ts).
+jest.mock('../ratchetMessages', () => ({
+  RATCHET_ENVELOPE_ALG: 'chatterbox-ratchet-envelope-v1',
+  isRatchetEnvelope: (v: unknown) =>
+    !!v && typeof v === 'object' && (v as {alg?: string}).alg === 'chatterbox-ratchet-envelope-v1',
+  sealText: (...args: unknown[]) => mockSealText(...args),
+  openEnvelope: (...args: unknown[]) => mockOpenRatchetEnvelope(...args),
 }));
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 
@@ -38,6 +50,10 @@ beforeEach(() => {
   carol = generateKeypair();
   mockSendMessage.mockReset().mockResolvedValue(undefined);
   mockGetOrCreateDeviceKeypair.mockReset().mockResolvedValue(me);
+  // Default: the peer is an older client with no published bundle, so every
+  // existing test keeps exercising the static path it was written for.
+  mockSealText.mockReset().mockResolvedValue({protection: 'unavailable'});
+  mockOpenRatchetEnvelope.mockReset();
   mockFetchPeerPublicKeyChecked.mockReset().mockImplementation(async (uid: string) => {
     if (uid === 'bob') return {key: bob.publicKey, status: 'unchanged'};
     if (uid === 'carol') return {key: carol.publicKey, status: 'unchanged'};
@@ -51,7 +67,7 @@ describe('sendTextMessage', () => {
   it('seals the body so no plaintext reaches Firestore', async () => {
     const result = await sendTextMessage(CHAT, msg('the nuclear codes'), ME, ['bob']);
 
-    expect(result).toEqual({encrypted: true});
+    expect(result).toEqual({encrypted: true, protection: 'static'});
     expect(JSON.stringify(sent())).not.toContain('the nuclear codes');
     // Blanked rather than omitted: sendMessage derives the chat-list preview
     // from `text`, so leaving it would leak the body into lastMessage.
@@ -69,19 +85,19 @@ describe('sendTextMessage', () => {
   it('falls back to plaintext for everyone if any recipient has not enrolled', async () => {
     const result = await sendTextMessage(CHAT, msg('hello'), ME, ['bob', 'stranger']);
 
-    expect(result).toEqual({encrypted: false});
+    expect(result).toEqual({encrypted: false, protection: 'none'});
     expect(sent().text).toBe('hello');
     expect(sent().encrypted).toBeUndefined();
   });
 
   it('sends plaintext when there is no text to seal', async () => {
     const result = await sendTextMessage(CHAT, msg(''), ME, ['bob']);
-    expect(result).toEqual({encrypted: false});
+    expect(result).toEqual({encrypted: false, protection: 'none'});
   });
 
   it('sends plaintext when there are no recipients', async () => {
     const result = await sendTextMessage(CHAT, msg('alone'), ME, []);
-    expect(result).toEqual({encrypted: false});
+    expect(result).toEqual({encrypted: false, protection: 'none'});
   });
 
   // Silently downgrading would mean the caller believes a message was sealed
@@ -183,7 +199,7 @@ describe('sendTextMessage refuses to downgrade on an unreachable key server', ()
   // where the key store is blocked outright — silently turns E2EE off.
   it('sends plaintext when a peer is definitely unenrolled', async () => {
     const result = await sendTextMessage(CHAT, msg('hello'), ME, ['dave']);
-    expect(result).toEqual({encrypted: false});
+    expect(result).toEqual({encrypted: false, protection: 'none'});
     expect(sent().text).toBe('hello');
   });
 
@@ -206,5 +222,69 @@ describe('sendTextMessage refuses to downgrade on an unreachable key server', ()
 
     await expect(sendTextMessage(CHAT, msg('secret'), ME, ['bob', 'carol'])).rejects.toThrow();
     expect(mockSendMessage).not.toHaveBeenCalled();
+  });
+});
+
+describe('choosing between the ratchet and the static path', () => {
+  const ratchetEnvelope = {
+    alg: 'chatterbox-ratchet-envelope-v1',
+    from: ME,
+    message: {alg: 'chatterbox-double-ratchet-v1', header: {dh: 'x', pn: 0, n: 0}, body: 'ct'},
+  };
+
+  it('uses the ratchet for a 1:1 chat when the peer has published a bundle', async () => {
+    mockSealText.mockResolvedValue({protection: 'ratchet', envelope: ratchetEnvelope});
+    const result = await sendTextMessage(CHAT, msg('hello'), ME, ['bob']);
+    expect(result).toEqual({encrypted: true, protection: 'ratchet'});
+    expect(sent().encrypted).toBe(ratchetEnvelope);
+    expect(sent().text).toBe('');
+  });
+
+  it('falls back to the static path when the peer has no bundle, and says so', async () => {
+    // The fallback is correct — an older client could not read a ratchet
+    // message — but it must be reported, or the conversation silently stops
+    // being forward-secret.
+    mockSealText.mockResolvedValue({protection: 'unavailable'});
+    mockFetchPeerPublicKeyChecked.mockResolvedValue({key: bob.publicKey, status: 'unchanged'});
+    const result = await sendTextMessage(CHAT, msg('hello'), ME, ['bob']);
+    expect(result).toEqual({encrypted: true, protection: 'static'});
+    expect(sent().encrypted).not.toBe(ratchetEnvelope);
+  });
+
+  it('never claims ratchet protection for a group message', async () => {
+    // The ratchet is a two-party protocol. Groups keep fan-out until sender
+    // keys are wired up, and must not be reported as forward-secret.
+    mockSealText.mockResolvedValue({protection: 'ratchet', envelope: ratchetEnvelope});
+    mockFetchPeerPublicKeyChecked.mockResolvedValue({key: bob.publicKey, status: 'unchanged'});
+    const result = await sendTextMessage(CHAT, msg('hello'), ME, ['bob', 'carol']);
+    expect(result.protection).toBe('static');
+    expect(mockSealText).not.toHaveBeenCalled();
+  });
+
+  it('reports "none" when nothing was sealed', async () => {
+    mockFetchPeerPublicKeyChecked.mockResolvedValue({key: null, status: 'unenrolled'});
+    const result = await sendTextMessage(CHAT, msg('hello'), ME, ['bob']);
+    expect(result).toEqual({encrypted: false, protection: 'none'});
+  });
+
+  it('opens a ratchet envelope through the ratchet, not the static opener', async () => {
+    // Handing it to the static opener would fail and report a perfectly good
+    // message as undecryptable.
+    mockOpenRatchetEnvelope.mockResolvedValue({status: 'ok', text: 'hi', sessionReset: false});
+    const message = {_id: 'm1', text: '', createdAt: 0, encrypted: ratchetEnvelope} as unknown as Message;
+    expect(await resolveMessageText(message, ME, CHAT)).toBe('hi');
+    expect(mockOpenRatchetEnvelope).toHaveBeenCalled();
+  });
+
+  it('reports an undecryptable ratchet message as null rather than blank', async () => {
+    mockOpenRatchetEnvelope.mockResolvedValue({status: 'undecryptable'});
+    const message = {_id: 'm1', text: '', createdAt: 0, encrypted: ratchetEnvelope} as unknown as Message;
+    expect(await resolveMessageText(message, ME, CHAT)).toBeNull();
+  });
+
+  it('counts a ratchet message as encrypted and as one copy', async () => {
+    const message = {_id: 'm1', text: '', createdAt: 0, encrypted: ratchetEnvelope} as unknown as Message;
+    expect(isMessageEncrypted(message)).toBe(true);
+    expect(sealedKeyCount(message)).toBe(1);
   });
 });

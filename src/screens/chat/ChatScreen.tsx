@@ -107,7 +107,8 @@ import {
 } from '../../services/firebaseChat';
 import {reportError} from '../../services/telemetry';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
-import {computeSafetyNumber, diagnoseSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
+import {computeSafetyNumber, diagnoseSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
+import {openEnvelope as openRatchetEnvelope} from '../../services/ratchetMessages';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import {fonts} from '../../theme/typography';
@@ -427,6 +428,10 @@ export default function ChatScreen() {
   // Cleared per chat, not per snapshot: once you've seen one such message the
   // offer stays relevant for as long as you're in the thread.
   const [sealedToOtherDevice, setSealedToOtherDevice] = useState(false);
+  // Latched when a peer's forward-secret session was replaced — a reinstall,
+  // or an impersonation. The two are indistinguishable from here, so the user
+  // is told rather than the app choosing for them.
+  const [peerSessionReset, setPeerSessionReset] = useState(false);
   // Android's action menus. null when closed; setting it while one is open
   // swaps the contents, which is how a menu opens a submenu without the
   // dismiss/present race a second Modal would cause. iOS uses ActionSheetIOS
@@ -895,6 +900,7 @@ export default function ChatScreen() {
               // Accumulated across the batch and committed once, rather than
               // calling setState from inside the loop.
               let anyWrongKey = false;
+              let anyPeerSessionReset = false;
               /**
                * The user-facing text for a failure, and a note of whether it
                * is the recoverable kind.
@@ -927,7 +933,14 @@ export default function ChatScreen() {
                 // that failed stands in for the message.
                 let failedPayload: unknown = null;
 
-                if (isSealed(em.encrypted) && !decryptedTextRef.current.has(id)) {
+                // Ratchet envelopes are handled in the async pass below:
+                // opening one needs stored session state, which openSealed
+                // has no access to and would throw on.
+                if (
+                  isSealed(em.encrypted) &&
+                  !isRatchetSealed(em.encrypted) &&
+                  !decryptedTextRef.current.has(id)
+                ) {
                   try {
                     decryptedTextRef.current.set(id, openSealed(em.encrypted, secretKey, user.uid, chatId));
                   } catch (decryptError) {
@@ -983,10 +996,38 @@ export default function ChatScreen() {
                   decryptedTextRef.current.set(id, failureText(failedPayload));
                 }
               });
+
+              /**
+               * Forward-secret messages, opened separately because each one
+               * reads and advances stored session state and so must be
+               * awaited — and awaited *in order*, which is why this is a
+               * for-of rather than a Promise.all. Out-of-order decrypts of the
+               * same session are serialized by the session store anyway, but
+               * doing it here keeps the ordering obvious rather than relying
+               * on that.
+               */
+              for (const m of toDecrypt) {
+                if (!active) break;
+                const em = m as any;
+                const id = String(m._id);
+                if (!isRatchetSealed(em.encrypted) || decryptedTextRef.current.has(id)) continue;
+                const outcome = await openRatchetEnvelope(em.encrypted, user.uid, chatId);
+                if (outcome.status === 'ok') {
+                  decryptedTextRef.current.set(id, outcome.text);
+                  // The peer started a new session — they reinstalled, or
+                  // someone is impersonating them. Indistinguishable from
+                  // here, so it is surfaced rather than absorbed.
+                  if (outcome.sessionReset) anyPeerSessionReset = true;
+                } else {
+                  decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                }
+              }
+
               // One state write per batch. Latches on: a later snapshot that
               // happens to contain only readable messages must not retract an
               // offer the user may be halfway through acting on.
               if (active && anyWrongKey) setSealedToOtherDevice(true);
+              if (active && anyPeerSessionReset) setPeerSessionReset(true);
               if (active) {
                 setMessages(prev =>
                   prev.map(item => {
@@ -3926,6 +3967,24 @@ export default function ChatScreen() {
           <Icon name="lock" size={13} color="#111" />
           <Text style={styles.offlineText}>
             Some messages were sealed on another device. Tap to restore with your recovery phrase.
+          </Text>
+        </TouchableOpacity>
+      ) : null}
+      {peerSessionReset && !peerDeleted ? (
+        // A forward-secret session was replaced by the peer. Benign in the
+        // common case (they reinstalled or switched devices) and serious in
+        // the rare one (someone is impersonating them), and nothing available
+        // here can tell the two apart — so it says exactly that, and points at
+        // the one check that can: comparing the safety number out of band.
+        <TouchableOpacity
+          style={[styles.offlineBanner, {backgroundColor: colors.warning}]}
+          accessibilityRole="button"
+          accessibilityLabel="This contact's encryption session changed. Tap to verify."
+          onPress={verifyContact}>
+          <Icon name="lock" size={13} color="#111" />
+          <Text style={styles.offlineText}>
+            This contact's encryption session changed — usually a reinstall. Tap to verify their
+            safety number.
           </Text>
         </TouchableOpacity>
       ) : null}

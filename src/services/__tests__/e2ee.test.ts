@@ -6,6 +6,7 @@ import {
   E2EE_ALG,
   generateKeypair,
   isEncryptedPayload,
+  isRatchetSealed,
   isSealed,
   isSealedEnvelope,
   MAX_GROUP_MEMBERS,
@@ -486,5 +487,46 @@ describe('diagnoseSealed', () => {
     expect(diagnoseSealed(null, publicKey, 'me')).toBe('not-sealed');
     expect(diagnoseSealed({}, publicKey, 'me')).toBe('not-sealed');
     expect(diagnoseSealed({alg: E2EE_ALG, copies: {}}, publicKey, 'me')).toBe('not-sealed');
+  });
+});
+
+describe('recognising forward-secret envelopes', () => {
+  const ratchetEnvelope = {
+    alg: 'chatterbox-ratchet-envelope-v1',
+    from: 'alice',
+    message: {alg: 'chatterbox-double-ratchet-v1', header: {dh: 'x', pn: 0, n: 0}, body: 'ct'},
+  };
+
+  it('counts a ratchet envelope as sealed', () => {
+    // Not cosmetic. Callers use isSealed to decide whether `text` is empty
+    // because the body lives elsewhere. If a ratchet message answered "not
+    // sealed", the UI would render the blank plaintext field — an empty bubble
+    // where a perfectly readable message should be.
+    expect(isSealed(ratchetEnvelope)).toBe(true);
+    expect(isRatchetSealed(ratchetEnvelope)).toBe(true);
+  });
+
+  it('does not mistake the other sealed shapes for ratchet envelopes', () => {
+    const keys = generateKeypair();
+    const peer = generateKeypair();
+    const payload = encryptMessage('hi', keys.secretKey, peer.publicKey, 'chat1');
+    expect(isRatchetSealed(payload)).toBe(false);
+    expect(isRatchetSealed(sealForRecipients('hi', keys.secretKey, [{uid: 'bob', publicKey: peer.publicKey}], 'chat1'))).toBe(false);
+  });
+
+  it('refuses to open one through openSealed, and says why', () => {
+    // Opening it needs stored session state. Failing with a routing message
+    // rather than a generic error is the difference between a five-minute fix
+    // and an afternoon spent suspecting the ciphertext.
+    const keys = generateKeypair();
+    expect(() => openSealed(ratchetEnvelope, keys.secretKey, 'bob', 'chat1')).toThrow(
+      /ratchetMessages/,
+    );
+  });
+
+  it('rejects things that merely look like one', () => {
+    for (const bad of [null, undefined, 'x', 7, {}, {alg: 'chatterbox-ratchet-envelope-v1'}, {alg: 'other', from: 'a', message: {}}]) {
+      expect(isRatchetSealed(bad)).toBe(false);
+    }
   });
 });

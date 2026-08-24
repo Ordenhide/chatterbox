@@ -109,6 +109,30 @@ export interface SealedEnvelopeField {
   copies: Record<string, EncryptedField>;
 }
 
+/**
+ * A forward-secret 1:1 message — see services/ratchetMessages.ts.
+ *
+ * A third shape rather than a variant of the two above, because it is opened
+ * from stored session state rather than from a key pair, and handing it to the
+ * static-DH opener would fail and report the message as undecryptable.
+ * `isRatchetEnvelope` distinguishes it. Old messages keep their old shape and
+ * stay readable; there is no migration.
+ */
+export interface RatchetEnvelopeField {
+  alg: string;
+  from: string;
+  message: {header: {dh: string; pn: number; n: number}; body: string; alg: string};
+  initial?: {
+    identityKey: string;
+    ephemeralKey: string;
+    signedPreKeyId: string;
+    oneTimePreKeyId?: string;
+  };
+}
+
+/** Every shape `Message.encrypted` can hold. */
+export type SealedField = EncryptedField | SealedEnvelopeField | RatchetEnvelopeField;
+
 export interface Message {
   _id: string | number;
   text: string;
@@ -211,11 +235,13 @@ export interface Message {
    * E2EE envelope. When present, `text` is empty on the wire and the real body
    * lives here, decryptable only by the chat members' devices.
    *
-   * Two shapes: a bare EncryptedField for messages sealed before group support,
-   * and a SealedEnvelopeField (one copy per recipient) for everything since.
-   * resolveMessageText handles both — see services/e2eeMessages.ts.
+   * Three shapes: a bare EncryptedField for messages sealed before group
+   * support, a SealedEnvelopeField (one copy per recipient) for group and
+   * legacy 1:1 messages, and a RatchetEnvelopeField for forward-secret 1:1
+   * messages. resolveMessageText handles all three — see
+   * services/e2eeMessages.ts.
    */
-  encrypted?: EncryptedField | SealedEnvelopeField;
+  encrypted?: SealedField;
   /**
    * Same envelope shape, applied to media: when present, the corresponding
    * plaintext field (image/video/audio, or file.uri) is empty on the wire.

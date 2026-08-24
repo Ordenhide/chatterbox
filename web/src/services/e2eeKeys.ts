@@ -18,7 +18,7 @@
  * account A's cached trust history for a shared contact from earlier in the
  * same browser, masking a genuine key substitution that happened in between.
  */
-import {doc, getDoc, serverTimestamp, setDoc} from 'firebase/firestore';
+import {collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc} from 'firebase/firestore';
 import {x25519} from '@noble/curves/ed25519.js';
 import {db} from '../firebase';
 import {bytesToBase64, base64ToBytes, bytesToHex, hexToBytes} from './crypto';
@@ -135,9 +135,37 @@ export async function publishPublicKey(userId: string, publicKey: Uint8Array): P
       {publicKey: bytesToBase64(publicKey), updatedAt: serverTimestamp()},
       {merge: true},
     );
+    await retractRatchetBundle(userId);
   } catch (error) {
     console.warn('e2ee publish public key failed:', error);
     throw error;
+  }
+}
+
+/**
+ * Removes any forward-secrecy prekey bundle published by another device.
+ *
+ * A published bundle is a claim that this *account* can be reached over the
+ * ratchet, and senders act on it in preference to the static path. This client
+ * does not implement the ratchet, so once it becomes the account's active
+ * device that claim is false — and leaving it standing would make every
+ * incoming message unreadable here while looking perfectly fine to the sender.
+ *
+ * The situation is narrow (a user moves from the mobile app to the web client)
+ * but the failure is total and silent, which is what makes it worth the write.
+ * It is the same single-device assumption the rest of enrollment already makes:
+ * publishing an identity means "this device is the one to reach me on".
+ *
+ * Best-effort — a failure here leaves messaging working over whichever path
+ * the sender picks, so it must not block enrolling.
+ */
+async function retractRatchetBundle(userId: string): Promise<void> {
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'publicKeys', 'ratchet'));
+    const stale = await getDocs(collection(db, 'users', userId, 'oneTimePreKeys'));
+    await Promise.all(stale.docs.map(d => deleteDoc(d.ref).catch(() => undefined)));
+  } catch (error) {
+    console.warn('e2ee retract ratchet bundle failed:', error);
   }
 }
 

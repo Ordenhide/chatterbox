@@ -305,8 +305,35 @@ export function openEnvelope(
  * from before it), and a reader that only recognises one silently renders the
  * other as an empty message.
  */
+/**
+ * True for any shape whose body is encrypted — including the forward-secret
+ * ratchet envelope, which `openSealed` deliberately cannot open.
+ *
+ * That split is the point. Callers use isSealed to decide "is `text` empty
+ * because the body lives elsewhere?", and a ratchet message answers yes: if it
+ * were excluded, the UI would fall through to rendering the (blank) plaintext
+ * field and show an empty bubble. Opening it needs stored session state and is
+ * asynchronous, so it is routed through services/ratchetMessages.ts instead —
+ * hence `isRatchetSealed`, so callers can tell which opener to use.
+ */
 export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
-  return isSealedEnvelope(value) || isEncryptedPayload(value);
+  return isSealedEnvelope(value) || isEncryptedPayload(value) || isRatchetSealed(value);
+}
+
+/**
+ * True for a forward-secret envelope. Kept here, rather than imported from
+ * ratchetMessages, so this module stays free of that dependency: e2ee.ts is
+ * imported by nearly everything, and ratchetMessages imports Firestore.
+ */
+export function isRatchetSealed(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false;
+  const e = value as {alg?: unknown; from?: unknown; message?: unknown};
+  return (
+    e.alg === 'chatterbox-ratchet-envelope-v1' &&
+    typeof e.from === 'string' &&
+    !!e.message &&
+    typeof e.message === 'object'
+  );
 }
 
 /**
@@ -323,6 +350,12 @@ export function openSealed(
 ): string {
   if (isSealedEnvelope(value)) return openEnvelope(value, mySecretKey, myUid, chatId);
   if (isEncryptedPayload(value)) return decryptMessage(value, mySecretKey, chatId);
+  // A ratchet envelope is sealed but not openable from a key pair alone — it
+  // needs stored session state and an await. Named explicitly so this reads as
+  // a routing error rather than a corrupt payload.
+  if (isRatchetSealed(value)) {
+    throw new Error('ratchet envelope: open with services/ratchetMessages.ts, not openSealed');
+  }
   throw new Error('value is not sealed');
 }
 
