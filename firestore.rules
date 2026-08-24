@@ -475,6 +475,42 @@ service cloud.firestore {
       allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
+    /**
+     * One-time prekeys for the forward-secrecy handshake (services/ratchetKeys.ts).
+     *
+     * Unusual shape: readable by anyone signed in, created and deleted only by
+     * the owner, but *claimable* by anyone — a peer starting a conversation
+     * marks one as taken so no second peer receives the same one. That claim
+     * is the only write a non-owner may make, and it may flip `claimed` from
+     * false to true and nothing else.
+     *
+     * The claim records only THAT a key was taken, never by whom. A
+     * `claimedBy` field would hand the server a precise log of who started
+     * talking to whom — exactly the metadata this app should be reducing — in
+     * exchange for nothing, since the owner finds the matching secret by id in
+     * its own storage.
+     *
+     * Known and accepted: any signed-in user can drain someone's batch by
+     * claiming every key. That is griefing, not compromise — X3DH without a
+     * one-time prekey is still authenticated and still forward-secret, losing
+     * only replay resistance on the first message, and the owner republishes
+     * when the count runs low. Refusing the handshake instead would turn this
+     * into a way to block messaging to a user entirely, which is worse.
+     */
+    match /users/{userId}/oneTimePreKeys/{preKeyId} {
+      allow read: if isSignedIn();
+      allow create, delete: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (
+        request.auth.uid == userId ||
+        (
+          resource.data.get('claimed', false) == false &&
+          request.resource.data.claimed == true &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['claimed', 'claimedAt'])
+        )
+      );
+    }
+
     // Paid-subscription entitlement. Deliberately a TOP-LEVEL collection
     // rather than a field on /users/{uid} or a doc under /users/{uid}/private:
     // both of those grant the owner blanket write access (see the rules

@@ -48,7 +48,7 @@
 import {ed25519, x25519} from '@noble/curves/ed25519.js';
 import {hkdf} from '@noble/hashes/hkdf.js';
 import {sha256} from '@noble/hashes/sha2.js';
-import {bytesToBase64, secureRandomBytes, utf8ToBytes} from '../crypto';
+import {bytesToBase64, bytesToHex, secureRandomBytes, utf8ToBytes} from '../crypto';
 import {generateRatchetKeypair, type Keypair} from './doubleRatchet';
 
 export const X3DH_ALG = 'chatterbox-x3dh-v1';
@@ -115,8 +115,14 @@ export function verifyPreKeySignature(
   }
 }
 
+/**
+ * Hex, not base64, because these ids become Firestore document ids and base64
+ * contains '/' — which is a path separator there, not a character. A batch
+ * published with base64 ids silently loses every key whose id happened to
+ * contain one.
+ */
 function randomId(): string {
-  return bytesToBase64(secureRandomBytes(9));
+  return bytesToHex(secureRandomBytes(9));
 }
 
 export function generatePreKeys(

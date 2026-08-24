@@ -947,3 +947,66 @@ describe('messageReports/{reportId} — the counterpart to author-only deletion'
     await assertSucceeds(setDoc(doc(asUser('bob'), 'messageReports/r3'), withoutContent));
   });
 });
+
+describe('users/{userId}/oneTimePreKeys/{preKeyId} — forward-secrecy handshake', () => {
+  const preKey = (over = {}) => ({publicKey: 'cHVi', claimed: false, createdAt: 1, ...over});
+
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'users/alice/oneTimePreKeys/k1'), preKey()));
+  });
+
+  it('lets the owner publish their own batch', async () => {
+    await assertSucceeds(setDoc(doc(asUser('alice'), 'users/alice/oneTimePreKeys/k2'), preKey()));
+  });
+
+  it('denies anyone else creating prekeys in your name', async () => {
+    // Otherwise a peer could plant a prekey whose secret they hold and read
+    // the first message of every conversation started against it.
+    await assertFails(setDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k3'), preKey()));
+  });
+
+  it('lets a peer read and claim an unclaimed prekey', async () => {
+    await assertSucceeds(getDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1')));
+    await assertSucceeds(
+      updateDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1'), {claimed: true, claimedAt: 2}),
+    );
+  });
+
+  it('denies claiming one that is already claimed', async () => {
+    // The property the whole collection exists for: two peers must never
+    // receive the same one-time prekey.
+    await seed(db => setDoc(doc(db, 'users/alice/oneTimePreKeys/k1'), preKey({claimed: true})));
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1'), {claimed: true, claimedAt: 3}),
+    );
+  });
+
+  it('denies un-claiming a key', async () => {
+    await seed(db => setDoc(doc(db, 'users/alice/oneTimePreKeys/k1'), preKey({claimed: true})));
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1'), {claimed: false}),
+    );
+  });
+
+  it('denies a claimer changing the key material itself', async () => {
+    // A claim that could also rewrite publicKey would let any peer substitute
+    // a prekey they hold the secret for — the substitution the signature on
+    // the signed prekey exists to stop, arriving by another door.
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1'), {
+        claimed: true,
+        publicKey: 'YXR0YWNrZXI=',
+      }),
+    );
+  });
+
+  it('denies a non-owner deleting prekeys', async () => {
+    await assertFails(deleteDoc(doc(asUser('bob'), 'users/alice/oneTimePreKeys/k1')));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'users/alice/oneTimePreKeys/k1')));
+  });
+
+  it('denies unauthenticated access entirely', async () => {
+    await assertFails(getDoc(doc(anon(), 'users/alice/oneTimePreKeys/k1')));
+    await assertFails(updateDoc(doc(anon(), 'users/alice/oneTimePreKeys/k1'), {claimed: true}));
+  });
+});

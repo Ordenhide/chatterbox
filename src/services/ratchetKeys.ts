@@ -1,0 +1,589 @@
+/**
+ * Publication and retrieval of the keys the ratchet needs — phase 2 of the
+ * forward-secrecy work. The crypto itself lives in ./ratchet; this file is
+ * only about who publishes what, where it is stored, and how a peer gets it.
+ *
+ * ## Coexistence with the existing identity, not replacement
+ *
+ * `e2eeKeys.ts` publishes an X25519 key at `users/{uid}/publicKeys/e2ee` and
+ * every existing message is sealed to it. That key is left completely alone:
+ * it stays published and keeps decrypting history. This module adds a second,
+ * independent identity at `users/{uid}/publicKeys/ratchet`.
+ *
+ * Two identities is a real cost — twice the key material, and a safety number
+ * that has to cover both to keep meaning anything. The alternative was to
+ * migrate the existing key, which cannot work: the identity must be Ed25519 to
+ * sign prekeys (see ratchet/x3dh.ts), the published X25519 keys are not
+ * derived from any Ed25519 key, and rotating them would orphan every message
+ * already on the server.
+ *
+ * ## Where the secrets live
+ *
+ * The identity secret goes to the OS key store, exactly as the E2EE device key
+ * does, reusing the same read-back-verified helpers — this key is worth what
+ * that one is worth. Prekey secrets go there too: the signed prekey's secret
+ * completes X3DH as the responder, so it opens the first message of every
+ * conversation started against it.
+ *
+ * Both fall back to MMKV when the key store is unavailable, which is the same
+ * degradation e2eeKeys.ts already makes and for the same reason: on a build
+ * where the native module isn't linked, "no key store" must mean "behave as
+ * before", never "lose the key".
+ */
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+  where,
+} from './firebase/firestore';
+import {base64ToBytes, bytesToBase64} from './crypto';
+import {mmkvStorage} from './storageMMKV';
+import {getSecret, isSecureStoreAvailable, removeSecret, setSecretVerified} from './secureKeyStore';
+import {reportError} from './telemetry';
+import {
+  generateIdentityKeypair,
+  generatePreKeys,
+  verifyPreKeySignature,
+  type IdentityKeypair,
+  type PreKeyBundle,
+  type PreKeySecrets,
+} from './ratchet/x3dh';
+import type {Keypair} from './ratchet/doubleRatchet';
+
+const db = getFirestore();
+
+/** Published document id, alongside the existing `e2ee` doc. */
+const RATCHET_KEY_DOC = 'ratchet';
+
+const IDENTITY_STORAGE_PREFIX = 'ratchet_identity_v1_';
+const PREKEY_SECRETS_STORAGE_PREFIX = 'ratchet_prekey_secrets_v1_';
+
+const IDENTITY_SERVICE_PREFIX = 'com.chatterbox.ratchet.identity';
+const PREKEY_SERVICE_PREFIX = 'com.chatterbox.ratchet.prekeys';
+
+/** How many one-time prekeys a fresh batch holds. */
+export const ONE_TIME_PREKEY_BATCH = 50;
+/** Publish a new batch once the published count falls to this. */
+export const ONE_TIME_PREKEY_LOW_WATER = 10;
+
+/**
+ * How long a signed prekey stays current.
+ *
+ * Rotation is what limits the damage of a stolen signed-prekey secret: it can
+ * open the first message of any conversation started against it, and only
+ * until it is replaced. A week is the usual interval and is short enough to
+ * matter without churning published state.
+ */
+export const SIGNED_PREKEY_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
+function identityService(userId: string): string {
+  return `${IDENTITY_SERVICE_PREFIX}.${userId}`;
+}
+
+function preKeyService(userId: string): string {
+  return `${PREKEY_SERVICE_PREFIX}.${userId}`;
+}
+
+// ---- protected storage -----------------------------------------------------
+//
+// Mirrors readSecretKeyHex/writeSecretKeyHex in e2eeKeys.ts, including the
+// property that matters most: the MMKV copy is deleted only once the key store
+// has read the value back, never on a write that merely didn't throw.
+
+async function readProtected(storageKey: string, service: string): Promise<string | null> {
+  if (isSecureStoreAvailable()) {
+    const fromStore = await getSecret(service);
+    if (fromStore) return fromStore;
+  }
+  const fromMmkv = await mmkvStorage.getItem(storageKey);
+  if (!fromMmkv) return null;
+  if (isSecureStoreAvailable() && (await setSecretVerified(service, fromMmkv))) {
+    await mmkvStorage.removeItem(storageKey);
+  }
+  return fromMmkv;
+}
+
+async function writeProtected(storageKey: string, service: string, value: string): Promise<void> {
+  if (isSecureStoreAvailable() && (await setSecretVerified(service, value))) {
+    await mmkvStorage.removeItem(storageKey);
+    return;
+  }
+  await mmkvStorage.setItem(storageKey, value);
+}
+
+// ---- identity --------------------------------------------------------------
+
+type StoredIdentity = {v: 1; secretKey: string; publicKey: string};
+
+let cachedIdentity: {userId: string; identity: IdentityKeypair} | null = null;
+
+/**
+ * This device's Ed25519 ratchet identity, created on first use.
+ *
+ * Deliberately does not publish. Publication is a separate, explicit step
+ * (`publishRatchetKeys`) because generating an identity is local and cheap
+ * while publishing is a claim to peers that this device can be reached — and
+ * one that must not happen as a side effect of some unrelated read.
+ */
+export async function getOrCreateRatchetIdentity(userId: string): Promise<IdentityKeypair> {
+  if (cachedIdentity?.userId === userId) return cachedIdentity.identity;
+
+  const storageKey = IDENTITY_STORAGE_PREFIX + userId;
+  const stored = await readProtected(storageKey, identityService(userId));
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored) as StoredIdentity;
+      if (parsed.v === 1) {
+        const identity: IdentityKeypair = {
+          secretKey: base64ToBytes(parsed.secretKey),
+          publicKey: base64ToBytes(parsed.publicKey),
+        };
+        cachedIdentity = {userId, identity};
+        return identity;
+      }
+    } catch (error) {
+      // Falling through to generate a new identity would silently orphan every
+      // session established under the old one. Surface it instead.
+      reportError(error, 'ratchet_identity_unreadable');
+      throw new Error('ratchet: stored identity is unreadable');
+    }
+  }
+
+  const identity = generateIdentityKeypair();
+  const payload: StoredIdentity = {
+    v: 1,
+    secretKey: bytesToBase64(identity.secretKey),
+    publicKey: bytesToBase64(identity.publicKey),
+  };
+  await writeProtected(storageKey, identityService(userId), JSON.stringify(payload));
+  cachedIdentity = {userId, identity};
+  return identity;
+}
+
+// ---- prekey secrets --------------------------------------------------------
+
+type StoredSignedPreKey = {pair: {secretKey: string; publicKey: string}; createdAt: number};
+
+type StoredPreKeySecrets = {
+  v: 2;
+  /** Current first, then the one it replaced. See the grace-period note below. */
+  signedPreKeys: [string, StoredSignedPreKey][];
+  currentSignedPreKeyId: string;
+  oneTimePreKeys: [string, {secretKey: string; publicKey: string}][];
+};
+
+function encodeKeypair(pair: Keypair) {
+  return {secretKey: bytesToBase64(pair.secretKey), publicKey: bytesToBase64(pair.publicKey)};
+}
+
+function decodeKeypair(raw: {secretKey: string; publicKey: string}): Keypair {
+  return {secretKey: base64ToBytes(raw.secretKey), publicKey: base64ToBytes(raw.publicKey)};
+}
+
+/**
+ * Everything this device needs to answer a handshake.
+ *
+ * More than one signed prekey on purpose. A peer fetches the bundle and then
+ * sends; if rotation lands in between, the message names the key that was
+ * current when they looked. Keeping the previous one means that message still
+ * opens instead of becoming permanently undecryptable — a rare window, but the
+ * failure is silent and unrecoverable, which is the combination worth
+ * spending state on. Exactly one generation is retained: the point is to cover
+ * a send in flight, not to keep old keys alive indefinitely.
+ */
+export type LocalPreKeySecrets = {
+  signedPreKeys: Map<string, {pair: Keypair; createdAt: number}>;
+  currentSignedPreKeyId: string;
+  oneTimePreKeys: Map<string, Keypair>;
+};
+
+export async function loadPreKeySecrets(userId: string): Promise<LocalPreKeySecrets | null> {
+  const stored = await readProtected(PREKEY_SECRETS_STORAGE_PREFIX + userId, preKeyService(userId));
+  if (!stored) return null;
+  try {
+    const raw = JSON.parse(stored) as StoredPreKeySecrets;
+    if (raw.v !== 2) return null;
+    return {
+      signedPreKeys: new Map(
+        raw.signedPreKeys.map(([id, s]) => [id, {pair: decodeKeypair(s.pair), createdAt: s.createdAt}]),
+      ),
+      currentSignedPreKeyId: raw.currentSignedPreKeyId,
+      oneTimePreKeys: new Map(raw.oneTimePreKeys.map(([id, pair]) => [id, decodeKeypair(pair)])),
+    };
+  } catch (error) {
+    reportError(error, 'ratchet_prekey_secrets_unreadable');
+    return null;
+  }
+}
+
+async function savePreKeySecrets(userId: string, secrets: LocalPreKeySecrets): Promise<void> {
+  const payload: StoredPreKeySecrets = {
+    v: 2,
+    signedPreKeys: [...secrets.signedPreKeys].map(([id, s]) => [
+      id,
+      {pair: encodeKeypair(s.pair), createdAt: s.createdAt},
+    ]),
+    currentSignedPreKeyId: secrets.currentSignedPreKeyId,
+    oneTimePreKeys: [...secrets.oneTimePreKeys].map(([id, pair]) => [id, encodeKeypair(pair)]),
+  };
+  await writeProtected(
+    PREKEY_SECRETS_STORAGE_PREFIX + userId,
+    preKeyService(userId),
+    JSON.stringify(payload),
+  );
+}
+
+/**
+ * The single-signed-prekey view `respondX3DH` expects, selected by the id the
+ * incoming message actually names.
+ *
+ * Returns null when this device holds no such signed prekey — meaning the
+ * message was built against a key rotated out more than one generation ago.
+ * The caller must treat that as an undecryptable first message rather than
+ * substituting the current key, which would derive a different secret and fail
+ * later with a far more confusing symptom.
+ */
+export async function preKeySecretsForResponding(
+  userId: string,
+  signedPreKeyId: string,
+): Promise<PreKeySecrets | null> {
+  const secrets = await loadPreKeySecrets(userId);
+  const signed = secrets?.signedPreKeys.get(signedPreKeyId);
+  if (!secrets || !signed) return null;
+  return {
+    signedPreKey: signed.pair,
+    signedPreKeyId,
+    oneTimePreKeys: secrets.oneTimePreKeys,
+  };
+}
+
+/**
+ * Drops a one-time prekey once it has been used.
+ *
+ * Separate from responding to a handshake so the caller controls the ordering:
+ * burning the key before the resulting session is durably stored would make
+ * that first message permanently undecryptable if the app died in between.
+ */
+export async function burnOneTimePreKey(userId: string, id: string): Promise<void> {
+  const secrets = await loadPreKeySecrets(userId);
+  if (!secrets || !secrets.oneTimePreKeys.has(id)) return;
+  const next = new Map(secrets.oneTimePreKeys);
+  next.delete(id);
+  await savePreKeySecrets(userId, {...secrets, oneTimePreKeys: next});
+}
+
+// ---- publication -----------------------------------------------------------
+
+function preKeysCollection(userId: string) {
+  return collection(doc(collection(db, 'users'), userId), 'oneTimePreKeys');
+}
+
+async function publishOneTimePreKeys(
+  userId: string,
+  keys: {id: string; publicKey: Uint8Array}[],
+): Promise<void> {
+  await Promise.all(
+    keys.map(otp =>
+      setDoc(doc(preKeysCollection(userId), otp.id), {
+        publicKey: bytesToBase64(otp.publicKey),
+        claimed: false,
+        createdAt: serverTimestamp(),
+      }),
+    ),
+  );
+}
+
+async function publishBundleDoc(
+  userId: string,
+  published: {
+    identityKey: Uint8Array;
+    signedPreKey: Uint8Array;
+    signedPreKeySignature: Uint8Array;
+    signedPreKeyId: string;
+  },
+): Promise<void> {
+  await setDoc(
+    doc(collection(doc(collection(db, 'users'), userId), 'publicKeys'), RATCHET_KEY_DOC),
+    {
+      identityKey: bytesToBase64(published.identityKey),
+      signedPreKey: bytesToBase64(published.signedPreKey),
+      signedPreKeySignature: bytesToBase64(published.signedPreKeySignature),
+      signedPreKeyId: published.signedPreKeyId,
+      updatedAt: serverTimestamp(),
+    },
+    {merge: true},
+  );
+}
+
+/**
+ * First publication for this device: identity document, signed prekey, and an
+ * initial one-time batch.
+ *
+ * Order matters. The private half is stored *before* anything is published,
+ * because publishing first would advertise a prekey this device cannot answer
+ * — turning the first message of every conversation started against it into an
+ * undecryptable one.
+ */
+export async function publishRatchetKeys(userId: string): Promise<void> {
+  const identity = await getOrCreateRatchetIdentity(userId);
+  const {published, secrets} = generatePreKeys(identity, ONE_TIME_PREKEY_BATCH);
+
+  await savePreKeySecrets(userId, {
+    signedPreKeys: new Map([[secrets.signedPreKeyId, {pair: secrets.signedPreKey, createdAt: Date.now()}]]),
+    currentSignedPreKeyId: secrets.signedPreKeyId,
+    oneTimePreKeys: secrets.oneTimePreKeys,
+  });
+
+  await publishBundleDoc(userId, published);
+  await publishOneTimePreKeys(userId, published.oneTimePreKeys);
+}
+
+/**
+ * Adds one-time prekeys without disturbing anything already published.
+ *
+ * Strictly additive, and that is the point. An earlier version regenerated the
+ * whole batch on top-up, which replaced the stored secrets and left every
+ * still-published key from the old batch unanswerable: a peer could claim one,
+ * complete X3DH against it, and the responder would have no matching secret —
+ * a permanently undecryptable first message, reported as nothing at all.
+ */
+export async function topUpOneTimePreKeys(userId: string, count = ONE_TIME_PREKEY_BATCH): Promise<void> {
+  const identity = await getOrCreateRatchetIdentity(userId);
+  const secrets = await loadPreKeySecrets(userId);
+  if (!secrets) {
+    await publishRatchetKeys(userId);
+    return;
+  }
+
+  // generatePreKeys also mints a signed prekey; only the one-time keys are
+  // wanted here, so that one is discarded rather than published and the
+  // current signed prekey stays current. Rotation is rotateSignedPreKey's job.
+  const generated = generatePreKeys(identity, count);
+  const merged = new Map(secrets.oneTimePreKeys);
+  for (const [id, pair] of generated.secrets.oneTimePreKeys) merged.set(id, pair);
+
+  await savePreKeySecrets(userId, {...secrets, oneTimePreKeys: merged});
+  await publishOneTimePreKeys(userId, generated.published.oneTimePreKeys);
+}
+
+/**
+ * Replaces the signed prekey, keeping the previous one so a message already in
+ * flight against it can still be answered. Exactly one generation is retained.
+ */
+export async function rotateSignedPreKey(userId: string): Promise<void> {
+  const identity = await getOrCreateRatchetIdentity(userId);
+  const secrets = await loadPreKeySecrets(userId);
+  if (!secrets) {
+    await publishRatchetKeys(userId);
+    return;
+  }
+
+  const {published, secrets: fresh} = generatePreKeys(identity, 0);
+  const previous = secrets.signedPreKeys.get(secrets.currentSignedPreKeyId);
+
+  const kept = new Map<string, {pair: Keypair; createdAt: number}>();
+  kept.set(fresh.signedPreKeyId, {pair: fresh.signedPreKey, createdAt: Date.now()});
+  if (previous) kept.set(secrets.currentSignedPreKeyId, previous);
+
+  await savePreKeySecrets(userId, {
+    signedPreKeys: kept,
+    currentSignedPreKeyId: fresh.signedPreKeyId,
+    oneTimePreKeys: secrets.oneTimePreKeys,
+  });
+  await publishBundleDoc(userId, published);
+}
+
+/**
+ * Removes prekeys this device has already answered.
+ *
+ * Only claimed ones: an unclaimed published key still has a live secret here,
+ * and deleting it would throw away a usable key for nothing.
+ */
+async function purgeClaimedPreKeys(userId: string): Promise<void> {
+  const snap = await getDocs(query(preKeysCollection(userId), where('claimed', '==', true)));
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref).catch(() => undefined)));
+}
+
+export type RatchetKeyStatus = {
+  published: boolean;
+  unclaimedPreKeys: number;
+  signedPreKeyAgeMs: number | null;
+};
+
+export async function ratchetKeyStatus(userId: string): Promise<RatchetKeyStatus> {
+  const bundleSnap = await getDoc(
+    doc(collection(doc(collection(db, 'users'), userId), 'publicKeys'), RATCHET_KEY_DOC),
+  );
+  const secrets = await loadPreKeySecrets(userId);
+  const unclaimed = await getDocs(query(preKeysCollection(userId), where('claimed', '==', false)));
+  const current = secrets?.signedPreKeys.get(secrets.currentSignedPreKeyId);
+  return {
+    published: bundleSnap.exists(),
+    unclaimedPreKeys: unclaimed.size,
+    signedPreKeyAgeMs: current ? Date.now() - current.createdAt : null,
+  };
+}
+
+/**
+ * Publishes if nothing is published, tops up a depleted batch, and rotates an
+ * aged signed prekey. Safe and cheap to call on app start.
+ *
+ * The three are separate operations rather than one republish, because a
+ * republish invalidates keys that are still published and still claimable —
+ * see topUpOneTimePreKeys.
+ */
+export async function ensureRatchetKeysPublished(userId: string): Promise<void> {
+  try {
+    const status = await ratchetKeyStatus(userId);
+    const secrets = await loadPreKeySecrets(userId);
+
+    if (!status.published || !secrets) {
+      await publishRatchetKeys(userId);
+      return;
+    }
+
+    // Claimed keys are dead weight on both sides; clear them before counting
+    // what still needs topping up.
+    await purgeClaimedPreKeys(userId).catch(() => undefined);
+
+    if (status.unclaimedPreKeys <= ONE_TIME_PREKEY_LOW_WATER) {
+      await topUpOneTimePreKeys(userId, ONE_TIME_PREKEY_BATCH - status.unclaimedPreKeys);
+    }
+    if (status.signedPreKeyAgeMs !== null && status.signedPreKeyAgeMs > SIGNED_PREKEY_MAX_AGE_MS) {
+      await rotateSignedPreKey(userId);
+    }
+  } catch (error) {
+    // Never fatal. A device that cannot publish simply cannot be reached over
+    // the ratchet yet, which the send path treats as "no ratchet session" —
+    // it must not take the app down or block signing in.
+    reportError(error, 'ratchet_ensure_keys_published');
+  }
+}
+
+export async function clearRatchetKeys(userId: string): Promise<void> {
+  cachedIdentity = null;
+  await removeSecret(identityService(userId));
+  await removeSecret(preKeyService(userId));
+  await mmkvStorage.removeItem(IDENTITY_STORAGE_PREFIX + userId);
+  await mmkvStorage.removeItem(PREKEY_SECRETS_STORAGE_PREFIX + userId);
+}
+
+// ---- fetching a peer's bundle ----------------------------------------------
+
+export class PreKeyBundleUnavailableError extends Error {
+  readonly code = 'prekey-bundle-unavailable';
+  constructor(message = 'could not retrieve the peer prekey bundle') {
+    super(message);
+    this.name = 'PreKeyBundleUnavailableError';
+  }
+}
+
+/**
+ * Claims one unclaimed one-time prekey, atomically.
+ *
+ * A transaction, not a plain read: two people starting a conversation with the
+ * same peer at the same moment must not receive the same one-time prekey, or
+ * neither gets the replay resistance it exists to provide.
+ *
+ * The claim deliberately records only *that* the key was taken, never by whom.
+ * Writing the claimer's uid would hand the server a precise record of who
+ * started talking to whom — the exact metadata an end-to-end encrypted app is
+ * supposed to be reducing — in return for nothing, since the responder locates
+ * the matching secret by id from its own storage.
+ *
+ * Returns null when the batch is exhausted, which is a supported state: X3DH
+ * without a one-time prekey still authenticates and is still forward-secret,
+ * it just loses replay resistance for the first message. Failing the whole
+ * handshake instead would let anyone disable messaging to a user by draining
+ * their batch.
+ */
+async function claimOneTimePreKey(
+  peerUserId: string,
+): Promise<{id: string; publicKey: Uint8Array} | null> {
+  const available = await getDocs(
+    query(preKeysCollection(peerUserId), where('claimed', '==', false), limit(5)),
+  );
+  for (const candidate of available.docs) {
+    try {
+      const claimed = await runTransaction(db, async tx => {
+        const fresh = await tx.get(candidate.ref);
+        if (!fresh.exists() || fresh.data()?.claimed === true) return null;
+        tx.update(candidate.ref, {claimed: true, claimedAt: serverTimestamp()});
+        return fresh.data()?.publicKey as string | undefined;
+      });
+      if (claimed) return {id: candidate.id, publicKey: base64ToBytes(claimed)};
+    } catch {
+      // Lost the race to another claimer; try the next candidate.
+    }
+  }
+  return null;
+}
+
+/**
+ * The peer's bundle, ready to hand to initiateX3DH.
+ *
+ * Returns null only when the peer has genuinely not published a ratchet
+ * identity — an old client, or one that has not upgraded yet. Every other
+ * failure throws, because the two must not be confused: treating an
+ * unreachable server as "peer has no ratchet" is precisely the silent
+ * downgrade this project has already had to fix once elsewhere.
+ */
+export async function fetchPeerPreKeyBundle(peerUserId: string): Promise<PreKeyBundle | null> {
+  let snap;
+  try {
+    snap = await getDoc(
+      doc(collection(doc(collection(db, 'users'), peerUserId), 'publicKeys'), RATCHET_KEY_DOC),
+    );
+  } catch (error) {
+    reportError(error, 'ratchet_fetch_bundle');
+    throw new PreKeyBundleUnavailableError();
+  }
+  if (!snap.exists()) return null;
+
+  const data = snap.data() as
+    | {
+        identityKey?: string;
+        signedPreKey?: string;
+        signedPreKeySignature?: string;
+        signedPreKeyId?: string;
+      }
+    | undefined;
+  if (!data?.identityKey || !data.signedPreKey || !data.signedPreKeySignature || !data.signedPreKeyId) {
+    return null;
+  }
+
+  const identityKey = base64ToBytes(data.identityKey);
+  const signedPreKey = base64ToBytes(data.signedPreKey);
+  const signedPreKeySignature = base64ToBytes(data.signedPreKeySignature);
+
+  // Verified here as well as inside initiateX3DH. This is the point where a
+  // hostile or compromised server would substitute its own prekey, and
+  // catching it here means the caller never even claims a one-time prekey
+  // against a bundle that was going to be rejected.
+  if (!verifyPreKeySignature(identityKey, signedPreKey, signedPreKeySignature)) {
+    reportError(new Error('signed prekey signature invalid'), 'ratchet_bundle_signature');
+    throw new PreKeyBundleUnavailableError('signed prekey signature did not verify');
+  }
+
+  const oneTimePreKey = await claimOneTimePreKey(peerUserId).catch(() => null);
+
+  return {
+    identityKey,
+    signedPreKey,
+    signedPreKeySignature,
+    signedPreKeyId: data.signedPreKeyId,
+    ...(oneTimePreKey ? {oneTimePreKey} : null),
+  };
+}
+
+export function _resetRatchetIdentityCache(): void {
+  cachedIdentity = null;
+}
