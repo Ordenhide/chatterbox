@@ -33,7 +33,11 @@ local.properties
 !debug.keystore
 
 # node.js
+# Both forms: the trailing slash matches only directories, and a *symlink*
+# named node_modules slips past it — which is how two absolute self-referential
+# symlinks were committed and then handed to every clone.
 node_modules/
+node_modules
 npm-debug.log
 yarn-error.log
 
