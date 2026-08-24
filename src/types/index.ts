@@ -1,3 +1,6 @@
+import type {MediaKeyInfo} from '../services/mediaCrypto';
+import type {MediaSlot} from '../services/messageBody';
+
 export interface StealthSettings {
   hideOnline: boolean;
   hideTyping: boolean;
@@ -271,6 +274,26 @@ export interface Message {
   encryptedVideo?: EncryptedField | SealedEnvelopeField;
   encryptedAudio?: EncryptedField | SealedEnvelopeField;
   encryptedFileUri?: EncryptedField | SealedEnvelopeField;
+  /**
+   * Set when this message's attachment *bytes* are encrypted at rest
+   * (services/mediaCrypto.ts), which supersedes the four fields above: the
+   * plaintext URL stays in the clear because the object it names is
+   * ciphertext, and the content key travels inside the sealed body.
+   *
+   * A reader that does not understand this flag must not render the URL, so
+   * it is plaintext by design — it is the one part of the scheme every client
+   * has to be able to see. It reveals only that the message has an
+   * attachment, which the message already reveals.
+   */
+  mediaSealed?: boolean;
+  /**
+   * Content keys for this message's attachments, on the way *out* only.
+   *
+   * Never written to Firestore: encryptOutgoingMessage folds it into the
+   * sealed body (services/messageBody.ts) and clears it. It exists so the
+   * upload path can hand keys to the seal step without a side channel.
+   */
+  mediaKeys?: Partial<Record<MediaSlot, MediaKeyInfo>>;
   /**
    * The sealed form of `linkPreview` above (a JSON-encoded preview — see
    * services/linkPreview.ts). When present the plaintext field is absent; the

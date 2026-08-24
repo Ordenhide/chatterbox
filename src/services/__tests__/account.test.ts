@@ -71,6 +71,7 @@ jest.mock('../storageMMKV', () => ({mmkvStorage: {clear: (...a: unknown[]) => mo
 const mockClearDeviceKeypair = jest.fn();
 const mockClearRatchetKeys = jest.fn();
 const mockClearRatchetSessions = jest.fn();
+const mockClearMediaCache = jest.fn();
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({
   deleteStorageObjectByUrl: (...args: unknown[]) => mockDeleteStorageObjectByUrl(...args),
@@ -86,6 +87,8 @@ jest.mock('../ratchetSessionStore', () => ({
   clearRatchetSessions: (...args: unknown[]) => mockClearRatchetSessions(...args),
 }));
 
+jest.mock('../mediaVault', () => ({clearMediaCache: (...args: unknown[]) => mockClearMediaCache(...args)}));
+
 import {clearLocalData, purgeUserData} from '../account';
 import {encryptMessage, generateKeypair} from '../e2ee';
 
@@ -98,6 +101,7 @@ beforeEach(() => {
   mockClearDeviceKeypair.mockReset().mockResolvedValue(undefined);
   mockClearRatchetKeys.mockReset().mockResolvedValue(undefined);
   mockClearRatchetSessions.mockReset().mockResolvedValue(undefined);
+  mockClearMediaCache.mockReset().mockResolvedValue(undefined);
   mockFixtures.collections = new Map();
 });
 
@@ -163,6 +167,14 @@ describe('clearLocalData', () => {
     expect(mockMmkvClear).toHaveBeenCalled();
   });
 
+  // Decrypted attachments are plaintext files outside MMKV, so the wholesale
+  // wipe does not reach them either. Omitting this would leave a readable copy
+  // of every photo the user opened on a device whose account was deleted.
+  it('clears decrypted attachments from the filesystem', async () => {
+    await clearLocalData('uid1');
+    expect(mockClearMediaCache).toHaveBeenCalled();
+  });
+
   it('still clears the rest when one step fails', async () => {
     // Otherwise a single failing key-store call silently leaves everything
     // after it behind.
@@ -170,6 +182,7 @@ describe('clearLocalData', () => {
     await clearLocalData('uid1');
     expect(mockClearRatchetKeys).toHaveBeenCalledWith('uid1');
     expect(mockClearRatchetSessions).toHaveBeenCalledWith('uid1');
+    expect(mockClearMediaCache).toHaveBeenCalled();
     expect(mockMmkvClear).toHaveBeenCalled();
   });
 });

@@ -27,6 +27,7 @@ import {resolveMessageMediaUrls} from './messageMedia';
 import {clearDeviceKeypair, getOrCreateDeviceKeypair} from './e2eeKeys';
 import {clearRatchetKeys} from './ratchetKeys';
 import {clearRatchetSessions} from './ratchetSessionStore';
+import {clearMediaCache} from './mediaVault';
 
 /**
  * Account-level operations: changing a password, and permanently deleting an
@@ -316,12 +317,19 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
  * the MMKV wipe: its identity, its prekey secrets, and the key that encrypts
  * stored sessions all live in the key store too. Each is wrapped separately so
  * one failure does not skip the rest.
+ *
+ * Decrypted attachments are on the same footing and for the same reason: they
+ * are plaintext copies on the filesystem, outside MMKV, of every photo and
+ * document the user ever opened. Leaving them would mean the one action that
+ * is supposed to remove an account's data from a device left the most
+ * personal part of it sitting in the caches directory.
  */
 export async function clearLocalData(userId: string): Promise<void> {
   const steps: [string, () => Promise<void>][] = [
     ['account_clear_keystore_failed', () => clearDeviceKeypair(userId)],
     ['account_clear_ratchet_keys_failed', () => clearRatchetKeys(userId)],
     ['account_clear_ratchet_sessions_failed', () => clearRatchetSessions(userId)],
+    ['account_clear_media_cache_failed', () => clearMediaCache()],
   ];
   for (const [context, step] of steps) {
     try {

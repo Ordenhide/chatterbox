@@ -248,11 +248,31 @@ function keypairFromSecret(secretKey: Uint8Array): Keypair {
   return {secretKey, publicKey: x25519.getPublicKey(secretKey)};
 }
 
+/**
+ * Capability this client advertises for encrypted attachment *bytes*
+ * (services/mediaCrypto.ts).
+ *
+ * Needed because encrypting the object is not a change a reader can ignore.
+ * Text degrades gracefully — an older client that cannot open a ratchet
+ * envelope simply never receives one — but an older client handed a message
+ * whose `image` URL points at ciphertext will fetch it and render a broken
+ * image, with no way to tell that from a genuinely corrupt upload.
+ *
+ * So the sender checks first, and only encrypts when *every* recipient
+ * advertises this. Published on the existing public-key document, which is
+ * already owner-written and world-readable, so this needs no rules change and
+ * no extra read on the send path.
+ */
+export const MEDIA_CAPABILITY = 'media-v1';
+
+/** What this build supports. Sent on every key publish. */
+const CAPABILITIES = [MEDIA_CAPABILITY];
+
 export async function publishPublicKey(userId: string, publicKey: Uint8Array): Promise<void> {
   try {
     await setDoc(
       doc(db, 'users', userId, 'publicKeys', 'e2ee'),
-      {publicKey: bytesToBase64(publicKey), updatedAt: serverTimestamp()},
+      {publicKey: bytesToBase64(publicKey), caps: CAPABILITIES, updatedAt: serverTimestamp()},
       {merge: true},
     );
   } catch (error) {
@@ -302,6 +322,31 @@ async function fetchPublishedKeyOrThrow(userId: string): Promise<Uint8Array | nu
   const snap = await getDoc(doc(db, 'users', userId, 'publicKeys', 'e2ee'));
   const key = snap.exists() ? (snap.data()?.publicKey as string | undefined) : undefined;
   return key ? base64ToBytes(key) : null;
+}
+
+/**
+ * Whether every one of `peerUserIds` can read encrypted attachment bytes.
+ *
+ * Throws when any peer's capabilities cannot be determined. That is
+ * deliberate and matches how the send path already treats an undeterminable
+ * peer key: answering "I could not find out" with "then send it in the clear"
+ * is how one flaky network turns into a permanently downgraded conversation.
+ * The callers queue to the outbox and retry, so the cost of throwing is a
+ * delayed attachment rather than an unencrypted one.
+ *
+ * A peer who is definitely *reachable* and definitely lacks the capability is
+ * a different answer, and returns false — that is an older client, and
+ * sending them ciphertext they cannot open would be worse than sending them
+ * a photo the server can also see.
+ */
+export async function peersSupportEncryptedMedia(peerUserIds: string[]): Promise<boolean> {
+  for (const peerUserId of peerUserIds) {
+    const snap = await getDoc(doc(db, 'users', peerUserId, 'publicKeys', 'e2ee'));
+    if (!snap.exists()) return false;
+    const caps = snap.data()?.caps;
+    if (!Array.isArray(caps) || !caps.includes(MEDIA_CAPABILITY)) return false;
+  }
+  return true;
 }
 
 const PEER_KEY_CACHE_PREFIX = 'e2ee_peer_key_v1_';

@@ -194,6 +194,23 @@ describe('publishPublicKey / fetchPeerPublicKeyChecked', () => {
     await publishPublicKey(ME, publicKey);
     expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey).toBe(bytesToBase64(publicKey));
   });
+
+  it('clears a capability the account published from another device', async () => {
+    // The mobile app advertises `media-v1` to say it can decrypt attachment
+    // *bytes*. This client cannot, so leaving that claim standing after it
+    // becomes the account's active device would have senders encrypting
+    // photos it renders as broken images — silently, on both ends. The write
+    // merges, so the field has to be overwritten rather than left out.
+    firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
+      publicKey: 'from-the-phone',
+      caps: ['media-v1'],
+    });
+
+    const {publicKey} = generateKeypair();
+    await publishPublicKey(ME, publicKey);
+
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.caps).toEqual([]);
+  });
 });
 
 describe('getRecoveryPhrase', () => {

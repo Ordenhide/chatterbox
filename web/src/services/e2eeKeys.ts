@@ -132,7 +132,18 @@ export async function publishPublicKey(userId: string, publicKey: Uint8Array): P
   try {
     await setDoc(
       doc(db, 'users', userId, 'publicKeys', 'e2ee'),
-      {publicKey: bytesToBase64(publicKey), updatedAt: serverTimestamp()},
+      {
+        publicKey: bytesToBase64(publicKey),
+        // Cleared, not omitted. `merge: true` leaves absent fields alone, so
+        // omitting this would let a capability published by the user's phone
+        // survive on the document after the web client became the account's
+        // active device — and senders would keep encrypting attachment bytes
+        // this client cannot decrypt, producing a broken image with no error
+        // on either side. Same reasoning as retractRatchetBundle below: an
+        // unhonoured capability claim is worse than none.
+        caps: [],
+        updatedAt: serverTimestamp(),
+      },
       {merge: true},
     );
     await retractRatchetBundle(userId);
