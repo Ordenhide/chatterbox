@@ -497,8 +497,26 @@ export default function ChatScreen() {
    * synchronous render, so referencing a `const` before its own declaration
    * line is a real temporal-dead-zone crash, not just a style nit.
    */
+  /**
+   * `allowRatchet: false` forces the stateless fan-out path below, skipping the
+   * double ratchet. Used for scheduled messages, which are sealed now and
+   * delivered hours or days later.
+   *
+   * The ratchet would very likely survive that — a DH step stores the skipped
+   * keys for the chain it leaves behind, which is exactly what makes
+   * out-of-order delivery work — but "very likely" is doing real work in that
+   * sentence: the skipped-key store is capped and evicts oldest-first, and a
+   * cancelled scheduled message burns a chain position that never arrives.
+   * Fan-out has no state to go stale, so a message sealed today opens next week
+   * for the same reason it opens now.
+   *
+   * The cost is forward secrecy, and it is worth being exact about the
+   * comparison: this is weaker than the ratchet, and stronger than what
+   * scheduling did before, which was to store the text in the clear.
+   */
   const encryptOutgoingMessage = useCallback(
-    async (data: ChatMessage): Promise<ChatMessage> => {
+    async (data: ChatMessage, opts?: {allowRatchet?: boolean}): Promise<ChatMessage> => {
+      const allowRatchet = opts?.allowRatchet !== false;
       if (!user || !chatId || otherUserIds.length === 0) return data;
       try {
         /**
@@ -520,14 +538,14 @@ export default function ChatScreen() {
           !data.mediaSealed && !!(data.image || data.video || data.audio || data.file);
         const bodyOnly = !!body && !hasUnsealedMedia;
 
-        if (bodyOnly && otherUserIds.length === 1) {
+        if (allowRatchet && bodyOnly && otherUserIds.length === 1) {
           const outcome = await sealText(user.uid, chatId, otherUserIds[0], body);
           if (outcome.protection === 'ratchet') {
             if (outcome.identityStatus === 'changed') setPeerSessionReset(true);
             return {...data, text: '', mediaKeys: undefined, encrypted: outcome.envelope} as ChatMessage;
           }
           // 'unavailable' — peer runs an older client. Fall through to fan-out.
-        } else if (bodyOnly && otherUserIds.length > 1) {
+        } else if (allowRatchet && bodyOnly && otherUserIds.length > 1) {
           // Groups use sender keys: one ciphertext, distributed over the
           // pairwise sessions. All-or-nothing — one member without a ratchet
           // identity sends the whole chat back to fan-out, because a message
@@ -2000,11 +2018,31 @@ export default function ChatScreen() {
       createdAt: new Date(),
       user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
     };
-    await scheduleMessage(chatId, messageData, scheduledFor);
+    /**
+     * Sealed here, not at delivery. A scheduled message used to be written to
+     * Firestore as plain text and sat there until its time came — in a chat
+     * where every ordinary message goes out encrypted, and with no sign in the
+     * UI that this one was different. Delivery copies the document verbatim
+     * (the Cloud Function uses the Admin SDK), so an unsealed one stayed
+     * unsealed in the thread forever.
+     *
+     * A failure here aborts the schedule rather than falling back to plaintext:
+     * the message is not going anywhere for at least a minute, so there is
+     * nothing to lose by making the user try again.
+     */
+    let outgoing: ChatMessage;
+    try {
+      outgoing = await encryptOutgoingMessage(messageData, {allowRatchet: false});
+    } catch (error) {
+      reportError(error, 'schedule_encrypt_failed');
+      Alert.alert('Not scheduled', 'Could not encrypt the message. Please try again.');
+      return;
+    }
+    await scheduleMessage(chatId, outgoing, scheduledFor);
     setComposerText('');
     setSchedulePickerVisible(false);
     Alert.alert('Scheduled', `Message will be sent in ${mins} minute${mins > 1 ? 's' : ''}.`);
-  }, [chatId, user, inputText, scheduleMinutes, setComposerText]);
+  }, [chatId, user, inputText, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
 
   const handleCreateList = useCallback(async () => {
     if (!chatId || !user) return;

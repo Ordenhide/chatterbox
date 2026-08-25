@@ -7,6 +7,8 @@ type SnapshotHandler = (snap: {
   docs: Array<{id: string; data: () => Record<string, unknown>}>;
 }) => void;
 const handlers: SnapshotHandler[] = [];
+/** Every document scheduleMessage wrote, so a test can look for plaintext. */
+const written: Record<string, unknown>[] = [];
 
 vi.mock('../firebase', () => ({db: {}}));
 vi.mock('firebase/firestore', () => ({
@@ -19,7 +21,9 @@ vi.mock('firebase/firestore', () => ({
   getDocs: vi.fn(),
   runTransaction: vi.fn(),
   serverTimestamp: () => ({__ts: true}),
-  setDoc: vi.fn(),
+  setDoc: vi.fn(async (_ref: unknown, data: Record<string, unknown>) => {
+    written.push(data);
+  }),
   onSnapshot: (_ref: unknown, onNext: SnapshotHandler) => {
     handlers.push(onNext);
     return () => {
@@ -29,7 +33,8 @@ vi.mock('firebase/firestore', () => ({
   },
 }));
 
-import {listenScheduledMessages, ownScheduledMessages} from './scheduledMessages';
+import {listenScheduledMessages, ownScheduledMessages, scheduleMessage} from './scheduledMessages';
+import {generateKeypair, openSealed, sealForRecipients} from './e2ee';
 
 const sched = (id: string, uid?: string) => ({
   id,
@@ -41,6 +46,7 @@ const emit = (docs: Array<{id: string; data: () => Record<string, unknown>}>) =>
 
 beforeEach(() => {
   handlers.length = 0;
+  written.length = 0;
 });
 
 describe('ownScheduledMessages', () => {
@@ -97,5 +103,63 @@ describe('listenScheduledMessages', () => {
     unsub();
     emit([sched('a', 'me')]);
     expect(seen).toEqual([]);
+  });
+});
+
+/**
+ * The bug this guards: a scheduled message was written to Firestore as plain
+ * text and sat there until its delivery time — in a chat where every ordinary
+ * message goes out sealed, with nothing in the UI to say this one was
+ * different. Delivery copies the document verbatim, so it stayed readable in
+ * the thread afterwards too.
+ */
+describe('scheduleMessage keeps the body sealed', () => {
+  const me = {uid: 'me', name: 'Me'};
+
+  it('stores the envelope and no readable text', async () => {
+    const author = generateKeypair();
+    const peer = generateKeypair();
+    const secret = 'meet-me-at-midnight';
+    const envelope = sealForRecipients(secret, author.secretKey, [{uid: 'them', publicKey: peer.publicKey}], 'c1');
+
+    await scheduleMessage('c1', {text: '', encrypted: envelope}, Date.now() + 60_000, me);
+
+    expect(written).toHaveLength(1);
+    expect(written[0].encrypted).toBe(envelope);
+    expect(written[0].text).toBe('');
+    expect(JSON.stringify(written[0])).not.toContain(secret);
+  });
+
+  // The unsealed path still exists for a peer with no key published — the same
+  // all-or-nothing fallback an ordinary send makes — so it has to keep working.
+  it('still stores plain text when the caller had nothing to seal with', async () => {
+    await scheduleMessage('c1', {text: 'hello'}, Date.now() + 60_000, me);
+    expect(written[0].text).toBe('hello');
+    expect(written[0].encrypted).toBeUndefined();
+  });
+
+  it('hands the envelope to the listener so the composer can open it', () => {
+    const seen: ScheduledLike[] = [];
+    type ScheduledLike = {_id: string; encrypted?: unknown};
+    listenScheduledMessages('c1', 'me', msgs => seen.push(...(msgs as ScheduledLike[])));
+    handlers.forEach(h =>
+      h({
+        docs: [
+          {id: 'a', data: () => ({user: {_id: 'me'}, text: '', encrypted: {alg: 'x', copies: {}}, scheduledFor: 1})},
+        ],
+      }),
+    );
+    expect(seen[0].encrypted).toEqual({alg: 'x', copies: {}});
+  });
+
+  // What the composer's pending list depends on: the author is not one of the
+  // recipients, so they have no copy addressed to them. openSealed falls back
+  // to any copy, which works because deriving the wrong key fails the AEAD tag.
+  it('lets the author reopen their own pending message to display it', () => {
+    const author = generateKeypair();
+    const peer = generateKeypair();
+    const envelope = sealForRecipients('see you at 8', author.secretKey, [{uid: 'them', publicKey: peer.publicKey}], 'c1');
+    expect(openSealed(envelope, author.secretKey, 'me', 'c1')).toBe('see you at 8');
+    expect(openSealed(envelope, peer.secretKey, 'them', 'c1')).toBe('see you at 8');
   });
 });

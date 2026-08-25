@@ -420,7 +420,30 @@ export default function ChatPane({
   // being open — but sweep once on open too for immediacy.
   useEffect(() => {
     deliverDueScheduledMessages(chatId, me.uid).catch(() => undefined);
-    return listenScheduledMessages(chatId, me.uid, setScheduled);
+    let live = true;
+    // The bodies are sealed to the recipients, so showing the author their own
+    // pending message means opening it. openSealed handles that: the sender has
+    // no copy addressed to them, and openEnvelope falls back to any copy for
+    // exactly this case. A body that won't open shows as empty rather than as
+    // ciphertext — the row still carries its time and its cancel button.
+    const unsub = listenScheduledMessages(chatId, me.uid, async msgs => {
+      const secretKey = await getOrCreateDeviceKeypair(me.uid)
+        .then(k => k.secretKey)
+        .catch(() => null);
+      const shown = msgs.map(m => {
+        if (!m.encrypted || !secretKey) return m;
+        try {
+          return {...m, text: openSealed(m.encrypted, secretKey, me.uid, chatId)};
+        } catch {
+          return {...m, text: ''};
+        }
+      });
+      if (live) setScheduled(shown);
+    });
+    return () => {
+      live = false;
+      unsub();
+    };
   }, [chatId, me.uid]);
 
   const loadOlder = useCallback(async () => {
@@ -1279,7 +1302,14 @@ export default function ChatPane({
     const trimmed = text.trim();
     if (!trimmed || !at || at <= Date.now()) return;
     try {
-      await scheduleMessage(chatId, trimmed, at, me);
+      // Sealed now, not at delivery: the document sits in Firestore until its
+      // time comes and is then copied verbatim into the thread, so anything
+      // stored here in the clear stays in the clear. encryptOutgoingMessage
+      // throws rather than falling back to plaintext, and the catch below puts
+      // the text back in the composer — the message is not going anywhere for
+      // at least a minute, so there is nothing to lose by asking again.
+      const sealed = await encryptOutgoingMessage({text: trimmed});
+      await scheduleMessage(chatId, {text: sealed.text, encrypted: sealed.encrypted}, at, me);
       setText('');
       setDraft(me.uid, chatId, '');
       setScheduleOpen(false);

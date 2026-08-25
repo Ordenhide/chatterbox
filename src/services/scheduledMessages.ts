@@ -17,6 +17,13 @@ const db = getFirestore();
 const scheduledRef = (chatId: string) =>
   collection(doc(collection(db, 'chats'), chatId), 'scheduledMessages');
 
+/**
+ * `message` must already be sealed if the chat's peers are enrolled — the
+ * composer runs it through encryptOutgoingMessage first. Scheduling used to
+ * write plain text here, in a chat where every ordinary message goes out
+ * encrypted, and it stayed plain: delivery copies the document verbatim into
+ * `messages`.
+ */
 export async function scheduleMessage(chatId: string, message: Message, scheduledFor: number) {
   const id = String(message._id);
   await setDoc(doc(scheduledRef(chatId), id), {

@@ -23,13 +23,26 @@ const scheduledCol = (chatId: string) => collection(db, 'chats', chatId, 'schedu
 export interface ScheduledMessage {
   _id: string;
   text?: string;
+  /** Set instead of `text` once the body has been sealed — see scheduleMessage. */
+  encrypted?: unknown;
   scheduledFor: number;
   user?: {_id: string; name?: string};
 }
 
+/**
+ * Takes an already-sealed body rather than raw text.
+ *
+ * A scheduled message used to be written here as plain text and sat in
+ * Firestore until its time came — in a chat where every ordinary message goes
+ * out encrypted, with nothing in the UI saying this one was different.
+ * Delivery copies the document verbatim, so it stayed unsealed in the thread
+ * afterwards too. Sealing is the caller's job because only the composer knows
+ * the chat's members and holds the keypair; taking `{text?, encrypted?}` here
+ * makes it impossible to reach this function without having made that choice.
+ */
 export async function scheduleMessage(
   chatId: string,
-  text: string,
+  body: {text?: string; encrypted?: unknown},
   scheduledFor: number,
   me: {uid: string; name: string},
 ): Promise<void> {
@@ -39,7 +52,8 @@ export async function scheduleMessage(
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   await setDoc(doc(scheduledCol(chatId), id), {
     _id: id,
-    text,
+    text: body.text ?? '',
+    ...(body.encrypted ? {encrypted: body.encrypted} : {}),
     user: {_id: me.uid, name: me.name},
     scheduledFor,
     sent: false,
