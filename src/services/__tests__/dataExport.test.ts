@@ -230,6 +230,9 @@ describe('exportUserData', () => {
     mockFixtures.collections.set('users/uid1/private', [
       {id: 'contact', data: {phoneNumber: '+15550123', phoneUpdatedAt: isoTimestamp('2026-01-01T00:00:00.000Z')}},
     ]);
+    mockFixtures.collections.set('users/uid1/oneTimePreKeys', [
+      {id: 'p1', data: {publicKey: 'AAAA', claimed: true}},
+    ]);
     mockFixtures.collections.set('users/uid1/publicKeys', [
       {id: 'e2ee', data: {publicKey: 'base64pubkey', updatedAt: isoTimestamp('2026-01-01T00:00:00.000Z')}},
     ]);
@@ -269,6 +272,10 @@ describe('exportUserData', () => {
     expect(result.reminders).toHaveLength(0);
     expect(result.private).toHaveLength(1);
     expect(result.publicKeys).toHaveLength(1);
+    // Published prekeys are the user's own key material and carry claim
+    // timestamps; an export that omits them is incomplete in the same way the
+    // purge that omitted them was.
+    expect(result.oneTimePreKeys).toHaveLength(1);
 
     expect(result.notes.length).toBeGreaterThan(0);
     expect(result.report).toMatchObject({

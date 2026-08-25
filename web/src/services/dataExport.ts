@@ -9,6 +9,7 @@ import {collection, doc, getDoc, getDocs, query, where, type Query} from 'fireba
 import {db} from '../firebase';
 import {decryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {USER_SUBCOLLECTIONS} from './userSubcollections';
 
 export interface DataExportReport {
   chatsProcessed: number;
@@ -27,6 +28,7 @@ export interface UserDataExport {
   profile: Record<string, unknown> | null;
   private: Record<string, unknown>[];
   publicKeys: Record<string, unknown>[];
+  oneTimePreKeys: Record<string, unknown>[];
   bookmarks: Record<string, unknown>[];
   reminders: Record<string, unknown>[];
   chats: Record<string, unknown>[];
@@ -307,13 +309,10 @@ export async function exportUserData(uid: string): Promise<UserDataExport> {
     report.errors.push(`blocks failed: ${String(error)}`);
   }
 
-  const owned: Record<string, Record<string, unknown>[]> = {
-    bookmarks: [],
-    reminders: [],
-    private: [],
-    publicKeys: [],
-  };
-  for (const sub of Object.keys(owned)) {
+  const owned: Record<string, Record<string, unknown>[]> = Object.fromEntries(
+    USER_SUBCOLLECTIONS.map(sub => [sub, [] as Record<string, unknown>[]]),
+  );
+  for (const sub of USER_SUBCOLLECTIONS) {
     try {
       owned[sub] = await dumpDocs(collection(db, 'users', uid, sub));
     } catch (error) {
@@ -328,6 +327,7 @@ export async function exportUserData(uid: string): Promise<UserDataExport> {
     profile,
     private: owned.private,
     publicKeys: owned.publicKeys,
+    oneTimePreKeys: owned.oneTimePreKeys,
     bookmarks: owned.bookmarks,
     reminders: owned.reminders,
     chats,

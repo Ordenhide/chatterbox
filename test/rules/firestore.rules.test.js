@@ -17,9 +17,12 @@ const {
   doc,
   getDoc,
   getDocs,
+  limit,
+  query,
   setDoc,
   Timestamp,
   updateDoc,
+  where,
 } = require('firebase/firestore');
 const {makeTestEnv} = require('./helpers');
 
@@ -1536,5 +1539,111 @@ describe('view-once marking', () => {
     await assertFails(
       updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m2'), {viewOnceViewedBy: ['mallory']}),
     );
+  });
+});
+
+/**
+ * The queries account.ts's purgeChat() runs to erase what a departing user owns
+ * inside each chat, before `participants: arrayRemove(uid)` costs them access.
+ *
+ * These are worth an emulator test rather than a unit test because the thing
+ * that can go wrong is not the rule's logic — it's Firestore's *query*
+ * evaluation. A collection query is rejected outright unless the rules can
+ * prove, from the query's constraints alone, that every document it could
+ * return is readable. A `where` clause on the same field the read rule tests is
+ * what supplies that proof. Get it wrong and the purge does not fail loudly at
+ * review time; it throws at runtime, gets swallowed into report.errors, and the
+ * data stays behind forever, because deleteAccount removes the auth user
+ * moments later and nothing can reach it again.
+ */
+describe('purgeChat queries are legal under the rules', () => {
+  beforeEach(async () => {
+    await seed(async db => {
+      await setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'mallory']});
+      await setDoc(doc(db, 'chats/c1/scheduledMessages/s1'), {
+        text: 'later', user: {_id: 'alice'}, scheduledFor: Date.now(), sent: false,
+      });
+      await setDoc(doc(db, 'chats/c1/scheduledMessages/s2'), {
+        text: 'hers', user: {_id: 'mallory'}, scheduledFor: Date.now(), sent: false,
+      });
+      await setDoc(doc(db, 'chats/c1/trash/t1'), {deletedBy: 'alice', text: 'oops'});
+      await setDoc(doc(db, 'chats/c1/trash/t2'), {deletedBy: 'mallory', text: 'hers'});
+      await setDoc(doc(db, 'chats/c1/senderKeys/k1'), {from: 'alice', to: 'mallory', key: 'x'});
+      await setDoc(doc(db, 'chats/c1/senderKeys/k2'), {from: 'mallory', to: 'alice', key: 'y'});
+      await setDoc(doc(db, 'chats/c1/liveLocations/alice'), {encryptedPosition: {c: 'x'}});
+    });
+  });
+
+  const mine = (path, field) =>
+    query(collection(asUser('alice'), path), where(field, '==', 'alice'), limit(200));
+
+  it('lets me query my own scheduled messages', async () => {
+    const snap = await assertSucceeds(getDocs(mine('chats/c1/scheduledMessages', 'user._id')));
+    expect(snap.docs.map(d => d.id)).toEqual(['s1']);
+  });
+
+  it('lets me query my own trash, which an unfiltered read is refused', async () => {
+    const snap = await assertSucceeds(getDocs(mine('chats/c1/trash', 'deletedBy')));
+    expect(snap.docs.map(d => d.id)).toEqual(['t1']);
+    // The filter is load-bearing, not decoration: without it the rule cannot be
+    // proved and the whole query is rejected.
+    await assertFails(getDocs(collection(asUser('alice'), 'chats/c1/trash')));
+  });
+
+  it('lets me query the sender keys I wrote, despite the rule being an OR', async () => {
+    // read is `to == uid || from == uid`. Filtering on one side of a disjunction
+    // still proves the whole condition, but it is exactly the kind of thing that
+    // is easier to assume than to verify.
+    const snap = await assertSucceeds(getDocs(mine('chats/c1/senderKeys', 'from')));
+    expect(snap.docs.map(d => d.id)).toEqual(['k1']);
+    await assertFails(getDocs(collection(asUser('alice'), 'chats/c1/senderKeys')));
+  });
+
+  it('lets me delete my own live-location document and not somebody else\'s', async () => {
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/liveLocations/alice')));
+    await seed(db => setDoc(doc(db, 'chats/c1/liveLocations/mallory'), {encryptedPosition: {c: 'y'}}));
+    await assertFails(deleteDoc(doc(asUser('alice'), 'chats/c1/liveLocations/mallory')));
+  });
+
+  it('refuses all of it once the uid is out of participants', async () => {
+    // Why the ordering in purgeChat is not negotiable: this is the state the
+    // user is in one line later, and it is permanent.
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['mallory']}));
+    await assertFails(getDocs(mine('chats/c1/trash', 'deletedBy')));
+    await assertFails(deleteDoc(doc(asUser('alice'), 'chats/c1/liveLocations/alice')));
+  });
+});
+
+/**
+ * users/{uid}/oneTimePreKeys survives account deletion unless the purge names
+ * it: `allow read: if isSignedIn()` keeps it visible to everyone, while delete
+ * needs `request.auth.uid == userId` — a uid that, once the auth user is gone,
+ * can never sign in again.
+ */
+describe('users/{uid}/oneTimePreKeys deletion window', () => {
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'users/alice/oneTimePreKeys/p1'), {
+      publicKey: 'AAAA', claimed: true, claimedAt: Timestamp.now(),
+    }));
+  });
+
+  it('is deletable only by its owner, and only while they can still sign in', async () => {
+    await assertFails(deleteDoc(doc(asUser('mallory'), 'users/alice/oneTimePreKeys/p1')));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'users/alice/oneTimePreKeys/p1')));
+  });
+
+  it('stays readable by any signed-in user, which is what makes leftovers matter', async () => {
+    const snap = await assertSucceeds(getDoc(doc(asUser('mallory'), 'users/alice/oneTimePreKeys/p1')));
+    expect(snap.data().claimedAt).toBeDefined();
+  });
+
+  it('survives deletion of the profile document', async () => {
+    // Firestore does not cascade: removing users/alice leaves its
+    // subcollections in place, which is the whole reason the purge has to
+    // enumerate them.
+    await seed(db => setDoc(doc(db, 'users/alice'), {uid: 'alice'}));
+    await seed(db => deleteDoc(doc(db, 'users/alice')));
+    const snap = await assertSucceeds(getDoc(doc(asUser('mallory'), 'users/alice/oneTimePreKeys/p1')));
+    expect(snap.exists()).toBe(true);
   });
 });

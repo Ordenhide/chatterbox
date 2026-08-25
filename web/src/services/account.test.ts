@@ -27,7 +27,16 @@ vi.stubGlobal('localStorage', memoryStorage);
 // the purgeUserData tests can read/write the same Map.
 const mockFixtures = vi.hoisted(() => ({
   collections: new Map<string, Array<{id: string; data: Record<string, unknown>}>>(),
+  /** Deletes and participant-list writes in the order they happened. */
+  ops: [] as string[],
 }));
+
+/** "path?field=value" — enough to say what a purge query actually asked for. */
+const describeQuery = (q: any) =>
+  `${q.path}${(q.clauses || [])
+    .filter((c: any) => c && 'field' in c)
+    .map((c: any) => `?${c.field}=${c.value}`)
+    .join('')}`;
 
 function mockClauseMatches(data: Record<string, unknown>, clause: {field: string; op: string; value: unknown}): boolean {
   const fieldValue = clause.field.split('.').reduce<unknown>((o, k) => (o as any)?.[k], data);
@@ -45,7 +54,9 @@ vi.mock('firebase/auth', () => ({
 vi.mock('firebase/firestore', () => ({
   arrayRemove: (v: unknown) => v,
   collection: (_db: unknown, ...segments: string[]) => ({path: segments.join('/'), clauses: []}),
-  deleteDoc: vi.fn(async () => undefined),
+  deleteDoc: vi.fn(async (ref: any) => {
+    mockFixtures.ops.push(`delete ${ref.path}`);
+  }),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   getDocs: async (ref: any) => {
     const all = mockFixtures.collections.get(ref.path) || [];
@@ -62,7 +73,9 @@ vi.mock('firebase/firestore', () => ({
     ...ref,
     clauses: [...(ref.clauses || []), ...clauses.filter(c => c && 'field' in c)],
   }),
-  updateDoc: vi.fn(async () => undefined),
+  updateDoc: vi.fn(async (ref: any, data: Record<string, unknown>) => {
+    if ('participants' in data) mockFixtures.ops.push(`leave ${ref.path}`);
+  }),
   where: (field: string, op: string, value: unknown) => ({field, op, value}),
 }));
 vi.mock('firebase/storage', () => ({
@@ -72,15 +85,22 @@ vi.mock('firebase/storage', () => ({
 }));
 vi.mock('../firebase', () => ({auth: {currentUser: null}, db: {}}));
 vi.mock('./storage', () => ({storage: {}, deleteStorageObjectByUrl: vi.fn(async () => true)}));
-vi.mock('./firestoreBatch', () => ({deleteQueryInChunks: vi.fn(async () => 0)}));
+vi.mock('./firestoreBatch', () => ({
+  deleteQueryInChunks: vi.fn(async (q: any) => {
+    mockFixtures.ops.push(`purge ${describeQuery(q)}`);
+    return 0;
+  }),
+}));
 vi.mock('./e2eeKeys', () => ({getOrCreateDeviceKeypair: vi.fn()}));
 
 import {clearLocalData, describeAuthError, purgeUserData} from './account';
+import {USER_SUBCOLLECTIONS} from './userSubcollections';
 import {encryptMessage, generateKeypair} from './e2ee';
 
 beforeEach(() => {
   localStorage.clear();
   mockFixtures.collections = new Map();
+  mockFixtures.ops = [];
 });
 
 describe('describeAuthError', () => {
@@ -216,5 +236,61 @@ describe('purgeUserData media cleanup', () => {
     expect(deletedUrls).toEqual(['https://storage.example/plain.jpg']);
     expect(report.storageObjectsDeleted).toBe(1);
     expect(report.errors.some(e => e.includes('device key unavailable'))).toBe(true);
+  });
+});
+
+/**
+ * Deleting a Firestore document does not delete its subcollections, and every
+ * rule inside a chat is gated on being a participant — so anything the purge
+ * fails to name before it leaves is not merely left behind. deleteAccount
+ * removes the auth user immediately afterwards, and that uid can never sign in
+ * again to finish the job.
+ */
+describe('purgeUserData leaves nothing reachable behind', () => {
+  beforeEach(() => {
+    mockFixtures.collections.set('chats', [
+      {id: 'chat1', data: {participants: ['uid1', 'uid2']}},
+    ]);
+    mockFixtures.collections.set('chats/chat1/messages', []);
+  });
+
+  it('purges the one-time prekeys, which no client could ever reach afterwards', async () => {
+    await purgeUserData('uid1');
+    expect(mockFixtures.ops).toContain('purge users/uid1/oneTimePreKeys');
+  });
+
+  it('visits every subcollection on the shared list', async () => {
+    await purgeUserData('uid1');
+    for (const sub of USER_SUBCOLLECTIONS) {
+      expect(mockFixtures.ops).toContain(`purge users/uid1/${sub}`);
+    }
+  });
+
+  it('takes my pending scheduled messages, trash and sender keys out of the chat', async () => {
+    await purgeUserData('uid1');
+    // Each filtered on the field its read rule tests — that filter is what
+    // makes the query legal, so it belongs in the assertion.
+    expect(mockFixtures.ops).toContain('purge chats/chat1/scheduledMessages?user._id=uid1');
+    expect(mockFixtures.ops).toContain('purge chats/chat1/trash?deletedBy=uid1');
+    expect(mockFixtures.ops).toContain('purge chats/chat1/senderKeys?from=uid1');
+    expect(mockFixtures.ops).toContain('delete chats/chat1/liveLocations/uid1');
+  });
+
+  // Ordering is the whole game: once participants loses the uid, every rule in
+  // the chat denies it, and deleteAccount is one line away.
+  it('clears the chat subcollections before leaving the chat', async () => {
+    await purgeUserData('uid1');
+    const leftAt = mockFixtures.ops.indexOf('leave chats/chat1');
+    expect(leftAt).toBeGreaterThan(-1);
+    for (const op of [
+      'purge chats/chat1/scheduledMessages?user._id=uid1',
+      'purge chats/chat1/trash?deletedBy=uid1',
+      'purge chats/chat1/senderKeys?from=uid1',
+      'delete chats/chat1/liveLocations/uid1',
+    ]) {
+      const at = mockFixtures.ops.indexOf(op);
+      expect(at).toBeGreaterThan(-1);
+      expect(at).toBeLessThan(leftAt);
+    }
   });
 });

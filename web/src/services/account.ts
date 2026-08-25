@@ -23,6 +23,7 @@ import {deleteQueryInChunks} from './firestoreBatch';
 import {storage, deleteStorageObjectByUrl} from './storage';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {USER_SUBCOLLECTIONS} from './userSubcollections';
 import type {ChatMessage} from '../types';
 
 /**
@@ -135,6 +136,49 @@ async function purgeChat(
   report.messagesDeleted += await deleteQueryInChunks(
     query(messagesRef, where('user._id', '==', uid)),
   );
+
+  /**
+   * The sibling subcollections this user owns documents in. These have to go
+   * before `participants: arrayRemove(uid)` below, because every rule in this
+   * chat is gated on isChatParticipant(chatId) — the moment that array loses
+   * the uid, the client can no longer reach any of it, and deleteAccount
+   * removes the auth user seconds later. So anything skipped here is not
+   * "cleaned up next time", it is permanent.
+   *
+   * What was being left behind: pending scheduled messages, which still hold
+   * their text; trash entries, which by design hold a byte-identical copy of a
+   * message the user had already chosen to delete; sealed sender-key chains;
+   * and the live-location document. Someone who asked for their account to be
+   * deleted was leaving the content of their deleted messages on the server.
+   *
+   * Each query filters on the same field its read rule tests, which is what
+   * makes it legal — Firestore rejects a query the rules cannot prove safe from
+   * its constraints alone.
+   *
+   * Deliberately left: sharedLists, whiteboards, expenses, quoteWall, playlist,
+   * countdowns and calls. Those are joint artifacts of the chat, not this
+   * user's own documents — deleting a shared list out from under the remaining
+   * participant would be destroying their data to satisfy someone else's
+   * erasure request.
+   */
+  const ownedInChat: [string, Query][] = [
+    ['scheduledMessages', query(collection(db, 'chats', chatId, 'scheduledMessages'), where('user._id', '==', uid))],
+    ['trash', query(collection(db, 'chats', chatId, 'trash'), where('deletedBy', '==', uid))],
+    ['senderKeys', query(collection(db, 'chats', chatId, 'senderKeys'), where('from', '==', uid))],
+  ];
+  for (const [label, q] of ownedInChat) {
+    try {
+      await deleteQueryInChunks(q);
+    } catch (err) {
+      report.errors.push(`chat ${chatId}/${label} failed: ${String(err)}`);
+    }
+  }
+  // Keyed by uid rather than queried: one document, deleted by path.
+  try {
+    await deleteDoc(doc(db, 'chats', chatId, 'liveLocations', uid));
+  } catch (err) {
+    report.errors.push(`chat ${chatId}/liveLocations failed: ${String(err)}`);
+  }
 
   // `chat.lastMessage` is a denormalised copy of the newest message's text,
   // read by both clients' chat lists. Leaving it would leave the deleted
@@ -285,7 +329,9 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
   }
 
   // Owner-only subcollections, including the published E2EE public key.
-  for (const sub of ['bookmarks', 'reminders', 'private', 'publicKeys']) {
+  // Deleting the profile document does NOT delete these — see
+  // userSubcollections.ts for why a name left off this list is unrecoverable.
+  for (const sub of USER_SUBCOLLECTIONS) {
     try {
       await deleteQueryInChunks(query(collection(db, 'users', uid, sub)));
     } catch (err) {
