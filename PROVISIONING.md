@@ -169,6 +169,17 @@ and the key store, so they prove the logic and nothing about the platform.
       arrive, unencrypted, rather than appearing broken.
 - [ ] Sign out and confirm decrypted attachments are gone from the app's cache
       directory.
+- [ ] **Schedule a message, then check the Firestore console before it is
+      delivered.** `chats/{id}/scheduledMessages/{id}` must show an `encrypted`
+      envelope and an empty `text`. This one used to store the message in the
+      clear, so it is worth looking at with your own eyes rather than trusting
+      the delivered result — a delivered message looks the same either way.
+- [ ] Let it deliver and confirm the recipient can read it. Mobile seals
+      scheduled messages through the fan-out path rather than the ratchet, and
+      that branch is the one part of this change no test reaches (see the
+      commit "Stop storing scheduled messages in plaintext").
+- [ ] Schedule one, then cancel it, and confirm ordinary messages sent
+      afterwards still decrypt on the other device.
 
 ---
 
