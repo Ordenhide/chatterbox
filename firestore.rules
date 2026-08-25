@@ -118,7 +118,53 @@ service cloud.firestore {
       // cannot reclaim itself by writing.
       allow read: if isSignedIn() ||
         (request.auth != null && request.auth.uid == userId);
-      allow write: if isSignedIn() && request.auth.uid == userId;
+      // Owning the document is not enough on its own, because two of its
+      // fields are *identity claims* that other users act on. See
+      // identityFieldsHonest().
+      allow write: if isSignedIn() && request.auth.uid == userId &&
+        identityFieldsHonest(userId);
+    }
+
+    /**
+     * Stops a profile from claiming an identity its owner does not hold.
+     *
+     * `email` is not decoration: it is what "add friend" and "new chat" search
+     * on (searchUsers / getUserByEmail in services/firebaseChat.ts). Owning
+     * your own document used to be the only requirement for writing it, so any
+     * user could set their profile email to someone else's, and a victim
+     * searching for that address would find the impersonator and start a chat
+     * with them. Trust-on-first-use then does exactly what it is designed to
+     * do — it does not flag a first contact, because every key is unseen once
+     * — so the conversation comes up correctly encrypted, to the wrong person.
+     * The encryption is never broken; the identity layer under it is simply
+     * bypassed, and by any ordinary user rather than a hostile server.
+     *
+     * `uid` matters for the same reason one step later: search results are
+     * built from document *data*, so a uid that disagrees with the document it
+     * sits in redirects whoever acts on that result.
+     *
+     * Both are compared against the auth token, which is issued by Firebase
+     * and cannot be forged by the client. Absent and null are allowed: phone
+     * sign-in produces an account with no email at all, and both clients write
+     * null for it rather than omitting the field.
+     *
+     * Compared lower-cased on both sides. The clients normalise before writing
+     * (email lookup depends on it), but a rule that rejected a legitimate
+     * difference in case would lock the account out of every future profile
+     * write, since `request.resource.data` is the whole post-write document —
+     * even an update that only touches an FCM token carries the existing email
+     * through this check.
+     */
+    function identityFieldsHonest(userId) {
+      // Deletes carry no resource to inspect.
+      return request.resource == null || (
+        (!('email' in request.resource.data) ||
+          request.resource.data.email == null ||
+          request.resource.data.email.lower() ==
+            request.auth.token.get('email', '').lower()) &&
+        (!('uid' in request.resource.data) ||
+          request.resource.data.uid == userId)
+      );
     }
 
     match /friendRequests/{requestId} {

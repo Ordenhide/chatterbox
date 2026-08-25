@@ -57,6 +57,17 @@
  *      that gap needs the out-of-band verification ceremony
  *      (computeSafetyNumber below already provides the number; nothing forces
  *      a user to actually compare it).
+ *
+ *      Worth being precise about who can exploit this, because it was
+ *      understated here until a profile-email spoof was found: the attacker
+ *      does not need to control the server. Contact discovery searches on a
+ *      profile field, so anyone who can make a victim start a conversation
+ *      with *them* — rather than substituting a key mid-conversation — lands
+ *      in the same place, and first contact is never flagged. The rules now
+ *      pin the email and uid on a profile to the auth token
+ *      (firestore.rules, identityFieldsHonest), which closes that particular
+ *      route in; it does not make first contact verified, and nothing here
+ *      does.
  *   3. SINGLE DEVICE PER USER. A second device generates a new keypair and
  *      overwrites the published one, breaking decryption on the first.
  *   4. NO BACKFILL. Existing plaintext messages stay plaintext.

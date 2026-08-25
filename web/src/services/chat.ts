@@ -32,17 +32,30 @@ export const MESSAGE_PAGE_SIZE = 30;
 
 // ---- Users -----------------------------------------------------------------
 
+/**
+ * The uid comes from the document id, not from the document body.
+ *
+ * They should always agree — the rules require it — but they are different
+ * kinds of fact: the id is where the document lives and cannot be written, the
+ * field is something a client wrote. Callers act on the uid by starting a chat
+ * with it, so it is taken from the half that cannot be wrong. Mirrors
+ * profileFromDoc in the mobile client.
+ */
+function profileFromDoc(snap: {id: string; data: () => unknown}): UserProfile {
+  return {...(snap.data() as UserProfile), uid: snap.id};
+}
+
 export async function getUserByEmail(email: string): Promise<UserProfile | null> {
   const snap = await getDocs(
     query(collection(db, 'users'), where('email', '==', email.trim().toLowerCase()), limit(1)),
   );
   if (snap.empty) return null;
-  return snap.docs[0].data() as UserProfile;
+  return profileFromDoc(snap.docs[0]);
 }
 
 export async function getUserById(uid: string): Promise<UserProfile | null> {
   const snap = await getDoc(doc(db, 'users', uid));
-  return snap.exists() ? (snap.data() as UserProfile) : null;
+  return snap.exists() ? profileFromDoc(snap) : null;
 }
 
 // ---- Chats -----------------------------------------------------------------

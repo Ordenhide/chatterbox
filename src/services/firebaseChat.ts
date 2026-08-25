@@ -156,12 +156,24 @@ export async function setUserFcmToken(userId: string, token: string | null) {
   );
 }
 
+/**
+ * A profile, with its uid taken from the document id rather than the body.
+ *
+ * The two should always agree — the rules now require it — but they are not
+ * the same kind of fact. The id is where the document *is* and cannot be
+ * written; the field is something a client wrote. Callers act on the uid by
+ * starting a chat with it, so it is read from the half that cannot be wrong.
+ */
+function profileFromDoc(docSnap: {id: string; data: () => unknown}): User {
+  return {...(docSnap.data() as User), uid: docSnap.id};
+}
+
 export async function getUserByEmail(email: string) {
   // Stored emails are lowercased (see upsertUserProfile); normalize the query
   // so lookups are case-insensitive, matching the web client.
   const snapshot = await getDocs(query(usersRef(), where('email', '==', email.trim().toLowerCase()), limit(1)));
   if (snapshot.empty) return null;
-  return snapshot.docs[0].data() as User;
+  return profileFromDoc(snapshot.docs[0]);
 }
 
 export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 5) {
@@ -179,7 +191,7 @@ export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 
 
   if (trimmed.includes('@')) {
     const snapshot = await getDocs(query(usersRef(), where('email', '==', emailTerm), limit(maxResults)));
-    snapshot.docs.forEach(docSnap => addResult(docSnap.data() as User));
+    snapshot.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
     return results;
   }
 
@@ -188,8 +200,8 @@ export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 
     getDocs(query(usersRef(), where('displayName', '==', trimmed), limit(maxResults))),
   ]);
 
-  emailSnap.docs.forEach(docSnap => addResult(docSnap.data() as User));
-  nameSnap.docs.forEach(docSnap => addResult(docSnap.data() as User));
+  emailSnap.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
+  nameSnap.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
   return results.slice(0, maxResults);
 }
 

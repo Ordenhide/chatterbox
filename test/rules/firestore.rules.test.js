@@ -73,6 +73,93 @@ describe('users/{userId}', () => {
     await assertSucceeds(setDoc(doc(asUser('alice'), 'users/alice'), {displayName: 'Alice'}));
   });
 
+  describe('identity fields', () => {
+    /** A signed-in context carrying a real email claim, as Firebase issues. */
+    function asEmailUser(uid, email) {
+      return testEnv.authenticatedContext(uid, {email}).firestore();
+    }
+
+    it('denies claiming an email the account does not hold', async () => {
+      // The impersonation this rule exists for. Mallory sets her profile email
+      // to Bob's; a victim searching for Bob's address (searchUsers queries
+      // exactly this field) finds Mallory and starts an encrypted chat with
+      // her. Trust-on-first-use will not flag it, because a first contact is
+      // never flagged. The crypto holds; the identity under it does not.
+      const mallory = asEmailUser('mallory', 'mallory@evil.example');
+      await assertFails(
+        setDoc(doc(mallory, 'users/mallory'), {
+          email: 'bob@company.example',
+          displayName: 'Bob',
+        }),
+      );
+    });
+
+    it('allows writing the account\'s own email', async () => {
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(
+        setDoc(doc(alice, 'users/alice'), {email: 'alice@example.com', displayName: 'Alice'}),
+      );
+    });
+
+    it('ignores case differences between the token and the stored value', async () => {
+      // Rejecting these would lock the account out of *every* future profile
+      // write, because request.resource.data is the whole post-write document
+      // — an update touching only an FCM token still carries the email.
+      const alice = asEmailUser('alice', 'Alice@Example.com');
+      await assertSucceeds(
+        setDoc(doc(alice, 'users/alice'), {email: 'alice@example.com'}),
+      );
+    });
+
+    it('allows a null email, which is what phone sign-in produces', async () => {
+      const phoneUser = testEnv.authenticatedContext('pat', {}).firestore();
+      await assertSucceeds(setDoc(doc(phoneUser, 'users/pat'), {email: null, displayName: 'Pat'}));
+    });
+
+    it('denies an account with no email claiming one', async () => {
+      const phoneUser = testEnv.authenticatedContext('pat', {}).firestore();
+      await assertFails(
+        setDoc(doc(phoneUser, 'users/pat'), {email: 'bob@company.example'}),
+      );
+    });
+
+    it('allows a profile with no email field at all', async () => {
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(setDoc(doc(alice, 'users/alice'), {displayName: 'Alice'}));
+    });
+
+    it('denies a uid that disagrees with the document it sits in', async () => {
+      // Search results are built from document data, so this redirects
+      // whoever acts on the result at a third party.
+      const mallory = asEmailUser('mallory', 'mallory@evil.example');
+      await assertFails(
+        setDoc(doc(mallory, 'users/mallory'), {uid: 'bob', email: 'mallory@evil.example'}),
+      );
+    });
+
+    it('allows the matching uid', async () => {
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(
+        setDoc(doc(alice, 'users/alice'), {uid: 'alice', email: 'alice@example.com'}),
+      );
+    });
+
+    it('still allows an ordinary update that carries the existing email through', async () => {
+      // The realistic write: setDoc(..., {merge: true}) from upsertUserProfile,
+      // and updateDoc for an FCM token. Both present the merged document to
+      // the rule.
+      await seed(db => setDoc(doc(db, 'users/alice'), {email: 'alice@example.com', uid: 'alice'}));
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(updateDoc(doc(alice, 'users/alice'), {fcmToken: 'token-123'}));
+    });
+
+    it('still allows deleting the profile', async () => {
+      await seed(db => setDoc(doc(db, 'users/alice'), {email: 'alice@example.com'}));
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(deleteDoc(doc(alice, 'users/alice')));
+    });
+  });
+
   it('denies writing another user\'s profile — this is the boundary that keeps activeSessionId honest', async () => {
     // If this ever failed, user A could set user B's activeSessionId and
     // forcibly sign B out (or worse, claim B's session) without ever holding

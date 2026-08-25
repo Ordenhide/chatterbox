@@ -61,7 +61,8 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages} from '../firebaseChat';
+import {deleteMessages, getUserByEmail, searchUsersByEmailOrName} from '../firebaseChat';
+import {getDocs} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
 const KEYPAIR = {secretKey: new Uint8Array([1, 2, 3]), publicKey: new Uint8Array([4, 5, 6])};
@@ -111,5 +112,41 @@ describe('deleteMessages', () => {
   it('never lets a purge failure fail the delete the user asked for', async () => {
     mockPurgeExpiredTrash.mockRejectedValue(new Error('offline'));
     await expect(deleteMessages('chat1', ['m1'], 'uid1')).resolves.toBeUndefined();
+  });
+});
+
+
+describe('user lookup takes the uid from the document id', () => {
+  /**
+   * A profile whose `uid` field disagrees with the document it sits in.
+   *
+   * The rules now reject writing one, but the lookup should not depend on
+   * that: the id is where the document lives and cannot be written, while the
+   * field is something a client wrote. Callers act on the uid by starting a
+   * chat with it, so it has to come from the half that cannot be wrong.
+   */
+  const mismatched = {id: 'mallory', data: () => ({uid: 'bob', email: 'x@example.com'})};
+  const mockedGetDocs = getDocs as jest.MockedFunction<typeof getDocs>;
+
+  afterEach(() => {
+    mockedGetDocs.mockReset();
+    mockedGetDocs.mockResolvedValue({docs: [], empty: true} as never);
+  });
+
+  it('getUserByEmail returns the document id, not the uid field', async () => {
+    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
+    expect((await getUserByEmail('x@example.com'))?.uid).toBe('mallory');
+  });
+
+  it('searchUsersByEmailOrName returns the document id, not the uid field', async () => {
+    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
+    const results = await searchUsersByEmailOrName('x@example.com');
+    expect(results).toHaveLength(1);
+    expect(results[0].uid).toBe('mallory');
+  });
+
+  it('keeps the rest of the profile intact', async () => {
+    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
+    expect((await getUserByEmail('x@example.com'))?.email).toBe('x@example.com');
   });
 });
