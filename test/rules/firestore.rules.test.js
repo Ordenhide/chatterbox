@@ -978,13 +978,19 @@ describe('chats/{chatId}/messages/{messageId}', () => {
 });
 
 describe('chat subcollections gated only by isChatParticipant', () => {
-  // calls, scheduledMessages, sharedLists, expenses, whiteboards, quoteWall,
-  // playlist, countdowns all share the identical
-  // `allow read, write: if isChatParticipant(chatId);` rule — one
-  // parameterized check across all of them rather than eight near-identical
-  // blocks, and it still catches a typo'd path in any one of them.
+  // calls, sharedLists, expenses, whiteboards, quoteWall, playlist and
+  // countdowns share the identical `allow read, write: if
+  // isChatParticipant(chatId);` rule — one parameterized check across all of
+  // them rather than seven near-identical blocks, and it still catches a
+  // typo'd path in any one of them.
+  //
+  // scheduledMessages used to be on this list and no longer belongs: it
+  // carries an author, so it is held to the same "author as yourself" rule as
+  // a message and has its own block above. Leaving it here would have
+  // asserted that any participant may write one, which is the forgery that
+  // block exists to prevent.
   const subcollections = [
-    'calls', 'scheduledMessages', 'sharedLists', 'expenses',
+    'calls', 'sharedLists', 'expenses',
     'whiteboards', 'quoteWall', 'playlist', 'countdowns',
   ];
 
@@ -1316,5 +1322,144 @@ describe('chats/{chatId}/senderKeys/{id} — group forward-secrecy distributions
     await assertFails(
       setDoc(doc(asUser('bob'), 'chats/c1/senderKeys/alice__bob'), dist('alice', 'bob')),
     );
+  });
+});
+
+describe('chats/{chatId}/scheduledMessages/{msgId}', () => {
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'mallory']}));
+  });
+
+  it('denies scheduling a message authored as somebody else', async () => {
+    // The forgery this rule exists for. processScheduledMessages copies a
+    // scheduled document into chats/{id}/messages with the Admin SDK, which
+    // does not consult rules — so scheduling was a way around the author
+    // check the messages rule enforces so carefully.
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/forged'), {
+        text: 'I quit.',
+        user: {_id: 'alice', name: 'Alice'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+  });
+
+  it('allows scheduling your own message', async () => {
+    await assertSucceeds(
+      setDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/mine'), {
+        text: 'later',
+        user: {_id: 'mallory'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+  });
+
+  it('denies scheduling with no author at all', async () => {
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/anon'), {
+        text: 'later',
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+  });
+
+  it('denies a non-participant scheduling anything', async () => {
+    await assertFails(
+      setDoc(doc(asUser('eve'), 'chats/c1/scheduledMessages/x'), {
+        text: 'hi',
+        user: {_id: 'eve'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+  });
+
+  it('denies rewriting another participant\'s pending message', async () => {
+    // The same forgery with an extra step.
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/hers'), {
+        text: 'see you at six',
+        user: {_id: 'alice'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/hers'), {text: 'I quit.'}),
+    );
+  });
+
+  it('denies taking over another participant\'s pending message', async () => {
+    // Rewriting it *as yourself*. The result is attributed correctly, so it is
+    // not forgery — but it silently destroys a message somebody else queued,
+    // and it is the case where checking only the incoming author is not
+    // enough. The existing document has to be checked too.
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/hers'), {
+        text: 'see you at six',
+        user: {_id: 'alice'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/hers'), {
+        text: 'cancelled',
+        user: {_id: 'mallory'},
+      }),
+    );
+  });
+
+  it('lets the author edit their own', async () => {
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/mine'), {
+        text: 'later',
+        user: {_id: 'mallory'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertSucceeds(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/mine'), {text: 'much later'}),
+    );
+  });
+
+  it('denies deleting another participant\'s pending message', async () => {
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/hers'), {
+        text: 'see you at six',
+        user: {_id: 'alice'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertFails(deleteDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/hers')));
+  });
+
+  it('lets the author cancel their own', async () => {
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/mine'), {
+        text: 'later',
+        user: {_id: 'mallory'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertSucceeds(deleteDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/mine')));
+  });
+
+  it('still lets any participant read them', async () => {
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/scheduledMessages/hers'), {
+        text: 'later',
+        user: {_id: 'alice'},
+        scheduledFor: Date.now(),
+        sent: false,
+      }),
+    );
+    await assertSucceeds(getDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/hers')));
   });
 });

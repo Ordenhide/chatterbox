@@ -571,9 +571,41 @@ service cloud.firestore {
         }
       }
 
+      /**
+       * A scheduled message is a message with a delay, so it carries the same
+       * `user._id` and has to be held to the same rule: you may only author as
+       * yourself.
+       *
+       * Nothing checked it. The messages rule below is careful about exactly
+       * this — and processScheduledMessages copies a scheduled document into
+       * that collection with the Admin SDK, which does not consult rules at
+       * all. So scheduling was a way around the author check: any participant
+       * could schedule a message naming another participant as its author, and
+       * a minute later it appeared as theirs. In a messenger, a message
+       * attributed to someone who did not write it is about the worst thing
+       * that can be forged.
+       *
+       * The web client's own delivery path already refused to send one it did
+       * not author ("only the author's client delivers"); this is that
+       * instinct, enforced where it cannot be walked around.
+       *
+       * Update and delete are the author's too. An unrestricted update let a
+       * participant rewrite the text of someone else's pending message, which
+       * is the same forgery with an extra step.
+       */
+      function scheduledAuthor() {
+        return request.resource.data.get('user', {}).get('_id', '');
+      }
+
       match /scheduledMessages/{msgId} {
-        allow read, create: if isChatParticipant(chatId);
-        allow update, delete: if isChatParticipant(chatId);
+        allow read: if isChatParticipant(chatId);
+        allow create: if isChatParticipant(chatId) &&
+          scheduledAuthor() == request.auth.uid;
+        allow update: if isChatParticipant(chatId) &&
+          resource.data.get('user', {}).get('_id', '') == request.auth.uid &&
+          scheduledAuthor() == request.auth.uid;
+        allow delete: if isChatParticipant(chatId) &&
+          resource.data.get('user', {}).get('_id', '') == request.auth.uid;
       }
 
       match /sharedLists/{listId} {

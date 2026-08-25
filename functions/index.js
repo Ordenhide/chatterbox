@@ -447,14 +447,33 @@ exports.processScheduledMessages = functions.pubsub
           const data = schedDoc.data();
           const chatRef = schedDoc.ref.parent.parent;
           if (!chatRef) continue;
+
+          // This writes with the Admin SDK, so the rule requiring a message to
+          // be authored as its sender never runs here. The rules now enforce
+          // that at scheduling time; this checks the author is at least a
+          // member of the chat, which catches documents written before that
+          // rule existed. It does not, on its own, stop one participant
+          // forging another — that is the scheduling rule's job, and this is
+          // the second lock rather than the first.
+          const chatSnap = await chatRef.get();
+          const chat = chatSnap.data();
+          const author = data.user?._id;
+          if (!author || !(chat?.participants || []).includes(author)) {
+            functions.logger.warn('Refusing scheduled message with a non-member author', {
+              path: schedDoc.ref.path,
+              author,
+            });
+            // Marked sent so it is not retried every minute forever.
+            await schedDoc.ref.update({sent: true});
+            continue;
+          }
+
           const msgRef = chatRef.collection('messages').doc(schedDoc.id);
           const {scheduledFor: _sf, sent: _s, ...messageData} = data;
           await msgRef.set({
             ...messageData,
             createdAt: FieldValue.serverTimestamp(),
           });
-          const chatSnap = await chatRef.get();
-          const chat = chatSnap.data();
           if (chat) {
             const unreadCountBy = {...(chat.unreadCountBy || {})};
             (chat.participants || []).forEach(uid => {
