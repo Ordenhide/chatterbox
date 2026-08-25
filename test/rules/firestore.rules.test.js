@@ -300,7 +300,7 @@ describe('users/{userId}/private, reminders, bookmarks — owner-only subcollect
 describe('friendRequests/{requestId}', () => {
   it('lets the sender create a pending request naming themself as fromId', async () => {
     await assertSucceeds(
-      setDoc(doc(asUser('alice'), 'friendRequests/req1'), {
+      setDoc(doc(asUser('alice'), 'friendRequests/alice_bob'), {
         fromId: 'alice',
         toId: 'bob',
         status: 'pending',
@@ -310,9 +310,33 @@ describe('friendRequests/{requestId}', () => {
 
   it('denies creating a request forging someone else as the sender', async () => {
     await assertFails(
-      setDoc(doc(asUser('mallory'), 'friendRequests/req1'), {
+      setDoc(doc(asUser('mallory'), 'friendRequests/alice_bob'), {
         fromId: 'alice',
         toId: 'bob',
+        status: 'pending',
+      }),
+    );
+  });
+
+  it('denies a request at a non-canonical document id', async () => {
+    // The friends rule decides consent by looking a request up at the
+    // canonical pair id. A request reachable at some other id is a request
+    // that lookup can never see, or — worse — one that names a pair the id
+    // does not correspond to.
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'friendRequests/req1'), {
+        fromId: 'alice',
+        toId: 'bob',
+        status: 'pending',
+      }),
+    );
+  });
+
+  it('denies a self-addressed request', async () => {
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'friendRequests/alice_alice'), {
+        fromId: 'alice',
+        toId: 'alice',
         status: 'pending',
       }),
     );
@@ -352,16 +376,54 @@ describe('friendRequests/{requestId}', () => {
 });
 
 describe('friends/{friendId}', () => {
-  it('creates only at the canonical pairId, and only naming yourself among userIds', async () => {
+  /** A pending request from `from` to `to`, at the canonical pair id. */
+  async function seedRequest(from, to) {
+    const id = from < to ? `${from}_${to}` : `${to}_${from}`;
+    await seed(db =>
+      setDoc(doc(db, `friendRequests/${id}`), {fromId: from, toId: to, status: 'pending'}),
+    );
+  }
+
+  it('denies a friendship nobody asked for', async () => {
+    // The vulnerability these rules previously had, and which the test that
+    // used to stand here asserted as correct: it created a friendship with no
+    // request in existence and expected that to succeed. Both clients refuse
+    // to accept a request not addressed to them, but that is client-side only
+    // — the document could simply be written directly.
+    //
+    // Not a cosmetic badge either. isFriend() gates friends-only moments and
+    // their images, so this was a way to read another account's posts.
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'friends/alice_mallory'), {
+        userIds: ['alice', 'mallory'],
+        status: 'accepted',
+      }),
+    );
+  });
+
+  it('denies it even when the impersonator sent the request themselves', async () => {
+    // Otherwise consent would mean no more than having asked.
+    await seedRequest('mallory', 'alice');
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'friends/alice_mallory'), {
+        userIds: ['alice', 'mallory'],
+        status: 'accepted',
+      }),
+    );
+  });
+
+  it('lets the recipient of a pending request create the friendship', async () => {
+    await seedRequest('alice', 'mallory');
     await assertSucceeds(
-      setDoc(doc(asUser('alice'), 'friends/alice_bob'), {
-        userIds: ['alice', 'bob'],
+      setDoc(doc(asUser('mallory'), 'friends/alice_mallory'), {
+        userIds: ['alice', 'mallory'],
         status: 'accepted',
       }),
     );
   });
 
   it('denies creating a friendship between two other users', async () => {
+    await seedRequest('alice', 'bob');
     await assertFails(
       setDoc(doc(asUser('mallory'), 'friends/alice_bob'), {
         userIds: ['alice', 'bob'],
@@ -372,12 +434,57 @@ describe('friends/{friendId}', () => {
 
   it('denies creating at the wrong (non-canonical) document id', async () => {
     // pairId() sorts lexicographically — "bob_alice" is not the canonical id
-    // for {alice, bob}, so this must fail even though alice is a participant.
+    // for {alice, bob}. The request is seeded so this fails on the id rather
+    // than on missing consent.
+    await seedRequest('bob', 'alice');
     await assertFails(
       setDoc(doc(asUser('alice'), 'friends/bob_alice'), {
         userIds: ['alice', 'bob'],
         status: 'accepted',
       }),
+    );
+  });
+
+  it('denies a self-friendship even with a self-addressed request behind it', async () => {
+    // Seeded past the rules on purpose. The friendRequests rule now refuses a
+    // self-request, so this is checking that the friends rule rejects it too
+    // rather than leaning on that — the two constraints fail independently.
+    await seed(db =>
+      setDoc(doc(db, 'friendRequests/alice_alice'), {
+        fromId: 'alice',
+        toId: 'alice',
+        status: 'pending',
+      }),
+    );
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'friends/alice_alice'), {
+        userIds: ['alice', 'alice'],
+        status: 'accepted',
+      }),
+    );
+  });
+
+  it('denies creation when either party has blocked the other', async () => {
+    await seedRequest('alice', 'mallory');
+    await seed(db =>
+      setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'}),
+    );
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'friends/alice_mallory'), {
+        userIds: ['alice', 'mallory'],
+        status: 'accepted',
+      }),
+    );
+  });
+
+  it('refuses updates, since nothing legitimately edits a friendship', async () => {
+    // Unconstrained updates let either party rewrite userIds, leaving a
+    // document claiming a pairing its own id contradicts.
+    await seed(db =>
+      setDoc(doc(db, 'friends/alice_bob'), {userIds: ['alice', 'bob'], status: 'accepted'}),
+    );
+    await assertFails(
+      updateDoc(doc(asUser('alice'), 'friends/alice_bob'), {userIds: ['alice', 'mallory']}),
     );
   });
 

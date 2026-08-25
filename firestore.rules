@@ -181,9 +181,17 @@ service cloud.firestore {
       allow list: if isSignedIn() &&
         (request.auth.uid == resource.data.fromId ||
          request.auth.uid == resource.data.toId);
+      // The document id must be the canonical pair id, and the two parties
+      // must differ. Neither was checked, so requests could be created at
+      // arbitrary ids naming arbitrary pairs — which mattered once the
+      // friends rule below started reading a request to decide whether a
+      // friendship was consented to. A lookup is only as trustworthy as the
+      // addressing that led to it.
       allow create: if isSignedIn() &&
         request.auth.uid == request.resource.data.fromId &&
         request.resource.data.toId is string &&
+        request.resource.data.toId != request.resource.data.fromId &&
+        request.resource.id == pairId(request.resource.data.fromId, request.resource.data.toId) &&
         request.resource.data.status == "pending" &&
         !isBlocked(request.auth.uid, request.resource.data.toId) &&
         !isBlocked(request.resource.data.toId, request.auth.uid);
@@ -191,16 +199,65 @@ service cloud.firestore {
         (request.auth.uid == resource.data.fromId || request.auth.uid == resource.data.toId);
     }
 
+    /**
+     * Proves the other party actually asked to be friends.
+     *
+     * Both clients check this — acceptFriendRequest returns early unless the
+     * request is addressed to the caller — but that is client-side only, and
+     * the rules did not back it up. A friendship document could therefore be
+     * written directly, with no request and no consent from the other person,
+     * simply by naming them in `userIds`.
+     *
+     * That is not a cosmetic "friend" badge. `isFriend()` is what gates
+     * friends-only moments, and now their images too, so a self-granted
+     * friendship was a way to read another account's friends-only posts. The
+     * visibility checks above were correct; the thing they consulted was not.
+     *
+     * Only the *recipient* of a pending request may create the friendship,
+     * which is what makes it consent rather than assertion. The sender cannot,
+     * however many requests they send.
+     *
+     * The client accepts inside a transaction that also deletes the request.
+     * Rules read committed state, so the request is still there when this
+     * evaluates.
+     *
+     * Being exact about the two comparisons, since it is easy to read them as
+     * two independent defences: once friendRequests are pinned to the
+     * canonical pair id, they are *mutually* redundant. The id fixes which two
+     * accounts the request is between, and a request has exactly one sender
+     * and one recipient, so "it came from the other party" and "it was
+     * addressed to me" are the same statement. Mutating out either one alone
+     * leaves the test suite green; mutating out both does not.
+     *
+     * Both are kept because together they say the property in full, and
+     * because either would become load-bearing on its own if the id constraint
+     * were relaxed. Neither is carrying the check by itself today.
+     */
+    function acceptingOwnRequest(userIds) {
+      let other = userIds[0] == request.auth.uid ? userIds[1] : userIds[0];
+      let pending = get(/databases/$(database)/documents/friendRequests/$(pairId(request.auth.uid, other)));
+      return pending != null &&
+        pending.data.toId == request.auth.uid &&
+        pending.data.fromId == other;
+    }
+
     match /friends/{friendId} {
       allow read: if isSignedIn() &&
         (resource == null || request.auth.uid in resource.data.userIds);
       allow create: if isSignedIn() &&
+        request.resource.data.userIds.size() == 2 &&
+        request.resource.data.userIds[0] != request.resource.data.userIds[1] &&
         request.auth.uid in request.resource.data.userIds &&
         request.resource.data.status == "accepted" &&
         request.resource.id == pairId(request.resource.data.userIds[0], request.resource.data.userIds[1]) &&
+        acceptingOwnRequest(request.resource.data.userIds) &&
         !isBlocked(request.resource.data.userIds[0], request.resource.data.userIds[1]) &&
         !isBlocked(request.resource.data.userIds[1], request.resource.data.userIds[0]);
-      allow update, delete: if isSignedIn() &&
+      // No update: nothing in either client ever edits a friendship, and an
+      // unconstrained update let either party rewrite `userIds` — leaving a
+      // document that claims a pairing its own id contradicts. Unfriending is
+      // a delete, which either party may do.
+      allow delete: if isSignedIn() &&
         request.auth.uid in resource.data.userIds;
     }
 
