@@ -39,6 +39,8 @@ const logError = (error: unknown, context: string) => {
  * can look the moment up and apply its visibility (see storage.rules). The id
  * therefore has to exist before the upload, which happens before the document.
  */
+export {canDeleteMomentComment} from './momentPermissions';
+
 export function newMomentId(): string {
   return doc(momentsRef()).id;
 }

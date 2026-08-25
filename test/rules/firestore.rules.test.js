@@ -596,6 +596,119 @@ describe('moments/{momentId}', () => {
         addDoc(collection(asUser('mallory'), 'moments/m1/comments'), {authorId: 'bob', text: 'hi'}),
       ).rejects.toBeDefined();
     });
+
+    /**
+     * Reading a moment and writing to it used to be gated differently: every
+     * one of these succeeded, because create asked only "are you authoring as
+     * yourself" and never "are you allowed near this moment at all".
+     *
+     * Note every pre-existing test above uses a *public* moment, which is why
+     * the gap survived — the visibility model was thoroughly tested on read
+     * and not exercised once on write.
+     */
+    describe('writing to a moment you cannot read', () => {
+      it('denies a blocked user commenting, which is the whole point of a block', async () => {
+        // No id-guessing needed for this one: comment on a public moment, get
+        // blocked, keep commenting — the id is already known.
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'});
+        });
+        await assertFails(
+          addDoc(collection(asUser('mallory'), 'moments/m1/comments'), {
+            authorId: 'mallory',
+            text: 'still here',
+          }),
+        );
+      });
+
+      it('denies a blocked user liking', async () => {
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'});
+        });
+        await assertFails(setDoc(doc(asUser('mallory'), 'moments/m1/likes/mallory'), {}));
+      });
+
+      it('denies a stranger commenting on a private moment', async () => {
+        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'private'}));
+        await assertFails(
+          addDoc(collection(asUser('stranger'), 'moments/m1/comments'), {
+            authorId: 'stranger',
+            text: 'hi',
+          }),
+        );
+      });
+
+      it('denies a non-friend commenting on a friends-only moment', async () => {
+        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'friends'}));
+        await assertFails(
+          addDoc(collection(asUser('stranger'), 'moments/m1/comments'), {
+            authorId: 'stranger',
+            text: 'hi',
+          }),
+        );
+      });
+
+      it('still lets an actual friend comment on a friends-only moment', async () => {
+        // The gate has to be the visibility model, not a blanket refusal.
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'friends'});
+          await setDoc(doc(db, 'friends/alice_bob'), {userIds: ['alice', 'bob'], status: 'accepted'});
+        });
+        await assertSucceeds(
+          addDoc(collection(asUser('bob'), 'moments/m1/comments'), {authorId: 'bob', text: 'nice'}),
+        );
+        await assertSucceeds(setDoc(doc(asUser('bob'), 'moments/m1/likes/bob'), {}));
+      });
+
+      it('still lets the author comment on their own private moment', async () => {
+        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'private'}));
+        await assertSucceeds(
+          addDoc(collection(asUser('alice'), 'moments/m1/comments'), {authorId: 'alice', text: 'note'}),
+        );
+      });
+    });
+
+    describe('taking things back', () => {
+      // Delete is deliberately not gated on read access: losing access must
+      // never strand your own data somewhere you can no longer reach it.
+      it('lets me unlike after the moment turns private', async () => {
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'moments/m1/likes/bob'), {});
+        });
+        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'private'}));
+        await assertSucceeds(deleteDoc(doc(asUser('bob'), 'moments/m1/likes/bob')));
+      });
+
+      it('lets me delete my own comment after being blocked', async () => {
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'moments/m1/comments/c1'), {authorId: 'mallory', text: 'oops'});
+          await setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'});
+        });
+        await assertSucceeds(deleteDoc(doc(asUser('mallory'), 'moments/m1/comments/c1')));
+      });
+
+      it('lets the moment author remove a comment from their own post', async () => {
+        // Without this, a comment on your own post could only ever be removed
+        // by whoever left it — which, for the case that matters, is nobody.
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'moments/m1/comments/c1'), {authorId: 'mallory', text: 'abuse'});
+        });
+        await assertSucceeds(deleteDoc(doc(asUser('alice'), 'moments/m1/comments/c1')));
+      });
+
+      it('does not let a bystander delete somebody else\'s comment', async () => {
+        await seed(async db => {
+          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+          await setDoc(doc(db, 'moments/m1/comments/c1'), {authorId: 'bob', text: 'hi'});
+        });
+        await assertFails(deleteDoc(doc(asUser('mallory'), 'moments/m1/comments/c1')));
+      });
+    });
   });
 });
 

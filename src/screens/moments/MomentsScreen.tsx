@@ -24,12 +24,14 @@ import {useNavigation} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Video from 'react-native-video';
 import ImageResizer from 'react-native-image-resizer';
+import {canDeleteMomentComment} from '../../services/momentPermissions';
 import {useAuth} from '../../contexts/AuthContext';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import {useTranslation} from 'react-i18next';
 import {
   addMomentComment,
+  deleteMomentComment,
   createMoment,
   deleteMoment,
   fetchMomentsForAuthors,
@@ -234,6 +236,27 @@ export default function MomentsScreen() {
     setComments([]);
     setActiveMoment(null);
     setCommentDraft('');
+  };
+
+  /**
+   * Deleting a comment is not undoable and the rows are small and close
+   * together, so it asks first. The listener refreshes the list — no local
+   * bookkeeping to get out of step with the server.
+   */
+  const confirmDeleteComment = (commentId: string) => {
+    if (!activeMoment?.id) return;
+    Alert.alert(t('moments.comments.deleteTitle'), t('moments.comments.deleteBody'), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('moments.comments.delete'),
+        style: 'destructive',
+        onPress: () => {
+          deleteMomentComment(activeMoment.id, commentId).catch(error =>
+            reportError(error, 'deleteMomentComment'),
+          );
+        },
+      },
+    ]);
   };
 
   const extractMentions = (text: string) => {
@@ -798,9 +821,26 @@ export default function MomentsScreen() {
             renderItem={({item}) => {
               const author = commentAuthors[item.authorId];
               const name = author?.displayName || author?.email || item.authorId;
+              const canRemove = canDeleteMomentComment(
+                item,
+                activeMoment?.authorId ?? '',
+                user?.uid ?? '',
+              );
               return (
                 <View style={[styles.commentCard, {borderColor: colors.glassBorder}]}>
-                  <Text style={[styles.commentAuthor, {color: colors.text}]}>{name}</Text>
+                  <View style={styles.commentHeaderRow}>
+                    <Text style={[styles.commentAuthor, {color: colors.text}]}>{name}</Text>
+                    {canRemove && (
+                      <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityLabel={t('moments.comments.delete')}
+                        onPress={() => confirmDeleteComment(item.id)}>
+                        <Text style={[styles.commentDelete, {color: colors.textSecondary}]}>
+                          {t('moments.comments.delete')}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
                   <Text style={[styles.commentText, {color: colors.text}]}>{item.text}</Text>
                 </View>
               );
@@ -1008,9 +1048,18 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     elevation: 1,
   },
+  commentHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   commentAuthor: {
     fontSize: 13,
     fontWeight: '600',
+    marginBottom: 4,
+  },
+  commentDelete: {
+    fontSize: 12,
     marginBottom: 4,
   },
   commentText: {

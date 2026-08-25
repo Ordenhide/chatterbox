@@ -1,14 +1,18 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
-import {addComment, listenComments} from '../services/moments';
+import {addComment, deleteComment, listenComments} from '../services/moments';
+import {canDeleteMomentComment} from '../services/momentPermissions';
 import {getUserById} from '../services/chat';
 import type {MomentComment, UserProfile} from '../types';
 
 export default function MomentComments({
   momentId,
+  momentAuthorId,
   myUid,
 }: {
   momentId: string;
+  /** Needed to decide who may remove a comment — see canDeleteComment. */
+  momentAuthorId: string;
   myUid: string;
 }) {
   const [comments, setComments] = useState<MomentComment[]>([]);
@@ -50,6 +54,15 @@ export default function MomentComments({
       {comments.map(c => (
         <div key={c.id} style={styles.comment}>
           <span style={styles.author}>{nameOf(c.authorId)}</span> {c.text}
+          {canDeleteMomentComment(c, momentAuthorId, myUid) && (
+            <button
+              type="button"
+              style={styles.remove}
+              aria-label={`Delete comment by ${nameOf(c.authorId)}`}
+              onClick={() => deleteComment(momentId, c.id).catch(() => undefined)}>
+              Delete
+            </button>
+          )}
         </div>
       ))}
       <form onSubmit={submit} style={styles.form}>
@@ -72,6 +85,16 @@ const styles: Record<string, React.CSSProperties> = {
   wrap: {marginTop: 12, paddingTop: 12, borderTop: `1px solid ${colors.border}`},
   comment: {fontSize: 14, color: colors.text, marginBottom: 6, lineHeight: 1.4},
   author: {fontWeight: 700},
+  remove: {
+    marginLeft: 8,
+    padding: 0,
+    border: 'none',
+    background: 'none',
+    color: colors.textSecondary,
+    fontSize: 12,
+    textDecoration: 'underline',
+    cursor: 'pointer',
+  },
   form: {display: 'flex', gap: 8, marginTop: 8},
   input: {
     flex: 1,

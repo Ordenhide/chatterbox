@@ -319,7 +319,9 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
                   </button>
                 )}
               </div>
-              {openComments.has(m.id) && <MomentComments momentId={m.id} myUid={user.uid} />}
+              {openComments.has(m.id) && (
+                <MomentComments momentId={m.id} momentAuthorId={m.authorId} myUid={user.uid} />
+              )}
             </article>
             </RevealOnScroll>
           ))

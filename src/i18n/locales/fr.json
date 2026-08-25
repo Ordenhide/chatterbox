@@ -156,6 +156,9 @@
       "refreshFailed": "Impossible d'actualiser les moments."
     },
     "comments": {
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer le commentaire ?",
+      "deleteBody": "Cette action est irréversible.",
       "title": "Commentaires",
       "placeholder": "Ajouter un commentaire...",
       "empty": "Aucun commentaire pour le moment.",

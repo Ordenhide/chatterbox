@@ -156,6 +156,9 @@
       "refreshFailed": "Momente konnten nicht aktualisiert werden."
     },
     "comments": {
+      "delete": "Löschen",
+      "deleteTitle": "Kommentar löschen?",
+      "deleteBody": "Das lässt sich nicht rückgängig machen.",
       "title": "Kommentare",
       "placeholder": "Kommentar hinzufügen...",
       "empty": "Noch keine Kommentare.",

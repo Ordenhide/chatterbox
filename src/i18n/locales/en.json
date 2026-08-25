@@ -269,6 +269,9 @@
       "refreshFailed": "Unable to refresh moments."
     },
     "comments": {
+      "delete": "Delete",
+      "deleteTitle": "Delete comment?",
+      "deleteBody": "This can't be undone.",
       "title": "Comments",
       "placeholder": "Add a comment...",
       "empty": "No comments yet.",

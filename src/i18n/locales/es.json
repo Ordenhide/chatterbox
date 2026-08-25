@@ -156,6 +156,9 @@
       "refreshFailed": "No se pudo actualizar momentos."
     },
     "comments": {
+      "delete": "Eliminar",
+      "deleteTitle": "¿Eliminar comentario?",
+      "deleteBody": "Esta acción no se puede deshacer.",
       "title": "Comentarios",
       "placeholder": "Agrega un comentario...",
       "empty": "Aún no hay comentarios.",

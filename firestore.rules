@@ -273,15 +273,46 @@ service cloud.firestore {
       allow delete: if isSignedIn() &&
         resource.data.authorId == request.auth.uid;
 
+      /**
+       * Reading a moment and writing to it were gated differently, and only
+       * the read side asked whether you were allowed near it at all.
+       *
+       * canReadMomentById() carries the whole visibility model — author,
+       * public, friends-only — and blocks in both directions. It was applied
+       * to `read` on both subcollections and to neither `create`. So any
+       * signed-in user could like or comment on a moment they could not see:
+       * a private one, a friends-only one belonging to a stranger, or one
+       * whose author had blocked them. The author could not read the
+       * commenter's own profile, but the comment landed on their post and
+       * they saw it.
+       *
+       * Blocking is precisely the control that is supposed to stop that, and
+       * this was the last place it did nothing. The realistic route in needs
+       * no id guessing: comment on a public moment, get blocked, keep
+       * commenting — you already know the id.
+       *
+       * Delete stays ungated on purpose. Removing your own like or your own
+       * comment must keep working after you lose read access, or losing access
+       * strands your data somewhere you can never take it back from.
+       */
       match /likes/{userId} {
         allow read: if canReadMomentById(momentId);
-        allow create, delete: if isSignedIn() && request.auth.uid == userId;
+        allow create: if isSignedIn() && request.auth.uid == userId &&
+          canReadMomentById(momentId);
+        allow delete: if isSignedIn() && request.auth.uid == userId;
       }
 
       match /comments/{commentId} {
         allow read: if canReadMomentById(momentId);
-        allow create: if isSignedIn() && request.auth.uid == request.resource.data.authorId;
-        allow delete: if isSignedIn() && request.auth.uid == resource.data.authorId;
+        allow create: if isSignedIn() && request.auth.uid == request.resource.data.authorId &&
+          canReadMomentById(momentId);
+        // The moment's author may delete too. Without that, a comment on your
+        // own post could only ever be removed by the person who left it —
+        // which, for the case this rule block exists to handle, is nobody.
+        allow delete: if isSignedIn() && (
+          request.auth.uid == resource.data.authorId ||
+          request.auth.uid == get(/databases/$(database)/documents/moments/$(momentId)).data.authorId
+        );
       }
     }
 

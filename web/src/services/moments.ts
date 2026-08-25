@@ -169,3 +169,32 @@ export async function addComment(momentId: string, authorId: string, text: strin
     tx.set(doc(db, 'moments', momentId), {commentCount: increment(1)}, {merge: true});
   });
 }
+
+/**
+ * Removes a comment and decrements the moment's cached count.
+ *
+ * Neither client had this at all. The rules permitted a comment's author to
+ * delete it and nothing ever called that, so in the product a comment — anyone's
+ * comment, on anyone's post — could not be removed by anybody. The rules now
+ * also let the *moment's* author delete, which is the case that matters: a
+ * comment left on your own post by someone you have since blocked can only be
+ * cleared by you.
+ *
+ * One consequence worth knowing: the counter update rides in the same
+ * transaction, and writing it needs read access to the moment. A user who has
+ * been blocked since commenting therefore cannot remove their own comment — the
+ * moment's author has to. Letting them write the counter anyway would hand
+ * someone a channel back to the person who blocked them, which is a worse
+ * trade than the one taken here.
+ */
+export async function deleteComment(momentId: string, commentId: string): Promise<void> {
+  const commentRef = doc(db, 'moments', momentId, 'comments', commentId);
+  await runTransaction(db, async tx => {
+    const snap = await tx.get(commentRef);
+    if (!snap.exists()) return;
+    tx.delete(commentRef);
+    tx.set(doc(db, 'moments', momentId), {commentCount: increment(-1)}, {merge: true});
+  });
+}
+
+export {canDeleteMomentComment} from './momentPermissions';
