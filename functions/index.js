@@ -109,6 +109,58 @@ function isAllowedReturnUrl(url) {
 // flag undefined at exactly the moment it decides anything, so these six
 // functions silently never deployed — which is why disappearing messages never
 // expired in production.
+/**
+ * App Check enforcement for callable functions, off unless switched on.
+ *
+ * App Check is initialised on the clients but nothing verified it here, and an
+ * unenforced App Check protects nothing at all — it is a token the client
+ * bothers to fetch and the server never looks at. Any script holding a stolen
+ * or self-registered ID token can call these functions directly, which is what
+ * App Check exists to stop.
+ *
+ * It is off by default because turning it on is not a code decision. Enforcing
+ * before the providers are registered in the Firebase console (App Attest or
+ * DeviceCheck for iOS, Play Integrity for Android, and a debug token for local
+ * builds) rejects *every* call from *every* client — a total outage, not a
+ * degradation. So this ships ready and inert, exactly like the scheduled
+ * functions above, and PROVISIONING.md carries the order the switches have to
+ * be thrown in.
+ *
+ * Read from the .env file as well as process.env for the reason given at
+ * length above: during the CLI's discovery pass, .env has not been applied to
+ * process.env and an inherited shell variable does not reach the subprocess.
+ */
+function envFlag(name) {
+  if (process.env[name] !== undefined) return process.env[name];
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const raw = fs.readFileSync(path.join(__dirname, '.env'), 'utf8');
+    const line = raw
+      .split('\n')
+      .map(l => l.trim())
+      .find(l => !l.startsWith('#') && l.startsWith(`${name}=`));
+    return line ? line.slice(line.indexOf('=') + 1).trim() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const APP_CHECK_ENFORCED = envFlag('CHATTERBOX_ENFORCE_APP_CHECK') === 'true';
+
+/**
+ * The builder every callable in this file is defined through.
+ *
+ * A single place so enforcement cannot be switched on for some entry points
+ * and quietly missed on others — the one left out would be the one that gets
+ * used.
+ */
+function callable() {
+  return APP_CHECK_ENFORCED
+    ? functions.runWith({enforceAppCheck: true}).https
+    : functions.https;
+}
+
 function scheduledFlagFromEnvFile() {
   try {
     const fs = require('fs');
@@ -221,7 +273,7 @@ async function safeFetchUrl(targetUrl, redirectsLeft = MAX_REDIRECTS) {
  * 2. The old device detects the change via its real-time listener and signs out
  * 3. No token revocation — the old session logs out gracefully on its own
  */
-exports.claimSession = functions.https.onCall(async (data, context) => {
+exports.claimSession = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -291,7 +343,7 @@ exports.claimSession = functions.https.onCall(async (data, context) => {
  * Heartbeat function to keep session alive
  * Sessions expire after 5 minutes of inactivity
  */
-exports.sessionHeartbeat = functions.https.onCall(async (data, context) => {
+exports.sessionHeartbeat = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -496,7 +548,7 @@ exports.processReminders = functions.pubsub
 // clip's audio here so it can be forwarded to Speech-to-Text. Nothing about
 // how messages are stored or synced between devices changes; the function
 // itself never reads ciphertext or has any way to decrypt it.
-exports.transcribeVoiceMessage = functions.https.onCall(async (data, context) => {
+exports.transcribeVoiceMessage = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -563,7 +615,7 @@ exports.transcribeVoiceMessage = functions.https.onCall(async (data, context) =>
 // with any signed-in token. Checked first, before the rate-limit write and
 // well before any billable Cloudflare AI call, so an unentitled caller costs
 // one Firestore read and nothing else.
-exports.summarizeChat = functions.https.onCall(async (data, context) => {
+exports.summarizeChat = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -617,7 +669,7 @@ exports.summarizeChat = functions.https.onCall(async (data, context) => {
 // deliberate, per-message exception: the caller sends its already-decrypted
 // plaintext (it has it, for display) when the user explicitly taps
 // "Translate". Nothing about how messages are stored or synced changes.
-exports.translateMessage = functions.https.onCall(async (data, context) => {
+exports.translateMessage = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -841,7 +893,7 @@ exports.processExpiredMessages = functions.pubsub
   });
 
 // ─── View-Once Media Cleanup ────────────────────────────────────────────────
-exports.markViewOnceViewed = functions.https.onCall(async (data, context) => {
+exports.markViewOnceViewed = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -886,7 +938,7 @@ exports.markViewOnceViewed = functions.https.onCall(async (data, context) => {
 });
 
 // ─── Server-Side Link Preview ───────────────────────────────────────────────
-exports.fetchLinkPreview = functions.https.onCall(async (data, context) => {
+exports.fetchLinkPreview = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -1156,7 +1208,7 @@ async function getOrCreateStripeCustomer(stripe, uid, email) {
   return customer.id;
 }
 
-exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
+exports.createCheckoutSession = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
@@ -1209,7 +1261,7 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
   }
 });
 
-exports.createBillingPortalSession = functions.https.onCall(async (data, context) => {
+exports.createBillingPortalSession = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }

@@ -1,181 +1,106 @@
-# Final Solution: Deploy Firebase Functions
+# Deploying
 
-## The Reality
+> Rewritten. The previous version was built on the claim that *"Firebase CLI
+> doesn't support service account authentication for deployment"* and walked
+> through obtaining a `firebase login:ci` token as the way around it. That
+> claim is false, the workflow in this repository has never used such a token,
+> and `firebase login:ci` is deprecated. Anyone following the old instructions
+> was configuring a secret nothing reads.
 
-**Firebase CLI doesn't support service account authentication for deployment.** It requires:
-- Interactive OAuth login (fails in China)
-- CI token from `firebase login:ci` (also fails in China)
+Everything deploys from GitHub Actions using a service account. Nothing needs a
+browser login, a CI token, or a VPN.
 
-## ✅ Working Solutions
+## What deploys, and when
 
-### Solution 1: GitHub Actions (Best for China Users)
+| Workflow | Trigger | Deploys |
+|---|---|---|
+| `deploy-functions.yml` | push to `main` touching `functions/**`, or manual | Cloud Functions |
+| `deploy-rules.yml` | push to `main` touching the rules, or manual | Firestore + Storage rules |
+| `release-apk.yml` | tag `v*`, or manual | Signed Android APK |
+| `ci.yml` | every push and PR | Nothing — lint, typecheck, tests |
 
-GitHub Actions runs outside China, so Firebase authentication works.
+`deploy-rules.yml` runs the rules tests against the emulator first and will not
+deploy if they fail. `deploy-functions.yml` does not run tests; `ci.yml` covers
+that on the same push.
 
-**Setup:**
+## The one required secret
 
-1. **Add secrets to GitHub**:
-   - Go to your GitHub repo → Settings → Secrets and variables → Actions
-   - Add these secrets:
-     - `FIREBASE_SERVICE_ACCOUNT`: Paste entire content of `service-account-key.json`
-     - `FIREBASE_TOKEN`: Get from `firebase login:ci` (run this once with VPN, or get from someone outside China)
+`FIREBASE_SERVICE_ACCOUNT` — the full JSON key for a service account on project
+`chatterbox-e5d10`, with **Cloud Functions Admin**, **Service Account User**,
+and **Cloud Build Editor** (2nd-gen functions build through Cloud Build).
 
-2. **Push the workflow file**:
-   ```bash
-   git add .github/workflows/deploy-functions.yml
-   git commit -m "Add GitHub Actions for function deployment"
-   git push
-   ```
+It is not currently set, so **no function or rules deploy has ever run**. Both
+workflows now check for it up front and fail with that instruction; before, the
+failure surfaced inside `google-github-actions/auth` as a malformed-credentials
+error that never named the secret.
 
-3. **Deploy**:
-   - Go to GitHub repo → Actions tab
-   - Click "Deploy Firebase Functions"
-   - Click "Run workflow"
-   - Or just push changes to `functions/` folder
+Everything else is optional and turns individual features on. `PROVISIONING.md`
+lists them with what breaks without each.
 
-**To get FIREBASE_TOKEN** (one-time, with VPN):
-```bash
-npx firebase login:ci
-# Copy the token output
+## How authentication actually works
+
+`google-github-actions/auth` writes the key to a file and exports
+`GOOGLE_APPLICATION_CREDENTIALS`. `firebase-tools` picks that up, exactly as
+the Admin SDK does. No OAuth, no browser.
+
+This replaced `FirebaseExtended/action-hosting-deploy`, which only deploys
+Hosting and has no mechanism for Cloud Functions — so that earlier workflow
+never shipped a function no matter how many times it ran green.
+
+## Functions currently exported
+
+```
+autoReplyFocusMode   claimSession           createBillingPortalSession
+createCheckoutSession  fetchLinkPreview     markViewOnceViewed
+notifyNewMessage     onCallEnded            sessionHeartbeat
+stripeWebhook        summarizeChat          transcribeVoiceMessage
+translateMessage
 ```
 
-### Solution 2: Deploy from VPS/Server Outside China
+Six scheduled (pubsub) functions are defined but stripped from `exports` unless
+`CHATTERBOX_ENABLE_SCHEDULED=true`, because Cloud Scheduler needs the Blaze
+plan and its absence fails the whole deploy rather than just those functions.
+The deploy workflow sets it. See the long comment at the top of `functions/index.js`
+for why the flag is read from `.env` and not only from `process.env` — reading
+only the environment silently disabled them, which is why disappearing messages
+never expired.
 
-1. **SSH into server** (DigitalOcean, AWS, etc.)
-2. **Clone repo**:
-   ```bash
-   git clone <your-repo-url>
-   cd chatterbox
-   ```
-3. **Install Firebase CLI**:
-   ```bash
-   npm install -g firebase-tools
-   ```
-4. **Login** (will work outside China):
-   ```bash
-   firebase login
-   ```
-5. **Deploy**:
-   ```bash
-   cd functions
-   npm install
-   cd ..
-   firebase deploy --only functions
-   ```
+## Deploying by hand
 
-### Solution 3: Get CI Token Once (With VPN)
+Rarely needed, and it requires credentials the CI already holds:
 
-If you can get VPN working temporarily:
-
-1. **Get CI token**:
-   ```bash
-   npx firebase login:ci
-   ```
-   This outputs a token like: `1//abc123...`
-
-2. **Save token**:
-   ```bash
-   export FIREBASE_TOKEN="1//abc123..."
-   ```
-
-3. **Deploy**:
-   ```bash
-   cd functions
-   npm install
-   cd ..
-   npx firebase deploy --only functions --token "$FIREBASE_TOKEN"
-   ```
-
-4. **Make permanent**:
-   Add to `~/.zshrc`:
-   ```bash
-   export FIREBASE_TOKEN="1//abc123..."
-   ```
-
-### Solution 4: Ask Someone Outside China
-
-Have someone outside China:
-1. Clone your repo
-2. Run `firebase login:ci`
-3. Send you the token
-4. You use the token to deploy
-
-## Why Service Account Doesn't Work
-
-Firebase CLI uses OAuth2 flow which:
-- Requires browser redirect
-- Doesn't support service accounts for deployment
-- Only supports service accounts for Admin SDK (server-side)
-
-The `GOOGLE_APPLICATION_CREDENTIALS` environment variable works for:
-- ✅ Firebase Admin SDK
-- ✅ gcloud CLI
-- ✅ Direct API calls
-- ❌ Firebase CLI deployment
-
-## Recommended Approach
-
-**For China users**: Use **GitHub Actions** (Solution 1)
-- Set up once
-- Automatic deployment on push
-- No VPN needed
-- Free for public repos
-
-## Quick Start: GitHub Actions
-
-1. **Create the workflow file** (already created: `.github/workflows/deploy-functions.yml`)
-
-2. **Add secrets**:
-   - `FIREBASE_SERVICE_ACCOUNT`: Content of `service-account-key.json`
-   - `FIREBASE_TOKEN`: Get from `firebase login:ci` (with VPN, one-time)
-
-3. **Push and deploy**:
-   ```bash
-   git add .github/workflows/deploy-functions.yml
-   git commit -m "Add GitHub Actions deployment"
-   git push
-   ```
-
-4. **Trigger deployment**:
-   - Go to GitHub → Actions
-   - Click "Deploy Firebase Functions"
-   - Click "Run workflow"
-
-## Verify Deployment
-
-After deployment:
-```bash
-npx firebase functions:list
+```sh
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
+npx firebase-tools@^15 deploy --only functions --project chatterbox-e5d10 --non-interactive
+npx firebase-tools@^15 deploy --only firestore:rules,storage --project chatterbox-e5d10 --non-interactive
 ```
 
-Should show:
-- `claimSession`
-- `sessionHeartbeat`
+Run the rules tests first — the workflow does, and this does not:
 
-## Troubleshooting
+```sh
+npm run test:rules
+```
 
-### "FIREBASE_TOKEN secret not found"
-Add it in GitHub repo → Settings → Secrets → Actions
+## Verifying
 
-### "Functions deploy failed"
-Check:
-1. Billing enabled (Blaze plan)
-2. Service account has Cloud Functions Admin role
-3. Functions code has no errors
+```sh
+npx firebase-tools@^15 functions:list --project chatterbox-e5d10
+```
 
-### "Workflow not running"
-Make sure:
-1. Workflow file is in `.github/workflows/`
-2. File is named `deploy-functions.yml`
-3. You pushed to `main` or `master` branch
+The Actions run log is the other source of truth; a deploy that reports success
+without an `i functions:` upload line deployed nothing.
 
-## Summary
+## When a deploy fails
 
-**Best option**: GitHub Actions
-- Works from China
-- Automatic
-- No VPN needed after setup
+**Malformed or missing credentials** — `FIREBASE_SERVICE_ACCOUNT` is unset or
+is not the complete JSON key file. The preflight step now catches this first.
 
-**Quick option**: Get CI token once with VPN, use it forever
+**Permission denied on deploy** — the service account is missing one of the
+three roles above. Cloud Build Editor is the one usually forgotten, and its
+absence only shows up at the build step.
 
-**Manual option**: Deploy from server outside China
+**Blaze-plan errors** — billing is off and something scheduled slipped into
+`exports`. Check `CHATTERBOX_ENABLE_SCHEDULED`.
+
+**Rules deploy blocked** — the emulator tests failed. Read them; they run the
+real `firestore.rules`, so a failure is a real rule change, not a flaky test.

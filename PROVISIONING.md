@@ -172,7 +172,35 @@ and the key store, so they prove the logic and nothing about the platform.
 
 ---
 
-## 5. Sign in with Apple
+## 5. App Check enforcement
+
+App Check is initialised on the clients, but nothing on the server ever
+verified a token — and **unenforced App Check protects nothing**. It is a token
+the client bothers to fetch and the server never looks at, so any script
+holding a stolen or self-registered ID token can call the callable functions
+directly, which is the exact thing App Check exists to stop.
+
+The code is in place and inert. Turning it on is a console decision, not a code
+one, because enforcing before the providers are registered rejects **every call
+from every client** — a total outage. The order matters:
+
+1. **Register providers** — Firebase Console → App Check: App Attest (or
+   DeviceCheck) for the iOS app, Play Integrity for Android.
+2. **Add a debug token** for local development, or every debug build breaks.
+3. **Watch the metrics.** The console shows verified vs unverified requests per
+   service. Wait until unverified requests are near zero — anything else means
+   real users on older builds would be locked out.
+4. **Only then enforce.** Set the repo *variable* (not secret)
+   `CHATTERBOX_ENFORCE_APP_CHECK` to `true`, or `CHATTERBOX_ENFORCE_APP_CHECK=true`
+   in `functions/.env`, and redeploy.
+5. Enforce for Firestore and Storage separately in the console when ready;
+   those are independent of this flag.
+
+Rolling back is the same switch in reverse, and takes a redeploy.
+
+---
+
+## 6. Sign in with Apple
 
 See `SIGN_IN_WITH_APPLE.md`. Code is in place; the dependency has never been
 installed, and the Apple Developer and Firebase Console steps remain.
