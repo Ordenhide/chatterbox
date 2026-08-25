@@ -708,9 +708,12 @@ export default function ChatScreen() {
 
   useEffect(() => {
     if (!chatId) return;
-    const unsub = listenScheduledMessages(chatId, msgs => setScheduledCount(msgs.length));
+    if (!user?.uid) return;
+    const unsub = listenScheduledMessages(chatId, user.uid, msgs =>
+      setScheduledCount(msgs.length),
+    );
     return () => unsub();
-  }, [chatId]);
+  }, [chatId, user?.uid]);
 
   const startBurnCountdown = useCallback(
     (messageId: string | number, duration: number, startedAt: number) => {

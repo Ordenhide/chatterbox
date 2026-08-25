@@ -414,12 +414,13 @@ export default function ChatPane({
     return () => clearTimeout(id);
   }, [text, chatId, me.uid, editing]);
 
-  // Live list of this chat's pending scheduled messages (for the composer UI).
+  // Live list of my own pending scheduled messages in this chat (for the composer
+  // UI — it is an outbox, and only its author can cancel one).
   // Actual *delivery* runs globally in CallProvider so it isn't tied to this chat
   // being open — but sweep once on open too for immediacy.
   useEffect(() => {
     deliverDueScheduledMessages(chatId, me.uid).catch(() => undefined);
-    return listenScheduledMessages(chatId, setScheduled);
+    return listenScheduledMessages(chatId, me.uid, setScheduled);
   }, [chatId, me.uid]);
 
   const loadOlder = useCallback(async () => {

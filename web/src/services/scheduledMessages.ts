@@ -50,13 +50,43 @@ export async function cancelScheduledMessage(chatId: string, messageId: string):
   await deleteDoc(doc(scheduledCol(chatId), messageId));
 }
 
+/**
+ * A pending scheduled message belongs to whoever wrote it. The collection is
+ * per-chat, so a query over it returns every participant's — but a scheduled
+ * message is an *outbox*, and only its author can cancel one (the rules make
+ * delete author-only, since an unrestricted delete let any participant quietly
+ * destroy someone else's pending message). The composer listed the whole chat's
+ * and put a cancel button on each, so the button was inert on every row that
+ * wasn't yours — and `.catch(() => undefined)` swallowed the denial, leaving
+ * the row sitting there as though nothing had been clicked.
+ *
+ * Filtered in the client rather than as a `where('user._id', '==', myUid)`
+ * clause: that would need a fourth composite index for a collection that holds
+ * a handful of documents, and it would strand every already-loaded client until
+ * the index finished building.
+ */
+export function ownScheduledMessages<T extends {user?: {_id?: string}}>(
+  messages: T[],
+  myUid: string,
+): T[] {
+  if (!myUid) return [];
+  return messages.filter(m => m.user?._id === myUid);
+}
+
 export function listenScheduledMessages(
   chatId: string,
+  myUid: string,
   cb: (messages: ScheduledMessage[]) => void,
 ) {
   return onSnapshot(
     query(scheduledCol(chatId), where('sent', '==', false), orderBy('scheduledFor', 'asc')),
-    snap => cb(snap.docs.map(d => ({...(d.data() as ScheduledMessage), _id: d.id}))),
+    snap =>
+      cb(
+        ownScheduledMessages(
+          snap.docs.map(d => ({...(d.data() as ScheduledMessage), _id: d.id})),
+          myUid,
+        ),
+      ),
     () => cb([]),
   );
 }
