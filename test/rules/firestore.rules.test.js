@@ -1463,3 +1463,78 @@ describe('chats/{chatId}/scheduledMessages/{msgId}', () => {
     await assertSucceeds(getDoc(doc(asUser('mallory'), 'chats/c1/scheduledMessages/hers')));
   });
 });
+
+describe('view-once marking', () => {
+  async function seedViewOnce(viewedBy) {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob', 'mallory']}));
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/messages/m1'), {
+        text: '',
+        image: 'https://example/x.jpg',
+        viewOnce: true,
+        viewOnceViewedBy: viewedBy,
+        user: {_id: 'alice'},
+      }),
+    );
+  }
+
+  it('lets a viewer record their own view', async () => {
+    await seedViewOnce([]);
+    await assertSucceeds(
+      updateDoc(doc(asUser('bob'), 'chats/c1/messages/m1'), {
+        viewOnceViewedBy: ['bob'],
+        viewOnceExpired: false,
+      }),
+    );
+  });
+
+  it('denies recording somebody else as having viewed', async () => {
+    // Burns another participant's one view without them ever seeing it.
+    await seedViewOnce([]);
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m1'), {viewOnceViewedBy: ['bob']}),
+    );
+  });
+
+  it('denies adding yourself and somebody else at once', async () => {
+    await seedViewOnce([]);
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m1'), {
+        viewOnceViewedBy: ['mallory', 'bob'],
+      }),
+    );
+  });
+
+  it('denies expiring a message nobody has opened', async () => {
+    await seedViewOnce([]);
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m1'), {viewOnceExpired: true}),
+    );
+  });
+
+  it('denies removing an existing viewer, which would hand back a second view', async () => {
+    await seedViewOnce(['bob']);
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m1'), {viewOnceViewedBy: ['mallory']}),
+    );
+  });
+
+  it('preserves earlier viewers when adding yourself', async () => {
+    await seedViewOnce(['bob']);
+    await assertSucceeds(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m1'), {
+        viewOnceViewedBy: ['bob', 'mallory'],
+      }),
+    );
+  });
+
+  it('still refuses these fields on a message that is not view-once', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'mallory']}));
+    await seed(db =>
+      setDoc(doc(db, 'chats/c1/messages/m2'), {text: 'hi', user: {_id: 'alice'}}),
+    );
+    await assertFails(
+      updateDoc(doc(asUser('mallory'), 'chats/c1/messages/m2'), {viewOnceViewedBy: ['mallory']}),
+    );
+  });
+});

@@ -140,6 +140,7 @@ import {
 import {type MediaKeyInfo} from '../../services/mediaCrypto';
 import {discard, encryptToScratch} from '../../services/mediaFiles';
 import {resolveSealedMedia} from '../../services/mediaVault';
+import {markViewOnceViewed} from '../../services/viewOnce';
 import {MEDIA_SLOTS, decodeBody, encodeBody, type MediaSlot} from '../../services/messageBody';
 import {
   hasLostPeer,
@@ -3162,6 +3163,11 @@ export default function ChatScreen() {
             onPress={() => {
               const uri = msg?.image;
               if (uri) {
+                // Recorded, not awaited: the photo opens now. Without this the
+                // view was never registered at all, so the placeholder came
+                // back on the next render and the media stayed openable
+                // forever — the feature did nothing.
+                markViewOnceViewed(chatId, msg._id);
                 const index = imageMessages.findIndex(img => img.uri === uri);
                 setImageViewerIndex(index >= 0 ? index : 0);
                 setImageViewerVisible(true);
