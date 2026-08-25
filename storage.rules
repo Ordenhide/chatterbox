@@ -71,11 +71,71 @@ service firebase.storage {
       return request.resource == null || (withinSize(maxBytes) && !isActiveContent());
     }
 
-    match /moments/{userId}/{allPaths=**} {
-      allow read: if hasActiveSession();
+    function pairId(userA, userB) {
+      return userA < userB ? userA + "_" + userB : userB + "_" + userA;
+    }
+
+    function isFriendOf(userA, userB) {
+      return firestore.exists(/databases/(default)/documents/friends/$(pairId(userA, userB)));
+    }
+
+    function isBlockedBy(blockerId, blockedId) {
+      return firestore.exists(
+        /databases/(default)/documents/blocks/$(blockerId + "_" + blockedId));
+    }
+
+    /**
+     * The same visibility test firestore.rules applies to the moment document,
+     * applied to the object that document points at.
+     *
+     * These were not the same check, and the gap was the whole point of the
+     * feature: Firestore correctly hid a private moment's document, while
+     * Storage served the image to any signed-in user. `allow read` covers
+     * `list` as well as `get`, and the old filenames were timestamps, so the
+     * images did not even have to be guessed at — a stranger could enumerate
+     * another account's moment media and download all of it, private ones
+     * included, blocks ignored. Hiding the metadata while serving the content
+     * protects nothing.
+     *
+     * Kept deliberately parallel to canReadMomentById in firestore.rules. If
+     * one is ever changed, the other has to change with it, and the two files
+     * cannot share code — which is exactly how they drifted apart to begin
+     * with.
+     */
+    function canReadMoment(momentId) {
+      let moment = firestore.get(/databases/(default)/documents/moments/$(momentId));
+      return moment != null && (
+        moment.data.authorId == request.auth.uid ||
+        moment.data.visibility == "public" ||
+        (moment.data.visibility == "friends" &&
+          isFriendOf(request.auth.uid, moment.data.authorId))
+      ) &&
+      !isBlockedBy(request.auth.uid, moment.data.authorId) &&
+      !isBlockedBy(moment.data.authorId, request.auth.uid);
+    }
+
+    // Moment media, addressed by the moment it belongs to so the rule can look
+    // up that moment's visibility. The author is allowed unconditionally: the
+    // object is uploaded before its document exists, and without this their
+    // own upload would be unreadable until the document lands.
+    match /moments/{userId}/{momentId}/{fileName} {
+      allow read: if hasActiveSession() &&
+        (request.auth.uid == userId || canReadMoment(momentId));
       // Images only, and downscaled by the client before upload.
       allow write: if hasActiveSession() && request.auth.uid == userId &&
         uploadAllowed(25 * 1024 * 1024);
+    }
+
+    // Objects uploaded before the path carried a moment id. Nothing in the
+    // path identifies which moment they belong to, so their visibility cannot
+    // be determined — and the honest answer to "cannot determine" is no. The
+    // author keeps access to their own; everyone else loses images on moments
+    // posted before this change, which is the price of closing a hole that
+    // exposed private ones to everybody. Writes are refused outright so no new
+    // object can land somewhere unprotectable.
+    match /moments/{userId}/{fileName} {
+      allow read: if hasActiveSession() && request.auth.uid == userId;
+      allow write: if false;
     }
 
     match /chats/{chatId}/{allPaths=**} {

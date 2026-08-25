@@ -200,13 +200,27 @@ export function uploadChatBlob(
   return uploadWithProgress(`chats/${chatId}/${Date.now()}.${ext}`, blob, onProgress);
 }
 
+/**
+ * Uploads under the id of the moment the image belongs to.
+ *
+ * The moment id in the path is load-bearing: it is the only thing that lets
+ * the Storage rule look up the moment document and apply its visibility. The
+ * previous flat path carried no such link, so the rule could check nothing
+ * beyond "is signed in", and a private moment's image was readable — and
+ * listable — by any account. Mirrors uploadMomentMedia in the mobile client.
+ */
 export async function uploadMomentImage(
   uid: string,
+  momentId: string,
   file: File,
   onProgress?: (pct: number) => void,
 ): Promise<string> {
   const blob = await downscaleImage(file);
-  return uploadWithProgress(`moments/${uid}/${Date.now()}.${extFor(blob, file.name)}`, blob, onProgress);
+  return uploadWithProgress(
+    `moments/${uid}/${momentId}/${Date.now()}.${extFor(blob, file.name)}`,
+    blob,
+    onProgress,
+  );
 }
 
 /**

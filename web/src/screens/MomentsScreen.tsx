@@ -4,7 +4,7 @@ import {avatarColor, colors} from '../theme';
 import {useT, type TKey} from '../i18n';
 import {useLightbox} from '../context/LightboxContext';
 import {formatRemaining, isExpired, MOMENT_EXPIRY_HOURS} from '../utils/ephemeral';
-import {createMoment, deleteMoment, fetchFeed, getLikedMomentIds, toggleLike} from '../services/moments';
+import {createMoment, deleteMoment, fetchFeed, getLikedMomentIds, newMomentId, toggleLike} from '../services/moments';
 import {getUserById} from '../services/chat';
 import {uploadMomentImage} from '../services/storage';
 import type {Moment, MomentVisibility, UserProfile} from '../types';
@@ -87,9 +87,12 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
     setPosting(true);
     try {
       let mediaUrl: string | undefined;
+      // Reserved before the upload: the media path contains the moment id,
+      // which is what lets the Storage rule apply this moment's visibility.
+      const momentId = newMomentId();
       if (imageFile) {
         setUploadPct(0);
-        mediaUrl = await uploadMomentImage(user.uid, imageFile, p => setUploadPct(p));
+        mediaUrl = await uploadMomentImage(user.uid, momentId, imageFile, p => setUploadPct(p));
       }
       await createMoment(user.uid, {
         text: t,
@@ -97,7 +100,7 @@ export default function MomentsScreen({user, requestCount = 0}: {user: User; req
         mediaUrl,
         mediaType: mediaUrl ? 'image' : undefined,
         expiresAt: expiryHours > 0 ? Date.now() + expiryHours * 3600 * 1000 : undefined,
-      });
+      }, momentId);
       setText('');
       clearImage();
       setExpiryHours(0);

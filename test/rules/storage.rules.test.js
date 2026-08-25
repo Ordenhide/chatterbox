@@ -71,26 +71,130 @@ async function seedChat(chatId, participants) {
   await seed(context => setDoc(doc(context.firestore(), `chats/${chatId}`), {participants}));
 }
 
-describe('moments/{userId}/{allPaths=**}', () => {
-  it('owner whose auth_time matches their claim can upload and read their own moment media', async () => {
-    await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
-    const alice = asUser('alice', Math.floor(NOW_MS / 1000));
-    await assertSucceeds(uploadBytes(ref(alice, 'moments/alice/photo1.jpg'), BYTES));
-    await assertSucceeds(getBytes(ref(alice, 'moments/alice/photo1.jpg')));
-  });
+/**
+ * A moment document, so the Storage rule has something to read a visibility
+ * from. This is the link the old flat media path did not have.
+ */
+async function seedMoment(momentId, authorId, visibility) {
+  await seed(context =>
+    setDoc(doc(context.firestore(), `moments/${momentId}`), {authorId, visibility}),
+  );
+}
 
-  it('a different current-session user can read but not write someone else\'s moment media', async () => {
+async function seedFriends(a, b) {
+  const id = a < b ? `${a}_${b}` : `${b}_${a}`;
+  await seed(context => setDoc(doc(context.firestore(), `friends/${id}`), {users: [a, b]}));
+}
+
+async function seedBlock(blockerId, blockedId) {
+  await seed(context =>
+    setDoc(doc(context.firestore(), `blocks/${blockerId}_${blockedId}`), {blockerId, blockedId}),
+  );
+}
+
+describe('moments/{userId}/{momentId}/{fileName}', () => {
+  const PATH = 'moments/alice/m1/photo1.jpg';
+
+  beforeEach(async () => {
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     await seedUser('bob', {sessionClaimedAtMs: NOW_MS});
-    await seed(context => uploadBytes(ref(context.storage(), 'moments/alice/photo1.jpg'), BYTES));
-    const bob = asUser('bob', Math.floor(NOW_MS / 1000));
-    await assertSucceeds(getBytes(ref(bob, 'moments/alice/photo1.jpg')));
-    await assertFails(uploadBytes(ref(bob, 'moments/alice/photo2.jpg'), BYTES));
+  });
+
+  const alice = () => asUser('alice', Math.floor(NOW_MS / 1000));
+  const bob = () => asUser('bob', Math.floor(NOW_MS / 1000));
+
+  it('the author can upload and read their own moment media', async () => {
+    await assertSucceeds(uploadBytes(ref(alice(), PATH), BYTES));
+    await assertSucceeds(getBytes(ref(alice(), PATH)));
+  });
+
+  it('denies a stranger the image of a private moment', async () => {
+    // The hole this path exists to close. Firestore correctly hid the private
+    // moment's document while Storage served the image to anyone signed in —
+    // and `read` covers `list`, with timestamp filenames, so the images did
+    // not even need guessing. Hiding metadata while serving content protects
+    // nothing.
+    await seedMoment('m1', 'alice', 'private');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertFails(getBytes(ref(bob(), PATH)));
+  });
+
+  it('denies a non-friend the image of a friends-only moment', async () => {
+    await seedMoment('m1', 'alice', 'friends');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertFails(getBytes(ref(bob(), PATH)));
+  });
+
+  it('allows a friend the image of a friends-only moment', async () => {
+    await seedMoment('m1', 'alice', 'friends');
+    await seedFriends('alice', 'bob');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertSucceeds(getBytes(ref(bob(), PATH)));
+  });
+
+  it('allows anyone signed in the image of a public moment', async () => {
+    await seedMoment('m1', 'alice', 'public');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertSucceeds(getBytes(ref(bob(), PATH)));
+  });
+
+  it('denies a blocked user even a public moment image', async () => {
+    // Both directions, matching firestore.rules. A block that hid the post but
+    // not its media would be a block in name only.
+    await seedMoment('m1', 'alice', 'public');
+    await seedBlock('alice', 'bob');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertFails(getBytes(ref(bob(), PATH)));
+  });
+
+  it('denies a user who blocked the author', async () => {
+    await seedMoment('m1', 'alice', 'public');
+    await seedBlock('bob', 'alice');
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertFails(getBytes(ref(bob(), PATH)));
+  });
+
+  it('denies everyone but the author while the moment document does not exist yet', async () => {
+    // The window between upload and document creation. Denying is correct;
+    // the author is exempt so their own upload is never unreadable.
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
+    await assertFails(getBytes(ref(bob(), PATH)));
+    await assertSucceeds(getBytes(ref(alice(), PATH)));
+  });
+
+  it('still refuses writes to another user\'s path', async () => {
+    await assertFails(uploadBytes(ref(bob(), PATH), BYTES));
   });
 
   it('denies unauthenticated access entirely', async () => {
+    await assertFails(uploadBytes(ref(anon(), PATH), BYTES));
+  });
+});
+
+describe('moments/{userId}/{fileName} — objects from before the path carried a moment id', () => {
+  const LEGACY = 'moments/alice/photo1.jpg';
+
+  beforeEach(async () => {
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
-    await assertFails(uploadBytes(ref(anon(), 'moments/alice/photo1.jpg'), BYTES));
+    await seedUser('bob', {sessionClaimedAtMs: NOW_MS});
+    await seed(context => uploadBytes(ref(context.storage(), LEGACY), BYTES));
+  });
+
+  it('lets the author read their own', async () => {
+    await assertSucceeds(getBytes(ref(asUser('alice', Math.floor(NOW_MS / 1000)), LEGACY)));
+  });
+
+  it('denies everyone else, because nothing in the path says which moment it is', async () => {
+    // Their visibility is unknowable from the path, and the honest answer to
+    // "cannot determine" is no. Costs images on moments posted before this
+    // change; the alternative leaves private ones readable by everybody.
+    await assertFails(getBytes(ref(asUser('bob', Math.floor(NOW_MS / 1000)), LEGACY)));
+  });
+
+  it('refuses new uploads, so nothing can land somewhere unprotectable', async () => {
+    await assertFails(
+      uploadBytes(ref(asUser('alice', Math.floor(NOW_MS / 1000)), 'moments/alice/new.jpg'), BYTES),
+    );
   });
 });
 
@@ -140,7 +244,7 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     // token.sessionId == activeSessionId check would have let that through.
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const anHourAgo = Math.floor((NOW_MS - 60 * 60 * 1000) / 1000);
-    await assertFails(uploadBytes(ref(asUser('alice', anHourAgo), 'moments/alice/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', anHourAgo), 'moments/alice/m1/photo1.jpg'), BYTES));
   });
 
   it('an account that has never claimed a session (no sessionClaimedAt) is not enforced — fail-open by design', async () => {
@@ -149,21 +253,21 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     // from an account's first claimSession call onward.
     await seedUser('alice'); // no sessionClaimedAtMs
     const longAgo = Math.floor((NOW_MS - 30 * 24 * 60 * 60 * 1000) / 1000);
-    await assertSucceeds(uploadBytes(ref(asUser('alice', longAgo), 'moments/alice/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', longAgo), 'moments/alice/m1/photo1.jpg'), BYTES));
   });
 
   it('auth_time just inside the grace window (network delay between sign-in and claimSession) is allowed', async () => {
     const claimedAt = NOW_MS;
     const authTime = Math.floor((NOW_MS - 90 * 1000) / 1000); // 90s before the claim
     await seedUser('alice', {sessionClaimedAtMs: claimedAt});
-    await assertSucceeds(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/m1/photo1.jpg'), BYTES));
   });
 
   it('auth_time well outside the grace window is denied even though it is "close"', async () => {
     const claimedAt = NOW_MS;
     const authTime = Math.floor((NOW_MS - 10 * 60 * 1000) / 1000); // 10 minutes before the claim
     await seedUser('alice', {sessionClaimedAtMs: claimedAt});
-    await assertFails(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/m1/photo1.jpg'), BYTES));
   });
 
   it('a fresh re-authentication after being displaced is allowed again', async () => {
@@ -173,12 +277,12 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     const firstClaim = NOW_MS - 60 * 60 * 1000;
     await seedUser('alice', {sessionClaimedAtMs: firstClaim});
     const staleAuthTime = Math.floor((firstClaim - 60 * 60 * 1000) / 1000);
-    await assertFails(uploadBytes(ref(asUser('alice', staleAuthTime), 'moments/alice/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', staleAuthTime), 'moments/alice/m1/photo1.jpg'), BYTES));
 
     // alice re-authenticates and reclaims.
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const freshAuthTime = Math.floor(NOW_MS / 1000);
-    await assertSucceeds(uploadBytes(ref(asUser('alice', freshAuthTime), 'moments/alice/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', freshAuthTime), 'moments/alice/m1/photo1.jpg'), BYTES));
   });
 });
 
@@ -210,7 +314,7 @@ describe('upload ceilings', () => {
     const alice = asUser('alice', authTime());
     const overCap = new Uint8Array(25 * 1024 * 1024 + 1024);
     await assertFails(
-      uploadBytes(ref(alice, 'moments/alice/huge.jpg'), overCap, {contentType: 'image/jpeg'}),
+      uploadBytes(ref(alice, 'moments/alice/m1/huge.jpg'), overCap, {contentType: 'image/jpeg'}),
     );
   });
 
@@ -271,10 +375,10 @@ describe('upload ceilings', () => {
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const alice = asUser('alice', authTime());
     await assertFails(
-      uploadBytes(ref(alice, 'moments/alice/evil.svg'), BYTES, {contentType: 'image/svg+xml'}),
+      uploadBytes(ref(alice, 'moments/alice/m1/evil.svg'), BYTES, {contentType: 'image/svg+xml'}),
     );
     await assertSucceeds(
-      uploadBytes(ref(alice, 'moments/alice/ok.jpg'), BYTES, {contentType: 'image/jpeg'}),
+      uploadBytes(ref(alice, 'moments/alice/m1/ok.jpg'), BYTES, {contentType: 'image/jpeg'}),
     );
   });
 });

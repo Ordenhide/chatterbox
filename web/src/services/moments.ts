@@ -82,6 +82,17 @@ export async function deleteMoment(momentId: string, mediaUrl?: string | null): 
   await deleteDoc(doc(db, 'moments', momentId));
 }
 
+/**
+ * Reserves a moment id before anything is written.
+ *
+ * The media path now contains the moment id, because that is what lets the
+ * Storage rule find the moment and apply its visibility (see storage.rules).
+ * So the id has to exist before the upload, which happens before the document.
+ */
+export function newMomentId(): string {
+  return doc(collection(db, 'moments')).id;
+}
+
 export async function createMoment(
   authorId: string,
   params: {
@@ -91,8 +102,9 @@ export async function createMoment(
     mediaType?: 'image' | 'video';
     expiresAt?: number;
   },
+  momentId?: string,
 ): Promise<string> {
-  const ref = doc(collection(db, 'moments'));
+  const ref = momentId ? doc(collection(db, 'moments'), momentId) : doc(collection(db, 'moments'));
   await setDoc(ref, {
     authorId,
     text: params.text || '',

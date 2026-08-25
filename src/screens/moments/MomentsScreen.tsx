@@ -38,6 +38,7 @@ import {
   listenMomentComments,
   unlikeMoment,
   updateMoment,
+  newMomentId,
   uploadMomentMedia,
 } from '../../services/moments';
 import {Moment, MomentComment, MomentVisibility, Friend, User, BlockRecord, ChatRoom} from '../../types';
@@ -435,7 +436,13 @@ export default function MomentsScreen() {
           mediaType = media.type;
         } else {
           mediaType = media.type;
-          mediaUrl = await uploadMomentMedia(user.uid, media.uri, media.type, setUploadProgress);
+          mediaUrl = await uploadMomentMedia(
+            user.uid,
+            editingMoment.id,
+            media.uri,
+            media.type,
+            setUploadProgress,
+          );
         }
         await updateMoment(editingMoment.id, {
           text: momentText.trim(),
@@ -444,9 +451,18 @@ export default function MomentsScreen() {
           mediaType,
         });
       } else {
+        // Reserved before the upload: the media path contains the moment id,
+        // which is what lets the Storage rule apply this moment's visibility.
+        const momentId = newMomentId();
         if (media) {
           mediaType = media.type;
-          mediaUrl = await uploadMomentMedia(user.uid, media.uri, media.type, setUploadProgress);
+          mediaUrl = await uploadMomentMedia(
+            user.uid,
+            momentId,
+            media.uri,
+            media.type,
+            setUploadProgress,
+          );
         }
         const payload: {
           text: string;
@@ -461,7 +477,7 @@ export default function MomentsScreen() {
           payload.mediaUrl = mediaUrl;
           payload.mediaType = mediaType;
         }
-        await createMoment(user.uid, payload);
+        await createMoment(user.uid, payload, momentId);
       }
       resetDraft();
       setCreateVisible(false);

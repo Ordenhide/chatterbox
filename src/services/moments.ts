@@ -32,15 +32,27 @@ const logError = (error: unknown, context: string) => {
   reportError(error, context);
 };
 
+/**
+ * Reserves a moment id before anything is written.
+ *
+ * Needed because the media path now contains the moment id, so that Storage
+ * can look the moment up and apply its visibility (see storage.rules). The id
+ * therefore has to exist before the upload, which happens before the document.
+ */
+export function newMomentId(): string {
+  return doc(momentsRef()).id;
+}
+
 export async function createMoment(
   authorId: string,
   params: {text?: string; mediaUrl?: string; mediaType?: 'image' | 'video'; visibility?: MomentVisibility},
+  momentId?: string,
 ) {
   if (!authorId) {
     return;
   }
   try {
-    const momentDoc = doc(momentsRef());
+    const momentDoc = momentId ? doc(momentsRef(), momentId) : doc(momentsRef());
     await setDoc(momentDoc, {
     authorId,
     text: params.text || '',
@@ -343,15 +355,30 @@ export function listenMomentComments(
   );
 }
 
+/**
+ * Uploads a moment's media under the id of the moment it belongs to.
+ *
+ * The moment id in the path is load-bearing, not tidiness: it is the only
+ * thing that lets the Storage rule find the moment document and apply its
+ * visibility. The previous flat path carried no such link, so the rule could
+ * only check that *someone* was signed in — and a private moment's image was
+ * readable, and listable, by any account.
+ *
+ * The object is uploaded before its document exists. That is safe because the
+ * write rule authorises on the path's user id alone, and because the read rule
+ * lets the author read their own objects unconditionally; to everyone else an
+ * object whose document has not landed yet is simply unreadable.
+ */
 export async function uploadMomentMedia(
   authorId: string,
+  momentId: string,
   uri: string,
   mediaType: 'image' | 'video',
   onProgress?: (percent: number) => void,
 ): Promise<string> {
   const ext = mediaType === 'video' ? 'mp4' : 'jpg';
   const fileName = `${Date.now()}.${ext}`;
-  const storageRef = ref(storage, `moments/${authorId}/${fileName}`);
+  const storageRef = ref(storage, `moments/${authorId}/${momentId}/${fileName}`);
   try {
     let uploadUri = uri;
     if (mediaType === 'image' && isExifStrippingEnabled()) {
