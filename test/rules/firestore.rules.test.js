@@ -597,6 +597,61 @@ describe('moments/{momentId}', () => {
 });
 
 describe('chats/{chatId}', () => {
+  describe('blocking stops a chat starting', () => {
+    async function seedBlock(blockerId, blockedId) {
+      await seed(db =>
+        setDoc(doc(db, `blocks/${blockerId}_${blockedId}`), {blockerId, blockedId}),
+      );
+    }
+
+    it('denies the blocked party creating the chat', async () => {
+      // The app promises exactly this — "You cannot start a chat with this
+      // user" — and it was checked in one screen, client-side, and nowhere
+      // else, so the blocked party could create the chat directly.
+      await seedBlock('alice', 'mallory');
+      await assertFails(
+        setDoc(doc(asUser('mallory'), 'chats/c-new'), {participants: ['alice', 'mallory']}),
+      );
+    });
+
+    it('denies the blocker creating it too', async () => {
+      // Either direction is a reason not to open the conversation.
+      await seedBlock('alice', 'mallory');
+      await assertFails(
+        setDoc(doc(asUser('alice'), 'chats/c-new'), {participants: ['alice', 'mallory']}),
+      );
+    });
+
+    it('denies it regardless of which participant is listed first', async () => {
+      // The block here is mallory→alice while the array reads
+      // ['alice', 'mallory'], so only the second direction catches it. With
+      // one direction checked, this is the case that slips through — and the
+      // array's order is not something a rule should depend on.
+      await seedBlock('mallory', 'alice');
+      await assertFails(
+        setDoc(doc(asUser('alice'), 'chats/c-new'), {participants: ['alice', 'mallory']}),
+      );
+    });
+
+    it('allows an ordinary two-party chat', async () => {
+      await assertSucceeds(
+        setDoc(doc(asUser('alice'), 'chats/c-new'), {participants: ['alice', 'bob']}),
+      );
+    });
+
+    it('does not apply to group chats', async () => {
+      // Blocking someone does not make either of you leave a room you are
+      // both already in, and a per-member lookup would run past the
+      // document-read limit at the group cap.
+      await seedBlock('alice', 'mallory');
+      await assertSucceeds(
+        setDoc(doc(asUser('alice'), 'chats/c-group'), {
+          participants: ['alice', 'mallory', 'bob'],
+        }),
+      );
+    });
+  });
+
   it('lets a participant create a chat naming themself among participants', async () => {
     await assertSucceeds(
       setDoc(doc(asUser('alice'), 'chats/c1'), {participants: ['alice', 'bob']}),

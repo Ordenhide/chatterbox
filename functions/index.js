@@ -811,6 +811,20 @@ exports.notifyNewMessage = functions.firestore
 
       for (const recipientId of recipients) {
         try {
+          // Blocking someone must at minimum stop them making your phone
+          // buzz with their name on it. Nothing checked this: `mutedBy` above
+          // was the only filter, so a blocked sender still triggered a full
+          // notification, which is the single most visible thing a block is
+          // expected to prevent.
+          //
+          // Checked here rather than in the rules because the write itself
+          // cannot be denied safely — a rejected send stays in the sender's
+          // outbox and retries forever, and permission-denied is
+          // indistinguishable from the displaced-session case, so denying
+          // would risk silently dropping legitimate messages.
+          const blockSnap = await db.doc(`blocks/${recipientId}_${senderId}`).get();
+          if (blockSnap.exists) continue;
+
           const pushSnap = await db.doc(`users/${recipientId}/private/push`).get();
           const pushData = pushSnap.data();
           const token = pushData?.fcmToken || pushData?.fcmTokens?.[0];

@@ -363,9 +363,30 @@ service cloud.firestore {
           removedMembers() == [request.auth.uid].toSet();
       }
 
+      /**
+       * Blocking is meant to stop a conversation starting. The app says so in
+       * as many words — "You cannot start a chat with this user" — and until
+       * now that was checked in one screen, client-side, and nowhere else: the
+       * blocked party could create the chat directly and message through it.
+       *
+       * Scoped to two-party chats on purpose. A group is a different question
+       * (blocking someone does not make either of you leave a room you are
+       * both already in), and a rule that looked up a block for every member
+       * would run past the per-request document-read limit at the group cap.
+       * Checked in both directions, since either side blocking is a reason not
+       * to open the conversation.
+       */
+      function blockedFromStarting(participants) {
+        return participants.size() == 2 && (
+          isBlocked(participants[0], participants[1]) ||
+          isBlocked(participants[1], participants[0])
+        );
+      }
+
       allow create: if isSignedIn() &&
         request.auth.uid in request.resource.data.participants &&
-        withinMemberCap(request.resource.data.participants);
+        withinMemberCap(request.resource.data.participants) &&
+        !blockedFromStarting(request.resource.data.participants);
       allow read: if isSignedIn() &&
         request.auth.uid in resource.data.participants;
       allow update: if isSignedIn() &&

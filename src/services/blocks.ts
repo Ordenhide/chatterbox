@@ -22,6 +22,35 @@ const logError = (error: unknown, context: string) => {
   reportError(error, context);
 };
 
+/**
+ * Blocking.
+ *
+ * ## What it does
+ *
+ * - Stops a *new* two-party chat being created in either direction
+ *   (firestore.rules, blockedFromStarting), which is the promise the UI makes:
+ *   "You cannot start a chat with this user".
+ * - Stops push notifications from a blocked sender reaching you
+ *   (functions/index.js, notifyNewMessage).
+ * - Hides each side's moments and their images from the other
+ *   (firestore.rules and storage.rules).
+ * - Stops friend requests and friendship creation in either direction.
+ *
+ * ## What it does not do, and why
+ *
+ * A blocked user can still write messages into a chat that already existed
+ * before the block. That is not an oversight to be quietly left: denying the
+ * write in the rules was considered and rejected, because a rejected send
+ * stays in the sender's outbox and is retried on every launch forever, and
+ * `permission-denied` cannot be told apart from the displaced-session case —
+ * so denying would risk silently discarding legitimate messages from an
+ * ordinary user whose session had rotated.
+ *
+ * Closing it properly needs the client to distinguish a permanent refusal
+ * from a transient one, the way isRecipientUnreachable already does for a
+ * deleted account. Until then the messages arrive but are silent, and this
+ * comment exists so nobody reads the feature as doing more than it does.
+ */
 export function buildBlockId(blockerId: string, blockedId: string) {
   return `${blockerId}_${blockedId}`;
 }
