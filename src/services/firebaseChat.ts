@@ -23,6 +23,7 @@ import {
 import {getStorage, getDownloadURL, ref, deleteObject, uploadFileFromUri} from './firebase/storage';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
+import {stripUndefined} from './firestoreValues';
 import {isStealthMode} from './privacyGuard';
 import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
 import {assertRecipientReachable} from './recipient';
@@ -100,27 +101,6 @@ const deleteCollectionInBatches = async (colRef: any) => {
 
 export function clearUserCache() {
   userCache.clear();
-}
-
-function stripUndefined(value: any): any {
-  if (value === undefined) return undefined;
-  if (Array.isArray(value)) {
-    return value.map(stripUndefined).filter(v => v !== undefined);
-  }
-  if (value && typeof value === 'object') {
-    if (value.constructor && value.constructor !== Object) {
-      return value;
-    }
-    const cleaned: Record<string, any> = {};
-    Object.entries(value).forEach(([key, val]) => {
-      const next = stripUndefined(val);
-      if (next !== undefined) {
-        cleaned[key] = next;
-      }
-    });
-    return cleaned;
-  }
-  return value;
 }
 
 export async function upsertUserProfile(user: User) {

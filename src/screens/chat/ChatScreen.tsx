@@ -2038,7 +2038,17 @@ export default function ChatScreen() {
       Alert.alert('Not scheduled', 'Could not encrypt the message. Please try again.');
       return;
     }
-    await scheduleMessage(chatId, outgoing, scheduledFor);
+    // Awaited into a catch. Without this the write's rejection went nowhere:
+    // the button did nothing, showed nothing, and left the picker open — which
+    // is exactly how a broken scheduled send survived a release. Anything that
+    // can fail here has to say so.
+    try {
+      await scheduleMessage(chatId, outgoing, scheduledFor);
+    } catch (error) {
+      reportError(error, 'schedule_write_failed');
+      Alert.alert('Not scheduled', 'Could not save the scheduled message. Please try again.');
+      return;
+    }
     setComposerText('');
     setSchedulePickerVisible(false);
     Alert.alert('Scheduled', `Message will be sent in ${mins} minute${mins > 1 ? 's' : ''}.`);

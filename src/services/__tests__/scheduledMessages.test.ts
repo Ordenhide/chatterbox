@@ -6,6 +6,29 @@ type MockSnapshotHandler = (
 ) => void;
 const mockOnSnapshotHandlers: MockSnapshotHandler[] = [];
 const mockReportError = jest.fn();
+/** Documents that reached setDoc, i.e. that real Firestore would have accepted. */
+const mockWritten: Record<string, unknown>[] = [];
+
+/**
+ * Real Firestore rejects an `undefined` field value rather than treating the
+ * key as absent. The previous mock accepted anything, which is why a scheduled
+ * send that always carried `mediaKeys: undefined` passed every test here and
+ * failed on the first real device — silently, because nothing caught the throw.
+ */
+function mockRejectUndefined(value: unknown, path = ''): void {
+  if (value === undefined) {
+    throw new Error(`Unsupported field value: undefined (found in field ${path})`);
+  }
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => mockRejectUndefined(v, `${path}[${i}]`));
+    return;
+  }
+  if (value && typeof value === 'object' && (value as object).constructor === Object) {
+    Object.entries(value as Record<string, unknown>).forEach(([k, v]) =>
+      mockRejectUndefined(v, path ? `${path}.${k}` : k),
+    );
+  }
+}
 
 jest.mock('../telemetry', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
 
@@ -16,7 +39,10 @@ jest.mock('../firebase/firestore', () => ({
   query: (ref: unknown) => ref,
   where: (field: string, op: string, value: unknown) => ({field, op, value}),
   orderBy: (field: string, dir: string) => ({field, dir}),
-  setDoc: jest.fn(async () => undefined),
+  setDoc: jest.fn(async (_ref: unknown, data: Record<string, unknown>) => {
+    mockRejectUndefined(data);
+    mockWritten.push(data);
+  }),
   deleteDoc: jest.fn(async () => undefined),
   onSnapshot: (_ref: unknown, onNext: MockSnapshotHandler) => {
     mockOnSnapshotHandlers.push(onNext);
@@ -27,7 +53,8 @@ jest.mock('../firebase/firestore', () => ({
   },
 }));
 
-import {listenScheduledMessages, ownScheduledMessages} from '../scheduledMessages';
+import {listenScheduledMessages, ownScheduledMessages, scheduleMessage} from '../scheduledMessages';
+import type {Message} from '../../types';
 
 const sched = (id: string, uid?: string) => ({
   id,
@@ -45,6 +72,7 @@ function emit(docs: Array<{id: string; data: () => Record<string, unknown>}>) {
 
 beforeEach(() => {
   mockOnSnapshotHandlers.length = 0;
+  mockWritten.length = 0;
 });
 
 describe('ownScheduledMessages', () => {
@@ -111,5 +139,54 @@ describe('listenScheduledMessages', () => {
       mockOnSnapshotHandlers.forEach(h => h(null, {code: 'firestore/permission-denied'})),
     ).not.toThrow();
     expect(seen).toEqual([]);
+  });
+});
+
+/**
+ * The bug this exists for: handleScheduleSend was changed to seal the body
+ * through encryptOutgoingMessage, whose output always carries
+ * `mediaKeys: undefined` (that is how it clears the field). scheduleMessage
+ * wrote straight to Firestore without stripping, so every scheduled send threw
+ * — and nothing awaited it into a catch, so the button silently did nothing.
+ *
+ * sendMessage had always called stripUndefined; scheduling was the write path
+ * that never did.
+ */
+describe('scheduleMessage survives what encryptOutgoingMessage produces', () => {
+  const sealed = {
+    _id: 'sched_1',
+    text: '',
+    createdAt: new Date(0),
+    user: {_id: 'me', name: 'Me', avatar: undefined},
+    mediaKeys: undefined,
+    encrypted: {alg: 'chatterbox-e2ee-v1', copies: {them: {n: 'x', c: 'y'}}},
+  } as unknown as Message;
+
+  it('writes a sealed message that carries undefined fields', async () => {
+    await expect(scheduleMessage('c1', sealed, 123)).resolves.toBeUndefined();
+    expect(mockWritten).toHaveLength(1);
+  });
+
+  it('drops the undefined keys rather than sending them', async () => {
+    await scheduleMessage('c1', sealed, 123);
+    const written = mockWritten[0];
+    expect('mediaKeys' in written).toBe(false);
+    expect('avatar' in (written.user as Record<string, unknown>)).toBe(false);
+  });
+
+  it('keeps everything that was actually set', async () => {
+    await scheduleMessage('c1', sealed, 123);
+    const w = mockWritten[0];
+    expect(w.encrypted).toEqual(sealed.encrypted);
+    expect(w.text).toBe('');
+    expect(w.scheduledFor).toBe(123);
+    expect(w.sent).toBe(false);
+    expect((w.user as {_id: string})._id).toBe('me');
+  });
+
+  // A Date must survive as a Date — stripUndefined walks plain objects only.
+  it('leaves non-plain objects like Date intact', async () => {
+    await scheduleMessage('c1', sealed, 123);
+    expect(mockWritten[0].createdAt).toBeInstanceOf(Date);
   });
 });

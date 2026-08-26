@@ -11,6 +11,7 @@ import {
 } from './firebase/firestore';
 import {Message} from '../types';
 import {guardQuerySnapshot} from './snapshotGuard';
+import {stripUndefined} from './firestoreValues';
 
 const db = getFirestore();
 
@@ -26,11 +27,17 @@ const scheduledRef = (chatId: string) =>
  */
 export async function scheduleMessage(chatId: string, message: Message, scheduledFor: number) {
   const id = String(message._id);
-  await setDoc(doc(scheduledRef(chatId), id), {
-    ...message,
-    scheduledFor,
-    sent: false,
-  });
+  // stripUndefined, exactly as sendMessage does. encryptOutgoingMessage clears
+  // fields by setting them to `undefined` (`{...data, mediaKeys: undefined}`),
+  // and Firestore throws on an undefined value rather than ignoring the key.
+  await setDoc(
+    doc(scheduledRef(chatId), id),
+    stripUndefined({
+      ...message,
+      scheduledFor,
+      sent: false,
+    }),
+  );
 }
 
 export async function cancelScheduledMessage(chatId: string, messageId: string) {
