@@ -81,5 +81,25 @@ jobs:
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
 
-      - name: Deploy Firestore & Storage rules
-        run: npx firebase-tools@^15 deploy --only firestore:rules,storage:rules --project chatterbox-e5d10 --non-interactive
+      # Deployed as two steps, not one `--only firestore:rules,storage:rules`.
+      #
+      # firebase-tools runs storage first and aborts the whole command when it
+      # fails, so a problem confined to Storage silently took the Firestore
+      # rules down with it — twice, on the first two real deploy attempts: once
+      # on a missing serviceusage permission, once on the default bucket. Both
+      # times the Firestore rules were never even attempted, and the run just
+      # said "failure".
+      #
+      # That is the same shape as the bug this workflow's header describes: a
+      # rules file sitting undeployed with no error pointing at it. Splitting
+      # the steps means each half reports its own outcome, and one being broken
+      # cannot hide the other.
+      #
+      # `if: always()` on the second step, so Storage is still attempted when
+      # Firestore fails — and the job still fails if either does.
+      - name: Deploy Firestore rules
+        run: npx firebase-tools@^15 deploy --only firestore:rules --project chatterbox-e5d10 --non-interactive
+
+      - name: Deploy Storage rules
+        if: always()
+        run: npx firebase-tools@^15 deploy --only storage:rules --project chatterbox-e5d10 --non-interactive
