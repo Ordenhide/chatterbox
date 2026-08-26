@@ -16,6 +16,7 @@ const {
   deleteDoc,
   doc,
   getDoc,
+  arrayUnion,
   getDocs,
   limit,
   query,
@@ -1642,6 +1643,57 @@ describe('view-once marking', () => {
         viewOnceViewedBy: ['bob', 'mallory'],
       }),
     );
+  });
+
+  /**
+   * The web client marks a view with `arrayUnion(uid)` rather than by writing
+   * the whole array (services/chat.ts). The rule compares
+   * `request.resource.data.viewOnceViewedBy` as a set, which only works because
+   * Firestore applies array transforms *before* rules evaluate — so the rule
+   * sees the resulting array, not a sentinel.
+   *
+   * That is not obvious from reading either side, and these rules have never
+   * been deployed, so nothing has ever exercised the combination against a real
+   * emulator. If it were the other way round, view-once would break on web the
+   * moment the rules ship.
+   */
+  describe("the web client's arrayUnion write", () => {
+    it('is accepted, transform and all', async () => {
+      await seedViewOnce([]);
+      await assertSucceeds(
+        setDoc(
+          doc(asUser('mallory'), 'chats/c1/messages/m1'),
+          {
+            viewOnceViewedBy: arrayUnion('mallory'),
+            viewOnceExpired: true,
+            viewOnceOpenedAt: Timestamp.now(),
+          },
+          {merge: true},
+        ),
+      );
+    });
+
+    it('cannot be pointed at somebody else through the transform', async () => {
+      await seedViewOnce([]);
+      await assertFails(
+        setDoc(
+          doc(asUser('mallory'), 'chats/c1/messages/m1'),
+          {viewOnceViewedBy: arrayUnion('bob'), viewOnceExpired: true},
+          {merge: true},
+        ),
+      );
+    });
+
+    it('keeps an earlier viewer when unioning onto a non-empty list', async () => {
+      await seedViewOnce(['bob']);
+      await assertSucceeds(
+        setDoc(
+          doc(asUser('mallory'), 'chats/c1/messages/m1'),
+          {viewOnceViewedBy: arrayUnion('mallory')},
+          {merge: true},
+        ),
+      );
+    });
   });
 
   it('still refuses these fields on a message that is not view-once', async () => {
