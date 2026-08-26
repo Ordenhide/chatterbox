@@ -146,6 +146,36 @@ export function generateKeypair(): Keypair {
 }
 
 /**
+ * Derived message keys, keyed by the secret they came from and then by
+ * peer+chat.
+ *
+ * The derivation is a pure function of (secretKey, peerPublicKey, chatId), and
+ * every message in a conversation shares all three — so opening a 50-message
+ * chat ran the same X25519 scalar multiplication 50 times over. That is the
+ * dominant cost of reading a thread: measured against @noble's pure-JS curve
+ * code, the derivation is ~20x the XChaCha20-Poly1305 decryption it feeds, and
+ * Hermes has no JIT to soften it.
+ *
+ * Caching costs no confidentiality. A derived key is recomputable from
+ * `secretKey`, which the caller already holds in memory for as long as this
+ * entry lives; keying the outer map weakly means both become collectable
+ * together. It is deliberately not persisted — that would be a different
+ * claim entirely.
+ *
+ * Mirrors `publicKeyCache` below, which already does this for the other X25519
+ * call on this same path.
+ */
+const messageKeyCache = new WeakMap<Uint8Array, Map<string, Uint8Array>>();
+
+/**
+ * Per-secret cap. One conversation contributes one entry, so this is generous
+ * for any real account; the bound exists so that a client which somehow cycles
+ * through peers cannot grow the map without limit. Oldest-first eviction,
+ * matching the skipped-key store in ratchet/doubleRatchet.ts.
+ */
+const MAX_CACHED_MESSAGE_KEYS = 256;
+
+/**
  * Derives the symmetric message key.
  *
  * The raw X25519 output is not used directly as a cipher key — it is not
@@ -159,8 +189,27 @@ function deriveMessageKey(
   peerPublicKey: Uint8Array,
   chatId: string,
 ): Uint8Array {
+  let perSecret = messageKeyCache.get(secretKey);
+  if (!perSecret) {
+    perSecret = new Map();
+    messageKeyCache.set(secretKey, perSecret);
+  }
+  // chatId is caller-supplied and could itself contain the separator; the peer
+  // key is fixed-length base64, so putting it first keeps the pair unambiguous.
+  const cacheKey = `${bytesToBase64(peerPublicKey)}|${chatId}`;
+  const hit = perSecret.get(cacheKey);
+  if (hit) return hit;
+
   const shared = x25519.getSharedSecret(secretKey, peerPublicKey);
-  return hkdf(sha256, shared, utf8ToBytes(chatId), utf8ToBytes(E2EE_ALG), 32);
+  const derived = hkdf(sha256, shared, utf8ToBytes(chatId), utf8ToBytes(E2EE_ALG), 32);
+
+  perSecret.set(cacheKey, derived);
+  while (perSecret.size > MAX_CACHED_MESSAGE_KEYS) {
+    const oldest = perSecret.keys().next();
+    if (oldest.done) break;
+    perSecret.delete(oldest.value);
+  }
+  return derived;
 }
 
 export function encryptMessage(

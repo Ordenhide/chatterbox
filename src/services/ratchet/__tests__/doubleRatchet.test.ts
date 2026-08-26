@@ -294,6 +294,50 @@ describe('session integrity', () => {
   });
 });
 
+describe('history is not re-readable', () => {
+  /**
+   * Forward secrecy working as designed, recorded here because a *caller* can
+   * so easily assume otherwise. Firestore keeps every envelope forever, which
+   * makes it natural to treat the collection as the message store and decrypt
+   * it again on each read — and that does work for the stateless envelopes in
+   * services/e2ee.ts.
+   *
+   * It cannot work here: the message key is destroyed as it is used. Any UI
+   * that re-decrypts a thread it has already shown will get failures for
+   * everything already read, and ChatScreen's caches are per-mount `useRef`s,
+   * so a remount does exactly that. A client that wants scrollback has to keep
+   * the plaintext itself — once the key is gone there is nothing left to
+   * recover it from.
+   */
+  it('cannot decrypt the same message twice', () => {
+    let {alice, bob} = pair();
+    const sent = ratchetEncrypt(alice, 'read once', AD);
+    alice = sent.session;
+
+    const first = ratchetDecrypt(bob, sent.message, AD);
+    expect(first.plaintext).toBe('read once');
+    // Round-tripped through storage, as the session store does between reads.
+    bob = deserializeSession(serializeSession(first.session));
+
+    expect(() => ratchetDecrypt(bob, sent.message, AD)).toThrow();
+  });
+
+  it('consumes a skipped key on use, so a delayed message is also read once', () => {
+    let {alice, bob} = pair();
+    const held = ratchetEncrypt(alice, 'delayed', AD);
+    alice = held.session;
+    const next = ratchetEncrypt(alice, 'first', AD);
+    alice = next.session;
+    bob = ratchetDecrypt(bob, next.message, AD).session;
+    expect(bob.skipped.size).toBe(1);
+
+    const caught = ratchetDecrypt(bob, held.message, AD);
+    expect(caught.plaintext).toBe('delayed');
+    expect(caught.session.skipped.size).toBe(0);
+    expect(() => ratchetDecrypt(caught.session, held.message, AD)).toThrow();
+  });
+});
+
 describe('isRatchetMessage', () => {
   it('accepts a real message and rejects everything else', () => {
     const {alice} = pair();

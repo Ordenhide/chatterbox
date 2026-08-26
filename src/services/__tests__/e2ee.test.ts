@@ -113,6 +113,63 @@ describe('own-public-key cache', () => {
   });
 });
 
+describe('derived-message-key cache', () => {
+  // deriveMessageKey caches on (secretKey identity, peer public key, chatId),
+  // because every message in a conversation shares all three and the X25519
+  // scalar multiplication underneath is the dominant cost of opening a thread.
+  // The risk a cache introduces is handing back a key derived for a different
+  // peer, or for a different conversation — which would decrypt nothing, but
+  // would also mean the key separation those inputs exist to provide had been
+  // quietly lost. Each of these varies exactly one input and holds the rest
+  // steady, so a cache key that drops an input fails one of them.
+
+  it('keeps peers separate when the same secret talks to both', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    const carol = generateKeypair();
+
+    const toBob = encryptMessage('for bob', alice.secretKey, bob.publicKey, CHAT);
+    const toCarol = encryptMessage('for carol', alice.secretKey, carol.publicKey, CHAT);
+
+    expect(decryptMessage(toBob, bob.secretKey, CHAT)).toBe('for bob');
+    expect(decryptMessage(toCarol, carol.secretKey, CHAT)).toBe('for carol');
+    // Neither opens with the other's key — the separation the cache key exists
+    // to preserve.
+    expect(() => decryptMessage(toBob, carol.secretKey, CHAT)).toThrow();
+    expect(() => decryptMessage(toCarol, bob.secretKey, CHAT)).toThrow();
+  });
+
+  it('keeps chats separate for the same pair of users', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+
+    const inFirst = encryptMessage('same words', alice.secretKey, bob.publicKey, 'chat-one');
+    const inSecond = encryptMessage('same words', alice.secretKey, bob.publicKey, 'chat-two');
+
+    expect(decryptMessage(inFirst, bob.secretKey, 'chat-one')).toBe('same words');
+    expect(decryptMessage(inSecond, bob.secretKey, 'chat-two')).toBe('same words');
+    // chatId is the HKDF salt, so opening one conversation's payload under the
+    // other's id must fail even though the pair of users is identical.
+    expect(() => decryptMessage(inFirst, bob.secretKey, 'chat-two')).toThrow();
+  });
+
+  it('gives the same answer warm as cold, over many messages', () => {
+    const alice = generateKeypair();
+    const bob = generateKeypair();
+    // Identical plaintext every time, so the only thing that can make the
+    // bodies differ is a fresh nonce per message. Caching the derived *key*
+    // must not slide into reusing the whole encryption — nonce reuse under a
+    // shared key is exactly what XChaCha20's 24-byte nonce exists to rule out.
+    const sent = Array.from({length: 20}, () =>
+      encryptMessage('same words every time', alice.secretKey, bob.publicKey, CHAT),
+    );
+    sent.forEach(payload => {
+      expect(decryptMessage(payload, bob.secretKey, CHAT)).toBe('same words every time');
+    });
+    expect(new Set(sent.map(p => p.body)).size).toBe(sent.length);
+  });
+});
+
 describe('security properties', () => {
   it('the server sees no plaintext', () => {
     const alice = generateKeypair();

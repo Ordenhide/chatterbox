@@ -1096,6 +1096,56 @@ export default function ChatScreen() {
                 if (body.media) pendingMediaRef.current.set(id, body.media);
               };
 
+              /**
+               * Patches every message whose plaintext has resolved so far into
+               * the list.
+               *
+               * Called more than once per batch, and that is the point. This
+               * used to run only after the whole batch finished, so the slowest
+               * message in a snapshot set the latency for all of them — every
+               * bubble sat at "🔒 …" until the last one was open. The stateless
+               * envelopes below resolve synchronously, while the forward-secret
+               * ones each cost a storage round trip, so flushing between the
+               * two passes lets the cheap majority appear immediately instead
+               * of waiting behind the expensive minority.
+               *
+               * Idempotent: it reads the caches rather than a delta, so a
+               * message already patched simply patches to the same value, and
+               * the `Object.keys(patch).length` check keeps untouched items
+               * referentially identical for the list's benefit.
+               */
+              const flushDecrypted = () => {
+                if (!active) return;
+                setMessages(prev =>
+                  prev.map(item => {
+                    const id = String(item._id);
+                    const patch: Record<string, unknown> = {};
+                    if (decryptedTextRef.current.has(id)) {
+                      patch.text = decryptedTextRef.current.get(id);
+                    }
+                    if (decryptedImageRef.current.has(id)) {
+                      patch.image = decryptedImageRef.current.get(id) || undefined;
+                    }
+                    if (decryptedVideoRef.current.has(id)) {
+                      patch.video = decryptedVideoRef.current.get(id) || undefined;
+                    }
+                    if (decryptedAudioRef.current.has(id)) {
+                      patch.audio = decryptedAudioRef.current.get(id) || undefined;
+                    }
+                    if (decryptedFileUriRef.current.has(id) && (item as any).file) {
+                      patch.file = {
+                        ...(item as any).file,
+                        uri: decryptedFileUriRef.current.get(id) || '',
+                      };
+                    }
+                    if (decryptedPreviewRef.current.has(id)) {
+                      patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
+                    }
+                    return Object.keys(patch).length ? {...item, ...patch} : item;
+                  }),
+                );
+              };
+
               toDecrypt.forEach(m => {
                 const em = m as any;
                 const id = String(m._id);
@@ -1170,6 +1220,10 @@ export default function ChatScreen() {
                 }
               });
 
+              // The stateless envelopes are all open at this point. Show them
+              // now rather than holding them behind the awaited pass below.
+              flushDecrypted();
+
               /**
                * Forward-secret messages, opened separately because each one
                * reads and advances stored session state and so must be
@@ -1189,6 +1243,10 @@ export default function ChatScreen() {
                   const opened = await openGroupEnvelope(em.encrypted, user.uid, chatId);
                   if (opened.status === 'ok') acceptBody(id, opened.text);
                   else decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                  // Each pass through this loop costs a storage round trip, so
+                  // a message is shown the moment it opens rather than at the
+                  // end — the queue behind it may be seconds long.
+                  flushDecrypted();
                   continue;
                 }
 
@@ -1203,6 +1261,7 @@ export default function ChatScreen() {
                 } else {
                   decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
                 }
+                flushDecrypted();
               }
 
               /**
@@ -1254,41 +1313,12 @@ export default function ChatScreen() {
                 }
               }
 
-              // One state write per batch. Latches on: a later snapshot that
-              // happens to contain only readable messages must not retract an
-              // offer the user may be halfway through acting on.
+              // Latches on: a later snapshot that happens to contain only
+              // readable messages must not retract an offer the user may be
+              // halfway through acting on.
               if (active && anyWrongKey) setSealedToOtherDevice(true);
               if (active && anyPeerSessionReset) setPeerSessionReset(true);
-              if (active) {
-                setMessages(prev =>
-                  prev.map(item => {
-                    const id = String(item._id);
-                    const patch: Record<string, unknown> = {};
-                    if (decryptedTextRef.current.has(id)) {
-                      patch.text = decryptedTextRef.current.get(id);
-                    }
-                    if (decryptedImageRef.current.has(id)) {
-                      patch.image = decryptedImageRef.current.get(id) || undefined;
-                    }
-                    if (decryptedVideoRef.current.has(id)) {
-                      patch.video = decryptedVideoRef.current.get(id) || undefined;
-                    }
-                    if (decryptedAudioRef.current.has(id)) {
-                      patch.audio = decryptedAudioRef.current.get(id) || undefined;
-                    }
-                    if (decryptedFileUriRef.current.has(id) && (item as any).file) {
-                      patch.file = {
-                        ...(item as any).file,
-                        uri: decryptedFileUriRef.current.get(id) || '',
-                      };
-                    }
-                    if (decryptedPreviewRef.current.has(id)) {
-                      patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
-                    }
-                    return Object.keys(patch).length ? {...item, ...patch} : item;
-                  }),
-                );
-              }
+              flushDecrypted();
             } catch (keyError) {
               reportError(keyError, 'e2ee_decrypt_key_unavailable');
             }
