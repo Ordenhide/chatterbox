@@ -52,9 +52,19 @@ That aborts the whole command at the storage step, so **the Firestore rules are
 never attempted either** — a missing role on the storage half silently blocks
 the Firestore half.
 
-**Functions** (`deploy-functions.yml`): **Cloud Functions Admin**, **Service
-Account User**, and **Cloud Build Editor** (2nd-gen functions build through
-Cloud Build).
+**Functions** (`deploy-functions.yml`):
+
+| Role | Why |
+|---|---|
+| `Cloud Functions Admin` | creates and updates the functions |
+| `Service Account User` | `iam.serviceAccounts.actAs` on the runtime account `chatterbox-e5d10@appspot.gserviceaccount.com` — deploying a function means granting it that identity |
+| `Cloud Build Editor` | 2nd-gen functions build through Cloud Build |
+| `Cloud Scheduler Admin` | the six pubsub functions each need a Cloud Scheduler job created or updated |
+
+Cloud Scheduler Admin is easy to miss because its absence is a *partial*
+failure: every non-scheduled function deploys fine and only the six scheduled
+ones fail, with `cloudscheduler.jobs.update` denied. The run fails, but most of
+what it was asked to do already succeeded.
 
 The project's auto-created `firebase-adminsdk-*` service account has none of
 these by default — its stock `Firebase Admin SDK Administrator Service Agent`

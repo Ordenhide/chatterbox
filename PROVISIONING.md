@@ -23,9 +23,9 @@ the secret value. **Set**, but the roles still need granting — see DEPLOYING.m
 for the per-workflow table and the exact errors each missing role produces.
 
 Rules deploy needs `Firebase Rules Admin` and `Service Usage Consumer`;
-functions additionally need `Cloud Functions Admin`, `Service Account User` and
-`Cloud Build Editor`. The auto-created `firebase-adminsdk-*` account has none of
-them by default.
+functions additionally need `Cloud Functions Admin`, `Service Account User`,
+`Cloud Build Editor` and `Cloud Scheduler Admin`. The auto-created
+`firebase-adminsdk-*` account has none of them by default.
 
 Both workflows now check for this before doing anything and fail with that
 instruction. Previously they failed inside `google-github-actions/auth` with a
