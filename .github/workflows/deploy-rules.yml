@@ -100,6 +100,14 @@ jobs:
       - name: Deploy Firestore rules
         run: npx firebase-tools@^15 deploy --only firestore:rules --project chatterbox-e5d10 --non-interactive
 
+      # `--only storage`, not `storage:rules`. Firestore accepts sub-selectors
+      # (firestore:rules, firestore:indexes); Storage does not — there
+      # `storage:<name>` means a *deploy target*, so `storage:rules` sends
+      # firebase-tools looking for a target called "rules" and it fails with
+      # "Could not find rules for the following storage targets: rules".
+      #
+      # The original combined command had this too. It never showed, because
+      # both earlier attempts died on IAM before reaching the argument.
       - name: Deploy Storage rules
         if: always()
-        run: npx firebase-tools@^15 deploy --only storage:rules --project chatterbox-e5d10 --non-interactive
+        run: npx firebase-tools@^15 deploy --only storage --project chatterbox-e5d10 --non-interactive
