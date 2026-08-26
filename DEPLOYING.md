@@ -26,13 +26,39 @@ that on the same push.
 ## The one required secret
 
 `FIREBASE_SERVICE_ACCOUNT` — the full JSON key for a service account on project
-`chatterbox-e5d10`, with **Cloud Functions Admin**, **Service Account User**,
-and **Cloud Build Editor** (2nd-gen functions build through Cloud Build).
+`chatterbox-e5d10`.
 
-It is not currently set, so **no function or rules deploy has ever run**. Both
-workflows now check for it up front and fail with that instruction; before, the
-failure surfaced inside `google-github-actions/auth` as a malformed-credentials
-error that never named the secret.
+It is now set, and the roles below are what an actual deploy attempt turned out
+to need. They are listed per workflow because the two need different things and
+the rules deploy is the one worth getting working first.
+
+**Rules** (`deploy-rules.yml`):
+
+| Role | Why |
+|---|---|
+| `Firebase Rules Admin` | writes the ruleset and points the release at it |
+| `Service Usage Consumer` | `firebase-tools` checks whether `firebasestorage.googleapis.com` is enabled *before* deploying storage rules, and that check needs `serviceusage.services.get` |
+
+The second one is not in any Firebase documentation and is easy to miss,
+because the failure names an API rather than a permission:
+
+```
+i  storage: ensuring required API firebasestorage.googleapis.com is enabled...
+Error: ... HTTP Error: 403, Permission denied to get service
+       [firebasestorage.googleapis.com]
+```
+
+That aborts the whole command at the storage step, so **the Firestore rules are
+never attempted either** — a missing role on the storage half silently blocks
+the Firestore half.
+
+**Functions** (`deploy-functions.yml`): **Cloud Functions Admin**, **Service
+Account User**, and **Cloud Build Editor** (2nd-gen functions build through
+Cloud Build).
+
+The project's auto-created `firebase-adminsdk-*` service account has none of
+these by default — its stock `Firebase Admin SDK Administrator Service Agent`
+role covers Admin SDK data access, not deployment.
 
 Everything else is optional and turns individual features on. `PROVISIONING.md`
 lists them with what breaks without each.
@@ -96,8 +122,10 @@ without an `i functions:` upload line deployed nothing.
 is not the complete JSON key file. The preflight step now catches this first.
 
 **Permission denied on deploy** — the service account is missing one of the
-three roles above. Cloud Build Editor is the one usually forgotten, and its
-absence only shows up at the build step.
+roles above. Two are easy to miss for opposite reasons: Cloud Build Editor
+because its absence only shows up at the build step, and Service Usage Consumer
+because the error names an API rather than a permission (see the rules table
+above).
 
 **Blaze-plan errors** — billing is off and something scheduled slipped into
 `exports`. Check `CHATTERBOX_ENABLE_SCHEDULED`.
