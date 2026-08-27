@@ -931,13 +931,37 @@ export async function setLastRead(chatId: string, userId: string) {
   }
 }
 
+/**
+ * Publishes the typing indicator. Never rejects.
+ *
+ * Both callers are fire-and-forget by construction — one is a debounce timer,
+ * the other a focus-effect cleanup — so neither awaits this and neither could
+ * act on a failure if it did. Left to reject, it surfaced as an unhandled
+ * promise rejection: a full-screen red console error in dev, and in release the
+ * silent kind that this project has already been bitten by once (see the
+ * scheduled-send path, which failed invisibly for exactly this reason).
+ *
+ * The failure is not hypothetical or rare. Writing the indicator is an update
+ * to the chat document, which the rules allow only to a participant, and the
+ * cleanup callback fires *as the screen unmounts* — including on the unmount
+ * that follows leaving the chat. Leaving therefore ends, reliably, with one
+ * denied write for a chat the user just chose to leave.
+ *
+ * Swallowing is right here rather than lazy: a typing indicator is best-effort
+ * presence. A dropped one is invisible, and there is nothing to retry or report
+ * to the user. It is still logged, so a *broad* permission failure does not
+ * become undetectable.
+ */
 export async function setTyping(chatId: string, userId: string, isTyping: boolean) {
   if (isStealthMode()) return;
-  const ref = doc(chatsRef(), chatId);
-  if (isTyping) {
-    await setDoc(ref, {typingBy: {[userId]: Date.now()}}, {merge: true});
-  } else {
-    await setDoc(ref, {typingBy: {[userId]: 0}}, {merge: true});
+  try {
+    await setDoc(
+      doc(chatsRef(), chatId),
+      {typingBy: {[userId]: isTyping ? Date.now() : 0}},
+      {merge: true},
+    );
+  } catch (error) {
+    logError(error, 'setTyping');
   }
 }
 

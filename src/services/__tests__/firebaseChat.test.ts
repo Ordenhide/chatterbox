@@ -61,8 +61,8 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUserByEmail, searchUsersByEmailOrName} from '../firebaseChat';
-import {getDocs} from '../firebase/firestore';
+import {deleteMessages, getUserByEmail, searchUsersByEmailOrName, setTyping} from '../firebaseChat';
+import {getDocs, setDoc} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
 const KEYPAIR = {secretKey: new Uint8Array([1, 2, 3]), publicKey: new Uint8Array([4, 5, 6])};
@@ -148,5 +148,47 @@ describe('user lookup takes the uid from the document id', () => {
   it('keeps the rest of the profile intact', async () => {
     mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
     expect((await getUserByEmail('x@example.com'))?.email).toBe('x@example.com');
+  });
+});
+
+describe('setTyping never rejects', () => {
+  const mockedSetDoc = setDoc as unknown as jest.Mock;
+
+  afterEach(() => {
+    mockedSetDoc.mockReset();
+    mockedSetDoc.mockResolvedValue(undefined);
+  });
+
+  it('swallows a permission error instead of rejecting', async () => {
+    // The real one: writing the indicator updates the chat document, which the
+    // rules allow only to a participant, and the focus-effect cleanup fires as
+    // the screen unmounts — including the unmount right after leaving a chat.
+    // Neither caller awaits this, so a rejection here became an unhandled
+    // promise rejection rather than anything anyone could act on.
+    mockedSetDoc.mockRejectedValue(
+      Object.assign(new Error('permission-denied'), {code: 'firestore/permission-denied'}),
+    );
+    await expect(setTyping('c1', 'alice', false)).resolves.toBeUndefined();
+  });
+
+  it('swallows a failure when starting to type, too', async () => {
+    mockedSetDoc.mockRejectedValue(new Error('offline'));
+    await expect(setTyping('c1', 'alice', true)).resolves.toBeUndefined();
+  });
+
+  it('still writes the indicator on the happy path', async () => {
+    mockedSetDoc.mockResolvedValue(undefined);
+    await setTyping('c1', 'alice', true);
+    expect(mockedSetDoc).toHaveBeenCalledTimes(1);
+    const [, payload] = mockedSetDoc.mock.calls[0];
+    expect(typeof (payload as any).typingBy.alice).toBe('number');
+    expect((payload as any).typingBy.alice).toBeGreaterThan(0);
+  });
+
+  it('clears the indicator with a zero rather than deleting the field', async () => {
+    mockedSetDoc.mockResolvedValue(undefined);
+    await setTyping('c1', 'alice', false);
+    const [, payload] = mockedSetDoc.mock.calls[0];
+    expect((payload as any).typingBy.alice).toBe(0);
   });
 });
