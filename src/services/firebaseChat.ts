@@ -86,12 +86,13 @@ const logListenerError = (error: unknown, context: string) => {
   logError(error, context);
 };
 
-const deleteCollectionInBatches = async (colRef: any) => {
+const deleteCollectionInBatches = async (colRef: any, ...constraints: any[]) => {
   let iterations = 0;
   const MAX_ITERATIONS = 50;
   while (iterations < MAX_ITERATIONS) {
     iterations++;
-    const snapshot = await getDocs(query(colRef, limit(300)));
+    // The constraints go *before* the limit so a filtered sweep still pages.
+    const snapshot = await getDocs(query(colRef, ...constraints, limit(300)));
     if (snapshot.empty) break;
     const batch = writeBatch(db);
     snapshot.docs.forEach(docSnap => batch.delete(docSnap.ref));
@@ -968,23 +969,52 @@ export async function deleteStorageObjectByUrl(url: string): Promise<boolean> {
   }
 }
 
-export async function deleteChat(chatId: string) {
+/**
+ * Removes this user from a chat, taking the content that is theirs with them.
+ *
+ * Replaces a `deleteChat` that swept the whole `messages` collection and then
+ * deleted the chat document. That could not work and had not for some time:
+ * the message rule allows a delete only by the message's author (see
+ * firestore.rules — it was narrowed so one member of a group could not destroy
+ * everyone's history), so the sweep hit the other participant's first message
+ * and the whole thing failed with permission-denied. The confirmation dialog
+ * had been promising to "permanently delete the entire chat history for all
+ * participants" the entire time, which the rules make impossible by design.
+ *
+ * What is actually possible is what this does. Everything authored by this
+ * user goes — messages, anything they had scheduled, their own trash — and
+ * then they leave. The other participant keeps their own messages and the
+ * conversation.
+ *
+ * Ordering is not incidental: every rule involved is gated on still being a
+ * participant, so leaving first would lock this user out of deleting their own
+ * content. Leaving is last, and only after the deletes have succeeded.
+ *
+ * Scheduled messages matter more than they look. Left behind, they would be
+ * delivered by processScheduledMessages into a conversation this user is no
+ * longer part of, minutes or days after they left it.
+ *
+ * Deliberately not touched: call records, and the missed-call system notices
+ * the rules would technically let any participant remove. Both are shared
+ * history rather than this user's content, and the point of this function is
+ * that the distinction is now respected.
+ */
+export async function leaveAndClearOwnContent(chatId: string, myUserId: string) {
+  if (!myUserId) throw new Error('leaveAndClearOwnContent requires the signed-in user id');
   try {
     const chatDoc = doc(chatsRef(), chatId);
-    const messagesRef = collection(chatDoc, 'messages');
-    const callsCollection = callsRef(chatId);
+    const mine = where('user._id', '==', myUserId);
 
-    await deleteCollectionInBatches(messagesRef);
+    await deleteCollectionInBatches(collection(chatDoc, 'messages'), mine);
+    await deleteCollectionInBatches(collection(chatDoc, 'scheduledMessages'), mine);
+    await deleteCollectionInBatches(
+      collection(chatDoc, 'trash'),
+      where('deletedBy', '==', myUserId),
+    );
 
-    const callsSnapshot = await getDocs(callsCollection);
-    for (const callDoc of callsSnapshot.docs) {
-      const candidatesRef = collection(callDoc.ref, 'candidates');
-      await deleteCollectionInBatches(candidatesRef);
-    }
-    await deleteCollectionInBatches(callsCollection);
-    await deleteDoc(chatDoc);
+    await leaveChat(chatId, myUserId);
   } catch (error) {
-    logError(error, 'deleteChat');
+    logError(error, 'leaveAndClearOwnContent');
     throw error;
   }
 }

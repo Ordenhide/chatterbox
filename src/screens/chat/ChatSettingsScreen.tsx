@@ -16,7 +16,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useAuth} from '../../contexts/AuthContext';
 import {
-  deleteChat,
+  leaveAndClearOwnContent,
   exportChat,
   importChat,
   toggleMuteChat,
@@ -213,28 +213,36 @@ export default function ChatSettingsScreen() {
     ]);
   };
 
-  const handleDeleteChat = async () => {
+  // Named for what it does now. The old "delete the whole chat for everyone"
+  // was not something the rules permit — see leaveAndClearOwnContent — so the
+  // dialog below says what actually happens instead of what used to be
+  // promised. New i18n keys rather than edited ones, so the translations of
+  // the old (untrue) wording fall back to English until they are redone.
+  const handleLeaveAndClear = async () => {
     if (!chatId || !user) return;
     Alert.alert(
-      t('chatSettings.alerts.deleteTitle'),
-      t('chatSettings.alerts.deleteBody'),
+      t('chatSettings.alerts.leaveClearTitle'),
+      t('chatSettings.alerts.leaveClearBody'),
       [
         {text: t('chatSettings.alerts.deleteCancel'), style: 'cancel'},
         {
-          text: t('chatSettings.alerts.deleteConfirm'),
+          text: t('chatSettings.alerts.leaveClearConfirm'),
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteChat(chatId);
+              await leaveAndClearOwnContent(chatId, user.uid);
               await removeCachedChat(user.uid, chatId);
               await removeOutboxForChat(user.uid, chatId);
               await setDraft(user.uid, chatId, '');
               navigation.goBack();
             } catch (err) {
               if (__DEV__) {
-                console.warn('ChatSettingsScreen: failed to delete chat', err);
+                console.warn('ChatSettingsScreen: failed to leave chat', err);
               }
-              Alert.alert(t('chatSettings.alerts.deleteFailedTitle'), t('chatSettings.alerts.deleteFailedBody'));
+              Alert.alert(
+                t('chatSettings.alerts.leaveClearFailedTitle'),
+                t('chatSettings.alerts.leaveClearFailedBody'),
+              );
             }
           },
         },
@@ -612,8 +620,8 @@ export default function ChatSettingsScreen() {
         <TouchableOpacity style={styles.row} onPress={handlePruneMedia}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.cleanupMedia')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={handleDeleteChat}>
-          <Text style={[styles.rowLabel, {color: colors.danger}]}>{t('chatSettings.deleteChat')}</Text>
+        <TouchableOpacity style={styles.row} onPress={handleLeaveAndClear}>
+          <Text style={[styles.rowLabel, {color: colors.danger}]}>{t('chatSettings.leaveAndClear')}</Text>
         </TouchableOpacity>
       </GlassView>
 

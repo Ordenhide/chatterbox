@@ -512,6 +512,7 @@
     "importChat": "Import Chat (JSON)",
     "cleanupMedia": "Cleanup Media (30 days)",
     "deleteChat": "Delete Chat",
+    "leaveAndClear": "Delete My Messages & Leave",
     "data": "Data",
     "exportModalTitle": "Export Chat",
     "copy": "Copy",
@@ -541,6 +542,11 @@
       "deleteConfirm": "Delete",
       "deleteFailedTitle": "Error",
       "deleteFailedBody": "Failed to delete chat",
+      "leaveClearTitle": "Leave and delete your messages?",
+      "leaveClearBody": "The messages you sent are deleted for everyone. Messages other people sent stay, and they keep the conversation. Anything you had scheduled here is cancelled, and you are removed from the chat.",
+      "leaveClearConfirm": "Leave",
+      "leaveClearFailedTitle": "Error",
+      "leaveClearFailedBody": "Could not leave the chat. Nothing was changed \u2014 please try again.",
       "copiedTitle": "Copied",
       "copiedBody": "Chat JSON copied to clipboard"
     }

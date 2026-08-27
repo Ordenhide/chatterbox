@@ -16,6 +16,7 @@ const {
   deleteDoc,
   doc,
   getDoc,
+  arrayRemove,
   arrayUnion,
   getDocs,
   limit,
@@ -1810,5 +1811,70 @@ describe('users/{uid}/oneTimePreKeys deletion window', () => {
     await seed(db => deleteDoc(doc(db, 'users/alice')));
     const snap = await assertSucceeds(getDoc(doc(asUser('mallory'), 'users/alice/oneTimePreKeys/p1')));
     expect(snap.exists()).toBe(true);
+  });
+});
+
+
+/**
+ * The sweep leaveAndClearOwnContent() runs before a user leaves a chat.
+ *
+ * "Delete chat" used to sweep the whole messages collection and then delete the
+ * chat document, while the dialog promised to remove the history "for all
+ * participants". The rules had already made that impossible — a message may be
+ * deleted only by its author — so the sweep hit the other person's first
+ * message and the whole operation failed with permission-denied. What is left
+ * is this: take your own content with you, then go.
+ *
+ * The ordering is the part worth pinning down. Every rule involved is gated on
+ * still being a participant, so leaving first does not merely skip the cleanup,
+ * it makes the cleanup impossible afterwards — the content stays in a
+ * conversation the user believes they erased themselves from.
+ */
+describe('leaving a chat and taking your own content with you', () => {
+  beforeEach(async () => {
+    await seed(async db => {
+      await setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']});
+      await setDoc(doc(db, 'chats/c1/messages/a1'), {text: 'mine', user: {_id: 'alice'}});
+      await setDoc(doc(db, 'chats/c1/messages/a2'), {text: 'mine too', user: {_id: 'alice'}});
+      await setDoc(doc(db, 'chats/c1/messages/b1'), {text: 'his', user: {_id: 'bob'}});
+      await setDoc(doc(db, 'chats/c1/scheduledMessages/s1'), {
+        text: 'later', user: {_id: 'alice'}, scheduledFor: Date.now(), sent: false,
+      });
+    });
+  });
+
+  const myMessages = () =>
+    query(
+      collection(asUser('alice'), 'chats/c1/messages'),
+      where('user._id', '==', 'alice'),
+      limit(300),
+    );
+
+  it('selects only my own messages, and deletes every one of them', async () => {
+    const snap = await assertSucceeds(getDocs(myMessages()));
+    expect(snap.docs.map(d => d.id).sort()).toEqual(['a1', 'a2']);
+    for (const d of snap.docs) {
+      await assertSucceeds(deleteDoc(doc(asUser('alice'), `chats/c1/messages/${d.id}`)));
+    }
+  });
+
+  it("leaves the other participant's message where it is", async () => {
+    // The old implementation's failure, kept as an assertion: this is the
+    // document the unfiltered sweep died on.
+    await assertFails(deleteDoc(doc(asUser('alice'), 'chats/c1/messages/b1')));
+  });
+
+  it('lets me cancel what I had scheduled, so it cannot fire after I leave', async () => {
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/scheduledMessages/s1')));
+  });
+
+  it('THE ORDERING: once I have left, I can no longer delete any of it', async () => {
+    await assertSucceeds(
+      updateDoc(doc(asUser('alice'), 'chats/c1'), {participants: arrayRemove('alice')}),
+    );
+    await assertFails(deleteDoc(doc(asUser('alice'), 'chats/c1/messages/a1')));
+    await assertFails(deleteDoc(doc(asUser('alice'), 'chats/c1/scheduledMessages/s1')));
+    // Not even readable any more, so nothing could enumerate what was missed.
+    await assertFails(getDocs(myMessages()));
   });
 });
