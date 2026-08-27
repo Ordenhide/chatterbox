@@ -12,6 +12,12 @@ name: Deploy Firestore & Storage Rules
 # test job below, run against a real emulator (see test/rules/), is what
 # would have caught that exact bug the moment it was introduced instead of
 # via a user report 6 months later.
+#
+# Firestore *indexes* are deployed here too, despite the name, and for the
+# same reason: they have exactly the same "committed but never deployed" gap,
+# and it bit in exactly the same way — three scheduled Cloud Functions failing
+# every run on a missing index while reporting success. The workflow name is
+# left alone so any status check referencing it keeps matching.
 
 on:
   workflow_dispatch: # Manual trigger
@@ -20,6 +26,11 @@ on:
     paths:
       - 'firestore.rules'
       - 'storage.rules'
+      # Without this an index-only change deploys nothing: the file is not a
+      # rules file, so no path here matched it and the workflow never ran.
+      # That is half of why indexes drifted from the repo for so long — the
+      # other half being that no step deployed them even when it did run.
+      - 'firestore.indexes.json'
       - 'test/rules/**'
       - '.github/workflows/deploy-rules.yml'
 
@@ -99,6 +110,30 @@ jobs:
       # Firestore fails — and the job still fails if either does.
       - name: Deploy Firestore rules
         run: npx firebase-tools@^15 deploy --only firestore:rules --project chatterbox-e5d10 --non-interactive
+
+      # Indexes were never deployed by anything. firestore.indexes.json was
+      # committed, reviewed and merged like the rules beside it, and went
+      # nowhere — so the file said one thing and the project did another, with
+      # nothing to notice the gap.
+      #
+      # That is not cosmetic. processScheduledMessages, processReminders and
+      # sweepExpiredLiveLocations all query with collectionGroup, all needed an
+      # index declared at COLLECTION_GROUP scope, and all failed every run with
+      # "The query requires an index" — caught, logged, and returned as
+      # success, so scheduled messages sat undelivered for over twelve hours
+      # while the scheduler looked perfectly healthy. The scope was fixed in
+      # firestore.indexes.json, but only a manual deploy actually shipped it.
+      #
+      # Deploying without --force on purpose: an index in the project that is
+      # absent from the file is reported and left alone. Dropping an index is
+      # not something a merge should be able to do silently, and the CLI's
+      # notice is the prompt to do it deliberately.
+      #
+      # `if: always()` for the same reason as Storage below — each deploy
+      # reports its own outcome, and one failing cannot hide the others.
+      - name: Deploy Firestore indexes
+        if: always()
+        run: npx firebase-tools@^15 deploy --only firestore:indexes --project chatterbox-e5d10 --non-interactive
 
       # `--only storage`, not `storage:rules`. Firestore accepts sub-selectors
       # (firestore:rules, firestore:indexes); Storage does not — there
