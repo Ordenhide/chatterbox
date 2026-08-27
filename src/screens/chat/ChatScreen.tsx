@@ -83,6 +83,7 @@ import {
   removeOutboxMessage,
   setCachedMessages,
 } from '../../services/offlineCache';
+import {loadBodies, saveBodies} from '../../services/messageBodyStore';
 import {useNetworkStatus} from '../../hooks/useNetworkStatus';
 import {prefetchMessageImages} from '../../services/imageCache';
 import {
@@ -184,6 +185,25 @@ const VOICE_CHANNEL_COUNT = 1;
  * plain number from either. */
 function toCreatedAtMillis(createdAt: Date | number): number {
   return createdAt instanceof Date ? createdAt.getTime() : createdAt;
+}
+
+/**
+ * Strips decrypted bodies back out before a message reaches the offline cache.
+ *
+ * That cache is a plain JSON blob in MMKV and was only ever meant to hold what
+ * the server holds. It quietly stopped doing so: `text` on a sealed message is
+ * read from the decrypt cache, so any snapshot arriving after the first one
+ * carried real plaintext into it — unplanned, undocumented, and not covered by
+ * the reasoning in storageMMKV.ts about what may live there.
+ *
+ * Bodies have a proper home now (services/messageBodyStore.ts), encrypted under
+ * a key of their own, so this puts the placeholder back and lets that store be
+ * the only place plaintext is written.
+ */
+function withoutDecryptedBody(message: IMessage): IMessage {
+  const em = message as any;
+  if (!isSealed(em.encrypted)) return message;
+  return {...message, text: '🔒 …', awaitingDecryption: true} as IMessage;
 }
 
 /** Module-level so the identity is stable: GlassScreen is memoized, and a fresh
@@ -794,14 +814,50 @@ export default function ChatScreen() {
       }
 
       let active = true;
-      const loadCached = async () => {
-        const cached = await getCachedMessages(chatId);
+
+      /**
+       * Seeds the plaintext this device has already opened, and hydrates the
+       * offline cache with it.
+       *
+       * The offline cache holds ciphertext, and decryption used to happen only
+       * inside the snapshot callback below — so a returning reader watched
+       * every sealed message sit at "🔒 …" for a full network round trip, with
+       * the bytes needed to read them on disk the whole time. Bodies come from
+       * local storage, so this path never touches the network.
+       *
+       * Everything downstream waits on this promise. That is not an
+       * optimisation: a ratchet envelope opens exactly once, so attempting one
+       * whose plaintext is already stored would consume the attempt, fail, and
+       * cache a padlock over a message that was perfectly readable.
+       */
+      const bodiesReady = (async () => {
+        const [cached, bodies] = await Promise.all([
+          getCachedMessages(chatId),
+          loadBodies(user.uid, chatId),
+        ]);
         if (!active) return;
+
+        bodies.forEach((text, id) => {
+          if (!decryptedTextRef.current.has(id)) decryptedTextRef.current.set(id, text);
+        });
+
         if (cached.length) {
-          setMessages(prev => (prev.length ? prev : cached));
+          const hydrated = bodies.size
+            ? cached.map(item => {
+                const text = decryptedTextRef.current.get(String(item._id));
+                return text ? {...item, text, awaitingDecryption: false} : item;
+              })
+            : cached;
+          setMessages(prev => (prev.length ? prev : hydrated));
         }
-      };
-      loadCached();
+      })().catch(error => {
+        // Must never reject. The decrypt pass below awaits this promise from
+        // outside its own try, so a rejection here would surface as an
+        // unhandled rejection and silently skip decryption altogether — the
+        // same shape of failure as the scheduled-send bug. Seeding is an
+        // optimisation; failing to seed costs a slower chat, nothing more.
+        reportError(error, 'message_bodies_seed_failed');
+      });
 
       const unsubscribe = listenMessages(chatId, snapshotMessages => {
         const oldest = snapshotMessages[snapshotMessages.length - 1];
@@ -957,7 +1013,7 @@ export default function ChatScreen() {
           );
         })();
         setMessages(merged);
-        scheduleMessageCacheWrite(chatId, formattedMessages);
+        scheduleMessageCacheWrite(chatId, formattedMessages.map(withoutDecryptedBody));
 
         // E2EE: decrypt any messages in this batch not already resolved, then
         // patch their placeholder(s) in place. Deliberately runs after
@@ -992,338 +1048,370 @@ export default function ChatScreen() {
             (isSealed(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
           );
         };
-        const toDecrypt = merged.filter(needsDecrypt);
-        if (toDecrypt.length) {
-          (async () => {
-            try {
-              // Deliberately the non-enrolling read. This used to call
-              // getOrCreateDeviceKeypair, which publishes on first call — so
-              // simply *opening* a chat containing sealed messages was enough
-              // for a newly-installed second device to mint a key and
-              // overwrite the account's published one, orphaning every message
-              // sealed to the original. Reading must never enroll.
-              const keypair = await getDeviceKeypairIfEnrolled(user.uid);
-              if (!active) return;
-              if (!keypair) {
-                // No key on this device, but sealed messages in the thread —
-                // so by definition they were sealed to a key held elsewhere.
-                // No need to ask diagnoseSealed; there is no key to diagnose
-                // against.
-                setSealedToOtherDevice(true);
-                toDecrypt.forEach(m => {
-                  const em = m as any;
-                  const id = String(m._id);
-                  // Every cache is filled, including the media ones, so these
-                  // messages stop matching needsDecrypt. Left unfilled they
-                  // would re-enter this block on every single snapshot. A
-                  // successful restore bumps the key generation, which clears
-                  // all of them and re-runs this for real.
-                  const sealedMedia =
-                    isSealed(em.encryptedImage) ||
-                    isSealed(em.encryptedVideo) ||
-                    isSealed(em.encryptedAudio) ||
-                    isSealed(em.encryptedFileUri) ||
-                    sealedSlots(em).length > 0;
-                  if (isSealed(em.encryptedImage)) decryptedImageRef.current.set(id, '');
-                  if (isSealed(em.encryptedVideo)) decryptedVideoRef.current.set(id, '');
-                  if (isSealed(em.encryptedAudio)) decryptedAudioRef.current.set(id, '');
-                  if (isSealed(em.encryptedFileUri)) decryptedFileUriRef.current.set(id, '');
-                  // Same for attachments whose bytes are encrypted: their key
-                  // is inside a body this device cannot open, so there is
-                  // nothing to fetch. Left unfilled they would keep matching
-                  // needsDecrypt and re-enter this block on every snapshot.
-                  for (const slot of sealedSlots(em)) {
-                    mediaCacheForSlot(slot).current.set(id, '');
-                  }
-                  if (isSealed(em.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
-                  // A message whose only sealed field is its link preview keeps
-                  // its real text — losing the card is not worth overwriting a
-                  // perfectly readable message with a padlock.
-                  if (isSealed(em.encrypted) || sealedMedia) {
-                    decryptedTextRef.current.set(id, '🔒 Sealed to another device');
-                  }
-                });
-                setMessages(prev =>
-                  prev.map(item => {
-                    const text = decryptedTextRef.current.get(String(item._id));
-                    return text ? {...item, text} : item;
-                  }),
-                );
-                return;
+        /**
+         * Patches every message whose plaintext has resolved so far into
+         * the list.
+         *
+         * Called more than once per batch, and that is the point. This
+         * used to run only after the whole batch finished, so the slowest
+         * message in a snapshot set the latency for all of them — every
+         * bubble sat at "🔒 …" until the last one was open. The stateless
+         * envelopes below resolve synchronously, while the forward-secret
+         * ones each cost a storage round trip, so flushing between the
+         * two passes lets the cheap majority appear immediately instead
+         * of waiting behind the expensive minority.
+         *
+         * Idempotent: it reads the caches rather than a delta, so a
+         * message already patched simply patches to the same value, and
+         * the `Object.keys(patch).length` check keeps untouched items
+         * referentially identical for the list's benefit.
+         */
+        const flushDecrypted = () => {
+          if (!active) return;
+          setMessages(prev =>
+            prev.map(item => {
+              const id = String(item._id);
+              const patch: Record<string, unknown> = {};
+              if (decryptedTextRef.current.has(id)) {
+                patch.text = decryptedTextRef.current.get(id);
               }
-              const {secretKey, publicKey} = keypair;
-              // Whether anything in this batch failed the *recoverable* way.
-              // Accumulated across the batch and committed once, rather than
-              // calling setState from inside the loop.
-              let anyWrongKey = false;
-              let anyPeerSessionReset = false;
-              /**
-               * The user-facing text for a failure, and a note of whether it
-               * is the recoverable kind.
-               *
-               * "Unable to decrypt" was true but useless: it reads as data
-               * loss, when the overwhelmingly common cause is simply that the
-               * message was sealed to this account's *other* device — which
-               * the recovery phrase fixes. diagnoseSealed can tell those apart
-               * from the addressing alone, so the placeholder says which one
-               * happened instead of making the user guess.
-               */
-              const failureText = (payload: unknown): string => {
-                const reason = diagnoseSealed(payload, publicKey, user.uid);
-                if (reason === 'wrong-key') {
-                  anyWrongKey = true;
-                  return '🔒 Sealed to another device';
-                }
-                if (reason === 'unsupported-algorithm') {
-                  return '🔒 Update the app to read this';
-                }
-                return '🔒 Unable to decrypt';
-              };
+              if (decryptedImageRef.current.has(id)) {
+                patch.image = decryptedImageRef.current.get(id) || undefined;
+              }
+              if (decryptedVideoRef.current.has(id)) {
+                patch.video = decryptedVideoRef.current.get(id) || undefined;
+              }
+              if (decryptedAudioRef.current.has(id)) {
+                patch.audio = decryptedAudioRef.current.get(id) || undefined;
+              }
+              if (decryptedFileUriRef.current.has(id) && (item as any).file) {
+                patch.file = {
+                  ...(item as any).file,
+                  uri: decryptedFileUriRef.current.get(id) || '',
+                };
+              }
+              if (decryptedPreviewRef.current.has(id)) {
+                patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
+              }
+              return Object.keys(patch).length ? {...item, ...patch} : item;
+            }),
+          );
+        };
 
-              /**
-               * Records a decrypted body: its text for display, and any
-               * attachment content keys for the resolve pass below.
-               *
-               * Every path that opens a body goes through this — static,
-               * ratchet and sender-key alike — so that a message carrying an
-               * attachment behaves the same however it was sealed. Routing
-               * only some of them would leave photos permanently unopenable
-               * on whichever path was missed, with no error anywhere.
-               */
-              const acceptBody = (id: string, raw: string) => {
-                const body = decodeBody(raw);
-                decryptedTextRef.current.set(id, body.text);
-                if (body.media) pendingMediaRef.current.set(id, body.media);
-              };
+        (async () => {
+          // What still needs opening can only be decided once the locally
+          // stored bodies are in the caches — see bodiesReady. Deciding first
+          // and seeding later would send a ratchet envelope whose plaintext is
+          // already on disk into a decrypt that consumes its only attempt.
+          await bodiesReady;
+          if (!active) return;
 
-              /**
-               * Patches every message whose plaintext has resolved so far into
-               * the list.
-               *
-               * Called more than once per batch, and that is the point. This
-               * used to run only after the whole batch finished, so the slowest
-               * message in a snapshot set the latency for all of them — every
-               * bubble sat at "🔒 …" until the last one was open. The stateless
-               * envelopes below resolve synchronously, while the forward-secret
-               * ones each cost a storage round trip, so flushing between the
-               * two passes lets the cheap majority appear immediately instead
-               * of waiting behind the expensive minority.
-               *
-               * Idempotent: it reads the caches rather than a delta, so a
-               * message already patched simply patches to the same value, and
-               * the `Object.keys(patch).length` check keeps untouched items
-               * referentially identical for the list's benefit.
-               */
-              const flushDecrypted = () => {
-                if (!active) return;
-                setMessages(prev =>
-                  prev.map(item => {
-                    const id = String(item._id);
-                    const patch: Record<string, unknown> = {};
-                    if (decryptedTextRef.current.has(id)) {
-                      patch.text = decryptedTextRef.current.get(id);
-                    }
-                    if (decryptedImageRef.current.has(id)) {
-                      patch.image = decryptedImageRef.current.get(id) || undefined;
-                    }
-                    if (decryptedVideoRef.current.has(id)) {
-                      patch.video = decryptedVideoRef.current.get(id) || undefined;
-                    }
-                    if (decryptedAudioRef.current.has(id)) {
-                      patch.audio = decryptedAudioRef.current.get(id) || undefined;
-                    }
-                    if (decryptedFileUriRef.current.has(id) && (item as any).file) {
-                      patch.file = {
-                        ...(item as any).file,
-                        uri: decryptedFileUriRef.current.get(id) || '',
-                      };
-                    }
-                    if (decryptedPreviewRef.current.has(id)) {
-                      patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
-                    }
-                    return Object.keys(patch).length ? {...item, ...patch} : item;
-                  }),
-                );
-              };
+          const toDecrypt = merged.filter(needsDecrypt);
+          if (!toDecrypt.length) {
+            // Nothing to open, but the seeded bodies still have to reach the
+            // list: this snapshot rebuilt every item from the raw documents.
+            flushDecrypted();
+            return;
+          }
 
+          try {
+            // Deliberately the non-enrolling read. This used to call
+            // getOrCreateDeviceKeypair, which publishes on first call — so
+            // simply *opening* a chat containing sealed messages was enough
+            // for a newly-installed second device to mint a key and
+            // overwrite the account's published one, orphaning every message
+            // sealed to the original. Reading must never enroll.
+            const keypair = await getDeviceKeypairIfEnrolled(user.uid);
+            if (!active) return;
+            if (!keypair) {
+              // No key on this device, but sealed messages in the thread —
+              // so by definition they were sealed to a key held elsewhere.
+              // No need to ask diagnoseSealed; there is no key to diagnose
+              // against.
+              setSealedToOtherDevice(true);
               toDecrypt.forEach(m => {
                 const em = m as any;
                 const id = String(m._id);
-                let mediaFailed = false;
-                // The payload blamed when a *media* field fails: media has no
-                // `encrypted` text of its own to diagnose, so the first field
-                // that failed stands in for the message.
-                let failedPayload: unknown = null;
-
-                // Ratchet envelopes are handled in the async pass below:
-                // opening one needs stored session state, which openSealed
-                // has no access to and would throw on.
-                if (
-                  isSealed(em.encrypted) &&
-                  !isRatchetSealed(em.encrypted) &&
-                  !isGroupSealed(em.encrypted) &&
-                  !decryptedTextRef.current.has(id)
-                ) {
-                  try {
-                    acceptBody(id, openSealed(em.encrypted, secretKey, user.uid, chatId));
-                  } catch (decryptError) {
-                    // Wrong/rotated key, or a payload from before this device
-                    // enrolled — distinct from "still loading" so it doesn't
-                    // spin on the placeholder forever.
-                    reportError(decryptError, 'e2ee_decrypt_failed');
-                    decryptedTextRef.current.set(id, failureText(em.encrypted));
-                  }
+                // Every cache is filled, including the media ones, so these
+                // messages stop matching needsDecrypt. Left unfilled they
+                // would re-enter this block on every single snapshot. A
+                // successful restore bumps the key generation, which clears
+                // all of them and re-runs this for real.
+                const sealedMedia =
+                  isSealed(em.encryptedImage) ||
+                  isSealed(em.encryptedVideo) ||
+                  isSealed(em.encryptedAudio) ||
+                  isSealed(em.encryptedFileUri) ||
+                  sealedSlots(em).length > 0;
+                if (isSealed(em.encryptedImage)) decryptedImageRef.current.set(id, '');
+                if (isSealed(em.encryptedVideo)) decryptedVideoRef.current.set(id, '');
+                if (isSealed(em.encryptedAudio)) decryptedAudioRef.current.set(id, '');
+                if (isSealed(em.encryptedFileUri)) decryptedFileUriRef.current.set(id, '');
+                // Same for attachments whose bytes are encrypted: their key
+                // is inside a body this device cannot open, so there is
+                // nothing to fetch. Left unfilled they would keep matching
+                // needsDecrypt and re-enter this block on every snapshot.
+                for (const slot of sealedSlots(em)) {
+                  mediaCacheForSlot(slot).current.set(id, '');
                 }
-
-                const mediaField = (
-                  payload: unknown,
-                  cache: React.MutableRefObject<Map<string, string>>,
-                ) => {
-                  if (!isSealed(payload) || cache.current.has(id)) return;
-                  try {
-                    cache.current.set(id, openSealed(payload, secretKey, user.uid, chatId));
-                  } catch (decryptError) {
-                    reportError(decryptError, 'e2ee_decrypt_failed');
-                    cache.current.set(id, '');
-                    mediaFailed = true;
-                    if (failedPayload === null) failedPayload = payload;
-                  }
-                };
-                mediaField(em.encryptedImage, decryptedImageRef);
-                mediaField(em.encryptedVideo, decryptedVideoRef);
-                mediaField(em.encryptedAudio, decryptedAudioRef);
-                mediaField(em.encryptedFileUri, decryptedFileUriRef);
-
-                // A preview that won't decrypt is cached as null rather than
-                // left absent, so this doesn't retry it on every snapshot —
-                // and a missing card is a far smaller loss than an unreadable
-                // message, so it deliberately doesn't count as mediaFailed.
-                if (
-                  isSealed(em.encryptedLinkPreview) &&
-                  !decryptedPreviewRef.current.has(id)
-                ) {
-                  try {
-                    decryptedPreviewRef.current.set(
-                      id,
-                      parsePreview(openSealed(em.encryptedLinkPreview, secretKey, user.uid, chatId)),
-                    );
-                  } catch {
-                    decryptedPreviewRef.current.set(id, null);
-                  }
-                }
-
-                // A media message has no `encrypted` text of its own to carry
-                // a failure message, so surface it the same way a text
-                // decrypt failure does.
-                if (mediaFailed && !isSealed(em.encrypted)) {
-                  decryptedTextRef.current.set(id, failureText(failedPayload));
+                if (isSealed(em.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
+                // A message whose only sealed field is its link preview keeps
+                // its real text — losing the card is not worth overwriting a
+                // perfectly readable message with a padlock.
+                if (isSealed(em.encrypted) || sealedMedia) {
+                  decryptedTextRef.current.set(id, '🔒 Sealed to another device');
                 }
               });
+              setMessages(prev =>
+                prev.map(item => {
+                  const text = decryptedTextRef.current.get(String(item._id));
+                  return text ? {...item, text} : item;
+                }),
+              );
+              return;
+            }
+            const {secretKey, publicKey} = keypair;
+            // Whether anything in this batch failed the *recoverable* way.
+            // Accumulated across the batch and committed once, rather than
+            // calling setState from inside the loop.
+            let anyWrongKey = false;
+            let anyPeerSessionReset = false;
+            /**
+             * The user-facing text for a failure, and a note of whether it
+             * is the recoverable kind.
+             *
+             * "Unable to decrypt" was true but useless: it reads as data
+             * loss, when the overwhelmingly common cause is simply that the
+             * message was sealed to this account's *other* device — which
+             * the recovery phrase fixes. diagnoseSealed can tell those apart
+             * from the addressing alone, so the placeholder says which one
+             * happened instead of making the user guess.
+             */
+            const failureText = (payload: unknown): string => {
+              const reason = diagnoseSealed(payload, publicKey, user.uid);
+              if (reason === 'wrong-key') {
+                anyWrongKey = true;
+                return '🔒 Sealed to another device';
+              }
+              if (reason === 'unsupported-algorithm') {
+                return '🔒 Update the app to read this';
+              }
+              return '🔒 Unable to decrypt';
+            };
 
-              // The stateless envelopes are all open at this point. Show them
-              // now rather than holding them behind the awaited pass below.
+            /**
+             * Records a decrypted body: its text for display, and any
+             * attachment content keys for the resolve pass below.
+             *
+             * Every path that opens a body goes through this — static,
+             * ratchet and sender-key alike — so that a message carrying an
+             * attachment behaves the same however it was sealed. Routing
+             * only some of them would leave photos permanently unopenable
+             * on whichever path was missed, with no error anywhere.
+             */
+            /**
+             * Bodies opened in this pass, for the local store.
+             *
+             * Deliberately filled here and not from decryptedTextRef, which
+             * also holds the "🔒 …" failure placeholders. Persisting one of
+             * those would be irreversible on the ratchet path: the envelope
+             * it stood in for cannot be opened a second time, so a padlock
+             * written over a message would be the last word on it.
+             */
+            const resolvedBodies = new Map<string, string>();
+
+            const acceptBody = (id: string, raw: string) => {
+              const body = decodeBody(raw);
+              decryptedTextRef.current.set(id, body.text);
+              resolvedBodies.set(id, body.text);
+              if (body.media) pendingMediaRef.current.set(id, body.media);
+            };
+
+            toDecrypt.forEach(m => {
+              const em = m as any;
+              const id = String(m._id);
+              let mediaFailed = false;
+              // The payload blamed when a *media* field fails: media has no
+              // `encrypted` text of its own to diagnose, so the first field
+              // that failed stands in for the message.
+              let failedPayload: unknown = null;
+
+              // Ratchet envelopes are handled in the async pass below:
+              // opening one needs stored session state, which openSealed
+              // has no access to and would throw on.
+              if (
+                isSealed(em.encrypted) &&
+                !isRatchetSealed(em.encrypted) &&
+                !isGroupSealed(em.encrypted) &&
+                !decryptedTextRef.current.has(id)
+              ) {
+                try {
+                  acceptBody(id, openSealed(em.encrypted, secretKey, user.uid, chatId));
+                } catch (decryptError) {
+                  // Wrong/rotated key, or a payload from before this device
+                  // enrolled — distinct from "still loading" so it doesn't
+                  // spin on the placeholder forever.
+                  reportError(decryptError, 'e2ee_decrypt_failed');
+                  decryptedTextRef.current.set(id, failureText(em.encrypted));
+                }
+              }
+
+              const mediaField = (
+                payload: unknown,
+                cache: React.MutableRefObject<Map<string, string>>,
+              ) => {
+                if (!isSealed(payload) || cache.current.has(id)) return;
+                try {
+                  cache.current.set(id, openSealed(payload, secretKey, user.uid, chatId));
+                } catch (decryptError) {
+                  reportError(decryptError, 'e2ee_decrypt_failed');
+                  cache.current.set(id, '');
+                  mediaFailed = true;
+                  if (failedPayload === null) failedPayload = payload;
+                }
+              };
+              mediaField(em.encryptedImage, decryptedImageRef);
+              mediaField(em.encryptedVideo, decryptedVideoRef);
+              mediaField(em.encryptedAudio, decryptedAudioRef);
+              mediaField(em.encryptedFileUri, decryptedFileUriRef);
+
+              // A preview that won't decrypt is cached as null rather than
+              // left absent, so this doesn't retry it on every snapshot —
+              // and a missing card is a far smaller loss than an unreadable
+              // message, so it deliberately doesn't count as mediaFailed.
+              if (
+                isSealed(em.encryptedLinkPreview) &&
+                !decryptedPreviewRef.current.has(id)
+              ) {
+                try {
+                  decryptedPreviewRef.current.set(
+                    id,
+                    parsePreview(openSealed(em.encryptedLinkPreview, secretKey, user.uid, chatId)),
+                  );
+                } catch {
+                  decryptedPreviewRef.current.set(id, null);
+                }
+              }
+
+              // A media message has no `encrypted` text of its own to carry
+              // a failure message, so surface it the same way a text
+              // decrypt failure does.
+              if (mediaFailed && !isSealed(em.encrypted)) {
+                decryptedTextRef.current.set(id, failureText(failedPayload));
+              }
+            });
+
+            // The stateless envelopes are all open at this point. Show them
+            // now rather than holding them behind the awaited pass below.
+            flushDecrypted();
+
+            /**
+             * Forward-secret messages, opened separately because each one
+             * reads and advances stored session state and so must be
+             * awaited — and awaited *in order*, which is why this is a
+             * for-of rather than a Promise.all. Out-of-order decrypts of the
+             * same session are serialized by the session store anyway, but
+             * doing it here keeps the ordering obvious rather than relying
+             * on that.
+             */
+            for (const m of toDecrypt) {
+              if (!active) break;
+              const em = m as any;
+              const id = String(m._id);
+              if (decryptedTextRef.current.has(id)) continue;
+
+              if (isGroupEnvelope(em.encrypted)) {
+                const opened = await openGroupEnvelope(em.encrypted, user.uid, chatId);
+                if (opened.status === 'ok') acceptBody(id, opened.text);
+                else decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                // Each pass through this loop costs a storage round trip, so
+                // a message is shown the moment it opens rather than at the
+                // end — the queue behind it may be seconds long.
+                flushDecrypted();
+                continue;
+              }
+
+              if (!isRatchetSealed(em.encrypted)) continue;
+              const outcome = await openRatchetEnvelope(em.encrypted, user.uid, chatId);
+              if (outcome.status === 'ok') {
+                acceptBody(id, outcome.text);
+                // The peer started a new session — they reinstalled, or
+                // someone is impersonating them. Indistinguishable from
+                // here, so it is surfaced rather than absorbed.
+                if (outcome.sessionReset) anyPeerSessionReset = true;
+              } else {
+                decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+              }
               flushDecrypted();
+            }
 
-              /**
-               * Forward-secret messages, opened separately because each one
-               * reads and advances stored session state and so must be
-               * awaited — and awaited *in order*, which is why this is a
-               * for-of rather than a Promise.all. Out-of-order decrypts of the
-               * same session are serialized by the session store anyway, but
-               * doing it here keeps the ordering obvious rather than relying
-               * on that.
-               */
-              for (const m of toDecrypt) {
-                if (!active) break;
-                const em = m as any;
-                const id = String(m._id);
-                if (decryptedTextRef.current.has(id)) continue;
+            /**
+             * Fetch and decrypt attachment bytes.
+             *
+             * Last, and separately, because it is the only part of this that
+             * touches the network: bodies are already in the caches above,
+             * so captions and text messages have rendered by now and a slow
+             * photo delays nothing but itself.
+             *
+             * Failures are cached as an empty string, matching how the
+             * legacy media fields behave. That trades a retry for
+             * termination — without it a message whose object is missing or
+             * corrupt would re-enter this pass on every snapshot, forever.
+             * Re-opening the chat retries.
+             */
+            for (const m of toDecrypt) {
+              if (!active) break;
+              const em = m as any;
+              const id = String(m._id);
+              const keys = pendingMediaRef.current.get(id);
 
-                if (isGroupEnvelope(em.encrypted)) {
-                  const opened = await openGroupEnvelope(em.encrypted, user.uid, chatId);
-                  if (opened.status === 'ok') acceptBody(id, opened.text);
-                  else decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
-                  // Each pass through this loop costs a storage round trip, so
-                  // a message is shown the moment it opens rather than at the
-                  // end — the queue behind it may be seconds long.
-                  flushDecrypted();
+              for (const slot of sealedSlots(em)) {
+                const cache = mediaCacheForSlot(slot);
+                if (cache.current.has(id)) continue;
+
+                const info = keys?.[slot];
+                if (!info) {
+                  // The body did not open, or carried no key for this slot.
+                  // Either way there is nothing to fetch and no point
+                  // asking again.
+                  cache.current.set(id, '');
                   continue;
                 }
-
-                if (!isRatchetSealed(em.encrypted)) continue;
-                const outcome = await openRatchetEnvelope(em.encrypted, user.uid, chatId);
-                if (outcome.status === 'ok') {
-                  acceptBody(id, outcome.text);
-                  // The peer started a new session — they reinstalled, or
-                  // someone is impersonating them. Indistinguishable from
-                  // here, so it is surfaced rather than absorbed.
-                  if (outcome.sessionReset) anyPeerSessionReset = true;
-                } else {
-                  decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
-                }
-                flushDecrypted();
-              }
-
-              /**
-               * Fetch and decrypt attachment bytes.
-               *
-               * Last, and separately, because it is the only part of this that
-               * touches the network: bodies are already in the caches above,
-               * so captions and text messages have rendered by now and a slow
-               * photo delays nothing but itself.
-               *
-               * Failures are cached as an empty string, matching how the
-               * legacy media fields behave. That trades a retry for
-               * termination — without it a message whose object is missing or
-               * corrupt would re-enter this pass on every snapshot, forever.
-               * Re-opening the chat retries.
-               */
-              for (const m of toDecrypt) {
-                if (!active) break;
-                const em = m as any;
-                const id = String(m._id);
-                const keys = pendingMediaRef.current.get(id);
-
-                for (const slot of sealedSlots(em)) {
-                  const cache = mediaCacheForSlot(slot);
-                  if (cache.current.has(id)) continue;
-
-                  const info = keys?.[slot];
-                  if (!info) {
-                    // The body did not open, or carried no key for this slot.
-                    // Either way there is nothing to fetch and no point
-                    // asking again.
-                    cache.current.set(id, '');
-                    continue;
-                  }
-                  try {
-                    const path = await resolveSealedMedia(
-                      id,
-                      slot,
-                      em.sealedMediaUrls[slot],
-                      info,
-                    );
-                    // Players need a scheme; a bare path silently fails to
-                    // load on iOS.
-                    cache.current.set(id, `file://${path}`);
-                  } catch (mediaError) {
-                    reportError(mediaError, 'media_decrypt_failed');
-                    cache.current.set(id, '');
-                  }
+                try {
+                  const path = await resolveSealedMedia(
+                    id,
+                    slot,
+                    em.sealedMediaUrls[slot],
+                    info,
+                  );
+                  // Players need a scheme; a bare path silently fails to
+                  // load on iOS.
+                  cache.current.set(id, `file://${path}`);
+                } catch (mediaError) {
+                  reportError(mediaError, 'media_decrypt_failed');
+                  cache.current.set(id, '');
                 }
               }
-
-              // Latches on: a later snapshot that happens to contain only
-              // readable messages must not retract an offer the user may be
-              // halfway through acting on.
-              if (active && anyWrongKey) setSealedToOtherDevice(true);
-              if (active && anyPeerSessionReset) setPeerSessionReset(true);
-              flushDecrypted();
-            } catch (keyError) {
-              reportError(keyError, 'e2ee_decrypt_key_unavailable');
             }
-          })();
-        }
+
+            // Latches on: a later snapshot that happens to contain only
+            // readable messages must not retract an offer the user may be
+            // halfway through acting on.
+            if (active && anyWrongKey) setSealedToOtherDevice(true);
+            if (active && anyPeerSessionReset) setPeerSessionReset(true);
+            flushDecrypted();
+
+            // Recorded after the list is patched, not before: the write is the
+            // slower half and nothing on screen is waiting for it, so it is
+            // deliberately not awaited. Nor is it gated on `active` — a body
+            // opened just as the screen closes is the one case where storing it
+            // matters most, because on the ratchet path there is no second
+            // chance to open it. saveBodies reports its own failures.
+            saveBodies(user.uid, chatId, resolvedBodies);
+          } catch (keyError) {
+            reportError(keyError, 'e2ee_decrypt_key_unavailable');
+          }
+        })();
 
         // Prefetch images for better UX
         prefetchMessageImages(formattedMessages.slice(0, 20));

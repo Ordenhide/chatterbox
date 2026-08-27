@@ -27,6 +27,7 @@ import {resolveMessageMediaUrls} from './messageMedia';
 import {clearDeviceKeypair, getOrCreateDeviceKeypair} from './e2eeKeys';
 import {clearRatchetKeys} from './ratchetKeys';
 import {clearRatchetSessions} from './ratchetSessionStore';
+import {clearBodies} from './messageBodyStore';
 import {clearMediaCache} from './mediaVault';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
 
@@ -366,8 +367,8 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
  * Every key-store user has to be named here for the same reason, which is why
  * the ratchet's three are listed explicitly rather than assumed to fall under
  * the MMKV wipe: its identity, its prekey secrets, and the key that encrypts
- * stored sessions all live in the key store too. Each is wrapped separately so
- * one failure does not skip the rest.
+ * stored sessions all live in the key store too. The message body store adds a
+ * fourth. Each is wrapped separately so one failure does not skip the rest.
  *
  * Decrypted attachments are on the same footing and for the same reason: they
  * are plaintext copies on the filesystem, outside MMKV, of every photo and
@@ -380,6 +381,11 @@ export async function clearLocalData(userId: string): Promise<void> {
     ['account_clear_keystore_failed', () => clearDeviceKeypair(userId)],
     ['account_clear_ratchet_keys_failed', () => clearRatchetKeys(userId)],
     ['account_clear_ratchet_sessions_failed', () => clearRatchetSessions(userId)],
+    // Decrypted message text, and the key-store entry protecting it. On the
+    // same footing as the attachments below and for the same reason: it is a
+    // plaintext copy of the conversation, and it is the copy that survives
+    // without any network access at all.
+    ['account_clear_message_bodies_failed', () => clearBodies(userId)],
     ['account_clear_media_cache_failed', () => clearMediaCache()],
   ];
   for (const [context, step] of steps) {

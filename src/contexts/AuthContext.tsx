@@ -26,6 +26,7 @@ import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
 import {_resetKeypairCache, enrollmentReadiness, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {clearBodies} from '../services/messageBodyStore';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
@@ -233,9 +234,14 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       if (signingOutRef.current) return;
       signingOutRef.current = true;
       try {
+        const uid = auth.currentUser?.uid;
         sessionIdRef.current = null;
         await clearSessionId();
         await firebaseSignOut(auth);
+        // Same reasoning as the explicit sign-out below. This path fires when
+        // the account was claimed on another device, which is exactly when
+        // leaving readable history behind would be worst.
+        if (uid) await clearBodies(uid).catch(error => reportError(error, 'signout_bodies'));
       } finally {
         signingOutRef.current = false;
         setSessionReady(true);
@@ -772,9 +778,17 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     claimInProgressRef.current = false;
     setSessionReady(false);
     try {
+      // Read before the auth user goes away — the cleanup below is scoped by
+      // uid and there is nothing to scope it by afterwards.
+      const uid = auth.currentUser?.uid;
       sessionIdRef.current = null;
       await clearSessionId().catch(() => undefined);
       await firebaseSignOut(auth).catch(error => reportError(error, 'signout_auth'));
+      // Locally stored message plaintext is the one cache readable without
+      // ever reaching the network, so it must not outlive the session that
+      // produced it: otherwise the next person to pick up the phone is one tap
+      // from the previous account's history.
+      if (uid) await clearBodies(uid).catch(error => reportError(error, 'signout_bodies'));
       // Defense in depth: getOrCreateDeviceKeypair already scopes its cache by
       // uid, but drop it anyway so a signed-out account's secret key doesn't
       // linger in memory longer than it needs to.
