@@ -42,7 +42,7 @@
     },
     {
       "collectionGroup": "scheduledMessages",
-      "queryScope": "COLLECTION",
+      "queryScope": "COLLECTION_GROUP",
       "fields": [
         {"fieldPath": "sent", "order": "ASCENDING"},
         {"fieldPath": "scheduledFor", "order": "ASCENDING"}
@@ -50,12 +50,22 @@
     },
     {
       "collectionGroup": "reminders",
-      "queryScope": "COLLECTION",
+      "queryScope": "COLLECTION_GROUP",
       "fields": [
         {"fieldPath": "sent", "order": "ASCENDING"},
         {"fieldPath": "remindAt", "order": "ASCENDING"}
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "liveLocations",
+      "fieldPath": "expiresAt",
+      "indexes": [
+        {"order": "ASCENDING", "queryScope": "COLLECTION"},
+        {"order": "DESCENDING", "queryScope": "COLLECTION"},
+        {"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}
+      ]
+    }
+  ]
 }
