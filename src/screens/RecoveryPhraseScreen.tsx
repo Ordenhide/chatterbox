@@ -15,13 +15,20 @@ import GlassScreen from '../components/GlassScreen';
 import GlassView from '../components/GlassView';
 import RecoveryPhraseRevealModal from '../components/RecoveryPhraseRevealModal';
 import {useAuth} from '../contexts/AuthContext';
-import {hasRevealedRecoveryPhrase, restoreDeviceKeypairFromPhrase} from '../services/e2eeKeys';
+import {
+  enrollmentReadiness,
+  hasRevealedRecoveryPhrase,
+  restoreDeviceKeypairFromPhrase,
+  type EnrollmentReadiness,
+} from '../services/e2eeKeys';
+import {revealOffer} from '../services/recoveryPhraseReveal';
 import {reportError} from '../services/telemetry';
 
 export default function RecoveryPhraseScreen() {
   const colors = getColors(useColorScheme());
   const {user} = useAuth();
   const [revealed, setRevealed] = useState<boolean | null>(null);
+  const [readiness, setReadiness] = useState<EnrollmentReadiness | null>(null);
   const [revealModalVisible, setRevealModalVisible] = useState(false);
   // Mirrors the uncontrolled input below purely so the button knows whether
   // there is anything to submit. Never written back into the field.
@@ -29,12 +36,19 @@ export default function RecoveryPhraseScreen() {
   const [restoring, setRestoring] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const canRestore = !!restorePhrase.trim() && !restoring;
+  const offer = revealOffer(readiness, revealed);
 
   const refreshStatus = useCallback(() => {
     if (!user) return;
     hasRevealedRecoveryPhrase(user.uid)
       .then(setRevealed)
       .catch(() => setRevealed(false));
+    // Revealing enrolls this device (see services/recoveryPhraseReveal.ts), so
+    // whether the offer may be shown at all depends on this. 'unknown' on
+    // failure, which withholds the offer rather than risking an overwrite.
+    enrollmentReadiness(user.uid)
+      .then(setReadiness)
+      .catch(() => setReadiness('unknown'));
   }, [user]);
 
   useFocusEffect(refreshStatus);
@@ -108,14 +122,31 @@ export default function RecoveryPhraseScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.sectionTitle, {color: colors.text}]}>Your recovery phrase</Text>
-          {revealed === null ? (
+          {offer === 'checking' ? (
             <ActivityIndicator color={colors.primary} style={styles.statusLoader} />
-          ) : revealed ? (
+          ) : offer === 'already-revealed' ? (
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
               You've already saved your recovery phrase on this device. For your security it
               won't be shown again — if you still have it, keep it somewhere safe. If you lost
               it, this device keeps working normally; you'll only need it to restore old messages
               on a different device.
+            </Text>
+          ) : offer === 'restore-first' ? (
+            // No button here on purpose. Revealing would enroll this device and
+            // publish a fresh key over the one this account already has — the
+            // very key the phrase below has to match. Offering it on the screen
+            // someone reaches *in order to restore* meant the first tap could
+            // strand the history they came to recover.
+            <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
+              This device doesn't have your account's encryption key yet, so there's no phrase to
+              show — the one you want was saved on your other device. Enter it below to restore
+              your message history. Once that's done, this phrase becomes available here too.
+            </Text>
+          ) : offer === 'unavailable' ? (
+            <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
+              We couldn't check this device's encryption status, so the phrase isn't being shown
+              yet — revealing it now could overwrite a key you may still need. Check your
+              connection and come back.
             </Text>
           ) : (
             <>
