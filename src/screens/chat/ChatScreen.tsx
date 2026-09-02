@@ -2971,18 +2971,24 @@ export default function ChatScreen() {
       return;
     }
     try {
-      const file = await DocumentPicker.pickSingle();
+      // copyTo, because the picker otherwise hands back a content:// URI and
+      // mediaFiles' toPath only strips file://. That URI reached fs.stat()
+      // verbatim, which threw, so *every* file attachment died in
+      // encryptToScratch while photos — which arrive as file:// — uploaded
+      // fine. fileCopyUri is a real path in the cache directory.
+      const file = await DocumentPicker.pickSingle({copyTo: 'cachesDirectory'});
       if (!file?.uri) return;
       if (file.size && file.size > MAX_FILE_BYTES) {
         Alert.alert('File too large', 'Please select a file under 25MB.');
         return;
       }
+      const pickedUri = file.fileCopyUri ?? file.uri;
       let remoteUrl: string | null = null;
       let fileKey: MediaKeyInfo | undefined;
       try {
         const uploaded = await uploadAttachment(
           'Uploading file',
-          file.uri,
+          pickedUri,
           file.name || `file_${Date.now()}`,
           file.type ?? undefined,
         );
@@ -2998,6 +3004,10 @@ export default function ChatScreen() {
           "The upload didn't finish. Check your connection and try again.",
         );
         return;
+      } finally {
+        // Only the copy copyTo made is ours to delete; file.uri belongs to the
+        // document provider. Same reasoning as uploadAttachment's own finally.
+        if (file.fileCopyUri) await discard(file.fileCopyUri);
       }
 
       const messageData: ChatMessage = {
