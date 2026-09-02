@@ -2861,7 +2861,14 @@ export default function ChatScreen() {
         mediaUrl = uploaded.url;
         mediaKey = uploaded.key;
       } catch (error) {
-        Alert.alert('Storage required', 'Video messages need Firebase Storage enabled.');
+        // The cause is not knowable from here — a missing bucket, a rules
+        // rejection and a dropped connection all land in this catch — so
+        // record it rather than asserting one in the copy below.
+        reportError(error, 'video_upload_failed');
+        Alert.alert(
+          "Couldn't send video",
+          "The upload didn't finish. Check your connection and try again.",
+        );
         return;
       }
     } else {
@@ -2901,12 +2908,18 @@ export default function ChatScreen() {
         mediaUrl = uploaded.url;
         mediaKey = uploaded.key;
       } catch (error) {
+        // Falling back to an inline copy, which encryptOutgoingMessage still
+        // seals field-by-field — so this is a downgrade in *transport*, not in
+        // confidentiality. Recorded either way: a silent fallback that fires on
+        // every send is a broken upload nobody would otherwise hear about.
+        reportError(error, 'image_upload_failed_inline_fallback');
         const base64 = asset.base64;
         const maxBase64Length = 700000;
         if (!base64 || base64.length > maxBase64Length) {
           Alert.alert(
-            'Storage required',
-            'This image is too large to store in Firestore. Enable Firebase Storage or choose a smaller image.',
+            "Couldn't send photo",
+            "The upload didn't finish, and this image is too large to send inside the message. " +
+              'Check your connection, or try a smaller image.',
           );
           return;
         }
@@ -2976,7 +2989,14 @@ export default function ChatScreen() {
         remoteUrl = uploaded.url;
         fileKey = uploaded.key;
       } catch (error) {
-        Alert.alert('Storage required', 'File attachments need Firebase Storage enabled.');
+        // Unlike images there is no inline fallback for files, so this is the
+        // end of the send. See the video catch for why the cause is recorded
+        // rather than named.
+        reportError(error, 'file_upload_failed');
+        Alert.alert(
+          "Couldn't send file",
+          "The upload didn't finish. Check your connection and try again.",
+        );
         return;
       }
 
