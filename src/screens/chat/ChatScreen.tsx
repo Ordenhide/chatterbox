@@ -3335,13 +3335,21 @@ export default function ChatScreen() {
       return;
     }
 
-    Alert.alert('Attach Media', 'Choose a source', [
-      {text: 'Camera', onPress: () => openMediaPicker('camera')},
-      {text: 'Gallery', onPress: () => openMediaPicker('library')},
-      {text: 'File', onPress: handlePickFile},
-      {text: 'Voice', onPress: () => setRecordModalVisible(true)},
-      {text: 'Cancel', style: 'cancel'},
-    ]);
+    // ActionSheet, not Alert.alert: this menu has five entries and Android's
+    // AlertDialog has three button slots, so 'Voice' and 'Cancel' were dropped
+    // with no error — the voice recorder had no reachable entry point on
+    // Android at all, and the dialog could not even be cancelled. Same failure
+    // the message menu hit; see the module doc on components/ActionSheet.
+    setSheet({
+      title: 'Attach Media',
+      message: 'Choose a source',
+      actions: [
+        {label: 'Camera', onPress: () => openMediaPicker('camera')},
+        {label: 'Gallery', onPress: () => openMediaPicker('library')},
+        {label: 'File', onPress: handlePickFile},
+        {label: 'Voice', onPress: () => setRecordModalVisible(true)},
+      ],
+    });
   }, [openMediaPicker, handlePickFile]);
 
   const renderMessageImage = useCallback(
@@ -4313,7 +4321,12 @@ export default function ChatScreen() {
   // Passing it unconditionally therefore parks an empty 44dp bar under the
   // composer forever. Gate at the call site instead — the guard below only
   // covers the render, not the reserved space.
-  const hasAccessory = !!replyTo || burnMode;
+  // `dictating` belongs here for a reason beyond tidiness: its only other
+  // appearance is the Voice entry inside the attach sheet, which closes the
+  // instant it is tapped. Recording therefore ran with the microphone live and
+  // nothing on screen saying so, and the one control that stops it was behind a
+  // sheet the user had no reason to reopen. Killing the app was the only exit.
+  const hasAccessory = !!replyTo || burnMode || dictating;
 
   const renderAccessory = () => {
     if (!hasAccessory) {
@@ -4321,6 +4334,23 @@ export default function ChatScreen() {
     }
     return (
       <View>
+        {dictating ? (
+          <View
+            style={[
+              styles.burnAccessoryBar,
+              {backgroundColor: colors.surface, borderTopColor: colors.danger},
+            ]}>
+            <Icon name="mic" size={14} color={colors.danger} style={styles.burnAccessoryIcon} />
+            <Text style={[styles.burnAccessoryText, {color: colors.danger}]}>
+              {`Recording ${Math.floor(dictationSeconds / 60)}:${String(dictationSeconds % 60).padStart(2, '0')}`}
+            </Text>
+            <TouchableOpacity
+              style={[styles.burnDurationButton, {marginLeft: 'auto'}]}
+              onPress={stopDictation}>
+              <Text style={[styles.burnDurationButtonText, {color: colors.danger}]}>Stop</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
         {burnMode ? (
           <View style={[styles.burnAccessoryBar, {backgroundColor: colors.surface, borderTopColor: colors.warning}]}>
             <Icon name="flame" size={14} color={colors.warning} style={styles.burnAccessoryIcon} />
