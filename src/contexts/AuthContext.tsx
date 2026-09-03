@@ -27,6 +27,7 @@ import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
 import {_resetKeypairCache, enrollmentReadiness, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
 import {clearBodies} from '../services/messageBodyStore';
+import {clearMediaCache} from '../services/mediaVault';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 
 const TOKEN_CHECK_INTERVAL_MS = 30_000;
@@ -242,6 +243,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         // the account was claimed on another device, which is exactly when
         // leaving readable history behind would be worst.
         if (uid) await clearBodies(uid).catch(error => reportError(error, 'signout_bodies'));
+        await clearMediaCache().catch(error => reportError(error, 'signout_media_cache'));
       } finally {
         signingOutRef.current = false;
         setSessionReady(true);
@@ -789,6 +791,11 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       // produced it: otherwise the next person to pick up the phone is one tap
       // from the previous account's history.
       if (uid) await clearBodies(uid).catch(error => reportError(error, 'signout_bodies'));
+      // Same reasoning, for attachment bytes. clearMediaCache's own doc says it
+      // is called from "sign-out and account deletion", but only the deletion
+      // half was ever wired: a decrypted photo outlived the session that could
+      // read it and was still on disk for whoever signed in next.
+      await clearMediaCache().catch(error => reportError(error, 'signout_media_cache'));
       // Defense in depth: getOrCreateDeviceKeypair already scopes its cache by
       // uid, but drop it anyway so a signed-out account's secret key doesn't
       // linger in memory longer than it needs to.

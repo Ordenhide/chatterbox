@@ -43,7 +43,16 @@ jest.mock('react-native-blob-util', () => ({
         );
       },
       async unlink(path: string) {
-        if (!mockState.files.delete(mockNormalize(path))) throw new Error(`ENOENT ${path}`);
+        // blob-util's unlink takes a directory as well as a file, removing
+        // everything beneath it — which is how clearMediaCache disposes of the
+        // image loader's cache. Modelling it as an exact-key delete would let
+        // a test that seeds a directory pass without anything being removed.
+        const target = mockNormalize(path);
+        const doomed = [...mockState.files.keys()].filter(
+          key => key === target || key.startsWith(`${target}/`),
+        );
+        if (!doomed.length) throw new Error(`ENOENT ${path}`);
+        doomed.forEach(key => mockState.files.delete(key));
       },
       async exists(path: string) {
         return mockState.files.has(mockNormalize(path));
@@ -233,5 +242,18 @@ describe('clearMediaCache', () => {
 
   it('does not throw when there is nothing cached', async () => {
     await expect(clearMediaCache()).resolves.toBeUndefined();
+  });
+
+  // The cbxmedia_ files were never the only decrypted copy: anything handed to
+  // <Image> is kept by the platform image loader too, and a photo was recovered
+  // from there after sign-out.
+  it('also clears the image loader cache, which holds decrypted copies too', async () => {
+    mockState.files.set('/cache/image_cache/v2.ols100.1/65/abc.cnt', Buffer.from('a photo'));
+    mockState.files.set('/cache/image_cache/v2.ols100.1/60/def.cnt', Buffer.from('a frame'));
+    mockState.files.set('/cache/unrelated.txt', Buffer.from('keep me'));
+
+    await clearMediaCache();
+
+    expect([...mockState.files.keys()]).toEqual(['/cache/unrelated.txt']);
   });
 });

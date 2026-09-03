@@ -152,4 +152,12 @@ export async function clearMediaCache(): Promise<void> {
   } catch {
     // The caches directory may not exist yet, which is not a failure.
   }
+  // Our own cbxmedia_ files are not the only decrypted copy. Once a plaintext
+  // path or a data: URI reaches <Image>, the platform image loader keeps its
+  // own on-disk copy (Fresco's image_cache on Android), and a photo recovered
+  // from there after sign-out is what proved this cleanup was incomplete.
+  // There is no JS API to flush that cache, so the directory is deleted
+  // outright; the loader recreates it, at the cost of re-fetching whatever was
+  // still warm.
+  await discard(`${fs.dirs.CacheDir}/image_cache`);
 }
