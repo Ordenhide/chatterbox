@@ -2518,7 +2518,7 @@ export default function ChatScreen() {
         user: {_id: user.uid, name: user.displayName || user.email || 'User'},
       } as ChatMessage);
 
-      try {
+      const runTranscription = async () => {
         const transcription = await transcribeVoiceMessage(
           chatId,
           tempMsgId,
@@ -2532,8 +2532,28 @@ export default function ChatScreen() {
             inputTextRef.current ? `${inputTextRef.current} ${transcription}` : transcription,
           );
         }
-      } catch {
+      };
+      const transcriptionFailed = () =>
         Alert.alert('Info', 'Voice recorded but transcription failed. The voice message was sent.');
+
+      try {
+        await runTranscription();
+      } catch (err) {
+        // Same split the other three transcription call sites make: AI being
+        // switched off is a setting, not a fault, and reporting it as "failed"
+        // sends the user looking for a problem that does not exist. The clip is
+        // already sent by this point, so accepting the prompt re-runs only the
+        // transcription rather than the whole dictation.
+        if (isAiConsentError(err)) {
+          if (!(await promptAiConsent(t))) return;
+          try {
+            await runTranscription();
+          } catch {
+            transcriptionFailed();
+          }
+        } else {
+          transcriptionFailed();
+        }
       }
     } catch {
       setDictating(false);
@@ -3083,6 +3103,19 @@ export default function ChatScreen() {
 
   const sendRecording = useCallback(async () => {
     if (!recordedUri || !chatId || !user) return;
+    // Stop first, unconditionally — Send is reachable while still recording and
+    // used to leave the recorder running. The microphone stayed live after the
+    // message had gone out, the file kept growing past the bytes that were
+    // uploaded, and the record-back listener went on raising recordedDuration
+    // against the *accumulated* position, which is why a ten-second clip was
+    // sent as "140s". Harmless when the user already pressed Stop.
+    try {
+      await recorderRef.current.stopRecorder();
+      recorderRef.current.removeRecordBackListener();
+    } catch {
+      // Nothing was recording, which is the Stop-then-Send path.
+    }
+    setRecording(false);
     if (!isOnline) {
       Alert.alert('Offline', 'Voice messages require an internet connection.');
       return;
