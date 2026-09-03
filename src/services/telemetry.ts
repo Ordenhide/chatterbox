@@ -52,6 +52,16 @@ export function logBreadcrumb(message: string) {
 }
 
 export function reportError(error: unknown, context?: string) {
+  // Ahead of the telemetry guard on purpose. Telemetry is off by default, and
+  // Crashlytics is not wired up on a debug build at all, so every error handed
+  // to reportError used to vanish leaving nothing anywhere — precisely when
+  // someone is trying to find out why something failed. Chasing a send that
+  // reported "couldn't be encrypted" meant adding a temporary console.error to
+  // see the cause, then taking it out again. Dev-only, so release builds are
+  // unchanged.
+  if (__DEV__) {
+    console.error(`[reportError] ${context ?? 'no context'}:`, error);
+  }
   if (!telemetryEnabled || !crashlytics) return;
   if (context) {
     crashLog(crashlytics, context);
