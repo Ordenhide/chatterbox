@@ -4149,7 +4149,11 @@ export default function ChatScreen() {
             </View>
           ) : null}
           {renderMomentCard(current.moment)}
-          {renderAudioBubble(current)}
+          {/* No audio here: it is already drawn inside the Bubble above by
+              GiftedChat's renderMessageAudio slot, the same way image and video
+              are. Rendering it here as well put a second, detached copy under
+              every voice message. The cards that do belong here — moment, file,
+              link, list — have no GiftedChat slot of their own. */}
           {renderFileCard(current.file)}
           {renderLinkPreview(current.linkPreview)}
           {current.sharedList ? (
