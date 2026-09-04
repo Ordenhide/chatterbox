@@ -151,7 +151,7 @@ function AppContent() {
     <View style={styles.appRoot}>
       <LiquidGlassBackground />
       {appTree}
-      {!coldOpenDone && <ColdOpen onDone={() => setColdOpenDone(true)} />}
+      {!coldOpenDone && <ColdOpen ready={!loading} onDone={() => setColdOpenDone(true)} />}
     </View>
   );
 }

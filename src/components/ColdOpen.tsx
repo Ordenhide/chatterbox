@@ -1,7 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, Text, useColorScheme} from 'react-native';
 import {getColors} from '../theme/colors';
-import {coldOpenFrame, scrambleFrame, useReduceMotion} from '../utils/motion';
+import {
+  COLD_OPEN_MAX_HOLD_MS,
+  coldOpenFrame,
+  scrambleFrame,
+  useReduceMotion,
+} from '../utils/motion';
 import {fonts} from '../theme/typography';
 
 /**
@@ -38,7 +43,14 @@ export function coldOpenPending(): boolean {
 /** ~30fps, matching CipherText. The scramble is text churn, not motion. */
 const FRAME_MS = 33;
 
-export default function ColdOpen({onDone}: {onDone: () => void}) {
+export default function ColdOpen({
+  onDone,
+  ready,
+}: {
+  /** True once the app behind this is ready to be looked at. */
+  ready: boolean;
+  onDone: () => void;
+}) {
   const reduced = useReduceMotion();
   const colors = getColors(useColorScheme());
   const [text, setText] = useState(() =>
@@ -56,6 +68,9 @@ export default function ColdOpen({onDone}: {onDone: () => void}) {
   // parent re-renders with a new callback identity.
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
+  // Read from inside the ticker, which must not restart when this flips.
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
 
   useEffect(() => {
     played = true;
@@ -87,12 +102,16 @@ export default function ColdOpen({onDone}: {onDone: () => void}) {
           setText(scrambleFrame(WORDMARK, progress));
         } else {
           setText(WORDMARK);
-          if (phase === 'done') {
+          // Holds past `done` until the app behind is ready. Handing over to a
+          // blank screen would be a worse launch than a slightly longer one,
+          // and this is what makes the sequence cover real waiting rather than
+          // impose its own — see the note in utils/motion.ts.
+          if (phase === 'done' && (readyRef.current || now - startedAt >= COLD_OPEN_MAX_HOLD_MS)) {
             Animated.timing(exit, {
               toValue: 1,
               // Shortened with the phases in motion.ts — this fade is time the
               // app is ready and still hidden.
-              duration: 160,
+              duration: 120,
               useNativeDriver: true,
             }).start(() => onDoneRef.current());
             return;

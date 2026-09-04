@@ -522,19 +522,34 @@ export function cipherTexture(length: number, seed: number): string {
  * and hidden — the launch was not slow, it was covered. Every other
  * optimisation in this area was invisible for exactly that reason.
  *
- * So the durations are now sized to what the launch actually costs rather
- * than to what the animation wanted. Same three phases, same curves, ~3x
- * shorter: `seal` establishes the wordmark as ciphertext, `resolve` is the
- * reveal, and `settle` is the beat that keeps the reveal from being cut off
- * by the app arriving on top of it.
+ * So the durations are sized to what the launch actually costs rather than to
+ * what the animation wanted: 380ms of phases and a 120ms fade. Same three
+ * phases, same curves — `seal` establishes the wordmark as ciphertext,
+ * `resolve` is the reveal, and `settle` is the beat that keeps the reveal
+ * from being cut off by the app arriving on top of it.
+ *
+ * And the original claim is now actually implemented rather than asserted:
+ * ColdOpen holds past `done` until App.tsx says the auth check has resolved,
+ * so the sequence covers real waiting when there is some and costs 500ms when
+ * there is not. It can no longer be the thing you are waiting for.
  *
  * Reduced-motion skips the whole thing (see ColdOpen.tsx), which is also the
  * switch to copy if it should stop playing entirely.
  * ------------------------------------------------------------------------ */
 
-export const COLD_OPEN_SEAL_MS = 160;
-export const COLD_OPEN_RESOLVE_MS = 340;
-export const COLD_OPEN_SETTLE_MS = 100;
+export const COLD_OPEN_SEAL_MS = 100;
+export const COLD_OPEN_RESOLVE_MS = 220;
+export const COLD_OPEN_SETTLE_MS = 60;
+/**
+ * The longest the sequence will hold waiting for the app to be ready.
+ *
+ * Without it, gating the exit on readiness turns any stall in the auth check —
+ * offline, a hung token refresh — into a launch screen that never leaves. A
+ * splash that overstays is a worse failure than one that hands over early, so
+ * past this it hands over regardless of what is behind it.
+ */
+export const COLD_OPEN_MAX_HOLD_MS = 4000;
+
 export const COLD_OPEN_TOTAL_MS =
   COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS;
 

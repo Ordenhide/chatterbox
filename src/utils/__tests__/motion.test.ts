@@ -7,6 +7,7 @@ import {
   cipherTexture,
   hashSeed,
   seededRandom,
+  COLD_OPEN_MAX_HOLD_MS,
   COLD_OPEN_RESOLVE_MS,
   COLD_OPEN_SEAL_MS,
   COLD_OPEN_SETTLE_MS,
@@ -753,5 +754,28 @@ describe('normalizedVelocity', () => {
     // rate, and Infinity here would be handed straight to Animated.spring.
     expect(normalizedVelocity(50, 100, 100)).toBe(0);
     expect(normalizedVelocity(NaN, 0, 100)).toBe(0);
+  });
+});
+
+/**
+ * The cold open's exit is gated on the app behind it being ready, so that the
+ * sequence covers real waiting instead of imposing its own. This is the cap
+ * that keeps that gate from becoming a launch screen with no way out.
+ */
+describe('COLD_OPEN_MAX_HOLD_MS', () => {
+  it('is longer than the sequence, so a ready app is never cut short', () => {
+    expect(COLD_OPEN_MAX_HOLD_MS).toBeGreaterThan(COLD_OPEN_TOTAL_MS);
+  });
+
+  it('is short enough that a stalled launch still hands over', () => {
+    // Past a few seconds a launch screen reads as a hang, whatever it is
+    // waiting for.
+    expect(COLD_OPEN_MAX_HOLD_MS).toBeLessThanOrEqual(5000);
+  });
+
+  it('leaves the sequence itself well inside half a second', () => {
+    // The whole point of the retune: the imposed cost of launching, when
+    // nothing is actually being waited on.
+    expect(COLD_OPEN_TOTAL_MS).toBeLessThan(500);
   });
 });

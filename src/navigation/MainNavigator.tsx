@@ -5,24 +5,30 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ChatListScreen from '../screens/chat/ChatListScreen';
 import ChatScreen from '../screens/chat/ChatScreen';
-import NewChatScreen from '../screens/chat/NewChatScreen';
-import ChatMediaScreen from '../screens/chat/ChatMediaScreen';
-import ChatSettingsScreen from '../screens/chat/ChatSettingsScreen';
-import CallScreen from '../screens/chat/CallScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import StoreScreen from '../screens/StoreScreen';
-import RecentlyDeletedScreen from '../screens/chat/RecentlyDeletedScreen';
-import MomentsScreen from '../screens/moments/MomentsScreen';
-import FriendsScreen from '../screens/moments/FriendsScreen';
 import {lazyLoad} from '../utils/lazyLoading';
 
-// Less-frequently-visited screens are lazy-loaded: with Babel's inlineRequires
+// Everything off the startup path is lazy-loaded: with Babel's inlineRequires
 // (see metro.config.js) a plain `import` still gets evaluated the first time
 // ANY screen in the same stack renders (all `<Stack.Screen component={X}>`
 // entries are dereferenced together when the stack mounts), so without this
 // every one of these modules' top-level work runs on first opening the Chats
 // tab. Wrapping them in React.lazy defers that work until the user actually
 // navigates to each specific screen.
+//
+// ChatListScreen and ChatScreen are deliberately NOT here. The first is what
+// launch renders, and the second is what launch exists to get you to — making
+// either lazy would move cost onto the path being optimised rather than off
+// it. The nine below are ~5,000 lines that a cold start has no reason to
+// evaluate: Profile, Store, Moments, Friends, Call, and the chat sub-screens.
+const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
+const StoreScreen = lazyLoad(() => import('../screens/StoreScreen'));
+const MomentsScreen = lazyLoad(() => import('../screens/moments/MomentsScreen'));
+const FriendsScreen = lazyLoad(() => import('../screens/moments/FriendsScreen'));
+const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
+const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
+const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
+const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
+const RecentlyDeletedScreen = lazyLoad(() => import('../screens/chat/RecentlyDeletedScreen'));
 const WhiteboardScreen = lazyLoad(() => import('../screens/chat/WhiteboardScreen'));
 const PlaylistScreen = lazyLoad(() => import('../screens/chat/PlaylistScreen'));
 const CountdownScreen = lazyLoad(() => import('../screens/chat/CountdownScreen'));
