@@ -237,21 +237,28 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [pendingMessages, setPendingMessages] = useState<IMessage[]>([]);
   const [uploading, setUploading] = useState<{label: string; progress: number} | null>(null);
-  const [inputText, setInputText] = useState('');
+  /**
+   * Whether the composer has anything in it — *not* what it contains.
+   *
+   * The text itself lives in inputTextRef below. ChatComposer is uncontrolled
+   * (it takes defaultValue), so nothing renders from the string, and the only
+   * thing a keystroke can actually change on screen is whether Send is
+   * enabled. Keeping the string in state re-ran this component — 7,000 lines,
+   * ~100 state slots, and the whole message thread — on every character
+   * typed. As a boolean, React bails out of the render entirely except on the
+   * empty/non-empty transition.
+   */
+  const [hasText, setHasText] = useState(false);
   // The composer is uncontrolled (see components/ChatComposer for why). These
   // two exist so the rare programmatic *writes* still work: bumping the
   // generation remounts the field with a fresh defaultValue.
   const [composerGeneration, setComposerGeneration] = useState(0);
   const composerSeedRef = useRef('');
   // The live text, tracked alongside state. Callbacks that need to *read* what
-  // is currently typed must use this rather than the `inputText` closure: the
+  // is currently typed must read this rather than a captured copy: the
   // composer no longer round-trips through state on every keystroke, so a
   // memoised callback's captured copy can be several characters behind.
   const inputTextRef = useRef('');
-  const handleComposerChange = useCallback((value: string) => {
-    inputTextRef.current = value;
-    setInputText(value);
-  }, []);
   const composerRef = useRef<TextInput>(null);
 
   // Keyboard avoidance without KeyboardAvoidingView.
@@ -294,7 +301,7 @@ export default function ChatScreen() {
   const setComposerText = useCallback((value: string) => {
     composerSeedRef.current = value;
     inputTextRef.current = value;
-    setInputText(value);
+    setHasText(value.trim().length > 0);
     if (value === '') {
       // Clearing after a send goes through the imperative API so the field
       // keeps focus. Remounting here would close the keyboard every time you
@@ -475,6 +482,51 @@ export default function ChatScreen() {
   const lastDraftRef = useRef('');
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTypingRef = useRef<{value: boolean; at: number}>({value: false, at: 0});
+
+  /**
+   * Saving the draft and pinging the typing indicator, both debounced 400ms.
+   *
+   * These were effects keyed on the composer's text, which is why the text had
+   * to be state at all. Driving them from the change handler instead keeps the
+   * same debounce and the same 2-second typing re-ping, and lets the text stop
+   * being state.
+   */
+  const scheduleDraftSave = useCallback(() => {
+    if (!chatId || !user) return;
+    if (draftSaveTimeoutRef.current) clearTimeout(draftSaveTimeoutRef.current);
+    draftSaveTimeoutRef.current = setTimeout(() => {
+      const text = inputTextRef.current.trimEnd();
+      if (text !== lastDraftRef.current) {
+        setDraft(user.uid, chatId, text);
+        lastDraftRef.current = text;
+      }
+    }, 400);
+  }, [chatId, user]);
+
+  const scheduleTypingPing = useCallback(() => {
+    if (!chatId || !user) return;
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    const typing = inputTextRef.current.trim().length > 0;
+    const now = Date.now();
+    const last = lastTypingRef.current;
+    // Re-ping every 2s while still typing, so the peer's indicator doesn't
+    // expire mid-sentence.
+    if (typing === last.value && now - last.at <= 2000) return;
+    typingTimeoutRef.current = setTimeout(() => {
+      setTyping(chatId, user.uid, typing);
+      lastTypingRef.current = {value: typing, at: Date.now()};
+    }, 400);
+  }, [chatId, user]);
+
+  const handleComposerChange = useCallback(
+    (value: string) => {
+      inputTextRef.current = value;
+      setHasText(value.trim().length > 0);
+      scheduleDraftSave();
+      scheduleTypingPing();
+    },
+    [scheduleDraftSave, scheduleTypingPing],
+  );
   const listRef = useRef<FlatList<IMessage>>(null);
   const pendingRef = useRef<IMessage[]>([]);
   const cacheWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1770,40 +1822,16 @@ export default function ChatScreen() {
     };
   }, [otherUserId]);
 
-  useEffect(() => {
-    if (!chatId || !user) return;
-    if (draftSaveTimeoutRef.current) {
-      clearTimeout(draftSaveTimeoutRef.current);
-    }
-    draftSaveTimeoutRef.current = setTimeout(() => {
-      const text = inputText.trimEnd();
-      if (text !== lastDraftRef.current) {
-        setDraft(user.uid, chatId, text);
-        lastDraftRef.current = text;
-      }
-    }, 400);
-  }, [chatId, user, inputText]);
 
-  useEffect(() => {
-    if (!chatId || !user) return;
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-    const typing = inputText.trim().length > 0;
-    const now = Date.now();
-    const last = lastTypingRef.current;
-    const shouldSend = typing !== last.value || now - last.at > 2000;
-    if (!shouldSend) return;
-    typingTimeoutRef.current = setTimeout(() => {
-      setTyping(chatId, user.uid, typing);
-      lastTypingRef.current = {value: typing, at: Date.now()};
-    }, 400);
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  }, [chatId, user, inputText]);
+  // The debounces above are scheduled from handleComposerChange, so this only
+  // has to make sure neither timer outlives the screen.
+  useEffect(
+    () => () => {
+      if (draftSaveTimeoutRef.current) clearTimeout(draftSaveTimeoutRef.current);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    },
+    [],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -2247,7 +2275,7 @@ export default function ChatScreen() {
   );
 
   const handleScheduleSend = useCallback(async () => {
-    if (!chatId || !user || !inputText.trim()) return;
+    if (!chatId || !user || !inputTextRef.current.trim()) return;
     const mins = parseInt(scheduleMinutes, 10);
     if (isNaN(mins) || mins <= 0) {
       Alert.alert('Invalid time', 'Enter a positive number of minutes.');
@@ -2256,7 +2284,7 @@ export default function ChatScreen() {
     const scheduledFor = Date.now() + mins * 60 * 1000;
     const messageData: ChatMessage = {
       _id: `sched_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      text: inputText.trim(),
+      text: inputTextRef.current.trim(),
       createdAt: new Date(),
       user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
     };
@@ -2294,7 +2322,7 @@ export default function ChatScreen() {
     setComposerText('');
     setSchedulePickerVisible(false);
     Alert.alert('Scheduled', `Message will be sent in ${mins} minute${mins > 1 ? 's' : ''}.`);
-  }, [chatId, user, inputText, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
+  }, [chatId, user, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
 
   const handleCreateList = useCallback(async () => {
     if (!chatId || !user) return;
@@ -4918,7 +4946,7 @@ export default function ChatScreen() {
           </View>
         </TouchableOpacity>
       ) : null}
-      {/* Not gated on `inputText`, deliberately.
+      {/* Not gated on the composer's contents, deliberately.
           Hiding this row while you typed unmounted it, and removing a view from
           this subtree made GiftedChat's thread resample: React Native renders
           an `inverted` FlatList as `transform: [{scaleY: -1}]`, so the thread is
@@ -4978,8 +5006,6 @@ export default function ChatScreen() {
         onLoadEarlier={loadEarlier}
         isLoadingEarlier={isLoadingEarlier}
         user={giftedUser}
-        text={inputText}
-        onInputTextChanged={handleComposerChange}
         // Replaces the composer outright rather than disabling it. A greyed-out
         // input still invites you to type something you can't send; a plain
         // statement of why the conversation is over does not. Returning null
@@ -5112,12 +5138,12 @@ export default function ChatScreen() {
             renderSend={() => (
               <TouchableOpacity
                 style={[styles.ownSend, {borderColor: colors.border}]}
-                disabled={!inputText.trim()}
+                disabled={!hasText}
                 onPress={() =>
                   onSend([
                     {
                       _id: Date.now(),
-                      text: inputText,
+                      text: inputTextRef.current,
                       createdAt: new Date(),
                       user: {_id: user?.uid || ''},
                     } as IMessage,
@@ -5126,7 +5152,7 @@ export default function ChatScreen() {
                 <Text
                   style={[
                     styles.ownSendText,
-                    {color: inputText.trim() ? colors.primary : colors.textSecondary},
+                    {color: hasText ? colors.primary : colors.textSecondary},
                   ]}>
                   {t('common.send')}
                 </Text>
