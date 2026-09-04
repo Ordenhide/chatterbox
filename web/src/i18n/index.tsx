@@ -227,6 +227,8 @@ const en = {
     "You can't send messages to a deleted account. Your existing conversation is still here to read.",
   'chat.recipientDeletedToast': "Not sent — this account has been deleted.",
   'chat.verifyNoKey': "Your contact hasn't set up secure messaging on their device yet, so there's no key to verify.",
+  'chat.verifyNotEnrolled':
+    "This browser doesn't hold your encryption key yet, so there's nothing to compare. Send a message from here, or restore your recovery phrase, and try again.",
   'chat.safetyNumberDesc': 'Compare this with your contact in person or over a trusted channel. If it matches on both devices, this chat is encrypted directly between you two.',
   'chat.viewOnceExpired': 'View-once photo expired',
   'chat.viewOnceBadge': 'View once',

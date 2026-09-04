@@ -9,7 +9,7 @@ import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {useToast} from '../context/ToastContext';
 import {decryptMessage, isEncryptedPayload} from '../services/e2ee';
-import {getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from '../services/e2eeKeys';
 import {
   formatRemaining,
   listenTrash,
@@ -63,9 +63,11 @@ export default function RecentlyDeletedModal({
 
   useEffect(() => {
     let active = true;
-    getOrCreateDeviceKeypair(uid)
+    // Reading the trash must not enrol this browser; without a key the list
+    // simply renders undecrypted.
+    getDeviceKeypairIfEnrolled(uid)
       .then(kp => {
-        if (active) setSecretKey(kp.secretKey);
+        if (active && kp) setSecretKey(kp.secretKey);
       })
       .catch(() => undefined);
     return () => {

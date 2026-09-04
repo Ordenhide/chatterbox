@@ -48,6 +48,7 @@ vi.mock('../firebase', () => ({db: {}}));
 import {
   _resetKeypairCache,
   enrollmentReadiness,
+  getDeviceKeypairIfEnrolled,
   fetchPeerPublicKeyChecked,
   getKeyGeneration,
   getOrCreateDeviceKeypair,
@@ -335,11 +336,53 @@ describe('restoreDeviceKeypairFromPhrase', () => {
     expect(getKeyGeneration()).toBeGreaterThan(before);
   });
 
+  // The guard above is only as good as the call sites that respect it, and
+  // for a long time none did: nothing in the web app called
+  // enrollmentReadiness at all, while five *read* paths — opening a chat,
+  // decrypting its messages, the scheduled-message preview, the trash list,
+  // the verify dialog — all reached for getOrCreateDeviceKeypair. Reading a
+  // conversation was therefore enough to publish a new key over the account's
+  // real one. getDeviceKeypairIfEnrolled is what those paths use now.
+  it('reading with getDeviceKeypairIfEnrolled leaves the published key alone', async () => {
+    const original = await getOrCreateDeviceKeypair(ME);
+    const phrase = secretKeyToMnemonic(original.secretKey);
+    const publishedBefore = firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey;
+
+    memoryStorage.clear(); // new browser, or cleared site data
+    _resetKeypairCache();
+
+    // A reader gets null rather than a freshly minted key...
+    expect(await getDeviceKeypairIfEnrolled(ME)).toBeNull();
+    // ...the account's published key is untouched...
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey).toBe(publishedBefore);
+    // ...and the phrase the user wrote down still works.
+    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({success: true});
+  });
+
+  it('getDeviceKeypairIfEnrolled returns the key this browser already holds', async () => {
+    const original = await getOrCreateDeviceKeypair(ME);
+    _resetKeypairCache();
+    expect((await getDeviceKeypairIfEnrolled(ME))?.secretKey).toEqual(original.secretKey);
+  });
+
   // Found by a test that was wrong in an instructive way: this is the exact
   // disaster enrollmentReadiness exists to prevent. Auto-enrolling a browser
   // that has lost its local key republishes a brand-new key over the account's
   // real one, and the recovery phrase the user carefully wrote down is now
   // permanently useless. The guard must run *before* any getOrCreateDeviceKeypair.
+  it('reports superseded when the account has replaced the key this browser holds', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+
+    // Another device restores a different phrase and republishes.
+    firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
+      publicKey: bytesToBase64(generateKeypair().publicKey),
+    });
+
+    // No _resetKeypairCache: the in-memory cache used to answer 'safe' first.
+    expect(await enrollmentReadiness(ME)).toBe('superseded');
+  });
+
   it('a phrase stops working if the browser auto-enrolls before restoring', async () => {
     const original = await getOrCreateDeviceKeypair(ME);
     const phrase = secretKeyToMnemonic(original.secretKey);

@@ -3,7 +3,7 @@ import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {computeSafetyNumber} from '../services/e2ee';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {fetchPeerPublicKeyChecked, getDeviceKeypairIfEnrolled} from '../services/e2eeKeys';
 import Icon from './Icon';
 
 /**
@@ -28,18 +28,29 @@ export default function VerifyContactModal({
 }) {
   const {t} = useT();
   const dialogRef = useModal<HTMLDivElement>(onClose);
-  const [state, setState] = useState<'loading' | 'no-key' | 'error' | 'ready'>('loading');
+  const [state, setState] = useState<'loading' | 'no-key' | 'not-enrolled' | 'error' | 'ready'>('loading');
   const [safetyNumber, setSafetyNumber] = useState('');
 
   useEffect(() => {
     let active = true;
     (async () => {
       try {
-        const [{publicKey: myPublicKey}, peer] = await Promise.all([
-          getOrCreateDeviceKeypair(myUid),
+        // A read: opening this dialog must not mint a key, which would
+        // publish over the account's real one and make the safety number it
+        // then displays a number for a key nobody else has.
+        const [mine, peer] = await Promise.all([
+          getDeviceKeypairIfEnrolled(myUid),
           fetchPeerPublicKeyChecked(myUid, peerUid),
         ]);
         if (!active) return;
+        // Distinct from 'no-key', which is a statement about the *contact*.
+        // Saying that because this browser has no key of its own would blame
+        // them for a gap on this side.
+        if (!mine) {
+          setState('not-enrolled');
+          return;
+        }
+        const myPublicKey = mine.publicKey;
         // The checked read, not fetchPeerPublicKey: that one maps a failed
         // lookup onto null, which this screen would render as "this contact
         // hasn't set up encryption". Saying that because the network blipped
@@ -97,6 +108,7 @@ export default function VerifyContactModal({
         {state === 'loading' && <div style={styles.info}>{t('app.loading')}</div>}
 
         {state === 'no-key' && <div style={styles.info}>{t('chat.verifyNoKey')}</div>}
+        {state === 'not-enrolled' && <div style={styles.info}>{t('chat.verifyNotEnrolled')}</div>}
 
         {state === 'error' && <div style={styles.info}>{t('common.error')}</div>}
 

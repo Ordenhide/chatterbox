@@ -122,6 +122,41 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
   return keypair;
 }
 
+/**
+ * This browser's keypair if it already has one, or null — never mints one.
+ *
+ * For *readers*. getOrCreateDeviceKeypair publishes on first call, so calling
+ * it merely to decrypt turns opening a chat into an enrollment: a browser with
+ * no local key mints one and overwrites the account's published key within
+ * milliseconds of the view mounting, stranding every message sealed to the
+ * real key and permanently invalidating the recovery phrase the user wrote
+ * down. That is the disaster enrollmentReadiness exists to prevent, performed
+ * by the code that was trying to read the messages it just orphaned.
+ *
+ * Returning null is the correct outcome for a reader: it has no key, so it
+ * cannot decrypt, and inventing one would not have helped it decrypt anything
+ * either — the new key opens nothing that was sealed to the old one. Callers
+ * render the undecryptable state instead.
+ *
+ * Mirrors mobile's src/services/e2eeKeys.ts, which grew the same split for
+ * the same reason.
+ */
+export async function getDeviceKeypairIfEnrolled(userId: string): Promise<Keypair | null> {
+  const hit = cached.get(userId);
+  if (hit) {
+    markActiveKey(userId);
+    return hit;
+  }
+
+  const storedHex = readLocal(`${SECRET_KEY_PREFIX}:${userId}`);
+  if (!storedHex) return null;
+
+  const keypair = keypairFromSecret(hexToBytes(storedHex));
+  cached.set(userId, keypair);
+  markActiveKey(userId);
+  return keypair;
+}
+
 function keypairFromSecret(secretKey: Uint8Array): Keypair {
   // Recomputing the public half is cheap and avoids storing it twice, so the
   // secret key remains the single source of truth.
@@ -222,6 +257,13 @@ export type EnrollmentReadiness =
   | 'safe'
   /** The account has a key published elsewhere that this browser doesn't hold. */
   | 'needs-restore'
+  /**
+   * This browser holds a key, but it is no longer the one the account
+   * publishes — another device replaced it. Nothing here is missing, which is
+   * why it went unreported: the browser looks enrolled, sends fine, and
+   * silently fails to open anything addressed to the new key.
+   */
+  | 'superseded'
   /** Couldn't find out — treat as "don't touch anything yet". */
   | 'unknown';
 
@@ -241,14 +283,25 @@ export type EnrollmentReadiness =
  * first enrollment, and the next sign-in tries again.
  */
 export async function enrollmentReadiness(userId: string): Promise<EnrollmentReadiness> {
-  if (cached.has(userId)) return 'safe';
-  if (readLocal(`${SECRET_KEY_PREFIX}:${userId}`)) return 'safe';
+  // Holding *a* key used to be enough to answer 'safe', without ever asking
+  // which key the account publishes — so the one state worth warning about
+  // was the one state this could not report. See the mobile twin.
+  const local = await getDeviceKeypairIfEnrolled(userId);
+
+  let publishedKey: Uint8Array | null;
   try {
-    return (await fetchPublishedKeyOrThrow(userId)) === null ? 'safe' : 'needs-restore';
+    publishedKey = await fetchPublishedKeyOrThrow(userId);
   } catch (error) {
     console.warn('e2ee enrollment readiness failed:', error);
-    return 'unknown';
+    // An enrolled browser keeps its old answer offline: 'unknown' exists to
+    // stop a browser with *no* key guessing its way into an overwrite, and
+    // one that already holds a key has nothing to overwrite.
+    return local ? 'safe' : 'unknown';
   }
+
+  if (!publishedKey) return 'safe';
+  if (!local) return 'needs-restore';
+  return bytesToBase64(local.publicKey) === bytesToBase64(publishedKey) ? 'safe' : 'superseded';
 }
 
 function peerKeyCacheKey(myUserId: string, peerUserId: string): string {

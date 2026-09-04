@@ -43,6 +43,7 @@ import {
   EncryptionUnavailableError,
   fetchPeerPublicKeyChecked,
   getKeyGeneration,
+  getDeviceKeypairIfEnrolled,
   getOrCreateDeviceKeypair,
   isEncryptionUnavailable,
 } from '../services/e2eeKeys';
@@ -427,8 +428,11 @@ export default function ChatPane({
     // exactly this case. A body that won't open shows as empty rather than as
     // ciphertext — the row still carries its time and its cancel button.
     const unsub = listenScheduledMessages(chatId, me.uid, async msgs => {
-      const secretKey = await getOrCreateDeviceKeypair(me.uid)
-        .then(k => k.secretKey)
+      // Read-only: a scheduled-message preview must never be the thing that
+      // enrolls this browser. Null flows into the `!secretKey` branch below,
+      // which already renders the row without its body.
+      const secretKey = await getDeviceKeypairIfEnrolled(me.uid)
+        .then(k => k?.secretKey ?? null)
         .catch(() => null);
       const shown = msgs.map(m => {
         if (!m.encrypted || !secretKey) return m;
@@ -582,12 +586,38 @@ export default function ChatPane({
     let active = true;
     (async () => {
       try {
-        const {secretKey} = await getOrCreateDeviceKeypair(me.uid);
+        // Emphatically not getOrCreateDeviceKeypair: this effect runs on
+        // opening a chat, and minting here would publish a fresh key over the
+        // account's real one — orphaning the very messages it is trying to
+        // read, and invalidating the user's recovery phrase for good.
+        const keypair = await getDeviceKeypairIfEnrolled(me.uid);
         if (!active) return;
 
         toDecrypt.forEach(m => {
           const id = m._id;
           let mediaFailed = false;
+
+          if (!keypair) {
+            // Nothing to decrypt with, so by definition these were sealed to a
+            // key held elsewhere. Every cache is filled, the media ones
+            // included, so they stop matching needsDecrypt — left unfilled
+            // they would re-enter this effect on every snapshot. A successful
+            // restore bumps the key generation, which clears them all and
+            // re-runs this for real.
+            if (isSealed(m.encrypted)) {
+              decryptedTextRef.current.set(id, '🔒 Sealed to another device');
+            }
+            if (isSealed(m.encryptedImage)) decryptedImageRef.current.set(id, '');
+            if (isSealed(m.encryptedVideo)) decryptedVideoRef.current.set(id, '');
+            if (isSealed(m.encryptedAudio)) decryptedAudioRef.current.set(id, '');
+            if (isSealed(m.encryptedFileUri)) decryptedFileUriRef.current.set(id, '');
+            if (isSealed(m.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
+            if (!isSealed(m.encrypted)) {
+              decryptedTextRef.current.set(id, '🔒 Sealed to another device');
+            }
+            return;
+          }
+          const {secretKey} = keypair;
 
           if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
             try {
@@ -718,10 +748,12 @@ export default function ChatPane({
     if (!otherUid) return;
     let unsubscribe: (() => void) | null = null;
     let cancelled = false;
-    getOrCreateDeviceKeypair(me.uid)
-      .then(({secretKey}) => {
-        if (cancelled || !otherUid) return;
-        unsubscribe = listenLiveLocation(chatId, otherUid, secretKey, setPeerLiveLocation);
+    // Listening is a read. This effect runs on opening any chat, so minting
+    // here made simply looking at a conversation overwrite the account's key.
+    getDeviceKeypairIfEnrolled(me.uid)
+      .then(keypair => {
+        if (cancelled || !otherUid || !keypair) return;
+        unsubscribe = listenLiveLocation(chatId, otherUid, keypair.secretKey, setPeerLiveLocation);
       })
       .catch(err => console.warn('live location listen failed:', err));
     return () => {
