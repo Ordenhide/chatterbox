@@ -29,6 +29,7 @@ import {
 } from '../../services/firebaseChat';
 import {getColors} from '../../theme/colors';
 import {fonts, terminal} from '../../theme/typography';
+import CornerBrackets from '../../components/CornerBrackets';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
@@ -64,6 +65,7 @@ type ChatListItemProps = {
   cardBorder: string;
   unreadColor: string;
   unreadTextColor: string;
+  bracketColor: string;
 };
 
 const ChatListItem = memo(
@@ -88,11 +90,15 @@ const ChatListItem = memo(
     cardBorder,
     unreadColor,
     unreadTextColor,
+    bracketColor,
   }: ChatListItemProps) => (
     <TouchableOpacity style={styles.chatItem} onPress={onPress} onLongPress={onLongPress}>
       <GlassView blur={false} style={[styles.card, {backgroundColor: cardBackground, borderColor: cardBorder}]}>
         <View style={[styles.avatar, {borderColor: avatarColor}]}>
           <Text style={[styles.avatarText, {color: textColor}]}>{avatarText || '?'}</Text>
+          {/* Inset by 2: at 0 the ticks land on the avatar's own hairline and
+              the accent loses the pixel to the border. */}
+          {unreadCount ? <CornerBrackets size={6} inset={2} color={bracketColor} /> : null}
         </View>
         <View style={styles.chatContent}>
           <View style={styles.chatTitleRow}>
@@ -621,6 +627,7 @@ export default function ChatListScreen() {
             cardBorder={colors.glassBorder}
             unreadColor={colors.primary}
             unreadTextColor={colors.textOnPrimary}
+            bracketColor={colors.primary}
           />
           </ListEntrance>
         )}

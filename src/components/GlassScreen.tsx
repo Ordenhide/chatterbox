@@ -3,6 +3,7 @@ import {StyleProp, StyleSheet, View, ViewStyle, useColorScheme} from 'react-nati
 import {SafeAreaView, Edge} from 'react-native-safe-area-context';
 import {getColors} from '../theme/colors';
 import CipherTexture from './CipherTexture';
+import Scanlines from './Scanlines';
 
 type GlassScreenProps = {
   children: React.ReactNode;
@@ -43,6 +44,9 @@ function GlassScreen({
       <View pointerEvents="none" style={[styles.blobTwo, {backgroundColor: colors.glassTint2}]} />
       <View pointerEvents="none" style={[styles.blobThree, {backgroundColor: colors.glassTint3}]} />
       {showTexture ? <CipherTexture seed={textureSeed} color={colors.primary} /> : null}
+      {/* Above the cipher field so it grains the text too, below the content
+          so it never sits over anything anyone has to read. */}
+      <Scanlines />
       {children}
     </SafeAreaView>
   );
