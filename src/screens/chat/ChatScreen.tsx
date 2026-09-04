@@ -3655,22 +3655,37 @@ export default function ChatScreen() {
     );
   };
 
+  /**
+   * A voice message, drawn inside the bubble rather than on top of one.
+   *
+   * This used to paint `colors.surface` on itself. The bubble already has a
+   * fill — a solid block of colors.text when the message is mine, a ruled
+   * outline when it is not — so on an outgoing message that put a light pill
+   * inside the dark block, and the timestamp landed on the strip of bubble
+   * still showing underneath. It read as two stacked elements rather than one
+   * message, and it was the only bubble in the thread that did.
+   *
+   * Ink follows the same rule the message text does: the accent where it sits
+   * on the app's own ground, the inverted ink where it sits on the fill.
+   */
   const renderAudioBubble = (message: ChatMessage) => {
     if (!message.audio) return null;
+    const mine = message.user?._id === user?.uid;
+    const ink = mine ? colors.textOnPrimary : colors.text;
     const filterLabel = message.voiceFilter && message.voiceFilter !== 'none'
       ? ` (${message.voiceFilter})`
       : '';
     return (
       <Pressable
-        style={[styles.audioBubble, {backgroundColor: colors.surface}]}
+        style={styles.audioBubble}
         onPress={() => playAudio(message._id, message.audio || '')}>
         <Icon
           name={playingAudioId === message._id ? 'pause' : 'play'}
           size={16}
-          color={colors.primary}
+          color={mine ? ink : colors.primary}
           style={styles.audioIcon}
         />
-        <Text style={[styles.audioText, {color: colors.text}]}>
+        <Text style={[styles.audioText, {color: ink}]}>
           {message.audioDuration ? `${message.audioDuration}s` : 'Voice message'}{filterLabel}
         </Text>
       </Pressable>
@@ -3679,7 +3694,8 @@ export default function ChatScreen() {
 
   const renderMessageAudio = useCallback(
     (props: any) => renderAudioBubble(props?.currentMessage as ChatMessage),
-    [playingAudioId, colors],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [playingAudioId, colors, user?.uid],
   );
 
   const renderLinkPreview = (preview?: ChatMessage['linkPreview']) => {

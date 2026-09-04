@@ -2,7 +2,24 @@ import {useRef, useState} from 'react';
 import {colors} from '../theme';
 import Icon from './Icon';
 
-export default function AudioMessage({url, duration}: {url: string; duration?: number}) {
+/**
+ * A voice message, drawn inside the bubble rather than on top of one.
+ *
+ * `mine` exists because the bubble already has a fill: a solid block of
+ * --cb-text for an outgoing message, a ruled outline for an incoming one.
+ * This used to paint surfaceStrong and a border on itself regardless, which
+ * put a light pill inside the dark block and read as two stacked elements.
+ * Mirrors ChatScreen's renderAudioBubble on mobile.
+ */
+export default function AudioMessage({
+  url,
+  duration,
+  mine,
+}: {
+  url: string;
+  duration?: number;
+  mine?: boolean;
+}) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -23,17 +40,23 @@ export default function AudioMessage({url, duration}: {url: string; duration?: n
     return `${m}:${sec.toString().padStart(2, '0')}`;
   };
 
+  // On the inverted fill the accent is not legible, so the ink is; on the
+  // app's own ground the accent is exactly where it belongs.
+  const accent = mine ? 'var(--cb-text-on-primary)' : colors.primary;
   return (
-    <div style={styles.wrap}>
-      <button onClick={toggle} style={styles.play} aria-label={playing ? 'Pause' : 'Play'}>
+    <div style={mine ? styles.wrapPlain : styles.wrap}>
+      <button
+        onClick={toggle}
+        style={mine ? {...styles.play, ...styles.playPlain} : styles.play}
+        aria-label={playing ? 'Pause' : 'Play'}>
         <Icon name={playing ? 'pause' : 'play'} size={15} />
       </button>
       <div style={styles.bars}>
         {BARS.map((h, i) => (
-          <span key={i} style={{...styles.bar, height: h}} />
+          <span key={i} style={{...styles.bar, height: h, background: accent}} />
         ))}
       </div>
-      <span style={styles.time}>{fmt(duration)}</span>
+      <span style={mine ? {...styles.time, color: accent} : styles.time}>{fmt(duration)}</span>
       <audio
         ref={audioRef}
         src={url}
@@ -59,6 +82,21 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 999,
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
+  },
+  // Same box, no fill of its own — the bubble underneath is the fill.
+  wrapPlain: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 10,
+    minWidth: 200,
+    maxWidth: 300,
+    padding: '6px 12px',
+    margin: '4px 0',
+    borderRadius: 999,
+  },
+  playPlain: {
+    background: 'transparent',
+    color: 'var(--cb-text-on-primary)',
   },
   play: {
     width: 30,

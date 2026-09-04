@@ -2263,7 +2263,7 @@ export default function ChatPane({
                               <img src={m.gif.previewUrl || m.gif.url} alt="" style={styles.gifMsg} />
                             </button>
                           )}
-                          {m.audio && <AudioMessage url={m.audio} duration={m.audioDuration} />}
+                          {m.audio && <AudioMessage url={m.audio} duration={m.audioDuration} mine={mine} />}
                           {m.audio && (transcribing.has(m._id) || m.transcription) && (
                             <div style={styles.transcription}>
                               {transcribing.has(m._id) ? t('chat.transcribing') : m.transcription}
