@@ -25,7 +25,7 @@ import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import {useAuth} from '../../contexts/AuthContext';
 import {decryptMessage, isEncryptedPayload} from '../../services/e2ee';
-import {getOrCreateDeviceKeypair} from '../../services/e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from '../../services/e2eeKeys';
 import {
   formatRemaining,
   listenTrash,
@@ -78,9 +78,12 @@ export default function RecentlyDeletedScreen() {
   useEffect(() => {
     if (!user) return;
     let active = true;
-    getOrCreateDeviceKeypair(user.uid)
+    // Non-enrolling: reading your own trash must not enroll the device.
+    // Without a key the list still renders — the entries just stay sealed,
+    // which is the truth about them on this device.
+    getDeviceKeypairIfEnrolled(user.uid)
       .then(kp => {
-        if (active) setSecretKey(kp.secretKey);
+        if (active) setSecretKey(kp?.secretKey ?? null);
       })
       .catch(() => undefined);
     return () => {

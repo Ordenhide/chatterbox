@@ -22,7 +22,7 @@ import {auth, db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
 import {storage, deleteStorageObjectByUrl} from './storage';
 import {resolveMessageMediaUrls} from './messageMedia';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
 import type {ChatMessage} from '../types';
 
@@ -283,7 +283,16 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
   // account is being deleted regardless, and a partial purge beats none.
   let secretKey: Uint8Array | null = null;
   try {
-    secretKey = (await getOrCreateDeviceKeypair(uid)).secretKey;
+    // Non-enrolling: publishing a fresh key on the way out would be the
+    // last thing this account ever did, and the degraded path below already
+    // covers a missing one.
+    const keypair = await getDeviceKeypairIfEnrolled(uid);
+    secretKey = keypair?.secretKey ?? null;
+    if (!keypair) {
+      report.errors.push(
+        'device key unavailable: this device is not enrolled, so encrypted pointers were left unread',
+      );
+    }
   } catch (err) {
     report.errors.push(`device key unavailable: ${String(err)}`);
   }

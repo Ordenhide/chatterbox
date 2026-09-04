@@ -5,6 +5,7 @@ const mockPeerKey = jest.fn();
 
 jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...a: unknown[]) => mockKeypair(...a),
+  getDeviceKeypairIfEnrolled: (...a: unknown[]) => mockKeypair(...a),
   fetchPeerPublicKeyChecked: (...a: unknown[]) => mockPeerKey(...a),
 }));
 

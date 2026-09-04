@@ -44,6 +44,7 @@ jest.mock('../firebase/firestore', () => ({
 
 jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
+  getDeviceKeypairIfEnrolled: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
 import {exportUserData, sanitizeForExport, sanitizeMessageForExport} from '../dataExport';

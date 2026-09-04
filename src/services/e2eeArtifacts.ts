@@ -29,7 +29,7 @@
  * names, same semantics — matching this repo's parallel-not-shared convention.
  */
 import {decryptMessage, encryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {fetchPeerPublicKeyChecked, getDeviceKeypairIfEnrolled} from './e2eeKeys';
 
 export interface ArtifactCrypto {
   /** True when a peer key was available and writes will actually be sealed. */
@@ -62,7 +62,14 @@ export async function makeArtifactCrypto(
 ): Promise<ArtifactCrypto> {
   if (!myUid || !peerUid || !chatId) return INERT_ARTIFACT_CRYPTO;
   try {
-    const {secretKey} = await getOrCreateDeviceKeypair(myUid);
+    // Non-enrolling: this is built on mount, so the enrolling variant made
+    // *opening* a shared list an enrollment. Returning the inert crypto when
+    // there is no key degrades new content to server-readable — the same
+    // state as an unenrolled peer, and the one this function already
+    // documents — instead of stranding the chat's whole history.
+    const keypair = await getDeviceKeypairIfEnrolled(myUid);
+    if (!keypair) return INERT_ARTIFACT_CRYPTO;
+    const {secretKey} = keypair;
     // Mobile's checker takes only the peer id — see services/e2eeKeys.ts.
     const {key: peerPublicKey} = await fetchPeerPublicKeyChecked(peerUid);
 

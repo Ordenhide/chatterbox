@@ -91,7 +91,10 @@ vi.mock('./firestoreBatch', () => ({
     return 0;
   }),
 }));
-vi.mock('./e2eeKeys', () => ({getOrCreateDeviceKeypair: vi.fn()}));
+vi.mock('./e2eeKeys', () => ({
+  getOrCreateDeviceKeypair: vi.fn(),
+  getDeviceKeypairIfEnrolled: vi.fn(),
+}));
 
 import {clearLocalData, describeAuthError, purgeUserData} from './account';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
@@ -206,15 +209,19 @@ describe('purgeUserData media cleanup', () => {
       {id: 'm2', data: {user: {_id: 'uid1'}, encryptedImage: encryptedPayload, createdAt: 2}},
     ]);
 
-    const {getOrCreateDeviceKeypair} = await import('./e2eeKeys');
+    const {getDeviceKeypairIfEnrolled} = await import('./e2eeKeys');
     const {deleteStorageObjectByUrl} = await import('./storage');
     vi.mocked(deleteStorageObjectByUrl).mockClear();
-    return {me, getOrCreateDeviceKeypair: vi.mocked(getOrCreateDeviceKeypair), deleteStorageObjectByUrl: vi.mocked(deleteStorageObjectByUrl)};
+    return {
+      me,
+      getDeviceKeypair: vi.mocked(getDeviceKeypairIfEnrolled),
+      deleteStorageObjectByUrl: vi.mocked(deleteStorageObjectByUrl),
+    };
   }
 
   it('cleans up both plaintext and encrypted media once the device key resolves', async () => {
-    const {me, getOrCreateDeviceKeypair, deleteStorageObjectByUrl} = await seedChatWithMedia();
-    getOrCreateDeviceKeypair.mockResolvedValue(me);
+    const {me, getDeviceKeypair, deleteStorageObjectByUrl} = await seedChatWithMedia();
+    getDeviceKeypair.mockResolvedValue(me);
 
     const report = await purgeUserData('uid1');
 
@@ -227,8 +234,8 @@ describe('purgeUserData media cleanup', () => {
   });
 
   it('still cleans up plaintext media but leaves encrypted media orphaned when the device key is unavailable — same degraded fallback as before this fix', async () => {
-    const {getOrCreateDeviceKeypair, deleteStorageObjectByUrl} = await seedChatWithMedia();
-    getOrCreateDeviceKeypair.mockRejectedValue(new Error('no key material'));
+    const {getDeviceKeypair, deleteStorageObjectByUrl} = await seedChatWithMedia();
+    getDeviceKeypair.mockRejectedValue(new Error('no key material'));
 
     const report = await purgeUserData('uid1');
 
@@ -236,6 +243,25 @@ describe('purgeUserData media cleanup', () => {
     expect(deletedUrls).toEqual(['https://storage.example/plain.jpg']);
     expect(report.storageObjectsDeleted).toBe(1);
     expect(report.errors.some(e => e.includes('device key unavailable'))).toBe(true);
+  });
+
+  it('degrades the same way on an unenrolled device, without minting a key', async () => {
+    const {getDeviceKeypair, deleteStorageObjectByUrl} = await seedChatWithMedia();
+    // The reader answers null rather than throwing: holding no key is a state,
+    // not a failure. Purging must not be what enrolls a browser — publishing a
+    // fresh key would be the last thing this account ever did, and it would
+    // strand every other device's history on the way out.
+    getDeviceKeypair.mockResolvedValue(null);
+    const {getOrCreateDeviceKeypair} = await import('./e2eeKeys');
+    vi.mocked(getOrCreateDeviceKeypair).mockClear();
+
+    const report = await purgeUserData('uid1');
+
+    expect(vi.mocked(getOrCreateDeviceKeypair)).not.toHaveBeenCalled();
+    expect(deleteStorageObjectByUrl.mock.calls.map(([url]) => url)).toEqual([
+      'https://storage.example/plain.jpg',
+    ]);
+    expect(report.errors.some(e => e.includes('not enrolled'))).toBe(true);
   });
 });
 

@@ -100,6 +100,7 @@ jest.mock('../firebaseChat', () => ({
 }));
 jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
+  getDeviceKeypairIfEnrolled: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
   clearDeviceKeypair: (...args: unknown[]) => mockClearDeviceKeypair(...args),
 }));
 jest.mock('../ratchetKeys', () => ({

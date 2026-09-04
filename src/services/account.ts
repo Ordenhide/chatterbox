@@ -24,7 +24,7 @@ import {mmkvStorage} from './storageMMKV';
 import {reportError} from './telemetry';
 import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
-import {clearDeviceKeypair, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {clearDeviceKeypair, getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {clearRatchetKeys} from './ratchetKeys';
 import {clearRatchetSessions} from './ratchetSessionStore';
 import {clearBodies} from './messageBodyStore';
@@ -255,7 +255,16 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
   // account is being deleted regardless, and a partial purge beats none.
   let secretKey: Uint8Array | null = null;
   try {
-    secretKey = (await getOrCreateDeviceKeypair(uid)).secretKey;
+    // Non-enrolling: publishing a fresh key on the way out would be the
+    // last thing this account ever did, and the degraded path below already
+    // covers a missing one.
+    const keypair = await getDeviceKeypairIfEnrolled(uid);
+    secretKey = keypair?.secretKey ?? null;
+    if (!keypair) {
+      report.errors.push(
+        'device key unavailable: this device is not enrolled, so encrypted pointers were left unread',
+      );
+    }
   } catch (error) {
     report.errors.push(`device key unavailable: ${String(error)}`);
   }

@@ -34,7 +34,10 @@ vi.mock('./firestoreBatch', () => ({deleteQueryInChunks: vi.fn(async () => 0)}))
 vi.mock('./recipient', () => ({assertRecipientReachable: vi.fn(async () => undefined)}));
 vi.mock('./messageMedia', () => ({resolveMessageMediaUrls: vi.fn(() => [])}));
 vi.mock('./storage', () => ({deleteStorageObjectByUrl: vi.fn(async () => true)}));
-vi.mock('./e2eeKeys', () => ({getOrCreateDeviceKeypair: vi.fn()}));
+vi.mock('./e2eeKeys', () => ({
+  getOrCreateDeviceKeypair: vi.fn(),
+  getDeviceKeypairIfEnrolled: vi.fn(),
+}));
 vi.mock('./messageTrash', () => ({
   trashMessages: vi.fn(async () => []),
   purgeExpiredTrash: vi.fn(async () => 0),
@@ -44,7 +47,7 @@ import {burnMessage, deleteMessage, deleteMessages} from './chat';
 import {deleteStorageObjectByUrl} from './storage';
 import {setDoc} from 'firebase/firestore';
 import {resolveMessageMediaUrls} from './messageMedia';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
 
 const CHAT_ID = 'chat1';
@@ -57,7 +60,7 @@ beforeEach(() => {
   vi.mocked(trashMessages).mockReset().mockResolvedValue([]);
   vi.mocked(purgeExpiredTrash).mockReset().mockResolvedValue(0);
   vi.mocked(resolveMessageMediaUrls).mockReset().mockReturnValue([]);
-  vi.mocked(getOrCreateDeviceKeypair).mockReset().mockResolvedValue({
+  vi.mocked(getDeviceKeypairIfEnrolled).mockReset().mockResolvedValue({
     secretKey: new Uint8Array(32),
     publicKey: new Uint8Array(32),
   } as never);
@@ -149,7 +152,7 @@ describe('burnMessage', () => {
     // No key, a rotated key, or a corrupt pointer must not leave the message
     // readable — clearing is the part that has to happen regardless.
     mockDocs.data.set('m1', {encrypted: {v: 1}, user: {_id: 'alice'}});
-    vi.mocked(getOrCreateDeviceKeypair).mockRejectedValue(new Error('no key'));
+    vi.mocked(getDeviceKeypairIfEnrolled).mockRejectedValue(new Error('no key'));
 
     await burnMessage(CHAT_ID, 'm1', 'uid1');
 

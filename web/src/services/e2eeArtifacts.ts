@@ -26,7 +26,7 @@
  * path. Encryption is best-effort at the edges and total in the common case.
  */
 import {decryptMessage, encryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {fetchPeerPublicKeyChecked, getDeviceKeypairIfEnrolled} from './e2eeKeys';
 
 export interface ArtifactCrypto {
   /** True when a peer key was available and writes will actually be sealed. */
@@ -59,7 +59,14 @@ export async function makeArtifactCrypto(
 ): Promise<ArtifactCrypto> {
   if (!myUid || !peerUid || !chatId) return INERT_ARTIFACT_CRYPTO;
   try {
-    const {secretKey} = await getOrCreateDeviceKeypair(myUid);
+    // Non-enrolling: this is built on mount, so the enrolling variant made
+    // *opening* a shared list an enrollment. Returning the inert crypto when
+    // there is no key degrades new content to server-readable — the same
+    // state as an unenrolled peer, and the one this function already
+    // documents — instead of stranding the chat's whole history.
+    const keypair = await getDeviceKeypairIfEnrolled(myUid);
+    if (!keypair) return INERT_ARTIFACT_CRYPTO;
+    const {secretKey} = keypair;
     const {key: peerPublicKey} = await fetchPeerPublicKeyChecked(myUid, peerUid);
 
     // Decryption only needs my own secret, so reading still works even when

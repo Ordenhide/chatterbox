@@ -31,7 +31,7 @@ import {
 import {db} from '../firebase';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {deleteStorageObjectByUrl} from './storage';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 
 /**
  * How long a deleted message stays recoverable.
@@ -171,7 +171,14 @@ export async function purgeExpiredTrash(chatId: string, uid: string): Promise<nu
 
   let secretKey: Uint8Array | null = null;
   try {
-    secretKey = (await getOrCreateDeviceKeypair(uid)).secretKey;
+    // Non-enrolling. This runs on chat open, so the enrolling variant made
+    // a housekeeping sweep — one whose whole failure mode is "expired trash
+    // lingers a while" — capable of publishing a new key over the account's.
+    const keypair = await getDeviceKeypairIfEnrolled(uid);
+    secretKey = keypair?.secretKey ?? null;
+    if (!keypair) {
+      console.warn('purgeExpiredTrash: device not enrolled; sealed entries left in place');
+    }
   } catch (error) {
     console.warn('purgeExpiredTrash: device key unavailable:', error);
   }

@@ -8,7 +8,7 @@
 import {collection, doc, getDoc, getDocs, query, where, type Query} from 'firebase/firestore';
 import {db} from '../firebase';
 import {decryptMessage, isEncryptedPayload, type EncryptedPayload} from './e2ee';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
 
 export interface DataExportReport {
@@ -237,7 +237,16 @@ export async function exportUserData(uid: string): Promise<UserDataExport> {
 
   let secretKey: Uint8Array | null = null;
   try {
-    secretKey = (await getOrCreateDeviceKeypair(uid)).secretKey;
+    // Non-enrolling: an export reads, and the report already has a place to
+    // say the key was unavailable. Minting one here would produce an export
+    // that could decrypt nothing *and* strand the history it failed to read.
+    const keypair = await getDeviceKeypairIfEnrolled(uid);
+    secretKey = keypair?.secretKey ?? null;
+    if (!keypair) {
+      report.errors.push(
+        'device key unavailable: this device is not enrolled, so encrypted pointers were left unread',
+      );
+    }
   } catch (error) {
     report.errors.push(`device key unavailable: ${String(error)}`);
   }

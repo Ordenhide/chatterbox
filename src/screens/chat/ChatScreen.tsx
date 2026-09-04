@@ -106,7 +106,7 @@ import {
   updateCall,
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
-import {reportError} from '../../services/telemetry';
+import {reportError, reportSealedFailure} from '../../services/telemetry';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
 import {computeSafetyNumber, diagnoseSealed, isGroupSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {openEnvelope as openRatchetEnvelope} from '../../services/ratchetMessages';
@@ -1200,6 +1200,21 @@ export default function ChatScreen() {
              * from the addressing alone, so the placeholder says which one
              * happened instead of making the user guess.
              */
+            /**
+             * Reports a decrypt failure at the severity its cause deserves.
+             *
+             * Same diagnosis that picks the placeholder below, so the two can
+             * never disagree. Previously every failure here went to
+             * reportError as an undifferentiated 'e2ee_decrypt_failed' — which
+             * meant a red dev overlay stacked over a state the UI was already
+             * explaining in words, and, in release, a Crashlytics issue for
+             * the routine "sealed to your other device" case that buried the
+             * 'corrupt' one worth acting on.
+             */
+            const reportFailure = (payload: unknown, error: unknown) => {
+              reportSealedFailure(error, diagnoseSealed(payload, publicKey, user.uid));
+            };
+
             const failureText = (payload: unknown): string => {
               const reason = diagnoseSealed(payload, publicKey, user.uid);
               if (reason === 'wrong-key') {
@@ -1264,7 +1279,7 @@ export default function ChatScreen() {
                   // Wrong/rotated key, or a payload from before this device
                   // enrolled — distinct from "still loading" so it doesn't
                   // spin on the placeholder forever.
-                  reportError(decryptError, 'e2ee_decrypt_failed');
+                  reportFailure(em.encrypted, decryptError);
                   decryptedTextRef.current.set(id, failureText(em.encrypted));
                 }
               }
@@ -1277,7 +1292,7 @@ export default function ChatScreen() {
                 try {
                   cache.current.set(id, openSealed(payload, secretKey, user.uid, chatId));
                 } catch (decryptError) {
-                  reportError(decryptError, 'e2ee_decrypt_failed');
+                  reportFailure(payload, decryptError);
                   cache.current.set(id, '');
                   mediaFailed = true;
                   if (failedPayload === null) failedPayload = payload;
@@ -2604,10 +2619,24 @@ export default function ChatScreen() {
   const verifyContact = useCallback(async () => {
     if (!otherUserId || !user) return;
     try {
-      const [{publicKey: myPublicKey}, peer] = await Promise.all([
-        getOrCreateDeviceKeypair(user.uid),
+      // The non-enrolling read. A safety number is something you *check*,
+      // and computing one on an unenrolled device used to mint and publish a
+      // key first — so the fingerprint the user was about to read aloud
+      // belonged to a key created a millisecond earlier, which had just
+      // replaced the account's real one. Verification would have caused the
+      // thing it exists to detect.
+      const [mine, peer] = await Promise.all([
+        getDeviceKeypairIfEnrolled(user.uid),
         fetchPeerPublicKeyChecked(otherUserId),
       ]);
+      if (!mine) {
+        Alert.alert(
+          'Not available yet',
+          "This device doesn't hold your encryption key yet, so there's no safety number to compare. Restore it with your recovery phrase first.",
+        );
+        return;
+      }
+      const myPublicKey = mine.publicKey;
       // "Couldn't look it up" is not "they haven't enrolled". Reporting the
       // second when the first happened tells the user something false about
       // their contact's security, on the one screen whose entire job is
@@ -3337,9 +3366,13 @@ export default function ChatScreen() {
     if (!chatId || !user || !otherUserId) return;
     let unsubscribe: (() => void) | null = null;
     let cancelled = false;
-    getOrCreateDeviceKeypair(user.uid)
-      .then(({secretKey}) => {
-        if (cancelled) return;
+    // Non-enrolling: listening for a peer's share must not be what enrolls
+    // this device. An unenrolled device simply has nothing to decrypt the
+    // share with, so it shows no pin rather than minting a key to find that out.
+    getDeviceKeypairIfEnrolled(user.uid)
+      .then(keypair => {
+        if (cancelled || !keypair) return;
+        const {secretKey} = keypair;
         unsubscribe = listenLiveLocation(chatId, otherUserId, secretKey, setPeerLiveLocation);
       })
       .catch(error => reportError(error, 'live_location_listen_failed'));

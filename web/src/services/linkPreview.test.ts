@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('./e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...a: unknown[]) => mocks.keypair(...a),
+  getDeviceKeypairIfEnrolled: (...a: unknown[]) => mocks.keypair(...a),
   fetchPeerPublicKeyChecked: (...a: unknown[]) => mocks.peerKey(...a),
 }));
 

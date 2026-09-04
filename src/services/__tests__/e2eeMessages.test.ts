@@ -3,6 +3,7 @@ const mockSealText = jest.fn();
 const mockOpenRatchetEnvelope = jest.fn();
 const mockFetchPeerPublicKeyChecked = jest.fn();
 const mockGetOrCreateDeviceKeypair = jest.fn();
+const mockGetDeviceKeypairIfEnrolled = jest.fn();
 
 jest.mock('../firebaseChat', () => ({
   sendMessage: (...args: unknown[]) => mockSendMessage(...args),
@@ -10,6 +11,7 @@ jest.mock('../firebaseChat', () => ({
 jest.mock('../e2eeKeys', () => ({
   fetchPeerPublicKeyChecked: (...args: unknown[]) => mockFetchPeerPublicKeyChecked(...args),
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
+  getDeviceKeypairIfEnrolled: (...args: unknown[]) => mockGetDeviceKeypairIfEnrolled(...args),
 }));
 // Mocked at this boundary because ratchetMessages reaches Firestore through
 // ratchetKeys; the dispatch logic under test here is which path is chosen, not
@@ -21,7 +23,12 @@ jest.mock('../ratchetMessages', () => ({
   sealText: (...args: unknown[]) => mockSealText(...args),
   openEnvelope: (...args: unknown[]) => mockOpenRatchetEnvelope(...args),
 }));
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+const mockReportError = jest.fn();
+const mockReportSealedFailure = jest.fn();
+jest.mock('../telemetry', () => ({
+  reportError: (...a: unknown[]) => mockReportError(...a),
+  reportSealedFailure: (...a: unknown[]) => mockReportSealedFailure(...a),
+}));
 
 import {encryptMessage, generateKeypair, type Keypair} from '../e2ee';
 import {isMessageEncrypted, resolveMessageText, sealedKeyCount, sendTextMessage} from '../e2eeMessages';
@@ -50,6 +57,9 @@ beforeEach(() => {
   carol = generateKeypair();
   mockSendMessage.mockReset().mockResolvedValue(undefined);
   mockGetOrCreateDeviceKeypair.mockReset().mockResolvedValue(me);
+  mockGetDeviceKeypairIfEnrolled.mockReset().mockResolvedValue(me);
+  mockReportError.mockReset();
+  mockReportSealedFailure.mockReset();
   // Default: the peer is an older client with no published bundle, so every
   // existing test keeps exercising the static path it was written for.
   mockSealText.mockReset().mockResolvedValue({protection: 'unavailable'});
@@ -127,8 +137,39 @@ describe('resolveMessageText', () => {
 
   it('returns null for a member who cannot decrypt, so the UI can say so', async () => {
     await sendTextMessage(CHAT, msg('secret'), ME, ['bob']);
-    mockGetOrCreateDeviceKeypair.mockResolvedValue(generateKeypair()); // stranger
+    mockGetDeviceKeypairIfEnrolled.mockResolvedValue(generateKeypair()); // stranger
     expect(await resolveMessageText(sent(), 'mallory', CHAT)).toBeNull();
+
+    // Reported as the diagnosed, expected condition rather than as an app
+    // error. A reader without the key is end-to-end encryption working; if
+    // this reaches reportError, every user with an un-restored second device
+    // files Crashlytics issues, and the 'corrupt' failure that does mean
+    // damage is buried among them.
+    expect(mockReportError).not.toHaveBeenCalled();
+    expect(mockReportSealedFailure).toHaveBeenCalledWith(expect.anything(), 'wrong-key');
+  });
+
+  // The read path must never be what enrolls this device. getOrCreate mints
+  // *and publishes*, so a push notification decrypting a preview on a
+  // reinstalled phone would have overwritten the account's published key in
+  // the background — before the app was opened, and long before the user
+  // could reach the restore screen.
+  it('does not enroll the device just to read', async () => {
+    await sendTextMessage(CHAT, msg('secret'), ME, ['bob']);
+    mockGetOrCreateDeviceKeypair.mockClear();
+    mockGetDeviceKeypairIfEnrolled.mockResolvedValue(bob);
+
+    expect(await resolveMessageText(sent(), 'bob', CHAT)).toBe('secret');
+    expect(mockGetOrCreateDeviceKeypair).not.toHaveBeenCalled();
+  });
+
+  it('reads nothing rather than minting a key when this device is unenrolled', async () => {
+    await sendTextMessage(CHAT, msg('secret'), ME, ['bob']);
+    mockGetOrCreateDeviceKeypair.mockClear();
+    mockGetDeviceKeypairIfEnrolled.mockResolvedValue(null);
+
+    expect(await resolveMessageText(sent(), 'bob', CHAT)).toBeNull();
+    expect(mockGetOrCreateDeviceKeypair).not.toHaveBeenCalled();
   });
 
   it('passes plaintext messages straight through', async () => {
@@ -143,7 +184,7 @@ describe('resolveMessageText', () => {
       encrypted: encryptMessage('old message', me.secretKey, bob.publicKey, CHAT),
     } as Message;
 
-    mockGetOrCreateDeviceKeypair.mockResolvedValue(bob);
+    mockGetDeviceKeypairIfEnrolled.mockResolvedValue(bob);
     expect(await resolveMessageText(legacy, 'bob', CHAT)).toBe('old message');
   });
 });

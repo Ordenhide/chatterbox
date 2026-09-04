@@ -29,7 +29,7 @@ import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
 import {assertRecipientReachable} from './recipient';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {MAX_GROUP_MEMBERS} from './e2ee';
-import {getOrCreateDeviceKeypair} from './e2eeKeys';
+import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {purgeExpiredTrash, trashMessages} from './messageTrash';
 
 const db = getFirestore();
@@ -619,8 +619,18 @@ export async function burnMessage(chatId: string, messageId: string | number, ui
   try {
     const snap = await getDoc(msgRef);
     if (snap.exists()) {
-      const {secretKey} = await getOrCreateDeviceKeypair(uid);
-      mediaUrls = resolveMessageMediaUrls(snap.data() as Record<string, unknown>, secretKey, chatId);
+      // Non-enrolling: resolving the media a burn should delete is a read.
+      // With no key the URLs stay unresolved and the bytes are orphaned —
+      // already the documented best-effort outcome here, and a far smaller
+      // loss than overwriting the account's published key.
+      const keypair = await getDeviceKeypairIfEnrolled(uid);
+      if (keypair) {
+        mediaUrls = resolveMessageMediaUrls(
+          snap.data() as Record<string, unknown>,
+          keypair.secretKey,
+          chatId,
+        );
+      }
     }
   } catch {
     // No key, an unreadable pointer, or the message already gone. The content

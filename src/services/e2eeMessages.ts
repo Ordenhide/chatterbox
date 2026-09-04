@@ -14,6 +14,7 @@ import {Message} from '../types';
 import {sendMessage} from './firebaseChat';
 import {
   decryptMessage,
+  diagnoseSealed,
   isEncryptedPayload,
   isGroupSealed,
   isSealedEnvelope,
@@ -21,13 +22,17 @@ import {
   sealForRecipients,
   type EnvelopeRecipient,
 } from './e2ee';
-import {fetchPeerPublicKeyChecked, getOrCreateDeviceKeypair} from './e2eeKeys';
+import {
+  fetchPeerPublicKeyChecked,
+  getDeviceKeypairIfEnrolled,
+  getOrCreateDeviceKeypair,
+} from './e2eeKeys';
 import {
   isRatchetEnvelope,
   openEnvelope as openRatchetEnvelope,
   sealText,
 } from './ratchetMessages';
-import {reportError} from './telemetry';
+import {reportError, reportSealedFailure} from './telemetry';
 
 /**
  * `protection` is reported so a downgrade is never silent.
@@ -150,18 +155,33 @@ export async function resolveMessageText(
     return outcome.status === 'ok' ? outcome.text : null;
   }
 
+  // The non-enrolling read. getOrCreateDeviceKeypair publishes on first
+  // call, and this function's hottest caller is the *background* push
+  // handler (services/firebase/push.ts): a notification arriving on a
+  // reinstalled device would have minted a key and overwritten the
+  // account's published one to render a preview, before the app had been
+  // opened once and long before the user could reach the restore screen.
+  // That is the damage enrollmentReadiness holds sign-in back to prevent,
+  // done in the background by the code trying to read the messages it was
+  // orphaning. A reader with no key returns null, which is the same
+  // "can't decrypt" state the caller already handles.
+  const keypair = await getDeviceKeypairIfEnrolled(myUserId).catch(error => {
+    reportError(error, 'e2ee_decrypt_key_unavailable');
+    return null;
+  });
+  if (!keypair) return null;
+
   try {
-    const {secretKey} = await getOrCreateDeviceKeypair(myUserId);
     if (isSealedEnvelope(sealed)) {
-      return openEnvelope(sealed, secretKey, myUserId, chatId);
+      return openEnvelope(sealed, keypair.secretKey, myUserId, chatId);
     }
     if (isEncryptedPayload(sealed)) {
       // Pre-group message: a single payload rather than an envelope.
-      return decryptMessage(sealed, secretKey, chatId);
+      return decryptMessage(sealed, keypair.secretKey, chatId);
     }
     return message.text ?? '';
   } catch (error) {
-    reportError(error, 'e2ee_decrypt_failed');
+    reportSealedFailure(error, diagnoseSealed(sealed, keypair.publicKey, myUserId));
     return null;
   }
 }
