@@ -33,6 +33,7 @@ import CornerBrackets from '../../components/CornerBrackets';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
+import {avatarNeutral, getInitials} from '../../utils/avatar';
 import {isDecoyMode} from '../../services/appLock';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
@@ -483,29 +484,9 @@ export default function ChatListScreen() {
     return date.toLocaleDateString([], {month: 'short', day: 'numeric'});
   };
 
-  const getInitials = (value?: string) => {
-    if (!value) return '?';
-    const parts = value.trim().split(/\s+/);
-    const first = parts[0]?.[0] || '';
-    const second = parts.length > 1 ? parts[1][0] : '';
-    return (first + second).toUpperCase();
-  };
-
-  // Monochrome. The previous palette (purple/blue/green/yellow/red/blue) put
-  // six saturated hues on a design whose whole premise is one signal colour —
-  // and it coloured them by name hash, so the hue carried no meaning to spend
-  // attention on. These are four steps of the same neutral, enough to keep
-  // adjacent rows distinguishable without competing with the accent.
-  const getAvatarColor = (seed: string) => {
-    const palette = isDark
-      ? ['#2A2A2A', '#333333', '#3C3C3C', '#454545']
-      : ['rgba(10,15,10,0.16)', 'rgba(10,15,10,0.22)', 'rgba(10,15,10,0.28)', 'rgba(10,15,10,0.34)'];
-    let hash = 0;
-    for (let i = 0; i < seed.length; i += 1) {
-      hash = (hash * 31 + seed.charCodeAt(i)) % palette.length;
-    }
-    return palette[hash] || palette[0];
-  };
+  // Both moved to utils/avatar so the chat thread can render the same avatar
+  // this list does, instead of gifted-chat's own hashed-hue one.
+  const getAvatarColor = (seed: string) => avatarNeutral(seed, isDark);
 
   if (loading) {
     return (

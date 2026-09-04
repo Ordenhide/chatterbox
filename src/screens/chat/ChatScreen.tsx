@@ -71,6 +71,7 @@ import {isAiConsentError} from '../../services/aiConsent';
 import {promptAiConsent} from '../../utils/aiConsentPrompt';
 import {safeExternalUrl} from '../../utils/safeUrl';
 import {inkOn, type StoreTheme} from '../../services/themeCatalog';
+import {avatarNeutral, getInitials} from '../../utils/avatar';
 import type {Edge} from 'react-native-safe-area-context';
 import {getCurrentPosition, watchMyPosition, LocationError} from '../../utils/geolocation';
 import {formatCoordinates, staticMapTileUrl} from '../../utils/mapTile';
@@ -451,7 +452,9 @@ export default function ChatScreen() {
   const knownMembersRef = useRef<string[] | null>(null);
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const {user} = useAuth();
-  const colors = getColors(useColorScheme());
+  const scheme = useColorScheme();
+  const colors = getColors(scheme);
+  const isDarkMode = scheme === 'dark';
   /**
    * Ink for anything filled with the chat's accent.
    *
@@ -4201,6 +4204,48 @@ export default function ChatScreen() {
     });
   }, [messages, startBurnCountdown]);
 
+  /**
+   * The peer's avatar, drawn the way ChatListScreen draws it.
+   *
+   * Left to itself, gifted-chat renders GiftedAvatar: initials on a background
+   * picked by hashing the name into its own saturated palette. That is exactly
+   * the treatment this app removed from the chat list — six hues that look
+   * like they encode something and do not — and it is where the magenta circle
+   * beside voice messages came from. It also emits no accessibility label, so
+   * a screen reader reads an unlabelled image.
+   *
+   * A photo is used when there is one. Otherwise: initials, the border in the
+   * same four-step neutral the list uses, and the person's name announced.
+   */
+  const renderAvatar = useCallback(
+    (props: any) => {
+      const author = props?.currentMessage?.user;
+      if (!author) return null;
+      const name = author.name || '';
+      if (author.avatar) {
+        return (
+          <Image
+            source={{uri: author.avatar}}
+            style={styles.threadAvatarImage}
+            accessibilityLabel={name || undefined}
+          />
+        );
+      }
+      return (
+        <View
+          accessible
+          accessibilityLabel={name || undefined}
+          style={[
+            styles.threadAvatar,
+            {borderColor: avatarNeutral(String(author._id ?? name), isDarkMode)},
+          ]}>
+          <Text style={[styles.threadAvatarText, {color: colors.text}]}>{getInitials(name)}</Text>
+        </View>
+      );
+    },
+    [colors.text, isDarkMode],
+  );
+
   const renderBubble = useCallback((props: any) => {
     const {key: _key, ...bubbleProps} = props || {};
     const current = props?.currentMessage || {};
@@ -5091,7 +5136,10 @@ export default function ChatScreen() {
         isKeyboardInternallyHandled={false}
         listViewProps={listViewProps}
         placeholder={t('chat.composerPlaceholder')}
-        showUserAvatar
+        // Deliberately not showUserAvatar: your own messages sit on your own
+        // side, so stamping your face on each one says nothing. The web
+        // client already omits it for the same reason.
+        renderAvatar={renderAvatar}
         alwaysShowSend
         textInputProps={{
           autoCorrect: !incognitoMode,
@@ -6001,6 +6049,25 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Same square-with-a-hairline as the chat list, one size down for the thread.
+  threadAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 2,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  threadAvatarText: {
+    fontSize: 11,
+    letterSpacing: 1,
+    fontWeight: '600',
+  },
+  threadAvatarImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 2,
+  },
   chatFlex: {flex: 1},
   ownSend: {
     paddingHorizontal: 14,
