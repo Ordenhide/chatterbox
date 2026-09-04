@@ -384,7 +384,8 @@
     "voiceTooLongTitle": "录音过长",
     "voiceTooLongBody": "录音过长，无法发送。请录制两分钟以内的语音。",
     "channelSealed": "端到端加密。这条消息会被封装给这个聊天里的人。",
-    "channelClear": "未加密。这条消息服务器可读 —— 这个聊天里没有可以封装的密钥。"
+    "channelClear": "未加密。这条消息服务器可读 —— 这个聊天里没有可以封装的密钥。",
+    "channelClearBar": "未加密 —— 你发送的内容服务器可以读取"
   },
   "chatSettings": {
     "notifications": "通知",

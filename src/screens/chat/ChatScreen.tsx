@@ -4626,7 +4626,12 @@ export default function ChatScreen() {
   // instant it is tapped. Recording therefore ran with the microphone live and
   // nothing on screen saying so, and the one control that stops it was behind a
   // sheet the user had no reason to reopen. Killing the app was the only exit.
-  const hasAccessory = !!replyTo || burnMode || dictating;
+  // channelSealed === false earns a bar of its own. The 11px glyph in the
+  // composer is enough for the sealed case — a quiet padlock is a convention
+  // people already read — but the unsealed case is the exception, and an
+  // exception that matters has to be in words. The author of this app looked
+  // at that glyph and asked what it was.
+  const hasAccessory = !!replyTo || burnMode || dictating || channelSealed === false;
 
   useEffect(() => {
     if (!otherUserIds.length) {
@@ -4663,6 +4668,18 @@ export default function ChatScreen() {
     }
     return (
       <View>
+        {channelSealed === false ? (
+          <View
+            style={[
+              styles.burnAccessoryBar,
+              {backgroundColor: colors.surface, borderTopColor: colors.warning},
+            ]}>
+            <Icon name="alertTriangle" size={14} color={colors.warning} style={styles.burnAccessoryIcon} />
+            <Text style={[styles.burnAccessoryText, {color: colors.warning}]}>
+              {t('chat.channelClearBar')}
+            </Text>
+          </View>
+        ) : null}
         {dictating ? (
           <View
             style={[
