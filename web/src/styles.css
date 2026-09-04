@@ -41,7 +41,6 @@
   --cb-glow-2: rgba(124, 255, 168, 0.06);
   --cb-grid-line: rgba(0, 255, 65, 0.045);
   --cb-grid-size: 44px;
-  --cb-grain-opacity: 0.04;
   --cb-scroll-thumb: rgba(0, 255, 65, 0.22);
   --cb-scroll-thumb-hover: rgba(0, 255, 65, 0.4);
 
@@ -88,7 +87,6 @@
   --cb-glow-2: rgba(47, 98, 181, 0.08);
   --cb-grid-line: rgba(15, 33, 60, 0.045);
   --cb-grid-size: 44px;
-  --cb-grain-opacity: 0.02;
   --cb-scroll-thumb: rgba(15, 33, 60, 0.2);
   --cb-scroll-thumb-hover: rgba(15, 33, 60, 0.32);
 
@@ -169,15 +167,30 @@ body::before {
   mask-image: radial-gradient(120% 120% at 30% 0%, #000 40%, transparent 100%);
 }
 
-/* ---- Fine grain overlay for a premium, non-flat surface ---- */
+/* ---- Scanline field ----
+   Replaces the fractal-noise grain that used to sit on this layer. Noise reads
+   as paper or film; this design is a display, and the horizontal rule is what
+   says so. Same layer rather than a third overlay, so the stacking order and
+   the pointer-events exemption are unchanged.
+
+   Dark only. Dark lines over a pale ground read as dirt rather than as a
+   screen, and the layer carries no meaning to lose by being absent — light
+   simply keeps the flat canvas. */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: var(--cb-grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0 1px,
+    transparent 1px 4px
+  );
+}
+
+:root[data-theme='light'] body::after {
+  background-image: none;
 }
 
 a {
@@ -1159,4 +1172,41 @@ button:focus-visible {
   .cb-particle {
     animation: none !important;
   }
+}
+
+
+/* ---- Corner brackets ----
+   Marks a region as a readout without boxing it in, so a column of panels does
+   not become a grid of competing rectangles. Ticks are short deliberately: a
+   longer one stops reading as a corner mark and starts reading as a broken
+   border.
+
+   Applied via ::before/::after on a wrapper, which means an element already
+   using both pseudo-elements needs an inner span instead — that is the cost of
+   not adding four real nodes per panel. */
+.corner-brackets {
+  position: relative;
+}
+.corner-brackets::before,
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  border-color: var(--cb-primary);
+  border-style: solid;
+  border-width: 0;
+}
+.corner-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.corner-brackets::after {
+  right: -1px;
+  bottom: -1px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
 }
