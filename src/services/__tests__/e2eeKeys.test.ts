@@ -386,11 +386,62 @@ describe('enrollmentReadiness', () => {
     expect(await enrollmentReadiness(ME)).toBe('safe');
   });
 
-  it('is safe when a pre-scoping legacy key is present, since it will be migrated instead of overwritten', async () => {
+  it('is safe when the pre-scoping legacy key is the account key, since it is migrated not overwritten', async () => {
+    // The legacy secret has to be the one behind the published key for this
+    // to test migration at all. Generating an unrelated one — as this did —
+    // also passed, but only because holding any key answered 'safe'; it was
+    // really asserting the short-circuit, and would have kept passing if
+    // migration were deleted outright.
+    const legacy = generateKeypair();
+    mockFirestoreDocs.set(publicKeyPathFor(ME), {publicKey: bytesToBase64(legacy.publicKey)});
+    mockMmkvStore.set('e2ee_secret_key_v1', bytesToHex(legacy.secretKey));
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+  });
+
+  // The state that had no answer before this: the device is enrolled, so
+  // every check said 'safe', while the account's key had moved on and nothing
+  // it received would open. Sending kept working, because that seals to the
+  // peer's key — so the app looked healthy from the composer and was silent
+  // about the one thing wrong with it.
+  it('reports superseded when the account has replaced the key this device holds', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    expect(await enrollmentReadiness(ME)).toBe('safe');
+
+    // Another device restores a different phrase and republishes over this one.
+    mockFirestoreDocs.set(publicKeyPathFor(ME), {
+      publicKey: bytesToBase64(generateKeypair().publicKey),
+    });
+
+    // Deliberately no _resetKeypairCache: the in-memory cache was the first
+    // and hardest short-circuit, answering 'safe' before any I/O at all.
+    expect(await enrollmentReadiness(ME)).toBe('superseded');
+  });
+
+  it('reports superseded from the stored key alone, with no in-memory cache', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    mockFirestoreDocs.set(publicKeyPathFor(ME), {
+      publicKey: bytesToBase64(generateKeypair().publicKey),
+    });
+    _resetKeypairCache();
+    expect(await enrollmentReadiness(ME)).toBe('superseded');
+  });
+
+  it('reports superseded for a legacy key the account has moved on from', async () => {
     mockFirestoreDocs.set(publicKeyPathFor(ME), {
       publicKey: bytesToBase64(generateKeypair().publicKey),
     });
     mockMmkvStore.set('e2ee_secret_key_v1', bytesToHex(generateKeypair().secretKey));
+    expect(await enrollmentReadiness(ME)).toBe('superseded');
+  });
+
+  // The whole point of reporting it: there is a way out, and this is it.
+  it('is safe again once the superseding phrase is restored', async () => {
+    await getOrCreateDeviceKeypair(ME);
+    const current = generateKeypair();
+    mockFirestoreDocs.set(publicKeyPathFor(ME), {publicKey: bytesToBase64(current.publicKey)});
+    expect(await enrollmentReadiness(ME)).toBe('superseded');
+
+    await restoreDeviceKeypairFromPhrase(ME, secretKeyToMnemonic(current.secretKey));
     expect(await enrollmentReadiness(ME)).toBe('safe');
   });
 

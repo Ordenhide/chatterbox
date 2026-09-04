@@ -33,17 +33,31 @@ export type RevealOffer =
    * that is how one network blip becomes a permanent overwrite. Costs nothing
    * — the phrase is still revealable once the check succeeds.
    */
-  | 'unavailable';
+  | 'unavailable'
+  /**
+   * This device's key was replaced from another device. The phrase this screen
+   * could show is the *stale* one, so showing it would hand the user a backup
+   * of the key that is currently failing to open their messages — and they
+   * would have no way to tell it apart from the one that works.
+   */
+  | 'superseded';
 
 export function revealOffer(
   readiness: EnrollmentReadiness | null,
   revealed: boolean | null,
 ): RevealOffer {
-  // Checked before readiness: a device that has already saved its phrase is
-  // enrolled by definition, and re-reading readiness would only ever agree.
-  if (revealed === null) return 'checking';
+  if (revealed === null || readiness === null) return 'checking';
+
+  // Ahead of `revealed`, which used to be checked first on the reasoning that
+  // a device which has saved its phrase is enrolled by definition, so readiness
+  // "would only ever agree". It agrees right up until another device publishes
+  // a different key, and then this is the one state where the two disagree —
+  // so the short-circuit silenced the screen exactly when it had something to
+  // say. A user arriving from the chat banner ("sealed on another device") was
+  // told they had already saved their phrase and offered nothing else.
+  if (readiness === 'superseded') return 'superseded';
+
   if (revealed) return 'already-revealed';
-  if (readiness === null) return 'checking';
   if (readiness === 'needs-restore') return 'restore-first';
   if (readiness === 'unknown') return 'unavailable';
   return 'offer';

@@ -129,6 +129,13 @@ export type EnrollmentReadiness =
   | 'safe'
   /** The account has a key published elsewhere that this device doesn't hold. */
   | 'needs-restore'
+  /**
+   * This device holds a key, but it is no longer the one the account
+   * publishes — another device replaced it. Distinct from 'needs-restore'
+   * because nothing here is missing: the device looks enrolled, sends fine,
+   * and silently fails to open anything addressed to the new key.
+   */
+  | 'superseded'
   /** Couldn't find out — treat as "don't touch anything yet". */
   | 'unknown';
 
@@ -149,17 +156,43 @@ export type EnrollmentReadiness =
  * plaintext exactly as it does before first enrollment (see e2eeMessages.ts),
  * and the next sign-in tries again. A user who explicitly sends a message
  * still gets a keypair via the normal getOrCreateDeviceKeypair path.
+ *
+ * It answers a second question the callers all need and none could ask before:
+ * whether the key this device holds is still the account's. Those are the same
+ * lookup — both are "does local agree with published" — and splitting them
+ * into two functions would have meant two round trips and two chances for the
+ * answers to disagree.
  */
 export async function enrollmentReadiness(userId: string): Promise<EnrollmentReadiness> {
-  if (cached && cached.userId === userId) return 'safe';
-  if (await readSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId)) return 'safe';
-  if (await mmkvStorage.getItem(LEGACY_SECRET_KEY_STORAGE)) return 'safe';
+  // Holding *a* key was previously enough to answer 'safe', without ever
+  // asking which key the account publishes. That made the worst state in the
+  // system unreportable: a device whose key has been replaced from elsewhere
+  // holds one, so it answered 'safe', so nothing anywhere ever told the user
+  // their key was the wrong one. It is also the state that looks most like
+  // working — sending succeeds, because that seals to the *peer's* key — while
+  // every incoming message fails to open. The comparison is the whole point of
+  // the check, so it happens before any answer.
+  const local = await getDeviceKeypairIfEnrolled(userId);
+
+  let publishedKey: Uint8Array | null;
   try {
-    return (await fetchPublishedKeyOrThrow(userId)) === null ? 'safe' : 'needs-restore';
+    publishedKey = await fetchPublishedKeyOrThrow(userId);
   } catch (error) {
     reportError(error, 'e2ee_enrollment_readiness_failed');
-    return 'unknown';
+    // An enrolled device keeps its old answer when the server is unreachable.
+    // 'unknown' exists to stop a device with no key from guessing its way into
+    // an overwrite; a device that already holds one has nothing to overwrite,
+    // and every passive trigger is a no-op for it. Returning 'unknown' here
+    // would cost it the phrase reveal and the save-your-phrase reminder for
+    // the duration of a network blip, protecting nothing.
+    return local ? 'safe' : 'unknown';
   }
+
+  // No published key: nothing can be stranded, whether or not this device
+  // holds one. Enrolling is what *creates* the published key.
+  if (!publishedKey) return 'safe';
+  if (!local) return 'needs-restore';
+  return bytesToBase64(local.publicKey) === bytesToBase64(publishedKey) ? 'safe' : 'superseded';
 }
 
 /**

@@ -181,6 +181,24 @@ export default function ChatListScreen() {
           );
           return;
         }
+        // Separate copy from 'needs-restore' because the user's situation is
+        // the opposite one: nothing here is new or missing, so "this looks
+        // like a new device" would be plainly wrong and would read as the app
+        // having lost track of them. This device was enrolled and has been
+        // replaced, and saying so is the only way the silence in the thread
+        // ("Sealed to another device", over and over) becomes explicable.
+        if (readiness === 'superseded') {
+          Alert.alert(
+            'Your encryption key changed',
+            "This device's key was replaced from another device, so messages sent to you since " +
+              "then can't be opened here. Enter that device's recovery phrase to read them.",
+            [
+              {text: 'Not now', style: 'cancel'},
+              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase')},
+            ],
+          );
+          return;
+        }
         hasRevealedRecoveryPhrase(user.uid)
           .then(revealed => {
             if (active && !revealed) setRecoveryModalVisible(true);

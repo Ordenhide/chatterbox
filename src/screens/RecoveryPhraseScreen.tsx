@@ -124,6 +124,17 @@ export default function RecoveryPhraseScreen() {
           <Text style={[styles.sectionTitle, {color: colors.text}]}>Your recovery phrase</Text>
           {offer === 'checking' ? (
             <ActivityIndicator color={colors.primary} style={styles.statusLoader} />
+          ) : offer === 'superseded' ? (
+            // No reveal button, for a different reason than 'restore-first':
+            // there *is* a phrase to show here, and showing it is the trap.
+            // It backs up the key this device still holds, which is no longer
+            // the account's — a user who saved it would be filing away the
+            // exact key that is failing to open their messages.
+            <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
+              This device's encryption key was replaced from another device, so messages sent to
+              you since then can't be opened here. Sending still works. Enter the recovery phrase
+              from that other device below to read the rest.
+            </Text>
           ) : offer === 'already-revealed' ? (
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
               You've already saved your recovery phrase on this device. For your security it
