@@ -4601,12 +4601,17 @@ export default function ChatScreen() {
         </View>
       ) : null}
       {peerDeleted ? (
-        // A fixed slate rather than a palette token: styles.offlineText is
-        // hard-coded to dark ink, so every banner background has to stay light
-        // in dark mode too, and no neutral in the palette is light in both.
-        <View style={[styles.offlineBanner, {backgroundColor: '#C7CDD6'}]}>
-          <Icon name="blocked" size={13} color="#111" />
-          <Text style={styles.offlineText}>{t('chat.recipientDeleted')}</Text>
+        // The fixed slate this used to carry existed only because
+        // styles.offlineText hard-coded dark ink, which forced every banner
+        // fill to stay light even in the dark theme. Now that each banner
+        // passes its own ink, the constraint is gone and this can be a
+        // surface: a deleted recipient is a statement of fact, not a warning,
+        // so it reads quietly rather than in amber.
+        <View style={[styles.offlineBanner, {backgroundColor: colors.surfaceStrong}]}>
+          <Icon name="blocked" size={13} color={colors.textSecondary} />
+          <Text style={[styles.offlineText, {color: colors.text}]}>
+            {t('chat.recipientDeleted')}
+          </Text>
         </View>
       ) : null}
       {peerKeyChanged && !peerDeleted ? (
@@ -5171,11 +5176,11 @@ export default function ChatScreen() {
                     <Icon name="timer" size={22} color={timeCapsuleMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: timeCapsuleMode ? '#fff' : colors.text}]}>Timer</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, invisibleInkMode && {backgroundColor: '#6366F1'}]} onPress={() => setInvisibleInkMode(prev => !prev)}>
+                  <TouchableOpacity style={[styles.attachOption, invisibleInkMode && {backgroundColor: colors.primary}]} onPress={() => setInvisibleInkMode(prev => !prev)}>
                     <Icon name="droplet" size={22} color={invisibleInkMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: invisibleInkMode ? '#fff' : colors.text}]}>Invisible</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: '#EC4899'}]} onPress={() => closeAttachSheetThen(() => setStylePickerVisible(true))}>
+                  <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: colors.primary}]} onPress={() => closeAttachSheetThen(() => setStylePickerVisible(true))}>
                     <Text style={[styles.attachOptionIcon, messageStyle !== 'none' && {color: '#fff'}]}>Aa</Text>
                     <Text style={[styles.attachOptionText, {color: messageStyle !== 'none' ? '#fff' : colors.text}]}>Style</Text>
                   </TouchableOpacity>
@@ -5185,7 +5190,7 @@ export default function ChatScreen() {
                     <Icon name="flame" size={22} color={burnMode ? colors.textOnPrimary : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: burnMode ? colors.textOnPrimary : colors.text}]}>Burn</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, viewOnceMode && {backgroundColor: '#10B981'}]} onPress={() => setViewOnceMode(prev => !prev)}>
+                  <TouchableOpacity style={[styles.attachOption, viewOnceMode && {backgroundColor: colors.primary}]} onPress={() => setViewOnceMode(prev => !prev)}>
                     <Icon name="eye" size={22} color={viewOnceMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: viewOnceMode ? '#fff' : colors.text}]}>View Once</Text>
                   </TouchableOpacity>
@@ -6444,7 +6449,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#FFD5C2',
+    backgroundColor: 'rgba(255,176,0,0.22)',
     overflow: 'hidden',
   },
   burnCountdownFill: {
@@ -6496,7 +6501,7 @@ const styles = StyleSheet.create({
   },
   burnPickerOptionActive: {
     borderColor: '#FFB000',
-    backgroundColor: '#FFF3ED',
+    backgroundColor: 'rgba(255,176,0,0.10)',
   },
   burnPickerOptionText: {
     fontSize: 16,
@@ -6913,7 +6918,7 @@ const styles = StyleSheet.create({
   invisibleInkWrap: {position: 'relative', padding: 10},
   invisibleInkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#6366F1',
+    backgroundColor: 'rgba(0,255,65,0.22)',
     borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
