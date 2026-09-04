@@ -19,7 +19,7 @@ import {
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import {db} from '../firebase';
-import {onListenerError} from './listenerErrors';
+import {isUnsyncedEmpty, onListenerError} from './listenerErrors';
 import {deleteQueryInChunks} from './firestoreBatch';
 import {MAX_GROUP_MEMBERS} from './e2ee';
 import {assertRecipientReachable} from './recipient';
@@ -69,7 +69,12 @@ export function listenChatsForUser(userId: string, cb: (chats: ChatRoom[]) => vo
   );
   return onSnapshot(
     q,
-    snap => cb(snap.docs.map(d => ({id: d.id, ...(d.data() as Omit<ChatRoom, 'id'>)}))),
+    snap => {
+      // Empty *and* from Firestore's own unsynced cache is "not yet", not
+      // "no chats" — delivering it empties the list until the server answers.
+      if (isUnsyncedEmpty(snap)) return;
+      cb(snap.docs.map(d => ({id: d.id, ...(d.data() as Omit<ChatRoom, 'id'>)})));
+    },
     err => onListenerError(err, 'listenChatsForUser', () => cb([])),
   );
 }
@@ -177,6 +182,9 @@ export function listenMessages(
   return onSnapshot(
     q,
     snap => {
+      // Empty *and* from Firestore's own unsynced cache is "not yet", not "no
+      // messages" — that is what opens a thread blank and leaves it there.
+      if (isUnsyncedEmpty(snap)) return;
       // `estimate` gives just-sent messages (pending serverTimestamp) a local
       // timestamp so they order correctly and show a time instead of being blank.
       const messages = snap.docs.map(d => ({

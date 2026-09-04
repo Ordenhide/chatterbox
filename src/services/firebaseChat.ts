@@ -25,6 +25,7 @@ import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
 import {
   isPermissionDenied,
+  isUnsyncedEmpty,
   logError,
   logListenerError,
   onListenerError,
@@ -264,8 +265,9 @@ export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[])
     query(chatsRef(), where('participants', 'array-contains', userId), orderBy('updatedAt', 'desc')),
     snapshot => {
       // No snapshot object at all is "no result", not "no chats" — same
-      // distinction onListenerError draws below.
-      if (!snapshot) return;
+      // distinction onListenerError draws below, and isUnsyncedEmpty draws
+      // for an empty first snapshot Firestore served from its own cache.
+      if (!snapshot || isUnsyncedEmpty(snapshot)) return;
       const chats = snapshot.docs.map(docSnap => ({
         id: docSnap.id,
         ...docSnap.data(),
@@ -288,8 +290,10 @@ export function listenMessages(chatId: string, callback: (messages: Message[]) =
   return onSnapshot(
     query(messagesRef, orderBy('createdAt', 'desc'), limit(50)),
     snapshot => {
-      // No snapshot object at all is "no result", not "no messages".
-      if (!snapshot) return;
+      // No snapshot object at all is "no result", not "no messages" — nor is
+      // an empty first snapshot Firestore served from its own unsynced cache,
+      // which is what opened a thread blank and left it there.
+      if (!snapshot || isUnsyncedEmpty(snapshot)) return;
       const messages = snapshot.docs.map(docSnap => ({
         _id: docSnap.id,
         ...docSnap.data(),

@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {isPermissionDenied, onListenerError} from './listenerErrors';
+import {isPermissionDenied, isUnsyncedEmpty, onListenerError} from './listenerErrors';
 
 describe('onListenerError', () => {
   beforeEach(() => {
@@ -51,5 +51,27 @@ describe('isPermissionDenied', () => {
     expect(isPermissionDenied(new Error('boom'))).toBe(false);
     expect(isPermissionDenied(null)).toBe(false);
     expect(isPermissionDenied(undefined)).toBe(false);
+  });
+});
+
+describe('isUnsyncedEmpty', () => {
+  it('is true for an empty snapshot Firestore served from its own cache', () => {
+    expect(isUnsyncedEmpty({docs: [], metadata: {fromCache: true}})).toBe(true);
+  });
+
+  it('is false for an empty snapshot from the server — that really is empty', () => {
+    expect(isUnsyncedEmpty({docs: [], metadata: {fromCache: false}})).toBe(false);
+  });
+
+  it('is false whenever there are documents', () => {
+    expect(isUnsyncedEmpty({docs: [{}], metadata: {fromCache: true}})).toBe(false);
+  });
+
+  // Dropping a snapshot is what leaves a screen empty, so it takes a positive
+  // signal rather than an absent one.
+  it('is false when metadata is missing, and for nothing at all', () => {
+    expect(isUnsyncedEmpty({docs: []})).toBe(false);
+    expect(isUnsyncedEmpty(null)).toBe(false);
+    expect(isUnsyncedEmpty(undefined)).toBe(false);
   });
 });

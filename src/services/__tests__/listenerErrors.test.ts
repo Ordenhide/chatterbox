@@ -1,7 +1,7 @@
 const mockReportError = jest.fn();
 jest.mock('../telemetry', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
 
-import {isPermissionDenied, onListenerError} from '../listenerErrors';
+import {isPermissionDenied, isUnsyncedEmpty, onListenerError} from '../listenerErrors';
 
 /**
  * The bug this encodes: every listener answered a *failure* by handing its
@@ -91,5 +91,42 @@ describe('isPermissionDenied', () => {
     expect(isPermissionDenied(new Error('boom'))).toBe(false);
     expect(isPermissionDenied(null)).toBe(false);
     expect(isPermissionDenied(undefined)).toBe(false);
+  });
+});
+
+/**
+ * The other half of "nothing" vs "not yet".
+ *
+ * Firestore answers a new subscription from its own local cache first and the
+ * server a round trip later. When the cache has nothing for that query, the
+ * first snapshot is empty with `fromCache` set — and delivering it replaced
+ * whatever was on screen with nothing until the server answered. It also raced
+ * ChatScreen's own seeding from local storage, which is what made a blank
+ * thread intermittent rather than reliable.
+ */
+describe('isUnsyncedEmpty', () => {
+  it('is true for an empty snapshot Firestore served from its own cache', () => {
+    expect(isUnsyncedEmpty({docs: [], metadata: {fromCache: true}})).toBe(true);
+  });
+
+  it('is false for an empty snapshot from the server — that chat really is empty', () => {
+    expect(isUnsyncedEmpty({docs: [], metadata: {fromCache: false}})).toBe(false);
+  });
+
+  it('is false whenever there are documents, cached or not', () => {
+    expect(isUnsyncedEmpty({docs: [{}], metadata: {fromCache: true}})).toBe(false);
+    expect(isUnsyncedEmpty({docs: [{}], metadata: {fromCache: false}})).toBe(false);
+  });
+
+  // Deliver rather than swallow when the shape is unfamiliar: dropping a
+  // snapshot is what leaves a screen empty, so it must take a positive signal.
+  it('is false when metadata is missing entirely', () => {
+    expect(isUnsyncedEmpty({docs: []})).toBe(false);
+    expect(isUnsyncedEmpty({docs: [], metadata: {}})).toBe(false);
+  });
+
+  it('is false for nothing at all, which the caller handles separately', () => {
+    expect(isUnsyncedEmpty(null)).toBe(false);
+    expect(isUnsyncedEmpty(undefined)).toBe(false);
   });
 });

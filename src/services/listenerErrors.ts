@@ -1,6 +1,10 @@
 /**
- * How this app reacts to a Firestore listener failing, kept apart from the
+ * How this app reads a Firestore listener's results, kept apart from the
  * queries themselves so the policy can be read — and tested — on its own.
+ *
+ * Both rules here answer the same question, which onSnapshot asks in two
+ * different ways: is this "there is nothing" or "I do not know yet"? Reporting
+ * the second as the first is what empties a screen that had content on it.
  */
 import {reportError} from './telemetry';
 
@@ -66,3 +70,31 @@ export const onListenerError = (error: unknown, context: string, clear: () => vo
   if (isPermissionDenied(error)) clear();
 };
 
+
+/**
+ * True when a snapshot is empty only because Firestore has not synced yet.
+ *
+ * On subscribe, Firestore serves an immediate snapshot from its own local
+ * cache and follows it with the server's. If the cache has nothing for that
+ * query — a chat opened for the first time on this device, or a cache the OS
+ * has since evicted — the first snapshot arrives empty with `fromCache` set,
+ * and the real one lands a round trip later.
+ *
+ * Delivering that empty snapshot means the caller replaces whatever was on
+ * screen with nothing, and holds there until the server answers: a thread that
+ * opens blank and fills in seconds later, or never on a bad connection. Worse,
+ * it races the caller's own seeding from local storage — seed first and the
+ * snapshot wipes it, snapshot first and the seed survives, which is exactly
+ * the shape of a bug that happens "sometimes".
+ *
+ * A genuinely empty collection still arrives from the server with `fromCache`
+ * false and is delivered normally. The one case this defers is an empty
+ * *offline* collection, which renders the same empty screen either way.
+ */
+export function isUnsyncedEmpty(snapshot: {
+  docs?: unknown[];
+  metadata?: {fromCache?: boolean};
+} | null | undefined): boolean {
+  if (!snapshot) return false;
+  return (snapshot.docs?.length ?? 0) === 0 && snapshot.metadata?.fromCache === true;
+}
