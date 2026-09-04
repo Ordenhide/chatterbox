@@ -1,0 +1,113 @@
+#!/bin/bash
+# Chatterbox emulator helper.
+#
+# The release APK is the only build worth measuring speed on: a debug APK ships
+# no JS bundle at all (it streams ~12MB from Metro on every cold start) and ART
+# refuses to AOT-compile it, so `cmd package compile -m speed` settles at
+# `verify`. Testing performance on a debug build measures Metro, not the app.
+set -euo pipefail
+
+export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+ADB="$ANDROID_HOME/platform-tools/adb"
+EMULATOR="$ANDROID_HOME/emulator/emulator"
+PKG=com.chatterbox.app
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+RELEASE_APK="$ROOT/android/app/build/outputs/apk/release/app-release.apk"
+
+# The installed app's signing cert. An install whose cert differs is rejected,
+# and the only way through is an uninstall — which destroys the device-only
+# E2EE private key and costs a 24-word recovery. So this is checked, not assumed.
+EXPECTED_CERT=fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c
+
+cert_of() {
+  local signer
+  signer=$(ls "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1)
+  "$signer" verify --print-certs "$1" 2>/dev/null \
+    | grep -m1 'certificate SHA-256 digest' | awk '{print $NF}'
+}
+
+case "${1:-help}" in
+  start)
+    if pgrep -f qemu-system >/dev/null; then
+      echo "emulator already running"
+    else
+      # DNS is frozen at boot and never re-read, so an emulator started before a
+      # network change keeps querying servers it can no longer reach. Passing it
+      # explicitly is the only fix; it cannot be changed on a running instance.
+      "$EMULATOR" -avd "${2:-Resizable_Experimental}" -dns-server 8.8.8.8,8.8.4.4 \
+        >/dev/null 2>&1 &
+      echo "starting ${2:-Resizable_Experimental}..."
+    fi
+    "$ADB" wait-for-device
+    "$ADB" devices
+    ;;
+
+  install)
+    [ -f "$RELEASE_APK" ] || { echo "no release APK — run: scripts/emu build"; exit 1; }
+    got=$(cert_of "$RELEASE_APK")
+    if [ "$got" != "$EXPECTED_CERT" ]; then
+      echo "REFUSING TO INSTALL — signing cert does not match the installed app."
+      echo "  expected $EXPECTED_CERT"
+      echo "  got      $got"
+      echo "Installing would require an uninstall, destroying the E2EE device key."
+      exit 1
+    fi
+    "$ADB" install -r "$RELEASE_APK"
+    # Only possible on a non-debuggable APK; on a debug build this silently
+    # settles at `verify` and the app stays interpreted.
+    "$ADB" shell cmd package compile -m speed -f "$PKG"
+    "$ADB" shell dumpsys package "$PKG" | grep -E 'status=|pkgFlags=' | head -3
+    ;;
+
+  build)
+    ( cd "$ROOT/android" && ./gradlew assembleRelease )
+    ;;
+
+  run)
+    "$ADB" shell am force-stop "$PKG"
+    "$ADB" shell am start -n "$PKG/.MainActivity"
+    ;;
+
+  shot)
+    out="${2:-/tmp/chatterbox-shot.png}"
+    # exec-out prepends a multiple-displays warning to stdout, corrupting the PNG.
+    "$ADB" shell screencap -p /sdcard/_shot.png
+    "$ADB" pull /sdcard/_shot.png "$out" >/dev/null
+    "$ADB" shell rm /sdcard/_shot.png
+    echo "$out"
+    ;;
+
+  check)
+    # Every grep here is guarded. Under `set -euo pipefail` an unmatched grep
+    # aborts the script, and the one state this most needs to report clearly —
+    # the app not being installed at all — is exactly the state that matches
+    # nothing. It used to exit silently on the one question it exists to answer.
+    if ! "$ADB" shell pm list packages 2>/dev/null | grep -q "^package:$PKG$"; then
+      echo "NOT INSTALLED on $("$ADB" emu avd name 2>/dev/null | head -1)"
+      echo "  run: scripts/emu install"
+      exit 0
+    fi
+    dump=$("$ADB" shell dumpsys package "$PKG" 2>/dev/null || true)
+    echo "=== what is actually installed ==="
+    echo "avd:            $("$ADB" emu avd name 2>/dev/null | head -1)"
+    echo "$dump" | grep -E 'versionName|pkgFlags=|lastUpdateTime' | head -4 || true
+    echo "$dump" | grep -E 'status=' | head -2 || true
+    path=$("$ADB" shell pm path "$PKG" 2>/dev/null | sed 's/package://' | tr -d '\r' | head -1)
+    [ -n "$path" ] && echo "installed size: $("$ADB" shell "ls -l $path" | awk '{print $5}')"
+    [ -f "$RELEASE_APK" ] && echo "release APK:    $(stat -f %z "$RELEASE_APK")"
+    echo
+    if echo "$dump" | grep -q DEBUGGABLE; then
+      echo "!! DEBUGGABLE — this is a debug build streaming JS from Metro."
+      echo "   Performance measured here is meaningless. Run: scripts/emu install"
+    elif ! echo "$dump" | grep -q 'status=speed'; then
+      echo "!  Release build, but not AOT-compiled (\`status=speed\` missing)."
+      echo "   Something reinstalled it. Run: scripts/emu install"
+    else
+      echo "OK: non-debuggable release build, AOT-compiled."
+    fi
+    ;;
+
+  *)
+    echo "usage: scripts/emu {start [avd]|build|install|run|shot [path]|check}"
+    ;;
+esac
