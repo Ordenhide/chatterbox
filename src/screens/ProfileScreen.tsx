@@ -49,7 +49,7 @@ import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGu
 import {shareTextFile} from '../utils/shareFile';
 import {checkPasswordStrength} from '../services/passwordPolicy';
 import {guardDocSnapshot} from '../services/snapshotGuard';
-import {bodyWeight} from '../theme/typography';
+import {bodyWeight, fonts} from '../theme/typography';
 
 export default function ProfileScreen() {
   const {user, signOut} = useAuth();
@@ -1335,10 +1335,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   name: {
-    fontSize: 26,
-    fontFamily: bodyWeight('700'),
+    fontSize: 20,
+    fontFamily: fonts.display.bold,
     marginBottom: 4,
-    letterSpacing: -0.3,
+    letterSpacing: 0.3,
   },
   email: {
     fontSize: 15,
@@ -1433,7 +1433,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: bodyWeight('700'),
     marginBottom: 14,
-    letterSpacing: -0.3,
+    letterSpacing: 0.3,
   },
   modalInput: {
     flex: 1,

@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: bodyWeight('800'),
     marginBottom: 6,
-    letterSpacing: -0.3,
+    letterSpacing: 0.3,
   },
   headingSub: {
     fontSize: 15,

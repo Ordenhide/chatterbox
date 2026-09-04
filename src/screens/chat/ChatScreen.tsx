@@ -6188,7 +6188,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: bodyWeight('700'),
     marginBottom: 14,
-    letterSpacing: -0.3,
+    letterSpacing: 0.3,
   },
   modalInput: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -6240,7 +6240,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: bodyWeight('700'),
     marginBottom: 12,
-    letterSpacing: -0.2,
+    letterSpacing: 0.2,
   },
   actionSheetItem: {
     paddingVertical: 14,
@@ -6259,7 +6259,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: bodyWeight('700'),
     marginBottom: 8,
-    letterSpacing: -0.2,
+    letterSpacing: 0.2,
   },
   recordTimer: {
     fontSize: 15,

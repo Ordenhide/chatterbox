@@ -33,7 +33,7 @@ import {useAuth} from '../contexts/AuthContext';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
 import {applyStoreTheme, listenStoreTheme} from '../services/storeTheme';
-import {bodyWeight} from '../theme/typography';
+import {bodyWeight, fonts} from '../theme/typography';
 
 export default function StoreScreen() {
   const colors = getColors(useColorScheme());
@@ -140,7 +140,7 @@ export default function StoreScreen() {
 
 const styles = StyleSheet.create({
   content: {padding: 20, paddingBottom: 48},
-  pageTitle: {fontSize: 26, fontFamily: bodyWeight('800'), marginBottom: 4},
+  pageTitle: {fontSize: 19, fontFamily: fonts.display.bold, letterSpacing: 2.5, marginBottom: 4},
   pageDesc: {fontSize: 14, marginBottom: 20},
   card: {borderRadius: 2, borderWidth: 1, padding: 18, marginBottom: 26},
   cardTitle: {fontSize: 16, fontFamily: bodyWeight('700'), marginBottom: 6},

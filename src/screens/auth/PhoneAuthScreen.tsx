@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     fontFamily: bodyWeight('800'),
     textAlign: 'center',
     marginBottom: 8,
-    letterSpacing: -0.5,
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 16,

@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Text, useColorScheme, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getColors} from '../theme/colors';
 import GlassScreen from '../components/GlassScreen';
-import {bodyWeight} from '../theme/typography';
+import {bodyWeight, fonts} from '../theme/typography';
 
 const LAST_UPDATED = '2026-04-30';
 const CONTACT_EMAIL = 'privacy@chatterbox.app';
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   safe: {flex: 1},
   scroll: {flex: 1},
   content: {padding: 20, paddingBottom: 40},
-  title: {fontSize: 24, fontFamily: bodyWeight('700'), marginBottom: 4},
+  title: {fontSize: 18, fontFamily: fonts.display.bold, letterSpacing: 2.5, marginBottom: 4},
   meta: {fontSize: 13, marginBottom: 24},
   section: {marginBottom: 24},
   sectionTitle: {fontSize: 16, fontFamily: bodyWeight('700'), marginBottom: 8},
