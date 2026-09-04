@@ -484,7 +484,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: 110,
     borderRadius: 999,
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontSize: 46,
     fontWeight: 700,
     display: 'flex',

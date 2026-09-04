@@ -417,7 +417,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   badge: {
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontSize: 11.5,
     fontWeight: 700,
     minWidth: 20,

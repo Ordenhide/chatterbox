@@ -110,7 +110,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 999,
     border: 'none',
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontWeight: 700,
     fontSize: 13,
   },

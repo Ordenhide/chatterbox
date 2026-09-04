@@ -265,7 +265,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     color: colors.text,
   },
-  addBtn: {padding: '0 18px', borderRadius: 2, border: 'none', background: colors.primary, color: '#fff', fontWeight: 700},
+  addBtn: {padding: '0 18px', borderRadius: 2, border: 'none', background: colors.primary, color: colors.textOnPrimary, fontWeight: 700},
   msg: {fontSize: 13, color: colors.primary, marginTop: 6},
   tabs: {display: 'flex', gap: 4, borderBottom: `1px solid ${colors.border}`, margin: '14px 0 4px'},
   tab: {
@@ -292,7 +292,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   rowName: {flex: 1, fontWeight: 600, color: colors.text, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'},
   empty: {textAlign: 'center', color: colors.textSecondary, padding: 24, fontSize: 14},
-  primary: {...btn, background: colors.primary, color: '#fff', border: 'none'},
+  primary: {...btn, background: colors.primary, color: colors.textOnPrimary, border: 'none'},
   ghost: {...btn, color: colors.text},
   danger: {...btn, color: colors.danger, borderColor: colors.danger},
   pending: {fontSize: 12, fontWeight: 600, color: colors.textSecondary, padding: '0 4px'},

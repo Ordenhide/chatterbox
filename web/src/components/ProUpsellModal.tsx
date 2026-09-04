@@ -70,7 +70,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '2px 9px',
     borderRadius: 999,
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: '0.4px',

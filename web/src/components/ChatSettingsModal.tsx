@@ -356,7 +356,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     cursor: 'pointer',
   },
-  chipActive: {background: colors.primary, borderColor: colors.primary, color: '#fff'},
+  chipActive: {background: colors.primary, borderColor: colors.primary, color: colors.textOnPrimary},
   deleteBtn: {
     display: 'flex',
     alignItems: 'center',

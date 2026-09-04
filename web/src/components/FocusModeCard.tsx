@@ -154,7 +154,7 @@ const styles: Record<string, React.CSSProperties> = {
   label: {fontSize: 12.5, color: colors.textSecondary, marginBottom: 8},
   chips: {display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap'},
   chip: {flex: 1, minWidth: 72, padding: '9px 0', borderRadius: 2, fontSize: 13.5},
-  chipOn: {background: colors.primary, color: '#fff'},
+  chipOn: {background: colors.primary, color: colors.textOnPrimary},
   chipOff: {background: 'transparent', color: colors.text, border: `1px solid ${colors.border}`},
   input: {
     width: '100%',

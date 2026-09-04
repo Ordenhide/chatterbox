@@ -367,7 +367,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '0 5px',
     borderRadius: 999,
     background: colors.danger,
-    color: '#fff',
+    color: colors.textOnDanger,
     fontSize: 11,
     fontWeight: 700,
     display: 'flex',
@@ -412,7 +412,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 12,
     fontWeight: 600,
   },
-  expiryChipOn: {background: colors.primary, color: '#fff', borderColor: colors.primary},
+  expiryChipOn: {background: colors.primary, color: colors.textOnPrimary, borderColor: colors.primary},
   expiryBadge: {
     display: 'inline-flex',
     alignItems: 'center',

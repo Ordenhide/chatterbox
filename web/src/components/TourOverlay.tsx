@@ -200,7 +200,7 @@ const styles: Record<string, React.CSSProperties> = {
   next: {
     border: 'none',
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontSize: 13,
     fontWeight: 700,
     cursor: 'pointer',

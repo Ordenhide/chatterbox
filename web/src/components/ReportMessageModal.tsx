@@ -216,7 +216,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 2,
     border: 'none',
     background: colors.danger,
-    color: '#fff',
+    color: colors.textOnDanger,
     fontSize: 14,
     fontWeight: 600,
   },

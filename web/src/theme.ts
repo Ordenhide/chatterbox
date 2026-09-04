@@ -28,6 +28,8 @@ export const colors = {
 
   success: 'var(--cb-success)',
   danger: 'var(--cb-danger)',
+  // The dark theme's red is bright: black on it is 6.42:1, white 3.27:1.
+  textOnDanger: 'var(--cb-text-on-danger)',
 
   shadow: 'var(--cb-shadow)',
   shadowSoft: 'var(--cb-shadow-soft)',

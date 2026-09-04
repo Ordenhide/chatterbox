@@ -236,7 +236,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   tabs: {display: 'flex', gap: 8},
   tab: {flex: 1, padding: '9px 0', borderRadius: 2, fontSize: 14},
-  tabOn: {background: colors.primary, color: '#fff'},
+  tabOn: {background: colors.primary, color: colors.textOnPrimary},
   tabOff: {background: 'transparent', color: colors.textSecondary, border: `1px solid ${colors.border}`},
   // Danger-bordered on purpose: losing these words is irreversible data loss,
   // which is the same severity class as the delete-account dialog.

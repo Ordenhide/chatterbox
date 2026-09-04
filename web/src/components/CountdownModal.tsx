@@ -253,7 +253,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 2,
     border: 'none',
     background: colors.primary,
-    color: '#fff',
+    color: colors.textOnPrimary,
     fontWeight: 700,
     fontSize: 14,
     cursor: 'pointer',
@@ -294,7 +294,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     cursor: 'pointer',
   },
-  rsvpActive: {background: colors.primary, borderColor: colors.primary, color: '#fff'},
+  rsvpActive: {background: colors.primary, borderColor: colors.primary, color: colors.textOnPrimary},
   tasks: {display: 'flex', flexDirection: 'column', gap: 6},
   task: {display: 'flex', alignItems: 'center', gap: 8, border: 'none', background: 'transparent', cursor: 'pointer', padding: 0, textAlign: 'left'},
   checkbox: {

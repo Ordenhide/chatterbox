@@ -65,7 +65,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: 30,
     borderRadius: 999,
     border: 'none',
-    color: '#fff',
+    color: colors.textOnPrimary,
     background: colors.primary,
     display: 'flex',
     alignItems: 'center',

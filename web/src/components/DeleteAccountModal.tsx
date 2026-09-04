@@ -190,7 +190,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 2,
     border: 'none',
     background: colors.danger,
-    color: '#fff',
+    color: colors.textOnDanger,
     fontWeight: 700,
     fontSize: 15,
     cursor: 'pointer',
