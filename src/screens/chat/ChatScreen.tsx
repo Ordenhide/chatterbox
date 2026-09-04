@@ -4108,16 +4108,17 @@ export default function ChatScreen() {
               />
               {isBurnCountingDown && countdown != null ? (
                 <View style={styles.burnCountdownBar}>
-                  <Icon name="flame" size={10} color="#FF6B35" style={styles.burnCountdownIcon} />
+                  <Icon name="flame" size={10} color={colors.warning} style={styles.burnCountdownIcon} />
                   <View style={styles.burnCountdownTrack}>
                     <View
                       style={[
                         styles.burnCountdownFill,
+                        {backgroundColor: colors.warning},
                         {width: `${Math.max(0, (countdown / burn.duration) * 100)}%`},
                       ]}
                     />
                   </View>
-                  <Text style={styles.burnCountdownText}>{countdown}s</Text>
+                  <Text style={[styles.burnCountdownText, {color: colors.warning}]}>{countdown}s</Text>
                 </View>
               ) : null}
             </View>
@@ -4170,9 +4171,9 @@ export default function ChatScreen() {
             </View>
           ) : null}
           {current.timeCapsule && Date.now() < current.timeCapsule.unlocksAt ? (
-            <View style={[styles.capsuleOverlay, {backgroundColor: colors.surface, borderColor: '#8B5CF6'}]}>
-              <Icon name="timer" size={36} color="#8B5CF6" style={styles.capsuleIcon} />
-              <Text style={[styles.capsuleTitle, {color: '#8B5CF6'}]}>Time Capsule</Text>
+            <View style={[styles.capsuleOverlay, {backgroundColor: colors.surface, borderColor: colors.secondary}]}>
+              <Icon name="timer" size={36} color={colors.secondary} style={styles.capsuleIcon} />
+              <Text style={[styles.capsuleTitle, {color: colors.secondary}]}>Time Capsule</Text>
               <Text style={[styles.capsuleSub, {color: colors.textSecondary}]}>
                 Opens {new Date(current.timeCapsule.unlocksAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
               </Text>
@@ -4441,7 +4442,7 @@ export default function ChatScreen() {
               {`Recording ${Math.floor(dictationSeconds / 60)}:${String(dictationSeconds % 60).padStart(2, '0')}`}
             </Text>
             <TouchableOpacity
-              style={[styles.burnDurationButton, {marginLeft: 'auto'}]}
+              style={[styles.burnDurationButton, {marginLeft: 'auto', backgroundColor: colors.warning}]}
               onPress={stopDictation}>
               <Text style={[styles.burnDurationButtonText, {color: colors.danger}]}>Stop</Text>
             </TouchableOpacity>
@@ -4450,7 +4451,7 @@ export default function ChatScreen() {
         {burnMode ? (
           <View style={[styles.burnAccessoryBar, {backgroundColor: colors.surface, borderTopColor: colors.warning}]}>
             <Icon name="flame" size={14} color={colors.warning} style={styles.burnAccessoryIcon} />
-            <Text style={styles.burnAccessoryText}>
+            <Text style={[styles.burnAccessoryText, {color: colors.warning}]}>
               Burn after reading ({formatBurnDuration(burnDuration)})
             </Text>
             <TouchableOpacity
@@ -4575,9 +4576,17 @@ export default function ChatScreen() {
         </View>
       ) : null}
       {incognitoMode ? (
-        <View style={[styles.offlineBanner, {backgroundColor: '#1A1A2E'}]}>
-          <Icon name="blocked" size={13} color="#111" />
-          <Text style={styles.offlineText}>Incognito — no previews, no cache, no read receipts</Text>
+        // Every other banner here is amber with dark ink. This one overrode
+        // the background to a near-black navy and kept styles.offlineText's
+        // hardcoded #111, which is 1.11:1 — the text was, in practice, not
+        // rendered at all. Incognito is a mode rather than a warning, so it
+        // keeps a dark ground and gets ink that can be seen on it instead of
+        // being recoloured amber like the warnings.
+        <View style={[styles.offlineBanner, {backgroundColor: colors.surfaceStrong}]}>
+          <Icon name="blocked" size={13} color={colors.textSecondary} />
+          <Text style={[styles.offlineText, {color: colors.text}]}>
+            Incognito — no previews, no cache, no read receipts
+          </Text>
         </View>
       ) : null}
       {isScreenshotProtectionEnabled() ? (
@@ -5158,7 +5167,7 @@ export default function ChatScreen() {
                 <View style={styles.attachSectionRow}>
                   {SHOW_NATIVE_ONLY_FEATURES && (
                     <>
-                  <TouchableOpacity style={[styles.attachOption, timeCapsuleMode && {backgroundColor: '#8B5CF6'}]} onPress={() => { setTimeCapsuleMode(prev => !prev); }} onLongPress={() => setCapsulePickerVisible(true)}>
+                  <TouchableOpacity style={[styles.attachOption, timeCapsuleMode && {backgroundColor: colors.secondary}]} onPress={() => { setTimeCapsuleMode(prev => !prev); }} onLongPress={() => setCapsulePickerVisible(true)}>
                     <Icon name="timer" size={22} color={timeCapsuleMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: timeCapsuleMode ? '#fff' : colors.text}]}>Timer</Text>
                   </TouchableOpacity>
@@ -5458,7 +5467,7 @@ export default function ChatScreen() {
                   }}>
                   <Text style={[
                     styles.actionSheetText,
-                    {color: capsuleHours === opt.hours ? '#8B5CF6' : colors.text},
+                    {color: capsuleHours === opt.hours ? colors.secondary : colors.text},
                     capsuleHours === opt.hours && {fontFamily: bodyWeight('700')},
                   ]}>
                     {opt.label} {capsuleHours === opt.hours ? '  \u2713' : ''}
@@ -5518,6 +5527,7 @@ export default function ChatScreen() {
                   style={[
                     styles.burnPickerOption,
                     burnDuration === d && styles.burnPickerOptionActive,
+                    burnDuration === d && {borderColor: colors.warning},
                     {borderColor: colors.border},
                   ]}
                   onPress={() => {
@@ -5532,7 +5542,7 @@ export default function ChatScreen() {
                     {formatBurnDuration(d)}
                   </Text>
                   {burnDuration === d ? (
-                    <Icon name="check" size={16} color="#FF6B35" />
+                    <Icon name="check" size={16} color={colors.warning} />
                   ) : null}
                 </TouchableOpacity>
               ))}
@@ -6280,7 +6290,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   recordCancelText: {
-    color: '#007AFF',
+    // No colour here: the call site already supplies colors.primary, so the
+    // #007AFF that used to sit in this slot was dead and had been since the
+    // override was added.
     fontFamily: bodyWeight('600'),
   },
   videoBubble: {
@@ -6360,10 +6372,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 12,
     fontFamily: bodyWeight('600'),
-    color: '#FF6B35',
+    // Overridden at the call site with colors.warning; this is the fallback.
+    color: '#FFB000',
   },
   burnDurationButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FFB000',
     borderRadius: 2,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -6435,13 +6448,14 @@ const styles = StyleSheet.create({
   },
   burnCountdownFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FFB000',
     borderRadius: 2,
   },
   burnCountdownText: {
     fontSize: 10,
     fontFamily: bodyWeight('700'),
-    color: '#FF6B35',
+    // Overridden at the call site with colors.warning; this is the fallback.
+    color: '#FFB000',
     marginLeft: 4,
     minWidth: 28,
     textAlign: 'right',
@@ -6480,7 +6494,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   burnPickerOptionActive: {
-    borderColor: '#FF6B35',
+    borderColor: '#FFB000',
     backgroundColor: '#FFF3ED',
   },
   burnPickerOptionText: {
@@ -6490,7 +6504,8 @@ const styles = StyleSheet.create({
   burnPickerCheck: {
     fontSize: 16,
     fontFamily: bodyWeight('700'),
-    color: '#FF6B35',
+    // Overridden at the call site with colors.warning; this is the fallback.
+    color: '#FFB000',
   },
   burnPickerCancel: {
     marginTop: 8,
