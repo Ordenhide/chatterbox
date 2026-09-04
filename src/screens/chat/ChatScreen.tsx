@@ -2348,7 +2348,11 @@ export default function ChatScreen() {
     setListTitle('');
     setListItems(['']);
     setListModalVisible(false);
-  }, [chatId, user, listTitle, listItems]);
+    // artifactCrypto belongs here. It starts inert and is replaced a round
+    // trip later, so a callback that omits it keeps sealing with the inert
+    // one — and the inert sealer returns null, which sealedField writes as
+    // plaintext. Omitting it does not fail; it silently stops encrypting.
+  }, [chatId, user, listTitle, listItems, artifactCrypto]);
 
   const handleToggleListItem = useCallback(
     async (listId: string, items: SharedListItem[], itemId: string) => {
@@ -2358,7 +2362,11 @@ export default function ChatScreen() {
       );
       await updateSharedListItem(chatId, listId, updated, artifactCrypto);
     },
-    [chatId, user],
+    // Neither chatId nor user changes while the screen is open, so without
+    // artifactCrypto this callback was built once with the inert sealer and
+    // never rebuilt — every checkbox toggle rewrote the whole list as
+    // plaintext, over the encrypted copy that was already there.
+    [chatId, user, artifactCrypto],
   );
 
   const handleSetReminder = useCallback(

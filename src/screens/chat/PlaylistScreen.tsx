@@ -71,7 +71,9 @@ export default function PlaylistScreen() {
     } catch {
       Alert.alert('Error', 'Failed to add track.');
     }
-  }, [chatId, user, trackTitle, artist, url]);
+    // Same as CountdownScreen: without crypto here a track added after the
+    // sealer resolved is still stored server-readable.
+  }, [chatId, user, trackTitle, artist, url, crypto]);
 
   const handleVote = useCallback(
     async (trackId: string) => {

@@ -119,7 +119,10 @@ export default function CountdownScreen() {
     } catch {
       Alert.alert('Error', 'Failed to create countdown.');
     }
-  }, [chatId, user, title, emoji, dateStr, timeStr]);
+    // crypto starts inert and resolves a round trip later; leaving it out
+    // means a countdown created after it resolved is still written in the
+    // clear, because the inert sealer returns null.
+  }, [chatId, user, title, emoji, dateStr, timeStr, crypto]);
 
   const handleDelete = useCallback(
     (item: SharedCountdown) => {
