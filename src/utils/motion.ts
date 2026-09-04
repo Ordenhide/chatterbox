@@ -511,19 +511,30 @@ export function cipherTexture(length: number, seed: number): string {
  * The launch sequence, and the one place the app gets to introduce itself.
  * Same honesty rule as CipherText above: the wordmark resolves out of
  * ciphertext because that is what this app does to messages, not because
- * scrambling text looks technical. It plays over the auth-state check that
- * genuinely is happening at that moment (App.tsx renders nothing while
- * `loading`), so it occupies real waiting time rather than inventing some.
+ * scrambling text looks technical.
  *
- * Three phases rather than one long tween, because they are doing different
- * jobs: `seal` establishes the wordmark as ciphertext, `resolve` is the
+ * These used to total 1,940ms, plus a 260ms exit fade, on the stated grounds
+ * that the sequence "plays over the auth-state check that genuinely is
+ * happening at that moment, so it occupies real waiting time rather than
+ * inventing some". Measured on device, that was not true: the native launch
+ * is ~155ms, the thread opens in ~200ms, and the chat list is on screen well
+ * inside half a second. The app spent about 1.7 of those 2.2 seconds ready
+ * and hidden — the launch was not slow, it was covered. Every other
+ * optimisation in this area was invisible for exactly that reason.
+ *
+ * So the durations are now sized to what the launch actually costs rather
+ * than to what the animation wanted. Same three phases, same curves, ~3x
+ * shorter: `seal` establishes the wordmark as ciphertext, `resolve` is the
  * reveal, and `settle` is the beat that keeps the reveal from being cut off
  * by the app arriving on top of it.
+ *
+ * Reduced-motion skips the whole thing (see ColdOpen.tsx), which is also the
+ * switch to copy if it should stop playing entirely.
  * ------------------------------------------------------------------------ */
 
-export const COLD_OPEN_SEAL_MS = 620;
-export const COLD_OPEN_RESOLVE_MS = 900;
-export const COLD_OPEN_SETTLE_MS = 420;
+export const COLD_OPEN_SEAL_MS = 160;
+export const COLD_OPEN_RESOLVE_MS = 340;
+export const COLD_OPEN_SETTLE_MS = 100;
 export const COLD_OPEN_TOTAL_MS =
   COLD_OPEN_SEAL_MS + COLD_OPEN_RESOLVE_MS + COLD_OPEN_SETTLE_MS;
 

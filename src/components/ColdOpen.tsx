@@ -68,7 +68,7 @@ export default function ColdOpen({onDone}: {onDone: () => void}) {
 
     Animated.timing(enter, {
       toValue: 1,
-      duration: 420,
+      duration: 200,
       useNativeDriver: true,
     }).start();
 
@@ -90,7 +90,9 @@ export default function ColdOpen({onDone}: {onDone: () => void}) {
           if (phase === 'done') {
             Animated.timing(exit, {
               toValue: 1,
-              duration: 260,
+              // Shortened with the phases in motion.ts — this fade is time the
+              // app is ready and still hidden.
+              duration: 160,
               useNativeDriver: true,
             }).start(() => onDoneRef.current());
             return;
