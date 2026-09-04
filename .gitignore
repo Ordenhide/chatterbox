@@ -105,3 +105,9 @@ ios/buildsettings-cli.txt
 /harmony/entry/oh_modules/
 /harmony/entry/src/main/resources/rawfile/bundle.harmony.js
 /harmony/entry/src/main/resources/rawfile/assets/
+
+# Unrelated design exports and local build config that live in this directory
+# but are not part of the app. "Security Mobile App UI" is a Figma Make export
+# used as a visual reference; gradle-daemon-jvm.properties is per-machine.
+Security Mobile App UI/
+android/gradle/gradle-daemon-jvm.properties
