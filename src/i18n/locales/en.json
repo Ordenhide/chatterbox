@@ -190,7 +190,15 @@
     "offlineEmpty": "Offline — showing cached chats.",
     "actionsTitle": "Chat Actions",
     "pin": "Pin",
-    "unpin": "Unpin"
+    "unpin": "Unpin",
+    "eyebrow": "Secure messenger",
+    "keyChecking": "Checking key",
+    "keyReady": "Key ready",
+    "keySuperseded": "Key replaced",
+    "keyMissing": "Key not on this device",
+    "keyUnverified": "Key unverified",
+    "statChats": "{{count}} chats",
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
   },
   "members": {
     "title": "Members ({{count}})",
@@ -219,7 +227,7 @@
     "startGroup": "Start Group Chat",
     "errors": {
       "enterEmail": "Please enter an email address",
-    "noInvitees": "Add at least one person to start a chat",
+      "noInvitees": "Add at least one person to start a chat",
       "userNotFoundTitle": "User not found",
       "userNotFoundBody": "That email does not exist on this device. Create another account first, then try again.",
       "selfChat": "You cannot start a chat with yourself",
@@ -548,7 +556,7 @@
       "leaveClearBody": "The messages you sent are deleted for everyone. Messages other people sent stay, and they keep the conversation. Anything you had scheduled here is cancelled, and you are removed from the chat.",
       "leaveClearConfirm": "Leave",
       "leaveClearFailedTitle": "Error",
-      "leaveClearFailedBody": "Could not leave the chat. Nothing was changed \u2014 please try again.",
+      "leaveClearFailedBody": "Could not leave the chat. Nothing was changed — please try again.",
       "copiedTitle": "Copied",
       "copiedBody": "Chat JSON copied to clipboard"
     }

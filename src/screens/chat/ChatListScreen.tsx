@@ -28,13 +28,18 @@ import {
   toggleHideChat,
 } from '../../services/firebaseChat';
 import {getColors} from '../../theme/colors';
+import {fonts, terminal} from '../../theme/typography';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
 import {isDecoyMode} from '../../services/appLock';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
-import {enrollmentReadiness, hasRevealedRecoveryPhrase} from '../../services/e2eeKeys';
+import {
+  enrollmentReadiness,
+  hasRevealedRecoveryPhrase,
+  type EnrollmentReadiness,
+} from '../../services/e2eeKeys';
 import RecoveryPhraseRevealModal from '../../components/RecoveryPhraseRevealModal';
 
 type ChatListItemProps = {
@@ -57,6 +62,8 @@ type ChatListItemProps = {
   dangerColor: string;
   cardBackground: string;
   cardBorder: string;
+  unreadColor: string;
+  unreadTextColor: string;
 };
 
 const ChatListItem = memo(
@@ -79,11 +86,13 @@ const ChatListItem = memo(
     dangerColor,
     cardBackground,
     cardBorder,
+    unreadColor,
+    unreadTextColor,
   }: ChatListItemProps) => (
     <TouchableOpacity style={styles.chatItem} onPress={onPress} onLongPress={onLongPress}>
       <GlassView blur={false} style={[styles.card, {backgroundColor: cardBackground, borderColor: cardBorder}]}>
-        <View style={[styles.avatar, {backgroundColor: avatarColor}]}>
-          <Text style={styles.avatarText}>{avatarText || '?'}</Text>
+        <View style={[styles.avatar, {borderColor: avatarColor}]}>
+          <Text style={[styles.avatarText, {color: textColor}]}>{avatarText || '?'}</Text>
         </View>
         <View style={styles.chatContent}>
           <View style={styles.chatTitleRow}>
@@ -96,8 +105,8 @@ const ChatListItem = memo(
             <View style={styles.metaGroup}>
               {timeLabel ? <Text style={[styles.timeText, {color: textSecondary}]}>{timeLabel}</Text> : null}
               {unreadCount ? (
-                <View style={[styles.unreadBadge, {backgroundColor: dangerColor}]}>
-                  <Text style={styles.unreadText}>{unreadCount}</Text>
+                <View style={[styles.unreadBadge, {backgroundColor: unreadColor}]}>
+                  <Text style={[styles.unreadText, {color: unreadTextColor}]}>{unreadCount}</Text>
                 </View>
               ) : null}
             </View>
@@ -145,7 +154,9 @@ export default function ChatListScreen() {
   const [viewingHidden, setViewingHidden] = useState(false);
   const {user} = useAuth();
   const navigation = useNavigation<any>();
-  const colors = getColors(useColorScheme());
+  const scheme = useColorScheme();
+  const colors = getColors(scheme);
+  const isDark = scheme === 'dark';
   const {t} = useTranslation();
   const rawChatsRef = useRef<ChatRoom[]>([]);
   const chatsSignatureRef = useRef<string>('');
@@ -153,6 +164,10 @@ export default function ChatListScreen() {
   const cacheWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingCacheRef = useRef<ChatRoom[] | null>(null);
   const [recoveryModalVisible, setRecoveryModalVisible] = useState(false);
+  // The header's E2E badge reports this rather than asserting "encrypted".
+  // The screen already resolves it for the restore prompt below, so the badge
+  // costs nothing extra and cannot drift from what the prompt decided.
+  const [keyState, setKeyState] = useState<EnrollmentReadiness | null>(null);
 
 
   useEffect(() => {
@@ -168,7 +183,9 @@ export default function ChatListScreen() {
     // this re-runs on the next sign-in.
     enrollmentReadiness(user.uid)
       .then(readiness => {
-        if (!active || readiness === 'unknown') return;
+        if (!active) return;
+        setKeyState(readiness);
+        if (readiness === 'unknown') return;
         if (readiness === 'needs-restore') {
           Alert.alert(
             'Restore your message history?',
@@ -450,8 +467,15 @@ export default function ChatListScreen() {
     return (first + second).toUpperCase();
   };
 
+  // Monochrome. The previous palette (purple/blue/green/yellow/red/blue) put
+  // six saturated hues on a design whose whole premise is one signal colour —
+  // and it coloured them by name hash, so the hue carried no meaning to spend
+  // attention on. These are four steps of the same neutral, enough to keep
+  // adjacent rows distinguishable without competing with the accent.
   const getAvatarColor = (seed: string) => {
-    const palette = ['#7C5CFF', '#4B7BEC', '#20BF6B', '#F7B731', '#EB3B5A', '#45AAF2'];
+    const palette = isDark
+      ? ['#2A2A2A', '#333333', '#3C3C3C', '#454545']
+      : ['rgba(10,15,10,0.16)', 'rgba(10,15,10,0.22)', 'rgba(10,15,10,0.28)', 'rgba(10,15,10,0.34)'];
     let hash = 0;
     for (let i = 0; i < seed.length; i += 1) {
       hash = (hash * 31 + seed.charCodeAt(i)) % palette.length;
@@ -470,9 +494,14 @@ export default function ChatListScreen() {
   return (
     <GlassScreen style={styles.container} textureSeed="chat-list">
       <View style={styles.header}>
-        <Text style={[styles.title, {color: colors.text}]}>
-          {viewingHidden ? t('chats.hiddenTitle') : t('chatList.title')}
-        </Text>
+        <View style={styles.headerTitles}>
+          <Text style={[styles.eyebrow, {color: colors.textSecondary}]}>
+            {t('chatList.eyebrow')}
+          </Text>
+          <Text style={[styles.title, {color: colors.text}]}>
+            {viewingHidden ? t('chats.hiddenTitle') : t('chatList.title')}
+          </Text>
+        </View>
         {viewingHidden ? (
           <TouchableOpacity
             accessibilityRole="button"
@@ -485,9 +514,43 @@ export default function ChatListScreen() {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={[styles.newChatButton, {backgroundColor: colors.primary}]} onPress={createNewChat}>
-            <Text style={styles.newChatText}>{t('common.new')}</Text>
+            <Text style={[styles.newChatText, {color: colors.textOnPrimary}]}>
+              {t('common.new')}
+            </Text>
           </TouchableOpacity>
         )}
+      </View>
+      {/* Reports the key state this device is actually in. Deliberately not a
+          fixed "E2E ACTIVE" label: encryption degrades to plaintext when a
+          peer has no published key, and a badge that says "encrypted" no
+          matter what is worse than no badge — it is the one claim a user
+          cannot check for themselves. */}
+      <View style={styles.statusStrip}>
+        <View
+          style={[
+            styles.statusDot,
+            {backgroundColor: keyState === 'safe' ? colors.primary : colors.warning},
+          ]}
+        />
+        <Text
+          style={[
+            styles.statusText,
+            {color: keyState === 'safe' ? colors.primary : colors.warning},
+          ]}>
+          {keyState === null
+            ? t('chatList.keyChecking')
+            : keyState === 'safe'
+            ? t('chatList.keyReady')
+            : keyState === 'superseded'
+            ? t('chatList.keySuperseded')
+            : keyState === 'needs-restore'
+            ? t('chatList.keyMissing')
+            : t('chatList.keyUnverified')}
+        </Text>
+        <View style={[styles.statusRule, {backgroundColor: colors.separator}]} />
+        <Text style={[styles.statusCount, {color: colors.textSecondary}]}>
+          {t('chatList.statChats', {count: chats.length})}
+        </Text>
       </View>
       <TextInput
         style={[
@@ -556,6 +619,8 @@ export default function ChatListScreen() {
             dangerColor={colors.danger}
             cardBackground={colors.surface}
             cardBorder={colors.glassBorder}
+            unreadColor={colors.primary}
+            unreadTextColor={colors.textOnPrimary}
           />
           </ListEntrance>
         )}
@@ -570,6 +635,14 @@ export default function ChatListScreen() {
           </Cascade>
         }
       />
+      {/* The actual construction from services/e2ee.ts (E2EE_ALG), not a
+          decorative string. If someone reads this off the screen to check what
+          protects their messages, it has to be the truth. */}
+      <View style={[styles.cipherBar, {borderTopColor: colors.separator}]}>
+        <Text style={[styles.cipherText, {color: colors.textSecondary}]}>
+          {t('chatList.cipherSuite')}
+        </Text>
+      </View>
       {user && (
         <RecoveryPhraseRevealModal
           visible={recoveryModalVisible}
@@ -593,8 +666,8 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: 1,
   },
-  hiddenEntryText: {fontSize: 14, fontWeight: '600'},
-  hiddenEntryCount: {fontSize: 12, fontWeight: '700'},
+  hiddenEntryText: {...terminal.label},
+  hiddenEntryCount: {fontFamily: fonts.mono.medium, fontSize: 11},
   container: {
     flex: 1,
   },
@@ -606,22 +679,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerTitles: {flex: 1},
+  eyebrow: {...terminal.micro, marginBottom: 3},
   title: {
-    fontSize: 34,
-    fontWeight: '800',
-    letterSpacing: -0.5,
+    fontFamily: fonts.display.bold,
+    fontSize: 22,
+    letterSpacing: 3.5,
   },
+  statusStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 12,
+  },
+  statusDot: {width: 6, height: 6, borderRadius: 999},
+  statusText: {...terminal.micro},
+  statusRule: {flex: 1, height: StyleSheet.hairlineWidth},
+  statusCount: {...terminal.micro},
+  cipherBar: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+  },
+  cipherText: {...terminal.micro, fontSize: 7, textAlign: 'center'},
   newChatButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 2,
   },
-  newChatText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '700',
-    letterSpacing: 0.2,
-  },
+  newChatText: {...terminal.label},
   searchInput: {
     // No `flex: 1` here. This is a fixed-height field in a *column*, so flex
     // would fight the height below rather than complement it. Legacy Yoga let
@@ -630,7 +718,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    fontSize: 15,
+    ...terminal.data,
     borderWidth: 0,
     marginHorizontal: 20,
     marginBottom: 14,
@@ -661,16 +749,17 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   avatar: {
-    width: 52,
-    height: 52,
+    width: 44,
+    height: 44,
     borderRadius: 2,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
+    fontFamily: fonts.display.semibold,
+    fontSize: 13,
+    letterSpacing: 1,
   },
   chatContent: {
     flex: 1,
@@ -692,20 +781,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   chatName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontFamily: fonts.mono.medium,
+    fontSize: 13,
+    letterSpacing: 0.4,
     marginBottom: 3,
   },
-  pinLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
-  timeText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
+  pinLabel: {...terminal.micro},
+  timeText: {fontFamily: fonts.mono.regular, fontSize: 10, letterSpacing: 0.5},
   unreadBadge: {
     minWidth: 22,
     height: 22,
@@ -714,14 +796,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 7,
   },
-  unreadText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '700',
-  },
+  unreadText: {fontFamily: fonts.display.bold, fontSize: 11},
   lastMessage: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontFamily: fonts.body.regular,
+    fontSize: 13,
+    lineHeight: 19,
   },
   draftText: {
     fontSize: 14,
@@ -729,8 +808,8 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   emptyText: {
-    fontSize: 17,
-    fontWeight: '600',
+    ...terminal.label,
+    fontSize: 11,
     marginBottom: 8,
     textAlign: 'center',
     paddingTop: 60,
