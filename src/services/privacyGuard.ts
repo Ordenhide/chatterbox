@@ -1,6 +1,7 @@
 import {Platform} from 'react-native';
 import {mmkvStorage} from './storageMMKV';
 import {doc, getDoc, getFirestore, setDoc} from './firebase/firestore';
+import {reportHandled} from './telemetry';
 
 const db = getFirestore();
 
@@ -93,12 +94,38 @@ export function setLinkPreviewEnabled(enabled: boolean): void {
   mmkvStorage.setBoolean('link_preview_enabled', enabled);
 }
 
-export function applyScreenshotProtection(enabled: boolean): void {
-  if (Platform.OS === 'android') {
-    try {
-      const {NativeModules} = require('react-native');
-      NativeModules.ScreenshotGuard?.setSecureFlag?.(enabled);
-    } catch {}
+/**
+ * Applies or clears Android's FLAG_SECURE, and returns what the window is
+ * actually doing — not what the preference says.
+ *
+ * ChatScreen shows the user a green banner reading "Screenshot protection
+ * active". An assurance like that has to be derived from the mechanism. The
+ * preference being true and FLAG_SECURE being set are two different facts, and
+ * this function — the only thing that can make them agree — had no callers at
+ * all, so the banner was answering a stored boolean and nothing else. Anyone
+ * finishing the feature by wiring up a settings toggle would have got a banner
+ * promising protection over a window that never had the flag.
+ *
+ * Returns false on iOS, where there is no equivalent window flag, and on any
+ * failure. Failures are reported rather than swallowed: a security control
+ * that silently does not apply is the one case where silence costs the most.
+ */
+export function applyScreenshotProtection(enabled: boolean): boolean {
+  if (Platform.OS !== 'android') return false;
+  try {
+    const {NativeModules} = require('react-native');
+    const guard = NativeModules.ScreenshotGuard;
+    // Was `guard?.setSecureFlag?.(enabled)`, which made a missing native
+    // module and a successful call look identical from here.
+    if (typeof guard?.setSecureFlag !== 'function') {
+      reportHandled(new Error('ScreenshotGuard native module unavailable'), 'screenshot_protection');
+      return false;
+    }
+    guard.setSecureFlag(enabled);
+    return enabled;
+  } catch (error) {
+    reportHandled(error, 'screenshot_protection_failed');
+    return false;
   }
 }
 

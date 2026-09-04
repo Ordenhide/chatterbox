@@ -115,7 +115,11 @@ export default function ChatMediaScreen() {
         transparent
         animationType="fade"
         onRequestClose={() => setPreview(null)}>
-        <Pressable style={[styles.previewBackdrop, {backgroundColor: colors.mediaOverlayBackdrop}]} onPress={() => setPreview(null)}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
+          style={[styles.previewBackdrop, {backgroundColor: colors.mediaOverlayBackdrop}]}
+          onPress={() => setPreview(null)}>
           {preview?.type === 'image' ? (
             <Image source={{uri: preview.uri}} style={styles.previewImage} resizeMode="contain" />
           ) : (

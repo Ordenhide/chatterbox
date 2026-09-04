@@ -324,6 +324,9 @@ export default function ChatSettingsScreen() {
           {SOUNDSCAPES.map(s => (
             <TouchableOpacity
               key={s.id}
+              accessibilityRole="button"
+              accessibilityLabel={s.label}
+              accessibilityState={{selected: soundscape === s.id}}
               style={[
                 styles.themeDot,
                 {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border},
@@ -393,6 +396,9 @@ export default function ChatSettingsScreen() {
             return (
             <TouchableOpacity
               key={p.id}
+              accessibilityRole="button"
+              accessibilityLabel={p.label}
+              accessibilityState={{selected: isCurrent}}
               style={[
                 styles.themeDot,
                 {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border},

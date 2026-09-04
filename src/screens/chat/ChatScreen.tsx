@@ -168,7 +168,14 @@ import {listenChatPet, feedPet, calculatePetMood, decayHealth, didPetJustEat} fr
 import PetAvatar from '../../components/PetAvatar';
 import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
-import {isScreenshotProtectionEnabled, isLinkPreviewEnabled, isStealthMode, generateWatermark, isExifStrippingEnabled} from '../../services/privacyGuard';
+import {
+  applyScreenshotProtection,
+  isScreenshotProtectionEnabled,
+  isLinkPreviewEnabled,
+  isStealthMode,
+  generateWatermark,
+  isExifStrippingEnabled,
+} from '../../services/privacyGuard';
 import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
 
@@ -455,6 +462,23 @@ export default function ChatScreen() {
   const scheme = useColorScheme();
   const colors = getColors(scheme);
   const isDarkMode = scheme === 'dark';
+
+  /**
+   * FLAG_SECURE is a window flag, so it is set while the thread is mounted —
+   * this is the screen that puts message content on the glass — and cleared on
+   * the way out rather than left on for the whole app.
+   *
+   * The banner below reads this, not the preference. Whether the user asked
+   * for protection and whether the window has it are different questions, and
+   * the banner answers the user with the second one.
+   */
+  const [screenshotProtected, setScreenshotProtected] = useState(false);
+  useEffect(() => {
+    setScreenshotProtected(applyScreenshotProtection(isScreenshotProtectionEnabled()));
+    return () => {
+      applyScreenshotProtection(false);
+    };
+  }, []);
   /**
    * Ink for anything filled with the chat's accent.
    *
@@ -4806,7 +4830,7 @@ export default function ChatScreen() {
           </Text>
         </View>
       ) : null}
-      {isScreenshotProtectionEnabled() ? (
+      {screenshotProtected ? (
         <View style={[styles.offlineBanner, {backgroundColor: colors.success}]}>
           <Icon name="shield" size={13} color={colors.textOnPrimary} />
           <Text style={[styles.offlineText, {color: colors.textOnPrimary}]}>Screenshot protection active</Text>
@@ -5633,6 +5657,8 @@ export default function ChatScreen() {
               removeClippedSubviews={Platform.OS === 'android'}
               renderItem={({item}) => (
                 <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel={item.title || 'GIF'}
                   style={[styles.gifItem, {backgroundColor: colors.surface}]}
                   onPress={() => handleSendGif(item)}>
                   {item.mp4PreviewUrl ? (
@@ -5718,7 +5744,11 @@ export default function ChatScreen() {
       {preview && (
         <Modal visible transparent animationType="fade" onRequestClose={() => setPreview(null)}>
           <View style={styles.previewBackdrop}>
-            <Pressable style={styles.previewBackdrop} onPress={() => setPreview(null)}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('common.close')}
+              style={styles.previewBackdrop}
+              onPress={() => setPreview(null)}>
               {preview.type === 'image' ? (
                 <Image source={{uri: preview.uri}} style={styles.previewImage} resizeMode="contain" />
               ) : (
