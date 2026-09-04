@@ -22,7 +22,7 @@ import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import Cascade from '../../components/Cascade';
-import {bodyWeight, fonts} from '../../theme/typography';
+import {bodyWeight, fonts, terminal} from '../../theme/typography';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -93,6 +93,9 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
           bounces={false}>
           <Cascade index={0}>
+            <Text style={[styles.eyebrow, {color: colors.textSecondary}]}>
+              {t('auth.eyebrow')}
+            </Text>
             <Text style={[styles.title, {color: colors.text}]}>{t('app.name')}</Text>
             <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
               {loginVariant === 'variant_a'
@@ -106,7 +109,7 @@ export default function LoginScreen() {
           <TextInput
             style={[
               styles.input,
-              {backgroundColor: colors.surface, color: colors.text, borderColor: colors.glassBorder},
+              {color: colors.text, borderColor: colors.border},
             ]}
             placeholder={t('auth.login.emailPlaceholder')}
             placeholderTextColor={colors.textSecondary}
@@ -120,7 +123,7 @@ export default function LoginScreen() {
           <PasswordInput
             style={[
               styles.input,
-              {backgroundColor: colors.surface, color: colors.text, borderColor: colors.glassBorder},
+              {color: colors.text, borderColor: colors.border},
             ]}
             placeholder={t('auth.login.passwordPlaceholder')}
             placeholderTextColor={colors.textSecondary}
@@ -189,10 +192,10 @@ const styles = StyleSheet.create({
     // Display face. No fontWeight beside it -- the weight lives in the
     // file (see theme/typography.ts).
     fontFamily: fonts.display.bold,
-    fontSize: 34,
+    fontSize: 26,
     textAlign: 'center',
     marginBottom: 8,
-    letterSpacing: 0.5,
+    letterSpacing: 5,
   },
   subtitle: {
     fontSize: 16,
@@ -209,12 +212,17 @@ const styles = StyleSheet.create({
   },
   input: {
     borderRadius: 2,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    fontSize: 16,
-    borderWidth: 0,
-    borderColor: 'transparent',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    fontFamily: fonts.mono.regular,
+    fontSize: 14,
+    letterSpacing: 0.4,
+    // Ruled, not filled. On a black ground a surface tint is either invisible
+    // or heavy enough to compete with what is typed into it; an edge states
+    // the field without spending contrast.
+    borderWidth: 1,
   },
+  eyebrow: {...terminal.micro, textAlign: 'center', marginBottom: 6},
   button: {
     borderRadius: 2,
     paddingVertical: 17,

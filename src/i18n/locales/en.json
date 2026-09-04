@@ -141,7 +141,8 @@
     "session": {
       "title": "Signed out",
       "message": "This account was signed in on another device."
-    }
+    },
+    "eyebrow": "Encrypted messenger"
   },
   "aiConsent": {
     "title": "AI features send messages off your device",
