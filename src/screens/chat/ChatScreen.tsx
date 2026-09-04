@@ -4741,7 +4741,7 @@ export default function ChatScreen() {
             onPress={handleDeleteSelectedMsgs}
             disabled={msgSelected.size === 0}
             style={[styles.msgSelectDelete, {backgroundColor: colors.danger, opacity: msgSelected.size ? 1 : 0.4}]}>
-            <Text style={styles.msgSelectDeleteText}>Delete</Text>
+            <Text style={[styles.msgSelectDeleteText, {color: colors.textOnDanger}]}>Delete</Text>
           </TouchableOpacity>
         </View>
       ) : null}

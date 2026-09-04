@@ -40,6 +40,8 @@ const light = {
   secondary: '#1F5C3A',
   success: '#0A7A2A',
   danger: '#B3261E',
+  // White on the light theme's deeper red: 6.54:1.
+  textOnDanger: '#FFFFFF',
   // Terminal amber, darkened to carry on a light ground: 5.40:1.
   warning: '#8A5A00',
   glassTint1: 'rgba(10,122,42,0.07)',
@@ -85,6 +87,11 @@ const dark = {
   secondary: '#7CFFA8',
   success: '#00FF41',
   danger: '#FF4D4D',
+  // Black, for the same reason textOnPrimary is: the dark theme's red is
+  // bright. Black is 6.42:1 on it, white is 3.27:1 and fails AA. The old
+  // palette's #E5484D failed too, at 3.91:1 — this token is fixing a
+  // pre-existing bug, not one the retheme introduced.
+  textOnDanger: '#000000',
   warning: '#FFB000',
   glassTint1: 'rgba(0,255,65,0.05)',
   glassTint2: 'rgba(124,255,168,0.03)',

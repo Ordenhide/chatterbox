@@ -476,7 +476,7 @@ export default function CallScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.endButton, {backgroundColor: colors.danger}]} onPress={() => endCall(true)}>
-          <Text style={styles.endButtonText}>{t('call.end')}</Text>
+          <Text style={[styles.endButtonText, {color: colors.textOnDanger}]}>{t('call.end')}</Text>
         </TouchableOpacity>
       </View>
     </GlassScreen>

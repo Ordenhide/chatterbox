@@ -614,7 +614,9 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.vsPlayBtn, {backgroundColor: colors.danger}]}
                 onPress={handleVsRemove}>
-                <Text style={styles.vsPlayBtnText}>{t('profile.voiceDiaryRemove')}</Text>
+                <Text style={[styles.vsPlayBtnText, {color: colors.textOnDanger}]}>
+                  {t('profile.voiceDiaryRemove')}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -777,7 +779,7 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.focusBtn, {backgroundColor: colors.danger}]}
                 onPress={handleDisableFocus}>
-                <Text style={styles.focusBtnText}>Disable Focus Mode</Text>
+                <Text style={[styles.focusBtnText, {color: colors.textOnDanger}]}>Disable Focus Mode</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -901,7 +903,9 @@ export default function ProfileScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, {backgroundColor: colors.danger}]} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>{t('profile.buttons.signOut')}</Text>
+          <Text style={[styles.buttonText, {color: colors.textOnDanger}]}>
+            {t('profile.buttons.signOut')}
+          </Text>
         </TouchableOpacity>
         {/* Kept visually apart from the routine actions above: this one is
             irreversible, so it should never sit flush against sign-out. */}
@@ -1177,7 +1181,9 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                   style={[styles.vsRecordBtn, {backgroundColor: colors.danger}]}
                   onPress={handleVsStartRecording}>
-                  <Text style={styles.vsRecordBtnText}>{t('profile.voiceDiaryRecordButton')}</Text>
+                  <Text style={[styles.vsRecordBtnText, {color: colors.textOnDanger}]}>
+                    {t('profile.voiceDiaryRecordButton')}
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity

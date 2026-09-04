@@ -30,6 +30,10 @@
   /* Black on the signal green: 15.38:1. White would be 1.37:1 — a WCAG
      failure — which is why primary buttons are not white-on-green here. */
   --cb-text-on-primary: #000000;
+  /* Danger has the same inversion problem as the accent, for the same reason:
+     the dark theme's red is bright. Black on #FF4D4D is 6.42:1, white is
+     3.27:1 and fails. */
+  --cb-text-on-danger: #000000;
 
   --cb-shadow: 0 0 0 1px rgba(0, 255, 65, 0.08);
   --cb-shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -78,6 +82,8 @@
   --cb-danger: #b3261e;
   /* White on the deep green: 5.48:1. */
   --cb-text-on-primary: #ffffff;
+  /* White on the light theme's deeper red: 6.54:1. */
+  --cb-text-on-danger: #ffffff;
 
   --cb-shadow: 0 30px 70px -28px rgba(15, 33, 60, 0.26);
   --cb-shadow-soft: 0 16px 40px -20px rgba(15, 33, 60, 0.18);
@@ -515,11 +521,13 @@ button:focus-visible {
   text-align: center;
   font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: var(--cb-text-on-danger);
   padding: 7px 12px;
   /* Flat danger fill rather than the old pink→orange ramp: an alert state
-     should read as one unambiguous status colour, not decoration. */
-  background: #b3282d;
+     should read as one unambiguous status colour, not decoration. The ink is
+     a token because the two themes' reds want opposite inks — see
+     --cb-text-on-danger. */
+  background: var(--cb-danger);
   animation: toastIn 0.2s ease;
 }
 
