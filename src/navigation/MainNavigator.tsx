@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     color: 'transparent',
     minWidth: 9,
     height: 9,
-    borderRadius: 4.5,
+    borderRadius: 2.5,
     top: 2,
     right: -4,
   },

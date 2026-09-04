@@ -936,7 +936,7 @@ const styles = StyleSheet.create({
   headerButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 2,
   },
   headerButtonText: {
     fontSize: 14,
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 8,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 10,
+    borderRadius: 2,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     shadowColor: '#000',
     shadowOpacity: 0.06,
@@ -991,7 +991,7 @@ const styles = StyleSheet.create({
   media: {
     width: '100%',
     height: 180,
-    borderRadius: 10,
+    borderRadius: 2,
     marginBottom: 8,
   },
   cardMeta: {
@@ -1006,7 +1006,7 @@ const styles = StyleSheet.create({
   actionPill: {
     paddingVertical: 6,
     paddingHorizontal: 10,
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: 1,
   },
   actionText: {
@@ -1021,7 +1021,7 @@ const styles = StyleSheet.create({
   cardActionButton: {
     paddingVertical: 6,
     paddingHorizontal: 10,
-    borderRadius: 8,
+    borderRadius: 2,
   },
   cardActionText: {
     fontWeight: '600',
@@ -1039,7 +1039,7 @@ const styles = StyleSheet.create({
   },
   commentCard: {
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 2,
     padding: 10,
     marginBottom: 8,
     shadowColor: '#000',
@@ -1076,7 +1076,7 @@ const styles = StyleSheet.create({
   commentInput: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderColor: 'transparent',
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
   commentSend: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 2,
   },
   commentSendText: {
     fontWeight: '600',
@@ -1098,7 +1098,7 @@ const styles = StyleSheet.create({
   },
   shareRow: {
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 2,
     padding: 12,
     marginBottom: 10,
   },
@@ -1114,7 +1114,7 @@ const styles = StyleSheet.create({
   modalInput: {
     minHeight: 180,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     padding: 12,
     textAlignVertical: 'top',
   },
@@ -1129,7 +1129,7 @@ const styles = StyleSheet.create({
   mediaButton: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 2,
     alignItems: 'center',
   },
   mediaButtonText: {
@@ -1152,7 +1152,7 @@ const styles = StyleSheet.create({
   visibilityButton: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 2,
     borderWidth: 1,
     alignItems: 'center',
   },
@@ -1169,7 +1169,7 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 2,
     alignItems: 'center',
   },
   modalButtonText: {

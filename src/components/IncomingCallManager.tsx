@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 380,
-    borderRadius: 26,
+    borderRadius: 2,
     paddingHorizontal: 24,
     paddingTop: 32,
     paddingBottom: 26,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 88,
     height: 88,
-    borderRadius: 44,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   previewFrame: {
     width: '100%',
     aspectRatio: 4 / 3,
-    borderRadius: 14,
+    borderRadius: 2,
     overflow: 'hidden',
     backgroundColor: '#000',
     alignItems: 'center',
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 9,
     paddingHorizontal: 14,
-    borderRadius: 999,
+    borderRadius: 2,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.22)',
     backgroundColor: 'rgba(255,255,255,0.10)',
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   actionIcon: {
     width: 62,
     height: 62,
-    borderRadius: 31,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   phraseBox: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     padding: 16,
     fontSize: 16,
     lineHeight: 26,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 2,
     alignItems: 'center',
   },
   buttonText: {

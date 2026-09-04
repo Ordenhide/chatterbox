@@ -1303,7 +1303,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   profileCard: {
-    borderRadius: 24,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     marginHorizontal: 20,
     marginTop: 12,
@@ -1318,7 +1318,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 96,
     height: 96,
-    borderRadius: 48,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 18,
@@ -1347,7 +1347,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingHorizontal: 14,
     paddingVertical: 5,
-    borderRadius: 12,
+    borderRadius: 2,
   },
   memberBadgeText: {
     fontSize: 12,
@@ -1360,7 +1360,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   shortcutsCard: {
-    borderRadius: 18,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 18,
   },
@@ -1368,7 +1368,7 @@ const styles = StyleSheet.create({
   shortcutsRow: {flexDirection: 'row', justifyContent: 'space-between', gap: 12},
   shortcutItem: {
     flex: 1,
-    borderRadius: 14,
+    borderRadius: 2,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1376,7 +1376,7 @@ const styles = StyleSheet.create({
   shortcutIcon: {fontSize: 24, marginBottom: 6},
   shortcutLabel: {fontSize: 12, fontWeight: '600'},
   visibilityCard: {
-    borderRadius: 18,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 18,
   },
@@ -1396,7 +1396,7 @@ const styles = StyleSheet.create({
   },
   visibilityOption: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingVertical: 11,
     alignItems: 'center',
     borderWidth: 1,
@@ -1409,12 +1409,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   buttonSecondary: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingVertical: 16,
     alignItems: 'center',
   },
   button: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingVertical: 16,
     alignItems: 'center',
   },
@@ -1437,7 +1437,7 @@ const styles = StyleSheet.create({
   modalInput: {
     flex: 1,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: 16,
     textAlignVertical: 'top',
     fontSize: 15,
@@ -1449,7 +1449,7 @@ const styles = StyleSheet.create({
   },
   passphraseInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 10,
+    borderRadius: 2,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
@@ -1463,7 +1463,7 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
   },
   modalButtonText: {
@@ -1474,7 +1474,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 2,
     gap: 8,
     marginBottom: 8,
   },
@@ -1490,7 +1490,7 @@ const styles = StyleSheet.create({
   },
   focusBtn: {
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 2,
     alignItems: 'center',
   },
   focusBtnText: {
@@ -1512,7 +1512,7 @@ const styles = StyleSheet.create({
   focusDurationChip: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     alignItems: 'center',
   },
@@ -1527,7 +1527,7 @@ const styles = StyleSheet.create({
   vsPlayBtn: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 2,
     alignItems: 'center',
   },
   vsPlayBtnText: {
@@ -1549,7 +1549,7 @@ const styles = StyleSheet.create({
   vsRecordBtn: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1563,7 +1563,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
   },
   languageCurrentNative: {
@@ -1581,7 +1581,7 @@ const styles = StyleSheet.create({
   },
   languageSearchInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 15,
@@ -1595,7 +1595,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     marginBottom: 6,
   },
@@ -1613,7 +1613,7 @@ const styles = StyleSheet.create({
   languageCheck: {
     width: 26,
     height: 26,
-    borderRadius: 13,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },

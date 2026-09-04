@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     paddingVertical: 15,
     gap: 10,

@@ -5754,7 +5754,7 @@ const styles = StyleSheet.create({
   headerButton: {
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 16,
+    borderRadius: 2,
   },
   headerButtonText: {
     fontSize: 14,
@@ -5787,7 +5787,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 9,
     marginTop: 6,
-    borderRadius: 4,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
   timeText: {
@@ -5836,16 +5836,16 @@ const styles = StyleSheet.create({
   },
   uploadBar: {
     height: 6,
-    borderRadius: 3,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   uploadBarFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 2,
   },
   searchInput: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
@@ -5859,7 +5859,7 @@ const styles = StyleSheet.create({
   actionButton: {
     width: 38,
     height: 38,
-    borderRadius: 19,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 8,
@@ -5885,7 +5885,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: 2,
     marginBottom: 4,
     maxWidth: 260,
   },
@@ -5906,7 +5906,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   reactionChip: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
@@ -5943,7 +5943,7 @@ const styles = StyleSheet.create({
   },
   fileCard: {
     marginTop: 6,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: 14,
     maxWidth: 260,
   },
@@ -5959,7 +5959,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 6,
-    borderRadius: 20,
+    borderRadius: 2,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
@@ -5972,7 +5972,7 @@ const styles = StyleSheet.create({
   },
   linkPreview: {
     marginTop: 6,
-    borderRadius: 14,
+    borderRadius: 2,
     overflow: 'hidden',
     maxWidth: 260,
   },
@@ -6012,7 +6012,7 @@ const styles = StyleSheet.create({
   momentCard: {
     marginTop: 6,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 16,
+    borderRadius: 2,
     padding: 12,
     maxWidth: 260,
     overflow: 'hidden',
@@ -6030,7 +6030,7 @@ const styles = StyleSheet.create({
   momentMedia: {
     width: '100%',
     height: 140,
-    borderRadius: 12,
+    borderRadius: 2,
   },
   accessoryBar: {
     flexDirection: 'row',
@@ -6054,7 +6054,7 @@ const styles = StyleSheet.create({
   accessoryClose: {
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,
@@ -6065,7 +6065,7 @@ const styles = StyleSheet.create({
   },
   recordModal: {
     width: '85%',
-    borderRadius: 24,
+    borderRadius: 2,
     padding: 28,
     alignItems: 'center',
   },
@@ -6081,7 +6081,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: 16,
     textAlignVertical: 'top',
     fontSize: 15,
@@ -6094,7 +6094,7 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
   },
   modalButtonText: {
@@ -6107,7 +6107,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 6,
+    borderRadius: 2,
     borderWidth: 1,
   },
   clearNameText: {
@@ -6121,7 +6121,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   actionSheet: {
-    borderRadius: 20,
+    borderRadius: 2,
     paddingVertical: 16,
     paddingHorizontal: 20,
   },
@@ -6163,7 +6163,7 @@ const styles = StyleSheet.create({
   recordButton: {
     paddingHorizontal: 16,
     paddingVertical: 13,
-    borderRadius: 14,
+    borderRadius: 2,
     flex: 1,
     alignItems: 'center',
     marginHorizontal: 4,
@@ -6185,7 +6185,7 @@ const styles = StyleSheet.create({
   videoBubble: {
     width: 200,
     height: 140,
-    borderRadius: 14,
+    borderRadius: 2,
     overflow: 'hidden',
     backgroundColor: '#000',
   },
@@ -6235,7 +6235,7 @@ const styles = StyleSheet.create({
   burnToggle: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 6,
@@ -6263,7 +6263,7 @@ const styles = StyleSheet.create({
   },
   burnDurationButton: {
     backgroundColor: '#FF6B35',
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
@@ -6277,7 +6277,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 16,
+    borderRadius: 2,
     backgroundColor: 'rgba(0,0,0,0.04)',
     marginVertical: 2,
   },
@@ -6294,7 +6294,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 18,
     paddingHorizontal: 24,
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: 1,
     borderStyle: 'dashed',
     marginVertical: 2,
@@ -6354,7 +6354,7 @@ const styles = StyleSheet.create({
   },
   burnPickerSheet: {
     width: '100%',
-    borderRadius: 16,
+    borderRadius: 2,
     padding: 20,
   },
   burnPickerTitle: {
@@ -6374,7 +6374,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 2,
     borderWidth: 1,
     marginBottom: 8,
   },
@@ -6403,7 +6403,7 @@ const styles = StyleSheet.create({
   sharedListCard: {
     marginTop: 6,
     padding: 10,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
   },
   sharedListTitleRow: {
@@ -6436,7 +6436,7 @@ const styles = StyleSheet.create({
   expenseCard: {
     marginTop: 6,
     padding: 10,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     alignItems: 'center',
   },
@@ -6456,7 +6456,7 @@ const styles = StyleSheet.create({
   locationCard: {
     marginTop: 6,
     padding: 10,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -6476,7 +6476,7 @@ const styles = StyleSheet.create({
   translationCard: {
     marginTop: 6,
     padding: 8,
-    borderRadius: 10,
+    borderRadius: 2,
     borderWidth: 1,
   },
   translationLabelRow: {
@@ -6494,7 +6494,7 @@ const styles = StyleSheet.create({
   },
   contextCard: {
     flexDirection: 'row',
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
     marginTop: 6,
@@ -6536,7 +6536,7 @@ const styles = StyleSheet.create({
   },
   scheduleInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 12,
     fontSize: 18,
     textAlign: 'center',
@@ -6551,7 +6551,7 @@ const styles = StyleSheet.create({
   schedulePreset: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 10,
+    borderRadius: 2,
     borderWidth: 1,
   },
   schedulePresetText: {
@@ -6560,7 +6560,7 @@ const styles = StyleSheet.create({
   },
   scheduleButton: {
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 2,
     alignItems: 'center',
   },
   scheduleButtonText: {
@@ -6570,7 +6570,7 @@ const styles = StyleSheet.create({
   },
   listTitleInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 14,
     fontSize: 16,
     marginBottom: 12,
@@ -6584,7 +6584,7 @@ const styles = StyleSheet.create({
   listItemInput: {
     flex: 1,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 10,
+    borderRadius: 2,
     padding: 12,
     fontSize: 15,
   },
@@ -6595,7 +6595,7 @@ const styles = StyleSheet.create({
   },
   listAddBtn: {
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: 2,
     borderWidth: 1,
     alignItems: 'center',
     marginBottom: 16,
@@ -6607,7 +6607,7 @@ const styles = StyleSheet.create({
   summarySheet: {
     width: '90%',
     maxHeight: '70%',
-    borderRadius: 16,
+    borderRadius: 2,
     padding: 20,
   },
   summarySheetTitleRow: {
@@ -6634,7 +6634,7 @@ const styles = StyleSheet.create({
   smallActionBtn: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -6644,17 +6644,17 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   gifCard: {
-    borderRadius: 12,
+    borderRadius: 2,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
     marginTop: 4,
   },
   gifImage: {
-    borderRadius: 12,
+    borderRadius: 2,
   },
   gifSearchInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 15,
@@ -6668,7 +6668,7 @@ const styles = StyleSheet.create({
   },
   gifItem: {
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 2,
     overflow: 'hidden',
     marginBottom: 8,
   },
@@ -6690,7 +6690,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   capsuleOverlay: {
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: 2,
     padding: 20,
     alignItems: 'center',
@@ -6717,7 +6717,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     marginHorizontal: 12,
     marginTop: 4,
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
   petAvatar: {fontSize: 24, marginRight: 8},
@@ -6737,7 +6737,7 @@ const styles = StyleSheet.create({
   msgSelectCancel: {paddingVertical: 4, paddingRight: 4},
   msgSelectCancelText: {fontSize: 15, fontWeight: '600'},
   msgSelectCount: {flex: 1, fontSize: 15, fontWeight: '700'},
-  msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999},
+  msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 2},
   msgSelectDeleteText: {color: '#fff', fontSize: 14, fontWeight: '700'},
   locationBanner: {
     flexDirection: 'row',
@@ -6756,10 +6756,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginTop: 8,
     padding: 8,
-    borderRadius: 14,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
-  locationPreviewImage: {width: 56, height: 56, borderRadius: 10},
+  locationPreviewImage: {width: 56, height: 56, borderRadius: 2},
   locationPreviewInfo: {flex: 1},
   locationPreviewTitle: {fontSize: 13.5, fontWeight: '700'},
   locationPreviewCoords: {fontSize: 12.5, marginTop: 1},
@@ -6789,7 +6789,7 @@ const styles = StyleSheet.create({
   smartReplyChip: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
   smartReplyText: {fontSize: 13, fontWeight: '600'},
@@ -6797,7 +6797,7 @@ const styles = StyleSheet.create({
   invisibleInkOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#6366F1',
-    borderRadius: 8,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.9,
@@ -6807,7 +6807,7 @@ const styles = StyleSheet.create({
   gestureCard: {
     width: 200,
     height: 150,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     marginTop: 4,
     marginHorizontal: 4,
@@ -6815,7 +6815,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   lotteryCard: {
-    borderRadius: 14,
+    borderRadius: 2,
     borderWidth: 1.5,
     padding: 14,
     marginTop: 6,
@@ -6835,7 +6835,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 8,
+    borderRadius: 2,
     backgroundColor: 'rgba(175,82,222,0.15)',
     marginTop: 4,
     marginHorizontal: 4,
@@ -6846,7 +6846,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 10,
+    borderRadius: 2,
     marginTop: 4,
     marginHorizontal: 4,
   },
@@ -6867,7 +6867,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 20,
     marginVertical: 10,
-    borderRadius: 20,
+    borderRadius: 2,
     borderWidth: 1,
     position: 'relative',
     overflow: 'hidden',
@@ -6886,7 +6886,7 @@ const styles = StyleSheet.create({
   chatLockInput: {
     width: 200,
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 14,
     fontSize: 20,
     textAlign: 'center',
@@ -6896,7 +6896,7 @@ const styles = StyleSheet.create({
   chatLockBtn: {
     paddingHorizontal: 32,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 2,
   },
   chatLockBtnText: {color: '#fff', fontWeight: '700', fontSize: 16},
   attachSingleBtn: {
@@ -6904,7 +6904,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 20,
+    borderRadius: 2,
     borderWidth: 1,
     gap: 4,
   },
@@ -6915,8 +6915,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
     paddingHorizontal: 20,
     paddingBottom: 34,
     maxHeight: '50%',
@@ -6929,7 +6929,7 @@ const styles = StyleSheet.create({
   attachOption: {
     width: 72,
     paddingVertical: 12,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -6941,7 +6941,7 @@ const styles = StyleSheet.create({
   viewOncePlaceholder: {
     width: 200,
     height: 150,
-    borderRadius: 12,
+    borderRadius: 2,
     backgroundColor: 'rgba(16,185,129,0.15)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -6960,7 +6960,7 @@ const styles = StyleSheet.create({
   viewOnceExpired: {
     width: 200,
     height: 60,
-    borderRadius: 12,
+    borderRadius: 2,
     backgroundColor: 'rgba(120,120,128,0.12)',
     alignItems: 'center',
     justifyContent: 'center',

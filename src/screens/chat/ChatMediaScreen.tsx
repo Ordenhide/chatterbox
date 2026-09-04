@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     paddingHorizontal: 4,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 2,
   },
   previewBackdrop: {
     flex: 1,

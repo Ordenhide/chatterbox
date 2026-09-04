@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   },
   section: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 16,
   },
   sectionTitle: {
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     padding: 12,
     fontSize: 15,
     minHeight: 90,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 2,
     alignItems: 'center',
   },
   buttonDisabled: {

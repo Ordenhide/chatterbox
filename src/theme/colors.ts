@@ -1,83 +1,109 @@
 import {ColorSchemeName, Platform} from 'react-native';
 
-// Security-console palette, shared in spirit with the web client
-// (web/src/styles.css) and the marketing site: cool slate neutrals, a single
-// cyan signal accent, and a steel-blue support tone. The glass tints stay —
-// the structure is unchanged — but they're re-tinted off the accent range
-// instead of the previous blue/pink/mint mix, which read consumer-social.
+/**
+ * Terminal palette.
+ *
+ * A black ground, one signal green, and hairline rules — the look of a
+ * security console rather than a chat app. The previous slate/cyan palette was
+ * already heading here ("security-console" in its own comment); this takes it
+ * the rest of the way.
+ *
+ * Contrast is computed, not eyeballed, and the numbers are recorded because
+ * the accent makes one of them a trap. #00ff41 is 15.38:1 on black and
+ * **1.37:1 on white** — the single brightest thing in the dark theme is
+ * invisible in a light one. So the two themes do not share an accent: light
+ * uses #0A7A2A (4.99:1 on its ground), which is the same hue reading as the
+ * same signal, and is the reason a light theme could be kept at all.
+ *
+ * The glass tokens are retuned rather than removed. GlassScreen/GlassView are
+ * used across ~30 screens, and deleting the layer would mean touching all of
+ * them; near-zero tints plus a visible hairline border make the same
+ * components render as flat panels with ruled edges, which is what the design
+ * asks for.
+ */
+
 const light = {
-  backdrop: '#EEF2F7',
-  background: 'rgba(244,247,251,0.85)',
-  surface: 'rgba(255,255,255,0.75)',
-  surfaceStrong: 'rgba(255,255,255,0.93)',
-  text: '#0B1220',
-  textSecondary: 'rgba(11,18,32,0.58)',
-  border: 'rgba(15,33,60,0.08)',
-  // Darkened accents: the dark-mode cyan fails contrast on a light canvas.
-  primary: '#0B7F9E',
-  // White on the deepened cyan: 4.62:1.
-  textOnPrimary: '#fff',
-  primaryLight: 'rgba(11,127,158,0.12)',
-  secondary: '#2F62B5',
-  success: '#0F8F63',
-  danger: '#C8353A',
-  warning: '#B8791F',
-  glassTint1: 'rgba(11,127,158,0.20)',
-  glassTint2: 'rgba(47,98,181,0.14)',
-  glassTint3: 'rgba(15,143,99,0.10)',
-  glassBorder: 'rgba(255,255,255,0.40)',
-  glassHighlight: 'rgba(255,255,255,0.50)',
-  shadow: 'rgba(15,33,60,0.10)',
-  inputBackground: 'rgba(15,33,60,0.05)',
-  separator: 'rgba(15,33,60,0.08)',
+  // Faintly green-biased neutrals: a pure grey next to this accent reads as
+  // unconsidered, a hint of the accent's hue reads as chosen.
+  backdrop: '#E9EDE9',
+  background: 'rgba(242,245,242,0.92)',
+  surface: 'rgba(255,255,255,0.86)',
+  surfaceStrong: '#FFFFFF',
+  text: '#0A0F0A',
+  textSecondary: 'rgba(10,15,10,0.56)',
+  border: 'rgba(10,15,10,0.14)',
+  // Not #00ff41: that is 1.37:1 here. 4.99:1 on the ground above.
+  primary: '#0A7A2A',
+  // White on the deep green: 5.48:1.
+  textOnPrimary: '#FFFFFF',
+  primaryLight: 'rgba(10,122,42,0.12)',
+  secondary: '#1F5C3A',
+  success: '#0A7A2A',
+  danger: '#B3261E',
+  // Terminal amber, darkened to carry on a light ground: 5.40:1.
+  warning: '#8A5A00',
+  glassTint1: 'rgba(10,122,42,0.07)',
+  glassTint2: 'rgba(31,92,58,0.05)',
+  glassTint3: 'rgba(10,122,42,0.03)',
+  glassBorder: 'rgba(10,15,10,0.16)',
+  glassHighlight: 'rgba(255,255,255,0.55)',
+  shadow: 'rgba(10,15,10,0.10)',
+  inputBackground: 'rgba(10,15,10,0.05)',
+  separator: 'rgba(10,15,10,0.12)',
   mediaOverlayBg: '#000',
   mediaOverlayText: '#fff',
   mediaOverlayBadge: 'rgba(0,0,0,0.5)',
   mediaOverlayBackdrop: 'rgba(0,0,0,0.9)',
   cardShadow: {
     shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 4},
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    shadowOffset: {width: 0, height: 1},
+    elevation: 1,
   },
 };
 
 const dark = {
-  backdrop: '#070B12',
-  background: 'rgba(10,15,23,0.90)',
-  surface: 'rgba(18,27,40,0.68)',
-  surfaceStrong: 'rgba(18,27,40,0.94)',
-  text: '#E3ECF7',
-  textSecondary: 'rgba(227,236,247,0.58)',
-  border: 'rgba(130,173,219,0.10)',
-  primary: '#16B5D8',
-  // Dark ink on the bright cyan: 8.10:1. White here would be 2.43:1 — a WCAG
-  // failure — so dark mode deliberately inverts the on-primary text.
-  textOnPrimary: '#070B12',
-  primaryLight: 'rgba(22,181,216,0.15)',
-  secondary: '#4C82D8',
-  success: '#1FB57E',
-  danger: '#E5484D',
-  warning: '#E8A33D',
-  glassTint1: 'rgba(22,181,216,0.22)',
-  glassTint2: 'rgba(76,130,216,0.16)',
-  glassTint3: 'rgba(31,181,126,0.10)',
-  glassBorder: 'rgba(130,173,219,0.12)',
-  glassHighlight: 'rgba(190,220,255,0.07)',
-  shadow: 'rgba(0,0,0,0.36)',
-  inputBackground: 'rgba(130,173,219,0.09)',
-  separator: 'rgba(130,173,219,0.07)',
+  // Pure black, not a near-black. The design depends on the ground being the
+  // absence of light so the green is the only thing emitting any.
+  backdrop: '#000000',
+  background: 'rgba(0,0,0,0.94)',
+  surface: 'rgba(10,10,10,0.86)',
+  surfaceStrong: '#0A0A0A',
+  text: '#FFFFFF',
+  // The mockup carries most of its text at 20–60% white. Anything below ~45%
+  // stops being readable as body copy, so this is the floor for real text;
+  // the fainter values live in component styles as decoration only.
+  textSecondary: 'rgba(255,255,255,0.48)',
+  border: '#222222',
+  // 15.38:1 on black.
+  primary: '#00FF41',
+  // Black on the green: 15.38:1. White here would be 1.37:1 — the inversion
+  // is not a preference, it is the only legible direction.
+  textOnPrimary: '#000000',
+  primaryLight: 'rgba(0,255,65,0.14)',
+  secondary: '#7CFFA8',
+  success: '#00FF41',
+  danger: '#FF4D4D',
+  warning: '#FFB000',
+  glassTint1: 'rgba(0,255,65,0.05)',
+  glassTint2: 'rgba(124,255,168,0.03)',
+  glassTint3: 'rgba(0,255,65,0.02)',
+  glassBorder: '#222222',
+  glassHighlight: 'rgba(0,255,65,0.06)',
+  shadow: 'rgba(0,0,0,0.8)',
+  inputBackground: 'rgba(255,255,255,0.04)',
+  separator: 'rgba(255,255,255,0.08)',
   mediaOverlayBg: '#000',
   mediaOverlayText: '#fff',
-  mediaOverlayBadge: 'rgba(0,0,0,0.5)',
-  mediaOverlayBackdrop: 'rgba(0,0,0,0.9)',
+  mediaOverlayBadge: 'rgba(0,0,0,0.6)',
+  mediaOverlayBackdrop: 'rgba(0,0,0,0.95)',
   cardShadow: {
     shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 4},
-    elevation: 4,
+    shadowOpacity: 0.6,
+    shadowRadius: 0,
+    shadowOffset: {width: 0, height: 0},
+    elevation: 0,
   },
 };
 

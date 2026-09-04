@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   sheet: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
     paddingHorizontal: 8,
     paddingTop: 8,
   },
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   cancel: {
     marginTop: 8,
     paddingVertical: 15,
-    borderRadius: 12,
+    borderRadius: 2,
     alignItems: 'center',
   },
   cancelText: {

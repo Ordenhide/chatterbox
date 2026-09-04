@@ -493,12 +493,12 @@ const styles = StyleSheet.create({
   },
   remoteVideo: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   remotePlaceholder: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     top: 80,
     width: 120,
     height: 160,
-    borderRadius: 8,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   controls: {
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 6,
     paddingVertical: 12,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
   },
   controlText: {
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 6,
     paddingVertical: 12,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
   },
   endButtonText: {

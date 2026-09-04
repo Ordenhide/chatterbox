@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 16,
     marginBottom: 8,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
   },
   hiddenEntryText: {fontSize: 14, fontWeight: '600'},
@@ -614,7 +614,7 @@ const styles = StyleSheet.create({
   newChatButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 2,
   },
   newChatText: {
     color: '#fff',
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     // would fight the height below rather than complement it. Legacy Yoga let
     // the explicit height win; Fabric gives the flex line priority, and the
     // field grew to fill the whole screen between the header and the list.
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 16,
     paddingVertical: 10,
     fontSize: 15,
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 18,
+    borderRadius: 2,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 12,
@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 52,
     height: 52,
-    borderRadius: 26,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   unreadBadge: {
     minWidth: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 7,

@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   list: {paddingHorizontal: 16, paddingTop: 12, paddingBottom: 100},
   card: {
     padding: 14,
-    borderRadius: 14,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     marginBottom: 10,
   },
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   voteBtn: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 10,
+    borderRadius: 2,
     alignItems: 'center',
     minWidth: 54,
   },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     right: 24,
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
   modalTitle: {fontSize: 20, fontWeight: '700', marginBottom: 18},
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: 14,
     fontSize: 16,
     marginBottom: 12,
   },
   modalActions: {flexDirection: 'row', gap: 12, marginTop: 8},
-  modalButton: {flex: 1, paddingVertical: 14, borderRadius: 14, alignItems: 'center'},
+  modalButton: {flex: 1, paddingVertical: 14, borderRadius: 2, alignItems: 'center'},
   modalButtonText: {color: '#fff', fontSize: 16, fontWeight: '700'},
   modalButtonTextDark: {fontSize: 16, fontWeight: '700'},
 });

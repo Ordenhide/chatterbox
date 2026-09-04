@@ -201,14 +201,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   panel: {
-    borderRadius: 24,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 20,
     gap: 14,
     marginBottom: 16,
   },
   input: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingHorizontal: 18,
     paddingVertical: 16,
     fontSize: 16,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   button: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingVertical: 17,
     alignItems: 'center',
     marginTop: 6,

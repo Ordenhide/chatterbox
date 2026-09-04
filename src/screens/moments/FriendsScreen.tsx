@@ -572,12 +572,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   sendButton: {
-    borderRadius: 8,
+    borderRadius: 2,
     paddingHorizontal: 14,
     justifyContent: 'center',
   },
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   },
   card: {
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 2,
     padding: 12,
     marginBottom: 10,
     shadowColor: '#000',
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
   actionButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 2,
     borderWidth: 1,
     borderColor: 'transparent',
   },

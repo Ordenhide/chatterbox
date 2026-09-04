@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   formCard: {
-    borderRadius: 22,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 20,
   },
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   input: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingHorizontal: 16,
     paddingVertical: 15,
     marginBottom: 18,
@@ -269,14 +269,14 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   button: {
-    borderRadius: 14,
+    borderRadius: 2,
     paddingVertical: 17,
     alignItems: 'center',
     marginTop: 4,
   },
   addButton: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingVertical: 10,
     alignItems: 'center',
     marginBottom: 12,
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   chipRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14},
   chip: {
     borderWidth: 1,
-    borderRadius: 999,
+    borderRadius: 2,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 380,
-    borderRadius: 24,
+    borderRadius: 2,
     borderWidth: 1,
     padding: 24,
     alignItems: 'center',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   emojiCircle: {
     width: 72,
     height: 72,
-    borderRadius: 36,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
   title: {fontSize: 22, fontWeight: '800', textAlign: 'center', marginBottom: 10},
   body: {fontSize: 15, lineHeight: 22, textAlign: 'center', marginBottom: 22},
   dots: {flexDirection: 'row', gap: 6, marginBottom: 24},
-  dot: {height: 6, borderRadius: 3},
+  dot: {height: 6, borderRadius: 2},
   actions: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: 12},
-  back: {flex: 1, paddingVertical: 13, borderRadius: 999, borderWidth: 1, alignItems: 'center'},
+  back: {flex: 1, paddingVertical: 13, borderRadius: 2, borderWidth: 1, alignItems: 'center'},
   backText: {fontSize: 15, fontWeight: '700'},
   backSpacer: {flex: 1},
-  next: {flex: 1, paddingVertical: 13, borderRadius: 999, alignItems: 'center'},
+  next: {flex: 1, paddingVertical: 13, borderRadius: 2, alignItems: 'center'},
   nextText: {fontSize: 15, fontWeight: '700', color: '#fff'},
 });

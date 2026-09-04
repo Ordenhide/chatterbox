@@ -1,0 +1,10 @@
+{
+  "description": "This professional web application offers a sleek UI for a security-focused mobile app, providing users with robust protection and a modern aesthetic.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

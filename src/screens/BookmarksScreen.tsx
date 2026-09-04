@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   card: {
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 16,
     marginBottom: 10,

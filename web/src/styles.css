@@ -1,48 +1,49 @@
 /* ==== Theme tokens ==================================================== */
 /* Dark is the default and the primary design target (security tooling is
    overwhelmingly dark-first); light overrides under [data-theme]. The palette
-   is deliberately restrained: one cyan signal accent + a steel-blue support
-   tone over cool slate neutrals. No magenta/violet — saturated "fun" hues read
-   as consumer-social and undercut the security posture. */
+   is a terminal palette: a black ground and one signal green, mirroring the
+   mobile app's theme/colors.ts. The two themes do NOT share an accent —
+   #00ff41 is 15.38:1 on black and 1.37:1 on white, so light substitutes
+   #0a7a2a (4.99:1) rather than carrying the same hex across. */
 :root {
-  --cb-canvas: #070b12;
-  --cb-text: #e3ecf7;
-  --cb-text-secondary: rgba(227, 236, 247, 0.58);
-  --cb-text-tertiary: rgba(227, 236, 247, 0.38);
-  --cb-placeholder: rgba(227, 236, 247, 0.34);
+  --cb-canvas: #000000;
+  --cb-text: #ffffff;
+  --cb-text-secondary: rgba(255, 255, 255, 0.48);
+  --cb-text-tertiary: rgba(255, 255, 255, 0.3);
+  --cb-placeholder: rgba(255, 255, 255, 0.22);
 
-  --cb-surface: rgba(130, 173, 219, 0.05);
-  --cb-surface-strong: rgba(14, 21, 32, 0.88);
-  --cb-menu-solid: #101927;
-  --cb-glass-border: rgba(130, 173, 219, 0.12);
-  --cb-hover: rgba(130, 173, 219, 0.07);
-  --cb-input-bg: rgba(130, 173, 219, 0.055);
-  --cb-border: rgba(130, 173, 219, 0.11);
-  --cb-border-strong: rgba(130, 173, 219, 0.2);
+  --cb-surface: rgba(255, 255, 255, 0.03);
+  --cb-surface-strong: #0a0a0a;
+  --cb-menu-solid: #0a0a0a;
+  --cb-glass-border: #222222;
+  --cb-hover: rgba(255, 255, 255, 0.04);
+  --cb-input-bg: rgba(255, 255, 255, 0.03);
+  --cb-border: #222222;
+  --cb-border-strong: #333333;
 
-  --cb-primary: #16b5d8;
-  --cb-primary-soft: #5ed2ea;
-  --cb-primary-light: rgba(22, 181, 216, 0.14);
-  --cb-secondary: #4c82d8;
-  --cb-success: #1fb57e;
-  --cb-danger: #e5484d;
-  /* Dark ink on the bright cyan fill: 8.10:1. White would be 2.43:1 — a WCAG
-     failure — which is why primary buttons are not white-on-cyan here. */
-  --cb-text-on-primary: #070b12;
+  --cb-primary: #00ff41;
+  --cb-primary-soft: #7cffa8;
+  --cb-primary-light: rgba(0, 255, 65, 0.14);
+  --cb-secondary: #7cffa8;
+  --cb-success: #00ff41;
+  --cb-danger: #ff4d4d;
+  /* Black on the signal green: 15.38:1. White would be 1.37:1 — a WCAG
+     failure — which is why primary buttons are not white-on-green here. */
+  --cb-text-on-primary: #000000;
 
-  --cb-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.78);
-  --cb-shadow-soft: 0 16px 40px -20px rgba(0, 0, 0, 0.6);
-  --cb-shadow-glow: 0 14px 36px -12px rgba(22, 181, 216, 0.42);
+  --cb-shadow: 0 0 0 1px rgba(0, 255, 65, 0.08);
+  --cb-shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --cb-shadow-glow: 0 0 24px -6px rgba(0, 255, 65, 0.5);
 
   /* Backdrop: two restrained glows + a blueprint grid, in place of the old
      drifting multi-hue aurora. Reads as instrumentation, not ambience. */
-  --cb-glow-1: rgba(22, 181, 216, 0.2);
-  --cb-glow-2: rgba(76, 130, 216, 0.16);
-  --cb-grid-line: rgba(130, 173, 219, 0.055);
+  --cb-glow-1: rgba(0, 255, 65, 0.1);
+  --cb-glow-2: rgba(124, 255, 168, 0.06);
+  --cb-grid-line: rgba(0, 255, 65, 0.045);
   --cb-grid-size: 44px;
   --cb-grain-opacity: 0.04;
-  --cb-scroll-thumb: rgba(130, 173, 219, 0.18);
-  --cb-scroll-thumb-hover: rgba(130, 173, 219, 0.3);
+  --cb-scroll-thumb: rgba(0, 255, 65, 0.22);
+  --cb-scroll-thumb-hover: rgba(0, 255, 65, 0.4);
 
   /* The three faces, matching the mobile app's theme/typography.ts. Technical
      metadata (timestamps, ids, status, counts) sets in mono. Each keeps a
@@ -54,29 +55,29 @@
 }
 
 :root[data-theme='light'] {
-  --cb-canvas: #eef2f7;
-  --cb-text: #0b1220;
-  --cb-text-secondary: rgba(11, 18, 32, 0.62);
-  --cb-text-tertiary: rgba(11, 18, 32, 0.42);
-  --cb-placeholder: rgba(11, 18, 32, 0.38);
+  --cb-canvas: #e9ede9;
+  --cb-text: #0a0f0a;
+  --cb-text-secondary: rgba(10, 15, 10, 0.56);
+  --cb-text-tertiary: rgba(10, 15, 10, 0.4);
+  --cb-placeholder: rgba(10, 15, 10, 0.36);
 
-  --cb-surface: rgba(255, 255, 255, 0.72);
-  --cb-surface-strong: rgba(255, 255, 255, 0.92);
+  --cb-surface: rgba(255, 255, 255, 0.86);
+  --cb-surface-strong: #ffffff;
   --cb-menu-solid: #ffffff;
-  --cb-glass-border: rgba(15, 33, 60, 0.1);
+  --cb-glass-border: rgba(10, 15, 10, 0.16);
   --cb-hover: rgba(15, 33, 60, 0.05);
   --cb-input-bg: rgba(15, 33, 60, 0.04);
-  --cb-border: rgba(15, 33, 60, 0.11);
-  --cb-border-strong: rgba(15, 33, 60, 0.2);
+  --cb-border: rgba(10, 15, 10, 0.14);
+  --cb-border-strong: rgba(10, 15, 10, 0.24);
 
-  /* Darkened accents: the dark-mode cyan fails contrast on a light canvas. */
-  --cb-primary: #0b7f9e;
-  --cb-primary-soft: #0b7f9e;
-  --cb-primary-light: rgba(11, 127, 158, 0.12);
-  --cb-secondary: #2f62b5;
-  --cb-success: #0f8f63;
-  --cb-danger: #c8353a;
-  /* Light mode inverts: white on the deepened cyan is 4.62:1. */
+  /* A different green, not a dimmed one: #00ff41 is 1.37:1 here. */
+  --cb-primary: #0a7a2a;
+  --cb-primary-soft: #1f5c3a;
+  --cb-primary-light: rgba(10, 122, 42, 0.12);
+  --cb-secondary: #1f5c3a;
+  --cb-success: #0a7a2a;
+  --cb-danger: #b3261e;
+  /* White on the deep green: 5.48:1. */
   --cb-text-on-primary: #ffffff;
 
   --cb-shadow: 0 30px 70px -28px rgba(15, 33, 60, 0.26);
@@ -211,7 +212,7 @@ button:focus-visible {
    technical tooling, where pills read as consumer-social. */
 .btn {
   border: none;
-  border-radius: 10px;
+  border-radius: 2px;
   font-weight: 650;
   letter-spacing: 0.01em;
   cursor: pointer;
@@ -259,7 +260,7 @@ button:focus-visible {
   align-items: center;
   gap: 12px;
   padding: 11px 12px;
-  border-radius: 10px;
+  border-radius: 2px;
   border: none;
   text-align: left;
   background: transparent;
@@ -311,7 +312,7 @@ button:focus-visible {
 .rail-btn {
   width: 62px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 2px;
   border: none;
   background: transparent;
   color: var(--cb-text-secondary);
@@ -396,7 +397,7 @@ button:focus-visible {
 }
 .scroll::-webkit-scrollbar-thumb {
   background: var(--cb-scroll-thumb);
-  border-radius: 6px;
+  border-radius: 2px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
@@ -457,7 +458,7 @@ button:focus-visible {
   align-items: center;
   gap: 10px;
   padding: 11px 16px;
-  border-radius: 14px;
+  border-radius: 2px;
   font-size: 14px;
   font-weight: 600;
   color: var(--cb-text);
@@ -528,7 +529,7 @@ button:focus-visible {
 .lightbox img {
   max-width: 100%;
   max-height: 100%;
-  border-radius: 12px;
+  border-radius: 2px;
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
 }
 .lightbox-close {
@@ -637,7 +638,7 @@ button:focus-visible {
   z-index: 8;
   margin: 12px;
   border: 2px dashed var(--cb-primary);
-  border-radius: 18px;
+  border-radius: 2px;
   background: rgba(22, 181, 216, 0.12);
   display: flex;
   align-items: center;

@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   container: {flex: 1},
   list: {padding: 16, paddingBottom: 100},
   card: {
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     padding: 16,
     marginBottom: 12,
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   rsvpBtn: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     alignItems: 'center',
   },
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     right: 24,
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   sectionLabel: {fontSize: 13, fontWeight: '600', marginBottom: 6, marginTop: 4},
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: 14,
     fontSize: 16,
     marginBottom: 12,
@@ -352,14 +352,14 @@ const styles = StyleSheet.create({
   emojiChip: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: 2,
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   emojiChipText: {fontSize: 22},
   modalActions: {flexDirection: 'row', gap: 12, marginTop: 8},
-  modalButton: {flex: 1, paddingVertical: 14, borderRadius: 14, alignItems: 'center'},
+  modalButton: {flex: 1, paddingVertical: 14, borderRadius: 2, alignItems: 'center'},
   modalButtonText: {color: '#fff', fontSize: 16, fontWeight: '700'},
   modalButtonTextDark: {fontSize: 16, fontWeight: '700'},
 });

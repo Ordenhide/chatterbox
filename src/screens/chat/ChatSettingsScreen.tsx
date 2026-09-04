@@ -594,7 +594,7 @@ export default function ChatSettingsScreen() {
               key={opt.hours}
               style={[
                 styles.themeDot,
-                {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, width: 'auto' as any, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6},
+                {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, width: 'auto' as any, borderRadius: 2, paddingHorizontal: 10, paddingVertical: 6},
                 expiryHours === opt.hours && {borderColor: colors.primary, backgroundColor: colors.primary + '20'},
               ]}
               onPress={async () => {
@@ -729,7 +729,7 @@ const styles = StyleSheet.create({
   },
   section: {
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
     marginHorizontal: 16,
     marginTop: 12,
@@ -758,7 +758,7 @@ const styles = StyleSheet.create({
   themeDot: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
   modalInput: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     padding: 12,
     textAlignVertical: 'top',
   },
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 2,
     alignItems: 'center',
   },
   modalButtonText: {
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 6,
+    borderRadius: 2,
     borderWidth: 1,
   },
   clearNameText: {
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 12,
+    borderRadius: 2,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,

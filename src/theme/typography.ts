@@ -6,8 +6,13 @@
  * effect. The palette, the motion system and the glass layer were all
  * designed; the type never was.
  *
- *   Chakra Petch   display — squared terminals and tight apertures, technical
- *                  without tipping into the sci-fi costume Orbitron wears.
+ *   Chakra Petch   display — squared terminals and tight apertures. This was
+ *                  originally chosen *because* it stops short of the sci-fi
+ *                  costume Orbitron wears; the terminal redesign deliberately
+ *                  goes there, and Chakra Petch Bold carries it. Orbitron
+ *                  itself stays unbundled: adding a face means shipping the
+ *                  file and rebuilding natively, and at display sizes the two
+ *                  are close enough that the rebuild buys very little.
  *   IBM Plex Sans  body — drawn for technical products, still warm enough to
  *                  read as conversation at message sizes.
  *   IBM Plex Mono  data — same superfamily as the body face, so a timestamp
@@ -77,3 +82,45 @@ export function bodyWeight(weight?: string | number): string {
   if (numeric >= 500) return fonts.body.medium;
   return fonts.body.regular;
 }
+
+/**
+ * The terminal type scale.
+ *
+ * Small, wide-tracked, uppercase monospace is the redesign's signature — it is
+ * what makes a row of metadata read as instrument output rather than as small
+ * body text. Sizes are genuinely tiny (8–11px) because tracking, not size, is
+ * doing the work; at these sizes letterSpacing below ~1.5 turns the label back
+ * into ordinary small text.
+ *
+ * `micro` and `label` are decoration and metadata only. Body copy never gets
+ * uppercased — a message is read, not scanned, and all-caps costs real reading
+ * speed for anything longer than a few words.
+ */
+export const terminal = {
+  /** Section eyebrows, status strips, cipher footers. */
+  micro: {
+    fontFamily: fonts.mono.regular,
+    fontSize: 8,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  /** Field labels, buttons, tab titles. */
+  label: {
+    fontFamily: fonts.mono.medium,
+    fontSize: 10,
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
+  },
+  /** Handles, key fingerprints, timestamps — mono, but not shouted. */
+  data: {
+    fontFamily: fonts.mono.regular,
+    fontSize: 11,
+    letterSpacing: 0.6,
+  },
+  /** The wordmark and numeric readouts. */
+  display: {
+    fontFamily: fonts.display.bold,
+    fontSize: 18,
+    letterSpacing: 3,
+  },
+} as const;
