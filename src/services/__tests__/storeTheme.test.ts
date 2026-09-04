@@ -17,7 +17,7 @@ jest.mock('../firebase/firestore', () => ({
   getDocs: jest.fn(async () => ({docs: mockState.chatIds.map(id => ({id}))})),
   getFirestore: () => ({}),
   onSnapshot: (_ref: unknown, next: (s: unknown) => void) => {
-    next({data: () => ({storeThemeId: 'midnight'})});
+    next({data: () => ({storeThemeId: 'sky'})});
     return () => {};
   },
   query: (ref: unknown, ..._clauses: unknown[]) => ref,
@@ -45,9 +45,15 @@ import {
   resolveAccent,
   storeThemeFromProfile,
 } from '../storeTheme';
-import {THEME_CATALOG, themeById} from '../themeCatalog';
+import {
+  ACCENT_INK_DARK,
+  activeThemeId,
+  inkOn,
+  THEME_CATALOG,
+  themeById,
+} from '../themeCatalog';
 
-const MIDNIGHT = themeById('midnight')!;
+const SKY = themeById('sky')!;
 const CLASSIC = themeById('classic')!;
 
 beforeEach(() => {
@@ -90,11 +96,28 @@ describe('resolveAccent', () => {
   it('treats an empty string as unset', () => {
     expect(resolveAccent('', '#222222', '#333333')).toBe('#222222');
   });
+
+  /**
+   * The guarantee that made trimming the catalog from twelve to six safe.
+   *
+   * #818CF8 was Midnight. Anyone who applied it still has that hex sitting in
+   * `chat.themeBy[uid]`, and the store wrote it there as a colour, never as a
+   * catalog id — so the chat goes on rendering exactly as it did. All it loses
+   * is its *name*: activeThemeId stops finding an entry, and the Store shows
+   * nothing applied until the user picks again. Stated as a test because it is
+   * the whole reason removing an accent is not a migration.
+   */
+  it('keeps rendering a chat whose accent was dropped from the catalog', () => {
+    const dropped = '#818CF8';
+    expect(activeThemeId(dropped)).toBeUndefined();
+    expect(resolveAccent(dropped, CLASSIC.accent, '#333333')).toBe(dropped);
+    expect(inkOn(dropped)).toBe(ACCENT_INK_DARK);
+  });
 });
 
 describe('storeThemeFromProfile', () => {
   it('resolves a stored id to its catalog entry', () => {
-    expect(storeThemeFromProfile('midnight')?.name).toBe('Midnight');
+    expect(storeThemeFromProfile('sky')?.name).toBe('Sky');
   });
 
   it('ignores ids that are not in the catalog', () => {
@@ -104,30 +127,30 @@ describe('storeThemeFromProfile', () => {
   it('ignores non-string values without throwing', () => {
     expect(storeThemeFromProfile(undefined)).toBeUndefined();
     expect(storeThemeFromProfile(42)).toBeUndefined();
-    expect(storeThemeFromProfile({id: 'midnight'})).toBeUndefined();
+    expect(storeThemeFromProfile({id: 'sky'})).toBeUndefined();
   });
 });
 
 describe('applyStoreTheme', () => {
   it('records the account default before touching any chat', async () => {
     mockState.chatIds = ['a', 'b'];
-    await applyStoreTheme('uid1', MIDNIGHT);
-    expect(mockState.setDocCalls).toEqual([{path: 'uid1', data: {storeThemeId: 'midnight'}}]);
+    await applyStoreTheme('uid1', SKY);
+    expect(mockState.setDocCalls).toEqual([{path: 'uid1', data: {storeThemeId: 'sky'}}]);
   });
 
   it('overwrites the accent in every chat the user is in', async () => {
     mockState.chatIds = ['a', 'b', 'c'];
-    const count = await applyStoreTheme('uid1', MIDNIGHT);
+    const count = await applyStoreTheme('uid1', SKY);
 
     expect(count).toBe(3);
     const sets = mockState.batches.flatMap(b => b.sets);
     expect(sets.map(s => s.path)).toEqual(['a', 'b', 'c']);
-    expect(sets[0].data).toEqual({themeBy: {uid1: MIDNIGHT.accent}});
+    expect(sets[0].data).toEqual({themeBy: {uid1: SKY.accent}});
   });
 
   it('writes only the acting user key, never another participant', async () => {
     mockState.chatIds = ['a'];
-    await applyStoreTheme('uid1', MIDNIGHT);
+    await applyStoreTheme('uid1', SKY);
     const {themeBy} = mockState.batches[0].sets[0].data as {
       themeBy: Record<string, string>;
     };
@@ -147,7 +170,7 @@ describe('applyStoreTheme', () => {
 
   it('commits every batch when the chat count spans several', async () => {
     mockState.chatIds = Array.from({length: 401}, (_, i) => `c${i}`);
-    const count = await applyStoreTheme('uid1', MIDNIGHT);
+    const count = await applyStoreTheme('uid1', SKY);
     expect(count).toBe(401);
     expect(mockState.batches).toHaveLength(2);
     expect(mockState.batches.every(b => b.committed)).toBe(true);
@@ -155,7 +178,7 @@ describe('applyStoreTheme', () => {
 
   it('still records the default when the user has no chats yet', async () => {
     mockState.chatIds = [];
-    const count = await applyStoreTheme('uid1', MIDNIGHT);
+    const count = await applyStoreTheme('uid1', SKY);
     expect(count).toBe(0);
     expect(mockState.batches).toHaveLength(0);
     expect(mockState.setDocCalls).toHaveLength(1);
@@ -166,7 +189,7 @@ describe('listenStoreTheme', () => {
   it('hands back the catalog entry for the stored id', () => {
     const seen: unknown[] = [];
     listenStoreTheme('uid1', theme => seen.push(theme));
-    expect(seen).toEqual([themeById('midnight')]);
+    expect(seen).toEqual([themeById('sky')]);
   });
 });
 
@@ -189,12 +212,6 @@ describe('catalog integrity', () => {
       'amber',
       'rose',
       'slate',
-      'midnight',
-      'sunset',
-      'matcha',
-      'lavender',
-      'ember',
-      'arctic',
     ]);
   });
 });

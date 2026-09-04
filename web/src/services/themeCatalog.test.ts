@@ -38,7 +38,7 @@ describe('THEME_CATALOG', () => {
 
 describe('themeById / activeThemeId', () => {
   it('finds a theme by id', () => {
-    expect(themeById('midnight')?.name).toBe('Midnight');
+    expect(themeById('sky')?.name).toBe('Sky');
     expect(themeById('nope')).toBeUndefined();
   });
 

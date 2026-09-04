@@ -28,17 +28,17 @@ describe('the theme catalog', () => {
   });
 
   it('looks a theme up by id', () => {
-    expect(themeById('midnight')?.accent).toBe('#818CF8');
+    expect(themeById('sky')?.accent).toBe('#0EA5E9');
     expect(themeById('no-such-theme')).toBeUndefined();
   });
 
   describe('activeThemeId', () => {
     it('names the catalog entry a stored accent came from', () => {
-      expect(activeThemeId('#818CF8')).toBe('midnight');
+      expect(activeThemeId('#0EA5E9')).toBe('sky');
     });
 
     it('matches case-insensitively — stored values are free-form strings', () => {
-      expect(activeThemeId('#818cf8')).toBe('midnight');
+      expect(activeThemeId('#0ea5e9')).toBe('sky');
     });
 
     it('is undefined for an accent that is not in the catalog, and for none', () => {
@@ -55,8 +55,11 @@ describe('the theme catalog', () => {
  * The palette's `textOnPrimary` inverts with the dark/light mode, because the
  * two themes' own primaries do. A store accent is the same hex in both modes,
  * so taking its ink from the mode is unrelated to what the text sits on — and
- * it failed: white on Arctic (#22D3EE) is 1.81:1, and 11 of the 12 catalog
- * accents were unreadable that way in light mode.
+ * it failed: white on Arctic (#22D3EE) is 1.81:1, and 11 of the 12 accents
+ * the catalog carried at the time were unreadable that way in light mode.
+ * Arctic has since been dropped from the catalog, but it stays here as a
+ * regression input — the per-chat picker writes free-form hexes, so `inkOn`
+ * still has to be right for accents no catalog ever listed.
  */
 describe('inkOn', () => {
   const luminance = (hex: string) => {

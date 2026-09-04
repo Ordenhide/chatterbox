@@ -459,9 +459,10 @@ export default function ChatScreen() {
    * it inverts with the mode because the two themes' primaries do. A store
    * accent does not: it is the same hex in dark and light, so taking its ink
    * from the mode put white text on Arctic (#22D3EE) at 1.81:1 — and 11 of
-   * the 12 catalog accents failed the same way in light mode. Read the ink
-   * off the fill instead, and it is right for any accent, including ones the
-   * catalog has never heard of.
+   * the 12 accents the catalog carried then failed the same way in light
+   * mode. Read the ink off the fill instead, and it is right for any accent,
+   * including ones the catalog has never heard of — which now includes
+   * Arctic itself, and every colour the per-chat picker can write.
    *
    * With no accent set the bubble is filled with `colors.text`, which is
    * exactly what `textOnPrimary` was designed against — so that case keeps

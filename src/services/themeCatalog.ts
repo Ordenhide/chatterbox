@@ -22,9 +22,21 @@ export interface StoreTheme {
 }
 
 /**
- * Twelve hand-curated accents. The six/six split of light and dark values is
- * preserved from when each was paired with a matching wallpaper; without the
- * backgrounds it is simply variety.
+ * Six hand-curated accents — one per hue the app needs to tell apart.
+ *
+ * There were twelve. The second six (Midnight, Sunset, Matcha, Lavender,
+ * Ember, Arctic) were the light halves of a six/six split that existed only
+ * because each accent was once paired with a matching wallpaper. The
+ * wallpapers are gone, and with no background to pair against, a lighter
+ * Classic sitting next to Classic is not a choice, it is a near-duplicate:
+ * Midnight (#818CF8) and Lavender (#A78BFA) are both Classic (#6366F1),
+ * Arctic (#22D3EE) is Sky, Ember (#F97316) is Amber, Sunset (#FB7185) is
+ * Rose, Matcha (#84CC16) is Forest pulled toward yellow.
+ *
+ * Removing them cannot break a chat that has one applied. The accent is
+ * stored on the chat as a hex value, never as a catalog id, so such a chat
+ * keeps rendering exactly as it did; `activeThemeId` simply stops finding a
+ * name for it and the Store shows nothing applied until the user picks again.
  */
 export const THEME_CATALOG: StoreTheme[] = [
   {id: 'classic', name: 'Classic', accent: '#6366F1'},
@@ -33,12 +45,6 @@ export const THEME_CATALOG: StoreTheme[] = [
   {id: 'amber', name: 'Amber', accent: '#F59E0B'},
   {id: 'rose', name: 'Rose', accent: '#EC4899'},
   {id: 'slate', name: 'Slate', accent: '#64748B'},
-  {id: 'midnight', name: 'Midnight', accent: '#818CF8'},
-  {id: 'sunset', name: 'Sunset', accent: '#FB7185'},
-  {id: 'matcha', name: 'Matcha', accent: '#84CC16'},
-  {id: 'lavender', name: 'Lavender', accent: '#A78BFA'},
-  {id: 'ember', name: 'Ember', accent: '#F97316'},
-  {id: 'arctic', name: 'Arctic', accent: '#22D3EE'},
 ];
 
 export function themeById(id: string): StoreTheme | undefined {
