@@ -23,6 +23,12 @@ import {
 import {getStorage, getDownloadURL, ref, deleteObject, uploadFileFromUri} from './firebase/storage';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './telemetry';
+import {
+  isPermissionDenied,
+  logError,
+  logListenerError,
+  onListenerError,
+} from './listenerErrors';
 import {stripUndefined} from './firestoreValues';
 import {isStealthMode} from './privacyGuard';
 import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
@@ -48,43 +54,6 @@ function userCacheSet(key: string, value: Promise<User | null>) {
   }
   userCache.set(key, value);
 }
-
-const isPermissionDenied = (error: any) =>
-  error?.code === 'firestore/permission-denied' || error?.code === 'permission-denied';
-
-const logError = (error: unknown, context: string) => {
-  if (__DEV__) {
-    console.error(context, error);
-  }
-  reportError(error, context);
-};
-
-/**
- * Error handling for a *listener*, which differs from a one-shot call.
- *
- * Deleting or leaving a chat revokes read access while listeners are still
- * attached — the rules' isChatParticipant() reads the chat document, which by
- * then is gone — so every listener on that chat terminates with
- * permission-denied. That is a listener's normal end of life, not a fault.
- * Reporting it would raise a red error screen during an ordinary delete and
- * bury genuine failures in Crashlytics under noise from routine use.
- *
- * Three listeners here already did this inline and three did not (listenChat
- * among them, which is how deleting a chat surfaced an error). Sharing one
- * helper is what stops the next listener from missing it.
- *
- * Anything that is *not* permission-denied is still a real failure and is
- * reported as before.
- */
-const logListenerError = (error: unknown, context: string) => {
-  if (isPermissionDenied(error)) {
-    if (__DEV__) {
-      console.warn(`${context}: listener closed — access revoked (chat deleted or session ended)`);
-    }
-    return;
-  }
-  logError(error, context);
-};
 
 const deleteCollectionInBatches = async (colRef: any, ...constraints: any[]) => {
   let iterations = 0;
@@ -294,10 +263,9 @@ export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[])
   return onSnapshot(
     query(chatsRef(), where('participants', 'array-contains', userId), orderBy('updatedAt', 'desc')),
     snapshot => {
-      if (!snapshot) {
-        callback([]);
-        return;
-      }
+      // No snapshot object at all is "no result", not "no chats" — same
+      // distinction onListenerError draws below.
+      if (!snapshot) return;
       const chats = snapshot.docs.map(docSnap => ({
         id: docSnap.id,
         ...docSnap.data(),
@@ -305,8 +273,7 @@ export function listenChatsForUser(userId: string, callback: (chats: ChatRoom[])
       callback(chats);
     },
     error => {
-      logListenerError(error, 'listenChatsForUser');
-      callback([]);
+      onListenerError(error, 'listenChatsForUser', () => callback([]));
     },
   );
 }
@@ -321,10 +288,8 @@ export function listenMessages(chatId: string, callback: (messages: Message[]) =
   return onSnapshot(
     query(messagesRef, orderBy('createdAt', 'desc'), limit(50)),
     snapshot => {
-      if (!snapshot) {
-        callback([]);
-        return;
-      }
+      // No snapshot object at all is "no result", not "no messages".
+      if (!snapshot) return;
       const messages = snapshot.docs.map(docSnap => ({
         _id: docSnap.id,
         ...docSnap.data(),
@@ -333,8 +298,7 @@ export function listenMessages(chatId: string, callback: (messages: Message[]) =
       callback(messages);
     },
     error => {
-      logListenerError(error, 'listenMessages');
-      callback([]);
+      onListenerError(error, 'listenMessages', () => callback([]));
     },
   );
 }
@@ -372,8 +336,7 @@ export function listenChat(chatId: string, callback: (chat: ChatRoom | null) => 
       callback({...(snapshot.data() as ChatRoom), id: snapshot.id});
     },
     error => {
-      logListenerError(error, 'listenChat');
-      callback(null);
+      onListenerError(error, 'listenChat', () => callback(null));
     },
   );
 }
@@ -819,8 +782,7 @@ export function listenCall(
       callback({...(snapshot.data() as CallSession), id: snapshot.id});
     },
     error => {
-      logListenerError(error, 'listenCall');
-      callback(null);
+      onListenerError(error, 'listenCall', () => callback(null));
     },
   );
 }
@@ -840,8 +802,7 @@ export function listenLatestCall(
       callback({...(docSnap.data() as CallSession), id: docSnap.id});
     },
     error => {
-      logListenerError(error, 'listenLatestCall');
-      callback(null);
+      onListenerError(error, 'listenLatestCall', () => callback(null));
     },
   );
 }

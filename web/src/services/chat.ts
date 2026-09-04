@@ -19,6 +19,7 @@ import {
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import {db} from '../firebase';
+import {onListenerError} from './listenerErrors';
 import {deleteQueryInChunks} from './firestoreBatch';
 import {MAX_GROUP_MEMBERS} from './e2ee';
 import {assertRecipientReachable} from './recipient';
@@ -69,10 +70,7 @@ export function listenChatsForUser(userId: string, cb: (chats: ChatRoom[]) => vo
   return onSnapshot(
     q,
     snap => cb(snap.docs.map(d => ({id: d.id, ...(d.data() as Omit<ChatRoom, 'id'>)}))),
-    err => {
-      console.warn('listenChatsForUser error:', err.message);
-      cb([]);
-    },
+    err => onListenerError(err, 'listenChatsForUser', () => cb([])),
   );
 }
 
@@ -188,10 +186,7 @@ export function listenMessages(
       const oldest = snap.docs.length ? snap.docs[snap.docs.length - 1] : null;
       cb(messages, oldest, snap.docs.length === MESSAGE_PAGE_SIZE);
     },
-    err => {
-      console.warn('listenMessages error:', err.message);
-      cb([], null, false);
-    },
+    err => onListenerError(err, 'listenMessages', () => cb([], null, false)),
   );
 }
 
