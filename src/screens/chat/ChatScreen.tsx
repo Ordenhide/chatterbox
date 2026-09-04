@@ -65,12 +65,10 @@ import {
   type LiveLocationShare,
 } from '../../services/liveLocation';
 import {isProActive, listenEntitlement, type Entitlement} from '../../services/entitlement';
-import {listenStoreTheme, resolveAccent} from '../../services/storeTheme';
 import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
 import {isAiConsentError} from '../../services/aiConsent';
 import {promptAiConsent} from '../../utils/aiConsentPrompt';
 import {safeExternalUrl} from '../../utils/safeUrl';
-import {inkOn, type StoreTheme} from '../../services/themeCatalog';
 import {avatarNeutral, getInitials} from '../../utils/avatar';
 import type {Edge} from 'react-native-safe-area-context';
 import {getCurrentPosition, watchMyPosition, LocationError} from '../../utils/geolocation';
@@ -362,7 +360,6 @@ export default function ChatScreen() {
   // '' means "this chat has no accent of its own", which is different from
   // any particular colour and is why the default is not a hex here. It used to
   // be #007AFF — iOS blue, belonging to neither the old palette nor this one.
-  const [themeColor, setThemeColor] = useState<string>('');
   const [isLoadingEarlier, setIsLoadingEarlier] = useState(false);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const [oldestCursor, setOldestCursor] = useState<any | null>(null);
@@ -391,8 +388,6 @@ export default function ChatScreen() {
   // The chat's own stored accent, kept raw (undefined = never set) so the
   // account-wide Store theme can fill in for chats created after it was
   // applied.
-  const [chatAccent, setChatAccent] = useState<string | undefined>(undefined);
-  const [storeTheme, setStoreTheme] = useState<StoreTheme | undefined>(undefined);
   const [dictating, setDictating] = useState(false);
   const [dictationSeconds, setDictationSeconds] = useState(0);
   const [contextCards, setContextCards] = useState<Record<string, ContextCard[]>>({});
@@ -479,23 +474,6 @@ export default function ChatScreen() {
       applyScreenshotProtection(false);
     };
   }, []);
-  /**
-   * Ink for anything filled with the chat's accent.
-   *
-   * `colors.textOnPrimary` is the palette's answer for `colors.primary`, and
-   * it inverts with the mode because the two themes' primaries do. A store
-   * accent does not: it is the same hex in dark and light, so taking its ink
-   * from the mode put white text on Arctic (#22D3EE) at 1.81:1 — and 11 of
-   * the 12 accents the catalog carried then failed the same way in light
-   * mode. Read the ink off the fill instead, and it is right for any accent,
-   * including ones the catalog has never heard of — which now includes
-   * Arctic itself, and every colour the per-chat picker can write.
-   *
-   * With no accent set the bubble is filled with `colors.text`, which is
-   * exactly what `textOnPrimary` was designed against — so that case keeps
-   * using it rather than being re-derived.
-   */
-  const accentInk = themeColor ? inkOn(themeColor) : colors.textOnPrimary;
 
   const navigation = useNavigation<any>();
   const route = useRoute();
@@ -845,15 +823,6 @@ export default function ChatScreen() {
   // Account-wide Store theme, and the appearance actually rendered. Kept as a
   // separate effect so a theme applied in the Store repaints an already-open
   // chat without waiting for a chat-document write to arrive.
-  useEffect(() => {
-    if (!user) return;
-    return listenStoreTheme(user.uid, setStoreTheme);
-  }, [user]);
-
-  useEffect(() => {
-    setThemeColor(resolveAccent(chatAccent, storeTheme?.accent, ''));
-  }, [chatAccent, storeTheme]);
-
   useEffect(() => {
     return () => {
       if (cacheWriteTimeoutRef.current) {
@@ -1931,10 +1900,6 @@ export default function ChatScreen() {
           setOtherLastReadAt(chat.lastReadAt?.[otherId] || 0);
         }
         setPinnedMessageIds(chat.pinnedMessageIds || []);
-        // Raw stored values only — the account-wide Store theme is folded in
-        // by the effect below, which also reruns when that theme changes.
-        setChatAccent(chat.themeBy?.[user.uid]);
-
         const typingAt = chat.typingBy?.[otherId || ''] || 0;
         if (typingAt && Date.now() - typingAt < 3000) {
           setIsTyping(true);
@@ -3776,11 +3741,10 @@ export default function ChatScreen() {
       // the chat accent normally, colors.primary while selected — which is
       // what textOnPrimary was designed against.
       const isSelected = msgSelectMode && msgSelected.has(msgId);
-      const baseColor = isOutgoing
-        ? isSelected
-          ? colors.textOnPrimary
-          : accentInk
-        : colors.text;
+      // Outgoing bubbles are filled with colors.text and textOnPrimary is the
+      // palette's answer for that fill, so both branches land on the same ink;
+      // the conditional is kept because the *fill* still differs when selected.
+      const baseColor = isOutgoing ? colors.textOnPrimary : colors.text;
       const mentionColor = isOutgoing ? colors.warning : colors.primary;
 
       if (current.invisibleInk && !revealedMessages.has(msgId)) {
@@ -3854,7 +3818,6 @@ export default function ChatScreen() {
       );
     },
     [
-      accentInk,
       colors.primary,
       colors.text,
       colors.textOnPrimary,
@@ -4385,7 +4348,7 @@ export default function ChatScreen() {
                 // mean status rather than authorship. A chat with its own
                 // accent from the theme store still wins.
                 right: {
-                  backgroundColor: isSelected ? colors.primary : themeColor || colors.text,
+                  backgroundColor: isSelected ? colors.primary : colors.text,
                 },
                 // A ruled edge instead of a fill, so incoming messages sit on
                 // the ground rather than floating above it.
@@ -4634,7 +4597,7 @@ export default function ChatScreen() {
         </View>
       </SwipeToReply>
     );
-  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, themeColor, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected]);
+  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected]);
 
   // GiftedChat keys the accessory bar off whether this *prop is passed*, not off
   // what it returns: InputToolbar renders a fixed 44dp <View> around it, and

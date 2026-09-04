@@ -29,7 +29,6 @@ export interface ChatRoom {
   typingBy?: Record<string, number>;
   lastReadAt?: Record<string, number>;
   // Per-user chat appearance (matches mobile ChatSettings).
-  themeBy?: Record<string, string>;
   // Disappearing-messages policy (hours; 0/undefined = off). Matches mobile.
   messageExpiry?: number;
   // When the current disappearing-messages policy was enabled (epoch ms). The

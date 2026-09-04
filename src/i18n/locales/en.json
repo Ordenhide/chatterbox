@@ -50,15 +50,8 @@
   },
   "store": {
     "title": "Store",
-    "subtitle": "Themes and upgrades for every conversation.",
-    "themes": "Themes",
-    "themesDesc": "Applies to all your chats.",
-    "applied": "{{name}} applied to {{count}} chats.",
-    "appliedOne": "{{name}} applied to 1 chat.",
-    "appliedNone": "{{name}} applied. It will be used by new chats.",
-    "appliedTag": "APPLIED",
-    "openStore": "Open Store",
-    "themeMovedHint": "Themes now live in the Store."
+    "subtitle": "Upgrades for your account.",
+    "openStore": "Open Store"
   },
   "headers": {
     "chats": "Chats",
@@ -525,7 +518,6 @@
   },
   "chatSettings": {
     "notifications": "Notifications",
-    "theme": "Theme",
     "muteChat": "Mute Chat",
     "unmuteChat": "Unmute Chat",
     "recipientName": "Recipient Name",

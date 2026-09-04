@@ -103,16 +103,6 @@ export default function ChatSettingsModal({
             </span>
           </button>
 
-          {/* Theming is account-wide and lives in the Store. This section is
-              now only the signpost to it — the per-chat swatches that used to
-              sit here were a second, different palette that disagreed with
-              both the catalog and the mobile client's own third one. */}
-          <div style={styles.section}>
-            <div style={styles.label}>{t('chatSettings.theme')}</div>
-            <button style={styles.storeLink} onClick={() => (window.location.hash = '#/store')}>
-              {t('store.themeMovedHint')} {t('store.openStore')} →
-            </button>
-          </div>
 
           {/* Disappearing messages */}
           <div style={styles.section}>

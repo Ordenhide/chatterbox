@@ -357,7 +357,6 @@ export async function createChat(participants: string[], name?: string) {
       mutedBy: [],
       pinnedMessageIds: [],
       lastReadAt: {},
-      themeBy: {},
       typingBy: {},
     });
     return ref.id;

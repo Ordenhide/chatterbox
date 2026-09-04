@@ -303,7 +303,6 @@
   },
   "chatSettings": {
     "notifications": "Notificaciones",
-    "theme": "Tema",
     "muteChat": "Silenciar chat",
     "unmuteChat": "Activar sonido del chat",
     "recipientName": "Nombre del destinatario",

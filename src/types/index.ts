@@ -321,7 +321,6 @@ export interface ChatRoom {
   mutedBy?: string[];
   /** Per-user hidden flag — see services/hiddenChats.ts. */
   hiddenBy?: string[];
-  themeBy?: Record<string, string>;
   typingBy?: Record<string, number>;
   unreadCountBy?: Record<string, number>;
   pet?: ChatPet;

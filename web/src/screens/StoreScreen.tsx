@@ -10,24 +10,16 @@
  * categories with real content ship — an empty "coming soon" shelf is worse
  * than no shelf.
  */
-import {useCallback, useEffect, useState} from 'react';
-import type {User} from 'firebase/auth';
+import React, {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useT} from '../i18n';
-import {useToast} from '../context/ToastContext';
 import {useEntitlement} from '../context/EntitlementContext';
-import {useAccountTheme} from '../context/StoreThemeContext';
 import {createBillingPortalSession, createCheckoutSession, type ProPlan} from '../services/billing';
-import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
-import {applyStoreTheme} from '../services/storeTheme';
 
-export default function StoreScreen({user}: {user: User}) {
+export default function StoreScreen() {
   const {t} = useT();
-  const toast = useToast();
   const {isPro, entitlement} = useEntitlement();
 
-  const applied = useAccountTheme();
-  const [applyingId, setApplyingId] = useState<string | null>(null);
   const [billingBusy, setBillingBusy] = useState(false);
   const [billingError, setBillingError] = useState<string | null>(null);
 
@@ -62,25 +54,6 @@ export default function StoreScreen({user}: {user: User}) {
     return () => window.removeEventListener('pageshow', onPageShow);
   }, []);
 
-  const applyTheme = useCallback(
-    async (theme: StoreTheme) => {
-      setApplyingId(theme.id);
-      try {
-        const count = await applyStoreTheme(user.uid, theme);
-        // Separate keys rather than one "{count} chats" string: "1 chats"
-        // reads as a bug, and a zero-chat account needs a different message
-        // entirely — nothing changed yet, but new chats will use it.
-        const key = count === 0 ? 'store.appliedNone' : count === 1 ? 'store.appliedOne' : 'store.applied';
-        toast.show(t(key).replace('{name}', theme.name).replace('{count}', String(count)));
-      } catch (err) {
-        console.warn('applyStoreTheme failed:', err);
-        toast.error(t('common.error'));
-      } finally {
-        setApplyingId(null);
-      }
-    },
-    [t, toast, user.uid],
-  );
 
   const proStatusText = (() => {
     if (!entitlement) return t('pro.active');
@@ -134,45 +107,8 @@ export default function StoreScreen({user}: {user: User}) {
         </section>
 
         {/* ---- Themes ---- */}
-        <section aria-labelledby="store-themes-heading">
-          <h2 id="store-themes-heading" style={styles.sectionTitle}>
-            {t('store.themes')}
-          </h2>
-          <p style={styles.sectionDesc}>{t('store.themesDesc')}</p>
-          <div style={styles.grid}>
-            {THEME_CATALOG.map(theme => {
-              const selected = applied?.id === theme.id;
-              const busy = applyingId === theme.id;
-              return (
-                <button
-                  key={theme.id}
-                  type="button"
-                  aria-label={theme.name}
-                  aria-pressed={selected}
-                  disabled={busy}
-                  onClick={() => applyTheme(theme)}
-                  style={{
-                    ...styles.card,
-                    borderColor: selected ? theme.accent : colors.border,
-                    borderWidth: selected ? 2 : 1,
-                  }}>
-                  {/* The swatch *is* the theme now: a theme sets an accent
-                      and nothing else, so a gradient here would advertise a
-                      background the theme no longer changes. */}
-                  <span
-                    style={{
-                      ...styles.swatch,
-                      background: theme.accent,
-                      borderColor: colors.border,
-                    }}
-                  />
-                  <span style={styles.cardName}>{theme.name}</span>
-                  {selected && <span style={styles.appliedTag}>{t('store.appliedTag')}</span>}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+
+        {/* ---- Themes ---- */}
       </div>
     </div>
   );

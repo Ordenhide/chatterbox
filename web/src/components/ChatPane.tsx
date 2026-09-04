@@ -67,8 +67,6 @@ import {
   type LiveLocationShare,
 } from '../services/liveLocation';
 import {useEntitlement} from '../context/EntitlementContext';
-import {useAccountTheme} from '../context/StoreThemeContext';
-import {resolveAccent} from '../services/storeTheme';
 import {safeExternalUrl} from '../utils/safeUrl';
 import {formatDayLabel, isSameDay} from '../utils/messageDay';
 import ProUpsellModal from './ProUpsellModal';
@@ -911,8 +909,6 @@ export default function ChatPane({
   // account-wide Store theme applies, so a conversation created after the
   // theme was chosen still looks right (the Store's batch write can only
   // reach chats that already existed).
-  const storeTheme = useAccountTheme();
-  const themeColor = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, colors.primary);
   // A 1:1 thread doesn't need sender names — the side a bubble sits on says
   // who wrote it. Group chats still label each speaker.
   const isGroupChat = (chat?.participants?.length || 0) > 2;
@@ -1110,7 +1106,7 @@ export default function ChatPane({
       window.setTimeout(() => setLaunching(false), 1100);
       // A first message is worth marking. Only the first: confetti on every
       // send would be exhausting within a minute.
-      if (messages.length === 0) celebrate(themeColor);
+      if (messages.length === 0) celebrate(colors.primary);
     } catch (err) {
       console.warn('send failed:', err);
       setText(trimmed);
@@ -2077,9 +2073,11 @@ export default function ChatPane({
             // block of the foreground colour rather than a tint, which reads as
             // "sent" without spending the accent on authorship. A chat themed
             // from the store still wins.
-            const bubbleBg = mine
-              ? themeColor || 'var(--cb-text)'
-              : 'transparent';
+            // Always the foreground colour now. The `||` branch here was
+            // dead: resolveAccent fell back to the accent, so the un-themed
+            // case this comment describes never actually rendered, and web
+            // and mobile disagreed about what a sent bubble looks like.
+            const bubbleBg = mine ? 'var(--cb-text)' : 'transparent';
             // Not #FFFFFF: on the inverted fill the correct ink is whatever
             // contrasts with the *foreground* colour, which is the token the
             // themes already disagree about on purpose — black in dark, white
@@ -2195,7 +2193,7 @@ export default function ChatPane({
                     {/* Names only earn their space in a group thread. */}
                     {!grouped && !mine && isGroupChat && (
                       <div style={styles.msgHead}>
-                        <span style={{...styles.senderName, color: themeColor}}>{senderName}</span>
+                        <span style={{...styles.senderName, color: colors.primary}}>{senderName}</span>
                       </div>
                     )}
 
@@ -2714,7 +2712,7 @@ export default function ChatPane({
           <button
             type="submit"
             className="cb-send"
-            style={{...styles.sendBtn, background: themeColor}}>
+            style={{...styles.sendBtn, background: colors.primary}}>
             {t('common.save')}
           </button>
           <button type="button" style={styles.composerIcon} title={t('common.cancel')} onClick={() => setEditing(null)}>
@@ -2783,7 +2781,7 @@ export default function ChatPane({
               type="submit"
               className={`cb-send cb-glow${launching ? ' cb-launch cb-shimmer' : ''}`}
               style={
-                {...styles.sendBtn, background: themeColor, '--cb-anim-accent': themeColor} as React.CSSProperties
+                {...styles.sendBtn, background: colors.primary, '--cb-anim-accent': colors.primary} as React.CSSProperties
               }
               disabled={sending}>
               {t('common.send')}

@@ -11,7 +11,6 @@ import {useReminders} from '../hooks/useReminders';
 import {useIncomingRequests} from '../hooks/useIncomingRequests';
 import {useToast} from '../context/ToastContext';
 import {EntitlementProvider} from '../context/EntitlementContext';
-import {StoreThemeProvider} from '../context/StoreThemeContext';
 import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
 import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
 import {emitShortcut, type ShortcutId} from '../services/shortcuts';
@@ -211,14 +210,13 @@ export default function MainApp({user}: {user: User}) {
         />
       )}
       {tab === 'moments' && <MomentsScreen user={user} requestCount={requestCount} />}
-      {tab === 'store' && <StoreScreen user={user} />}
+      {tab === 'store' && <StoreScreen />}
       {tab === 'profile' && <ProfileScreen user={user} />}
     </Suspense>
   );
 
   return (
     <EntitlementProvider uid={user.uid}>
-    <StoreThemeProvider uid={user.uid}>
     <CallProvider user={me}>
       {isMobile ? (
         <div style={styles.mobileShell}>
@@ -267,7 +265,6 @@ export default function MainApp({user}: {user: User}) {
 
       {tourOpen && <TourOverlay onClose={closeTour} />}
     </CallProvider>
-    </StoreThemeProvider>
     </EntitlementProvider>
   );
 }

@@ -386,7 +386,6 @@
   },
   "chatSettings": {
     "notifications": "通知",
-    "theme": "主题",
     "muteChat": "静音聊天",
     "unmuteChat": "取消静音",
     "recipientName": "收件人名称",

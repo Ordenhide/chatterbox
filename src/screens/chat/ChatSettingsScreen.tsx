@@ -293,21 +293,6 @@ export default function ChatSettingsScreen() {
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        {/* Theming is account-wide and lives in the Store. What sat here was
-            a second palette — six iOS system colours — that matched neither
-            the catalog nor the web client's own third one, so a chat themed
-            here and the same chat themed from the Store disagreed. */}
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.theme')}</Text>
-        <TouchableOpacity
-          accessibilityRole="button"
-          onPress={() => navigation.navigate('Store')}>
-          <Text style={[styles.storeHint, {color: colors.primary}]}>
-            {`${t('store.themeMovedHint')} ${t('store.openStore')} →`}
-          </Text>
-        </TouchableOpacity>
-      </GlassView>
-
-      <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.recipientName')}</Text>
         <TouchableOpacity style={styles.row} onPress={() => setNameModalVisible(true)}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>

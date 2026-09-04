@@ -14,25 +14,19 @@
  * Sections are laid out so adding a category later (sticker packs, chat
  * effects) means adding a section, not restructuring this file.
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useColorScheme,
-  View,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
 import {useAuth} from '../contexts/AuthContext';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
-import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
-import {applyStoreTheme, listenStoreTheme} from '../services/storeTheme';
-import {bodyWeight, fonts, terminal} from '../theme/typography';
+import {bodyWeight, fonts} from '../theme/typography';
 
 export default function StoreScreen() {
   const colors = getColors(useColorScheme());
@@ -40,17 +34,10 @@ export default function StoreScreen() {
   const {user} = useAuth();
 
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
-  const [applied, setApplied] = useState<StoreTheme | undefined>(undefined);
-  const [applyingId, setApplyingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     return listenEntitlement(user.uid, setEntitlement);
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) return;
-    return listenStoreTheme(user.uid, setApplied);
   }, [user]);
 
   const isPro = isProActive(entitlement);
@@ -62,26 +49,6 @@ export default function StoreScreen() {
     if (entitlement?.cancelAtPeriodEnd) return t('pro.endsOn', {date});
     return entitlement ? t('pro.renewsOn', {date}) : t('pro.active');
   })();
-
-  const onApply = useCallback(
-    async (theme: StoreTheme) => {
-      if (!user) return;
-      setApplyingId(theme.id);
-      try {
-        const count = await applyStoreTheme(user.uid, theme);
-        // Separate keys rather than one "{{count}} chats" string: "1 chats"
-        // reads as a bug, and a zero-chat account needs a different message
-        // entirely — nothing changed yet, but new chats will use it.
-        const key = count === 0 ? 'store.appliedNone' : count === 1 ? 'store.appliedOne' : 'store.applied';
-        Alert.alert(t('store.title'), t(key, {name: theme.name, count}));
-      } catch {
-        Alert.alert(t('store.title'), t('common.error'));
-      } finally {
-        setApplyingId(null);
-      }
-    },
-    [t, user],
-  );
 
   return (
     <ScrollView style={{backgroundColor: colors.background}} contentContainerStyle={styles.content}>
@@ -96,42 +63,6 @@ export default function StoreScreen() {
         <Text style={[styles.cardDesc, {color: colors.textSecondary}]}>{proStatusText}</Text>
       </GlassView>
 
-      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('store.themes')}</Text>
-      <Text style={[styles.sectionDesc, {color: colors.textSecondary}]}>{t('store.themesDesc')}</Text>
-
-      <View style={styles.grid}>
-        {THEME_CATALOG.map(theme => {
-          const selected = applied?.id === theme.id;
-          const busy = applyingId === theme.id;
-          return (
-            <TouchableOpacity
-              key={theme.id}
-              accessibilityRole="button"
-              accessibilityLabel={theme.name}
-              accessibilityState={{selected, disabled: busy}}
-              disabled={busy}
-              onPress={() => onApply(theme)}
-              style={[
-                styles.themeCard,
-                {borderColor: selected ? theme.accent : colors.glassBorder},
-                selected && styles.themeCardSelected,
-              ]}>
-              {/* The swatch *is* the theme now: a theme sets an accent and
-                  nothing else, so a gradient here would advertise a
-                  background the theme no longer changes. */}
-              <View
-                style={[styles.swatch, {backgroundColor: theme.accent, borderColor: colors.border}]}
-              />
-              <Text style={[styles.themeName, {color: colors.text}]}>{theme.name}</Text>
-              {busy ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : selected ? (
-                <Text style={[styles.themeTag, {color: colors.primary}]}>{t('store.appliedTag')}</Text>
-              ) : null}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
     </ScrollView>
   );
 }
@@ -143,29 +74,4 @@ const styles = StyleSheet.create({
   card: {borderRadius: 2, borderWidth: 1, padding: 18, marginBottom: 26},
   cardTitle: {fontSize: 16, fontFamily: bodyWeight('700'), marginBottom: 6},
   cardDesc: {fontSize: 13.5, lineHeight: 20},
-  sectionTitle: {...terminal.label, marginBottom: 6},
-  sectionDesc: {fontSize: 13.5, marginBottom: 14},
-  grid: {flexDirection: 'row', flexWrap: 'wrap', gap: 12},
-  themeCard: {
-    width: '30%',
-    minWidth: 96,
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 8,
-    borderRadius: 2,
-    borderWidth: 1,
-  },
-  themeCardSelected: {borderWidth: 2},
-  swatch: {
-    width: 46,
-    height: 46,
-    borderRadius: 2,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 6,
-  },
-  themeName: {fontSize: 13, fontFamily: bodyWeight('700')},
-  themeTag: {fontSize: 10.5, fontFamily: bodyWeight('800'), letterSpacing: 0.4, marginTop: 2},
 });
