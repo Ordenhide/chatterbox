@@ -120,7 +120,7 @@ import {
 } from '../../services/groupRatchetMessages';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
-import {fonts} from '../../theme/typography';
+import {fonts, terminal} from '../../theme/typography';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -474,6 +474,16 @@ export default function ChatScreen() {
   // Cleared per chat, not per snapshot: once you've seen one such message the
   // offer stays relevant for as long as you're in the thread.
   const [sealedToOtherDevice, setSealedToOtherDevice] = useState(false);
+  /**
+   * Whether every recipient can receive sealed text — null while unknown.
+   *
+   * The composer shows a lock, and a lock is a claim. Encryption here degrades
+   * to plaintext for a peer who has published no key, so a permanently-drawn
+   * padlock would be decoration that happens to be wrong exactly when it
+   * matters. This resolves the same question the send path resolves, before
+   * the user types rather than after they have sent.
+   */
+  const [channelSealed, setChannelSealed] = useState<boolean | null>(null);
   // Latched when a peer's forward-secret session was replaced — a reinstall,
   // or an impersonation. The two are indistinguishable from here, so the user
   // is told rather than the app choosing for them.
@@ -4385,6 +4395,35 @@ export default function ChatScreen() {
   // sheet the user had no reason to reopen. Killing the app was the only exit.
   const hasAccessory = !!replyTo || burnMode || dictating;
 
+  useEffect(() => {
+    if (!otherUserIds.length) {
+      setChannelSealed(null);
+      return;
+    }
+    let active = true;
+    setChannelSealed(null);
+    (async () => {
+      try {
+        const results = await Promise.all(otherUserIds.map(uid => fetchPeerPublicKeyChecked(uid)));
+        if (!active) return;
+        // 'unavailable' is not 'unenrolled': one is "we could not ask", the
+        // other is "we asked and they have no key". Only the second is a fact
+        // about the peer, and neither licenses claiming the channel is sealed,
+        // so anything short of a key for everyone leaves this null or false.
+        if (results.some(r => r.status === 'unavailable')) {
+          setChannelSealed(null);
+          return;
+        }
+        setChannelSealed(results.every(r => !!r.key));
+      } catch {
+        if (active) setChannelSealed(null);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [otherUserIds]);
+
   const renderAccessory = () => {
     if (!hasAccessory) {
       return null;
@@ -4894,19 +4933,36 @@ export default function ChatScreen() {
             renderAccessory={hasAccessory ? renderAccessory : undefined}
             renderActions={renderActions}
             renderComposer={() => (
-              <ChatComposer
-                ref={composerRef}
-                generation={composerGeneration}
-                defaultValue={composerSeedRef.current}
-                onChangeText={handleComposerChange}
-                placeholder={t('chat.composerPlaceholder')}
-                placeholderTextColor={colors.textSecondary}
-                textInputStyle={{color: colors.text}}
-              />
+              <View style={[styles.composerField, {borderColor: colors.border}]}>
+                {/* Drawn only once the channel state is actually known, and
+                    in the colour that state deserves: the accent when every
+                    recipient can receive sealed text, a warning when one of
+                    them cannot and this message will go out in clear. While
+                    the answer is still unknown it draws nothing, because a
+                    padlock that appears before the check has finished is a
+                    guess wearing the costume of a guarantee. */}
+                {channelSealed !== null ? (
+                  <Icon
+                    name={channelSealed ? 'lock' : 'alertTriangle'}
+                    size={11}
+                    color={channelSealed ? colors.primary : colors.warning}
+                    style={styles.composerLock}
+                  />
+                ) : null}
+                <ChatComposer
+                  ref={composerRef}
+                  generation={composerGeneration}
+                  defaultValue={composerSeedRef.current}
+                  onChangeText={handleComposerChange}
+                  placeholder={t('chat.composerPlaceholder')}
+                  placeholderTextColor={colors.textSecondary}
+                  textInputStyle={{color: colors.text}}
+                />
+              </View>
             )}
             renderSend={() => (
               <TouchableOpacity
-                style={styles.ownSend}
+                style={[styles.ownSend, {borderColor: colors.border}]}
                 disabled={!inputText.trim()}
                 onPress={() =>
                   onSend([
@@ -5761,8 +5817,30 @@ export default function ChatScreen() {
 
 const styles = StyleSheet.create({
   chatFlex: {flex: 1},
-  ownSend: {paddingHorizontal: 16, paddingVertical: 12, justifyContent: 'center'},
-  ownSendText: {fontSize: 16, fontWeight: '700'},
+  ownSend: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginRight: 8,
+    marginBottom: 6,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 2,
+  },
+  ownSendText: {...terminal.label},
+  // The ruled field the mockup puts around the input. Bottom margin only, so
+  // the box grows upward with a multi-line message instead of drifting off
+  // the toolbar's baseline.
+  composerField: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 2,
+    paddingLeft: 10,
+    marginLeft: 8,
+    marginBottom: 6,
+  },
+  composerLock: {marginRight: 2},
   container: {
     flex: 1,
   },
@@ -5820,9 +5898,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   offlineText: {
+    // Stays #111 rather than moving to a token: these banners are painted with
+    // colors.warning as their *background* in both themes, so the ink has to
+    // be dark in both. A theme-following colour would turn white on amber.
     color: '#111',
-    fontSize: 12,
-    fontWeight: '600',
+    ...terminal.label,
+    fontSize: 9,
     textAlign: 'center',
   },
   deletedComposer: {
