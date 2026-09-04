@@ -43,7 +43,24 @@ export default function ChatPickerModal({
       setChats(cs);
       setLoading(false);
     });
-    return () => unsubscribe();
+    /*
+     * The listener is not guaranteed to deliver.
+     *
+     * It stays silent on a transient failure and on an empty first snapshot
+     * Firestore served from its own unsynced cache — both deliberate, so that
+     * neither empties a list that already has content (see
+     * services/listenerErrors.ts). The cost is that "the listener fired" is no
+     * longer a signal that loading has finished, and this modal was using it
+     * as exactly that: no delivery meant a spinner with no way out.
+     *
+     * So the spinner is bounded instead. Showing an empty picker is a worse
+     * answer than showing the chats, and a better one than spinning forever.
+     */
+    const settle = setTimeout(() => setLoading(false), 3000);
+    return () => {
+      clearTimeout(settle);
+      unsubscribe();
+    };
   }, [myUid]);
 
   useEffect(() => {

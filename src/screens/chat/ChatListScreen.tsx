@@ -360,11 +360,29 @@ export default function ChatListScreen() {
     if (!user) return;
     let active = true;
     const loadCached = async () => {
-      const cached = await getCachedChats(user.uid);
-      if (!active) return;
-      if (cached.length) {
-        setChats(cached as any);
-        setLoading(false);
+      try {
+        const cached = await getCachedChats(user.uid);
+        if (!active) return;
+        if (cached.length) setChats(cached as any);
+      } catch (error) {
+        reportError(error, 'chat_list_cache_read_failed');
+      } finally {
+        // Unconditionally, and in a finally.
+        //
+        // This used to clear only when the cache had something in it, which
+        // left `loadChats` — and therefore the listener firing — as the only
+        // reliable way off the spinner. That was already fragile and then I
+        // made it break: bf00165 and 0b7a0b5 both stopped listenChatsForUser
+        // delivering in cases where it previously delivered an empty array, so
+        // a transient failure or an unsynced first snapshot went from "shows
+        // an empty list for a moment" to "sits on a spinner until you leave
+        // the tab and come back". Same blank screen the user saw, new cause,
+        // mine.
+        //
+        // Having read local storage is enough to render: the answer may be
+        // "no chats", and the empty state is a real answer. A screen must not
+        // depend on a network listener to stop looking broken.
+        if (active) setLoading(false);
       }
     };
     loadCached();
