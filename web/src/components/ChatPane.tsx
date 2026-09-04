@@ -68,8 +68,7 @@ import {
 } from '../services/liveLocation';
 import {useEntitlement} from '../context/EntitlementContext';
 import {useAccountTheme} from '../context/StoreThemeContext';
-import {resolveAccent, resolveWallpaper} from '../services/storeTheme';
-import {effectForAccent, isDarkWallpaper} from '../services/themeCatalog';
+import {resolveAccent} from '../services/storeTheme';
 import {safeExternalUrl} from '../utils/safeUrl';
 import {formatDayLabel, isSameDay} from '../utils/messageDay';
 import ProUpsellModal from './ProUpsellModal';
@@ -914,16 +913,9 @@ export default function ChatPane({
   // reach chats that already existed).
   const storeTheme = useAccountTheme();
   const themeColor = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, colors.primary);
-  const wallpaper = resolveWallpaper(chat?.wallpaperBy?.[me.uid], storeTheme?.wallpaper);
-  const themeEffect = effectForAccent(themeColor);
-  // Message text is a fixed dark colour, which vanishes against a dark
-  // wallpaper. Half the catalog is dark, so this is a common case, not an
-  // edge one. A 1:1 thread doesn't need sender names — the side a bubble
-  // sits on says who wrote it. Group chats still label each speaker.
+  // A 1:1 thread doesn't need sender names — the side a bubble sits on says
+  // who wrote it. Group chats still label each speaker.
   const isGroupChat = (chat?.participants?.length || 0) > 2;
-  const darkWallpaper = isDarkWallpaper(wallpaper);
-  const threadText = darkWallpaper ? '#E8EEF7' : colors.text;
-  const threadTextDim = darkWallpaper ? 'rgba(232,238,247,0.62)' : colors.textTertiary;
 
   // Suggested quick replies: shown when the composer is empty and the other
   // person spoke last (so you can one-tap a response). English-keyword heuristic.
@@ -2057,72 +2049,15 @@ export default function ChatPane({
         </button>
       )}
 
-      {/* Living backdrop behind the thread. Suppressed only by a genuine
-          custom-photo wallpaper (always an http URL) — a chosen photo must
-          win outright rather than get an uninvited gradient laid over it. A
-          theme's own flat-colour wallpaper no longer suppresses this: every
-          catalog theme already sets one, so the old `!wallpaper` check meant
-          the backdrop never showed once any theme was applied. Rendered as a
-          sibling of the scroll container, not inside it, so it stays put
-          while you scroll. */}
-      {(!wallpaper || !wallpaper.startsWith('http')) && (
-        <>
-          <div
-            className="cb-aurora"
-            aria-hidden="true"
-            style={
-              {
-                '--cb-anim-accent': themeEffect.gradientStops[0],
-                '--cb-anim-accent-2': themeEffect.gradientStops[1],
-                '--cb-anim-accent-3':
-                  themeEffect.gradientStops[2] ?? themeEffect.gradientStops[1],
-              } as React.CSSProperties
-            }
-          />
-          <div className={`cb-particles cb-particles-${themeEffect.particles.style}`} aria-hidden="true">
-            {Array.from({length: themeEffect.particles.density}, (_, i) => (
-              <span
-                key={i}
-                className="cb-particle"
-                style={
-                  {
-                    '--cb-anim-accent': themeEffect.gradientStops[0],
-                    // Coprime-ish multipliers spread particles across the
-                    // width and stagger their timing without needing actual
-                    // randomness — same trick cbBlobDrift/cbBlobDrift2 use so
-                    // the loop doesn't look mechanically synchronized.
-                    left: `${(i * 37) % 100}%`,
-                    animationDelay: `${(i * 613) % 4000}ms`,
-                    animationDuration: `${7000 + ((i * 911) % 5000)}ms`,
-                  } as React.CSSProperties
-                }
-              />
-            ))}
-          </div>
-        </>
-      )}
+      {/* No backdrop layer here any more. The thread's ground is the app's
+          own canvas — a conversation should look like the app it is in, and
+          only the dark/light theme moves it. */}
 
       <div
         ref={scrollRef}
         className="scroll"
-        // Sits above the aurora layer rendered behind it.
         data-thread="true"
-        style={
-          wallpaper
-            ? // Custom wallpapers are Storage download URLs (always start with
-              // "http"); preset wallpapers are hex colors — same field
-              // (wallpaperBy), distinguished by shape rather than a schema change.
-              wallpaper.startsWith('http')
-              ? {
-                  ...styles.messages,
-                  backgroundImage: `url(${wallpaper})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                }
-              : {...styles.messages, background: wallpaper}
-            : styles.messages
-        }
+        style={styles.messages}
         onScroll={onScroll}
         onClick={() => setActiveMsg(null)}>
         {shownMessages.length > 0 && <div style={styles.msgSpacer} />}
@@ -2150,8 +2085,12 @@ export default function ChatPane({
             // themes already disagree about on purpose — black in dark, white
             // in light. Hardcoding white was right only while the bubble was a
             // saturated accent.
-            const bubbleText = mine ? 'var(--cb-text-on-primary)' : threadText;
-            const bubbleDim = mine ? 'var(--cb-text-on-primary)' : threadTextDim;
+            // An incoming bubble is transparent over the app's own canvas, so
+            // the theme's ordinary ink is correct by construction. This used to
+            // hand-pick a light ink whenever the wallpaper was dark — a check
+            // that only existed because a chat could paint its own ground.
+            const bubbleText = mine ? 'var(--cb-text-on-primary)' : colors.text;
+            const bubbleDim = mine ? 'var(--cb-text-on-primary)' : colors.textTertiary;
             const reactions = Object.entries(m.reactions || {}).filter(([, u]) => u.length > 0);
             const showDivider = m._id === firstUnreadId && !firstUnreadIsMine;
 

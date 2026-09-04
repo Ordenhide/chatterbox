@@ -16,13 +16,6 @@ type GlassScreenProps = {
    * GlassScreen gets a field either way; this only controls which one.
    */
   textureSeed?: string;
-  /**
-   * Chat screens paint a custom wallpaper as their first child and need the
-   * field to sit *above* that, not below it — so they render their own
-   * CipherTexture in the right place and pass false here rather than get a
-   * second copy that would just be hidden underneath.
-   */
-  showTexture?: boolean;
 };
 
 function GlassScreen({
@@ -31,7 +24,6 @@ function GlassScreen({
   edges = ['top', 'bottom'],
   pointerEvents = 'box-none',
   textureSeed = 'chatterbox',
-  showTexture = true,
 }: GlassScreenProps) {
   const colors = getColors(useColorScheme());
   return (
@@ -43,7 +35,7 @@ function GlassScreen({
       <View pointerEvents="none" style={[styles.blob, {backgroundColor: colors.glassTint1}]} />
       <View pointerEvents="none" style={[styles.blobTwo, {backgroundColor: colors.glassTint2}]} />
       <View pointerEvents="none" style={[styles.blobThree, {backgroundColor: colors.glassTint3}]} />
-      {showTexture ? <CipherTexture seed={textureSeed} color={colors.primary} /> : null}
+      <CipherTexture seed={textureSeed} color={colors.primary} />
       {/* Above the cipher field so it grains the text too, below the content
           so it never sits over anything anyone has to read. */}
       <Scanlines />

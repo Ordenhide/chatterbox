@@ -36,7 +36,6 @@ import {
   rubberbandRange,
   shouldCommit,
   makeBurst,
-  makeThemeParticles,
   petMotionProfile,
   REVEAL_ENTER_RATIO,
   revealWindow,
@@ -219,37 +218,6 @@ describe('makeBurst', () => {
   });
 });
 
-describe('makeThemeParticles', () => {
-  it('builds exactly `density` particles', () => {
-    expect(makeThemeParticles(9, 'dot')).toHaveLength(9);
-    expect(makeThemeParticles(13, 'spark')).toHaveLength(13);
-  });
-
-  it('gives every particle a distinct id, so React can key them', () => {
-    const particles = makeThemeParticles(10, 'confetti');
-    expect(new Set(particles.map(p => p.id)).size).toBe(10);
-  });
-
-  it('spreads particles across the full width, not clustered at one edge', () => {
-    const low = makeThemeParticles(1, 'dot', () => 0)[0];
-    const high = makeThemeParticles(1, 'dot', () => 1)[0];
-    expect(low.left).toBe(0);
-    expect(high.left).toBe(100);
-  });
-
-  it('sizes confetti larger than spark, and spark larger than dot', () => {
-    const size = (style: Parameters<typeof makeThemeParticles>[1]) => makeThemeParticles(1, style)[0].size;
-    expect(size('confetti')).toBeGreaterThan(size('dot'));
-    expect(size('dot')).toBeGreaterThan(size('spark'));
-  });
-
-  it('gives every particle a positive delay and duration', () => {
-    for (const p of makeThemeParticles(12, 'dot')) {
-      expect(p.delay).toBeGreaterThanOrEqual(0);
-      expect(p.duration).toBeGreaterThan(0);
-    }
-  });
-});
 
 describe('animation configs', () => {
   // Anything running off the native driver animates across the JS bridge each

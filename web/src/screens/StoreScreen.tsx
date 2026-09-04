@@ -156,14 +156,16 @@ export default function StoreScreen({user}: {user: User}) {
                     borderColor: selected ? theme.accent : colors.border,
                     borderWidth: selected ? 2 : 1,
                   }}>
+                  {/* The swatch *is* the theme now: a theme sets an accent
+                      and nothing else, so a gradient here would advertise a
+                      background the theme no longer changes. */}
                   <span
                     style={{
                       ...styles.swatch,
-                      background: `linear-gradient(135deg, ${theme.gradientStops.join(', ')})`,
-                      borderColor: theme.accent,
-                    }}>
-                    <span style={{...styles.dot, background: theme.accent}} />
-                  </span>
+                      background: theme.accent,
+                      borderColor: colors.border,
+                    }}
+                  />
                   <span style={styles.cardName}>{theme.name}</span>
                   {selected && <span style={styles.appliedTag}>{t('store.appliedTag')}</span>}
                 </button>

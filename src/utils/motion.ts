@@ -20,7 +20,6 @@
  */
 import {useEffect, useState} from 'react';
 import {AccessibilityInfo} from 'react-native';
-import type {ParticleStyle} from '../services/themeCatalog';
 import type {ChatPet} from '../types';
 
 /**
@@ -785,41 +784,7 @@ export function makeBurst(emoji: string, random: () => number = Math.random): Bu
   }));
 }
 
-export interface ThemeParticle {
-  id: string;
-  /** Horizontal position, percent of the container width (0-100). */
-  left: number;
-  /** How long to wait before this particle's first loop, in ms. */
-  delay: number;
-  /** One float-up-and-fade cycle, in ms. */
-  duration: number;
-  /** px — spark/dot render small, confetti a touch larger. */
-  size: number;
-}
 
-/**
- * Builds a chat theme's ambient particle layer — the mobile twin of the
- * web's `.cb-particle` (see ChatPane.tsx/styles.css). Unlike makeBurst above
- * this is a steady loop, not a one-shot: each particle just needs a starting
- * position and timing, not a drift/spin/life triple tuned for a single pass.
- *
- * `random` is injectable for the same reason makeBurst's is — deterministic
- * tests instead of sampling and hoping.
- */
-export function makeThemeParticles(
-  density: number,
-  style: ParticleStyle,
-  random: () => number = Math.random,
-): ThemeParticle[] {
-  const size = style === 'confetti' ? 7 : style === 'spark' ? 4 : 6;
-  return Array.from({length: density}, (_, i) => ({
-    id: `${style}-${i}`,
-    left: Math.round(random() * 100),
-    delay: Math.round(random() * 4000),
-    duration: 7000 + Math.round(random() * 5000),
-    size,
-  }));
-}
 
 /**
  * Tracks the system Reduce Motion setting, and keeps tracking it — someone can

@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
@@ -8,10 +8,8 @@ import {
   setChatExpiryPolicy,
   setChatName,
   setChatTheme,
-  setChatWallpaper,
   toggleMuteChat,
 } from '../services/chat';
-import {uploadChatWallpaper} from '../services/storage';
 import {useAccountTheme} from '../context/StoreThemeContext';
 import {resolveAccent} from '../services/storeTheme';
 import {useToast} from '../context/ToastContext';
@@ -23,17 +21,6 @@ import Icon from './Icon';
 // to make one conversation stand out afterwards.
 const THEME_COLORS = ['#6366F1', '#0EA5E9', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6', '#64748B'];
 
-// Wallpaper tints kept as their own row: a store theme sets a coordinated
-// wallpaper, but people can still override it independently afterwards.
-const WALLPAPERS: {id: string; value: string | null}[] = [
-  {id: 'none', value: null},
-  {id: 'blush', value: '#FDECF3'},
-  {id: 'mint', value: '#E7F8F1'},
-  {id: 'sky', value: '#E8F1FE'},
-  {id: 'sand', value: '#F6F1E7'},
-  {id: 'dusk', value: '#1B1B2A'},
-  {id: 'ink', value: '#12131F'},
-];
 
 export default function ChatSettingsModal({
   chatId,
@@ -51,7 +38,6 @@ export default function ChatSettingsModal({
   const {t} = useT();
   const toast = useToast();
   const dialogRef = useModal<HTMLDivElement>(onClose);
-  const wallpaperFileRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(chat?.nameBy?.[me.uid] || '');
   const isMuted = !!chat?.mutedBy?.includes(me.uid);
@@ -60,24 +46,8 @@ export default function ChatSettingsModal({
   // theme rather than this chat's own stored value.
   const storeTheme = useAccountTheme();
   const theme = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, THEME_COLORS[0]);
-  const wallpaper = chat?.wallpaperBy?.[me.uid] ?? null;
   const expiry = chat?.messageExpiry || 0;
-  const [uploadingWallpaper, setUploadingWallpaper] = useState(false);
 
-  const onWallpaperFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = ''; // allow re-selecting the same file next time
-    if (!file) return;
-    setUploadingWallpaper(true);
-    try {
-      const url = await uploadChatWallpaper(chatId, me.uid, file);
-      await setChatWallpaper(chatId, me.uid, url);
-    } catch {
-      toast.error(t('common.error'));
-    } finally {
-      setUploadingWallpaper(false);
-    }
-  };
 
   const saveName = () => {
     const trimmed = name.trim();
@@ -171,52 +141,6 @@ export default function ChatSettingsModal({
             <button style={styles.storeLink} onClick={() => (window.location.hash = '#/store')}>
               {t('store.themeMovedHint')} {t('store.openStore')} →
             </button>
-          </div>
-
-          {/* Wallpaper */}
-          <div style={styles.section}>
-            <div style={styles.label}>{t('chatSettings.wallpaper')}</div>
-            <div style={styles.swatchRow}>
-              {WALLPAPERS.map(w => (
-                <button
-                  key={w.id}
-                  aria-label={w.id}
-                  onClick={() => setChatWallpaper(chatId, me.uid, w.value).catch(() => toast.error(t('common.error')))}
-                  style={{
-                    ...styles.swatch,
-                    background: w.value || colors.inputBg,
-                    border: w.value ? styles.swatch.border : `1px dashed ${colors.borderStrong}`,
-                    outline: wallpaper === w.value ? `2px solid ${colors.text}` : 'none',
-                    outlineOffset: 2,
-                  }}>
-                  {w.value === null && <Icon name="close" size={14} style={{color: colors.textTertiary}} />}
-                </button>
-              ))}
-              <button
-                aria-label="Upload photo wallpaper"
-                title="Upload photo wallpaper"
-                onClick={() => wallpaperFileRef.current?.click()}
-                disabled={uploadingWallpaper}
-                style={{
-                  ...styles.swatch,
-                  backgroundImage: wallpaper?.startsWith('http') ? `url(${wallpaper})` : undefined,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  border: `1px dashed ${colors.borderStrong}`,
-                  outline: wallpaper?.startsWith('http') ? `2px solid ${colors.text}` : 'none',
-                  outlineOffset: 2,
-                  opacity: uploadingWallpaper ? 0.5 : 1,
-                }}>
-                {!wallpaper?.startsWith('http') && <Icon name="image" size={14} style={{color: colors.textTertiary}} />}
-              </button>
-              <input
-                ref={wallpaperFileRef}
-                type="file"
-                accept="image/*"
-                style={{display: 'none'}}
-                onChange={onWallpaperFileChange}
-              />
-            </div>
           </div>
 
           {/* Disappearing messages */}

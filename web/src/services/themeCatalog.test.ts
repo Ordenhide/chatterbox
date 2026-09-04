@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {activeThemeId, effectForAccent, THEME_CATALOG, themeById} from './themeCatalog';
+import {ACCENT_INK_DARK, ACCENT_INK_LIGHT, activeThemeId, inkOn, THEME_CATALOG, themeById} from './themeCatalog';
 
 describe('THEME_CATALOG', () => {
   it('has unique ids', () => {
@@ -25,18 +25,13 @@ describe('THEME_CATALOG', () => {
     }
   });
 
-  it("anchors every gradient to end at the theme's own wallpaper", () => {
-    // So the reduced-motion collapse to a flat tint reads as settling, not a
-    // cut — see the StoreTheme.gradientStops doc comment.
+  // A theme is an accent and nothing else. It used to carry a `wallpaper`
+  // tint plus `gradientStops`/`particles` for an animated backdrop behind the
+  // thread; the chat background is the app's canvas now, moved only by the
+  // dark/light theme.
+  it('carries an accent and no background of any kind', () => {
     for (const t of THEME_CATALOG) {
-      expect(t.gradientStops[t.gradientStops.length - 1]).toBe(t.wallpaper);
-    }
-  });
-
-  it('keeps particle density within the ambient-texture cap', () => {
-    for (const t of THEME_CATALOG) {
-      expect(t.particles.density).toBeGreaterThanOrEqual(8);
-      expect(t.particles.density).toBeLessThanOrEqual(14);
+      expect(Object.keys(t).sort()).toEqual(['accent', 'id', 'name']);
     }
   });
 });
@@ -62,54 +57,38 @@ describe('themeById / activeThemeId', () => {
   });
 });
 
-describe('effectForAccent', () => {
-  it('returns the curated stops/particles for a catalog accent', () => {
-    const midnight = themeById('midnight')!;
-    expect(effectForAccent(midnight.accent)).toEqual({
-      gradientStops: midnight.gradientStops,
-      particles: midnight.particles,
-    });
+describe('inkOn', () => {
+  // Ink for a theme accent used as a button fill. Measured against the fill,
+  // not taken from the dark/light mode, which says nothing about the colour
+  // sitting under the text. See the mobile twin for the full reasoning.
+  it('picks an AA-passing ink for every catalog accent', () => {
+    const luminance = (hex: string) => {
+      const n = Number.parseInt(hex.slice(1), 16);
+      const ch = (c: number) => {
+        const v = c / 255;
+        return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * ch((n >> 16) & 255) + 0.7152 * ch((n >> 8) & 255) + 0.0722 * ch(n & 255);
+    };
+    for (const t of THEME_CATALOG) {
+      const [hi, lo] = [luminance(t.accent), luminance(inkOn(t.accent))].sort((a, b) => b - a);
+      expect((hi + 0.05) / (lo + 0.05), t.id).toBeGreaterThanOrEqual(4.5);
+    }
   });
 
-  it('matches case-insensitively, same as activeThemeId', () => {
-    const midnight = themeById('midnight')!;
-    expect(effectForAccent(midnight.accent.toLowerCase())).toEqual({
-      gradientStops: midnight.gradientStops,
-      particles: midnight.particles,
-    });
+  it('takes the better of the two inks even when the call is close', () => {
+    expect(inkOn('#6366F1')).toBe(ACCENT_INK_DARK);
+    expect(inkOn('#64748B')).toBe(ACCENT_INK_LIGHT);
   });
 
-  it('derives a 3-stop gradient for an accent outside the catalog', () => {
-    const effect = effectForAccent('#123456');
-    expect(effect.gradientStops).toHaveLength(3);
-    expect(effect.particles.density).toBe(8);
-    expect(effect.particles.style).toBe('dot');
+  it('falls back to dark ink for anything that is not a hex colour', () => {
+    expect(inkOn(null)).toBe(ACCENT_INK_DARK);
+    expect(inkOn(undefined)).toBe(ACCENT_INK_DARK);
+    expect(inkOn('')).toBe(ACCENT_INK_DARK);
   });
 
-  it('derives distinct fallback stops for a light vs a dark custom accent', () => {
-    const light = effectForAccent('#EEEEEE');
-    const dark = effectForAccent('#111111');
-    expect(light.gradientStops).not.toEqual(dark.gradientStops);
-  });
-
-  // The two branches place the accent differently: light ramps up *from* the
-  // accent, dark puts it in the middle between a tint and a shade. Asserting
-  // that position is what actually pins which branch ran — comparing two
-  // different accents' stops passes either way, so it can't catch a
-  // dark-check that's stuck true (which it was: the old test's `#EEEEEE`
-  // took the dark branch).
-  it.each([
-    ['#EEEEEE', 'near-white'],
-    ['#FFD700', 'bright gold'],
-    ['#38BDF8', 'sky blue'],
-  ])('treats %s (%s) as light: the accent leads the gradient', accent => {
-    expect(effectForAccent(accent).gradientStops[0]).toBe(accent);
-  });
-
-  it.each([
-    ['#111111', 'near-black'],
-    ['#1E1B4B', 'deep indigo'],
-  ])('treats %s (%s) as dark: the accent sits mid-gradient', accent => {
-    expect(effectForAccent(accent).gradientStops[1]).toBe(accent);
+  it('accepts the 3-digit shorthand', () => {
+    expect(inkOn('#000')).toBe(ACCENT_INK_LIGHT);
+    expect(inkOn('#fff')).toBe(ACCENT_INK_DARK);
   });
 });

@@ -1,24 +1,21 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import {listenStoreTheme} from '../services/storeTheme';
-import {isDarkColor, type StoreTheme} from '../services/themeCatalog';
+import {inkOn, type StoreTheme} from '../services/themeCatalog';
 import {useTheme} from './ThemeContext';
 
 const Ctx = createContext<StoreTheme | undefined>(undefined);
 
 /**
- * How much of the theme's wallpaper is blended into the app canvas.
+ * A store theme moves the accent and nothing else.
  *
- * The wallpaper is *not* used as a flat background here, because it carries
- * no relationship to the user's dark/light choice: every free theme's
- * wallpaper is light and every Pro one is dark, so painting it directly puts
- * light ink on a light tint (or dark on dark) and the text vanishes. Blending
- * keeps the hue clearly readable as "this theme is applied" while the mode's
- * own canvas keeps deciding luminance — and therefore contrast.
- *
- * The chat thread still paints the wallpaper at full strength: ChatPane flips
- * its ink via isDarkWallpaper, so it can afford what the app shell cannot.
+ * It used to also blend a `wallpaper` hue into the app canvas — at 22%, and
+ * only that weak because the wallpaper carried no relationship to the user's
+ * dark/light choice: every free theme's was light and every Pro one dark, so
+ * painting it at full strength put light ink on a light tint and the text
+ * vanished. Having to dilute a value to 22% to stop it breaking contrast was
+ * the sign it should not have been deciding the background at all. The canvas
+ * now comes from the dark/light theme alone.
  */
-const WALLPAPER_TINT = '22%';
 
 export function StoreThemeProvider({uid, children}: {uid: string; children: React.ReactNode}) {
   const [storeTheme, setStoreTheme] = useState<StoreTheme | undefined>(undefined);
@@ -36,7 +33,6 @@ export function StoreThemeProvider({uid, children}: {uid: string; children: Reac
       '--cb-primary-soft',
       '--cb-primary-light',
       '--cb-text-on-primary',
-      '--cb-wallpaper',
     ];
     const clear = () => vars.forEach(v => root.removeProperty(v));
 
@@ -45,7 +41,7 @@ export function StoreThemeProvider({uid, children}: {uid: string; children: Reac
       return clear;
     }
 
-    const {accent, wallpaper} = storeTheme;
+    const {accent} = storeTheme;
     root.setProperty('--cb-primary', accent);
     root.setProperty('--cb-primary-light', `color-mix(in srgb, ${accent} 14%, transparent)`);
     // `--cb-primary-soft` is used as *text*, so it can't be the raw accent —
@@ -57,17 +53,11 @@ export function StoreThemeProvider({uid, children}: {uid: string; children: Reac
         ? `color-mix(in srgb, ${accent} 82%, #000000)`
         : `color-mix(in srgb, ${accent} 74%, #ffffff)`,
     );
-    // Ink on top of the accent fill, chosen from the accent's own brightness
-    // rather than the mode: a bright amber button needs dark text in either.
-    root.setProperty('--cb-text-on-primary', isDarkColor(accent) ? '#ffffff' : '#0b1220');
-    if (wallpaper) {
-      root.setProperty(
-        '--cb-wallpaper',
-        `color-mix(in srgb, ${wallpaper} ${WALLPAPER_TINT}, var(--cb-canvas))`,
-      );
-    } else {
-      root.removeProperty('--cb-wallpaper');
-    }
+    // Ink on top of the accent fill, measured against the accent itself
+    // rather than taken from the mode: a bright amber button needs dark text
+    // in either. See inkOn — it compares both candidates' contrast instead of
+    // thresholding brightness, which got Classic (#6366F1) wrong at 4.47:1.
+    root.setProperty('--cb-text-on-primary', inkOn(accent));
     return clear;
   }, [storeTheme, mode]);
 

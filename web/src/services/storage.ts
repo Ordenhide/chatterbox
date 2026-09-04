@@ -175,21 +175,6 @@ export async function uploadChatImage(
   return uploadWithProgress(`chats/${chatId}/${Date.now()}.${extFor(blob, file.name)}`, blob, onProgress);
 }
 
-/**
- * Uploads a custom chat wallpaper, downscaling it first. Fixed per-user path
- * (unlike uploadChatImage's timestamped one) so re-uploading replaces the
- * previous wallpaper instead of accumulating orphaned Storage files — mirrors
- * the mobile client's wallpaper_{uid}.jpg pattern (ChatSettingsScreen.tsx).
- */
-export async function uploadChatWallpaper(
-  chatId: string,
-  uid: string,
-  file: File,
-  onProgress?: (pct: number) => void,
-): Promise<string> {
-  const blob = await downscaleImage(file);
-  return uploadWithProgress(`chats/${chatId}/wallpaper_${uid}.${extFor(blob, file.name)}`, blob, onProgress);
-}
 
 export function uploadChatBlob(
   chatId: string,

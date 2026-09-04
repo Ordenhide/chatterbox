@@ -9,9 +9,7 @@ import {
   Modal,
   useColorScheme,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useAuth} from '../../contexts/AuthContext';
@@ -22,9 +20,7 @@ import {
   toggleMuteChat,
   setChatTheme,
   setChatName,
-  setChatWallpaper,
   getChat,
-  uploadFile,
   addChatMembers,
   leaveChat,
   getUserByEmail,
@@ -66,12 +62,6 @@ const PET_SPECIES: {id: ChatPet['species']; icon: IconName; label: string}[] = [
   {id: 'bunny', icon: 'rabbit', label: 'Bunny'},
   {id: 'fox', icon: 'fox', label: 'Fox'},
 ];
-const WALLPAPER_COLORS = [
-  null,
-  '#FFE5E5', '#E5F0FF', '#E5FFE8', '#FFF5E5', '#F0E5FF',
-  '#FFE5F3', '#E5FFFE', '#F5F5DC', '#E8E8E8', '#2C2C3E',
-  '#1A1A2E', '#0F3460',
-];
 
 export default function ChatSettingsScreen() {
   const route = useRoute();
@@ -88,8 +78,6 @@ export default function ChatSettingsScreen() {
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportText, setExportText] = useState('');
   const [importText, setImportText] = useState('');
-  const [wallpaper, setWallpaper] = useState<string | null>(null);
-  const [uploadingWallpaper, setUploadingWallpaper] = useState(false);
   const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
   const [pet, setPet] = useState<ChatPet | null>(null);
   const [members, setMembers] = useState<string[]>([]);
@@ -107,7 +95,6 @@ export default function ChatSettingsScreen() {
         setMuted(!!chat?.mutedBy?.includes(user.uid));
         setThemeColor(chat?.themeBy?.[user.uid] || '#007AFF');
         setCustomName(chat?.nameBy?.[user.uid] || '');
-        setWallpaper(chat?.wallpaperBy?.[user.uid] || null);
         setSoundscape((chat as any)?.soundscape || 'none');
         setExpiryHours((chat as any)?.messageExpiry || 0);
         setChatLocked(isChatLocked(chatId));
@@ -251,66 +238,8 @@ export default function ChatSettingsScreen() {
     );
   };
 
-  const handleWallpaperSelect = async (wp: string | null) => {
-    if (!chatId || !user) return;
-    try {
-      await setChatWallpaper(chatId, user.uid, wp);
-      setWallpaper(wp);
-    } catch (err) {
-      if (__DEV__) {
-        console.warn('ChatSettingsScreen: failed to set wallpaper', err);
-      }
-    }
-  };
 
-  const handleUploadWallpaperPhoto = async () => {
-    if (!chatId || !user || uploadingWallpaper) return;
-    const result = await launchImageLibrary({mediaType: 'photo', selectionLimit: 1, quality: 0.7});
-    if (result.didCancel) return;
-    const asset = result.assets?.[0];
-    if (!asset?.uri) {
-      Alert.alert(t('common.error'), 'Unable to load selected photo');
-      return;
-    }
-    setUploadingWallpaper(true);
-    try {
-      // Same Storage path/upload pattern as chat photo/video messages
-      // (firebaseChat.ts's uploadFile) — one wallpaper per user per chat, so
-      // a re-upload overwrites the previous one rather than accumulating.
-      const fileName = `wallpaper_${user.uid}.jpg`;
-      const url = await uploadFile(chatId, asset.uri, fileName);
-      await setChatWallpaper(chatId, user.uid, url);
-      setWallpaper(url);
-    } catch (err) {
-      if (__DEV__) {
-        console.warn('ChatSettingsScreen: failed to upload wallpaper photo', err);
-      }
-      Alert.alert(t('common.error'), 'Failed to upload wallpaper. Please try again.');
-    } finally {
-      setUploadingWallpaper(false);
-    }
-  };
 
-  const wallpaperDots = useMemo(
-    () =>
-      WALLPAPER_COLORS.map((wp, idx) => (
-        <TouchableOpacity
-          key={wp || 'none'}
-          accessibilityRole="button"
-          accessibilityLabel={wp ? `Wallpaper color ${wp}` : 'No wallpaper'}
-          accessibilityState={{selected: wallpaper === wp || (idx === 0 && !wallpaper)}}
-          style={[
-            styles.themeDot,
-            {backgroundColor: wp || '#fff', borderWidth: 1, borderColor: colors.border},
-            wallpaper === wp && [styles.themeDotSelected, {borderColor: colors.text}],
-            idx === 0 && !wallpaper && [styles.themeDotSelected, {borderColor: colors.text}],
-          ]}
-          onPress={() => handleWallpaperSelect(wp)}>
-          {idx === 0 ? <Icon name="close" size={12} color={colors.text} /> : null}
-        </TouchableOpacity>
-      )),
-    [wallpaper, colors.text, colors.border],
-  );
 
   // Plain per-chat accent overrides. The named catalog — free and Pro alike —
   // lives in the Store tab, which applies account-wide; duplicating it here is
@@ -426,27 +355,11 @@ export default function ChatSettingsScreen() {
         </TouchableOpacity>
       </GlassView>
 
-      <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>Wallpaper</Text>
-        <View style={styles.wallpaperRow}>{wallpaperDots}</View>
-        <TouchableOpacity
-          style={[styles.row, uploadingWallpaper && {opacity: 0.5}]}
-          onPress={handleUploadWallpaperPhoto}
-          disabled={uploadingWallpaper}>
-          {uploadingWallpaper ? (
-            <ActivityIndicator color={colors.primary} />
-          ) : (
-            <Text style={[styles.rowLabel, {color: colors.primary}]}>
-              {wallpaper?.startsWith('http') ? 'Change photo wallpaper' : 'Upload photo wallpaper'}
-            </Text>
-          )}
-        </TouchableOpacity>
-      </GlassView>
 
       {SHOW_NATIVE_ONLY_FEATURES && (
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Soundscape</Text>
-        <View style={styles.wallpaperRow}>
+        <View style={styles.optionRow}>
           {SOUNDSCAPES.map(s => (
             <TouchableOpacity
               key={s.id}
@@ -513,7 +426,7 @@ export default function ChatSettingsScreen() {
         <Text style={[styles.rowLabel, {color: colors.textSecondary}]}>
           {pet ? `${pet.name} · Lv.${pet.level} — tap a species to change it, anytime` : 'Adopt a pet for this chat'}
         </Text>
-        <View style={styles.wallpaperRow}>
+        <View style={styles.optionRow}>
           {PET_SPECIES.map(p => {
             const isCurrent = pet?.species === p.id;
             return (
@@ -589,7 +502,7 @@ export default function ChatSettingsScreen() {
         </TouchableOpacity>
         )}
         <Text style={[styles.sectionTitle, {color: colors.text, marginTop: 12}]}>Message Expiry</Text>
-        <View style={styles.wallpaperRow}>
+        <View style={styles.optionRow}>
           {getExpiryOptions().map(opt => (
             <TouchableOpacity
               key={opt.hours}
@@ -746,7 +659,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
   },
-  wallpaperRow: {
+  optionRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,

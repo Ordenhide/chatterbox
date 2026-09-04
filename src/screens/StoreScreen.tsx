@@ -25,7 +25,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
@@ -117,17 +116,16 @@ export default function StoreScreen() {
                 {borderColor: selected ? theme.accent : colors.glassBorder},
                 selected && styles.themeCardSelected,
               ]}>
-              <LinearGradient
-                colors={theme.gradientStops}
-                style={[styles.swatch, {borderColor: theme.accent}]}>
-                {busy ? (
-                  <ActivityIndicator color={theme.accent} />
-                ) : (
-                  <View style={[styles.dot, {backgroundColor: theme.accent}]} />
-                )}
-              </LinearGradient>
+              {/* The swatch *is* the theme now: a theme sets an accent and
+                  nothing else, so a gradient here would advertise a
+                  background the theme no longer changes. */}
+              <View
+                style={[styles.swatch, {backgroundColor: theme.accent, borderColor: colors.border}]}
+              />
               <Text style={[styles.themeName, {color: colors.text}]}>{theme.name}</Text>
-              {selected ? (
+              {busy ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : selected ? (
                 <Text style={[styles.themeTag, {color: colors.primary}]}>{t('store.appliedTag')}</Text>
               ) : null}
             </TouchableOpacity>
@@ -168,7 +166,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 6,
   },
-  dot: {width: 14, height: 14, borderRadius: 999},
   themeName: {fontSize: 13, fontFamily: bodyWeight('700')},
   themeTag: {fontSize: 10.5, fontFamily: bodyWeight('800'), letterSpacing: 0.4, marginTop: 2},
 });

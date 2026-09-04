@@ -31,8 +31,6 @@ import ChatInputToolbar from '../../components/ChatInputToolbar';
 import ActionSheet, {type SheetAction} from '../../components/ActionSheet';
 import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
 import FanOutBloom, {useFanOutBloom} from '../../components/FanOutBloom';
-import ThemeBackdrop from '../../components/ThemeBackdrop';
-import CipherTexture from '../../components/CipherTexture';
 import Icon from '../../components/Icon';
 import {useTranslation} from 'react-i18next';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -67,12 +65,12 @@ import {
   type LiveLocationShare,
 } from '../../services/liveLocation';
 import {isProActive, listenEntitlement, type Entitlement} from '../../services/entitlement';
-import {listenStoreTheme, resolveAccent, resolveWallpaper} from '../../services/storeTheme';
+import {listenStoreTheme, resolveAccent} from '../../services/storeTheme';
 import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
 import {isAiConsentError} from '../../services/aiConsent';
 import {promptAiConsent} from '../../utils/aiConsentPrompt';
 import {safeExternalUrl} from '../../utils/safeUrl';
-import type {StoreTheme} from '../../services/themeCatalog';
+import {inkOn, type StoreTheme} from '../../services/themeCatalog';
 import type {Edge} from 'react-native-safe-area-context';
 import {getCurrentPosition, watchMyPosition, LocationError} from '../../utils/geolocation';
 import {formatCoordinates, staticMapTileUrl} from '../../utils/mapTile';
@@ -354,12 +352,10 @@ export default function ChatScreen() {
   const [timeCapsuleMode, setTimeCapsuleMode] = useState(false);
   const [capsuleHours, setCapsuleHours] = useState(24);
   const [capsulePickerVisible, setCapsulePickerVisible] = useState(false);
-  const [chatWallpaper, setChatWallpaper] = useState<string | null>(null);
-  // The chat's own stored appearance, kept raw (undefined = never set) so the
+  // The chat's own stored accent, kept raw (undefined = never set) so the
   // account-wide Store theme can fill in for chats created after it was
-  // applied. `null` is a real "no wallpaper" choice and must not fall through.
+  // applied.
   const [chatAccent, setChatAccent] = useState<string | undefined>(undefined);
-  const [chatWallpaperRaw, setChatWallpaperRaw] = useState<string | null | undefined>(undefined);
   const [storeTheme, setStoreTheme] = useState<StoreTheme | undefined>(undefined);
   const [dictating, setDictating] = useState(false);
   const [dictationSeconds, setDictationSeconds] = useState(0);
@@ -428,6 +424,23 @@ export default function ChatScreen() {
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
+  /**
+   * Ink for anything filled with the chat's accent.
+   *
+   * `colors.textOnPrimary` is the palette's answer for `colors.primary`, and
+   * it inverts with the mode because the two themes' primaries do. A store
+   * accent does not: it is the same hex in dark and light, so taking its ink
+   * from the mode put white text on Arctic (#22D3EE) at 1.81:1 — and 11 of
+   * the 12 catalog accents failed the same way in light mode. Read the ink
+   * off the fill instead, and it is right for any accent, including ones the
+   * catalog has never heard of.
+   *
+   * With no accent set the bubble is filled with `colors.text`, which is
+   * exactly what `textOnPrimary` was designed against — so that case keeps
+   * using it rather than being re-derived.
+   */
+  const accentInk = themeColor ? inkOn(themeColor) : colors.textOnPrimary;
+
   const navigation = useNavigation<any>();
   const route = useRoute();
   const chatId = (route.params as any)?.chatId;
@@ -738,8 +751,7 @@ export default function ChatScreen() {
 
   useEffect(() => {
     setThemeColor(resolveAccent(chatAccent, storeTheme?.accent, ''));
-    setChatWallpaper(resolveWallpaper(chatWallpaperRaw, storeTheme?.wallpaper));
-  }, [chatAccent, chatWallpaperRaw, storeTheme]);
+  }, [chatAccent, storeTheme]);
 
   useEffect(() => {
     return () => {
@@ -1781,7 +1793,6 @@ export default function ChatScreen() {
         // Raw stored values only — the account-wide Store theme is folded in
         // by the effect below, which also reruns when that theme changes.
         setChatAccent(chat.themeBy?.[user.uid]);
-        setChatWallpaperRaw(chat.wallpaperBy?.[user.uid]);
 
         const typingAt = chat.typingBy?.[otherId || ''] || 0;
         if (typingAt && Date.now() - typingAt < 3000) {
@@ -3612,7 +3623,15 @@ export default function ChatScreen() {
       const text = current.text || '';
       const msgId = String(current._id);
       const isOutgoing = props?.position === 'right';
-      const baseColor = isOutgoing ? colors.textOnPrimary : colors.text;
+      // Follows the fill the bubble actually gets (see wrapperStyle below):
+      // the chat accent normally, colors.primary while selected — which is
+      // what textOnPrimary was designed against.
+      const isSelected = msgSelectMode && msgSelected.has(msgId);
+      const baseColor = isOutgoing
+        ? isSelected
+          ? colors.textOnPrimary
+          : accentInk
+        : colors.text;
       const mentionColor = isOutgoing ? colors.warning : colors.primary;
 
       if (current.invisibleInk && !revealedMessages.has(msgId)) {
@@ -3685,7 +3704,17 @@ export default function ChatScreen() {
         </CipherText>
       );
     },
-    [colors.primary, colors.text, colors.textOnPrimary, colors.warning, revealedMessages, burnCountdowns],
+    [
+      accentInk,
+      colors.primary,
+      colors.text,
+      colors.textOnPrimary,
+      colors.warning,
+      msgSelectMode,
+      msgSelected,
+      revealedMessages,
+      burnCountdowns,
+    ],
   );
 
   // ---- Multi-select delete --------------------------------------------------
@@ -4578,24 +4607,12 @@ export default function ChatScreen() {
     // content, so a SafeAreaView in here reads the *full* device inset and pads
     // a second time — which is what left a dead strip of backdrop between the
     // composer and the tab bar.
-    <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES} showTexture={false}>
-      {chatWallpaper ? (
-        // Custom wallpapers are Storage download URLs (always start with
-        // "http"); preset wallpapers are hex colors — same field
-        // (wallpaperBy), distinguished by shape rather than a schema change.
-        chatWallpaper.startsWith('http') ? (
-          <Image
-            source={{uri: chatWallpaper}}
-            style={[StyleSheet.absoluteFill, {opacity: 0.4}]}
-            resizeMode="cover"
-          />
-        ) : (
-          <ThemeBackdrop accent={themeColor || colors.primary} tint={chatWallpaper} />
-        )
-      ) : null}
-      {/* Above the wallpaper, below everything else: the sealed field this
-          conversation was decrypted out of. See components/CipherTexture.tsx. */}
-      <CipherTexture seed={chatId} color={colors.primary} />
+    <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES} textureSeed={chatId}>
+      {/* The thread's ground is the app's own canvas, painted by GlassScreen
+          — a conversation should look like the app it is in, and only the
+          dark/light theme moves it. The sealed field this conversation was
+          decrypted out of comes from GlassScreen too now (textureSeed), so
+          it lands under the scanlines like it does on every other screen. */}
       {/* The count is real — copies in the newest envelope, not a participant
           tally — so it stays honest when the two disagree. Hidden entirely
           when nothing is sealed rather than shown as "0 keys", which would

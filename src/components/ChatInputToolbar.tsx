@@ -41,11 +41,11 @@ export default function ChatInputToolbar(props: any) {
 
   return (
     // Two layers, because the theme's surfaces are deliberately translucent
-    // (`surfaceStrong` is 93% white). Over a saturated chat wallpaper that 7%
-    // bleeds through and the composer reads as frosted — GiftedChat's toolbar
-    // was flat opaque white, so this looked like a blur appearing from nowhere.
-    // An opaque base underneath keeps the glass tint without the haze, which is
-    // the same layering GlassScreen uses.
+    // (`surfaceStrong` is 93% white). That 7% lets the cipher field and
+    // scanlines behind the thread bleed through, and the composer reads as
+    // frosted rather than as a solid edge you type against. An opaque base
+    // underneath keeps the glass tint without the haze, which is the same
+    // layering GlassScreen uses.
     <View style={[styles.container, {backgroundColor: baseColor, borderTopColor: borderColor}, containerStyle]}>
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, {backgroundColor: surfaceColor}]} />
       {/* Above the input, not below it. GiftedChat renders the accessory after

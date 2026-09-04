@@ -734,10 +734,6 @@ export async function setChatTheme(chatId: string, uid: string, color: string): 
   await setDoc(doc(db, 'chats', chatId), {themeBy: {[uid]: color}}, {merge: true});
 }
 
-/** Per-user chat wallpaper (wallpaperBy: {uid: color|null}), matching the mobile app. */
-export async function setChatWallpaper(chatId: string, uid: string, wallpaper: string | null): Promise<void> {
-  await setDoc(doc(db, 'chats', chatId), {wallpaperBy: {[uid]: wallpaper}}, {merge: true});
-}
 
 /** Pin/unpin a message within a chat (chat.pinnedMessageIds), matching mobile. */
 export async function togglePinMessage(chatId: string, messageId: string): Promise<void> {

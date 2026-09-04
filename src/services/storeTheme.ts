@@ -7,12 +7,12 @@
  * appearance rather than leaving old conversations on whatever they were set
  * to individually.
  *
- * It still writes the *existing* per-chat fields (`themeBy[uid]`,
- * `wallpaperBy[uid]`) rather than introducing a parallel rendering path, so
- * every chat keeps rendering exactly the way it always has and no migration
- * is required. The only new field is `users/{uid}.storeThemeId`, which
- * records the choice so chats created *later* (by either participant, on
- * either platform) can fall back to it without a write.
+ * It still writes the *existing* per-chat field (`themeBy[uid]`) rather than
+ * introducing a parallel rendering path, so every chat keeps rendering
+ * exactly the way it always has and no migration is required. The only new
+ * field is `users/{uid}.storeThemeId`, which records the choice so chats
+ * created *later* (by either participant, on either platform) can fall back
+ * to it without a write.
  *
  * Kept deliberately parallel to web/src/services/storeTheme.ts — same names,
  * same semantics — matching this repo's parallel-not-shared convention.
@@ -64,19 +64,6 @@ export function resolveAccent(
   return chatAccent || accountAccent || fallback;
 }
 
-/**
- * Same idea for the wallpaper, but `null` is a real user choice ("none") and
- * must not be treated as "unset" — only `undefined` falls through to the
- * account default.
- */
-export function resolveWallpaper(
-  chatWallpaper: string | null | undefined,
-  accountWallpaper: string | null | undefined,
-): string | null {
-  if (chatWallpaper !== undefined) return chatWallpaper;
-  return accountWallpaper ?? null;
-}
-
 /** Reads the catalog entry a stored `storeThemeId` refers to. */
 export function storeThemeFromProfile(storeThemeId: unknown): StoreTheme | undefined {
   return typeof storeThemeId === 'string' ? themeById(storeThemeId) : undefined;
@@ -98,11 +85,7 @@ export async function applyStoreTheme(uid: string, theme: StoreTheme): Promise<n
   for (const group of chunk(ids)) {
     const batch = writeBatch(db);
     for (const id of group) {
-      batch.set(
-        doc(chatsRef(), id),
-        {themeBy: {[uid]: theme.accent}, wallpaperBy: {[uid]: theme.wallpaper}},
-        {merge: true},
-      );
+      batch.set(doc(chatsRef(), id), {themeBy: {[uid]: theme.accent}}, {merge: true});
     }
     await batch.commit();
   }

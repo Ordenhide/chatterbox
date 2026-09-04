@@ -43,10 +43,9 @@ import {
   listenStoreTheme,
   MAX_WRITES_PER_BATCH,
   resolveAccent,
-  resolveWallpaper,
   storeThemeFromProfile,
 } from '../storeTheme';
-import {isDarkWallpaper, THEME_CATALOG, themeById} from '../themeCatalog';
+import {THEME_CATALOG, themeById} from '../themeCatalog';
 
 const MIDNIGHT = themeById('midnight')!;
 const CLASSIC = themeById('classic')!;
@@ -93,26 +92,6 @@ describe('resolveAccent', () => {
   });
 });
 
-describe('resolveWallpaper', () => {
-  // The distinction that matters: null is a deliberate "no wallpaper", so it
-  // must win over the account theme rather than being read as "unset".
-  it('keeps an explicit null instead of falling back', () => {
-    expect(resolveWallpaper(null, '#0F172A')).toBeNull();
-  });
-
-  it('falls back only when the chat value is undefined', () => {
-    expect(resolveWallpaper(undefined, '#0F172A')).toBe('#0F172A');
-  });
-
-  it("prefers the chat's own wallpaper", () => {
-    expect(resolveWallpaper('#ABCDEF', '#0F172A')).toBe('#ABCDEF');
-  });
-
-  it('returns null when nothing is set anywhere', () => {
-    expect(resolveWallpaper(undefined, undefined)).toBeNull();
-  });
-});
-
 describe('storeThemeFromProfile', () => {
   it('resolves a stored id to its catalog entry', () => {
     expect(storeThemeFromProfile('midnight')?.name).toBe('Midnight');
@@ -136,38 +115,34 @@ describe('applyStoreTheme', () => {
     expect(mockState.setDocCalls).toEqual([{path: 'uid1', data: {storeThemeId: 'midnight'}}]);
   });
 
-  it('overwrites every chat the user is in, accent and wallpaper together', async () => {
+  it('overwrites the accent in every chat the user is in', async () => {
     mockState.chatIds = ['a', 'b', 'c'];
     const count = await applyStoreTheme('uid1', MIDNIGHT);
 
     expect(count).toBe(3);
     const sets = mockState.batches.flatMap(b => b.sets);
     expect(sets.map(s => s.path)).toEqual(['a', 'b', 'c']);
-    expect(sets[0].data).toEqual({
-      themeBy: {uid1: MIDNIGHT.accent},
-      wallpaperBy: {uid1: MIDNIGHT.wallpaper},
-    });
+    expect(sets[0].data).toEqual({themeBy: {uid1: MIDNIGHT.accent}});
   });
 
   it('writes only the acting user key, never another participant', async () => {
     mockState.chatIds = ['a'];
     await applyStoreTheme('uid1', MIDNIGHT);
-    const {themeBy, wallpaperBy} = mockState.batches[0].sets[0].data as {
+    const {themeBy} = mockState.batches[0].sets[0].data as {
       themeBy: Record<string, string>;
-      wallpaperBy: Record<string, string | null>;
     };
     expect(Object.keys(themeBy)).toEqual(['uid1']);
-    expect(Object.keys(wallpaperBy)).toEqual(['uid1']);
   });
 
-  it("writes a free theme's own wallpaper, not a null that would erase the look", async () => {
+  // Applying a theme must never touch the chat's background. It used to
+  // write wallpaperBy alongside the accent, which is how a purchased theme
+  // could repaint the ground the whole conversation is read against.
+  it('writes the accent and nothing else', async () => {
     mockState.chatIds = ['a'];
     await applyStoreTheme('uid1', CLASSIC);
-    expect(mockState.batches[0].sets[0].data).toEqual({
-      themeBy: {uid1: CLASSIC.accent},
-      wallpaperBy: {uid1: CLASSIC.wallpaper},
-    });
-    expect(CLASSIC.wallpaper).not.toBeNull();
+    const data = mockState.batches[0].sets[0].data as Record<string, unknown>;
+    expect(Object.keys(data)).toEqual(['themeBy']);
+    expect(data).toEqual({themeBy: {uid1: CLASSIC.accent}});
   });
 
   it('commits every batch when the chat count spans several', async () => {
@@ -187,37 +162,6 @@ describe('applyStoreTheme', () => {
   });
 });
 
-describe('isDarkWallpaper', () => {
-  it('flags the dark Pro backgrounds', () => {
-    expect(isDarkWallpaper('#0F172A')).toBe(true);
-    expect(isDarkWallpaper('#2E1065')).toBe(true);
-  });
-
-  it('leaves light tints alone', () => {
-    expect(isDarkWallpaper('#EEF0FF')).toBe(false);
-    expect(isDarkWallpaper('#FFFFFF')).toBe(false);
-  });
-
-  it('treats "no wallpaper" as light, matching the default surface', () => {
-    expect(isDarkWallpaper(null)).toBe(false);
-    expect(isDarkWallpaper(undefined)).toBe(false);
-  });
-
-  // A custom wallpaper is a Storage URL; its brightness can't be known without
-  // decoding the image, so it keeps the long-standing light-text behaviour
-  // rather than guessing and possibly making text worse.
-  it('does not guess at uploaded photo wallpapers', () => {
-    expect(isDarkWallpaper('https://firebasestorage.googleapis.com/x.jpg')).toBe(false);
-  });
-
-  it('handles shorthand hex and rejects malformed values without throwing', () => {
-    expect(isDarkWallpaper('#000')).toBe(true);
-    expect(isDarkWallpaper('#fff')).toBe(false);
-    expect(isDarkWallpaper('#zzzzzz')).toBe(false);
-    expect(isDarkWallpaper('#12')).toBe(false);
-  });
-});
-
 describe('listenStoreTheme', () => {
   it('hands back the catalog entry for the stored id', () => {
     const seen: unknown[] = [];
@@ -227,33 +171,6 @@ describe('listenStoreTheme', () => {
 });
 
 describe('catalog integrity', () => {
-  // The regression this guards: free themes originally shipped with
-  // `wallpaper: null`, and the accent reaches so little of the chat that
-  // applying one changed nothing on screen — a store item that looks broken.
-  it('gives every theme a wallpaper, so applying one is always visible', () => {
-    const invisible = THEME_CATALOG.filter(t => !t.wallpaper);
-    expect(invisible.map(t => t.id)).toEqual([]);
-  });
-
-  it('keeps the original light/dark split intact', () => {
-    // Every theme is free now, but the visual split predates that and is
-    // still deliberate variety, not an accident worth losing track of.
-    const historicallyDark = new Set([
-      'midnight',
-      'sunset',
-      'matcha',
-      'lavender',
-      'ember',
-      'arctic',
-    ]);
-    for (const theme of THEME_CATALOG) {
-      expect({id: theme.id, dark: isDarkWallpaper(theme.wallpaper)}).toEqual({
-        id: theme.id,
-        dark: historicallyDark.has(theme.id),
-      });
-    }
-  });
-
   it('has unique ids', () => {
     const ids = THEME_CATALOG.map(t => t.id);
     expect(new Set(ids).size).toBe(ids.length);
@@ -279,18 +196,5 @@ describe('catalog integrity', () => {
       'ember',
       'arctic',
     ]);
-  });
-
-  it('anchors every gradient to end at the theme\'s own wallpaper', () => {
-    for (const t of THEME_CATALOG) {
-      expect(t.gradientStops[t.gradientStops.length - 1]).toBe(t.wallpaper);
-    }
-  });
-
-  it('keeps particle density within the ambient-texture cap', () => {
-    for (const t of THEME_CATALOG) {
-      expect(t.particles.density).toBeGreaterThanOrEqual(8);
-      expect(t.particles.density).toBeLessThanOrEqual(14);
-    }
   });
 });

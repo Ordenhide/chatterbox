@@ -118,10 +118,10 @@ body,
 body {
   font-family: var(--cb-body);
   color: var(--cb-text);
-  /* Overridden inline (--cb-wallpaper) by StoreThemeContext when the account
-     has an applied Store theme, so it paints app-wide rather than only
-     inside an open chat. Falls back to the normal per-mode canvas color. */
-  background: var(--cb-wallpaper, var(--cb-canvas));
+  /* The dark/light theme is the only thing that moves this. A Store theme
+     used to blend its wallpaper in here at 22%; the ground the whole app is
+     read against is not a theme's to change. */
+  background: var(--cb-canvas);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow: hidden;
@@ -865,149 +865,6 @@ button:focus-visible {
   }
 }
 
-/* ---- Ambient thread backdrop ----
-   Three pools of colour that drift, breathe and rotate behind the thread.
-
-   An earlier pass had these at 7-10% opacity, which was invisible in practice
-   — technically animating, visually nothing. These are strong enough to
-   actually read as a living surface. Originally single-hue by design; each
-   theme now curates up to 3 gradient stops (THEME_CATALOG, effectForAccent)
-   because one hue can't reproduce a deliberate multi-stop mood like Sunset's
-   orange-to-pink-to-purple. Each individual blob below still draws from just
-   one stop, so it stays legible — the multi-hue read comes from different
-   blobs carrying different stops, not from mixing hues within one blob.
-   --cb-anim-accent-2/-3 fall back to --cb-anim-accent when a caller (or an
-   accent outside the catalog) only supplies one colour.
-
-   Two layers on different clocks (23s and 31s, deliberately coprime) so the
-   pattern doesn't visibly loop. */
-/* Its own layer behind the thread, NOT a background on the scroll container:
-   absolutely-positioned children of a scrolling element scroll with its
-   content, so blobs painted inside the message list would drift away as soon
-   as you scrolled. This sits in the (non-scrolling) pane instead. */
-.cb-aurora {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-.cb-aurora::before,
-.cb-aurora::after {
-  content: '';
-  position: absolute;
-  inset: -25%;
-}
-.cb-aurora::before {
-  background-image:
-    radial-gradient(40% 34% at 22% 26%, color-mix(in srgb, var(--cb-anim-accent) 55%, transparent), transparent 62%),
-    radial-gradient(34% 30% at 78% 30%, color-mix(in srgb, var(--cb-anim-accent-2, var(--cb-anim-accent)) 42%, transparent), transparent 60%),
-    radial-gradient(44% 38% at 50% 84%, color-mix(in srgb, var(--cb-anim-accent-3, var(--cb-anim-accent)) 48%, transparent), transparent 64%);
-  filter: blur(46px);
-  opacity: 0.5;
-  animation: cbBlobDrift 23s ease-in-out infinite alternate;
-}
-.cb-aurora::after {
-  background-image:
-    radial-gradient(36% 30% at 68% 66%, color-mix(in srgb, var(--cb-anim-accent-2, var(--cb-anim-accent)) 40%, transparent), transparent 60%),
-    radial-gradient(30% 26% at 26% 72%, color-mix(in srgb, var(--cb-anim-accent-3, var(--cb-anim-accent)) 34%, transparent), transparent 58%);
-  filter: blur(58px);
-  opacity: 0.42;
-  animation: cbBlobDrift2 31s ease-in-out infinite alternate;
-}
-
-/* ---- Theme particles ----
-   A light layer that drifts upward on top of the aurora, themed per catalog
-   entry (density/style from effectForAccent). Only `transform`/`opacity`
-   animate, matching this file's compositor-only rule throughout. Each
-   particle's horizontal position and timing are set inline per-instance
-   (ChatPane.tsx) via index-based math, not real randomness — same
-   deliberately-uneven-multiplier trick as cbBlobDrift/cbBlobDrift2, so the
-   loop doesn't look mechanically synchronized. */
-.cb-particles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-.cb-particle {
-  position: absolute;
-  bottom: -16px;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--cb-anim-accent) 70%, transparent);
-  opacity: 0;
-  animation-name: cbParticleFloat;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-.cb-particles-spark .cb-particle {
-  width: 4px;
-  height: 4px;
-  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--cb-anim-accent) 80%, transparent);
-}
-.cb-particles-confetti .cb-particle {
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  animation-name: cbParticleFloatSpin;
-}
-@keyframes cbParticleFloat {
-  0% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.75;
-  }
-  88% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate3d(0, -128px, 0);
-    opacity: 0;
-  }
-}
-@keyframes cbParticleFloatSpin {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.8;
-  }
-  88% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate3d(0, -128px, 0) rotate(180deg);
-    opacity: 0;
-  }
-}
-@keyframes cbBlobDrift {
-  0% {
-    transform: translate3d(-6%, -4%, 0) scale(1) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(5%, 6%, 0) scale(1.18) rotate(8deg);
-  }
-  100% {
-    transform: translate3d(-3%, 8%, 0) scale(1.06) rotate(-6deg);
-  }
-}
-@keyframes cbBlobDrift2 {
-  0% {
-    transform: translate3d(6%, 5%, 0) scale(1.1) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(-7%, -6%, 0) scale(0.94) rotate(-10deg);
-  }
-  100% {
-    transform: translate3d(4%, -3%, 0) scale(1.14) rotate(7deg);
-  }
-}
 
 /* ---- Accent glow ----
    A slow breathing pulse on the primary action, so the send button reads as
@@ -1174,9 +1031,6 @@ button:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
-  }
-  .cb-aurora {
-    animation: none !important;
   }
   .cb-particle {
     animation: none !important;
