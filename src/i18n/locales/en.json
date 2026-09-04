@@ -514,7 +514,9 @@
       "file": "[File]"
     },
     "voiceTooLongTitle": "Recording too long",
-    "voiceTooLongBody": "That recording is too long to send. Try one under two minutes."
+    "voiceTooLongBody": "That recording is too long to send. Try one under two minutes.",
+    "channelSealed": "End-to-end encrypted. This message will be sealed to the people in this chat.",
+    "channelClear": "Not encrypted. This message will be readable by the server — the people in this chat have no key it can be sealed to."
   },
   "chatSettings": {
     "notifications": "Notifications",

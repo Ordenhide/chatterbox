@@ -5177,12 +5177,23 @@ export default function ChatScreen() {
                     padlock that appears before the check has finished is a
                     guess wearing the costume of a guarantee. */}
                 {channelSealed !== null ? (
-                  <Icon
-                    name={channelSealed ? 'lock' : 'alertTriangle'}
-                    size={11}
-                    color={channelSealed ? colors.primary : colors.warning}
-                    style={styles.composerLock}
-                  />
+                  // Wrapped, because Icon renders a bare Svg and a screen
+                  // reader announced nothing at all for it — an 11px glyph was
+                  // carrying "this message will go out in the clear" and
+                  // saying so to no one.
+                  <View
+                    accessible
+                    accessibilityRole="image"
+                    accessibilityLabel={
+                      channelSealed ? t('chat.channelSealed') : t('chat.channelClear')
+                    }>
+                    <Icon
+                      name={channelSealed ? 'lock' : 'alertTriangle'}
+                      size={11}
+                      color={channelSealed ? colors.primary : colors.warning}
+                      style={styles.composerLock}
+                    />
+                  </View>
                 ) : null}
                 <ChatComposer
                   ref={composerRef}
