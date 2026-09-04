@@ -441,7 +441,17 @@
       "downloadDataFailedBody": "Unable to prepare your data. Please try again."
     },
     "restartForLayoutTitle": "Restart to finish switching",
-    "restartForLayoutBody": "{{language}} is written right to left. Close and reopen Chatterbox to lay the app out in that direction."
+    "restartForLayoutBody": "{{language}} is written right to left. Close and reopen Chatterbox to lay the app out in that direction.",
+    "privacyTitle": "Privacy",
+    "privacyDescription": "These apply on this device only. Nothing here is shared or synced.",
+    "privacyOn": "ON",
+    "privacyOff": "OFF",
+    "privacyScreenshotTitle": "Block screenshots",
+    "privacyScreenshotHint": "Stops screenshots and screen recording while a conversation is open, and hides the app in the recents switcher. Android only.",
+    "privacyNotificationsTitle": "Hide notification content",
+    "privacyNotificationsHint": "Notifications show that a message arrived, never who sent it or what it says.",
+    "privacyExifTitle": "Strip photo metadata",
+    "privacyExifHint": "Removes location, camera and timestamp data from photos before they are sent."
   },
   "notifications": {
     "newMessageTitle": "New message",

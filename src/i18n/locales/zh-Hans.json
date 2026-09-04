@@ -315,7 +315,17 @@
       "momentVisibilityUpdateFailed": "无法更新默认动态可见性。"
     },
     "restartForLayoutTitle": "需要重启才能完成切换",
-    "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox,界面才会按那个方向排布。"
+    "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox,界面才会按那个方向排布。",
+    "privacyTitle": "隐私",
+    "privacyDescription": "以下设置只作用于这台设备,不会同步也不会共享。",
+    "privacyOn": "开",
+    "privacyOff": "关",
+    "privacyScreenshotTitle": "阻止截屏",
+    "privacyScreenshotHint": "打开聊天时阻止截屏和录屏,并在最近任务列表中隐藏应用画面。仅 Android。",
+    "privacyNotificationsTitle": "隐藏通知内容",
+    "privacyNotificationsHint": "通知只提示有新消息,不显示发送者和内容。",
+    "privacyExifTitle": "清除照片元数据",
+    "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。"
   },
   "notifications": {
     "newMessageTitle": "新消息",

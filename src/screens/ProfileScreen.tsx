@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
-import {getColors} from '../theme/colors';
+import {getColors, monoFont, radius} from '../theme/colors';
 import {
   decryptedImportAll,
   encryptedExportAll,
@@ -32,6 +32,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
 import {applyLayoutDirection} from '../i18n/rtl';
+import {PRIVACY_TOGGLES, type PrivacyKey} from '../services/privacyToggles';
 import {enableFocusMode, disableFocusMode} from '../services/focusMode';
 import {uploadVoiceStatus, removeVoiceStatus} from '../services/voiceStatus';
 import {startTutorial} from '../services/tutorial';
@@ -137,6 +138,19 @@ export default function ProfileScreen() {
         l.code.toLowerCase().includes(q),
     );
   }, [languageSearch]);
+
+  const [privacy, setPrivacy] = useState<Record<PrivacyKey, boolean>>(() =>
+    Object.fromEntries(PRIVACY_TOGGLES.map(x => [x.key, x.read()])) as Record<PrivacyKey, boolean>,
+  );
+
+  const handlePrivacyToggle = useCallback((key: PrivacyKey) => {
+    const toggle = PRIVACY_TOGGLES.find(x => x.key === key);
+    if (!toggle) return;
+    toggle.write(!toggle.read());
+    // Read back rather than trusting the value just written: the row is a
+    // claim about stored state, and MMKV is the thing that holds it.
+    setPrivacy(prev => ({...prev, [key]: toggle.read()}));
+  }, []);
 
   const handleLanguageChange = useCallback(
     (code: string) => {
@@ -761,6 +775,49 @@ export default function ProfileScreen() {
             <Text style={[styles.languageArrow, {color: colors.textSecondary}]}>{'>'}</Text>
           </TouchableOpacity>
         </GlassView>
+        {/* Only the three controls whose values something actually reads. The
+            store also carries watermark, auto-lock and screenshot-alert flags
+            that nothing consults; giving those a switch would put a control on
+            screen that changes nothing, which is the bug this section exists
+            to stop repeating. */}
+        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
+          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('profile.privacyTitle')}</Text>
+          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
+            {t('profile.privacyDescription')}
+          </Text>
+          {PRIVACY_TOGGLES.map(toggle => {
+            const on = privacy[toggle.key];
+            return (
+              <TouchableOpacity
+                key={toggle.key}
+                accessibilityRole="switch"
+                accessibilityState={{checked: on}}
+                accessibilityLabel={t(toggle.title)}
+                accessibilityHint={t(toggle.hint)}
+                style={[styles.privacyRow, {borderColor: colors.border}]}
+                onPress={() => handlePrivacyToggle(toggle.key)}>
+                <View style={styles.privacyRowText}>
+                  <Text style={[styles.privacyRowTitle, {color: colors.text}]}>{t(toggle.title)}</Text>
+                  <Text style={[styles.privacyRowHint, {color: colors.textSecondary}]}>{t(toggle.hint)}</Text>
+                </View>
+                {/* Green fill for on, hairline for off — the same signal the
+                    visibility selectors above already use, so the row reads as
+                    a control rather than a label. */}
+                <Text
+                  style={[
+                    styles.privacyState,
+                    {
+                      backgroundColor: on ? colors.primary : 'transparent',
+                      borderColor: on ? colors.primary : colors.border,
+                      color: on ? colors.textOnPrimary : colors.textSecondary,
+                    },
+                  ]}>
+                  {on ? t('profile.privacyOn') : t('profile.privacyOff')}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </GlassView>
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('tutorial.settingsTitle')}</Text>
           <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
@@ -1317,6 +1374,29 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  privacyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  privacyRowText: {flex: 1},
+  privacyRowTitle: {fontSize: 14, fontFamily: bodyWeight('600')},
+  privacyRowHint: {fontSize: 12, marginTop: 2, lineHeight: 16},
+  privacyState: {
+    minWidth: 54,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    textAlign: 'center',
+    fontFamily: monoFont,
+    fontSize: 11,
+    letterSpacing: 1,
+    // Android clips a Text's background to the text box without this.
+    overflow: 'hidden',
+  },
   container: {
     flex: 1,
   },
