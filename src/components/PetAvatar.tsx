@@ -3,6 +3,7 @@ import {Animated, Easing, StyleProp, View, ViewStyle} from 'react-native';
 import Icon, {type IconName} from './Icon';
 import {petMotionProfile, SPRING, useReduceMotion} from '../utils/motion';
 import type {ChatPet} from '../types';
+import {bodyWeight} from '../theme/typography';
 
 const SPECIES_ICON: Record<ChatPet['species'], IconName> = {
   plant: 'seedling',
@@ -171,7 +172,7 @@ export default function PetAvatar({
             top: -4,
             right: -6,
             fontSize: Math.max(10, Math.round(size * 0.4)),
-            fontWeight: '700',
+            fontFamily: bodyWeight('700'),
             color,
             opacity: sleepFloat.interpolate({
               inputRange: [0, 0.15, 0.75, 1],

@@ -32,6 +32,7 @@ import {
   recoverMessage,
   type TrashedMessage,
 } from '../../services/messageTrash';
+import {bodyWeight} from '../../theme/typography';
 
 /** A short label for a trashed message: its text where readable, else its kind. */
 function preview(
@@ -161,8 +162,8 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   rowMain: {flex: 1, minWidth: 0},
-  rowText: {fontSize: 14, fontWeight: '600'},
+  rowText: {fontSize: 14, fontFamily: bodyWeight('600')},
   rowMeta: {fontSize: 11.5, marginTop: 3},
   recoverBtn: {paddingHorizontal: 14, paddingVertical: 8, borderRadius: 2, minWidth: 84, alignItems: 'center'},
-  recoverText: {color: '#fff', fontWeight: '700', fontSize: 13},
+  recoverText: {color: '#fff', fontFamily: bodyWeight('700'), fontSize: 13},
 });

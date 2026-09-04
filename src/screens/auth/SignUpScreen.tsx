@@ -20,7 +20,7 @@ import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import Cascade from '../../components/Cascade';
-import {fonts} from '../../theme/typography';
+import {bodyWeight, fonts} from '../../theme/typography';
 import {checkPasswordStrength} from '../../services/passwordPolicy';
 
 export default function SignUpScreen() {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.3,
   },
   linkButton: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   linkTextBold: {
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   termsText: {
     fontSize: 13,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   termsLink: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
 });
 

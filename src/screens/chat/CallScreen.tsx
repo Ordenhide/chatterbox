@@ -25,6 +25,7 @@ import {CallType} from '../../types';
 import {describeIceServers} from '../../config/rtc';
 import {reportError, trackEvent} from '../../services/telemetry';
 import GlassScreen from '../../components/GlassScreen';
+import {bodyWeight} from '../../theme/typography';
 
 export default function CallScreen() {
   const {t} = useTranslation();
@@ -524,7 +525,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   controlText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   endButton: {
     flex: 1,
@@ -535,7 +536,7 @@ const styles = StyleSheet.create({
   },
   endButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
 });
 

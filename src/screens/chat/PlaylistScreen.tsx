@@ -19,6 +19,7 @@ import {addTrack, removeTrack, voteTrack, listenPlaylist} from '../../services/p
 import {PlaylistItem} from '../../types';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
+import {bodyWeight} from '../../theme/typography';
 
 export default function PlaylistScreen() {
   const route = useRoute();
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
   },
   cardRow: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'},
   cardInfo: {flex: 1, marginRight: 12},
-  trackTitle: {fontSize: 15, fontWeight: '700'},
+  trackTitle: {fontSize: 15, fontFamily: bodyWeight('700')},
   trackArtist: {fontSize: 13, marginTop: 2},
   addedBy: {fontSize: 12, marginTop: 4},
   voteBtn: {
@@ -231,9 +232,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minWidth: 54,
   },
-  voteText: {fontSize: 14, fontWeight: '700'},
+  voteText: {fontSize: 14, fontFamily: bodyWeight('700')},
   removeBtn: {marginTop: 8, alignSelf: 'flex-end'},
-  removeText: {fontSize: 13, fontWeight: '600'},
+  removeText: {fontSize: 13, fontFamily: bodyWeight('600')},
   emptyText: {textAlign: 'center', marginTop: 60, fontSize: 15},
   fab: {
     position: 'absolute',
@@ -250,9 +251,9 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 4},
     elevation: 6,
   },
-  fabText: {fontSize: 28, color: '#fff', fontWeight: '600', marginTop: -2},
+  fabText: {fontSize: 28, color: '#fff', fontFamily: bodyWeight('600'), marginTop: -2},
   modalContainer: {flex: 1, padding: 20},
-  modalTitle: {fontSize: 20, fontWeight: '700', marginBottom: 18},
+  modalTitle: {fontSize: 20, fontFamily: bodyWeight('700'), marginBottom: 18},
   input: {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 2,
@@ -262,6 +263,6 @@ const styles = StyleSheet.create({
   },
   modalActions: {flexDirection: 'row', gap: 12, marginTop: 8},
   modalButton: {flex: 1, paddingVertical: 14, borderRadius: 2, alignItems: 'center'},
-  modalButtonText: {color: '#fff', fontSize: 16, fontWeight: '700'},
-  modalButtonTextDark: {fontSize: 16, fontWeight: '700'},
+  modalButtonText: {color: '#fff', fontSize: 16, fontFamily: bodyWeight('700')},
+  modalButtonTextDark: {fontSize: 16, fontFamily: bodyWeight('700')},
 });

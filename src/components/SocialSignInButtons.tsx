@@ -7,6 +7,7 @@ import {useAuth} from '../contexts/AuthContext';
 import {isAppleSignInAvailable} from '../services/appleAuth';
 import {getColors} from '../theme/colors';
 import Icon from './Icon';
+import {bodyWeight} from '../theme/typography';
 
 /** Google's official "G" logomark — required as-is (not recolored to match
  * the app's monochrome Icon.tsx set) by Google's Sign-In branding
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   button: {
     flexDirection: 'row',
@@ -170,6 +171,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
 });

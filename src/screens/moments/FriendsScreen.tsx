@@ -37,6 +37,7 @@ import {
   getUsersByIds,
   searchUsersByEmailOrName,
 } from '../../services/firebaseChat';
+import {bodyWeight} from '../../theme/typography';
 
 type UserMap = Record<string, User | null>;
 
@@ -557,7 +558,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginTop: 12,
     marginBottom: 8,
   },
@@ -582,7 +583,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   sendText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   card: {
     borderWidth: 1,
@@ -597,7 +598,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 8,
   },
   cardMeta: {
@@ -616,10 +617,10 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   actionText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   actionTextPrimary: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   emptyText: {
     textAlign: 'center',

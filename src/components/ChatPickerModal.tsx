@@ -13,6 +13,7 @@ import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import {getUsersByIds, listenChatsForUser} from '../services/firebaseChat';
 import type {ChatRoom} from '../types';
+import {bodyWeight} from '../theme/typography';
 
 /**
  * "Pick a chat to send this to" — built for message forwarding
@@ -114,11 +115,11 @@ export default function ChatPickerModal({
 
 const styles = StyleSheet.create({
   container: {flex: 1, paddingHorizontal: 20, paddingTop: 12},
-  title: {fontSize: 20, fontWeight: '700', marginBottom: 16, textAlign: 'center'},
+  title: {fontSize: 20, fontFamily: bodyWeight('700'), marginBottom: 16, textAlign: 'center'},
   listContent: {paddingBottom: 20},
   emptyText: {textAlign: 'center', marginTop: 40, fontSize: 15},
   row: {paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth},
-  rowName: {fontSize: 16, fontWeight: '600'},
+  rowName: {fontSize: 16, fontFamily: bodyWeight('600')},
   close: {paddingVertical: 16, alignItems: 'center'},
-  closeText: {fontSize: 16, fontWeight: '700'},
+  closeText: {fontSize: 16, fontFamily: bodyWeight('700')},
 });

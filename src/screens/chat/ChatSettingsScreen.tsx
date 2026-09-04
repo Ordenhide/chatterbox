@@ -45,6 +45,7 @@ import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpir
 import {ChatPet, SoundscapeId} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
+import {bodyWeight} from '../../theme/typography';
 
 const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
 const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
@@ -601,7 +602,7 @@ export default function ChatSettingsScreen() {
                 setExpiryHours(opt.hours);
                 await setChatExpiryPolicy(chatId, opt.hours);
               }}>
-              <Text style={[{fontSize: 12, fontWeight: '600'}, {color: expiryHours === opt.hours ? colors.primary : colors.text}]}>
+              <Text style={[{fontSize: 12, fontFamily: bodyWeight('600')}, {color: expiryHours === opt.hours ? colors.primary : colors.text}]}>
                 {opt.label}
               </Text>
             </TouchableOpacity>
@@ -736,7 +737,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 8,
   },
   row: {
@@ -762,7 +763,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  storeHint: {fontSize: 12.5, fontWeight: '600', marginTop: 10},
+  storeHint: {fontSize: 12.5, fontFamily: bodyWeight('600'), marginTop: 10},
   themeDotSelected: {
     borderWidth: 2,
   },
@@ -772,7 +773,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 12,
   },
   modalInput: {
@@ -794,7 +795,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   clearNameButton: {
     marginTop: 8,

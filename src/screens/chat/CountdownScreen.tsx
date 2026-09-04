@@ -24,6 +24,7 @@ import {
 import {SharedCountdown} from '../../types';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
+import {bodyWeight} from '../../theme/typography';
 
 const EMOJI_OPTIONS = ['\u{1F389}', '\u{1F382}', '\u2708\uFE0F', '\u{1F3B5}', '\u{1F4C5}', '\u{1F31F}', '\u{1F37B}', '\u{1F3C6}'];
 
@@ -300,8 +301,8 @@ const styles = StyleSheet.create({
   },
   cardHeader: {flexDirection: 'row', alignItems: 'center', marginBottom: 8},
   emojiLabel: {fontSize: 24, marginRight: 10},
-  cardTitle: {fontSize: 17, fontWeight: '700', flex: 1},
-  countdownText: {fontSize: 22, fontWeight: '800', marginBottom: 12},
+  cardTitle: {fontSize: 17, fontFamily: bodyWeight('700'), flex: 1},
+  countdownText: {fontSize: 22, fontFamily: bodyWeight('800'), marginBottom: 12},
   rsvpRow: {flexDirection: 'row', gap: 8},
   rsvpBtn: {
     flex: 1,
@@ -310,9 +311,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
   },
-  rsvpLabel: {fontSize: 13, fontWeight: '700'},
+  rsvpLabel: {fontSize: 13, fontFamily: bodyWeight('700')},
   deleteBtn: {marginTop: 10, alignSelf: 'flex-end'},
-  deleteBtnText: {fontSize: 13, fontWeight: '600'},
+  deleteBtnText: {fontSize: 13, fontFamily: bodyWeight('600')},
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   emptyIcon: {fontSize: 48, marginBottom: 16},
-  emptyTitle: {fontSize: 20, fontWeight: '700', marginBottom: 8},
+  emptyTitle: {fontSize: 20, fontFamily: bodyWeight('700'), marginBottom: 8},
   emptyText: {fontSize: 14, textAlign: 'center', lineHeight: 20},
   fab: {
     position: 'absolute',
@@ -337,10 +338,10 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 4},
     elevation: 6,
   },
-  fabText: {fontSize: 28, color: '#fff', fontWeight: '600', marginTop: -2},
+  fabText: {fontSize: 28, color: '#fff', fontFamily: bodyWeight('600'), marginTop: -2},
   modalContainer: {flex: 1, padding: 20},
-  modalTitle: {fontSize: 20, fontWeight: '700', marginBottom: 18},
-  sectionLabel: {fontSize: 13, fontWeight: '600', marginBottom: 6, marginTop: 4},
+  modalTitle: {fontSize: 20, fontFamily: bodyWeight('700'), marginBottom: 18},
+  sectionLabel: {fontSize: 13, fontFamily: bodyWeight('600'), marginBottom: 6, marginTop: 4},
   input: {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 2,
@@ -360,6 +361,6 @@ const styles = StyleSheet.create({
   emojiChipText: {fontSize: 22},
   modalActions: {flexDirection: 'row', gap: 12, marginTop: 8},
   modalButton: {flex: 1, paddingVertical: 14, borderRadius: 2, alignItems: 'center'},
-  modalButtonText: {color: '#fff', fontSize: 16, fontWeight: '700'},
-  modalButtonTextDark: {fontSize: 16, fontWeight: '700'},
+  modalButtonText: {color: '#fff', fontSize: 16, fontFamily: bodyWeight('700')},
+  modalButtonTextDark: {fontSize: 16, fontFamily: bodyWeight('700')},
 });

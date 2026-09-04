@@ -5,6 +5,7 @@ import {getColors} from '../theme/colors';
 import {useColorScheme} from 'react-native';
 import {getRecoveryPhrase, markRecoveryPhraseRevealed} from '../services/e2eeKeys';
 import {reportError} from '../services/telemetry';
+import {bodyWeight} from '../theme/typography';
 
 type Props = {
   visible: boolean;
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 12,
   },
   body: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     fontSize: 15,
   },
 });

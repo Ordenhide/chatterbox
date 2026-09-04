@@ -18,6 +18,7 @@ import {getColors} from '../../theme/colors';
 import ImageViewing from 'react-native-image-viewing';
 import GlassScreen from '../../components/GlassScreen';
 import {useTranslation} from 'react-i18next';
+import {bodyWeight} from '../../theme/typography';
 
 export default function ChatMediaScreen() {
   const route = useRoute();
@@ -151,14 +152,14 @@ const styles = StyleSheet.create({
   videoIcon: {
     position: 'absolute',
     fontSize: 20,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   videoDuration: {
     position: 'absolute',
     bottom: 6,
     right: 6,
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 2,

@@ -22,7 +22,7 @@ import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import Cascade from '../../components/Cascade';
-import {fonts} from '../../theme/typography';
+import {bodyWeight, fonts} from '../../theme/typography';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.3,
   },
   linkButton: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   linkTextBold: {
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
 });
 

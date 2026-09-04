@@ -16,6 +16,7 @@ import {BookmarkedMessage} from '../types';
 import GlassScreen from '../components/GlassScreen';
 import GlassView from '../components/GlassView';
 import {useNavigation} from '@react-navigation/native';
+import {bodyWeight} from '../theme/typography';
 
 export default function BookmarksScreen() {
   const {user} = useAuth();
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   },
   senderName: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   date: {
     fontSize: 12,
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   },
   removeBtn: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   emptyContainer: {
     flex: 1,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 8,
   },
   emptyHint: {

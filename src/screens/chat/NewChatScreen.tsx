@@ -20,6 +20,7 @@ import {getColors} from '../../theme/colors';
 import {reportError} from '../../services/telemetry';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
+import {bodyWeight} from '../../theme/typography';
 
 export default function NewChatScreen() {
   const {t} = useTranslation();
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
     marginBottom: 6,
     letterSpacing: -0.3,
   },
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 8,
     letterSpacing: 0.2,
     textTransform: 'uppercase',
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  addButtonText: {fontSize: 14, fontWeight: '600'},
+  addButtonText: {fontSize: 14, fontFamily: bodyWeight('600')},
   chipRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14},
   chip: {
     borderWidth: 1,
@@ -289,14 +290,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  chipText: {fontSize: 13, fontWeight: '600'},
+  chipText: {fontSize: 13, fontFamily: bodyWeight('600')},
   buttonDisabled: {
     opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.3,
   },
   helpText: {

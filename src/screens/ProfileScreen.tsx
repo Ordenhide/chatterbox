@@ -49,6 +49,7 @@ import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGu
 import {shareTextFile} from '../utils/shareFile';
 import {checkPasswordStrength} from '../services/passwordPolicy';
 import {guardDocSnapshot} from '../services/snapshotGuard';
+import {bodyWeight} from '../theme/typography';
 
 export default function ProfileScreen() {
   const {user, signOut} = useAuth();
@@ -1330,12 +1331,12 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: 38,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
     color: '#fff',
   },
   name: {
     fontSize: 26,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
     letterSpacing: -0.3,
   },
@@ -1351,7 +1352,7 @@ const styles = StyleSheet.create({
   },
   memberBadgeText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -1364,7 +1365,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     padding: 18,
   },
-  shortcutsTitle: {fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginBottom: 12},
+  shortcutsTitle: {fontSize: 11, fontFamily: bodyWeight('700'), letterSpacing: 0.5, marginBottom: 12},
   shortcutsRow: {flexDirection: 'row', justifyContent: 'space-between', gap: 12},
   shortcutItem: {
     flex: 1,
@@ -1374,7 +1375,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shortcutIcon: {fontSize: 24, marginBottom: 6},
-  shortcutLabel: {fontSize: 12, fontWeight: '600'},
+  shortcutLabel: {fontSize: 12, fontFamily: bodyWeight('600')},
   visibilityCard: {
     borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
@@ -1382,7 +1383,7 @@ const styles = StyleSheet.create({
   },
   visibilityTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
   },
   visibilityDescription: {
@@ -1403,7 +1404,7 @@ const styles = StyleSheet.create({
   },
   visibilityOptionText: {
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   visibilityLoader: {
     paddingVertical: 8,
@@ -1421,7 +1422,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.2,
   },
   modalContainer: {
@@ -1430,7 +1431,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 14,
     letterSpacing: -0.3,
   },
@@ -1467,7 +1468,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     fontSize: 16,
   },
   focusActiveBar: {
@@ -1480,7 +1481,7 @@ const styles = StyleSheet.create({
   },
   focusActiveText: {
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   focusReplyPreview: {
     fontSize: 13,
@@ -1496,11 +1497,11 @@ const styles = StyleSheet.create({
   focusBtnText: {
     color: '#fff',
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   focusLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 8,
     marginTop: 8,
   },
@@ -1518,7 +1519,7 @@ const styles = StyleSheet.create({
   },
   focusDurationText: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   vsActiveRow: {
     flexDirection: 'row',
@@ -1533,7 +1534,7 @@ const styles = StyleSheet.create({
   vsPlayBtnText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   vsRecordArea: {
     alignItems: 'center',
@@ -1543,7 +1544,7 @@ const styles = StyleSheet.create({
   },
   vsTimer: {
     fontSize: 48,
-    fontWeight: '200',
+    fontFamily: bodyWeight('200'),
     marginBottom: 20,
   },
   vsRecordBtn: {
@@ -1556,7 +1557,7 @@ const styles = StyleSheet.create({
   vsRecordBtnText: {
     color: '#fff',
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   languageSelector: {
     flexDirection: 'row',
@@ -1568,7 +1569,7 @@ const styles = StyleSheet.create({
   },
   languageCurrentNative: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     flex: 1,
   },
   languageCurrentLabel: {
@@ -1577,7 +1578,7 @@ const styles = StyleSheet.create({
   },
   languageArrow: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   languageSearchInput: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -1604,7 +1605,7 @@ const styles = StyleSheet.create({
   },
   languageItemNative: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 2,
   },
   languageItemLabel: {
@@ -1620,7 +1621,7 @@ const styles = StyleSheet.create({
   languageCheckText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
   },
 });
 

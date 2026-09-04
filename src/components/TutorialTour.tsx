@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
+import {bodyWeight} from '../theme/typography';
 
 interface Step {
   emoji: string;
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skip: {position: 'absolute', top: 14, right: 16, minWidth: 36, alignItems: 'flex-end'},
-  skipText: {fontSize: 14, fontWeight: '600'},
+  skipText: {fontSize: 14, fontFamily: bodyWeight('600')},
   emojiCircle: {
     width: 72,
     height: 72,
@@ -114,14 +115,14 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   emoji: {fontSize: 36},
-  title: {fontSize: 22, fontWeight: '800', textAlign: 'center', marginBottom: 10},
+  title: {fontSize: 22, fontFamily: bodyWeight('800'), textAlign: 'center', marginBottom: 10},
   body: {fontSize: 15, lineHeight: 22, textAlign: 'center', marginBottom: 22},
   dots: {flexDirection: 'row', gap: 6, marginBottom: 24},
   dot: {height: 6, borderRadius: 2},
   actions: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: 12},
   back: {flex: 1, paddingVertical: 13, borderRadius: 2, borderWidth: 1, alignItems: 'center'},
-  backText: {fontSize: 15, fontWeight: '700'},
+  backText: {fontSize: 15, fontFamily: bodyWeight('700')},
   backSpacer: {flex: 1},
   next: {flex: 1, paddingVertical: 13, borderRadius: 2, alignItems: 'center'},
-  nextText: {fontSize: 15, fontWeight: '700', color: '#fff'},
+  nextText: {fontSize: 15, fontFamily: bodyWeight('700'), color: '#fff'},
 });

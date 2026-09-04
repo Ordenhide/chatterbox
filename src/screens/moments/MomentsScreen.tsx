@@ -55,6 +55,7 @@ import {
   query,
   where,
 } from '../../services/firebase/firestore';
+import {bodyWeight} from '../../theme/typography';
 
 type MediaDraft = {uri: string; type: 'image' | 'video'; isRemote?: boolean};
 
@@ -926,7 +927,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   headerActions: {
     flexDirection: 'row',
@@ -940,11 +941,11 @@ const styles = StyleSheet.create({
   },
   headerButtonText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   headerButtonTextPrimary: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   listContent: {
     padding: 16,
@@ -963,7 +964,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontFamily: bodyWeight('500'),
   },
   card: {
     padding: 16,
@@ -982,7 +983,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   cardText: {
     fontSize: 15,
@@ -1011,7 +1012,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   cardActions: {
     flexDirection: 'row',
@@ -1024,10 +1025,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   cardActionText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   cardActionTextPrimary: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   emptyText: {
     textAlign: 'center',
@@ -1055,7 +1056,7 @@ const styles = StyleSheet.create({
   },
   commentAuthor: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 4,
   },
   commentDelete: {
@@ -1087,14 +1088,14 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   commentSendText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   modalClose: {
     marginTop: 16,
     alignItems: 'center',
   },
   modalCloseText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   shareRow: {
     borderWidth: 1,
@@ -1104,11 +1105,11 @@ const styles = StyleSheet.create({
   },
   shareName: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 12,
   },
   modalInput: {
@@ -1133,7 +1134,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mediaButtonText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   uploadRow: {
     flexDirection: 'row',
@@ -1158,7 +1159,7 @@ const styles = StyleSheet.create({
   },
   visibilityText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     textTransform: 'capitalize',
   },
   modalActions: {
@@ -1173,10 +1174,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   modalButtonTextPrimary: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
 });
 

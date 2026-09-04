@@ -13,6 +13,7 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getColors} from '../theme/colors';
 import {SPRING, useReduceMotion} from '../utils/motion';
+import {bodyWeight} from '../theme/typography';
 
 export type SheetAction = {
   label: string;
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     paddingHorizontal: 12,
     paddingTop: 4,
   },
@@ -201,6 +202,6 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
 });

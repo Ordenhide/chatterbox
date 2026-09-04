@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, useColorScheme} from 'react-native';
 import {getColors} from '../theme/colors';
 import {reportError} from '../services/telemetry';
+import {bodyWeight} from '../theme/typography';
 
 type Props = {
   children: React.ReactNode;
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -83,6 +84,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
 });

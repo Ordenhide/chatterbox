@@ -18,6 +18,7 @@ import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import type {ConfirmationResult} from '../../services/firebase/auth';
+import {bodyWeight} from '../../theme/typography';
 
 export default function PhoneAuthScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: -0.5,
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
     letterSpacing: 8,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   button: {
     borderRadius: 2,
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     letterSpacing: 0.3,
   },
   linkButton: {
@@ -248,6 +249,6 @@ const styles = StyleSheet.create({
   },
   linkTextBold: {
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
 });

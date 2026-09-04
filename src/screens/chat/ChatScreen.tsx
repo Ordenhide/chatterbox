@@ -120,7 +120,7 @@ import {
 } from '../../services/groupRatchetMessages';
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
-import {fonts, terminal} from '../../theme/typography';
+import {bodyWeight, fonts, terminal} from '../../theme/typography';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -3599,11 +3599,11 @@ export default function ChatScreen() {
       }
 
       const styleMap: Record<string, any> = {
-        neon: {color: '#0FF', textShadowColor: '#0FF', textShadowRadius: 10, fontWeight: '700'},
+        neon: {color: '#0FF', textShadowColor: '#0FF', textShadowRadius: 10, fontFamily: bodyWeight('700')},
         handwriting: {fontStyle: 'italic', fontSize: 18, letterSpacing: 0.5},
-        gradient: {color: '#EC4899', fontWeight: '800'},
+        gradient: {color: '#EC4899', fontFamily: bodyWeight('800')},
         typewriter: {fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', letterSpacing: 1},
-        bounce: {fontSize: 18, fontWeight: '800'},
+        bounce: {fontSize: 18, fontFamily: bodyWeight('800')},
       };
       const extraStyle = current.messageStyle ? styleMap[current.messageStyle] || {} : {};
 
@@ -3612,7 +3612,7 @@ export default function ChatScreen() {
         <Text style={[styles.messageText, {color: baseColor}, extraStyle]}>
           {parts.map((part: string, index: number) =>
             part.startsWith('@') ? (
-              <Text key={`${part}-${index}`} style={{color: mentionColor, fontWeight: '700'}}>
+              <Text key={`${part}-${index}`} style={{color: mentionColor, fontFamily: bodyWeight('700')}}>
                 {part}
               </Text>
             ) : (
@@ -4090,7 +4090,7 @@ export default function ChatScreen() {
           {current.forwarded ? (
             <View style={styles.forwardedLabel}>
               <Icon name="forward" size={11} color={colors.textSecondary} />
-              <Text style={{color: colors.textSecondary, fontSize: 11, fontWeight: '600'}}>Forwarded</Text>
+              <Text style={{color: colors.textSecondary, fontSize: 11, fontFamily: bodyWeight('600')}}>Forwarded</Text>
             </View>
           ) : null}
           {burn ? (
@@ -5459,7 +5459,7 @@ export default function ChatScreen() {
                   <Text style={[
                     styles.actionSheetText,
                     {color: capsuleHours === opt.hours ? '#8B5CF6' : colors.text},
-                    capsuleHours === opt.hours && {fontWeight: '700'},
+                    capsuleHours === opt.hours && {fontFamily: bodyWeight('700')},
                   ]}>
                     {opt.label} {capsuleHours === opt.hours ? '  \u2713' : ''}
                   </Text>
@@ -5714,11 +5714,11 @@ export default function ChatScreen() {
                   <Text style={[
                     styles.actionSheetText,
                     {color: messageStyle === s ? colors.primary : colors.text},
-                    s === 'neon' && {color: '#0FF', fontWeight: '700'},
+                    s === 'neon' && {color: '#0FF', fontFamily: bodyWeight('700')},
                     s === 'handwriting' && {fontStyle: 'italic'},
-                    s === 'gradient' && {color: '#EC4899', fontWeight: '800'},
+                    s === 'gradient' && {color: '#EC4899', fontFamily: bodyWeight('800')},
                     s === 'typewriter' && {fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace'},
-                    s === 'bounce' && {fontWeight: '800'},
+                    s === 'bounce' && {fontFamily: bodyWeight('800')},
                   ]}>
                     {s === 'none' ? 'Normal' : s.charAt(0).toUpperCase() + s.slice(1)}
                   </Text>
@@ -5800,12 +5800,12 @@ export default function ChatScreen() {
               <TouchableOpacity
                 onPress={() => setLotteryOptions(prev => [...prev, ''])}
                 style={{marginBottom: 12}}>
-                <Text style={{color: colors.primary, fontWeight: '600'}}>+ Add option</Text>
+                <Text style={{color: colors.primary, fontFamily: bodyWeight('600')}}>+ Add option</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.burnPickerOption, {backgroundColor: colors.primary}]}
                 onPress={sendLotteryMessage}>
-                <Text style={{color: '#fff', fontWeight: '700', textAlign: 'center'}}>Send Mystery Box</Text>
+                <Text style={{color: '#fff', fontFamily: bodyWeight('700'), textAlign: 'center'}}>Send Mystery Box</Text>
               </TouchableOpacity>
             </View>
           </Pressable>
@@ -5856,7 +5856,7 @@ const styles = StyleSheet.create({
   },
   headerButtonText: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   searchBar: {
     flexDirection: 'row',
@@ -5932,7 +5932,7 @@ const styles = StyleSheet.create({
   },
   uploadText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 6,
   },
   uploadBar: {
@@ -5955,7 +5955,7 @@ const styles = StyleSheet.create({
   searchClear: {
     marginLeft: 10,
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   actionButton: {
     width: 38,
@@ -5969,7 +5969,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   bubbleWrapper: {
     flex: 1,
@@ -5992,7 +5992,7 @@ const styles = StyleSheet.create({
   },
   replyName: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 2,
   },
   replyText: {
@@ -6013,7 +6013,7 @@ const styles = StyleSheet.create({
   },
   reactionText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: bodyWeight('500'),
   },
   seenText: {
     fontSize: 11,
@@ -6027,7 +6027,7 @@ const styles = StyleSheet.create({
   },
   pinnedTitle: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 2,
   },
   pinnedText: {
@@ -6040,7 +6040,7 @@ const styles = StyleSheet.create({
   },
   unreadTextBar: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   fileCard: {
     marginTop: 6,
@@ -6050,7 +6050,7 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   fileMeta: {
     marginTop: 3,
@@ -6086,7 +6086,7 @@ const styles = StyleSheet.create({
   },
   linkTitle: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
   },
   linkDescription: {
@@ -6120,7 +6120,7 @@ const styles = StyleSheet.create({
   },
   momentTitle: {
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
   },
   momentText: {
@@ -6145,7 +6145,7 @@ const styles = StyleSheet.create({
   },
   accessoryTitle: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   accessoryText: {
     fontSize: 12,
@@ -6162,7 +6162,7 @@ const styles = StyleSheet.create({
   },
   accessoryCloseText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   recordModal: {
     width: '85%',
@@ -6176,7 +6176,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 14,
     letterSpacing: -0.3,
   },
@@ -6200,7 +6200,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     fontSize: 16,
   },
   clearNameButton: {
@@ -6228,7 +6228,7 @@ const styles = StyleSheet.create({
   },
   actionSheetTitle: {
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 12,
     letterSpacing: -0.2,
   },
@@ -6237,7 +6237,7 @@ const styles = StyleSheet.create({
   },
   actionSheetText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: bodyWeight('500'),
   },
   actionSheetCancel: {
     marginTop: 6,
@@ -6247,7 +6247,7 @@ const styles = StyleSheet.create({
   },
   recordTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 8,
     letterSpacing: -0.2,
   },
@@ -6274,14 +6274,14 @@ const styles = StyleSheet.create({
   },
   recordButtonText: {
     color: '#fff',
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   recordCancel: {
     marginTop: 4,
   },
   recordCancelText: {
     color: '#007AFF',
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   videoBubble: {
     width: 200,
@@ -6307,13 +6307,13 @@ const styles = StyleSheet.create({
   videoOverlayText: {
     color: '#fff',
     fontSize: 32,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   videoDurationText: {
     marginTop: 6,
     color: '#fff',
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   previewBackdrop: {
     flex: 1,
@@ -6359,7 +6359,7 @@ const styles = StyleSheet.create({
   burnAccessoryText: {
     flex: 1,
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     color: '#FF6B35',
   },
   burnDurationButton: {
@@ -6371,7 +6371,7 @@ const styles = StyleSheet.create({
   burnDurationButtonText: {
     color: '#fff',
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   burnedContainer: {
     flexDirection: 'row',
@@ -6407,7 +6407,7 @@ const styles = StyleSheet.create({
   },
   burnOverlayText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     marginBottom: 4,
   },
   burnOverlaySub: {
@@ -6440,7 +6440,7 @@ const styles = StyleSheet.create({
   },
   burnCountdownText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     color: '#FF6B35',
     marginLeft: 4,
     minWidth: 28,
@@ -6460,7 +6460,7 @@ const styles = StyleSheet.create({
   },
   burnPickerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
     textAlign: 'center',
   },
@@ -6485,11 +6485,11 @@ const styles = StyleSheet.create({
   },
   burnPickerOptionText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   burnPickerCheck: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     color: '#FF6B35',
   },
   burnPickerCancel: {
@@ -6499,7 +6499,7 @@ const styles = StyleSheet.create({
   },
   burnPickerCancelText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   sharedListCard: {
     marginTop: 6,
@@ -6515,7 +6515,7 @@ const styles = StyleSheet.create({
   },
   sharedListTitle: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   sharedListItem: {
     flexDirection: 'row',
@@ -6547,11 +6547,11 @@ const styles = StyleSheet.create({
   },
   expenseCardDesc: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   expenseCardAmount: {
     fontSize: 18,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
     marginTop: 2,
   },
   locationCard: {
@@ -6572,7 +6572,7 @@ const styles = StyleSheet.create({
   },
   locationLive: {
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
   },
   translationCard: {
     marginTop: 6,
@@ -6588,7 +6588,7 @@ const styles = StyleSheet.create({
   },
   translationLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   translationText: {
     fontSize: 14,
@@ -6622,13 +6622,13 @@ const styles = StyleSheet.create({
   },
   contextCardType: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   contextCardTitle: {
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 2,
   },
   contextCardDesc: {
@@ -6657,7 +6657,7 @@ const styles = StyleSheet.create({
   },
   schedulePresetText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   scheduleButton: {
     paddingVertical: 14,
@@ -6667,7 +6667,7 @@ const styles = StyleSheet.create({
   scheduleButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
   },
   listTitleInput: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -6691,7 +6691,7 @@ const styles = StyleSheet.create({
   },
   listItemRemove: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     paddingHorizontal: 8,
   },
   listAddBtn: {
@@ -6703,7 +6703,7 @@ const styles = StyleSheet.create({
   },
   listAddText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
   },
   summarySheet: {
     width: '90%',
@@ -6720,7 +6720,7 @@ const styles = StyleSheet.create({
   },
   summarySheetTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     textAlign: 'center',
   },
   summaryLoading: {
@@ -6741,7 +6741,7 @@ const styles = StyleSheet.create({
   },
   smallActionIcon: {
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: bodyWeight('800'),
     color: '#888',
   },
   gifCard: {
@@ -6804,7 +6804,7 @@ const styles = StyleSheet.create({
   },
   capsuleTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 4,
   },
   capsuleSub: {
@@ -6823,7 +6823,7 @@ const styles = StyleSheet.create({
   },
   petAvatar: {fontSize: 24, marginRight: 8},
   petInfo: {flex: 1},
-  petName: {fontSize: 12, fontWeight: '700'},
+  petName: {fontSize: 12, fontFamily: bodyWeight('700')},
   petHealthBar: {height: 4, borderRadius: 2, marginTop: 3, overflow: 'hidden'},
   petHealthFill: {height: '100%', borderRadius: 2},
   petMood: {fontSize: 16, marginLeft: 6},
@@ -6836,10 +6836,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   msgSelectCancel: {paddingVertical: 4, paddingRight: 4},
-  msgSelectCancelText: {fontSize: 15, fontWeight: '600'},
-  msgSelectCount: {flex: 1, fontSize: 15, fontWeight: '700'},
+  msgSelectCancelText: {fontSize: 15, fontFamily: bodyWeight('600')},
+  msgSelectCount: {flex: 1, fontSize: 15, fontFamily: bodyWeight('700')},
   msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 2},
-  msgSelectDeleteText: {color: '#fff', fontSize: 14, fontWeight: '700'},
+  msgSelectDeleteText: {color: '#fff', fontSize: 14, fontFamily: bodyWeight('700')},
   locationBanner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -6848,8 +6848,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   locationBannerRow: {flexDirection: 'row', alignItems: 'center', gap: 6},
-  locationBannerText: {color: '#fff', fontSize: 14, fontWeight: '600'},
-  locationBannerStop: {color: '#fff', fontSize: 14, fontWeight: '700', textDecorationLine: 'underline'},
+  locationBannerText: {color: '#fff', fontSize: 14, fontFamily: bodyWeight('600')},
+  locationBannerStop: {color: '#fff', fontSize: 14, fontFamily: bodyWeight('700'), textDecorationLine: 'underline'},
   locationPreview: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -6862,7 +6862,7 @@ const styles = StyleSheet.create({
   },
   locationPreviewImage: {width: 56, height: 56, borderRadius: 2},
   locationPreviewInfo: {flex: 1},
-  locationPreviewTitle: {fontSize: 13.5, fontWeight: '700'},
+  locationPreviewTitle: {fontSize: 13.5, fontFamily: bodyWeight('700')},
   locationPreviewCoords: {fontSize: 12.5, marginTop: 1},
   locationPreviewMeta: {fontSize: 11.5, marginTop: 2},
   // Every vertical measurement here is a whole number on purpose, and it is
@@ -6893,7 +6893,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
-  smartReplyText: {fontSize: 13, fontWeight: '600'},
+  smartReplyText: {fontSize: 13, fontFamily: bodyWeight('600')},
   invisibleInkWrap: {position: 'relative', padding: 10},
   invisibleInkOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -6904,7 +6904,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   invisibleInkHintRow: {flexDirection: 'row', alignItems: 'center', gap: 6},
-  invisibleInkHint: {color: '#fff', fontWeight: '700', fontSize: 13},
+  invisibleInkHint: {color: '#fff', fontFamily: bodyWeight('700'), fontSize: 13},
   gestureCard: {
     width: 200,
     height: 150,
@@ -6925,9 +6925,9 @@ const styles = StyleSheet.create({
     minWidth: 200,
   },
   lotteryIcon: {fontSize: 28, marginBottom: 4},
-  lotteryTitle: {fontSize: 15, fontWeight: '700'},
+  lotteryTitle: {fontSize: 15, fontFamily: bodyWeight('700')},
   lotteryHint: {fontSize: 12, marginTop: 2, textAlign: 'center'},
-  lotteryRevealed: {fontSize: 18, fontWeight: '800', marginTop: 2},
+  lotteryRevealed: {fontSize: 18, fontFamily: bodyWeight('800'), marginTop: 2},
   lotteryRevealedBy: {fontSize: 11, marginTop: 4},
   anonymousBadge: {
     flexDirection: 'row',
@@ -6941,7 +6941,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginHorizontal: 4,
   },
-  anonymousText: {fontSize: 10, color: '#AF52DE', fontWeight: '600'},
+  anonymousText: {fontSize: 10, color: '#AF52DE', fontFamily: bodyWeight('600')},
   reactionChainRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -6951,7 +6951,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginHorizontal: 4,
   },
-  reactionChainLabel: {fontSize: 10, fontWeight: '600'},
+  reactionChainLabel: {fontSize: 10, fontFamily: bodyWeight('600')},
   reactionChainEmoji: {fontSize: 16, marginHorizontal: 1},
   gestureModal: {flex: 1},
   gestureHeader: {
@@ -6962,8 +6962,8 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 12,
   },
-  gestureHeaderBtn: {fontSize: 16, fontWeight: '600'},
-  gestureHeaderTitle: {fontSize: 17, fontWeight: '700'},
+  gestureHeaderBtn: {fontSize: 16, fontFamily: bodyWeight('600')},
+  gestureHeaderTitle: {fontSize: 17, fontFamily: bodyWeight('700')},
   gestureCanvas: {
     flex: 1,
     marginHorizontal: 20,
@@ -6974,7 +6974,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   gestureClearBtn: {alignSelf: 'center', paddingVertical: 12, paddingBottom: 40},
-  gestureClearText: {fontSize: 15, fontWeight: '600'},
+  gestureClearText: {fontSize: 15, fontFamily: bodyWeight('600')},
   chatLockContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -6982,7 +6982,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   chatLockIcon: {fontSize: 48, marginBottom: 16},
-  chatLockTitle: {fontSize: 22, fontWeight: '800', marginBottom: 6},
+  chatLockTitle: {fontSize: 22, fontFamily: bodyWeight('800'), marginBottom: 6},
   chatLockSubtitle: {fontSize: 14, marginBottom: 24},
   chatLockInput: {
     width: 200,
@@ -6999,7 +6999,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 2,
   },
-  chatLockBtnText: {color: '#fff', fontWeight: '700', fontSize: 16},
+  chatLockBtnText: {color: '#fff', fontFamily: bodyWeight('700'), fontSize: 16},
   attachSingleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -7009,8 +7009,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 4,
   },
-  attachSingleIcon: {fontSize: 18, fontWeight: '700'},
-  attachSingleLabel: {fontSize: 13, fontWeight: '600'},
+  attachSingleIcon: {fontSize: 18, fontFamily: bodyWeight('700')},
+  attachSingleLabel: {fontSize: 13, fontFamily: bodyWeight('600')},
   attachSheet: {
     position: 'absolute',
     bottom: 0,
@@ -7023,9 +7023,9 @@ const styles = StyleSheet.create({
     maxHeight: '50%',
   },
   attachSheetHandle: {width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginTop: 10, marginBottom: 16},
-  attachSheetTitle: {fontSize: 18, fontWeight: '700', marginBottom: 16},
+  attachSheetTitle: {fontSize: 18, fontFamily: bodyWeight('700'), marginBottom: 16},
   attachSheetScroll: {maxHeight: 280},
-  attachSectionLabel: {fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8, marginTop: 4},
+  attachSectionLabel: {fontSize: 11, fontFamily: bodyWeight('700'), letterSpacing: 0.5, marginBottom: 8, marginTop: 4},
   attachSectionRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 8},
   attachOption: {
     width: 72,
@@ -7035,8 +7035,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   attachOptionIcon: {fontSize: 22, marginBottom: 4},
-  attachOptionText: {fontSize: 11, fontWeight: '600'},
-  actionSectionHeader: {fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginTop: 16, marginBottom: 4},
+  attachOptionText: {fontSize: 11, fontFamily: bodyWeight('600')},
+  actionSectionHeader: {fontSize: 11, fontFamily: bodyWeight('700'), letterSpacing: 0.5, marginTop: 16, marginBottom: 4},
   actionSheetScrollable: {maxHeight: '75%'},
   actionSheetScroll: {maxHeight: 400},
   viewOncePlaceholder: {
@@ -7049,10 +7049,10 @@ const styles = StyleSheet.create({
     margin: 4,
   },
   viewOnceIcon: {fontSize: 32, marginBottom: 6},
-  viewOnceText: {fontSize: 13, fontWeight: '600', color: '#10B981'},
+  viewOnceText: {fontSize: 13, fontFamily: bodyWeight('600'), color: '#10B981'},
   viewOnceBadge: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     color: '#10B981',
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -7067,6 +7067,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 4,
   },
-  viewOnceExpiredText: {fontSize: 12, fontWeight: '500', fontStyle: 'italic'},
+  viewOnceExpiredText: {fontSize: 12, fontFamily: bodyWeight('500'), fontStyle: 'italic'},
 });
 

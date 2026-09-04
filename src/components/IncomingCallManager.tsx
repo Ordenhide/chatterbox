@@ -21,6 +21,7 @@ import {
 } from '../services/firebaseChat';
 import {reportError} from '../services/telemetry';
 import type {CallSession} from '../types';
+import {bodyWeight} from '../theme/typography';
 
 /** How long a call rings here before we treat it as missed and end it. */
 const RING_TIMEOUT_MS = 45_000;
@@ -341,8 +342,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
   },
-  avatarText: {color: '#fff', fontSize: 36, fontWeight: '700'},
-  name: {fontSize: 23, fontWeight: '700', textAlign: 'center'},
+  avatarText: {color: '#fff', fontSize: 36, fontFamily: bodyWeight('700')},
+  name: {fontSize: 23, fontFamily: bodyWeight('700'), textAlign: 'center'},
   sub: {fontSize: 14, marginTop: 5},
   previewBlock: {width: '100%', marginTop: 18},
   previewFrame: {
@@ -375,7 +376,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.22)',
     backgroundColor: 'rgba(255,255,255,0.10)',
   },
-  camToggleText: {color: '#fff', fontSize: 13, fontWeight: '600'},
+  camToggleText: {color: '#fff', fontSize: 13, fontFamily: bodyWeight('600')},
   actions: {flexDirection: 'row', gap: 28, marginTop: 26},
   action: {width: 74, alignItems: 'center', gap: 8},
   actionIcon: {
@@ -385,5 +386,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionLabel: {fontSize: 12.5, fontWeight: '600', color: 'rgba(255,255,255,0.85)'},
+  actionLabel: {fontSize: 12.5, fontFamily: bodyWeight('600'), color: 'rgba(255,255,255,0.85)'},
 });

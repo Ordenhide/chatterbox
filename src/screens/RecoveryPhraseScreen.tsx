@@ -23,6 +23,7 @@ import {
 } from '../services/e2eeKeys';
 import {revealOffer} from '../services/recoveryPhraseReveal';
 import {reportError} from '../services/telemetry';
+import {bodyWeight} from '../theme/typography';
 
 export default function RecoveryPhraseScreen() {
   const colors = getColors(useColorScheme());
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: bodyWeight('700'),
     marginBottom: 8,
   },
   sectionBody: {
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   buttonText: {
-    fontWeight: '600',
+    fontFamily: bodyWeight('600'),
     fontSize: 15,
   },
 });
