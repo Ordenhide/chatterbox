@@ -55,7 +55,7 @@ const NativeGlassBlurView =
  * If a motion sensor is ever added, swapping the input here upgrades every
  * glass surface in the app at once.
  */
-function Specular() {
+function Specular({tone}: {tone: {backgroundColor: string}}) {
   const scrollY = useScrollMotionValue();
   const reduced = useReduceMotion();
 
@@ -67,9 +67,9 @@ function Specular() {
     });
   }, [scrollY, reduced]);
 
-  if (!translateX) return <View pointerEvents="none" style={styles.specular} />;
+  if (!translateX) return <View pointerEvents="none" style={[styles.specular, tone]} />;
   return (
-    <Animated.View pointerEvents="none" style={[styles.specular, {transform: [{translateX}]}]} />
+    <Animated.View pointerEvents="none" style={[styles.specular, tone, {transform: [{translateX}]}]} />
   );
 }
 
@@ -94,7 +94,7 @@ function GlassView({children, style, blur = true, pointerEvents = 'auto'}: Glass
       <View pointerEvents="none" style={[styles.tintThree, {backgroundColor: colors.glassTint3}]} />
       {/* Highlight overlay for depth */}
       <View pointerEvents="none" style={[styles.highlight, highlightTone]} />
-      <Specular />
+      <Specular tone={highlightTone} />
       {/* Content */}
       {children}
     </View>
@@ -150,7 +150,11 @@ const styles = StyleSheet.create({
     right: -24,
     height: 70,
     borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    // Colour comes from the theme (glassHighlight) at the call site, not from
+    // a literal here. A fixed white sheen is a glass-gloss convention, and on
+    // a black ground it reads as a smudge rather than as light; the dark theme
+    // sweeps a faint green across the panel instead, which is the same gesture
+    // in this design's own vocabulary.
     opacity: 0.45,
   },
 });
