@@ -23,7 +23,7 @@ import {
 } from '../services/e2eeKeys';
 import {revealOffer} from '../services/recoveryPhraseReveal';
 import {reportError} from '../services/telemetry';
-import {bodyWeight} from '../theme/typography';
+import {bodyWeight, terminal} from '../theme/typography';
 
 export default function RecoveryPhraseScreen() {
   const colors = getColors(useColorScheme());
@@ -261,11 +261,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 16,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: bodyWeight('700'),
-    marginBottom: 8,
-  },
+  sectionTitle: {...terminal.label, marginBottom: 8},
   sectionBody: {
     fontSize: 14,
     lineHeight: 20,

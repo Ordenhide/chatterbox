@@ -37,7 +37,7 @@ import {
   getUsersByIds,
   searchUsersByEmailOrName,
 } from '../../services/firebaseChat';
-import {bodyWeight} from '../../theme/typography';
+import {bodyWeight, terminal} from '../../theme/typography';
 
 type UserMap = Record<string, User | null>;
 
@@ -556,12 +556,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: bodyWeight('700'),
-    marginTop: 12,
-    marginBottom: 8,
-  },
+  sectionTitle: {...terminal.label, marginBottom: 8},
   row: {
     flexDirection: 'row',
     gap: 8,

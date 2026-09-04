@@ -33,7 +33,7 @@ import {useAuth} from '../contexts/AuthContext';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {THEME_CATALOG, type StoreTheme} from '../services/themeCatalog';
 import {applyStoreTheme, listenStoreTheme} from '../services/storeTheme';
-import {bodyWeight, fonts} from '../theme/typography';
+import {bodyWeight, fonts, terminal} from '../theme/typography';
 
 export default function StoreScreen() {
   const colors = getColors(useColorScheme());
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   card: {borderRadius: 2, borderWidth: 1, padding: 18, marginBottom: 26},
   cardTitle: {fontSize: 16, fontFamily: bodyWeight('700'), marginBottom: 6},
   cardDesc: {fontSize: 13.5, lineHeight: 20},
-  sectionTitle: {fontSize: 17, fontFamily: bodyWeight('800'), marginBottom: 4},
+  sectionTitle: {...terminal.label, marginBottom: 6},
   sectionDesc: {fontSize: 13.5, marginBottom: 14},
   grid: {flexDirection: 'row', flexWrap: 'wrap', gap: 12},
   themeCard: {

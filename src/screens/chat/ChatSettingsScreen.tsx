@@ -45,7 +45,7 @@ import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpir
 import {ChatPet, SoundscapeId} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
-import {bodyWeight} from '../../theme/typography';
+import {bodyWeight, terminal} from '../../theme/typography';
 
 const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
 const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
@@ -735,11 +735,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 12,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: bodyWeight('600'),
-    marginBottom: 8,
-  },
+  sectionTitle: {...terminal.label, marginBottom: 8},
   row: {
     paddingVertical: 12,
   },
