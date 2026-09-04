@@ -4352,8 +4352,8 @@ export default function ChatScreen() {
           ) : null}
           {current.anonymous ? (
             <View style={styles.anonymousBadge}>
-              <Icon name="ghost" size={12} color="#AF52DE" />
-              <Text style={styles.anonymousText}>Anonymous</Text>
+              <Icon name="ghost" size={12} color={colors.secondary} />
+              <Text style={[styles.anonymousText, {color: colors.secondary}]}>Anonymous</Text>
             </View>
           ) : null}
           {current.reactionChain?.length ? (
@@ -5316,7 +5316,7 @@ export default function ChatScreen() {
                 setActionsModalVisible(false);
                 setAnonymousMode(prev => !prev);
               }}>
-              <Text style={[styles.actionSheetText, {color: anonymousMode ? '#AF52DE' : colors.text}]}>
+              <Text style={[styles.actionSheetText, {color: anonymousMode ? colors.secondary : colors.text}]}>
                 {anonymousMode ? 'Anonymous ON' : 'Anonymous'}
               </Text>
             </TouchableOpacity>
@@ -6962,7 +6962,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginHorizontal: 4,
   },
-  anonymousText: {fontSize: 10, color: '#AF52DE', fontFamily: bodyWeight('600')},
+  anonymousText: {fontSize: 10, fontFamily: bodyWeight('600')},
   reactionChainRow: {
     flexDirection: 'row',
     alignItems: 'center',

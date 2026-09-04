@@ -44,18 +44,24 @@ export const colors = {
 export const accentGradient =
   'linear-gradient(135deg, var(--cb-primary) 0%, var(--cb-primary-soft) 130%)';
 
-// Per-user avatar colors. Held to the cyan→blue→slate range (plus restrained
-// teal/amber) so identity chips stay legible without reintroducing the
-// consumer-social pink/violet the rest of the theme drops.
+// Per-user avatar colours, monochrome.
+//
+// These were eight hues from the previous palette, assigned by name hash — so
+// the colour distinguished one row from the next and meant nothing else. On a
+// design built around a single signal colour that is eight competing accents
+// for no information, which is the same reason the mobile client's palette
+// went. Four steps of one neutral keep adjacent rows apart without spending
+// the accent.
+//
+// Values rather than var(--cb-*) because avatarColor() returns a string used
+// as a background, and CSS variables cannot be indexed by hash at this layer
+// without a second lookup. They are theme-independent greys chosen to sit on
+// either ground.
 const AVATAR_COLORS = [
-  '#16B5D8',
-  '#4C82D8',
-  '#2FA98B',
-  '#6E8BA8',
-  '#3E9AD4',
-  '#1FB57E',
-  '#C08A3E',
-  '#5A7BC4',
+  '#3A3A3A',
+  '#464646',
+  '#525252',
+  '#5E5E5E',
 ];
 
 export function avatarColor(seed: string): string {
