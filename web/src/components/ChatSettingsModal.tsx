@@ -7,19 +7,11 @@ import {
   EXPIRY_OPTIONS,
   setChatExpiryPolicy,
   setChatName,
-  setChatTheme,
   toggleMuteChat,
 } from '../services/chat';
-import {useAccountTheme} from '../context/StoreThemeContext';
-import {resolveAccent} from '../services/storeTheme';
 import {useToast} from '../context/ToastContext';
 import type {ChatRoom} from '../types';
 import Icon from './Icon';
-
-// Plain per-chat accent overrides. The named catalog — free and Pro alike —
-// lives in the Store, which applies account-wide; these are just a quick way
-// to make one conversation stand out afterwards.
-const THEME_COLORS = ['#6366F1', '#0EA5E9', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6', '#64748B'];
 
 
 export default function ChatSettingsModal({
@@ -41,11 +33,6 @@ export default function ChatSettingsModal({
 
   const [name, setName] = useState(chat?.nameBy?.[me.uid] || '');
   const isMuted = !!chat?.mutedBy?.includes(me.uid);
-  // Mirrors what ChatPane actually renders, so the highlighted swatch matches
-  // the chat on screen even when the colour comes from the account-wide Store
-  // theme rather than this chat's own stored value.
-  const storeTheme = useAccountTheme();
-  const theme = resolveAccent(chat?.themeBy?.[me.uid], storeTheme?.accent, THEME_COLORS[0]);
   const expiry = chat?.messageExpiry || 0;
 
 
@@ -116,28 +103,12 @@ export default function ChatSettingsModal({
             </span>
           </button>
 
-          {/* Accent — a per-chat override. The full named catalog (including
-              the Pro ones) lives in the Store, which applies account-wide;
-              duplicating it here is what made theming feel scattered. */}
+          {/* Theming is account-wide and lives in the Store. This section is
+              now only the signpost to it — the per-chat swatches that used to
+              sit here were a second, different palette that disagreed with
+              both the catalog and the mobile client's own third one. */}
           <div style={styles.section}>
             <div style={styles.label}>{t('chatSettings.theme')}</div>
-            <div style={styles.swatchRow}>
-              {THEME_COLORS.map(c => (
-                <button
-                  key={c}
-                  aria-label={c}
-                  aria-pressed={theme.toLowerCase() === c.toLowerCase()}
-                  onClick={() =>
-                    setChatTheme(chatId, me.uid, c).catch(() => toast.error(t('common.error')))
-                  }
-                  style={{
-                    ...styles.swatch,
-                    background: c,
-                    outline: theme.toLowerCase() === c.toLowerCase() ? `2px solid ${colors.text}` : 'none',
-                  }}
-                />
-              ))}
-            </div>
             <button style={styles.storeLink} onClick={() => (window.location.hash = '#/store')}>
               {t('store.themeMovedHint')} {t('store.openStore')} →
             </button>
@@ -246,7 +217,6 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'transform .15s',
     boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
   },
-  swatchRow: {display: 'flex', flexWrap: 'wrap', gap: 10},
   storeLink: {
     marginTop: 10,
     padding: 0,
@@ -257,17 +227,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     cursor: 'pointer',
     textAlign: 'left',
-  },
-  swatch: {
-    width: 34,
-    height: 34,
-    borderRadius: 999,
-    border: `1px solid ${colors.border}`,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 0,
   },
   chipRow: {display: 'flex', flexWrap: 'wrap', gap: 8},
   chip: {

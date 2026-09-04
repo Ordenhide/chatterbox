@@ -722,10 +722,6 @@ export async function toggleHideChat(chatId: string, userId: string, hidden: boo
   });
 }
 
-export async function setChatTheme(chatId: string, userId: string, color: string) {
-  await setDoc(doc(chatsRef(), chatId), {themeBy: {[userId]: color}}, {merge: true});
-}
-
 export async function setChatName(chatId: string, userId: string, name: string | null) {
   await setDoc(
     doc(chatsRef(), chatId),

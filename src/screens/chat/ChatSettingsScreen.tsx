@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,6 @@ import {
   exportChat,
   importChat,
   toggleMuteChat,
-  setChatTheme,
   setChatName,
   getChat,
   addChatMembers,
@@ -43,7 +42,6 @@ import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
 import {bodyWeight, terminal} from '../../theme/typography';
 
-const THEME_COLORS = ['#007AFF', '#34C759', '#FF9500', '#FF2D55', '#AF52DE', '#5AC8FA'];
 const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
   {id: 'none', label: 'Off', icon: 'muteSpeaker'},
   {id: 'rain', label: 'Rain', icon: 'rain'},
@@ -71,7 +69,6 @@ export default function ChatSettingsScreen() {
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
   const [muted, setMuted] = useState(false);
-  const [themeColor, setThemeColor] = useState('#007AFF');
   const [nameModalVisible, setNameModalVisible] = useState(false);
   const [customName, setCustomName] = useState('');
   const [exportModalVisible, setExportModalVisible] = useState(false);
@@ -93,7 +90,6 @@ export default function ChatSettingsScreen() {
       try {
         const chat = await getChat(chatId);
         setMuted(!!chat?.mutedBy?.includes(user.uid));
-        setThemeColor(chat?.themeBy?.[user.uid] || '#007AFF');
         setCustomName(chat?.nameBy?.[user.uid] || '');
         setSoundscape((chat as any)?.soundscape || 'none');
         setExpiryHours((chat as any)?.messageExpiry || 0);
@@ -128,19 +124,6 @@ export default function ChatSettingsScreen() {
     } catch (err) {
       if (__DEV__) {
         console.warn('ChatSettingsScreen: failed to toggle mute', err);
-      }
-      Alert.alert(t('common.error'), t('errors.generic'));
-    }
-  };
-
-  const handleThemeSelect = async (color: string) => {
-    if (!chatId || !user) return;
-    try {
-      await setChatTheme(chatId, user.uid, color);
-      setThemeColor(color);
-    } catch (err) {
-      if (__DEV__) {
-        console.warn('ChatSettingsScreen: failed to set theme', err);
       }
       Alert.alert(t('common.error'), t('errors.generic'));
     }
@@ -241,31 +224,6 @@ export default function ChatSettingsScreen() {
 
 
 
-  // Plain per-chat accent overrides. The named catalog — free and Pro alike —
-  // lives in the Store tab, which applies account-wide; duplicating it here is
-  // what made theming feel scattered.
-  const themeDots = useMemo(
-    () =>
-      THEME_COLORS.map(color => (
-        <TouchableOpacity
-          key={color}
-          accessibilityRole="button"
-          accessibilityLabel={`Accent color ${color}`}
-          accessibilityState={{selected: themeColor.toLowerCase() === color.toLowerCase()}}
-          style={[
-            styles.themeDot,
-            {backgroundColor: color},
-            themeColor.toLowerCase() === color.toLowerCase() && [
-              styles.themeDotSelected,
-              {borderColor: colors.text},
-            ],
-          ]}
-          onPress={() => handleThemeSelect(color)}
-        />
-      )),
-    [themeColor, colors.text],
-  );
-
   const handleAddMember = async () => {
     const email = memberEmail.trim().toLowerCase();
     if (!email) return;
@@ -335,8 +293,11 @@ export default function ChatSettingsScreen() {
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
+        {/* Theming is account-wide and lives in the Store. What sat here was
+            a second palette — six iOS system colours — that matched neither
+            the catalog nor the web client's own third one, so a chat themed
+            here and the same chat themed from the Store disagreed. */}
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.theme')}</Text>
-        <View style={styles.themeRow}>{themeDots}</View>
         <TouchableOpacity
           accessibilityRole="button"
           onPress={() => navigation.navigate('Store')}>
@@ -654,10 +615,6 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: 14,
-  },
-  themeRow: {
-    flexDirection: 'row',
-    gap: 12,
   },
   optionRow: {
     flexDirection: 'row',

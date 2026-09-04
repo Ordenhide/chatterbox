@@ -186,13 +186,6 @@ class StorageService extends EventEmitter {
     await this.updateChat(chatId, {mutedBy: Array.from(mutedBy)});
   }
 
-  async setChatTheme(chatId: string, userId: string, color: string) {
-    const chat = await this.getChat(chatId);
-    if (!chat) return;
-    const themeBy = {...(chat.themeBy || {}), [userId]: color};
-    await this.updateChat(chatId, {themeBy});
-  }
-
   async replaceMessages(chatId: string, messages: Message[]) {
     const trimmed =
       messages.length > MAX_MESSAGES_PER_CHAT

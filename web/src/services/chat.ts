@@ -732,11 +732,6 @@ export async function setChatName(chatId: string, uid: string, name: string | nu
   await setDoc(doc(db, 'chats', chatId), {nameBy: {[uid]: name}}, {merge: true});
 }
 
-/** Per-user accent color (themeBy: {uid: color}), matching the mobile app. */
-export async function setChatTheme(chatId: string, uid: string, color: string): Promise<void> {
-  await setDoc(doc(db, 'chats', chatId), {themeBy: {[uid]: color}}, {merge: true});
-}
-
 
 /** Pin/unpin a message within a chat (chat.pinnedMessageIds), matching mobile. */
 export async function togglePinMessage(chatId: string, messageId: string): Promise<void> {
