@@ -78,7 +78,7 @@ export default function TutorialTour({visible, onClose}: {visible: boolean; onCl
               <View style={styles.backSpacer} />
             )}
             <TouchableOpacity style={[styles.next, {backgroundColor: colors.primary}]} onPress={next}>
-              <Text style={styles.nextText}>{last ? t('tutorial.done') : t('tutorial.next')}</Text>
+              <Text style={[styles.nextText, {color: colors.textOnPrimary}]}>{last ? t('tutorial.done') : t('tutorial.next')}</Text>
             </TouchableOpacity>
           </View>
         </View>

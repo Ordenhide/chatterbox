@@ -136,9 +136,9 @@ export default function RecentlyDeletedScreen() {
               style={[styles.recoverBtn, {backgroundColor: colors.primary}]}
               onPress={() => onRecover(item.id)}>
               {busyId === item.id ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.textOnPrimary} size="small" />
               ) : (
-                <Text style={styles.recoverText}>{t('trash.recover')}</Text>
+                <Text style={[styles.recoverText, {color: colors.textOnPrimary}]}>{t('trash.recover')}</Text>
               )}
             </TouchableOpacity>
           </GlassView>

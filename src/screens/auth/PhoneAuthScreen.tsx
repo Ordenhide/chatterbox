@@ -105,9 +105,9 @@ export default function PhoneAuthScreen() {
                   onPress={handleSendCode}
                   disabled={loading}>
                   {loading ? (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color={colors.textOnPrimary} />
                   ) : (
-                    <Text style={styles.buttonText}>{t('auth.phone.sendCode')}</Text>
+                    <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('auth.phone.sendCode')}</Text>
                   )}
                 </TouchableOpacity>
               </GlassView>
@@ -144,9 +144,9 @@ export default function PhoneAuthScreen() {
                   onPress={handleVerifyCode}
                   disabled={loading}>
                   {loading ? (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color={colors.textOnPrimary} />
                   ) : (
-                    <Text style={styles.buttonText}>{t('auth.phone.verify')}</Text>
+                    <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('auth.phone.verify')}</Text>
                   )}
                 </TouchableOpacity>
               </GlassView>

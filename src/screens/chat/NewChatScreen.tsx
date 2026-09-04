@@ -215,7 +215,7 @@ export default function NewChatScreen() {
             ]}
             onPress={handleCreateChat}
             disabled={loading}>
-            <Text style={styles.buttonText}>
+            <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
               {loading ? t('newChat.creating') : invitees.length > 1 ? t('newChat.startGroup') : t('newChat.startChat')}
             </Text>
           </TouchableOpacity>

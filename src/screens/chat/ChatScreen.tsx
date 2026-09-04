@@ -4748,11 +4748,11 @@ export default function ChatScreen() {
       {sharingLocation ? (
         <View style={[styles.locationBanner, {backgroundColor: colors.primary}]}>
           <View style={styles.locationBannerRow}>
-            <Icon name="pin" size={14} color="#fff" />
-            <Text style={styles.locationBannerText}>Sharing your location</Text>
+            <Icon name="pin" size={14} color={colors.textOnPrimary} />
+            <Text style={[styles.locationBannerText, {color: colors.textOnPrimary}]}>Sharing your location</Text>
           </View>
           <TouchableOpacity onPress={handleStopSharingLocation}>
-            <Text style={styles.locationBannerStop}>Stop</Text>
+            <Text style={[styles.locationBannerStop, {color: colors.textOnPrimary}]}>Stop</Text>
           </TouchableOpacity>
         </View>
       ) : null}
@@ -5042,11 +5042,11 @@ export default function ChatScreen() {
             <View style={styles.recordActions}>
               {!recording ? (
                 <TouchableOpacity style={[styles.recordButton, {backgroundColor: colors.primary}]} onPress={startRecording}>
-                  <Text style={styles.recordButtonText}>Record</Text>
+                  <Text style={[styles.recordButtonText, {color: colors.textOnPrimary}]}>Record</Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity style={[styles.recordButton, {backgroundColor: colors.primary}]} onPress={stopRecording}>
-                  <Text style={styles.recordButtonText}>Stop</Text>
+                  <Text style={[styles.recordButtonText, {color: colors.textOnPrimary}]}>Stop</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity
@@ -5057,7 +5057,7 @@ export default function ChatScreen() {
                 ]}
                 onPress={sendRecording}
                 disabled={!recordedUri}>
-                <Text style={styles.recordButtonText}>Send</Text>
+                <Text style={[styles.recordButtonText, {color: colors.textOnPrimary}]}>Send</Text>
               </TouchableOpacity>
             </View>
             {SHOW_NATIVE_ONLY_FEATURES && (
@@ -5110,12 +5110,12 @@ export default function ChatScreen() {
             <TouchableOpacity
               style={[styles.modalButton, {backgroundColor: colors.primary}]}
               onPress={handleSaveCustomName}>
-              <Text style={styles.modalButtonText}>Save</Text>
+              <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.modalButton, {backgroundColor: colors.surface}]}
               onPress={() => setNameModalVisible(false)}>
-              <Text style={[styles.modalButtonText, {color: colors.text}]}>Cancel</Text>
+              <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}, {color: colors.text}]}>Cancel</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -5597,7 +5597,7 @@ export default function ChatScreen() {
               <TouchableOpacity
                 style={[styles.scheduleButton, {backgroundColor: colors.primary}]}
                 onPress={handleScheduleSend}>
-                <Text style={styles.scheduleButtonText}>Schedule</Text>
+                <Text style={[styles.scheduleButtonText, {color: colors.textOnPrimary}]}>Schedule</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.burnPickerCancel}
@@ -5652,12 +5652,12 @@ export default function ChatScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleCreateList}>
-                <Text style={styles.modalButtonText}>Create List</Text>
+                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>Create List</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
                 onPress={() => setListModalVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>Cancel</Text>
+                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}, {color: colors.text}]}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -5697,9 +5697,9 @@ export default function ChatScreen() {
                 disabled={summaryLoading}
                 onPress={() => handleSummarize(summaryQuestion)}>
                 {summaryLoading ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color={colors.textOnPrimary} />
                 ) : (
-                  <Text style={styles.modalButtonText}>{summaryQuestion.trim() ? 'Ask' : 'Regenerate Summary'}</Text>
+                  <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{summaryQuestion.trim() ? 'Ask' : 'Regenerate Summary'}</Text>
                 )}
               </TouchableOpacity>
               <TouchableOpacity

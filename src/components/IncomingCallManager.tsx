@@ -260,7 +260,7 @@ export default function IncomingCallManager({
       <View style={styles.backdrop}>
         <View style={[styles.card, {backgroundColor: colors.surface || '#101018'}]}>
           <View style={[styles.avatar, {backgroundColor: colors.primary}]}>
-            <Text style={styles.avatarText}>
+            <Text style={[styles.avatarText, {color: colors.textOnPrimary}]}>
               {incoming.callerName.charAt(0).toUpperCase()}
             </Text>
           </View>

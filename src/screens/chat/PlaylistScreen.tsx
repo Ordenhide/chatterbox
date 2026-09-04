@@ -162,7 +162,7 @@ export default function PlaylistScreen() {
       <TouchableOpacity
         style={[styles.fab, {backgroundColor: colors.primary}]}
         onPress={() => setAddVisible(true)}>
-        <Text style={styles.fabText}>+</Text>
+        <Text style={[styles.fabText, {color: colors.textOnPrimary}]}>+</Text>
       </TouchableOpacity>
 
       {addVisible && (
@@ -196,7 +196,7 @@ export default function PlaylistScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleAdd}>
-                <Text style={styles.modalButtonText}>Add</Text>
+                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>Add</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}

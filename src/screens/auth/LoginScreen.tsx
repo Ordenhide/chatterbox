@@ -138,9 +138,9 @@ export default function LoginScreen() {
             onPress={handleLogin}
             disabled={loading}>
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={colors.textOnPrimary} />
             ) : (
-              <Text style={styles.buttonText}>
+              <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
                 {loginVariant === 'variant_a' ? t('common.continue') : t('common.signIn')}
               </Text>
             )}

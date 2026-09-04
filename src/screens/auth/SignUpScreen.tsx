@@ -129,9 +129,9 @@ export default function SignUpScreen() {
             onPress={handleSignUp}
             disabled={loading}>
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={colors.textOnPrimary} />
             ) : (
-              <Text style={styles.buttonText}>{t('common.signUp')}</Text>
+              <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.signUp')}</Text>
             )}
           </TouchableOpacity>
         </GlassView>

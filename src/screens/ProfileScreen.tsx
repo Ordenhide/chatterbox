@@ -585,7 +585,7 @@ export default function ProfileScreen() {
       <GlassView style={[styles.profileCard, {borderColor: colors.glassBorder}]}>
         <View style={[styles.profileSection, {borderBottomColor: colors.border}]}>
           <View style={[styles.avatar, {backgroundColor: colors.primary}]}>
-            <Text style={styles.avatarText}>{profileInitial}</Text>
+            <Text style={[styles.avatarText, {color: colors.textOnPrimary}]}>{profileInitial}</Text>
           </View>
           <Text style={[styles.name, {color: colors.text}]}>{user?.displayName || t('profile.defaultName')}</Text>
           <Text style={[styles.email, {color: colors.textSecondary}]}>{user?.email}</Text>
@@ -607,7 +607,7 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.vsPlayBtn, {backgroundColor: colors.primary}]}
                 onPress={vsPlaying ? handleVsStop : handleVsPlay}>
-                <Text style={styles.vsPlayBtnText}>
+                <Text style={[styles.vsPlayBtnText, {color: colors.textOnPrimary}]}>
                   {vsPlaying ? t('profile.voiceDiaryStop') : t('profile.voiceDiaryPlay', {seconds: voiceStatusDuration})}
                 </Text>
               </TouchableOpacity>
@@ -623,7 +623,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={[styles.focusBtn, {backgroundColor: colors.primary}]}
               onPress={() => setVsModalVisible(true)}>
-              <Text style={styles.focusBtnText}>{t('profile.recordVoiceDiary')}</Text>
+              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>{t('profile.recordVoiceDiary')}</Text>
             </TouchableOpacity>
           )}
         </GlassView>
@@ -753,7 +753,7 @@ export default function ProfileScreen() {
             {t('tutorial.settingsDescription')}
           </Text>
           <TouchableOpacity style={[styles.focusBtn, {backgroundColor: colors.primary}]} onPress={() => startTutorial()}>
-            <Text style={styles.focusBtnText}>{t('tutorial.replay')}</Text>
+            <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>{t('tutorial.replay')}</Text>
           </TouchableOpacity>
         </GlassView>
         {SHOW_NATIVE_ONLY_FEATURES && (
@@ -786,7 +786,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={[styles.focusBtn, {backgroundColor: colors.primary}]}
               onPress={() => setFocusModalVisible(true)}>
-              <Text style={styles.focusBtnText}>Enable Focus Mode</Text>
+              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>Enable Focus Mode</Text>
             </TouchableOpacity>
           )}
         </GlassView>
@@ -859,9 +859,9 @@ export default function ProfileScreen() {
             disabled={exportingData}
             onPress={handleDownloadData}>
             {exportingData ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={colors.textOnPrimary} />
             ) : (
-              <Text style={styles.focusBtnText}>{t('profile.account.downloadDataButton')}</Text>
+              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>{t('profile.account.downloadDataButton')}</Text>
             )}
           </TouchableOpacity>
           {exportDataError ? (
@@ -872,23 +872,23 @@ export default function ProfileScreen() {
           <TouchableOpacity
             style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
             onPress={openFeedback}>
-            <Text style={styles.buttonText}>{t('profile.buttons.feedback')}</Text>
+            <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.buttons.feedback')}</Text>
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
           onPress={handleExport}>
-          <Text style={styles.buttonText}>{t('profile.buttons.export')}</Text>
+          <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.buttons.export')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
           onPress={openImport}>
-          <Text style={styles.buttonText}>{t('profile.buttons.import')}</Text>
+          <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.buttons.import')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
           onPress={() => navigation.navigate('Chats', {screen: 'PrivacyPolicy'})}>
-          <Text style={[styles.buttonText, {color: colors.text}]}>Privacy Policy</Text>
+          <Text style={[styles.buttonText, {color: colors.textOnPrimary}, {color: colors.text}]}>Privacy Policy</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
@@ -961,9 +961,9 @@ export default function ProfileScreen() {
               disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
               onPress={submitPasswordChange}>
               {changingPassword ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color={colors.textOnPrimary} />
               ) : (
-                <Text style={styles.buttonText}>{t('profile.account.changePasswordTitle')}</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.account.changePasswordTitle')}</Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -1104,7 +1104,7 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleImport}>
-                <Text style={styles.buttonText}>{t('common.import')}</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.import')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
@@ -1156,7 +1156,7 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleEnableFocus}>
-                <Text style={styles.buttonText}>Enable</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>Enable</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
@@ -1189,7 +1189,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                   style={[styles.vsRecordBtn, {backgroundColor: colors.primary}]}
                   onPress={handleVsStopRecording}>
-                  <Text style={styles.vsRecordBtnText}>{t('profile.voiceDiaryStop')}</Text>
+                  <Text style={[styles.vsRecordBtnText, {color: colors.textOnPrimary}]}>{t('profile.voiceDiaryStop')}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -1202,7 +1202,7 @@ export default function ProfileScreen() {
                 ]}
                 onPress={handleVsSave}
                 disabled={!vsRecordedUri}>
-                <Text style={styles.buttonText}>{t('profile.voiceDiarySave')}</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.voiceDiarySave')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
@@ -1255,7 +1255,7 @@ export default function ProfileScreen() {
                     </View>
                     {isSelected ? (
                       <View style={[styles.languageCheck, {backgroundColor: colors.primary}]}>
-                        <Icon name="check" size={14} color="#fff" />
+                        <Icon name="check" size={14} color={colors.textOnPrimary} />
                       </View>
                     ) : null}
                   </TouchableOpacity>
@@ -1287,7 +1287,7 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleSendFeedback}>
-                <Text style={styles.buttonText}>{t('common.send')}</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}

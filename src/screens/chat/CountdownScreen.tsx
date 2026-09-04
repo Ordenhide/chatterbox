@@ -222,7 +222,7 @@ export default function CountdownScreen() {
       <TouchableOpacity
         style={[styles.fab, {backgroundColor: colors.primary}]}
         onPress={openModal}>
-        <Text style={styles.fabText}>+</Text>
+        <Text style={[styles.fabText, {color: colors.textOnPrimary}]}>+</Text>
       </TouchableOpacity>
 
       {modalVisible && (
@@ -275,7 +275,7 @@ export default function CountdownScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleCreate}>
-                <Text style={styles.modalButtonText}>Create</Text>
+                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>Create</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
