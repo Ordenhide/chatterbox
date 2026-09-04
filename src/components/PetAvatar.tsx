@@ -170,7 +170,7 @@ export default function PetAvatar({
           style={{
             position: 'absolute',
             top: -4,
-            right: -6,
+            end: -6,
             fontSize: Math.max(10, Math.round(size * 0.4)),
             fontFamily: bodyWeight('700'),
             color,

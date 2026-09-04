@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   videoDuration: {
     position: 'absolute',
     bottom: 6,
-    right: 6,
+    end: 6,
     fontSize: 11,
     fontFamily: bodyWeight('600'),
     paddingHorizontal: 4,

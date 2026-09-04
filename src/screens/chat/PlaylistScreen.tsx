@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardRow: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'},
-  cardInfo: {flex: 1, marginRight: 12},
+  cardInfo: {flex: 1, marginEnd: 12},
   trackTitle: {fontSize: 15, fontFamily: bodyWeight('700')},
   trackArtist: {fontSize: 13, marginTop: 2},
   addedBy: {fontSize: 12, marginTop: 4},
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     bottom: 32,
-    right: 24,
+    end: 24,
     width: 56,
     height: 56,
     borderRadius: 2,

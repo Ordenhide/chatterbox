@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   buttonIcon: {
-    marginRight: 2,
+    marginEnd: 2,
   },
   buttonText: {
     fontSize: 16,

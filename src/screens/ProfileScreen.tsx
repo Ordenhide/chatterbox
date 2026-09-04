@@ -31,6 +31,7 @@ import PasswordInput from '../components/PasswordInput';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
+import {applyLayoutDirection} from '../i18n/rtl';
 import {enableFocusMode, disableFocusMode} from '../services/focusMode';
 import {uploadVoiceStatus, removeVoiceStatus} from '../services/voiceStatus';
 import {startTutorial} from '../services/tutorial';
@@ -142,8 +143,21 @@ export default function ProfileScreen() {
       i18n.changeLanguage(code);
       setLanguageModalVisible(false);
       setLanguageSearch('');
+      // changeLanguage records the layout direction for the next launch (see
+      // i18n/rtl.ts). React Native cannot reflow the running app, so when the
+      // direction actually flips the user is told — otherwise they are left
+      // looking at right-to-left text inside a left-to-right layout and have
+      // no reason to think a relaunch would fix it.
+      const {needsRestart} = applyLayoutDirection(code);
+      if (needsRestart) {
+        const language = LANGUAGES.find(l => l.code === code)?.nativeLabel || code;
+        Alert.alert(
+          t('profile.restartForLayoutTitle'),
+          t('profile.restartForLayoutBody', {language}),
+        );
+      }
     },
-    [],
+    [t],
   );
   const profileInitial = useMemo(() => {
     return user?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
@@ -1580,7 +1594,7 @@ const styles = StyleSheet.create({
   },
   languageCurrentLabel: {
     fontSize: 13,
-    marginRight: 8,
+    marginEnd: 8,
   },
   languageArrow: {
     fontSize: 18,

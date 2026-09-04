@@ -4695,7 +4695,7 @@ export default function ChatScreen() {
               {`Recording ${Math.floor(dictationSeconds / 60)}:${String(dictationSeconds % 60).padStart(2, '0')}`}
             </Text>
             <TouchableOpacity
-              style={[styles.burnDurationButton, {marginLeft: 'auto', backgroundColor: colors.warning}]}
+              style={[styles.burnDurationButton, {marginStart: 'auto', backgroundColor: colors.warning}]}
               onPress={stopDictation}>
               <Text style={[styles.burnDurationButtonText, {color: colors.textOnWarning}]}>Stop</Text>
             </TouchableOpacity>
@@ -4715,7 +4715,7 @@ export default function ChatScreen() {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.accessoryClose, {backgroundColor: colors.primaryLight, marginLeft: 4}]}
+              style={[styles.accessoryClose, {backgroundColor: colors.primaryLight, marginStart: 4}]}
               onPress={() => setBurnMode(false)}>
               <Text style={[styles.accessoryCloseText, {color: colors.warning}]}>×</Text>
             </TouchableOpacity>
@@ -5130,7 +5130,7 @@ export default function ChatScreen() {
                 // Match the text's horizontal inset (styles.messageText), so
                 // the timestamp lines up with the message above it instead of
                 // sitting on GiftedChat's narrower default margin.
-                const inset = {marginLeft: 14, marginRight: 14, marginBottom: 6};
+                const inset = {marginStart: 14, marginEnd: 14, marginBottom: 6};
                 // Mono for the clock, matching the seal pill and the web
                 // client's --cb-mono rule: technical metadata sets in mono, so
                 // timestamps stop drifting in width between :11 and :44.
@@ -6102,7 +6102,7 @@ const styles = StyleSheet.create({
   ownSend: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    marginRight: 8,
+    marginEnd: 8,
     marginBottom: 6,
     justifyContent: 'center',
     borderWidth: 1,
@@ -6118,11 +6118,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 2,
-    paddingLeft: 10,
-    marginLeft: 8,
+    paddingStart: 10,
+    marginStart: 8,
     marginBottom: 6,
   },
-  composerLock: {marginRight: 2},
+  composerLock: {marginEnd: 2},
   container: {
     flex: 1,
   },
@@ -6236,7 +6236,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   searchClear: {
-    marginLeft: 10,
+    marginStart: 10,
     fontSize: 14,
     fontFamily: bodyWeight('700'),
   },
@@ -6246,7 +6246,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+    marginStart: 8,
     marginBottom: 4,
   },
   actionButtonText: {
@@ -6286,7 +6286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 6,
-    marginLeft: 6,
+    marginStart: 6,
     gap: 4,
   },
   reactionChip: {
@@ -6301,7 +6301,7 @@ const styles = StyleSheet.create({
   seenText: {
     fontSize: 11,
     marginTop: 4,
-    marginLeft: 6,
+    marginStart: 6,
   },
   pinnedBar: {
     paddingHorizontal: 12,
@@ -6349,7 +6349,7 @@ const styles = StyleSheet.create({
   },
   audioIcon: {
     fontSize: 16,
-    marginRight: 8,
+    marginEnd: 8,
   },
   audioText: {
     fontSize: 13,
@@ -6441,7 +6441,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 10,
+    marginStart: 10,
   },
   accessoryCloseText: {
     fontSize: 18,
@@ -6624,7 +6624,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 6,
+    marginStart: 6,
     marginBottom: 4,
   },
   burnToggleIcon: {
@@ -6639,7 +6639,7 @@ const styles = StyleSheet.create({
   },
   burnAccessoryIcon: {
     fontSize: 14,
-    marginRight: 6,
+    marginEnd: 6,
   },
   burnAccessoryText: {
     flex: 1,
@@ -6670,7 +6670,7 @@ const styles = StyleSheet.create({
   },
   burnedIcon: {
     fontSize: 14,
-    marginRight: 6,
+    marginEnd: 6,
   },
   burnedText: {
     fontSize: 13,
@@ -6710,7 +6710,7 @@ const styles = StyleSheet.create({
   },
   burnCountdownIcon: {
     fontSize: 10,
-    marginRight: 4,
+    marginEnd: 4,
   },
   burnCountdownTrack: {
     flex: 1,
@@ -6729,7 +6729,7 @@ const styles = StyleSheet.create({
     fontFamily: bodyWeight('700'),
     // Overridden at the call site with colors.warning; this is the fallback.
     color: '#FFB000',
-    marginLeft: 4,
+    marginStart: 4,
     minWidth: 28,
     textAlign: 'right',
   },
@@ -6906,7 +6906,7 @@ const styles = StyleSheet.create({
   },
   contextCardTypeIcon: {
     fontSize: 11,
-    marginRight: 4,
+    marginEnd: 4,
   },
   contextCardType: {
     fontSize: 10,
@@ -7109,12 +7109,12 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
   },
-  petAvatar: {fontSize: 24, marginRight: 8},
+  petAvatar: {fontSize: 24, marginEnd: 8},
   petInfo: {flex: 1},
   petName: {fontSize: 12, fontFamily: bodyWeight('700')},
   petHealthBar: {height: 4, borderRadius: 2, marginTop: 3, overflow: 'hidden'},
   petHealthFill: {height: '100%', borderRadius: 2},
-  petMood: {fontSize: 16, marginLeft: 6},
+  petMood: {fontSize: 16, marginStart: 6},
   msgSelectBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -7123,7 +7123,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  msgSelectCancel: {paddingVertical: 4, paddingRight: 4},
+  msgSelectCancel: {paddingVertical: 4, paddingEnd: 4},
   msgSelectCancelText: {fontSize: 15, fontFamily: bodyWeight('600')},
   msgSelectCount: {flex: 1, fontSize: 15, fontFamily: bodyWeight('700')},
   msgSelectDelete: {paddingHorizontal: 16, paddingVertical: 8, borderRadius: 2},

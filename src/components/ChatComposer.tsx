@@ -92,7 +92,7 @@ export default ChatComposer;
 const styles = StyleSheet.create({
   textInput: {
     flex: 1,
-    marginLeft: 10,
+    marginStart: 10,
     // Matches styles.messageText in ChatScreen: what you type should be set in
     // the same face it will be read in.
     fontFamily: fonts.body.regular,

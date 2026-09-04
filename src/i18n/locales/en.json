@@ -439,7 +439,9 @@
       "momentVisibilityUpdateFailed": "Unable to update default moment visibility.",
       "downloadDataFailedTitle": "Error",
       "downloadDataFailedBody": "Unable to prepare your data. Please try again."
-    }
+    },
+    "restartForLayoutTitle": "Restart to finish switching",
+    "restartForLayoutBody": "{{language}} is written right to left. Close and reopen Chatterbox to lay the app out in that direction."
   },
   "notifications": {
     "newMessageTitle": "New message",

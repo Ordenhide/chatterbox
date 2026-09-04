@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
 import mmkvStorage from '../services/storageMMKV';
+import {applyLayoutDirection} from './rtl';
 
 import en from './locales/en.json';
 import zhHans from './locales/zh-Hans.json';
@@ -121,5 +122,18 @@ i18n
     },
     returnNull: false,
   });
+
+/**
+ * Layout direction follows the language, and has to be recorded as soon as the
+ * language is known — including the detector's very first resolution, which is
+ * why this hangs off the event rather than off the caller that changes it.
+ *
+ * React Native fixes direction at startup from native, so this only ever
+ * describes the *next* launch. Callers that change the language while running
+ * should use applyLayoutDirection's needsRestart and say so; see ProfileScreen.
+ */
+i18n.on('languageChanged', lng => {
+  applyLayoutDirection(lng);
+});
 
 export default i18n;

@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 52,
     height: 52,
-    marginLeft: -26,
+    marginStart: -26,
     marginTop: -26,
     borderRadius: 2,
     alignItems: 'center',

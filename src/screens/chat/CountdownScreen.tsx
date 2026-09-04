@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardHeader: {flexDirection: 'row', alignItems: 'center', marginBottom: 8},
-  emojiLabel: {fontSize: 24, marginRight: 10},
+  emojiLabel: {fontSize: 24, marginEnd: 10},
   cardTitle: {fontSize: 17, fontFamily: bodyWeight('700'), flex: 1},
   countdownText: {fontSize: 22, fontFamily: bodyWeight('800'), marginBottom: 12},
   rsvpRow: {flexDirection: 'row', gap: 8},
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     bottom: 32,
-    right: 24,
+    end: 24,
     width: 56,
     height: 56,
     borderRadius: 2,

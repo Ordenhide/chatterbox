@@ -313,7 +313,9 @@
       "signOutFailed": "退出登录失败",
       "visibilityUpdateFailed": "无法更新个人资料可见性。",
       "momentVisibilityUpdateFailed": "无法更新默认动态可见性。"
-    }
+    },
+    "restartForLayoutTitle": "需要重启才能完成切换",
+    "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox,界面才会按那个方向排布。"
   },
   "notifications": {
     "newMessageTitle": "新消息",

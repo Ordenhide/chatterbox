@@ -1,4 +1,5 @@
 import React from 'react';
+import {I18nManager, StyleSheet} from 'react-native';
 import type {StyleProp, ViewStyle} from 'react-native';
 import Svg, {Circle, Line, Path, Rect} from 'react-native-svg';
 
@@ -58,6 +59,17 @@ export type IconName =
 
 const FILLED = new Set<IconName>(['play', 'heartFilled']);
 
+/**
+ * Glyphs that point somewhere, and so have to be flipped under RTL.
+ *
+ * Only these. A symmetric glyph gains nothing from mirroring and a
+ * near-symmetric one (a clock, a shield) comes out subtly wrong, so this is a
+ * list rather than a blanket transform. `forward` marks a forwarded message
+ * and labels the swipe-to-reply affordance; in an Arabic layout an unflipped
+ * one points back the way the text reads.
+ */
+const DIRECTIONAL = new Set<IconName>(['forward']);
+
 export default function Icon({
   name,
   size = 18,
@@ -79,8 +91,15 @@ export default function Icon({
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
   };
+  // I18nManager.isRTL is fixed for the life of the process, so this is a plain
+  // read rather than state — it cannot change without a relaunch.
+  const mirrored = I18nManager.isRTL && DIRECTIONAL.has(name);
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" style={style}>
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      style={mirrored ? [styles.mirrored, style] : style}>
       {PATHS(common)[name]}
     </Svg>
   );
@@ -346,4 +365,8 @@ const PATHS = (common: {
       <Path d="M9 15c1 1 5 1 6 0" {...common} />
     </>
   ),
+});
+
+const styles = StyleSheet.create({
+  mirrored: {transform: [{scaleX: -1}]},
 });

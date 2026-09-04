@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 2.5,
     top: 2,
-    right: -4,
+    end: -4,
   },
   tabBarGlass: {
     ...StyleSheet.absoluteFillObject,

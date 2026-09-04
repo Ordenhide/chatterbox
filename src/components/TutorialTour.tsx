@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'center',
   },
-  skip: {position: 'absolute', top: 14, right: 16, minWidth: 36, alignItems: 'flex-end'},
+  skip: {position: 'absolute', top: 14, end: 16, minWidth: 36, alignItems: 'flex-end'},
   skipText: {fontSize: 14, fontFamily: bodyWeight('600')},
   emojiCircle: {
     width: 72,
