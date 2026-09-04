@@ -95,6 +95,22 @@ const styles = StyleSheet.create({
     marginStart: 10,
     // Matches styles.messageText in ChatScreen: what you type should be set in
     // the same face it will be read in.
+    //
+    // On Android this line currently does nothing, and that is React Native's
+    // to fix, not ours. Measured on RN 0.84.1 with the new architecture: the
+    // composer renders in the system face no matter what is asked for here.
+    // Changing this to fonts.mono.regular, to a hardcoded 'IBMPlexMono-Regular',
+    // or to Android's own built-in 'monospace' all render identically, and
+    // moving it to an inline style from ChatScreen does too — while fontSize
+    // in this same object takes effect, so the style object is reaching the
+    // view. In ReactEditText.kt, applyTextAttributes() sets size and letter
+    // spacing directly, whereas setFontFamily() only marks typefaceDirty and
+    // leaves the work to maybeUpdateTypeface().
+    //
+    // It stays because it is correct, it is what iOS uses, and it will start
+    // working the day the underlying bug is fixed. Do not spend another
+    // afternoon on it without first re-running the fontSize check above: if
+    // that stops taking effect too, the problem has moved somewhere else.
     fontFamily: fonts.body.regular,
     fontSize: 16,
     lineHeight: 16,
