@@ -214,7 +214,7 @@ const styles: Record<string, React.CSSProperties> = {
     overflowY: 'auto',
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 18,
     display: 'flex',
     flexDirection: 'column',
@@ -235,14 +235,14 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
   },
   tabs: {display: 'flex', gap: 8},
-  tab: {flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 14},
+  tab: {flex: 1, padding: '9px 0', borderRadius: 2, fontSize: 14},
   tabOn: {background: colors.primary, color: '#fff'},
   tabOff: {background: 'transparent', color: colors.textSecondary, border: `1px solid ${colors.border}`},
   // Danger-bordered on purpose: losing these words is irreversible data loss,
   // which is the same severity class as the delete-account dialog.
   warnBox: {
     border: `1px solid ${colors.danger}`,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 12,
     fontSize: 13,
     lineHeight: 1.5,
@@ -250,7 +250,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   phraseBox: {
     border: `1px solid ${colors.border}`,
-    borderRadius: 12,
+    borderRadius: 2,
     padding: 14,
     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
     fontSize: 14,
@@ -265,7 +265,7 @@ const styles: Record<string, React.CSSProperties> = {
   input: {
     width: '100%',
     padding: '11px 14px',
-    borderRadius: 12,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.inputBg,
     fontSize: 14,
@@ -273,7 +273,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: colors.text,
     resize: 'vertical',
   },
-  action: {width: '100%', padding: '12px', borderRadius: 12, fontSize: 14.5},
+  action: {width: '100%', padding: '12px', borderRadius: 2, fontSize: 14.5},
   muted: {fontSize: 13, lineHeight: 1.5, color: colors.textSecondary},
   error: {fontSize: 13, lineHeight: 1.5, color: colors.danger},
 };

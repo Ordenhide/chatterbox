@@ -81,7 +81,7 @@ const styles: Record<string, React.CSSProperties> = {
   card: {
     background: colors.surface,
     border: `1px solid ${colors.border}`,
-    borderRadius: 18,
+    borderRadius: 2,
     padding: 20,
     display: 'flex',
     flexDirection: 'column',

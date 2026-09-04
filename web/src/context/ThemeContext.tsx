@@ -26,7 +26,7 @@ export function ThemeProvider({children}: {children: React.ReactNode}) {
     document.documentElement.setAttribute('data-theme', theme);
     // Keep the browser UI (mobile address bar) in sync.
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#eef0f8' : '#0a0a14');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#e9ede9' : '#000000');
   }, [theme]);
 
   const value = useMemo<ThemeCtx>(

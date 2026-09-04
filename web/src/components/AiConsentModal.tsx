@@ -79,7 +79,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 400,
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 26,
     boxShadow: '0 30px 60px -20px rgba(20,30,60,0.4)',
   },
@@ -105,7 +105,7 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.75,
   },
   note: {margin: '0 0 18px', fontSize: 12.5, color: colors.textTertiary, lineHeight: 1.5},
-  primary: {width: '100%', padding: 12, borderRadius: 12, fontSize: 14.5, fontWeight: 700},
+  primary: {width: '100%', padding: 12, borderRadius: 2, fontSize: 14.5, fontWeight: 700},
   cancel: {
     width: '100%',
     marginTop: 10,

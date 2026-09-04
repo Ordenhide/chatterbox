@@ -376,7 +376,7 @@ const styles: Record<string, React.CSSProperties> = {
   searchInput: {
     width: '100%',
     padding: '10px 14px 10px 38px',
-    borderRadius: 12,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.inputBg,
     fontSize: 14,
@@ -442,7 +442,7 @@ const styles: Record<string, React.CSSProperties> = {
   emptyIcon: {
     width: 96,
     height: 96,
-    borderRadius: 32,
+    borderRadius: 2,
     background: colors.primaryLight,
     display: 'flex',
     alignItems: 'center',

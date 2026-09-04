@@ -184,7 +184,7 @@ const styles: Record<string, React.CSSProperties> = {
   hero: {
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 20,
     marginBottom: 28,
     boxShadow: colors.shadowSoft,
@@ -216,7 +216,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 6,
     padding: '14px 10px',
-    borderRadius: 16,
+    borderRadius: 2,
     borderStyle: 'solid',
     background: colors.surfaceStrong,
     cursor: 'pointer',
@@ -226,7 +226,7 @@ const styles: Record<string, React.CSSProperties> = {
   swatch: {
     width: 46,
     height: 46,
-    borderRadius: 14,
+    borderRadius: 2,
     borderWidth: 2,
     borderStyle: 'solid',
     display: 'flex',

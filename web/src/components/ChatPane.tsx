@@ -2138,15 +2138,20 @@ export default function ChatPane({
         ) : (
           shownMessages.map((m, i) => {
             const mine = m.user?._id === me.uid;
-            // Own bubbles carry the chat accent, so their text is always light
-            // regardless of wallpaper; peer bubbles sit on the thread surface.
+            // Inverted, matching the mobile app: an outgoing bubble is a solid
+            // block of the foreground colour rather than a tint, which reads as
+            // "sent" without spending the accent on authorship. A chat themed
+            // from the store still wins.
             const bubbleBg = mine
-              ? themeColor
-              : darkWallpaper
-                ? 'rgba(255,255,255,0.10)'
-                : colors.surfaceStrong;
-            const bubbleText = mine ? '#FFFFFF' : threadText;
-            const bubbleDim = mine ? 'rgba(255,255,255,0.72)' : threadTextDim;
+              ? themeColor || 'var(--cb-text)'
+              : 'transparent';
+            // Not #FFFFFF: on the inverted fill the correct ink is whatever
+            // contrasts with the *foreground* colour, which is the token the
+            // themes already disagree about on purpose — black in dark, white
+            // in light. Hardcoding white was right only while the bubble was a
+            // saturated accent.
+            const bubbleText = mine ? 'var(--cb-text-on-primary)' : threadText;
+            const bubbleDim = mine ? 'var(--cb-text-on-primary)' : threadTextDim;
             const reactions = Object.entries(m.reactions || {}).filter(([, u]) => u.length > 0);
             const showDivider = m._id === firstUnreadId && !firstUnreadIsMine;
 
@@ -2241,11 +2246,12 @@ export default function ChatPane({
                     style={{
                       ...styles.msgMain,
                       background: bubbleBg,
+                      borderColor: mine ? 'transparent' : 'var(--cb-border)',
                       alignItems: mine ? 'flex-end' : 'flex-start',
                       // Square off the corner nearest the speaker so a run of
                       // bubbles reads as one turn rather than separate cards.
-                      borderTopRightRadius: mine && grouped ? 6 : 18,
-                      borderTopLeftRadius: !mine && grouped ? 6 : 18,
+                      borderTopRightRadius: mine && grouped ? 0 : 2,
+                      borderTopLeftRadius: !mine && grouped ? 0 : 2,
                     }}>
                     {/* Names only earn their space in a group thread. */}
                     {!grouped && !mine && isGroupChat && (
@@ -3083,7 +3089,7 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: 'blur(30px)',
     WebkitBackdropFilter: 'blur(30px)',
     border: `1px solid ${colors.border}`,
-    borderRadius: 12,
+    borderRadius: 2,
     boxShadow: '0 24px 48px -16px rgba(0,0,0,0.5)',
     // The menu has grown past what a short window can show. Without a cap it
     // ran off the bottom and its last items (Chat settings, Delete chat) sat
@@ -3155,7 +3161,7 @@ const styles: Record<string, React.CSSProperties> = {
   summaryAskInput: {
     flex: 1,
     padding: '8px 12px',
-    borderRadius: 10,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.inputBg,
     color: colors.text,
@@ -3164,7 +3170,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   summaryAskBtn: {
     padding: '8px 14px',
-    borderRadius: 10,
+    borderRadius: 2,
     border: 'none',
     background: colors.primary,
     color: '#fff',
@@ -3176,7 +3182,7 @@ const styles: Record<string, React.CSSProperties> = {
   translation: {
     marginTop: 4,
     padding: '6px 10px',
-    borderRadius: 10,
+    borderRadius: 2,
     background: colors.surfaceStrong,
     border: `1px dashed ${colors.border}`,
     fontSize: 13.5,
@@ -3298,8 +3304,11 @@ const styles: Record<string, React.CSSProperties> = {
     minWidth: 0,
     maxWidth: 'min(68%, 560px)',
     padding: '8px 12px 6px',
-    borderRadius: 18,
-    boxShadow: '0 1px 2px rgba(15,23,42,0.06)',
+    borderRadius: 2,
+    // A ruled edge instead of a drop shadow. On a black ground a soft shadow
+    // is invisible, and the outgoing bubble no longer needs lifting off the
+    // surface — it *is* the brightest thing in the thread.
+    border: '1px solid transparent',
   },
   msgHead: {display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 2},
   dayDivider: {display: 'flex', justifyContent: 'center', margin: '18px 0 10px'},
@@ -3328,11 +3337,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   msgText: {whiteSpace: 'pre-wrap'},
   inlineMeta: {marginLeft: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
-  gifMsg: {display: 'block', maxWidth: 260, width: '100%', borderRadius: 12, margin: '4px 0', cursor: 'zoom-in'},
+  gifMsg: {display: 'block', maxWidth: 260, width: '100%', borderRadius: 2, margin: '4px 0', cursor: 'zoom-in'},
   transcription: {
     margin: '4px 0',
     padding: '7px 11px',
-    borderRadius: 10,
+    borderRadius: 2,
     background: colors.surfaceStrong,
     border: `1px dashed ${colors.border}`,
     fontSize: 13.5,
@@ -3429,13 +3438,13 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
     margin: '8px 16px 0',
     padding: 8,
-    borderRadius: 14,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.surface,
     textAlign: 'left',
     cursor: 'pointer',
   },
-  locationPreviewImage: {width: 56, height: 56, borderRadius: 10, objectFit: 'cover', flexShrink: 0},
+  locationPreviewImage: {width: 56, height: 56, borderRadius: 2, objectFit: 'cover', flexShrink: 0},
   locationPreviewInfo: {display: 'flex', flexDirection: 'column', minWidth: 0},
   locationPreviewTitle: {fontSize: 13.5, fontWeight: 700, color: colors.text},
   locationPreviewCoords: {fontSize: 12.5, color: colors.textSecondary, marginTop: 1},
@@ -3448,7 +3457,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '0 16px',
     background: colors.menuSolid,
     border: `1px solid ${colors.border}`,
-    borderRadius: 12,
+    borderRadius: 2,
     boxShadow: colors.shadowSoft,
     overflow: 'hidden',
   },
@@ -3460,8 +3469,8 @@ const styles: Record<string, React.CSSProperties> = {
   scheduledItem: {display: 'flex', alignItems: 'center', gap: 8, padding: '6px 4px'},
   scheduledText: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13.5, color: colors.text},
   scheduledTime: {fontSize: 12, color: colors.textTertiary, flexShrink: 0},
-  scheduleInput: {padding: '7px 10px', borderRadius: 10, border: `1px solid ${colors.border}`, background: colors.inputBg, color: colors.text, fontSize: 13, fontFamily: 'inherit'},
-  image: {display: 'block', maxWidth: 360, width: '100%', borderRadius: 10, margin: '4px 0', cursor: 'zoom-in'},
+  scheduleInput: {padding: '7px 10px', borderRadius: 2, border: `1px solid ${colors.border}`, background: colors.inputBg, color: colors.text, fontSize: 13, fontFamily: 'inherit'},
+  image: {display: 'block', maxWidth: 360, width: '100%', borderRadius: 2, margin: '4px 0', cursor: 'zoom-in'},
   // Resets default button chrome so wrapping a message image in a real
   // <button> (for keyboard access) doesn't change how it looks — the image's
   // own style (image/gifMsg) still controls sizing.
@@ -3472,7 +3481,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
     padding: '9px 12px',
     margin: '4px 0',
-    borderRadius: 10,
+    borderRadius: 2,
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
     color: colors.text,
@@ -3482,7 +3491,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   fileName: {flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 14},
   searchBar: {display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderBottom: `1px solid ${colors.border}`, background: colors.surface},
-  searchInput: {flex: 1, padding: '8px 12px', borderRadius: 10, border: `1px solid ${colors.border}`, background: colors.inputBg, fontSize: 14, color: colors.text},
+  searchInput: {flex: 1, padding: '8px 12px', borderRadius: 2, border: `1px solid ${colors.border}`, background: colors.inputBg, fontSize: 14, color: colors.text},
   searchClose: {background: 'none', border: 'none', color: colors.textSecondary, display: 'flex', alignItems: 'center'},
   uploadBar: {position: 'relative', height: 26, background: colors.surface, borderTop: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center'},
   uploadFill: {position: 'absolute', left: 0, top: 0, bottom: 0, background: colors.primaryLight},
@@ -3528,7 +3537,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 8,
     padding: '14px 18px',
     minWidth: 170,
-    borderRadius: 10,
+    borderRadius: 2,
     border: `1px dashed ${colors.borderStrong}`,
     background: 'transparent',
     color: colors.text,
@@ -3660,7 +3669,7 @@ const styles: Record<string, React.CSSProperties> = {
   input: {
     flex: 1,
     padding: '11px 16px',
-    borderRadius: 22,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.surfaceStrong,
     fontSize: 15,

@@ -142,7 +142,7 @@ const styles: Record<string, React.CSSProperties> = {
   dim: {position: 'absolute', inset: 0, background: 'rgba(2,6,23,0.68)'},
   spotlight: {
     position: 'absolute',
-    borderRadius: 14,
+    borderRadius: 2,
     boxShadow: '0 0 0 9999px rgba(2,6,23,0.68)',
     border: `2px solid ${colors.primary}`,
     pointerEvents: 'none',
@@ -154,7 +154,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 'calc(100vw - 24px)',
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 18,
+    borderRadius: 2,
     padding: 20,
     boxShadow: colors.shadow,
     display: 'flex',
@@ -164,7 +164,7 @@ const styles: Record<string, React.CSSProperties> = {
   iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: 2,
     background: colors.primaryLight,
     display: 'flex',
     alignItems: 'center',

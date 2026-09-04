@@ -145,7 +145,7 @@ const styles: Record<string, React.CSSProperties> = {
     overflowY: 'auto',
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 18,
     display: 'flex',
     flexDirection: 'column',
@@ -167,7 +167,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   warnBox: {
     border: `1px solid ${colors.danger}`,
-    borderRadius: 14,
+    borderRadius: 2,
     padding: '12px 14px',
     background: 'transparent',
   },
@@ -177,7 +177,7 @@ const styles: Record<string, React.CSSProperties> = {
   label: {fontSize: 12.5, fontWeight: 700, color: colors.textSecondary, marginTop: 4},
   input: {
     padding: '11px 14px',
-    borderRadius: 12,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.inputBg,
     fontSize: 15,
@@ -187,7 +187,7 @@ const styles: Record<string, React.CSSProperties> = {
   deleteBtn: {
     marginTop: 8,
     padding: '13px',
-    borderRadius: 14,
+    borderRadius: 2,
     border: 'none',
     background: colors.danger,
     color: '#fff',

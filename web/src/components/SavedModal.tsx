@@ -67,7 +67,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 440,
     maxHeight: '80vh',
     background: colors.surfaceStrong,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 22,
     display: 'flex',
     flexDirection: 'column',

@@ -36,7 +36,11 @@ export const colors = {
 
 // Signature accent gradient (buttons, outgoing bubbles, logo). Two stops, not
 // three: a tight cyan→steel-blue ramp instead of the old violet/magenta sweep.
-export const accentGradient = 'linear-gradient(135deg, #16B5D8 0%, #4C82D8 130%)';
+// Token-valued rather than fixed hex: the two themes deliberately use
+// different greens (#00FF41 is 1.37:1 on white), so a literal gradient here
+// would be correct in exactly one of them.
+export const accentGradient =
+  'linear-gradient(135deg, var(--cb-primary) 0%, var(--cb-primary-soft) 130%)';
 
 // Per-user avatar colors. Held to the cyan→blue→slate range (plus restrained
 // teal/amber) so identity chips stay legible without reintroducing the

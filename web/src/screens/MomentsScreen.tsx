@@ -378,7 +378,7 @@ const styles: Record<string, React.CSSProperties> = {
   composer: {
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 16,
     marginBottom: 22,
     boxShadow: colors.shadowSoft,
@@ -449,7 +449,7 @@ const styles: Record<string, React.CSSProperties> = {
   previewImg: {
     maxWidth: '100%',
     maxHeight: 240,
-    borderRadius: 14,
+    borderRadius: 2,
     display: 'block',
     border: `1px solid ${colors.border}`,
   },
@@ -473,7 +473,7 @@ const styles: Record<string, React.CSSProperties> = {
   card: {
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 18,
     marginBottom: 14,
     boxShadow: colors.shadowSoft,
@@ -497,7 +497,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%',
     maxHeight: 420,
     objectFit: 'cover',
-    borderRadius: 14,
+    borderRadius: 2,
     margin: '0 0 12px',
     border: `1px solid ${colors.border}`,
     cursor: 'zoom-in',

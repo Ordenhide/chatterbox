@@ -180,7 +180,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 340,
     background: colors.surfaceStrong,
     border: `1px solid ${colors.border}`,
-    borderRadius: 20,
+    borderRadius: 2,
     padding: 22,
     display: 'flex',
     flexDirection: 'column',
@@ -194,7 +194,7 @@ const styles: Record<string, React.CSSProperties> = {
   input: {
     width: '100%',
     padding: '11px 14px',
-    borderRadius: 12,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: colors.inputBg,
     fontSize: 16,
@@ -207,11 +207,11 @@ const styles: Record<string, React.CSSProperties> = {
   cancel: {
     flex: 1,
     padding: '11px',
-    borderRadius: 12,
+    borderRadius: 2,
     border: `1px solid ${colors.border}`,
     background: 'transparent',
     color: colors.text,
     fontWeight: 600,
   },
-  primary: {flex: 1, padding: '11px', borderRadius: 12, fontSize: 14.5},
+  primary: {flex: 1, padding: '11px', borderRadius: 2, fontSize: 14.5},
 };

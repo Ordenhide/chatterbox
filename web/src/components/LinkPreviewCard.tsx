@@ -47,7 +47,7 @@ const styles: Record<string, React.CSSProperties> = {
   card: {
     display: 'block',
     marginTop: 6,
-    borderRadius: 12,
+    borderRadius: 2,
     overflow: 'hidden',
     border: `1px solid ${colors.border}`,
     background: colors.surfaceStrong,
