@@ -39,6 +39,9 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password"
   },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  },
   "tabs": {
     "chats": "Chats",
     "moments": "Moments",
@@ -189,10 +192,6 @@
     "pin": "Pin",
     "unpin": "Unpin"
   },
-  "call": {
-    "groupUnsupportedTitle": "Group calls aren't available yet",
-    "groupUnsupportedBody": "Calling works in one-to-one chats for now. In a group it would only ring one person, so it's turned off here."
-  },
   "members": {
     "title": "Members ({{count}})",
     "you": " (you)",
@@ -220,6 +219,7 @@
     "startGroup": "Start Group Chat",
     "errors": {
       "enterEmail": "Please enter an email address",
+    "noInvitees": "Add at least one person to start a chat",
       "userNotFoundTitle": "User not found",
       "userNotFoundBody": "That email does not exist on this device. Create another account first, then try again.",
       "selfChat": "You cannot start a chat with yourself",
@@ -466,7 +466,9 @@
     "cameraOff": "Camera off",
     "cameraWillBeOff": "You will join with your camera off",
     "cameraUnavailable": "Camera unavailable — you can still answer with audio",
-    "unknownCaller": "Someone"
+    "unknownCaller": "Someone",
+    "groupUnsupportedTitle": "Group calls aren't available yet",
+    "groupUnsupportedBody": "Calling works in one-to-one chats for now. In a group it would only ring one person, so it's turned off here."
   },
   "chatMedia": {
     "seconds": "{{count}}s"

@@ -76,7 +76,11 @@ export default function NewChatScreen() {
   const handleCreateChat = async () => {
     if (!user) return;
     if (invitees.length === 0) {
-      Alert.alert(t('common.error'), t('newChat.errors.enterEmail'));
+      // Not enterEmail, which this shared with: the field can hold a
+      // perfectly good address that was never added to the list, and
+      // "Please enter an email address" then contradicts what the user is
+      // looking at while saying nothing about the Add step they missed.
+      Alert.alert(t('common.error'), t('newChat.errors.noInvitees'));
       return;
     }
 
