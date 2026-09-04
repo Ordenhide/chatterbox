@@ -19,6 +19,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {requestAppleCredential} from '../services/appleAuth';
 import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import {User} from '../types';
+import {sameUser} from '../utils/sameUser';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
 import {reportError, setTelemetryUser, trackEvent} from '../services/telemetry';
 import {clearSessionId, getSessionId, rotateSessionId} from '../services/session';
@@ -164,7 +165,17 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           displayName: firebaseUser.displayName || undefined,
           photoURL: firebaseUser.photoURL || undefined,
         };
-        setUser(profile);
+        // Keep the previous object when nothing in it changed. This callback
+        // fires again on a token refresh and on any user reload, and a fresh
+        // object each time is a new identity for every consumer — the chat
+        // screen keys four effects off `user`, including the one that opens
+        // the message listener, seeds the body cache and runs the decrypt
+        // pass. Those were tearing down and re-running for a profile that was
+        // field-for-field identical. React bails out of the re-render
+        // entirely when the state value is the same reference, so returning
+        // `prev` costs nothing and stops the churn at the source rather than
+        // asking every consumer to depend on `user.uid` and remember why.
+        setUser(prev => (sameUser(prev, profile) ? prev : profile));
         setSessionReady(false);
         setTelemetryUser(firebaseUser.uid);
         (async () => {

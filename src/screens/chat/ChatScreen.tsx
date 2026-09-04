@@ -119,6 +119,8 @@ import {
 import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import {bodyWeight, fonts, terminal} from '../../theme/typography';
+import {runPool} from '../../utils/pool';
+import {startTrace} from '../../utils/loadTrace';
 import {makeArtifactCrypto} from '../../services/e2eeArtifacts';
 import {
   buildLinkPreviewPatch,
@@ -206,6 +208,16 @@ function withoutDecryptedBody(message: IMessage): IMessage {
 
 /** Module-level so the identity is stable: GlassScreen is memoized, and a fresh
  * array literal each render would defeat that for the whole screen. */
+/**
+ * How many sealed attachments to fetch and decrypt at once when a chat opens.
+ *
+ * Four rather than one because the work is independent, and four rather than
+ * unbounded because each job streams a download to disk and decrypts it: a
+ * thread with fifty photos would otherwise open fifty sockets and fifty
+ * scratch files at once on a phone.
+ */
+const MEDIA_CONCURRENCY = 4;
+
 const NO_SAFE_AREA_EDGES: Edge[] = [];
 
 export default function ChatScreen() {
@@ -823,6 +835,7 @@ export default function ChatScreen() {
     useCallback(() => {
       if (!chatId || !user) return;
 
+      const trace = startTrace(`chat ${chatId}`);
       const currentKeyGeneration = getKeyGeneration();
       if (currentKeyGeneration !== decryptKeyGenerationRef.current) {
         decryptKeyGenerationRef.current = currentKeyGeneration;
@@ -865,6 +878,8 @@ export default function ChatScreen() {
         bodies.forEach((text, id) => {
           if (!decryptedTextRef.current.has(id)) decryptedTextRef.current.set(id, text);
         });
+
+        trace.mark('local cache read', `${cached.length} msgs, ${bodies.size} bodies`);
 
         if (cached.length) {
           const hydrated = bodies.size
@@ -1132,6 +1147,7 @@ export default function ChatScreen() {
           if (!active) return;
 
           const toDecrypt = merged.filter(needsDecrypt);
+          trace.mark('snapshot', `${merged.length} msgs, ${toDecrypt.length} to open`);
           if (!toDecrypt.length) {
             // Nothing to open, but the seeded bodies still have to reach the
             // list: this snapshot rebuilt every item from the raw documents.
@@ -1344,6 +1360,7 @@ export default function ChatScreen() {
             // The stateless envelopes are all open at this point. Show them
             // now rather than holding them behind the awaited pass below.
             flushDecrypted();
+            trace.mark('static decrypt');
 
             /**
              * Forward-secret messages, opened separately because each one
@@ -1399,8 +1416,15 @@ export default function ChatScreen() {
              * corrupt would re-enter this pass on every snapshot, forever.
              * Re-opening the chat retries.
              */
+            trace.mark('ratchet + group decrypt');
+
+            const mediaJobs: {
+              id: string;
+              slot: MediaSlot;
+              url: string;
+              info: MediaKeyInfo;
+            }[] = [];
             for (const m of toDecrypt) {
-              if (!active) break;
               const em = m as any;
               const id = String(m._id);
               const keys = pendingMediaRef.current.get(id);
@@ -1417,22 +1441,45 @@ export default function ChatScreen() {
                   cache.current.set(id, '');
                   continue;
                 }
-                try {
-                  const path = await resolveSealedMedia(
-                    id,
-                    slot,
-                    em.sealedMediaUrls[slot],
-                    info,
-                  );
-                  // Players need a scheme; a bare path silently fails to
-                  // load on iOS.
-                  cache.current.set(id, `file://${path}`);
-                } catch (mediaError) {
-                  reportError(mediaError, 'media_decrypt_failed');
-                  cache.current.set(id, '');
-                }
+                mediaJobs.push({id, slot, url: em.sealedMediaUrls[slot], info});
               }
             }
+
+            /*
+             * Pooled, not serial.
+             *
+             * The pass above has to be serial — a ratchet envelope opens
+             * exactly once and advances stored session state. Nothing here
+             * does: resolveSealedMedia is keyed by messageId:slot, holds its
+             * own in-flight dedupe, and two slots share no state. So awaiting
+             * each in turn bought nothing and cost everything — a thread of
+             * twenty photos downloaded and decrypted them strictly front to
+             * back, and the last one waited out all nineteen ahead of it. The
+             * comment that used to sit here said a slow photo "delays nothing
+             * but itself": true of the text beside it, not of the queue
+             * behind it.
+             */
+            await runPool(
+              mediaJobs,
+              MEDIA_CONCURRENCY,
+              async job => {
+                const cache = mediaCacheForSlot(job.slot);
+                try {
+                  const path = await resolveSealedMedia(job.id, job.slot, job.url, job.info);
+                  // Players need a scheme; a bare path silently fails to
+                  // load on iOS.
+                  cache.current.set(job.id, `file://${path}`);
+                } catch (mediaError) {
+                  reportError(mediaError, 'media_decrypt_failed');
+                  cache.current.set(job.id, '');
+                }
+                // Each attachment appears as it lands, the same way the
+                // ratchet pass shows each body as it opens.
+                flushDecrypted();
+              },
+              () => active,
+            );
+            trace.mark('attachments', `${mediaJobs.length} fetched`);
 
             // Latches on: a later snapshot that happens to contain only
             // readable messages must not retract an offer the user may be
