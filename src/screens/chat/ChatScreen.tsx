@@ -325,7 +325,10 @@ export default function ChatScreen() {
   const [actionsModalVisible, setActionsModalVisible] = useState(false);
   const [pinnedMessageIds, setPinnedMessageIds] = useState<Array<string | number>>([]);
   const [otherLastReadAt, setOtherLastReadAt] = useState<number>(0);
-  const [themeColor, setThemeColor] = useState<string>('#007AFF');
+  // '' means "this chat has no accent of its own", which is different from
+  // any particular colour and is why the default is not a hex here. It used to
+  // be #007AFF — iOS blue, belonging to neither the old palette nor this one.
+  const [themeColor, setThemeColor] = useState<string>('');
   const [isLoadingEarlier, setIsLoadingEarlier] = useState(false);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const [oldestCursor, setOldestCursor] = useState<any | null>(null);
@@ -724,7 +727,7 @@ export default function ChatScreen() {
   }, [user]);
 
   useEffect(() => {
-    setThemeColor(resolveAccent(chatAccent, storeTheme?.accent, '#007AFF'));
+    setThemeColor(resolveAccent(chatAccent, storeTheme?.accent, ''));
     setChatWallpaper(resolveWallpaper(chatWallpaperRaw, storeTheme?.wallpaper));
   }, [chatAccent, chatWallpaperRaw, storeTheme]);
 
@@ -4086,7 +4089,11 @@ export default function ChatScreen() {
                 {...bubbleProps}
                 wrapperStyle={{
                   right: {backgroundColor: isSelected ? colors.primary : colors.warning},
-                  left: {backgroundColor: isSelected ? colors.primaryLight : colors.surface},
+                  left: {
+                    backgroundColor: isSelected ? colors.primaryLight : 'transparent',
+                    borderWidth: StyleSheet.hairlineWidth,
+                    borderColor: colors.warning,
+                  },
                 }}
               />
               {isBurnCountingDown && countdown != null ? (
@@ -4108,8 +4115,21 @@ export default function ChatScreen() {
             <Bubble
               {...bubbleProps}
               wrapperStyle={{
-                right: {backgroundColor: isSelected ? colors.primary : themeColor},
-                left: {backgroundColor: isSelected ? colors.primaryLight : colors.surface},
+                // Inverted, per the design: the outgoing bubble is a solid
+                // block of the foreground colour. That reads as "sent" more
+                // strongly than a tint does, and it keeps the accent free to
+                // mean status rather than authorship. A chat with its own
+                // accent from the theme store still wins.
+                right: {
+                  backgroundColor: isSelected ? colors.primary : themeColor || colors.text,
+                },
+                // A ruled edge instead of a fill, so incoming messages sit on
+                // the ground rather than floating above it.
+                left: {
+                  backgroundColor: isSelected ? colors.primaryLight : 'transparent',
+                  borderWidth: StyleSheet.hairlineWidth,
+                  borderColor: colors.border,
+                },
               }}
             />
           )}
@@ -4497,7 +4517,7 @@ export default function ChatScreen() {
             resizeMode="cover"
           />
         ) : (
-          <ThemeBackdrop accent={themeColor} tint={chatWallpaper} />
+          <ThemeBackdrop accent={themeColor || colors.primary} tint={chatWallpaper} />
         )
       ) : null}
       {/* Above the wallpaper, below everything else: the sealed field this
