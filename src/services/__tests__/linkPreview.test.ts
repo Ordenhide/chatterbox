@@ -98,6 +98,52 @@ describe('isSafeToFetchDirectly', () => {
     expect(isSafeToFetchDirectly('http://[::ffff:93.184.216.34]/')).toBe(true);
   });
 
+  /**
+   * The forms the previous guard missed, and why it missed all of them.
+   *
+   * It matched /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/ against the raw host
+   * string. Every address below names 127.0.0.1 or 192.168.1.1 and every one
+   * of them fails that pattern, so each fell past the IPv4 branch to the
+   * `return true` at the end — the guard's only answer for "I did not
+   * recognise this" was to allow it. A URL parser applies inet_aton and goes
+   * to the loopback regardless of how the host was spelled.
+   */
+  it.each([
+    ['http://127.1/', 'two-part IPv4 — the last part absorbs three bytes'],
+    ['http://127.0.1/', 'three-part IPv4'],
+    ['http://2130706433/', '127.0.0.1 as a single decimal integer'],
+    ['http://0x7f000001/', '127.0.0.1 in hex'],
+    ['http://017700000001/', '127.0.0.1 in octal'],
+    ['http://0/', '0.0.0.0 as a bare zero'],
+    ['http://3232235777/', '192.168.1.1 as a decimal integer'],
+    ['http://0xc0a80101/', '192.168.1.1 in hex'],
+    ['http://[::ffff:7f00:1]/', 'IPv4-mapped loopback written in hex groups'],
+    ['http://[0:0:0:0:0:0:0:1]/', '::1 written out in full'],
+    ['http://[::0:1]/', '::1 with an explicit zero group'],
+  ])('blocks %s (%s)', url => {
+    expect(isSafeToFetchDirectly(url)).toBe(false);
+  });
+
+  // Fail closed. The old guard's fallthrough was `return true`, so an
+  // unrecognised host was assumed to be a public hostname. Anything shaped
+  // like an address now has to parse as one.
+  it.each([
+    ['http://0x7f.1/', 'hex part in a host too short to be an address'],
+    ['http://999.999.999.999/', 'out of range'],
+    ['http://[:::1]/', 'malformed IPv6'],
+    ['http://[gggg::1]/', 'non-hex IPv6 groups'],
+    ['http://[1:2:3:4:5:6:7]/', 'too few IPv6 groups without ::'],
+  ])('refuses %s rather than assuming it is a hostname (%s)', url => {
+    expect(isSafeToFetchDirectly(url)).toBe(false);
+  });
+
+  it('still leaves ordinary hostnames and public addresses alone', () => {
+    expect(isSafeToFetchDirectly('https://sub.domain.co.uk/x')).toBe(true);
+    expect(isSafeToFetchDirectly('http://8.8.8.8/')).toBe(true);
+    expect(isSafeToFetchDirectly('http://93.184.216.34/')).toBe(true);
+    expect(isSafeToFetchDirectly('http://[2606:2800:220:1:248:1893:25c8:1946]/')).toBe(true);
+  });
+
   it('rejects anything that is not an http(s) URL', () => {
     expect(isSafeToFetchDirectly('not a url')).toBe(false);
     expect(isSafeToFetchDirectly('ftp://example.com/x')).toBe(false);
