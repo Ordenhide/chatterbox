@@ -218,6 +218,15 @@ function withoutDecryptedBody(message: IMessage): IMessage {
  */
 const MEDIA_CONCURRENCY = 4;
 
+/**
+ * How long mid-loop list flushes are coalesced for, in ms.
+ *
+ * Short enough that messages still appear to open one after another, long
+ * enough that a burst opening in the same tick rebuilds the thread once
+ * instead of once each.
+ */
+const FLUSH_COALESCE_MS = 80;
+
 const NO_SAFE_AREA_EDGES: Edge[] = [];
 
 export default function ChatScreen() {
@@ -1138,6 +1147,35 @@ export default function ChatScreen() {
           );
         };
 
+        /**
+         * A coalesced flushDecrypted, for calls made from inside a loop.
+         *
+         * Each flush replaces the message array, which is the input to every
+         * derived value the thread renders from — imageMessages,
+         * lastOutgoingMessageId, firstUnreadMessageId, filteredMessages — and
+         * therefore to renderBubble's identity. Calling it once per opened
+         * message meant a fifty-message backlog recomputed all of that fifty
+         * times and handed GiftedChat a new renderer each time, so opening a
+         * chat got slower the more there was to open.
+         *
+         * Still progressive — the point of flushing mid-loop was that a
+         * message appears as it opens, and at this interval it still does.
+         * What it no longer does is rebuild the whole thread between two
+         * messages that opened in the same tick.
+         *
+         * Callers that must land immediately (the final flush of a pass) call
+         * flushDecrypted directly; it is idempotent, so a scheduled flush
+         * arriving afterwards is a no-op patch.
+         */
+        let flushPending: ReturnType<typeof setTimeout> | null = null;
+        const scheduleFlush = () => {
+          if (flushPending) return;
+          flushPending = setTimeout(() => {
+            flushPending = null;
+            flushDecrypted();
+          }, FLUSH_COALESCE_MS);
+        };
+
         (async () => {
           // What still needs opening can only be decided once the locally
           // stored bodies are in the caches — see bodiesReady. Deciding first
@@ -1384,7 +1422,7 @@ export default function ChatScreen() {
                 // Each pass through this loop costs a storage round trip, so
                 // a message is shown the moment it opens rather than at the
                 // end — the queue behind it may be seconds long.
-                flushDecrypted();
+                scheduleFlush();
                 continue;
               }
 
@@ -1399,7 +1437,7 @@ export default function ChatScreen() {
               } else {
                 decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
               }
-              flushDecrypted();
+              scheduleFlush();
             }
 
             /**
@@ -1475,7 +1513,7 @@ export default function ChatScreen() {
                 }
                 // Each attachment appears as it lands, the same way the
                 // ratchet pass shows each body as it opens.
-                flushDecrypted();
+                scheduleFlush();
               },
               () => active,
             );
