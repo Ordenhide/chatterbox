@@ -38,10 +38,21 @@ const DEBUG_APP_CHECK_TOKEN_ANDROID = '6c53c9a1-98b6-432f-96b2-a37aaa69bc30';
 const DEBUG_APP_CHECK_TOKEN_APPLE = '77904aef-75a2-4069-98a2-00c7bc76e80b';
 
 /**
- * Initialises the default Firebase app and App Check. Safe to call more than
- * once; returns the app's name for logging.
+ * Initialises the default Firebase app and App Check. Returns the app's name
+ * for logging.
+ *
+ * Genuinely safe to call more than once, which it previously was not: the
+ * `getApps().length` check below only makes the *app* idempotent, while
+ * initializeAppCheck and GoogleSignin.configure would both run again. That did
+ * not matter while App.tsx's effect was the only caller. It does now that
+ * index.js calls this at module scope to get the native SDK warming before
+ * React renders, and App.tsx still calls it for its own error path.
  */
+let initializedName: string | null = null;
+
 export function initFirebase(): string {
+  if (initializedName) return initializedName;
+
   if (getApps().length === 0) {
     initializeApp(firebaseConfig);
   }
@@ -66,5 +77,6 @@ export function initFirebase(): string {
 
   GoogleSignin.configure({webClientId: GOOGLE_WEB_CLIENT_ID});
 
+  initializedName = app.name;
   return app.name;
 }

@@ -8,6 +8,7 @@ import {ScrollMotionProvider} from './src/contexts/ScrollMotionContext';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
+import {startTrace} from './src/utils/loadTrace';
 import {initFirebase} from './src/services/firebase/bootstrap';
 import {getMessaging, getToken, onTokenRefresh} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
@@ -29,6 +30,15 @@ const navigationRef = createNavigationContainerRef();
 
 function AppContent() {
   const {user, loading} = useAuth();
+  const startupTrace = useRef(startTrace('startup'));
+  const marked = useRef<Record<string, boolean>>({});
+  const mark = (phase: string) => {
+    if (marked.current[phase]) return;
+    marked.current[phase] = true;
+    startupTrace.current.mark(phase);
+  };
+  mark('AppContent first render');
+  if (!loading) mark('auth resolved');
   const routeNameRef = useRef<string | undefined>(undefined);
   const scheme = useColorScheme();
   const [tutorialVisible, setTutorialVisible] = useState(false);
@@ -95,6 +105,7 @@ function AppContent() {
         onReady={() => {
           const currentRoute = navigationRef.getCurrentRoute();
           routeNameRef.current = currentRoute?.name;
+          startupTrace.current.mark('navigator ready');
           const startupMs = Date.now() - APP_START_TS;
           trackEvent('app_startup_time', {ms: startupMs});
           logBreadcrumb(`app_startup_time:${startupMs}`);
