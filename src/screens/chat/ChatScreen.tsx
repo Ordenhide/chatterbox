@@ -4444,7 +4444,7 @@ export default function ChatScreen() {
             <TouchableOpacity
               style={[styles.burnDurationButton, {marginLeft: 'auto', backgroundColor: colors.warning}]}
               onPress={stopDictation}>
-              <Text style={[styles.burnDurationButtonText, {color: colors.danger}]}>Stop</Text>
+              <Text style={[styles.burnDurationButtonText, {color: colors.textOnWarning}]}>Stop</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -4591,13 +4591,13 @@ export default function ChatScreen() {
       ) : null}
       {isScreenshotProtectionEnabled() ? (
         <View style={[styles.offlineBanner, {backgroundColor: colors.success}]}>
-          <Icon name="shield" size={13} color="#111" />
-          <Text style={styles.offlineText}>Screenshot protection active</Text>
+          <Icon name="shield" size={13} color={colors.textOnPrimary} />
+          <Text style={[styles.offlineText, {color: colors.textOnPrimary}]}>Screenshot protection active</Text>
         </View>
       ) : null}
       {isOffline ? (
         <View style={[styles.offlineBanner, {backgroundColor: colors.warning}]}>
-          <Text style={styles.offlineText}>Offline — messages will send when you're back online</Text>
+          <Text style={[styles.offlineText, {color: colors.textOnWarning}]}>Offline — messages will send when you're back online</Text>
         </View>
       ) : null}
       {peerDeleted ? (
@@ -4613,8 +4613,8 @@ export default function ChatScreen() {
         <TouchableOpacity
           style={[styles.offlineBanner, {backgroundColor: colors.danger}]}
           onPress={verifyContact}>
-          <Icon name="alertTriangle" size={13} color="#111" />
-          <Text style={styles.offlineText}>
+          <Icon name="alertTriangle" size={13} color={colors.textOnDanger} />
+          <Text style={[styles.offlineText, {color: colors.textOnDanger}]}>
             {otherUserName}'s security code changed. Tap to verify.
           </Text>
         </TouchableOpacity>
@@ -4630,8 +4630,8 @@ export default function ChatScreen() {
           accessibilityRole="button"
           accessibilityLabel="Restore your encrypted message history"
           onPress={() => navigation.navigate('RecoveryPhrase')}>
-          <Icon name="lock" size={13} color="#111" />
-          <Text style={styles.offlineText}>
+          <Icon name="lock" size={13} color={colors.textOnWarning} />
+          <Text style={[styles.offlineText, {color: colors.textOnWarning}]}>
             Some messages were sealed on another device. Tap to restore with your recovery phrase.
           </Text>
         </TouchableOpacity>
@@ -4647,8 +4647,8 @@ export default function ChatScreen() {
           accessibilityRole="button"
           accessibilityLabel="This contact's encryption session changed. Tap to verify."
           onPress={verifyContact}>
-          <Icon name="lock" size={13} color="#111" />
-          <Text style={styles.offlineText}>
+          <Icon name="lock" size={13} color={colors.textOnWarning} />
+          <Text style={[styles.offlineText, {color: colors.textOnWarning}]}>
             This contact's encryption session changed — usually a reinstall. Tap to verify their
             safety number.
           </Text>
@@ -5908,9 +5908,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   offlineText: {
-    // Stays #111 rather than moving to a token: these banners are painted with
-    // colors.warning as their *background* in both themes, so the ink has to
-    // be dark in both. A theme-following colour would turn white on amber.
+    // Fallback only — each banner passes the ink for the fill it actually
+    // uses. An earlier version of this comment claimed a dark ink worked in
+    // both themes; that is false, because the light theme's amber is itself
+    // dark (#8A5A00) and #111 on it is 3.19:1.
     color: '#111',
     ...terminal.label,
     fontSize: 9,

@@ -44,6 +44,8 @@ const light = {
   textOnDanger: '#FFFFFF',
   // Terminal amber, darkened to carry on a light ground: 5.40:1.
   warning: '#8A5A00',
+  // White, because the light theme's amber is dark. #111 here is 3.19:1.
+  textOnWarning: '#FFFFFF',
   glassTint1: 'rgba(10,122,42,0.07)',
   glassTint2: 'rgba(31,92,58,0.05)',
   glassTint3: 'rgba(10,122,42,0.03)',
@@ -93,6 +95,8 @@ const dark = {
   // pre-existing bug, not one the retheme introduced.
   textOnDanger: '#000000',
   warning: '#FFB000',
+  // Black on the bright amber: 11.46:1.
+  textOnWarning: '#000000',
   glassTint1: 'rgba(0,255,65,0.05)',
   glassTint2: 'rgba(124,255,168,0.03)',
   glassTint3: 'rgba(0,255,65,0.02)',

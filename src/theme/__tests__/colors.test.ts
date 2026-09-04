@@ -36,6 +36,10 @@ describe('contrast', () => {
     const pairs: Array<[string, string, string]> = [
       ['textOnPrimary on primary', c.textOnPrimary, c.primary],
       ['textOnDanger on danger', c.textOnDanger, c.danger],
+      // Added after the light theme's amber turned out to be *dark*, which
+      // made the one hardcoded #111 shared by every banner correct in the
+      // dark theme and 3.19:1 in the light one.
+      ['textOnWarning on warning', c.textOnWarning, c.warning],
       ['text on backdrop', c.text, c.backdrop],
       ['text on surfaceStrong', c.text, c.surfaceStrong],
     ];
