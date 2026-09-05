@@ -4232,7 +4232,7 @@ export default function ChatScreen() {
         <View style={styles.burnedContainer}>
           <Icon name="flame" size={14} color={colors.textSecondary} style={styles.burnedIcon} />
           <Text style={[styles.burnedText, {color: colors.textSecondary}]}>
-            Message burned
+            {t('burn.messageBurned')}
           </Text>
         </View>
       );
@@ -4251,10 +4251,10 @@ export default function ChatScreen() {
           style={[styles.burnOverlay, {backgroundColor: colors.surface, borderColor: colors.warning}]}>
           <Icon name="flame" size={24} color={colors.warning} style={styles.burnOverlayIcon} />
           <Text style={[styles.burnOverlayText, {color: colors.text}]}>
-            Tap to reveal
+            {t('burn.tapToReveal')}
           </Text>
           <Text style={[styles.burnOverlaySub, {color: colors.textSecondary}]}>
-            Burns in {formatBurnDuration(burn.duration)}
+            {t('burn.burnsIn', {duration: formatBurnDuration(burn.duration)})}
           </Text>
         </Pressable>
       );
@@ -4689,7 +4689,7 @@ export default function ChatScreen() {
           <View style={[styles.burnAccessoryBar, {backgroundColor: colors.surface, borderTopColor: colors.warning}]}>
             <Icon name="flame" size={14} color={colors.warning} style={styles.burnAccessoryIcon} />
             <Text style={[styles.burnAccessoryText, {color: colors.warning}]}>
-              Burn after reading ({formatBurnDuration(burnDuration)})
+              {t('burn.burnAfterReading', {duration: formatBurnDuration(burnDuration)})}
             </Text>
             <TouchableOpacity
               style={styles.burnDurationButton}
@@ -5687,10 +5687,10 @@ export default function ChatScreen() {
             onPress={() => setBurnDurationPickerVisible(false)}>
             <View style={[styles.burnPickerSheet, {backgroundColor: colors.background}]}>
               <Text style={[styles.burnPickerTitle, {color: colors.text}]}>
-                Burn Timer
+                {t('burn.burnTimerTitle')}
               </Text>
               <Text style={[styles.burnPickerSub, {color: colors.textSecondary}]}>
-                Message will be destroyed after being read
+                {t('burn.burnTimerDescription')}
               </Text>
               {BURN_DURATIONS.map(d => (
                 <TouchableOpacity

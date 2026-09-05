@@ -1187,21 +1187,22 @@ describe('chats/{chatId}/messages/{messageId}', () => {
 });
 
 describe('chat subcollections gated only by isChatParticipant', () => {
-  // calls, sharedLists, expenses, whiteboards, quoteWall, playlist and
-  // countdowns share the identical `allow read, write: if
-  // isChatParticipant(chatId);` rule — one parameterized check across all of
-  // them rather than seven near-identical blocks, and it still catches a
+  // calls, sharedLists and quoteWall share the identical `allow read, write:
+  // if isChatParticipant(chatId);` rule — one parameterized check across all
+  // of them rather than three near-identical blocks, and it still catches a
   // typo'd path in any one of them.
+  //
+  // expenses, whiteboards, playlist and countdowns were on this list until
+  // their rules were removed on 2026-09-05. Nothing had written or read them
+  // since the features went; the test was asserting that a participant could
+  // still write into four collections the app no longer knows about.
   //
   // scheduledMessages used to be on this list and no longer belongs: it
   // carries an author, so it is held to the same "author as yourself" rule as
   // a message and has its own block above. Leaving it here would have
   // asserted that any participant may write one, which is the forgery that
   // block exists to prevent.
-  const subcollections = [
-    'calls', 'sharedLists', 'expenses',
-    'whiteboards', 'quoteWall', 'playlist', 'countdowns',
-  ];
+  const subcollections = ['calls', 'sharedLists', 'quoteWall'];
 
   beforeEach(async () => {
     await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']}));
@@ -1215,6 +1216,20 @@ describe('chat subcollections gated only by isChatParticipant', () => {
     await assertFails(setDoc(doc(mallory, `chats/c1/${sub}/item2`), {v: 1}));
     await assertFails(getDoc(doc(mallory, `chats/c1/${sub}/item1`)));
   });
+
+  /**
+   * The removed ones, asserted rather than merely dropped from the list above.
+   * Deleting a rule and deleting its test together proves nothing; this is the
+   * half that says the collections are actually closed, and it fails if anyone
+   * re-adds a block for a feature that no longer exists.
+   */
+  it.each(['countdowns', 'expenses', 'playlist', 'whiteboards'])(
+    'denies %s, whose feature was removed',
+    async sub => {
+      await assertFails(setDoc(doc(asUser('alice'), `chats/c1/${sub}/item1`), {v: 1}));
+      await assertFails(getDoc(doc(asUser('alice'), `chats/c1/${sub}/item1`)));
+    },
+  );
 
   it('calls/{callId}/candidates inherits the same participant gate', async () => {
     await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), {status: 'ringing'}));

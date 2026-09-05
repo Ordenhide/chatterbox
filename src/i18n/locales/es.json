@@ -212,15 +212,6 @@
       "visibilityUpdateFailed": "No se pudo actualizar la visibilidad del perfil."
     }
   },
-  "notifications": {
-    "newMessageTitle": "Nuevo mensaje",
-    "newMessageBody": "Tienes un nuevo mensaje."
-  },
-  "calls": {
-    "incomingTitle": "Llamada entrante",
-    "voice": "Llamada de voz",
-    "video": "Llamada de video"
-  },
   "call": {
     "connecting": "Conectando...",
     "active": "En llamada",

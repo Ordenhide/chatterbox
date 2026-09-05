@@ -694,24 +694,13 @@ service cloud.firestore {
         allow read, write: if isChatParticipant(chatId);
       }
 
-      match /expenses/{expenseId} {
-        allow read, create: if isChatParticipant(chatId);
-        allow update, delete: if isChatParticipant(chatId);
-      }
-
-      match /whiteboards/{whiteboardId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
-
+      // countdowns, expenses, playlist and whiteboards used to sit here with
+      // the same participant gate. The features that wrote them were removed;
+      // the rules outlived them, leaving four subcollections any participant
+      // could write anything into that nothing would ever read back. A rule
+      // for a collection no client touches is not inert — it is writable
+      // server storage the app does not know about.
       match /quoteWall/{quoteId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
-
-      match /playlist/{trackId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
-
-      match /countdowns/{countdownId} {
         allow read, write: if isChatParticipant(chatId);
       }
 

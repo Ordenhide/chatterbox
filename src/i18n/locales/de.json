@@ -212,15 +212,6 @@
       "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden."
     }
   },
-  "notifications": {
-    "newMessageTitle": "Neue Nachricht",
-    "newMessageBody": "Sie haben eine neue Nachricht."
-  },
-  "calls": {
-    "incomingTitle": "Eingehender Anruf",
-    "voice": "Sprachanruf",
-    "video": "Videoanruf"
-  },
   "call": {
     "connecting": "Verbinden...",
     "active": "Im Anruf",

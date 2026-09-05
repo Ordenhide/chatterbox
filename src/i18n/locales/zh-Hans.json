@@ -312,15 +312,6 @@
     "privacyReceiptsTitle": "已读回执",
     "privacyReceiptsHint": "默认关闭,而且是双向的 —— 打开后,服务器会记录你何时读了消息,你也能看到对方何时读了。"
   },
-  "notifications": {
-    "newMessageTitle": "新消息",
-    "newMessageBody": "你有一条新消息。"
-  },
-  "calls": {
-    "incomingTitle": "来电",
-    "voice": "语音通话",
-    "video": "视频通话"
-  },
   "call": {
     "connecting": "连接中...",
     "active": "通话中",

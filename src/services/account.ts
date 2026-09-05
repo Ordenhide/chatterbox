@@ -187,14 +187,17 @@ async function purgeChat(
   }
 
   /**
-   * Deliberately left: sharedLists, expenses, quoteWall, playlist,
-   * countdowns and calls. Those are joint artifacts of the chat, not this
-   * user's own documents — an expense split between two people does not stop
-   * being the other person's record because one of them left, and deleting a
-   * shared list out from under the remaining participant would be destroying
+   * Deliberately left: sharedLists, quoteWall and calls. Those are joint
+   * artifacts of the chat, not this user's own documents — a shared list does
+   * not stop being the other person's record because one of them left, and
+   * deleting it out from under the remaining participant would be destroying
    * their data to satisfy someone else's erasure request. They carry a uid in
    * an attribution field, which is the same residue a departed participant
    * already leaves in the chat's history.
+   *
+   * This list used to name expenses, playlist and countdowns as well. Those
+   * features are gone and their rules were removed on 2026-09-05, so there is
+   * nothing left to leave behind.
    */
 
   // `chat.lastMessage` is a denormalised copy of the newest message's text,

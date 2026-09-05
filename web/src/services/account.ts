@@ -155,11 +155,14 @@ async function purgeChat(
    * makes it legal — Firestore rejects a query the rules cannot prove safe from
    * its constraints alone.
    *
-   * Deliberately left: sharedLists, expenses, quoteWall, playlist,
-   * countdowns and calls. Those are joint artifacts of the chat, not this
-   * user's own documents — deleting a shared list out from under the remaining
-   * participant would be destroying their data to satisfy someone else's
-   * erasure request.
+   * Deliberately left: sharedLists, quoteWall and calls. Those are joint
+   * artifacts of the chat, not this user's own documents — deleting a shared
+   * list out from under the remaining participant would be destroying their
+   * data to satisfy someone else's erasure request.
+   *
+   * This list used to name expenses, playlist and countdowns as well. Those
+   * features are gone and their rules were removed on 2026-09-05, so there is
+   * nothing left to leave behind.
    */
   const ownedInChat: [string, Query][] = [
     ['scheduledMessages', query(collection(db, 'chats', chatId, 'scheduledMessages'), where('user._id', '==', uid))],

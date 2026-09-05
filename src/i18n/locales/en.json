@@ -382,15 +382,6 @@
     "privacyReceiptsTitle": "Read receipts",
     "privacyReceiptsHint": "Off by default, and reciprocal — with this on, the server records when you read a message, and you can see when they did."
   },
-  "notifications": {
-    "newMessageTitle": "New message",
-    "newMessageBody": "You have a new message."
-  },
-  "calls": {
-    "incomingTitle": "Incoming call",
-    "voice": "Voice call",
-    "video": "Video call"
-  },
   "call": {
     "connecting": "Connecting...",
     "active": "In Call",
