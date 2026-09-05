@@ -20,7 +20,6 @@
  */
 import {useEffect, useState} from 'react';
 import {AccessibilityInfo} from 'react-native';
-import type {ChatPet} from '../types';
 
 /**
  * The house spring: slightly under-damped so it lands a touch past its target
@@ -280,42 +279,7 @@ export interface Size {
   height: number;
 }
 
-export interface PetMotionProfile {
-  /** How far the pet bobs on each idle cycle, in points. */
-  bobAmplitude: number;
-  /** Duration of one half of the bob cycle (rise or fall), in ms. */
-  bobDuration: number;
-  /** Idle sway, in degrees, applied in the same direction as the bob. */
-  rotateDeg: number;
-  /** How much the pet "breathes" — added to 1 for the idle scale peak. */
-  scalePulse: number;
-  /** Resting opacity. Dimmed for sleep, full otherwise. */
-  restOpacity: number;
-}
 
-/**
- * How a chat pet idles, by mood — the one thing standing between "a static
- * icon with a label" and something that reads as alive.
- *
- * All four numbers are driven off a single looping 0→1 Animated.Value (see
- * PetAvatar), so a happier pet isn't just "the same animation, faster" — it
- * bobs higher, sways more and breathes more visibly, while a sad or sleeping
- * one settles toward stillness rather than switching to a different motion.
- * That continuity is what keeps mood changes from reading as the pet being
- * swapped out.
- */
-export function petMotionProfile(mood: ChatPet['mood']): PetMotionProfile {
-  switch (mood) {
-    case 'happy':
-      return {bobAmplitude: 6, bobDuration: 650, rotateDeg: 5, scalePulse: 0.06, restOpacity: 1};
-    case 'neutral':
-      return {bobAmplitude: 4, bobDuration: 950, rotateDeg: 3, scalePulse: 0.035, restOpacity: 1};
-    case 'sad':
-      return {bobAmplitude: 2, bobDuration: 1400, rotateDeg: 1, scalePulse: 0.015, restOpacity: 0.85};
-    case 'sleeping':
-      return {bobAmplitude: 1, bobDuration: 2000, rotateDeg: 0, scalePulse: 0.02, restOpacity: 0.62};
-  }
-}
 
 /**
  * The largest box with `natural`'s aspect ratio that fits inside `bounds` —

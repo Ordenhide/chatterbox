@@ -323,7 +323,6 @@ export interface ChatRoom {
   hiddenBy?: string[];
   typingBy?: Record<string, number>;
   unreadCountBy?: Record<string, number>;
-  pet?: ChatPet;
   soundscape?: SoundscapeId;
   incognito?: boolean;
   messageExpiry?: number;
@@ -445,17 +444,6 @@ export interface ContextCard {
   description: string;
   image?: string;
   url?: string;
-}
-
-export interface ChatPet {
-  species: 'plant' | 'cat' | 'dog' | 'bunny' | 'fox';
-  name: string;
-  level: number;
-  xp: number;
-  health: number;
-  lastFed: number;
-  createdAt: number;
-  mood: 'happy' | 'neutral' | 'sad' | 'sleeping';
 }
 
 export interface ChatWrappedStats {

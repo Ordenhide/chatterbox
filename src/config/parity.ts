@@ -10,8 +10,3 @@
 //   protection/watermark · Focus Mode · Voice Diary
 export const SHOW_NATIVE_ONLY_FEATURES = false;
 
-// Chat pet was pulled out of the flag above and switched on independently —
-// unlike the rest of that list, it doesn't touch privacy/security surface
-// (PIN locks, incognito, screenshot protection), so there was no reason to
-// keep it coupled to the others.
-export const SHOW_CHAT_PET = true;

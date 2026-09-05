@@ -34,11 +34,10 @@ import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import Icon, {type IconName} from '../../components/Icon';
-import {changePetSpecies, createChatPet, getChatPet} from '../../services/chatPet';
 import {setChatLockPIN, removeChatLock, isChatLocked} from '../../services/appLock';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
-import {ChatPet, SoundscapeId} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
+import {SoundscapeId} from '../../types';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
 import {bodyWeight, terminal} from '../../theme/typography';
 
@@ -52,13 +51,6 @@ const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
   {id: 'lofi', label: 'Lo-fi', icon: 'music'},
   {id: 'thunder', label: 'Thunder', icon: 'lightning'},
   {id: 'wind', label: 'Wind', icon: 'wind'},
-];
-const PET_SPECIES: {id: ChatPet['species']; icon: IconName; label: string}[] = [
-  {id: 'plant', icon: 'seedling', label: 'Plant'},
-  {id: 'cat', icon: 'cat', label: 'Cat'},
-  {id: 'dog', icon: 'dog', label: 'Dog'},
-  {id: 'bunny', icon: 'rabbit', label: 'Bunny'},
-  {id: 'fox', icon: 'fox', label: 'Fox'},
 ];
 
 export default function ChatSettingsScreen() {
@@ -76,7 +68,6 @@ export default function ChatSettingsScreen() {
   const [exportText, setExportText] = useState('');
   const [importText, setImportText] = useState('');
   const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
-  const [pet, setPet] = useState<ChatPet | null>(null);
   const [members, setMembers] = useState<string[]>([]);
   const [memberNames, setMemberNames] = useState<Record<string, string>>({});
   const [memberEmail, setMemberEmail] = useState('');
@@ -94,7 +85,6 @@ export default function ChatSettingsScreen() {
         setSoundscape((chat as any)?.soundscape || 'none');
         setExpiryHours((chat as any)?.messageExpiry || 0);
         setChatLocked(isChatLocked(chatId));
-        setPet(await getChatPet(chatId));
 
         const participants = chat?.participants || [];
         setMembers(participants);
@@ -369,52 +359,6 @@ export default function ChatSettingsScreen() {
         </TouchableOpacity>
       </GlassView>
 
-      {SHOW_CHAT_PET && (
-      <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>Chat Pet</Text>
-        <Text style={[styles.rowLabel, {color: colors.textSecondary}]}>
-          {pet ? `${pet.name} · Lv.${pet.level} — tap a species to change it, anytime` : 'Adopt a pet for this chat'}
-        </Text>
-        <View style={styles.optionRow}>
-          {PET_SPECIES.map(p => {
-            const isCurrent = pet?.species === p.id;
-            return (
-            <TouchableOpacity
-              key={p.id}
-              accessibilityRole="button"
-              accessibilityLabel={p.label}
-              accessibilityState={{selected: isCurrent}}
-              style={[
-                styles.themeDot,
-                {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border},
-                isCurrent && [styles.themeDotSelected, {borderColor: colors.primary}],
-              ]}
-              onPress={() => {
-                if (isCurrent) return;
-                if (!pet) {
-                  Alert.alert('Adopt a Pet', `Adopt a ${p.label} for this chat?`, [
-                    {text: 'Cancel', style: 'cancel'},
-                    {text: 'Adopt!', onPress: async () => {
-                      setPet(await createChatPet(chatId, p.id, p.label));
-                    }},
-                  ]);
-                  return;
-                }
-                Alert.alert('Change Pet', `Change your pet to a ${p.label}? It keeps its level and progress.`, [
-                  {text: 'Cancel', style: 'cancel'},
-                  {text: 'Change', onPress: async () => {
-                    await changePetSpecies(chatId, p.id, p.label);
-                    setPet(prev => (prev ? {...prev, species: p.id, name: p.label} : prev));
-                  }},
-                ]);
-              }}>
-              <Icon name={p.icon} size={20} color={colors.text} />
-            </TouchableOpacity>
-            );
-          })}
-        </View>
-      </GlassView>
-      )}
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>

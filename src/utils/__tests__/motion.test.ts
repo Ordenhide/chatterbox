@@ -37,7 +37,6 @@ import {
   rubberbandRange,
   shouldCommit,
   makeBurst,
-  petMotionProfile,
   REVEAL_ENTER_RATIO,
   revealWindow,
   SPRING,
@@ -46,50 +45,6 @@ import {
   STAGGER_STEP_MS,
   TIMING,
 } from '../motion';
-
-describe('petMotionProfile', () => {
-  const MOODS = ['happy', 'neutral', 'sad', 'sleeping'] as const;
-
-  it('gives every mood a distinct profile, so mood changes are visible', () => {
-    const profiles = MOODS.map(petMotionProfile);
-    const serialized = profiles.map(p => JSON.stringify(p));
-    expect(new Set(serialized).size).toBe(MOODS.length);
-  });
-
-  // The whole point of driving these off mood is that a happier pet reads as
-  // livelier, not just "the same animation, faster or slower".
-  it('scales liveliness down monotonically from happy to sleeping', () => {
-    const [happy, neutral, sad, sleeping] = MOODS.map(petMotionProfile);
-    expect(happy.bobAmplitude).toBeGreaterThan(neutral.bobAmplitude);
-    expect(neutral.bobAmplitude).toBeGreaterThan(sad.bobAmplitude);
-    expect(sad.bobAmplitude).toBeGreaterThanOrEqual(sleeping.bobAmplitude);
-
-    expect(happy.rotateDeg).toBeGreaterThan(neutral.rotateDeg);
-    expect(neutral.rotateDeg).toBeGreaterThan(sad.rotateDeg);
-    expect(sad.rotateDeg).toBeGreaterThanOrEqual(sleeping.rotateDeg);
-  });
-
-  // A faster idle cycle is what makes "happy" read as more energetic than a
-  // bigger bob alone would: it's not just moving further, it's moving more often.
-  it('cycles faster the happier the mood', () => {
-    const [happy, neutral, sad, sleeping] = MOODS.map(petMotionProfile);
-    expect(happy.bobDuration).toBeLessThan(neutral.bobDuration);
-    expect(neutral.bobDuration).toBeLessThan(sad.bobDuration);
-    expect(sad.bobDuration).toBeLessThan(sleeping.bobDuration);
-  });
-
-  it('dims a sleeping pet but keeps every other mood at full opacity', () => {
-    expect(petMotionProfile('sleeping').restOpacity).toBeLessThan(1);
-    expect(petMotionProfile('happy').restOpacity).toBe(1);
-    expect(petMotionProfile('neutral').restOpacity).toBe(1);
-  });
-
-  it('never returns a negative or zero duration, which Animated.loop would reject', () => {
-    for (const mood of MOODS) {
-      expect(petMotionProfile(mood).bobDuration).toBeGreaterThan(0);
-    }
-  });
-});
 
 describe('fitContain', () => {
   const BOUNDS = {width: 400, height: 800};

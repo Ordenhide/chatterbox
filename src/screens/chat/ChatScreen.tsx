@@ -162,8 +162,6 @@ import {addBookmark} from '../../services/bookmarks';
 import {addToQuoteWall} from '../../services/quoteWall';
 import {searchGifs, getTrendingGifs} from '../../services/gifSearch';
 import {getContextCards} from '../../services/contextCards';
-import {listenChatPet, feedPet, calculatePetMood, decayHealth, didPetJustEat} from '../../services/chatPet';
-import PetAvatar from '../../components/PetAvatar';
 import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {
@@ -174,8 +172,8 @@ import {
   generateWatermark,
   isExifStrippingEnabled,
 } from '../../services/privacyGuard';
-import {SharedListItem, GifResult, ContextCard, ChatPet, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES, SHOW_CHAT_PET} from '../../config/parity';
+import {SharedListItem, GifResult, ContextCard, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
+import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
 // below) — unlike web's Opus recordings, AAC's sample rate isn't a fixed
@@ -391,20 +389,11 @@ export default function ChatScreen() {
   const [dictating, setDictating] = useState(false);
   const [dictationSeconds, setDictationSeconds] = useState(0);
   const [contextCards, setContextCards] = useState<Record<string, ContextCard[]>>({});
-  const [chatPet, setChatPet] = useState<ChatPet | null>(null);
-  // Bumped whenever didPetJustEat sees a feed go through, so PetAvatar can
-  // retrigger its celebration on every feed, not just the first one.
-  const [petFeedPulse, setPetFeedPulse] = useState(0);
-  // Same idea for arrivals: bumped when a message lands from the other side, so
-  // the pet can lean toward it.
-  const [petArrivalPulse, setPetArrivalPulse] = useState(0);
   // The message currently having a reaction picked for it, or null.
   const [arcTarget, setArcTarget] = useState<IMessage | null>(null);
   // The message currently being forwarded — set while the destination-chat
   // picker (ChatPickerModal) is open, null otherwise.
   const [forwardTarget, setForwardTarget] = useState<IMessage | null>(null);
-  const prevChatPetRef = useRef<ChatPet | null>(null);
-  const petWidgetRef = useRef<View>(null);
   const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('none');
   const [invisibleInkMode, setInvisibleInkMode] = useState(false);
   const [revealedMessages, setRevealedMessages] = useState<Set<string>>(new Set());
@@ -1622,26 +1611,6 @@ export default function ChatScreen() {
     })();
     return () => { cancelled = true; };
   }, [messages.length]);
-
-  useEffect(() => {
-    if (!chatId) return;
-    return listenChatPet(chatId, setChatPet);
-  }, [chatId]);
-
-  // Detects a feed via the Firestore round-trip (feedPet's writer runs
-  // fire-and-forget below, and this listens for its result coming back
-  // through listenChatPet above), rather than pulsing on the send itself —
-  // that way the celebration reflects what actually got written, not an
-  // optimistic guess that might not match if the write failed.
-  useEffect(() => {
-    if (didPetJustEat(prevChatPetRef.current, chatPet)) {
-      setPetFeedPulse(p => p + 1);
-      petWidgetRef.current?.measureInWindow((x, y, width, height) => {
-        burst('❤️', x + width / 2, y + height / 2);
-      });
-    }
-    prevChatPetRef.current = chatPet;
-  }, [chatPet, burst]);
 
   useEffect(() => {
     if (!messages.length) { setSmartReplies([]); return; }
@@ -2879,10 +2848,6 @@ export default function ChatScreen() {
       if (invisibleInkMode) setInvisibleInkMode(false);
       if (messageStyle !== 'none') setMessageStyle('none');
 
-      if (chatPet) {
-        feedPet(chatId).catch(() => {});
-      }
-
       const pendingMessage: IMessage & {burnAfterReading?: ChatMessage['burnAfterReading']} = {
         _id: String(messageData._id),
         text: messageData.text || '',
@@ -2959,7 +2924,6 @@ export default function ChatScreen() {
       invisibleInkMode,
       messageStyle,
       anonymousMode,
-      chatPet,
       encryptOutgoingMessage,
       t,
       // Both feed the fan-out bloom. otherUserIds.length in particular has to
@@ -4189,24 +4153,6 @@ export default function ChatScreen() {
     [chatId, startBurnCountdown],
   );
 
-  // The pet reacts to messages arriving from the other side. Deliberately not
-  // on mount: opening a chat is not an arrival, and a pet that lurched every
-  // time you opened a thread would read as a glitch rather than as attention.
-  const lastArrivalIdRef = useRef<string | null>(null);
-  useEffect(() => {
-    const newest = messages[0];
-    if (!newest) return;
-    const id = String(newest._id);
-    if (lastArrivalIdRef.current === null) {
-      lastArrivalIdRef.current = id;
-      return;
-    }
-    if (id === lastArrivalIdRef.current) return;
-    lastArrivalIdRef.current = id;
-    if (user && String(newest.user?._id) === user.uid) return;
-    setPetArrivalPulse(p => p + 1);
-  }, [messages, user]);
-
   useEffect(() => {
     messages.forEach(msg => {
       const burn = (msg as any).burnAfterReading;
@@ -4942,59 +4888,6 @@ export default function ChatScreen() {
               <Text style={[styles.searchClear, {color: colors.primary}]}>Clear</Text>
             </TouchableOpacity>
           ) : null}
-        </View>
-      ) : null}
-      {SHOW_CHAT_PET && chatPet ? (() => {
-        // Computed once here rather than three times inline below: health
-        // decays continuously (see decayHealth), so re-deriving mood per icon
-        // risked each one reading a subtly different instant.
-        const livePetMood = calculatePetMood({...chatPet, health: decayHealth(chatPet)});
-        return (
-        <View ref={petWidgetRef} style={[styles.petWidget, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
-          <PetAvatar
-            species={chatPet.species}
-            mood={livePetMood}
-            feedPulse={petFeedPulse}
-            arrivalPulse={petArrivalPulse}
-            size={24}
-            color={colors.text}
-            style={styles.petAvatar}
-          />
-          <View style={styles.petInfo}>
-            <Text style={[styles.petName, {color: colors.text}]}>{chatPet.name} Lv.{chatPet.level}</Text>
-            <View style={[styles.petHealthBar, {backgroundColor: colors.border}]}>
-              <View style={[styles.petHealthFill, {width: `${Math.max(0, Math.min(100, decayHealth(chatPet)))}%`, backgroundColor: decayHealth(chatPet) > 50 ? colors.success : decayHealth(chatPet) > 20 ? colors.warning : colors.danger}]} />
-            </View>
-          </View>
-          <Icon
-            name={
-              livePetMood === 'happy'
-                ? 'heartFilled'
-                : livePetMood === 'neutral'
-                ? 'faceNeutral'
-                : livePetMood === 'sad'
-                ? 'faceSad'
-                : 'faceSleepy'
-            }
-            size={16}
-            color={colors.text}
-            style={styles.petMood}
-          />
-        </View>
-        );
-      })() : null}
-      {msgSelectMode ? (
-        <View style={[styles.msgSelectBar, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}>
-          <TouchableOpacity onPress={exitMsgSelect} style={styles.msgSelectCancel}>
-            <Text style={[styles.msgSelectCancelText, {color: colors.text}]}>Cancel</Text>
-          </TouchableOpacity>
-          <Text style={[styles.msgSelectCount, {color: colors.text}]}>{msgSelected.size} selected</Text>
-          <TouchableOpacity
-            onPress={handleDeleteSelectedMsgs}
-            disabled={msgSelected.size === 0}
-            style={[styles.msgSelectDelete, {backgroundColor: colors.danger, opacity: msgSelected.size ? 1 : 0.4}]}>
-            <Text style={[styles.msgSelectDeleteText, {color: colors.textOnDanger}]}>Delete</Text>
-          </TouchableOpacity>
         </View>
       ) : null}
       {sharingLocation ? (
@@ -7116,22 +7009,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-  petWidget: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginHorizontal: 12,
-    marginTop: 4,
-    borderRadius: 2,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  petAvatar: {fontSize: 24, marginEnd: 8},
-  petInfo: {flex: 1},
-  petName: {fontSize: 12, fontFamily: bodyWeight('700')},
-  petHealthBar: {height: 4, borderRadius: 2, marginTop: 3, overflow: 'hidden'},
-  petHealthFill: {height: '100%', borderRadius: 2},
-  petMood: {fontSize: 16, marginStart: 6},
   msgSelectBar: {
     flexDirection: 'row',
     alignItems: 'center',
