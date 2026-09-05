@@ -2,19 +2,26 @@
 """
 Generates the launcher icon from the app's own palette.
 
-The concept is unchanged from the icon it replaces — a padlock whose body is a
-speech bubble — because that mark already reads as this app. What changes is
-the colour: the old one was a purple/indigo gradient from the palette this app
-had before the terminal redesign, so the icon on the home screen and the app
-behind it no longer agreed.
+Redrawn from the Figma design: a white speech bubble on black, a padlock with
+a keyhole inside it, a signal-green rule under the lock body, and the app's own
+corner brackets framing the whole thing.
 
-Every value here comes from src/theme/colors.ts rather than being picked:
+Redrawn rather than exported, because what arrived was a screenshot of the
+design page and not an asset. Every coordinate below is a fraction of the icon
+so it holds at 20px and at 1024.
 
-  ground  #000000  the dark theme's `backdrop`, "the absence of light so the
-                   green is the only thing emitting any"
-  signal  #00FF41  `primary`, 15.38:1 on that ground
-  ink     #000000  `textOnPrimary` — black on the green, because white there
-                   is 1.37:1. The inversion is not a preference.
+  ground  #000000  the dark theme's `backdrop`
+  paper   #FFFFFF  the bubble
+  signal  #00FF41  `primary`, and what CornerBrackets already draws in
+  ink     #000000  the lock, on the paper
+
+## The brackets do not sit at the edge
+
+In the design they touch the corners. On a device they would be the first
+thing lost: an Android adaptive icon only guarantees the centre 66 of 108dp,
+and iOS masks to a squircle. So the whole mark, brackets included, is drawn
+inside a safe inset — the frame survives the mask instead of being trimmed
+into four green stubs.
 
 Drawn at 8x and downsampled, because the mark has curves and a 48px mdpi icon
 drawn directly is a staircase.
@@ -27,6 +34,7 @@ from PIL import Image, ImageDraw
 GROUND = (0, 0, 0, 255)
 SIGNAL = (0, 255, 65, 255)
 INK = (0, 0, 0, 255)
+PAPER = (255, 255, 255, 255)
 
 SS = 8  # supersample factor
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -40,8 +48,14 @@ ANDROID = {  # density -> px
 }
 
 
-def draw_mark_layers(s, ground=None):
-    """The mark at `s` px, already supersampled. `ground` fills behind it."""
+def draw_mark_layers(s, ground=None, inset=0.0):
+    """
+    The mark at `s` px, already supersampled.
+
+    `ground` fills behind it; `inset` pulls the artwork in from the edge as a
+    fraction, so the same drawing serves the full-bleed legacy icon and the
+    adaptive foreground that has to survive a mask.
+    """
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     if ground == "round":
@@ -49,40 +63,100 @@ def draw_mark_layers(s, ground=None):
     elif ground == "square":
         d.rounded_rectangle([0, 0, s - 1, s - 1], radius=int(s * 0.17), fill=GROUND)
 
-    # Shackle — an open arc above the body, stroked in the signal colour.
-    # Width is a proportion of the icon so it survives the downsample at mdpi.
-    sw = max(2, int(s * 0.052))
-    ax0, ay0 = s * 0.335, s * 0.155
-    ax1, ay1 = s * 0.665, s * 0.545
-    d.arc([ax0, ay0, ax1, ay1], start=180, end=360, fill=SIGNAL, width=sw)
+    # Everything below is expressed against a unit square, then mapped through
+    # the inset — so a coordinate reads as "where in the design" rather than
+    # "where on this particular canvas".
+    o = s * inset
+    e = s * (1 - 2 * inset)
 
-    # Body — the speech bubble, a solid block of the signal colour. Solid
-    # rather than outlined because a hairline is the first thing to disappear
-    # at 48px, and because a filled block is what an outgoing bubble is.
-    bx0, by0 = s * 0.175, s * 0.40
-    bx1, by1 = s * 0.825, s * 0.80
-    d.rounded_rectangle([bx0, by0, bx1, by1], radius=int(s * 0.11), fill=SIGNAL)
+    def x(u):
+        return o + e * u
 
-    # Tail, bottom-left, the direction a sent message points.
+    # ── Speech bubble ────────────────────────────────────────────────
+    # Square corners, not rounded: the design's geometry is hard, and the app
+    # itself sets radius.sm to 6 on a 44px avatar for the same reason.
+    d.rectangle([x(0.152), x(0.125), x(0.850), x(0.642)], fill=PAPER)
+    # Tail, dropping from the bubble's bottom-left corner.
     d.polygon(
-        [(s * 0.255, s * 0.775), (s * 0.255, s * 0.895), (s * 0.395, s * 0.775)],
-        fill=SIGNAL,
+        [(x(0.152), x(0.642)), (x(0.152), x(0.858)), (x(0.360), x(0.642))],
+        fill=PAPER,
     )
 
-    # Three dots in the ink the palette specifies for this fill.
-    r = s * 0.042
-    cy = (by0 + by1) / 2
-    for cx in (s * 0.375, s * 0.50, s * 0.625):
-        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=INK)
+    # ── Padlock ──────────────────────────────────────────────────────
+    body_top, body_bot = 0.372, 0.566
+    d.rectangle([x(0.381), x(body_top), x(0.624), x(body_bot)], fill=INK)
+
+    # Shackle: a semicircle on two straight legs, drawn after the body so the
+    # legs can run under its top edge without a seam. Measured off the design —
+    # the shackle stands about four fifths of the body's own height above it,
+    # and getting that wrong is what makes a padlock read as a handbag.
+    # Span and stroke are both measured, and the ratio between them is what
+    # matters: at a stroke much over a third of the outer radius the hole
+    # closes and the shackle reads as a solid blob rather than a loop.
+    sl, sr = 0.421, 0.579
+    sw = max(2, int(e * 0.042))
+    arc_top = 0.178
+    arc_h = (sr - sl) / 2
+    d.arc(
+        [x(sl), x(arc_top), x(sr), x(arc_top + 2 * arc_h)],
+        start=180, end=360, fill=INK, width=sw,
+    )
+    for lx in (sl, sr - (sw / e)):
+        d.rectangle([x(lx), x(arc_top + arc_h), x(lx) + sw, x(body_top + 0.01)], fill=INK)
+
+    # Keyhole: a circle over a tapering stem, cut out of the lock body.
+    kr = e * 0.032
+    kcx, kcy = x(0.5025), x(0.437)
+    d.ellipse([kcx - kr, kcy - kr, kcx + kr, kcy + kr], fill=PAPER)
+    d.polygon(
+        [
+            (kcx - kr * 0.62, kcy),
+            (kcx + kr * 0.62, kcy),
+            (kcx + kr * 0.42, x(0.522)),
+            (kcx - kr * 0.42, x(0.522)),
+        ],
+        fill=PAPER,
+    )
+
+    # ── The one green thing inside: a rule under the lock ────────────
+    gh = max(1, int(e * 0.012))
+    d.rectangle([x(0.381), x(0.566), x(0.624), x(0.566) + gh], fill=SIGNAL)
+
+    # ── Corner brackets ──────────────────────────────────────────────
+    # The same motif as components/CornerBrackets, which is why they are the
+    # signal colour and a hairline rather than a frame.
+    bw = max(2, int(e * 0.038))   # stroke
+    bl = e * 0.175                # arm length
+    # Pulled well in from the artwork's edge, and this is geometry rather than
+    # taste. An adaptive icon only guarantees a *circle* of 66 of the 108dp
+    # canvas; the corners of the 66dp square sit at radius 46.7 and the circle
+    # stops at 33, so brackets placed at the square's edge are sliced into four
+    # green stubs by any round launcher — which is exactly what happened. At
+    # this inset they land inside the circle, and they end up framing the
+    # bubble instead of the tile, which is the better composition anyway.
+    bi = 0.092
+    for cx, cy, sx, sy in (
+        (x(bi), x(bi), 1, 1),
+        (x(1 - bi), x(bi), -1, 1),
+        (x(bi), x(1 - bi), 1, -1),
+        (x(1 - bi), x(1 - bi), -1, -1),
+    ):
+        d.rectangle(sorted_box(cx, cy, cx + sx * bl, cy + sy * bw), fill=SIGNAL)
+        d.rectangle(sorted_box(cx, cy, cx + sx * bw, cy + sy * bl), fill=SIGNAL)
 
     return img
 
 
+def sorted_box(x0, y0, x1, y1):
+    """PIL wants an ordered box; the bracket maths produces either order."""
+    return [min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)]
+
+
 def draw_mark(size, round_mask):
     """The legacy launcher icon at `size` px, ground included."""
-    return draw_mark_layers(size * SS, "round" if round_mask else "square").resize(
-        (size, size), Image.LANCZOS
-    )
+    return draw_mark_layers(
+        size * SS, "round" if round_mask else "square", inset=0.155
+    ).resize((size, size), Image.LANCZOS)
 
 
 def draw_foreground(size):
@@ -98,7 +172,10 @@ def draw_foreground(size):
     """
     s = size * SS
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    inner = int(s * 66 / 108)
+    # 66/108 is the guaranteed-visible centre; the mark is drawn to fill it.
+    # Slightly under the 66dp square, so that once the brackets are inset the
+    # whole frame clears the guaranteed circle with room to spare.
+    inner = int(s * 0.52)
     mark = draw_mark_layers(inner)
     img.paste(mark, ((s - inner) // 2, (s - inner) // 2), mark)
     return img.resize((size, size), Image.LANCZOS)
