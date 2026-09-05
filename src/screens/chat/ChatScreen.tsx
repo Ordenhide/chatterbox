@@ -2048,12 +2048,22 @@ export default function ChatScreen() {
         const preview = (result as any)?.data?.preview;
         await persist(preview ? {...preview, url: preview.url || url} : null);
       } catch {
-        // The callable is rate-limited and refuses private/blocked hosts, so
-        // fall back to fetching from the device directly — which reveals the
-        // link to nobody but the site itself. That fetch goes through
-        // link-preview-js with no SSRF protection of its own, so the same
-        // check the callable would have done is repeated here first — see
-        // isSafeToFetchDirectly.
+        // What reaches here, and what does not.
+        //
+        // The callable catches its *own* SSRF refusal and resolves with an
+        // empty preview, so a blocked host never lands in this branch — the
+        // try above simply persists nothing. This runs for the callable being
+        // unreachable, unauthenticated, or rate-limited (20/min), which is
+        // why falling back at all is reasonable.
+        //
+        // (A commit message once claimed the opposite — that the server's
+        // refusal arrived as `internal` and triggered this weaker path. It
+        // does not. Written here because the message cannot be corrected.)
+        //
+        // The fetch reveals the link to nobody but the site itself, and goes
+        // through link-preview-js, which has no SSRF protection of its own —
+        // so the same check the callable would have done is repeated first.
+        // See isSafeToFetchDirectly.
         if (!isSafeToFetchDirectly(url)) return;
         try {
           const data: any = await getLinkPreview(url);

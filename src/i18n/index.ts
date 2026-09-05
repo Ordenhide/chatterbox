@@ -2,6 +2,10 @@ import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
 import mmkvStorage from '../services/storageMMKV';
+import {LANGUAGES, type LanguageCode} from './languages';
+
+export {LANGUAGES};
+export type {LanguageCode};
 import {applyLayoutDirection} from './rtl';
 
 import en from './locales/en.json';
@@ -41,25 +45,7 @@ const resources = {
   vi: {translation: vi},
 } as const;
 
-export type LanguageCode = keyof typeof resources;
 
-export const LANGUAGES: {code: LanguageCode; label: string; nativeLabel: string}[] = [
-  {code: 'en', label: 'English', nativeLabel: 'English'},
-  {code: 'zh-Hans', label: 'Chinese (Simplified)', nativeLabel: '简体中文'},
-  {code: 'zh-Hant', label: 'Chinese (Traditional)', nativeLabel: '繁體中文'},
-  {code: 'es', label: 'Spanish', nativeLabel: 'Español'},
-  {code: 'fr', label: 'French', nativeLabel: 'Français'},
-  {code: 'de', label: 'German', nativeLabel: 'Deutsch'},
-  {code: 'ja', label: 'Japanese', nativeLabel: '日本語'},
-  {code: 'ko', label: 'Korean', nativeLabel: '한국어'},
-  {code: 'pt', label: 'Portuguese', nativeLabel: 'Português'},
-  {code: 'ru', label: 'Russian', nativeLabel: 'Русский'},
-  {code: 'ar', label: 'Arabic', nativeLabel: 'العربية'},
-  {code: 'hi', label: 'Hindi', nativeLabel: 'हिन्दी'},
-  {code: 'it', label: 'Italian', nativeLabel: 'Italiano'},
-  {code: 'tr', label: 'Turkish', nativeLabel: 'Türkçe'},
-  {code: 'vi', label: 'Vietnamese', nativeLabel: 'Tiếng Việt'},
-];
 
 const languageDetector = {
   type: 'languageDetector' as const,
@@ -106,6 +92,12 @@ const languageDetector = {
     }
   },
 };
+
+// The union in ./languages is written by hand so that file stays free of
+// native imports; this line is what keeps it honest. If a locale is added to
+// `resources` without being added there, this fails to compile.
+const _codesAgree: Record<LanguageCode, unknown> = resources;
+void _codesAgree;
 
 i18n
   .use(languageDetector)

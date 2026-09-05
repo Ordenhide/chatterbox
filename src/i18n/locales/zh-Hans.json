@@ -31,7 +31,8 @@
   "tabs": {
     "chats": "聊天",
     "moments": "动态",
-    "profile": "我的"
+    "profile": "我的",
+    "store": "商店"
   },
   "headers": {
     "chats": "聊天",
@@ -76,7 +77,10 @@
       "emailInUse": "此邮箱已被注册",
       "weakPassword": "密码强度不够",
       "networkError": "网络错误，请检查网络连接",
-      "tooManyRequests": "尝试次数过多，请稍后再试"
+      "tooManyRequests": "尝试次数过多，请稍后再试",
+      "invalidVerificationCode": "验证码不正确,请检查后重试",
+      "invalidPhoneNumber": "这看起来不是一个有效的手机号",
+      "accountExistsDifferentCredential": "这个邮箱已有账号,但当初是用另一种方式登录的。请改用那种方式登录。"
     },
     "reset": {
       "title": "重置密码",
@@ -89,7 +93,30 @@
     "session": {
       "title": "已退出登录",
       "message": "该账号已在其他设备登录。"
-    }
+    },
+    "social": {
+      "divider": "或使用以下方式",
+      "apple": "通过 Apple 登录",
+      "google": "通过 Google 继续",
+      "phone": "通过手机号继续"
+    },
+    "phone": {
+      "title": "手机号登录",
+      "subtitle": "我们会发一条验证码短信给你。",
+      "phonePlaceholder": "+86 138 0000 0000",
+      "sendCode": "发送验证码",
+      "codeTitle": "输入验证码",
+      "codeSubtitle": "输入我们发送到 {{phoneNumber}} 的 6 位验证码",
+      "codePlaceholder": "123456",
+      "verify": "验证",
+      "resendCode": "重新发送验证码",
+      "changeNumber": "更换手机号",
+      "errors": {
+        "invalidPhone": "请输入有效的手机号,包含国家/地区代码(例如 +86 138 0000 0000)",
+        "invalidCode": "请输入 6 位验证码"
+      }
+    },
+    "eyebrow": "加密通讯"
   },
   "chatList": {
     "title": "聊天",
@@ -98,7 +125,15 @@
     "offlineEmpty": "离线中 — 显示缓存聊天",
     "actionsTitle": "聊天操作",
     "pin": "置顶",
-    "unpin": "取消置顶"
+    "unpin": "取消置顶",
+    "eyebrow": "安全通讯",
+    "keyChecking": "正在检查密钥",
+    "keyReady": "密钥就绪",
+    "keySuperseded": "密钥已被替换",
+    "keyMissing": "这台设备上没有密钥",
+    "keyUnverified": "密钥未验证",
+    "statChats": "{{count}} 个聊天",
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
   },
   "newChat": {
     "heading": "开始对话",
@@ -115,8 +150,15 @@
       "userNotFoundTitle": "未找到用户",
       "userNotFoundBody": "该邮箱在此设备上不存在。请先创建账号后再试。",
       "selfChat": "不能与自己聊天",
-      "createFailed": "创建聊天失败"
-    }
+      "createFailed": "创建聊天失败",
+      "noInvitees": "至少添加一个人才能创建聊天",
+      "alreadyAdded": "这个人已经在聊天里了",
+      "groupFull": "一个聊天最多容纳 {{max}} 人"
+    },
+    "adding": "添加中…",
+    "addPerson": "+ 添加成员",
+    "removePerson": "移除 {{name}}",
+    "startGroup": "创建群聊"
   },
   "moments": {
     "title": "动态",
@@ -130,7 +172,8 @@
       "like": "点赞",
       "liked": "已赞",
       "comment": "评论",
-      "share": "分享"
+      "share": "分享",
+      "viewPhoto": "查看照片"
     },
     "visibility": {
       "public": "公开",
@@ -281,7 +324,10 @@
       "deleteEnterPassword": "请输入密码以永久删除你的账号。",
       "deleting": "正在删除你的数据…",
       "deleteFailed": "无法删除账号，请重试。",
-      "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。"
+      "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。",
+      "downloadDataTitle": "下载我的数据",
+      "downloadDataDesc": "获取你的个人资料、对话和动态的纯文本副本,可自行保存或查看 —— 与下面的「导出备份」不同,那个生成的是用于把账号迁移到新设备的加密文件。",
+      "downloadDataButton": "下载"
     },
     "modals": {
       "exportTitle": "导出备份",
@@ -312,7 +358,9 @@
       "signOutBody": "确定要退出登录吗？",
       "signOutFailed": "退出登录失败",
       "visibilityUpdateFailed": "无法更新个人资料可见性。",
-      "momentVisibilityUpdateFailed": "无法更新默认动态可见性。"
+      "momentVisibilityUpdateFailed": "无法更新默认动态可见性。",
+      "downloadDataFailedTitle": "错误",
+      "downloadDataFailedBody": "无法准备你的数据,请重试。"
     },
     "restartForLayoutTitle": "需要重启才能完成切换",
     "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox,界面才会按那个方向排布。",
@@ -325,7 +373,8 @@
     "privacyNotificationsTitle": "隐藏通知内容",
     "privacyNotificationsHint": "通知只提示有新消息,不显示发送者和内容。",
     "privacyExifTitle": "清除照片元数据",
-    "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。"
+    "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。",
+    "shortcutRecovery": "助记词"
   },
   "notifications": {
     "newMessageTitle": "新消息",
@@ -361,7 +410,9 @@
     "cameraOff": "摄像头已关",
     "cameraWillBeOff": "接听时将关闭摄像头",
     "cameraUnavailable": "摄像头不可用——仍可用语音接听",
-    "unknownCaller": "某人"
+    "unknownCaller": "某人",
+    "groupUnsupportedTitle": "群组通话暂不可用",
+    "groupUnsupportedBody": "目前通话只支持一对一聊天。在群里它只会拨给其中一个人,所以在这里关闭了。"
   },
   "chatMedia": {
     "seconds": "{{count}}秒"
@@ -385,7 +436,18 @@
     "voiceTooLongBody": "录音过长，无法发送。请录制两分钟以内的语音。",
     "channelSealed": "端到端加密。这条消息会被封装给这个聊天里的人。",
     "channelClear": "未加密。这条消息服务器可读 —— 这个聊天里没有可以封装的密钥。",
-    "channelClearBar": "未加密 —— 你发送的内容服务器可以读取"
+    "channelClearBar": "未加密 —— 你发送的内容服务器可以读取",
+    "reportReason": {
+      "spam": "垃圾信息",
+      "harassment": "骚扰",
+      "threat": "威胁或暴力",
+      "sexual-content": "色情内容",
+      "impersonation": "冒充他人",
+      "other": "其他"
+    },
+    "unsafeLink": "该链接已被拦截,因为它不是一个安全的网址。",
+    "sealedToKeys": "已封装 · {{count}} 个密钥",
+    "sealedToKeys_plural": "已封装 · {{count}} 个密钥"
   },
   "chatSettings": {
     "notifications": "通知",
@@ -428,8 +490,14 @@
       "deleteFailedTitle": "错误",
       "deleteFailedBody": "删除聊天失败",
       "copiedTitle": "已复制",
-      "copiedBody": "聊天 JSON 已复制到剪贴板"
-    }
+      "copiedBody": "聊天 JSON 已复制到剪贴板",
+      "leaveClearTitle": "退出并删除你的消息?",
+      "leaveClearBody": "你发送的消息会对所有人删除。别人发送的消息会保留,他们也继续留在这个对话里。你在这里安排的定时消息会被取消,并且你会被移出聊天。",
+      "leaveClearConfirm": "退出",
+      "leaveClearFailedTitle": "错误",
+      "leaveClearFailedBody": "未能退出聊天。没有任何改动 —— 请重试。"
+    },
+    "leaveAndClear": "删除我的消息并退出"
   },
   "burn": {
     "tapToReveal": "点击查看",
@@ -497,5 +565,75 @@
     "settingsTitle": "新手教程",
     "settingsDescription": "第一次使用？来看看 Chatterbox 的引导教程。",
     "replay": "重新播放教程"
+  },
+  "pro": {
+    "title": "Chatterbox Pro",
+    "badge": "PRO",
+    "active": "你的订阅正在生效。",
+    "renewsOn": "{{date}} 续订",
+    "endsOn": "{{date}} 到期",
+    "pastDue": "上一次扣款没有成功 —— 请在网页端更新银行卡以继续使用 Pro。",
+    "pitch": "解锁 AI 聊天摘要与搜索。",
+    "manageOnWeb": "在 Chatterbox 网站订阅或管理你的订阅。",
+    "lockedAiMobile": "AI 聊天摘要与搜索属于 Chatterbox Pro。在 Chatterbox 网站订阅后即可在这里使用。"
+  },
+  "errors": {
+    "generic": "出了点问题,请重试。"
+  },
+  "store": {
+    "title": "商店",
+    "subtitle": "账号升级。",
+    "openStore": "打开商店"
+  },
+  "aiConsent": {
+    "title": "AI 功能会把消息发出这台设备",
+    "body": "Chatterbox 会加密你的消息,只有你和对方能读。AI 是唯一的例外。\n\n为了做摘要、翻译或转写,被选中的消息会在这台设备上解密,然后发送到我们的服务器及其 AI 服务商。它们只用于生成你要的结果,不用于训练任何模型 —— 但在传输和处理过程中,它们不是端到端加密的。\n\n其余一切保持加密:你没有对其使用 AI 的消息,以及你的共享清单、播放列表和倒计时。\n\n你可以随时在「我的」里关闭它。",
+    "accept": "允许 AI 功能",
+    "decline": "暂不",
+    "settingsTitle": "AI 功能",
+    "settingsOn": "已允许 —— 使用 AI 时,被选中的消息会发出这台设备。",
+    "settingsOff": "已关闭 —— 什么都不会发出。任何 AI 功能运行前都会先询问你。",
+    "turnOff": "关闭 AI 功能",
+    "turnOn": "允许 AI 功能",
+    "turnedOff": "已在这台设备上关闭 AI 功能"
+  },
+  "linkPreview": {
+    "settingsTitle": "链接预览",
+    "settingsOn": "已开启 —— 你发送链接时,这台设备会抓取一次它的标题和图片,加密后放进消息里。收到的人不会为这个链接向我们的服务器发起任何请求。",
+    "settingsOff": "已关闭 —— 你发送的链接就是纯链接,我们的服务器不会知道它们。",
+    "turnOff": "关闭链接预览",
+    "turnOn": "开启链接预览",
+    "turnedOff": "已在这台设备上关闭链接预览"
+  },
+  "trash": {
+    "title": "最近删除",
+    "desc": "已删除的消息可在 24 小时内恢复,超过后将永久消失。只有你能看到和恢复你自己删除的消息。",
+    "empty": "最近没有删除任何内容。",
+    "recover": "恢复",
+    "expired": "这条消息已无法恢复。",
+    "timeLeft": "可恢复剩余",
+    "message": "消息",
+    "photo": "照片",
+    "video": "视频",
+    "voice": "语音消息",
+    "file": "文件"
+  },
+  "chats": {
+    "hide": "隐藏聊天",
+    "recover": "恢复聊天",
+    "hiddenTitle": "已隐藏的聊天",
+    "hiddenEmpty": "没有隐藏的聊天。",
+    "hiddenHint": "隐藏的聊天会一直隐藏,直到你恢复它,即使有新消息到达也一样。"
+  },
+  "members": {
+    "title": "成员({{count}})",
+    "you": "(你)",
+    "add": "+ 添加成员",
+    "adding": "添加中…",
+    "addPlaceholder": "通过邮箱添加",
+    "full": "一个聊天最多容纳 {{max}} 人",
+    "leave": "退出聊天",
+    "leaveConfirmTitle": "退出这个聊天?",
+    "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读,之后的不会。以后可以被重新加回来。"
   }
 }
