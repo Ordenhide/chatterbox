@@ -150,6 +150,18 @@ export default function NewChatScreen() {
         <Text style={[styles.headingSub, {color: colors.textSecondary}]}>
           {t('newChat.subheading')}
         </Text>
+        {/* Above the email field, not below it: this is the path that is
+            replacing it, and email lookup only reaches people who already have
+            an account and whose address you know. */}
+        <TouchableOpacity
+          style={[styles.inviteButton, {borderColor: colors.primary}]}
+          accessibilityRole="button"
+          onPress={() => navigation.navigate('Invite')}>
+          <Text style={[styles.inviteButtonText, {color: colors.primary}]}>
+            {t('newChat.useInvite')}
+          </Text>
+        </TouchableOpacity>
+
         <GlassView style={[styles.formCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.label, {color: colors.textSecondary}]}>{t('newChat.recipientEmail')}</Text>
           <TextInput
@@ -283,6 +295,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   addButtonText: {fontSize: 14, fontFamily: bodyWeight('600')},
+  inviteButton: {
+    borderWidth: 1,
+    borderRadius: 2,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  inviteButtonText: {fontSize: 15, fontFamily: bodyWeight('600')},
   chipRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14},
   chip: {
     borderWidth: 1,

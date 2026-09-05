@@ -12,12 +12,18 @@ const mockStore: {
   updates: {path: string; data: Record<string, unknown>}[];
   deleted: string[];
   failWrites: boolean;
+  failReads: boolean;
+  local: Map<string, string>;
+  failLocal: boolean;
 } = {
   invites: new Map(),
   writes: [],
   updates: [],
   deleted: [],
   failWrites: false,
+  failReads: false,
+  local: new Map(),
+  failLocal: false,
 };
 const mockGetKeypair = jest.fn();
 const mockReportError = jest.fn();
@@ -26,6 +32,7 @@ jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),
   doc: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
   getDoc: async (ref: {path: string}) => {
+    if (mockStore.failReads) throw new Error('unavailable');
     const data = mockStore.invites.get(ref.path);
     return {exists: () => !!data, data: () => data};
   },
@@ -54,16 +61,37 @@ jest.mock('../e2eeKeys', () => ({
 jest.mock('../telemetry', () => ({
   reportError: (...args: unknown[]) => mockReportError(...args),
 }));
+jest.mock('../storageMMKV', () => ({
+  mmkvStorage: {
+    getItem: async (key: string) => {
+      if (mockStore.failLocal) throw new Error('store unavailable');
+      return mockStore.local.get(key) ?? null;
+    },
+    setItem: async (key: string, value: string) => {
+      if (mockStore.failLocal) throw new Error('store unavailable');
+      mockStore.local.set(key, value);
+    },
+    removeItem: async (key: string) => {
+      if (mockStore.failLocal) throw new Error('store unavailable');
+      mockStore.local.delete(key);
+    },
+  },
+}));
 
 import {
   INVITE_SCHEME,
   INVITE_TTL_MS,
   acceptInvite,
   createInvite,
+  forgetInvite,
   inviteLink,
+  inviteState,
   newInviteToken,
+  outstandingInvite,
   parseInviteLink,
+  rememberInvite,
   revokeInvite,
+  type Invite,
 } from '../invites';
 
 const ALICE_KEY = new Uint8Array(32).fill(7);
@@ -84,6 +112,9 @@ beforeEach(() => {
   mockStore.updates = [];
   mockStore.deleted = [];
   mockStore.failWrites = false;
+  mockStore.failReads = false;
+  mockStore.local.clear();
+  mockStore.failLocal = false;
   mockGetKeypair.mockReset();
   mockGetKeypair.mockResolvedValue({publicKey: ALICE_KEY, secretKey: new Uint8Array(32)});
   mockReportError.mockClear();
@@ -151,6 +182,12 @@ describe('acceptInvite', () => {
 
   it('refuses a token nobody minted', async () => {
     expect(await acceptInvite('nope', 'bob')).toEqual({ok: false, reason: 'not-found'});
+  });
+
+  it('reports a failed read as a failure, not as a missing invite', async () => {
+    seedInvite('t13');
+    mockStore.failReads = true;
+    expect(await acceptInvite('t13', 'bob')).toEqual({ok: false, reason: 'failed'});
   });
 
   it('refuses one that has already been claimed', async () => {
@@ -239,5 +276,85 @@ describe('the link itself', () => {
     // path, so its output is checked in shape, not just in truthiness.
     const parsed = parseInviteLink(`${INVITE_SCHEME}#${newInviteToken()}`);
     expect(parsed).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+describe('the invite this device is offering', () => {
+  const mine = (over: Partial<Invite> = {}): Invite => ({
+    token: newInviteToken(),
+    inviterUid: 'alice',
+    inviterKey: 'AAAA',
+    expiresAt: Date.now() + INVITE_TTL_MS,
+    acceptedBy: null,
+    ...over,
+  });
+
+  it('comes back after the screen is closed and reopened', async () => {
+    // There is nowhere else to look: `list` is denied, so an invite the device
+    // forgets is one the inviter can no longer show or withdraw.
+    const invite = mine();
+    await rememberInvite(invite);
+    expect(await outstandingInvite()).toEqual(invite);
+  });
+
+  it('is nothing when none was ever made', async () => {
+    expect(await outstandingInvite()).toBeNull();
+  });
+
+  it('drops an expired one rather than offering it', async () => {
+    await rememberInvite(mine({expiresAt: Date.now() - 1}));
+    expect(await outstandingInvite()).toBeNull();
+    expect(mockStore.local.size).toBe(0);
+  });
+
+  it('ignores a stored value that is not an invite', async () => {
+    for (const junk of ['', 'not json', '{}', '{"token":"zzz","expiresAt":1}']) {
+      mockStore.local.set('chatterbox:invite:outstanding', junk);
+      expect(await outstandingInvite()).toBeNull();
+    }
+  });
+
+  it('forgets on request', async () => {
+    await rememberInvite(mine());
+    await forgetInvite();
+    expect(await outstandingInvite()).toBeNull();
+  });
+
+  it('survives a store that cannot be written or read', async () => {
+    mockStore.failLocal = true;
+    await expect(rememberInvite(mine())).resolves.toBeUndefined();
+    expect(await outstandingInvite()).toBeNull();
+    await expect(forgetInvite()).resolves.toBeUndefined();
+    expect(mockReportError).toHaveBeenCalled();
+  });
+});
+
+describe('inviteState', () => {
+  it('is pending while nobody has opened it', async () => {
+    seedInvite('t8');
+    expect(await inviteState('t8')).toBe('pending');
+  });
+
+  it('is accepted once someone has', async () => {
+    seedInvite('t9', {acceptedBy: 'bob'});
+    expect(await inviteState('t9')).toBe('accepted');
+  });
+
+  it('is expired when its time ran out unused', async () => {
+    seedInvite('t10', {expiresAt: Date.now() - 1});
+    expect(await inviteState('t10')).toBe('expired');
+  });
+
+  it('is gone when the server does not have it', async () => {
+    expect(await inviteState('t11')).toBe('gone');
+  });
+
+  it('does not report a failed read as gone', async () => {
+    // Saying "this link is dead" because the network was down would push the
+    // user to mint a second live link while the first one is still open.
+    seedInvite('t12');
+    mockStore.failReads = true;
+    expect(await inviteState('t12')).toBe('pending');
+    expect(mockReportError).toHaveBeenCalled();
   });
 });

@@ -59,7 +59,8 @@
     "media": "Media",
     "chatSettings": "Chat Settings",
     "call": "Call",
-    "friends": "Friends"
+    "friends": "Friends",
+    "invite": "Invite"
   },
   "auth": {
     "login": {
@@ -226,7 +227,8 @@
       "alreadyAdded": "That person is already in this chat",
       "groupFull": "A chat can hold at most {{max}} people",
       "createFailed": "Failed to create chat"
-    }
+    },
+    "useInvite": "Invite with a link instead"
   },
   "friends": {
     "addFriend": "Add Friend",
@@ -602,5 +604,39 @@
     "supersededBody": "This device's key was replaced from another device, so messages sent to you since then can't be opened here. Enter that device's recovery phrase to read them.",
     "notNow": "Not now",
     "restore": "Restore"
+  },
+  "invite": {
+    "yoursTitle": "Your invite link",
+    "yoursIntro": "There is no way to search for someone here, so this is how they reach you. Send the link through anything you already use, and the first person to open it can start one conversation with you.",
+    "create": "Create a link",
+    "statePending": "Open · single use · {{hours}}h left",
+    "stateAccepted": "Someone opened this link. It won't work again.",
+    "stateGone": "This link is no longer on the server.",
+    "copy": "Copy link",
+    "copiedTitle": "Copied",
+    "copiedBody": "Send it to one person. Whoever opens it first gets the chat.",
+    "share": "Send with another app",
+    "revoke": "Withdraw this link",
+    "revokeTitle": "Withdraw this link?",
+    "revokeBody": "Anyone you already sent it to won't be able to open it. You can create a new one.",
+    "openTitle": "Open an invite",
+    "openIntro": "Paste a link someone sent you. It works once, and only for the person who sent it.",
+    "linkPlaceholder": "chatterbox://invite#…",
+    "paste": "Paste from clipboard",
+    "nameLabel": "What to call them",
+    "namePlaceholder": "e.g. Sam",
+    "nameHint": "This name stays on your device and in your chat list. The server is never told who this person is to you.",
+    "open": "Open the invite",
+    "defaultChatName": "Chat",
+    "errors": {
+      "noKey": "This device doesn't have your encryption key yet, so there's nothing to invite anyone to. Restore it from your recovery phrase first.",
+      "createFailed": "Couldn't create the link. Check your connection and try again.",
+      "notALink": "That isn't a Chatterbox invite link. It should start with chatterbox://invite#.",
+      "not-found": "This link doesn't exist. It may have been withdrawn.",
+      "expired": "This link has expired. Ask for a new one.",
+      "already-used": "Someone has already opened this link. Ask for a new one.",
+      "own-invite": "This is your own link. Send it to someone else.",
+      "failed": "Couldn't open the invite. Check your connection and try again."
+    }
   }
 }

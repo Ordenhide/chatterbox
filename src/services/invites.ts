@@ -43,6 +43,7 @@ import {
 } from './firebase/firestore';
 import {bytesToBase64, bytesToHex, secureRandomBytes} from './crypto';
 import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
+import {mmkvStorage} from './storageMMKV';
 import {reportError} from './telemetry';
 
 const db = getFirestore();
@@ -180,4 +181,80 @@ export function parseInviteLink(link: string | null | undefined): string | null 
   if (!trimmed.startsWith(`${INVITE_SCHEME}#`)) return null;
   const token = trimmed.slice(INVITE_SCHEME.length + 1);
   return /^[0-9a-f]{64}$/.test(token) ? token : null;
+}
+
+/**
+ * The one invite this device is currently offering.
+ *
+ * It has to be remembered locally because there is nowhere to look it up: the
+ * rules forbid `list`, so not even the inviter can ask the server "which
+ * invites are mine?". That is the cost of a collection that cannot be
+ * enumerated, and it is the right cost — the alternative is an index of who
+ * invited whom, which is the graph this work exists to stop publishing.
+ *
+ * One at a time, deliberately. A pile of live links is a pile of ways in, and
+ * a user who cannot see them all cannot withdraw them.
+ */
+const OUTSTANDING_KEY = 'chatterbox:invite:outstanding';
+
+export type InviteState = 'pending' | 'accepted' | 'expired' | 'gone';
+
+export async function rememberInvite(invite: Invite): Promise<void> {
+  try {
+    await mmkvStorage.setItem(OUTSTANDING_KEY, JSON.stringify(invite));
+  } catch (error) {
+    // The invite exists on the server either way; losing the local copy costs
+    // the ability to show or withdraw it, not the link itself.
+    reportError(error, 'invite_remember_failed');
+  }
+}
+
+/** The remembered invite, or null. Expired ones are dropped rather than shown. */
+export async function outstandingInvite(): Promise<Invite | null> {
+  try {
+    const raw = await mmkvStorage.getItem(OUTSTANDING_KEY);
+    if (!raw) return null;
+    const invite = JSON.parse(raw) as Partial<Invite>;
+    if (typeof invite?.token !== 'string' || !/^[0-9a-f]{64}$/.test(invite.token)) return null;
+    if (typeof invite.expiresAt !== 'number' || invite.expiresAt < Date.now()) {
+      await forgetInvite();
+      return null;
+    }
+    return invite as Invite;
+  } catch (error) {
+    reportError(error, 'invite_load_failed');
+    return null;
+  }
+}
+
+export async function forgetInvite(): Promise<void> {
+  try {
+    await mmkvStorage.removeItem(OUTSTANDING_KEY);
+  } catch (error) {
+    reportError(error, 'invite_forget_failed');
+  }
+}
+
+/**
+ * Whether a link this device minted is still open.
+ *
+ * 'gone' covers both a withdrawn invite and one the server never had; they are
+ * the same thing to the person looking at the screen, and distinguishing them
+ * would mean saying "this used to exist", which is not information the inviter
+ * needs and not a claim this can actually make.
+ */
+export async function inviteState(token: string): Promise<InviteState> {
+  try {
+    const snapshot = await getDoc(doc(db, invitesRef(), token));
+    if (!snapshot.exists()) return 'gone';
+    const data = snapshot.data() as Partial<Invite> | undefined;
+    if (data?.acceptedBy) return 'accepted';
+    if (typeof data?.expiresAt === 'number' && data.expiresAt < Date.now()) return 'expired';
+    return 'pending';
+  } catch (error) {
+    reportError(error, 'invite_state_failed');
+    // Not 'gone': a failed read is not evidence the link is dead, and saying so
+    // would invite the user to mint a second one that also works.
+    return 'pending';
+  }
 }

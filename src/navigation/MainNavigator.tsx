@@ -27,6 +27,7 @@ const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
 const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
 const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
 const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
+const InviteScreen = lazyLoad(() => import('../screens/chat/InviteScreen'));
 const RecentlyDeletedScreen = lazyLoad(() => import('../screens/chat/RecentlyDeletedScreen'));
 const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
 const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScreen'));
@@ -142,6 +143,11 @@ export default function MainNavigator() {
             name="NewChat"
             component={NewChatScreen}
             options={{title: t('headers.newChat')}}
+          />
+          <Stack.Screen
+            name="Invite"
+            component={InviteScreen}
+            options={{title: t('headers.invite')}}
           />
           <Stack.Screen
             name="Chat"

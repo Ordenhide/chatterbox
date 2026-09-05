@@ -40,7 +40,8 @@
     "media": "媒体",
     "chatSettings": "聊天设置",
     "call": "通话",
-    "friends": "好友"
+    "friends": "好友",
+    "invite": "邀请"
   },
   "auth": {
     "login": {
@@ -156,7 +157,8 @@
     "adding": "添加中…",
     "addPerson": "+ 添加成员",
     "removePerson": "移除 {{name}}",
-    "startGroup": "创建群聊"
+    "startGroup": "创建群聊",
+    "useInvite": "改用邀请链接"
   },
   "friends": {
     "addFriend": "添加好友",
@@ -602,5 +604,39 @@
     "supersededBody": "这台设备的密钥被另一台设备替换了,所以从那之后发给你的消息在这里打不开。输入那台设备的助记词才能读取。",
     "notNow": "暂不",
     "restore": "恢复"
+  },
+  "invite": {
+    "yoursTitle": "你的邀请链接",
+    "yoursIntro": "这里无法搜索任何人，所以别人只能通过这个链接找到你。用你已经在用的任何方式把它发出去，第一个打开的人可以和你建立一次对话。",
+    "create": "创建链接",
+    "statePending": "有效 · 仅限一次 · 剩余 {{hours}} 小时",
+    "stateAccepted": "已经有人打开了这个链接，它不会再生效。",
+    "stateGone": "这个链接已不在服务器上。",
+    "copy": "复制链接",
+    "copiedTitle": "已复制",
+    "copiedBody": "只发给一个人。谁先打开，谁就得到这个对话。",
+    "share": "用其他应用发送",
+    "revoke": "撤销这个链接",
+    "revokeTitle": "要撤销这个链接吗？",
+    "revokeBody": "已经收到它的人将无法再打开。你可以重新创建一个。",
+    "openTitle": "打开邀请",
+    "openIntro": "粘贴别人发给你的链接。它只能用一次，而且只对发送它的人有效。",
+    "linkPlaceholder": "chatterbox://invite#…",
+    "paste": "从剪贴板粘贴",
+    "nameLabel": "你怎么称呼对方",
+    "namePlaceholder": "例如 小明",
+    "nameHint": "这个名字只留在你的设备和你的聊天列表里。服务器永远不会知道这个人对你来说是谁。",
+    "open": "打开邀请",
+    "defaultChatName": "对话",
+    "errors": {
+      "noKey": "这台设备还没有你的加密密钥，因此没有可邀请别人加入的东西。请先用助记词恢复。",
+      "createFailed": "无法创建链接。请检查网络后重试。",
+      "notALink": "这不是 Chatterbox 邀请链接。它应当以 chatterbox://invite# 开头。",
+      "not-found": "这个链接不存在，可能已被撤销。",
+      "expired": "这个链接已过期，请索取新的链接。",
+      "already-used": "已经有人打开过这个链接，请索取新的链接。",
+      "own-invite": "这是你自己的链接，请把它发给别人。",
+      "failed": "无法打开邀请。请检查网络后重试。"
+    }
   }
 }
