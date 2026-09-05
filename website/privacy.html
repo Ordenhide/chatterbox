@@ -23,6 +23,7 @@
       </a>
       <div class="nav-links">
         <a href="index.html#features">Features</a>
+        <a href="privacy.zh.html">简体中文</a>
         <a href="index.html#download" class="nav-cta">Download</a>
       </div>
     </div>
@@ -42,14 +43,14 @@
     <section>
       <h2>1. What is end-to-end encrypted</h2>
       <p>Encrypted on your device, unreadable to us and to Google:</p>
-      <ul><li>The text of your messages.</li><li>The contents of files, photos, audio and video you attach.</li><li>Shared lists, saved quotes and link previews.</li><li>Voice and video calls, which use WebRTC&#x27;s mandatory DTLS-SRTP between the two devices.</li></ul>
-      <p>Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone&#x27;s client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.</p>
+      <ul><li>The text of your messages.</li><li>The contents of files, photos, audio and video you attach.</li><li>Shared lists, saved quotes and link previews.</li><li>Voice and video calls, which use WebRTC's mandatory DTLS-SRTP between the two devices.</li></ul>
+      <p>Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.</p>
     </section>
 
     <section>
       <h2>2. What is not encrypted, and what we can see</h2>
       <p>Encryption protects contents, not the fact of a conversation. These sit in the clear on our servers:</p>
-      <ul><li>Who is in each conversation, and when it was created and last active.</li><li>The timestamp of every message, and how many you have not read.</li><li>An attachment&#x27;s file name, type and size. The bytes are encrypted; the description of them is not, and the length of the ciphertext bounds the length of the original.</li><li>GIFs, which are public third-party content.</li><li>Your friends and friend requests.</li><li>Call signalling — that a call was placed, to whom, and when. Not its audio or video.</li></ul>
+      <ul><li>Who is in each conversation, and when it was created and last active.</li><li>The timestamp of every message, and how many you have not read.</li><li>An attachment's file name, type and size. The bytes are encrypted; the description of them is not, and the length of the ciphertext bounds the length of the original.</li><li>GIFs, which are public third-party content.</li><li>Your friends and friend requests.</li><li>Call signalling — that a call was placed, to whom, and when. Not its audio or video.</li></ul>
       <p>Typing indicators and read receipts are off unless you turn them on, and while off nothing is written.</p>
       <p>What is no longer here: your email address and your name. Since September 2026 the account record holds only an account identifier. Your address stays in Firebase Authentication, where we use it to sign you in and where no other user can read it.</p>
       <p>Separately: because the app runs on Google Firebase, Google can see the IP address and timing of every connection your device makes to it. That is a property of the hosting, not of the app, and we cannot encrypt it away.</p>
@@ -77,7 +78,7 @@
     <section>
       <h2>6. Who else receives data</h2>
       <p>We do not sell, trade or rent your personal information. Data reaches:</p>
-      <ul><li>Google Firebase — our hosting provider, as described above.</li><li>GIPHY — only when you search for a GIF. Your search terms go to GIPHY&#x27;s API; nothing else about you does.</li></ul>
+      <ul><li>Google Firebase — our hosting provider, as described above.</li><li>GIPHY — only when you search for a GIF. Your search terms go to GIPHY's API; nothing else about you does.</li></ul>
       <p>We may disclose what we hold if the law requires it. What we hold is the list in section 2. We cannot produce message contents, because we cannot read them.</p>
     </section>
 
@@ -119,15 +120,5 @@
       <p>Questions about this policy: privacy@chatterbox.app</p>
     </section>
   </main>
-
-  <footer>
-    <div class="wrap footer-inner">
-      <span>© 2026 Chatterbox. Personal project.</span>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="https://github.com/Ordenhide/chatterbox" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>

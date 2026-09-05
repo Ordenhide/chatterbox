@@ -13,6 +13,9 @@ interface Step {
 // A first-run walkthrough that mirrors the web tutorial: a full-screen slide
 // carousel describing the essentials. Pure React Native + emoji (no native
 // modules), so it works identically on iOS, Android and macOS.
+// The Moments step was removed on 2026-09-05 along with the last of that
+// feature's remnants. It had outlived the feature by months: a new user's
+// first run walked them through a social feed the app no longer has.
 const STEP_KEYS: {emoji: string; title: string; body: string}[] = [
   {emoji: '✨', title: 'tutorial.welcomeTitle', body: 'tutorial.welcomeBody'},
   {emoji: '💬', title: 'tutorial.chatsTitle', body: 'tutorial.chatsBody'},
@@ -20,7 +23,6 @@ const STEP_KEYS: {emoji: string; title: string; body: string}[] = [
   {emoji: '📎', title: 'tutorial.composerTitle', body: 'tutorial.composerBody'},
   {emoji: '🧩', title: 'tutorial.spacesTitle', body: 'tutorial.spacesBody'},
   {emoji: '📞', title: 'tutorial.callsTitle', body: 'tutorial.callsBody'},
-  {emoji: '🌟', title: 'tutorial.momentsTitle', body: 'tutorial.momentsBody'},
   {emoji: '⚙️', title: 'tutorial.profileTitle', body: 'tutorial.profileBody'},
   {emoji: '✅', title: 'tutorial.doneTitle', body: 'tutorial.doneBody'},
 ];

@@ -325,7 +325,7 @@
       "deleteFailed": "Could not delete the account. Please try again.",
       "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support.",
       "downloadDataTitle": "Download my data",
-      "downloadDataDesc": "Get a copy of your profile, conversations, and moments as a plain-text file you can keep or inspect — different from Export Backup below, which creates an encrypted file for moving your account to a new device.",
+      "downloadDataDesc": "Get a copy of your profile and conversations as a plain-text file you can keep or inspect — different from Export Backup below, which creates an encrypted file for moving your account to a new device.",
       "downloadDataButton": "Download"
     },
     "modals": {
@@ -560,8 +560,6 @@
     "spacesBody": "Open a chat's menu for the media gallery and collaborative lists — both end-to-end encrypted, like the messages.",
     "callsTitle": "Voice & video calls",
     "callsBody": "Call anyone right from the chat — one tap for voice, one for video.",
-    "momentsTitle": "Moments",
-    "momentsBody": "Share photos and updates with your friends, and see what they post.",
     "profileTitle": "You & settings",
     "profileBody": "Set your name, theme, language and privacy here — and replay this tour anytime.",
     "doneTitle": "You're all set!",
@@ -615,5 +613,9 @@
       "own-invite": "This is your own link. Send it to someone else.",
       "failed": "Couldn't open the invite. Check your connection and try again."
     }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: {{date}}"
   }
 }

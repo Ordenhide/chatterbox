@@ -184,7 +184,7 @@ export default function MainNavigator() {
           <Stack.Screen
             name="PrivacyPolicy"
             component={PrivacyPolicyScreen}
-            options={{title: 'Privacy Policy'}}
+            options={{title: t('privacy.title')}}
           />
           <Stack.Screen
             name="RecoveryPhrase"

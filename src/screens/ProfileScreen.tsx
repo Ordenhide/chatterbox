@@ -879,7 +879,9 @@ export default function ProfileScreen() {
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
           onPress={() => navigation.navigate('Chats', {screen: 'PrivacyPolicy'})}>
-          <Text style={[styles.buttonText, {color: colors.textOnPrimary}, {color: colors.text}]}>Privacy Policy</Text>
+          <Text style={[styles.buttonText, {color: colors.textOnPrimary}, {color: colors.text}]}>
+            {t('privacy.title')}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}

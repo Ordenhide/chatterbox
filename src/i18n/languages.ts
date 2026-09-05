@@ -32,7 +32,17 @@ export type LanguageCode = 'en' | 'zh-Hans' | 'zh-Hant' | 'zh' | 'es' | 'fr' | '
  * fails if anything offered drops below OFFERED_MIN_COMPLETENESS. Finish a
  * translation and it lets the language back in.
  */
-export const LANGUAGES: {code: LanguageCode; label: string; nativeLabel: string}[] = [
+export const LANGUAGES = [
   {code: 'en', label: 'English', nativeLabel: 'English'},
   {code: 'zh-Hans', label: 'Chinese (Simplified)', nativeLabel: '简体中文'},
-];
+] as const satisfies readonly {code: LanguageCode; label: string; nativeLabel: string}[];
+
+/**
+ * Just the languages in the picker, as a type.
+ *
+ * Anything that has to exist in every offered language keys off this rather
+ * than off LanguageCode — the privacy policy, notably. Adding a language to
+ * the list above without writing its policy is then a compile error instead of
+ * a user quietly being shown English legal text.
+ */
+export type OfferedLanguage = (typeof LANGUAGES)[number]['code'];
