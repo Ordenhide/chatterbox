@@ -492,7 +492,7 @@
     "chatsTitle": "你的聊天",
     "chatsBody": "所有对话都在「聊天」标签里。有未读消息时会在那里显示提示。",
     "newChatTitle": "发起聊天",
-    "newChatBody": "在「聊天」中点击 + 找到好友，开始新的对话。",
+    "newChatBody": "点击「聊天」里的 + 给对方发一个邀请链接，或者打开别人发给你的链接。",
     "composerTitle": "不只是文字",
     "composerBody": "在聊天中，你可以发送照片、文件、语音和 GIF，回复或 @提及，甚至定时发送消息。",
     "spacesTitle": "共享空间",

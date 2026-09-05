@@ -20,8 +20,13 @@
  * the app depend on a server-readable list of who talks to whom makes that
  * rebuild more expensive, and it is already the largest gap between this app
  * and what its users would check first. Starting a chat, notably, does not go
- * through here — it takes an email address — so the graph is not load-bearing
- * for the messenger itself.
+ * through here — it takes an invite link (services/invites.ts) — so the graph
+ * is not load-bearing for the messenger itself.
+ *
+ * It is now the *last* place a plaintext relationship is written down. The
+ * email directory is gone, `users/{uid}` no longer carries an address, a photo
+ * or a name, and a display name reaches the other side sealed. This file did
+ * not change, which is exactly why it stands out.
  */
 import {
   collection,

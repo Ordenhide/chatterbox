@@ -426,7 +426,7 @@ const en = {
   'tour.chatsTitle': 'Your chats',
   'tour.chatsBody': 'All your conversations live here. Unread messages show a badge on this tab.',
   'tour.newChatTitle': 'Start a chat',
-  'tour.newChatBody': 'Tap here to find a friend by email and start a new conversation.',
+  'tour.newChatBody': 'Start here. Send someone an invite link, or open one they sent you.',
   'tour.composerTitle': 'Say more than words',
   'tour.composerBody':
     'In a chat, the composer lets you send photos, files, voice notes and GIFs, reply or @mention, and even schedule a message for later.',
@@ -856,7 +856,7 @@ const zh: Partial<Record<Key, string>> = {
   'tour.chatsTitle': '你的聊天',
   'tour.chatsBody': '所有对话都在这里。有未读消息时，此标签会显示提示。',
   'tour.newChatTitle': '发起聊天',
-  'tour.newChatBody': '点击这里，通过邮箱找到好友并开始新的对话。',
+  'tour.newChatBody': '从这里开始。给对方发一个邀请链接，或者打开别人发给你的链接。',
   'tour.composerTitle': '不只是文字',
   'tour.composerBody': '在聊天中，你可以发送照片、文件、语音和 GIF，回复或 @提及，甚至定时发送消息。',
   'tour.spacesTitle': '共享空间',

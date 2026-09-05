@@ -64,8 +64,8 @@ What the server holds in plaintext:
 
 - **who talks to whom** — `chats/{id}.participants`
 - **when** — `createdAt`, `updatedAt`, per message and per chat
-- **who is typing, who has read, unread counts**
-- **email, display name, photo** — `users/{uid}`, written by `upsertUserProfile`
+- **who is typing, who has read, unread counts** — both now opt-in and off by
+  default, so an untouched account writes neither
 - **the friend graph** — `friends`, `friendRequests`
 - every connection's IP, to Google, since this runs on Firebase
 
@@ -74,11 +74,31 @@ Metadata is often worth more than contents: who contacted whom, how often, at
 what hour. Signal answers it with sealed sender and private contact discovery;
 SimpleX answers it by having no user identifiers at all.
 
-**Metadata minimisation is the next direction**, and the honest note is that it
-is not a small change — dropping email/phone at sign-up, or making the
-participant list unreadable, means restructuring the data model or leaving
+### What was closed on 2026-09-05
+
+The user directory. `users/{uid}` used to carry an email, a display name and a
+photo, and any signed-in client could *query* the collection on the email —
+turning a person into the list of conversations they were in. All of it is
+gone:
+
+- `allow list` on `users` is `false`; only `get` by uid remains, so no query
+  returns anyone. `getUsersByIds` reads one document at a time because
+  `where('__name__', 'in', ...)` is a list.
+- `email` and `photoURL` are refused by the rules and `deleteField()`d on every
+  sign-in. The address lives in Firebase Auth, where a credential belongs.
+- `displayName` is refused too. It reaches the other side sealed to their key
+  and stored on the chat — `services/introductions.ts`.
+- Reaching someone new is an invite link (`services/invites.ts`): a 32-byte
+  token, single use, 24 hours, `get` allowed and `list` denied. Reaching
+  someone you already know is `services/contacts.ts`, a projection of your own
+  chats rather than a query.
+
+**Metadata minimisation is still the direction.** What is left is harder:
+`participants` and the friend graph both name pairs of users in the clear, and
+making either unreadable means restructuring the data model or leaving
 Firebase. Nothing here should be built in a way that makes that harder.
-`services/friends.ts` carries the same warning at the top for the same reason.
+`services/friends.ts` carries the same warning at the top for the same reason —
+and is now the last plaintext relationship on the server.
 
 ## Practical consequences
 
