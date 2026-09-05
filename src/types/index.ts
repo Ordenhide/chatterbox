@@ -471,31 +471,7 @@ export interface ChatRitual {
 
 export type SoundscapeId = 'none' | 'rain' | 'ocean' | 'forest' | 'cafe' | 'campfire' | 'lofi' | 'thunder' | 'wind';
 
-export interface PlaylistItem {
-  id: string;
-  url: string;
-  title: string;
-  artist?: string;
-  addedBy: string;
-  addedByName?: string;
-  addedAt: number;
-  votes: string[];
-}
-
 export type MessageStyle = 'none' | 'neon' | 'handwriting' | 'gradient' | 'typewriter' | 'bounce';
-
-export interface SharedCountdown {
-  id: string;
-  chatId: string;
-  title: string;
-  targetDate: number;
-  emoji?: string;
-  createdBy: string;
-  createdByName?: string;
-  createdAt: number;
-  rsvps?: Record<string, 'going' | 'maybe' | 'skip'>;
-  tasks?: Array<{id: string; text: string; done: boolean; assignee?: string}>;
-}
 
 export interface GestureStroke {
   color: string;

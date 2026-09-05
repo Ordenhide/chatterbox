@@ -77,7 +77,7 @@ describe('guardQuerySnapshot', () => {
 
   it('protects collection listeners from the same null snapshot', () => {
     const handler = jest.fn(snap => (snap as any).docs.map((d: any) => d.id));
-    const guarded = guardQuerySnapshot('listen_playlist', handler);
+    const guarded = guardQuerySnapshot('listen_shared_lists', handler);
 
     expect(() => guarded(null, new Error('permission-denied'))).not.toThrow();
     expect(handler).not.toHaveBeenCalled();

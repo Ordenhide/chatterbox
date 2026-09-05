@@ -163,37 +163,6 @@ export interface Reminder {
   sent?: boolean;
 }
 
-export interface PlaylistItem {
-  id: string;
-  url: string;
-  title: string;
-  artist?: string;
-  addedBy: string;
-  addedByName?: string;
-  addedAt: number;
-  votes: string[];
-}
-
-export interface CountdownTask {
-  id: string;
-  text: string;
-  done: boolean;
-  assignee?: string;
-}
-
-export interface SharedCountdown {
-  id: string;
-  chatId: string;
-  title: string;
-  targetDate: number;
-  emoji?: string;
-  createdBy: string;
-  createdByName?: string;
-  createdAt: number;
-  rsvps?: Record<string, 'going' | 'maybe' | 'skip'>;
-  tasks?: CountdownTask[];
-}
-
 export interface SharedListItem {
   id: string;
   text: string;

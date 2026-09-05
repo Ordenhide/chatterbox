@@ -29,8 +29,6 @@ const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsSc
 const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
 const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
 const RecentlyDeletedScreen = lazyLoad(() => import('../screens/chat/RecentlyDeletedScreen'));
-const PlaylistScreen = lazyLoad(() => import('../screens/chat/PlaylistScreen'));
-const CountdownScreen = lazyLoad(() => import('../screens/chat/CountdownScreen'));
 const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
 const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScreen'));
 const RecoveryPhraseScreen = lazyLoad(() => import('../screens/RecoveryPhraseScreen'));
@@ -245,16 +243,6 @@ export default function MainNavigator() {
             name="Bookmarks"
             component={BookmarksScreen}
             options={{title: 'Saved Messages'}}
-          />
-          <Stack.Screen
-            name="Playlist"
-            component={PlaylistScreen}
-            options={{title: 'Playlist'}}
-          />
-          <Stack.Screen
-            name="Countdown"
-            component={CountdownScreen}
-            options={{title: 'Countdowns'}}
           />
           <Stack.Screen
             name="PrivacyPolicy"

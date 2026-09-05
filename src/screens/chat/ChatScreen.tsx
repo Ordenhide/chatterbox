@@ -5435,22 +5435,6 @@ export default function ChatScreen() {
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Catch Up (AI Summary)</Text>
             </TouchableOpacity>
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Activities</Text>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                navigation.navigate('Playlist', {chatId});
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Playlist</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                navigation.navigate('Countdown', {chatId});
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Countdowns</Text>
-            </TouchableOpacity>
             {SHOW_NATIVE_ONLY_FEATURES && (
               <>
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>Privacy</Text>

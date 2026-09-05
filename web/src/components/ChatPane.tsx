@@ -109,8 +109,6 @@ import {isChatLocked} from '../services/appLock';
 import {useDismissOnOutside} from '../hooks/useDismissOnOutside';
 import ChatSettingsModal from './ChatSettingsModal';
 import ChatMediaModal from './ChatMediaModal';
-import PlaylistModal from './PlaylistModal';
-import CountdownModal from './CountdownModal';
 import SharedListsModal from './SharedListsModal';
 import VerifyContactModal from './VerifyContactModal';
 import type {ChatMessage, ChatRoom, Reminder} from '../types';
@@ -219,8 +217,6 @@ export default function ChatPane({
   // whatever they were doing.
   const [aiConsentRetry, setAiConsentRetry] = useState<(() => void) | null>(null);
   const [mediaOpen, setMediaOpen] = useState(false);
-  const [playlistOpen, setPlaylistOpen] = useState(false);
-  const [countdownOpen, setCountdownOpen] = useState(false);
   const [listsOpen, setListsOpen] = useState(false);
   const [reminderFor, setReminderFor] = useState<ChatMessage | null>(null);
   const [reminderAt, setReminderAt] = useState('');
@@ -1826,22 +1822,6 @@ export default function ChatPane({
                 <button
                   style={styles.menuItemRow}
                   onClick={() => {
-                    setPlaylistOpen(true);
-                    setMenuOpen(false);
-                  }}>
-                  <Icon name="music" size={15} /> {t('playlist.title')}
-                </button>
-                <button
-                  style={styles.menuItemRow}
-                  onClick={() => {
-                    setCountdownOpen(true);
-                    setMenuOpen(false);
-                  }}>
-                  <Icon name="calendar" size={15} /> {t('countdown.title')}
-                </button>
-                <button
-                  style={styles.menuItemRow}
-                  onClick={() => {
                     setListsOpen(true);
                     setMenuOpen(false);
                   }}>
@@ -2849,8 +2829,6 @@ export default function ChatPane({
         />
       )}
       {mediaOpen && <ChatMediaModal messages={messages} onClose={() => setMediaOpen(false)} />}
-      {playlistOpen && <PlaylistModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setPlaylistOpen(false)} />}
-      {countdownOpen && <CountdownModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setCountdownOpen(false)} />}
       {listsOpen && (
         <SharedListsModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setListsOpen(false)} />
       )}
