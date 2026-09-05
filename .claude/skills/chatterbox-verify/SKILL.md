@@ -100,6 +100,24 @@ cd web && npx tsc --noEmit
 `BUILD SUCCESSFUL` says nothing about what is on the device. Verify the
 *installed* app.
 
+**`npm run lint` currently crashes** — not on this app's code, but on a
+vendored esprima test fixture under `harmony/oh_modules/`, which makes
+`react-native/no-inline-styles` throw. It exits 0, so the crash is easy to read
+as a pass. Lint the files you touched by path instead
+(`npx eslint src/services/foo.ts`), and compare against the same file at HEAD
+before treating an error as yours: several files carry long-standing shadowing
+and exhaustive-deps errors.
+
+**There is no release build to install right now.** `assembleRelease` refuses
+without `CHATTERBOX_STORE_FILE` and friends, which is correct and must stay —
+the guard exists so a release is never signed with the public debug key. The
+consequence is that a UI change cannot be checked on the emulator until the
+user generates a real keystore: the installed app is the last AOT-compiled
+release build, and putting a debug build over it would leave no way back to
+one. Say so plainly instead of claiming a change was verified on device. What
+*can* be checked without a device: `npx react-native bundle --platform android
+--dev false` proves every import resolves and both locales ship.
+
 **Security properties get mutation-tested.** Break the line the test is
 supposed to be guarding, confirm the test fails, restore. A test that passes
 both ways is decoration — and several here were written only after a mutation
