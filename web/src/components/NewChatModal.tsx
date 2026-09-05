@@ -9,10 +9,12 @@ export default function NewChatModal({
   myUid,
   onClose,
   onCreated,
+  onUseInvite,
 }: {
   myUid: string;
   onClose: () => void;
   onCreated: (chatId: string) => void;
+  onUseInvite: () => void;
 }) {
   const dialogRef = useModal<HTMLFormElement>(onClose);
   const [email, setEmail] = useState('');
@@ -97,6 +99,12 @@ export default function NewChatModal({
         <p style={styles.subtitle}>
           Add one person for a direct chat, or several for a group.
         </p>
+        {/* Above the email field, not below it: this is the path replacing it.
+            Email lookup only reaches people who already have an account and
+            whose address you know, and it costs a searchable directory. */}
+        <button type="button" className="btn btn-soft" style={styles.invite} onClick={onUseInvite}>
+          Invite with a link instead
+        </button>
         <div style={styles.addRow}>
           <input
             style={styles.input}
@@ -184,6 +192,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: colors.text,
   },
   addRow: {display: 'flex', gap: 8},
+  invite: {width: '100%', padding: '12px 0', marginBottom: 16, minHeight: 44},
   add: {padding: '10px 16px', borderRadius: 2, whiteSpace: 'nowrap'},
   chips: {
     display: 'flex',

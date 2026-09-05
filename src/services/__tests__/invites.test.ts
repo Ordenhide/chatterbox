@@ -358,3 +358,43 @@ describe('inviteState', () => {
     expect(mockReportError).toHaveBeenCalled();
   });
 });
+
+/**
+ * `web/` is a separate reimplementation, so the two invite services are two
+ * pieces of code writing one collection. Anything that differs between them
+ * shows up as a link one client mints and the other cannot open — and a paste
+ * that silently does nothing is a bad way to find that out.
+ *
+ * These read the web source rather than importing it, because the web module
+ * pulls in the Firebase web SDK, which this jest environment does not have.
+ * The values are the wire format: the scheme in the link, the token's shape,
+ * the collection, and the exact field set the rules will accept.
+ */
+describe('parity with the web client', () => {
+  const web = require('fs').readFileSync(
+    require('path').join(__dirname, '../../../web/src/services/invites.ts'),
+    'utf8',
+  );
+
+  it.each([
+    ["const TOKEN_BYTES = 32;", 'token length'],
+    ["export const INVITE_TTL_MS = 24 * 60 * 60 * 1000;", 'lifetime'],
+    ["export const INVITE_SCHEME = 'chatterbox://invite';", 'link scheme'],
+    ["/^[0-9a-f]{64}$/.test(token)", 'accepted token shape'],
+    ["const OUTSTANDING_KEY = 'chatterbox:invite:outstanding';", 'local key'],
+  ])('agrees on %s (%s)', line => {
+    expect(web).toContain(line);
+    expect(
+      require('fs').readFileSync(require('path').join(__dirname, '../invites.ts'), 'utf8'),
+    ).toContain(line);
+  });
+
+  it('writes the same five fields, which is what the rules will accept', () => {
+    // keys().hasOnly([...]) in firestore.rules rejects a create carrying
+    // anything else, so a field added on one side alone is a silent refusal.
+    for (const field of ['inviterUid', 'inviterKey', 'expiresAt', 'acceptedBy', 'createdAt']) {
+      expect(web).toContain(`${field}:`);
+    }
+    expect(web).toContain("'invites'");
+  });
+});

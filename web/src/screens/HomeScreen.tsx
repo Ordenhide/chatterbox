@@ -12,6 +12,7 @@ import type {ChatRoom} from '../types';
 import Cascade from '../components/Cascade';
 import ChatPane from '../components/ChatPane';
 import NewChatModal from '../components/NewChatModal';
+import InviteModal from '../components/InviteModal';
 import Icon from '../components/Icon';
 import {SHORTCUT_EVENT, stepChat, type ShortcutId} from '../services/shortcuts';
 
@@ -28,6 +29,7 @@ export default function HomeScreen({
   const [chats, setChats] = useState<ChatRoom[]>([]);
   const userCache = useChatUserCache(chats, user.uid);
   const [showNewChat, setShowNewChat] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
   const [search, setSearch] = useState('');
   // The hidden list is a separate view of the same sidebar rather than a
   // section inside it — a collapsed group still advertises that hidden chats
@@ -275,8 +277,23 @@ export default function HomeScreen({
         <NewChatModal
           myUid={user.uid}
           onClose={() => setShowNewChat(false)}
+          onUseInvite={() => {
+            setShowNewChat(false);
+            setShowInvite(true);
+          }}
           onCreated={id => {
             setShowNewChat(false);
+            onSelectChat(id);
+          }}
+        />
+      )}
+
+      {showInvite && (
+        <InviteModal
+          myUid={user.uid}
+          onClose={() => setShowInvite(false)}
+          onCreated={id => {
+            setShowInvite(false);
             onSelectChat(id);
           }}
         />
