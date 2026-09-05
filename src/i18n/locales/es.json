@@ -325,7 +325,8 @@
     "privacyTypingTitle": "Indicador de escritura",
     "privacyTypingHint": "Desactivado por defecto y recíproco: con esto activado, el servidor registra cuándo escribes, y tú ves cuándo escribe la otra persona.",
     "privacyReceiptsTitle": "Confirmaciones de lectura",
-    "privacyReceiptsHint": "Desactivadas por defecto y recíprocas: con esto activado, el servidor registra cuándo lees un mensaje, y tú ves cuándo lo leyó la otra persona."
+    "privacyReceiptsHint": "Desactivadas por defecto y recíprocas: con esto activado, el servidor registra cuándo lees un mensaje, y tú ves cuándo lo leyó la otra persona.",
+    "languageSearchPlaceholder": "Buscar idiomas"
   },
   "call": {
     "connecting": "Conectando...",

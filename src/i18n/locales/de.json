@@ -325,7 +325,8 @@
     "privacyTypingTitle": "Schreibanzeige",
     "privacyTypingHint": "Standardmäßig aus, und beidseitig — ist sie an, hält der Server fest, wann du schreibst, und du siehst, wann die andere Person schreibt.",
     "privacyReceiptsTitle": "Lesebestätigungen",
-    "privacyReceiptsHint": "Standardmäßig aus, und beidseitig — sind sie an, hält der Server fest, wann du eine Nachricht gelesen hast, und du siehst, wann die andere Person gelesen hat."
+    "privacyReceiptsHint": "Standardmäßig aus, und beidseitig — sind sie an, hält der Server fest, wann du eine Nachricht gelesen hast, und du siehst, wann die andere Person gelesen hat.",
+    "languageSearchPlaceholder": "Sprachen suchen"
   },
   "call": {
     "connecting": "Verbinden...",

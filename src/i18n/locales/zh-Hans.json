@@ -310,7 +310,8 @@
     "privacyTypingTitle": "正在输入提示",
     "privacyTypingHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时在打字，你也能看到对方在打字。",
     "privacyReceiptsTitle": "已读回执",
-    "privacyReceiptsHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时读了消息，你也能看到对方何时读了。"
+    "privacyReceiptsHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时读了消息，你也能看到对方何时读了。",
+    "languageSearchPlaceholder": "搜索语言"
   },
   "call": {
     "connecting": "连接中...",

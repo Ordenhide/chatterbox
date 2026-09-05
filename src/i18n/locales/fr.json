@@ -325,7 +325,8 @@
     "privacyTypingTitle": "Indicateurs de saisie",
     "privacyTypingHint": "Désactivés par défaut, et réciproques — activés, le serveur enregistre le moment où vous écrivez, et vous voyez quand l'autre écrit.",
     "privacyReceiptsTitle": "Accusés de lecture",
-    "privacyReceiptsHint": "Désactivés par défaut, et réciproques — activés, le serveur enregistre le moment où vous lisez un message, et vous voyez quand l'autre l'a lu."
+    "privacyReceiptsHint": "Désactivés par défaut, et réciproques — activés, le serveur enregistre le moment où vous lisez un message, et vous voyez quand l'autre l'a lu.",
+    "languageSearchPlaceholder": "Rechercher une langue"
   },
   "call": {
     "connecting": "Connexion...",

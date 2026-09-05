@@ -1220,7 +1220,7 @@ export default function ProfileScreen() {
               style={[styles.languageSearchInput, {color: colors.text, borderColor: colors.glassBorder, backgroundColor: colors.surface}]}
               value={languageSearch}
               onChangeText={setLanguageSearch}
-              placeholder={t('chatList.searchPlaceholder')}
+              placeholder={t('profile.languageSearchPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               autoCorrect={false}
             />
@@ -1255,8 +1255,15 @@ export default function ProfileScreen() {
                 );
               })}
             </ScrollView>
+            {/* `flex: 0` deliberately. `modalButton` carries `flex: 1` because
+                it was written for a row of buttons that share the width; used
+                alone in a column it takes an equal share of the *height*
+                instead, and here it claimed 893px next to the list's 820. With
+                two languages the list still fit and nobody noticed; with
+                fifteen it cut off at Français and left a third of the screen
+                blank below the button. */}
             <TouchableOpacity
-              style={[styles.modalButton, {backgroundColor: colors.surface, marginTop: 14}]}
+              style={[styles.modalButton, {flex: 0, backgroundColor: colors.surface, marginTop: 14}]}
               onPress={() => { setLanguageModalVisible(false); setLanguageSearch(''); }}>
               <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.close')}</Text>
             </TouchableOpacity>
