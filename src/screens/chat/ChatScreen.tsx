@@ -115,7 +115,7 @@ import {
   openGroupEnvelope,
   sealGroupText,
 } from '../../services/groupRatchetMessages';
-import {sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
+import {messageProtection, sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import {bodyWeight, fonts, terminal} from '../../theme/typography';
 import {runPool} from '../../utils/pool';
@@ -4537,13 +4537,46 @@ export default function ChatScreen() {
               ))}
             </View>
           ) : null}
+          {/* What actually protected this message, when it is not the good
+              case. Silent for ratchet and sender-key, because the normal
+              state does not need saying and a mark on every message is a mark
+              nobody reads. `static` is genuinely encrypted and genuinely
+              readable later by anyone who obtains the long-lived key, which is
+              a difference the sender is entitled to see; `none` is the server
+              reading along. messageProtection reads the envelope's shape
+              rather than a flag the sender wrote, so it cannot be
+              overstated. */}
+          {(() => {
+            const level = messageProtection(current as any);
+            if (level === 'ratchet' || level === 'sender-key') return null;
+            const clear = level === 'none';
+            return (
+              <View
+                accessible
+                accessibilityLabel={clear ? t('chat.protectionNoneA11y') : t('chat.protectionStaticA11y')}
+                style={styles.protectionRow}>
+                <Icon
+                  name={clear ? 'alertTriangle' : 'lock'}
+                  size={9}
+                  color={clear ? colors.warning : colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.protectionText,
+                    {color: clear ? colors.warning : colors.textSecondary},
+                  ]}>
+                  {clear ? t('chat.protectionNone') : t('chat.protectionStatic')}
+                </Text>
+              </View>
+            );
+          })()}
           {seen ? (
             <Text style={[styles.seenText, {color: colors.textSecondary}]}>Seen</Text>
           ) : null}
         </View>
       </SwipeToReply>
     );
-  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected]);
+  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected, t]);
 
   // GiftedChat keys the accessory bar off whether this *prop is passed*, not off
   // what it returns: InputToolbar renders a fixed 44dp <View> around it, and
@@ -5939,6 +5972,14 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+  protectionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 3,
+    marginHorizontal: 14,
+  },
+  protectionText: {...terminal.micro, fontSize: 8.5},
   // Same square-with-a-hairline as the chat list, one size down for the thread.
   threadAvatar: {
     width: 36,

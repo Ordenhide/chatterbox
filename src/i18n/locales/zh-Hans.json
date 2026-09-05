@@ -386,7 +386,11 @@
     },
     "unsafeLink": "该链接已被拦截,因为它不是一个安全的网址。",
     "sealedToKeys": "已封装 · {{count}} 个密钥",
-    "sealedToKeys_plural": "已封装 · {{count}} 个密钥"
+    "sealedToKeys_plural": "已封装 · {{count}} 个密钥",
+    "protectionNone": "未加密",
+    "protectionNoneA11y": "未加密 —— 这条消息服务器可以读取。",
+    "protectionStatic": "无前向保密",
+    "protectionStaticA11y": "已加密,但用的是长期密钥:将来拿到该密钥的人可以回溯解密。"
   },
   "chatSettings": {
     "notifications": "通知",

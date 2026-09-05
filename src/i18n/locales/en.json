@@ -456,7 +456,11 @@
     "voiceTooLongBody": "That recording is too long to send. Try one under two minutes.",
     "channelSealed": "End-to-end encrypted. This message will be sealed to the people in this chat.",
     "channelClear": "Not encrypted. This message will be readable by the server — the people in this chat have no key it can be sealed to.",
-    "channelClearBar": "Not encrypted — the server can read what you send"
+    "channelClearBar": "Not encrypted — the server can read what you send",
+    "protectionNone": "NOT ENCRYPTED",
+    "protectionNoneA11y": "Not encrypted — the server can read this message.",
+    "protectionStatic": "NO FORWARD SECRECY",
+    "protectionStaticA11y": "Encrypted, but under a long-lived key: readable later by anyone who obtains that key."
   },
   "chatSettings": {
     "notifications": "Notifications",
