@@ -32,9 +32,8 @@ const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
 const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScreen'));
 const RecoveryPhraseScreen = lazyLoad(() => import('../screens/RecoveryPhraseScreen'));
 import {useAuth} from '../contexts/AuthContext';
-import {listenFriends, listenFriendRequests} from '../services/friends';
+import {listenFriendRequests} from '../services/friends';
 import {listenChatsForUser} from '../services/firebaseChat';
-import {Friend} from '../types';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
 import TabIcon from '../components/TabIcon';
@@ -48,7 +47,6 @@ export default function MainNavigator() {
   const insets = useSafeAreaInsets();
   const {user} = useAuth();
   const {t} = useTranslation();
-  const [friends, setFriends] = useState<Friend[]>([]);
   const [hasUnreadChats, setHasUnreadChats] = useState(false);
   const [hasFriendRequests, setHasFriendRequests] = useState(false);
 
@@ -57,15 +55,8 @@ export default function MainNavigator() {
   // without this the previous account's badges survive the sign-out.
   useEffect(() => {
     if (user?.uid) return;
-    setFriends([]);
     setHasUnreadChats(false);
     setHasFriendRequests(false);
-  }, [user?.uid]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-    const unsubscribe = listenFriends(user.uid, setFriends);
-    return () => unsubscribe();
   }, [user?.uid]);
 
   useEffect(() => {
@@ -85,19 +76,10 @@ export default function MainNavigator() {
     return () => unsubscribe();
   }, [user?.uid]);
 
-  const friendIds = useMemo(() => {
-    if (!user?.uid) return [];
-    return friends
-      .map(friend => friend.userIds.find(id => id !== user.uid))
-      .filter(Boolean) as string[];
-  }, [friends, user?.uid]);
-
-  const friendIdsKey = useMemo(() => friendIds.join(','), [friendIds]);
-
-  const showChatsBadge = hasUnreadChats;
-  // Friend requests were one of two things this badge meant; the other was
-  // new moments, which no longer exist.
-  const showFriendsBadge = hasFriendRequests;
+  // Friend requests badge the Chats tab now: the Friends screen moved into
+  // that stack when the Moments tab went, and an unanswered request is the
+  // same kind of "someone is waiting on you" as an unread message.
+  const showChatsBadge = hasUnreadChats || hasFriendRequests;
 
   const headerTitleStyle = useMemo(
     () => ({color: colors.text, fontSize: 17, fontWeight: '700' as const, letterSpacing: -0.2}),
