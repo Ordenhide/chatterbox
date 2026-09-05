@@ -313,7 +313,12 @@
     "privacyNotificationsHint": "通知只提示有新消息,不显示发送者和内容。",
     "privacyExifTitle": "清除照片元数据",
     "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。",
-    "shortcutRecovery": "助记词"
+    "shortcutRecovery": "助记词",
+    "visibility": {
+      "public": "公开",
+      "friends": "好友",
+      "private": "私密"
+    }
   },
   "notifications": {
     "newMessageTitle": "新消息",
@@ -390,7 +395,14 @@
     "protectionNone": "未加密",
     "protectionNoneA11y": "未加密 —— 这条消息服务器可以读取。",
     "protectionStatic": "无前向保密",
-    "protectionStaticA11y": "已加密,但用的是长期密钥:将来拿到该密钥的人可以回溯解密。"
+    "protectionStaticA11y": "已加密,但用的是长期密钥:将来拿到该密钥的人可以回溯解密。",
+    "sealedPending": "🔒 …",
+    "sealedOtherDevice": "🔒 封装给了另一台设备",
+    "sealedNeedsUpdate": "🔒 请更新 app 才能读取",
+    "sealedDamaged": "🔒 这条消息已损坏",
+    "sealedUnknown": "🔒 无法解密",
+    "sealedBanner": "有些消息封装给了另一台设备。点击用助记词恢复。",
+    "sealedBannerA11y": "恢复你的加密消息记录"
   },
   "chatSettings": {
     "notifications": "通知",
@@ -578,5 +590,13 @@
     "leave": "退出聊天",
     "leaveConfirmTitle": "退出这个聊天?",
     "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读,之后的不会。以后可以被重新加回来。"
+  },
+  "keys": {
+    "restoreTitle": "恢复你的消息记录?",
+    "restoreBody": "这看起来是一台新设备,而这个账号已经有加密密钥了。输入助记词恢复,才能继续读到旧消息;也可以直接继续,从头开始。",
+    "supersededTitle": "你的加密密钥变了",
+    "supersededBody": "这台设备的密钥被另一台设备替换了,所以从那之后发给你的消息在这里打不开。输入那台设备的助记词才能读取。",
+    "notNow": "暂不",
+    "restore": "恢复"
   }
 }

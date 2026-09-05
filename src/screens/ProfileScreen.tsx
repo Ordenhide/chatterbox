@@ -668,7 +668,7 @@ export default function ProfileScreen() {
                         styles.visibilityOptionText,
                         {color: selected ? '#fff' : colors.text},
                       ]}>
-                      {t(`moments.visibility.${option}`)}
+                      {t(`profile.visibility.${option}`)}
                     </Text>
                   </TouchableOpacity>
                 );

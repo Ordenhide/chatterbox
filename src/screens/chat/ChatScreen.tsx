@@ -1275,7 +1275,7 @@ export default function ChatScreen() {
                 // its real text — losing the card is not worth overwriting a
                 // perfectly readable message with a padlock.
                 if (isSealed(em.encrypted) || sealedMedia) {
-                  decryptedTextRef.current.set(id, '🔒 Sealed to another device');
+                  decryptedTextRef.current.set(id, t('chat.sealedOtherDevice'));
                 }
               });
               setMessages(prev =>
@@ -1322,12 +1322,20 @@ export default function ChatScreen() {
               const reason = diagnoseSealed(payload, publicKey, user.uid);
               if (reason === 'wrong-key') {
                 anyWrongKey = true;
-                return '🔒 Sealed to another device';
+                return t('chat.sealedOtherDevice');
               }
               if (reason === 'unsupported-algorithm') {
-                return '🔒 Update the app to read this';
+                return t('chat.sealedNeedsUpdate');
               }
-              return '🔒 Unable to decrypt';
+              // 'corrupt' is worth its own sentence. The other failures are
+              // things the user can act on — restore a phrase, update the app
+              // — and this one is not: the key was right and the ciphertext is
+              // damaged. Saying "unable to decrypt" invites them to keep
+              // trying the two fixes that cannot work.
+              if (reason === 'corrupt') {
+                return t('chat.sealedDamaged');
+              }
+              return t('chat.sealedUnknown');
             };
 
             /**
@@ -1455,7 +1463,7 @@ export default function ChatScreen() {
               if (isGroupEnvelope(em.encrypted)) {
                 const opened = await openGroupEnvelope(em.encrypted, user.uid, chatId);
                 if (opened.status === 'ok') acceptBody(id, opened.text);
-                else decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                else decryptedTextRef.current.set(id, t('chat.sealedUnknown'));
                 // Each pass through this loop costs a storage round trip, so
                 // a message is shown the moment it opens rather than at the
                 // end — the queue behind it may be seconds long.
@@ -1472,7 +1480,7 @@ export default function ChatScreen() {
                 // here, so it is surfaced rather than absorbed.
                 if (outcome.sessionReset) anyPeerSessionReset = true;
               } else {
-                decryptedTextRef.current.set(id, '🔒 Unable to decrypt');
+                decryptedTextRef.current.set(id, t('chat.sealedUnknown'));
               }
               scheduleFlush();
             }
@@ -1583,7 +1591,12 @@ export default function ChatScreen() {
         active = false;
         unsubscribe();
       };
-    }, [chatId, user]),
+      // `t` belongs here now that a failed decrypt caches its explanation as
+      // text. Without it, changing language leaves the old language's sentence
+      // sitting in decryptedTextRef until the thread is reopened — and the
+      // messages this affects are exactly the ones the user is trying to
+      // understand. Re-subscribing on a language change is a rare cost for it.
+    }, [chatId, user, t]),
   );
 
   useEffect(() => {
@@ -4833,11 +4846,11 @@ export default function ChatScreen() {
         <TouchableOpacity
           style={[styles.offlineBanner, {backgroundColor: colors.warning}]}
           accessibilityRole="button"
-          accessibilityLabel="Restore your encrypted message history"
+          accessibilityLabel={t('chat.sealedBannerA11y')}
           onPress={() => navigation.navigate('RecoveryPhrase')}>
           <Icon name="lock" size={13} color={colors.textOnWarning} />
           <Text style={[styles.offlineText, {color: colors.textOnWarning}]}>
-            Some messages were sealed on another device. Tap to restore with your recovery phrase.
+            {t('chat.sealedBanner')}
           </Text>
         </TouchableOpacity>
       ) : null}

@@ -383,7 +383,12 @@
     "privacyNotificationsTitle": "Hide notification content",
     "privacyNotificationsHint": "Notifications show that a message arrived, never who sent it or what it says.",
     "privacyExifTitle": "Strip photo metadata",
-    "privacyExifHint": "Removes location, camera and timestamp data from photos before they are sent."
+    "privacyExifHint": "Removes location, camera and timestamp data from photos before they are sent.",
+    "visibility": {
+      "public": "Public",
+      "friends": "Friends",
+      "private": "Private"
+    }
   },
   "notifications": {
     "newMessageTitle": "New message",
@@ -460,7 +465,14 @@
     "protectionNone": "NOT ENCRYPTED",
     "protectionNoneA11y": "Not encrypted — the server can read this message.",
     "protectionStatic": "NO FORWARD SECRECY",
-    "protectionStaticA11y": "Encrypted, but under a long-lived key: readable later by anyone who obtains that key."
+    "protectionStaticA11y": "Encrypted, but under a long-lived key: readable later by anyone who obtains that key.",
+    "sealedPending": "🔒 …",
+    "sealedOtherDevice": "🔒 Sealed to another device",
+    "sealedNeedsUpdate": "🔒 Update the app to read this",
+    "sealedDamaged": "🔒 This message is damaged",
+    "sealedUnknown": "🔒 Unable to decrypt",
+    "sealedBanner": "Some messages were sealed on another device. Tap to restore with your recovery phrase.",
+    "sealedBannerA11y": "Restore your encrypted message history"
   },
   "chatSettings": {
     "notifications": "Notifications",
@@ -578,5 +590,13 @@
     "settingsTitle": "Tutorial",
     "settingsDescription": "New here? Take the guided tour of Chatterbox.",
     "replay": "Replay tutorial"
+  },
+  "keys": {
+    "restoreTitle": "Restore your message history?",
+    "restoreBody": "This looks like a new device for an account that already has an encryption key. Restore your recovery phrase to keep reading old messages, or continue and start fresh.",
+    "supersededTitle": "Your encryption key changed",
+    "supersededBody": "This device's key was replaced from another device, so messages sent to you since then can't be opened here. Enter that device's recovery phrase to read them.",
+    "notNow": "Not now",
+    "restore": "Restore"
   }
 }

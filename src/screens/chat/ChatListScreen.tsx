@@ -200,15 +200,10 @@ export default function ChatListScreen() {
             return;
           }
           if (!active) return;
-          Alert.alert(
-            'Restore your message history?',
-            'This looks like a new device for an account that already has an encryption key. ' +
-              'Restore your recovery phrase to keep reading old messages, or continue and start fresh.',
-            [
-              {text: 'Not now', style: 'cancel'},
-              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase')},
-            ],
-          );
+          Alert.alert(t('keys.restoreTitle'), t('keys.restoreBody'), [
+            {text: t('keys.notNow'), style: 'cancel'},
+            {text: t('keys.restore'), onPress: () => navigation.navigate('RecoveryPhrase')},
+          ]);
           return;
         }
         // Separate copy from 'needs-restore' because the user's situation is
@@ -218,15 +213,10 @@ export default function ChatListScreen() {
         // replaced, and saying so is the only way the silence in the thread
         // ("Sealed to another device", over and over) becomes explicable.
         if (readiness === 'superseded') {
-          Alert.alert(
-            'Your encryption key changed',
-            "This device's key was replaced from another device, so messages sent to you since " +
-              "then can't be opened here. Enter that device's recovery phrase to read them.",
-            [
-              {text: 'Not now', style: 'cancel'},
-              {text: 'Restore', onPress: () => navigation.navigate('RecoveryPhrase')},
-            ],
-          );
+          Alert.alert(t('keys.supersededTitle'), t('keys.supersededBody'), [
+            {text: t('keys.notNow'), style: 'cancel'},
+            {text: t('keys.restore'), onPress: () => navigation.navigate('RecoveryPhrase')},
+          ]);
           return;
         }
         hasRevealedRecoveryPhrase(user.uid)
@@ -239,6 +229,12 @@ export default function ChatListScreen() {
     return () => {
       active = false;
     };
+    // `t` is deliberately not a dependency. It is read at the moment an Alert
+    // is raised, never cached, so a stale one cannot render — but listing it
+    // would re-run the readiness check on every language change and pop
+    // "Restore your message history?" again at someone who has just changed a
+    // setting. The rule cannot see that the value is consumed synchronously.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigation]);
 
   const scheduleChatCacheWrite = useCallback(

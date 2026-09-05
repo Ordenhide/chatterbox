@@ -188,3 +188,57 @@ describe('translation keys used in code', () => {
     expect(missing).toEqual([]);
   });
 });
+
+/**
+ * The static prefix of a computed key: `t(`chat.reportReason.${reason}`)`
+ * yields "chat.reportReason".
+ *
+ * A computed key cannot be resolved here, but its prefix can, and that is
+ * enough to catch the failure that actually happened: a namespace was deleted
+ * while a template literal still pointed into it, and every option rendered as
+ * its own key path on screen. The check above could not see it — its own
+ * comment says computed keys are invisible — so this is the floor under that
+ * floor.
+ */
+function computedKeyPrefixes(dir: string): Map<string, string> {
+  const found = new Map<string, string>();
+  const pattern = /\bt\(\s*`([A-Za-z0-9_.]+?)\.?\$\{/g;
+
+  const walk = (current: string) => {
+    for (const entry of fs.readdirSync(current, {withFileTypes: true})) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name !== '__tests__' && entry.name !== 'node_modules') walk(full);
+        continue;
+      }
+      if (!/\.tsx?$/.test(entry.name)) continue;
+      for (const match of fs.readFileSync(full, 'utf8').matchAll(pattern)) {
+        const prefix = match[1].replace(/\.$/, '');
+        if (prefix && !found.has(prefix)) found.set(prefix, full);
+      }
+    }
+  };
+
+  walk(dir);
+  return found;
+}
+
+describe('computed translation keys', () => {
+  const english = JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, 'en.json'), 'utf8'));
+  const prefixes = computedKeyPrefixes(path.join(__dirname, '..', '..'));
+
+  it('finds the call sites, so a passing run means something', () => {
+    expect(prefixes.size).toBeGreaterThan(0);
+  });
+
+  it('point at a namespace that exists and has strings in it', () => {
+    const broken = [...prefixes]
+      .filter(([prefix]) => {
+        const node = lookup(english, prefix);
+        if (typeof node !== 'object' || node === null) return true;
+        return !Object.values(node).some(v => typeof v === 'string');
+      })
+      .map(([prefix, file]) => `${prefix} (${path.relative(path.join(__dirname, '..', '..'), file)})`);
+    expect(broken).toEqual([]);
+  });
+});
