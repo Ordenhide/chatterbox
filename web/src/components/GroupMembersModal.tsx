@@ -9,6 +9,7 @@ import {
   listenChatsForUser,
 } from '../services/chat';
 import {contactsFromChats, uidLabel, type Contact} from '../services/contacts';
+import {openIntroductions} from '../services/introductions';
 import {MAX_GROUP_MEMBERS} from '../services/e2ee';
 import Icon from './Icon';
 
@@ -68,7 +69,15 @@ export default function GroupMembersModal({
     };
   }, [members]);
 
-  useEffect(() => listenChatsForUser(myUid, chats => setContacts(contactsFromChats(chats, myUid))), [myUid]);
+  useEffect(
+    () =>
+      listenChatsForUser(myUid, chats =>
+        openIntroductions(chats, myUid).then(introduced =>
+          setContacts(contactsFromChats(chats, myUid, introduced)),
+        ),
+      ),
+    [myUid],
+  );
 
   const add = async () => {
     if (!picked) return;

@@ -29,7 +29,9 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import {useAuth} from '../../contexts/AuthContext';
-import {createChat, setChatName} from '../../services/firebaseChat';
+import {createChat, setChatIntroduction, setChatName} from '../../services/firebaseChat';
+import {getDeviceKeypairIfEnrolled} from '../../services/e2eeKeys';
+import {sealIntroduction} from '../../services/introductions';
 import {
   acceptInvite,
   createInvite,
@@ -143,6 +145,18 @@ export default function InviteScreen() {
       const chosen = label.trim();
       const chatId = await createChat([user.uid, result.inviterUid], t('invite.defaultChatName'));
       if (chosen) await setChatName(chatId, user.uid, chosen);
+
+      // The other half: they have no idea who just opened their link, and the
+      // profile no longer carries a name to look up. So it is sealed to the key
+      // the invite carried and left on the chat for them alone to read — see
+      // services/introductions.ts.
+      if (user.displayName) {
+        const keypair = await getDeviceKeypairIfEnrolled(user.uid);
+        const sealed =
+          keypair &&
+          sealIntroduction(user.displayName, keypair.secretKey, result.inviterKey, chatId);
+        if (sealed) await setChatIntroduction(chatId, user.uid, sealed);
+      }
 
       setPasted('');
       setLabel('');

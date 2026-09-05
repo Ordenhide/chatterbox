@@ -126,7 +126,7 @@ describe('users/{userId}', () => {
   });
 
   it('lets a user write their own profile', async () => {
-    await assertSucceeds(setDoc(doc(asUser('alice'), 'users/alice'), {displayName: 'Alice'}));
+    await assertSucceeds(setDoc(doc(asUser('alice'), 'users/alice'), {profileVisibility: 'public'}));
   });
 
   describe('identity fields', () => {
@@ -203,9 +203,29 @@ describe('users/{userId}', () => {
       );
     });
 
-    it('allows a profile with no email field at all', async () => {
+    it('allows a profile carrying none of the three', async () => {
       const alice = asEmailUser('alice', 'alice@example.com');
-      await assertSucceeds(setDoc(doc(alice, 'users/alice'), {displayName: 'Alice'}));
+      await assertSucceeds(setDoc(doc(alice, 'users/alice'), {profileVisibility: 'public'}));
+    });
+
+    /**
+     * The name is refused like the address. It could not simply be deleted —
+     * a chat list of eight-character uids is not usable — so it moved to the
+     * chat, sealed to the one person who needs it
+     * (services/introductions.ts). Nothing on the server maps a uid to a
+     * person's name any more.
+     */
+    it('denies a new profile carrying a display name', async () => {
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertFails(setDoc(doc(alice, 'users/alice'), {displayName: 'Alice'}));
+    });
+
+    it('allows deleting a display name an old account already has', async () => {
+      await seed(db => setDoc(doc(db, 'users/alice'), {displayName: 'Alice', uid: 'alice'}));
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(
+        setDoc(doc(alice, 'users/alice'), {displayName: deleteField()}, {merge: true}),
+      );
     });
 
     it('denies a uid that disagrees with the document it sits in', async () => {

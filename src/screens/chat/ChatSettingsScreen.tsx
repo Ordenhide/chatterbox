@@ -28,6 +28,7 @@ import {
 } from '../../services/firebaseChat';
 import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
 import {contactsFromChats, uidLabel, type Contact} from '../../services/contacts';
+import {openIntroductions} from '../../services/introductions';
 import {getColors} from '../../theme/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache';
@@ -104,7 +105,10 @@ export default function ChatSettingsScreen() {
 
         // Loaded here rather than on demand so the list is already there when
         // the members section is scrolled to.
-        setContacts(contactsFromChats(await getChatsForUser(user.uid), user.uid));
+        const myChats = await getChatsForUser(user.uid);
+        setContacts(
+          contactsFromChats(myChats, user.uid, await openIntroductions(myChats, user.uid)),
+        );
       } catch (err) {
         if (__DEV__) {
           console.warn('ChatSettingsScreen: failed to load chat', err);

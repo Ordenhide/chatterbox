@@ -182,6 +182,7 @@ service cloud.firestore {
       return request.resource == null || (
         unchangedOrAbsent('email') &&
         unchangedOrAbsent('photoURL') &&
+        unchangedOrAbsent('displayName') &&
         (!('uid' in request.resource.data) ||
           request.resource.data.uid == userId)
       );

@@ -15,6 +15,7 @@ import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {createChat, listenChatsForUser, setChatName} from '../services/chat';
 import {contactsFromChats, type Contact} from '../services/contacts';
+import {openIntroductions} from '../services/introductions';
 import {MAX_GROUP_MEMBERS} from '../services/e2ee';
 import type {ChatRoom} from '../types';
 
@@ -41,7 +42,11 @@ export default function NewChatModal({
     () =>
       listenChatsForUser(myUid, found => {
         setChats(found);
-        setContacts(contactsFromChats(found, myUid));
+        // The names people sealed into their chats with you, so this picker
+        // calls them what the chat list calls them.
+        openIntroductions(found, myUid).then(introduced =>
+          setContacts(contactsFromChats(found, myUid, introduced)),
+        );
       }),
     [myUid],
   );

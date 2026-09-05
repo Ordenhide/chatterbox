@@ -37,10 +37,10 @@ async function completeCredentialSignIn(cred: UserCredential) {
       doc(db, 'users', u.uid),
       {
         uid: u.uid,
-        // No email and no photo. A Google or phone sign-in hands both over and
-        // neither is written down — see upsertUserProfile in the mobile
-        // client's services/firebaseChat.ts for why.
-        displayName: u.displayName || null,
+        // No email, no photo, no name. A Google or phone sign-in hands all
+        // three over and none is written down — see upsertUserProfile in the
+        // mobile client's services/firebaseChat.ts for why, and
+        // services/introductions.ts for where the name goes instead.
         profileVisibility: 'public',
         updatedAt: serverTimestamp(),
       },
@@ -86,13 +86,12 @@ export async function signUp(email: string, password: string, displayName?: stri
     await updateProfile(cred.user, {displayName});
   }
   // Write a users/{uid} doc matching the mobile app's schema
-  // (upsertUserProfile). No email and no photo: the rules reject both, and the
-  // address stays where a credential belongs — in Firebase Auth.
+  // (upsertUserProfile). No email, no photo, no name: the rules reject all
+  // three, and they stay where credentials belong — in Firebase Auth.
   await setDoc(
     doc(db, 'users', cred.user.uid),
     {
       uid: cred.user.uid,
-      displayName: displayName || null,
       profileVisibility: 'public',
       updatedAt: serverTimestamp(),
     },

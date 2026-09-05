@@ -5,6 +5,7 @@ import {useModal} from '../hooks/useModal';
 import {useChatUserCache} from '../hooks/useChatUserCache';
 import {listenChatsForUser} from '../services/chat';
 import {resolveChatMeta} from '../utils/chatMeta';
+import {useChatIntroductions} from '../hooks/useChatIntroductions';
 import Icon from './Icon';
 import type {ChatRoom} from '../types';
 
@@ -52,6 +53,7 @@ export default function QuickSwitcher({
   const dialogRef = useModal<HTMLDivElement>(onClose);
   const [chats, setChats] = useState<ChatRoom[]>([]);
   const userCache = useChatUserCache(chats, myUid);
+  const introduced = useChatIntroductions(chats, myUid);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const dialogTitle = title ?? t('quickSwitcher.title');
@@ -65,7 +67,7 @@ export default function QuickSwitcher({
     const matches = q
       ? pool.filter(
           c =>
-            resolveChatMeta(c, myUid, userCache).title.toLowerCase().includes(q) ||
+            resolveChatMeta(c, myUid, userCache, introduced).title.toLowerCase().includes(q) ||
             (c.lastMessage?.text || '').toLowerCase().includes(q),
         )
       : pool;
@@ -126,7 +128,7 @@ export default function QuickSwitcher({
             </div>
           ) : (
             results.map((chat, i) => {
-              const {title: chatTitle, seed} = resolveChatMeta(chat, myUid, userCache);
+              const {title: chatTitle, seed} = resolveChatMeta(chat, myUid, userCache, introduced);
               return (
                 <button
                   key={chat.id}

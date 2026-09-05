@@ -1,7 +1,10 @@
 import {useEffect, useState} from 'react';
+import {auth} from '../firebase';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
-import {createChat, setChatName} from '../services/chat';
+import {createChat, setChatIntroduction, setChatName} from '../services/chat';
+import {getDeviceKeypairIfEnrolled} from '../services/e2eeKeys';
+import {sealIntroduction} from '../services/introductions';
 import {
   acceptInvite,
   createInvite,
@@ -117,6 +120,18 @@ export default function InviteModal({
       const chosen = label.trim();
       const chatId = await createChat([myUid, result.inviterUid], 'Chat');
       if (chosen) await setChatName(chatId, myUid, chosen);
+
+      // The other half: they have no idea who just opened their link, and the
+      // profile no longer carries a name to look up. So it is sealed to the key
+      // the invite carried and left on the chat for them alone to read — see
+      // services/introductions.ts.
+      const myName = auth.currentUser?.displayName;
+      if (myName) {
+        const keypair = await getDeviceKeypairIfEnrolled(myUid);
+        const sealed =
+          keypair && sealIntroduction(myName, keypair.secretKey, result.inviterKey, chatId);
+        if (sealed) await setChatIntroduction(chatId, myUid, sealed);
+      }
       onCreated(chatId);
     } catch (err) {
       console.warn('accept invite failed:', err);

@@ -33,7 +33,16 @@ export function uidLabel(uid: string): string {
   return uid.slice(0, 8);
 }
 
-export function contactsFromChats(chats: ChatRoom[], myUid: string): Contact[] {
+export function contactsFromChats(
+  chats: ChatRoom[],
+  myUid: string,
+  /**
+   * Names the other side sealed to you, by chat id — services/introductions.ts.
+   * Ranked below your own label and above the chat's name, so this list calls
+   * someone the same thing the chat list does.
+   */
+  introduced: Record<string, string> = {},
+): Contact[] {
   const byUid = new Map<string, Contact>();
 
   for (const chat of chats) {
@@ -48,7 +57,8 @@ export function contactsFromChats(chats: ChatRoom[], myUid: string): Contact[] {
     // created recently and never used is less current than one created long ago
     // and used this morning.
     const activeAt = millis(chat.updatedAt) || millis(chat.createdAt);
-    const named = chat.nameBy?.[myUid]?.trim() || chat.name?.trim() || '';
+    const named =
+      chat.nameBy?.[myUid]?.trim() || introduced[chat.id]?.trim() || chat.name?.trim() || '';
     const contact: Contact = {
       uid: peer,
       // 'Chat' is what createChat writes when nobody supplied a name, so it is

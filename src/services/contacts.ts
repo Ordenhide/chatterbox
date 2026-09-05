@@ -12,10 +12,15 @@
  * in a document you can read, so no lookup happens: this is a projection of
  * data the client is holding anyway, not a query.
  *
- * The label is your own name for them, from `nameBy`, falling back to the
- * chat's name. Neither is a profile field and neither was fetched; if you never
- * named them, they are shown by the short form of their uid rather than by
- * something the server volunteered.
+ * The label is your own name for them from `nameBy`, then the name they sealed
+ * into the chat (services/introductions.ts), then the chat's own name. None is
+ * a profile field and none was looked up; if there is no name at all they are
+ * shown by the short form of their uid rather than by something the server
+ * volunteered.
+ *
+ * Kept free of Firestore imports so it stays a pure function of data the
+ * caller already has — which is also what makes it testable without a mock.
+ * Callers that want the sealed names pass them in; see NewChatScreen.
  */
 import type {ChatRoom} from '../types';
 
@@ -44,7 +49,16 @@ export function uidLabel(uid: string): string {
   return uid.slice(0, 8);
 }
 
-export function contactsFromChats(chats: ChatRoom[], myUid: string): Contact[] {
+export function contactsFromChats(
+  chats: ChatRoom[],
+  myUid: string,
+  /**
+   * Names the other side sealed to you, by chat id — services/introductions.ts.
+   * Ranked below your own label and above the chat's name, so this list calls
+   * someone the same thing the chat list does.
+   */
+  introduced: Record<string, string> = {},
+): Contact[] {
   const byUid = new Map<string, Contact>();
 
   for (const chat of chats) {
@@ -59,7 +73,8 @@ export function contactsFromChats(chats: ChatRoom[], myUid: string): Contact[] {
     // created recently and never used is less current than one created long ago
     // and used this morning, and max() would rank them the other way round.
     const activeAt = millis(chat.updatedAt) || millis(chat.createdAt);
-    const named = chat.nameBy?.[myUid]?.trim() || chat.name?.trim() || '';
+    const named =
+      chat.nameBy?.[myUid]?.trim() || introduced[chat.id]?.trim() || chat.name?.trim() || '';
     const contact: Contact = {
       uid: peer,
       // 'Chat' is what createChat writes when nobody supplied a name, so it is
@@ -79,3 +94,4 @@ export function contactsFromChats(chats: ChatRoom[], myUid: string): Contact[] {
     (a, b) => b.activeAt - a.activeAt || a.label.localeCompare(b.label),
   );
 }
+

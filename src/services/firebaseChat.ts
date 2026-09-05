@@ -76,12 +76,17 @@ export function clearUserCache() {
 /**
  * The public half of an account: as little as the app can work with.
  *
- * `email` and `photoURL` used to live here. The email was the searchable field
- * the directory ran on, and once the directory went (see the note above
- * `getUserById`) it was a real-world identifier sitting on the server for no
- * remaining purpose — readable by anyone who knew the uid, which is everyone
- * you have ever been in a group with. The photo was a Storage URL with the
- * same audience and no expiry.
+ * `email`, `photoURL` and `displayName` all used to live here. The email was
+ * the searchable field the directory ran on, and once the directory went (see
+ * the note above `getUserById`) it was a real-world identifier sitting on the
+ * server for no remaining purpose — readable by anyone who knew the uid, which
+ * is everyone you have ever been in a group with. The photo was a Storage URL
+ * with the same audience and no expiry.
+ *
+ * The name went last and could not simply be dropped: a chat list of
+ * eight-character uids is not usable. It moved instead — sealed to the person
+ * who needs it and stored on the chat, where the server holds a blob it cannot
+ * read. See services/introductions.ts.
  *
  * Both are written as `deleteField()` rather than simply omitted, because
  * `merge: true` leaves an omitted field exactly where it was: every account
@@ -99,7 +104,7 @@ export async function upsertUserProfile(user: User) {
       uid: user.uid,
       email: deleteField(),
       photoURL: deleteField(),
-      displayName: user.displayName || null,
+      displayName: deleteField(),
       // Push token lives in the owner-only private subcollection now, not on the
       // public profile (which any signed-in user can read). Strip any stale
       // value left on the public doc from older app versions.
@@ -668,6 +673,18 @@ export async function toggleHideChat(chatId: string, userId: string, hidden: boo
     }
     tx.set(ref, {hiddenBy: Array.from(hiddenBy)}, {merge: true});
   });
+}
+
+/**
+ * Writes your sealed self-introduction onto a chat.
+ *
+ * Merged into `introBy` under your own uid, so it cannot displace anyone
+ * else's — and would not be believed if it did, since the reader checks the
+ * envelope's sender key against the peer's published one. See
+ * services/introductions.ts.
+ */
+export async function setChatIntroduction(chatId: string, userId: string, sealed: unknown) {
+  await setDoc(doc(chatsRef(), chatId), {introBy: {[userId]: sealed}}, {merge: true});
 }
 
 export async function setChatName(chatId: string, userId: string, name: string | null) {

@@ -103,6 +103,7 @@ import {
   updateCall,
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
+import {openIntroductions} from '../../services/introductions';
 import {reportError, reportSealedFailure} from '../../services/telemetry';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
 import {computeSafetyNumber, diagnoseSealed, isGroupSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
@@ -1870,11 +1871,16 @@ export default function ChatScreen() {
           // the chat's own name (set at creation from the member list) and then
           // to a plain count — never to a single member's name.
           const isGroup = chat.participants.length > 2;
+          // Their sealed introduction, when there is no name of your own. The
+          // public profile no longer carries one — services/introductions.ts.
+          const introduced = isGroup
+            ? {}
+            : await openIntroductions([chat as any], user.uid);
           const name = isGroup
             ? customName ||
               chat.name ||
               t('members.title', {count: chat.participants.length})
-            : customName || otherUser?.displayName || 'Chat';
+            : customName || introduced[chatId] || otherUser?.displayName || 'Chat';
           setOtherUserName(name);
           setOtherUser(otherUser);
           setCustomName(customName);

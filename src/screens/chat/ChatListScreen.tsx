@@ -27,6 +27,7 @@ import {
   togglePinChat,
   toggleHideChat,
 } from '../../services/firebaseChat';
+import {openIntroductions} from '../../services/introductions';
 import {getColors} from '../../theme/colors';
 import {fonts, terminal} from '../../theme/typography';
 import CornerBrackets from '../../components/CornerBrackets';
@@ -268,9 +269,13 @@ export default function ChatListScreen() {
             .filter((id): id is string => !!id),
         ),
       );
-      const [usersById, drafts] = await Promise.all([
+      const [usersById, drafts, introduced] = await Promise.all([
         getUsersByIds(otherIds),
         getDrafts(user.uid),
+        // The peer's own name, sealed to this device. It has to be decrypted
+        // because the public profile no longer carries one — see
+        // services/introductions.ts.
+        openIntroductions(userChats, user.uid),
       ]);
       const now = Date.now();
       const toMillis = (value: any) =>
@@ -307,8 +312,10 @@ export default function ChatListScreen() {
         const otherId = chat.participants.find(id => id !== user.uid);
         const otherUser = otherId ? usersById[otherId] : null;
         const customName = chat.nameBy?.[user.uid] || '';
+        // Your own label first: you named them, and that beats what they call
+        // themselves. Then their sealed introduction, then the chat's name.
         const displayName =
-          customName || otherUser?.displayName || chat.name || 'Chat';
+          customName || introduced[chat.id] || otherUser?.displayName || chat.name || 'Chat';
         const typingAt = otherId && typingVisible ? chat.typingBy?.[otherId] || 0 : 0;
         const isTyping = typingAt ? now - typingAt < 3000 : false;
         return {

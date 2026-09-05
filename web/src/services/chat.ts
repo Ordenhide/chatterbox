@@ -729,6 +729,21 @@ export async function toggleHideChat(chatId: string, uid: string, hidden: boolea
   );
 }
 
+/**
+ * Writes your sealed self-introduction onto a chat.
+ *
+ * Merged under your own uid, so it cannot displace anyone else's — and would
+ * not be believed if it did, since the reader checks the envelope's sender key
+ * against the peer's published one. See services/introductions.ts.
+ */
+export async function setChatIntroduction(
+  chatId: string,
+  uid: string,
+  sealed: unknown,
+): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId), {introBy: {[uid]: sealed}}, {merge: true});
+}
+
 /** Per-user custom chat name (nameBy: {uid: name}), matching the mobile app. */
 export async function setChatName(chatId: string, uid: string, name: string | null): Promise<void> {
   await setDoc(doc(db, 'chats', chatId), {nameBy: {[uid]: name}}, {merge: true});

@@ -35,6 +35,13 @@ describe('contactsFromChats', () => {
     ).toBe(uidLabel('cy'));
   });
 
+  it('uses the name they sealed into the chat when you have not named them', () => {
+    const chats = [chat('a', {participants: [ME, 'ada'], name: 'Chat'})];
+    expect(contactsFromChats(chats, ME, {a: 'Ada'})[0].label).toBe('Ada');
+    const mine = [chat('a', {participants: [ME, 'ada'], nameBy: {[ME]: 'Ada W'}})];
+    expect(contactsFromChats(mine, ME, {a: 'Ada'})[0].label).toBe('Ada W');
+  });
+
   it('leaves out groups, chats you are not in, and chats with only yourself', () => {
     expect(contactsFromChats([chat('g', {participants: [ME, 'ada', 'bob']})], ME)).toEqual([]);
     expect(contactsFromChats([chat('x', {participants: ['ada', 'bob']})], ME)).toEqual([]);

@@ -8,6 +8,7 @@ import {useToast} from '../context/ToastContext';
 import {useIsMobile} from '../hooks/useIsMobile';
 import {useChatUserCache} from '../hooks/useChatUserCache';
 import {resolveChatMeta} from '../utils/chatMeta';
+import {useChatIntroductions} from '../hooks/useChatIntroductions';
 import type {ChatRoom} from '../types';
 import Cascade from '../components/Cascade';
 import ChatPane from '../components/ChatPane';
@@ -28,6 +29,7 @@ export default function HomeScreen({
   const {t} = useT();
   const [chats, setChats] = useState<ChatRoom[]>([]);
   const userCache = useChatUserCache(chats, user.uid);
+  const introduced = useChatIntroductions(chats, user.uid);
   const [showNewChat, setShowNewChat] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [search, setSearch] = useState('');
@@ -42,8 +44,8 @@ export default function HomeScreen({
   useEffect(() => listenChatsForUser(user.uid, setChats), [user.uid]);
 
   const chatMeta = useMemo(
-    () => (chat: ChatRoom) => resolveChatMeta(chat, user.uid, userCache),
-    [user.uid, userCache],
+    () => (chat: ChatRoom) => resolveChatMeta(chat, user.uid, userCache, introduced),
+    [user.uid, userCache, introduced],
   );
 
   const {visible: visibleChats, hidden: hiddenChats} = useMemo(

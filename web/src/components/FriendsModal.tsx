@@ -4,6 +4,7 @@ import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {getUserById, listenChatsForUser} from '../services/chat';
 import {contactsFromChats, uidLabel, type Contact} from '../services/contacts';
+import {openIntroductions} from '../services/introductions';
 import {
   acceptFriendRequest,
   blockUser,
@@ -60,7 +61,15 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
 
   const nameOf = (uid: string) => names[uid]?.displayName || uidLabel(uid);
 
-  useEffect(() => listenChatsForUser(myUid, chats => setContacts(contactsFromChats(chats, myUid))), [myUid]);
+  useEffect(
+    () =>
+      listenChatsForUser(myUid, chats =>
+        openIntroductions(chats, myUid).then(introduced =>
+          setContacts(contactsFromChats(chats, myUid, introduced)),
+        ),
+      ),
+    [myUid],
+  );
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();

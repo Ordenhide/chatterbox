@@ -319,6 +319,12 @@ export interface ChatRoom {
   /** Per-user hidden flag — see services/hiddenChats.ts. */
   hiddenBy?: string[];
   typingBy?: Record<string, number>;
+  /**
+   * Sealed self-introductions, keyed by the uid that wrote one. See
+   * services/introductions.ts — the server holds a blob it cannot read, in
+   * place of the display name that used to sit on the public profile.
+   */
+  introBy?: Record<string, unknown>;
   unreadCountBy?: Record<string, number>;
   soundscape?: SoundscapeId;
   incognito?: boolean;

@@ -45,6 +45,15 @@ describe('contactsFromChats', () => {
     expect(blank[0].label).toBe(uidLabel('cy'));
   });
 
+  it('uses the name they sealed into the chat when you have not named them', () => {
+    // Ranked below your own label and above the chat's name, so this list calls
+    // someone the same thing the chat list does.
+    const chats = [chat('a', {participants: [ME, 'ada'], name: 'Chat'})];
+    expect(contactsFromChats(chats, ME, {a: 'Ada'})[0].label).toBe('Ada');
+    const mine = [chat('a', {participants: [ME, 'ada'], nameBy: {[ME]: 'Ada W'}})];
+    expect(contactsFromChats(mine, ME, {a: 'Ada'})[0].label).toBe('Ada W');
+  });
+
   it('leaves out groups', () => {
     // Being in a group with someone is not a way to reach them: the invite
     // that put them there was somebody else's.

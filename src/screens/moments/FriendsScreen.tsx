@@ -36,6 +36,7 @@ import {
   getUsersByIds,
 } from '../../services/firebaseChat';
 import {contactsFromChats, uidLabel, type Contact} from '../../services/contacts';
+import {openIntroductions} from '../../services/introductions';
 import {bodyWeight, terminal} from '../../theme/typography';
 
 type UserMap = Record<string, User | null>;
@@ -125,8 +126,9 @@ export default function FriendsScreen() {
     if (!user?.uid) return;
     let active = true;
     getChatsForUser(user.uid)
-      .then(chats => {
-        if (active) setContacts(contactsFromChats(chats, user.uid));
+      .then(async chats => {
+        const introduced = await openIntroductions(chats, user.uid);
+        if (active) setContacts(contactsFromChats(chats, user.uid, introduced));
       })
       .catch(error => reportError(error, 'friends_load_contacts_failed'));
     return () => {

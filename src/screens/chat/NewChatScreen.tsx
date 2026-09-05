@@ -34,6 +34,7 @@ import {useAuth} from '../../contexts/AuthContext';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import {contactsFromChats, type Contact} from '../../services/contacts';
+import {openIntroductions} from '../../services/introductions';
 import {createChat, getChatsForUser} from '../../services/firebaseChat';
 import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
 import {reportError} from '../../services/telemetry';
@@ -58,10 +59,13 @@ export default function NewChatScreen() {
       if (!user) return;
       let cancelled = false;
       getChatsForUser(user.uid)
-        .then(found => {
+        .then(async found => {
           if (cancelled) return;
           setChats(found);
-          setContacts(contactsFromChats(found, user.uid));
+          // The names people sealed into their chats with you, so this picker
+          // calls them what the chat list calls them.
+          const introduced = await openIntroductions(found, user.uid);
+          if (!cancelled) setContacts(contactsFromChats(found, user.uid, introduced));
         })
         .catch(error => {
           reportError(error, 'new_chat_load_contacts_failed');

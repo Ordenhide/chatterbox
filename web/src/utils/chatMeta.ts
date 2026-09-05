@@ -25,13 +25,18 @@ export function resolveChatMeta(
   chat: ChatRoom,
   myUid: string,
   userCache: Record<string, UserProfile>,
+  /** Opened self-introductions by chat id — see services/introductions.ts. */
+  introduced: Record<string, string> = {},
 ): ChatMeta {
   const custom = chat.nameBy?.[myUid];
   const otherUid = chat.participants.find(p => p !== myUid) || chat.id;
   const other = otherUid ? userCache[otherUid] : undefined;
   const isGroup = chat.participants.length > 2;
+  // Your own label first: you named them, and that beats what they call
+  // themselves. Then their sealed introduction — the profile no longer carries
+  // a name, so this is where one comes from.
   const title = isGroup
     ? custom || chat.name || `${chat.participants.length} members`
-    : custom || other?.displayName || chat.name || 'Chat';
+    : custom || introduced[chat.id] || other?.displayName || chat.name || 'Chat';
   return {title, seed: otherUid};
 }
