@@ -767,5 +767,53 @@ service cloud.firestore {
       allow read: if isSignedIn() && request.auth.uid == userId;
       allow write: if false;
     }
+
+    // ── Invites ──────────────────────────────────────────────────────────
+    //
+    // Replaces lookup by email. The document id *is* the capability: 32 random
+    // bytes, handed over out of band, and the only way to reach the document.
+    //
+    // `get` without `list` is the whole access model and the distinction is
+    // load-bearing. A rule that allowed listing would let any signed-in user
+    // read every pending invite in the system, which is a directory again —
+    // exactly the thing this collection exists to remove.
+    match /invites/{token} {
+      function unexpired() {
+        return request.resource.data.expiresAt is number
+          && request.resource.data.expiresAt > request.time.toMillis()
+          && request.resource.data.expiresAt <= request.time.toMillis() + 7 * 24 * 60 * 60 * 1000;
+      }
+
+      // Knowing the token is the authorisation. Still gated on being signed in,
+      // so an unauthenticated scraper gets nothing even with a leaked link.
+      allow get: if isSignedIn();
+      allow list: if false;
+
+      // Only for yourself, and only carrying what the recipient is about to
+      // learn anyway. A name here would be a plaintext profile field again.
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.inviterUid
+        && request.resource.data.acceptedBy == null
+        && request.resource.data.inviterKey is string
+        && request.resource.data.keys().hasOnly(
+             ['inviterUid', 'inviterKey', 'expiresAt', 'acceptedBy', 'createdAt'])
+        && unexpired();
+
+      // Single use, enforced here rather than in the client: accepting may only
+      // stamp your own uid, only onto an invite nobody has claimed, and only
+      // while it is live. Everything else about the document is immutable, so a
+      // claimer cannot rewrite the key it points at.
+      allow update: if isSignedIn()
+        && resource.data.acceptedBy == null
+        && resource.data.expiresAt > request.time.toMillis()
+        && request.resource.data.acceptedBy == request.auth.uid
+        && request.resource.data.inviterUid == resource.data.inviterUid
+        && request.resource.data.inviterKey == resource.data.inviterKey
+        && request.resource.data.expiresAt == resource.data.expiresAt;
+
+      // Withdrawing your own link. Not the recipient's to delete: an accepted
+      // invite is the inviter's record that it was used.
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.inviterUid;
+    }
   }
 }

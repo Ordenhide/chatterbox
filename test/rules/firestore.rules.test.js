@@ -1878,3 +1878,121 @@ describe('leaving a chat and taking your own content with you', () => {
     await assertFails(getDocs(myMessages()));
   });
 });
+
+describe('invites/{token} — the capability that replaced email lookup', () => {
+  const FUTURE = () => Date.now() + 60 * 60 * 1000;
+  const live = (over = {}) => ({
+    inviterUid: 'alice',
+    inviterKey: 'AAAAkey',
+    expiresAt: FUTURE(),
+    acceptedBy: null,
+    ...over,
+  });
+
+  /**
+   * The whole access model. `get` is allowed because knowing the 32-byte token
+   * *is* the authorisation; `list` must not be, because a rule that permitted
+   * it would let any signed-in user read every pending invite — a directory
+   * again, which is the thing this collection exists to remove.
+   */
+  it('lets someone who knows the token read it', async () => {
+    await seed(db => setDoc(doc(db, 'invites/tok1'), live()));
+    await assertSucceeds(getDoc(doc(asUser('bob'), 'invites/tok1')));
+  });
+
+  it('refuses to let the collection be listed', async () => {
+    await seed(db => setDoc(doc(db, 'invites/tok1'), live()));
+    await assertFails(getDocs(query(collection(asUser('bob'), 'invites'))));
+  });
+
+  it('denies an unauthenticated reader even with the token', async () => {
+    await seed(db => setDoc(doc(db, 'invites/tok1'), live()));
+    await assertFails(getDoc(doc(anon(), 'invites/tok1')));
+  });
+
+  it('lets a user mint an invite for themselves', async () => {
+    await assertSucceeds(setDoc(doc(asUser('alice'), 'invites/mine'), live()));
+  });
+
+  it('denies minting one in someone else\'s name', async () => {
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'invites/forged'), live({inviterUid: 'alice'})),
+    );
+  });
+
+  // A name here would put a plaintext profile field back on the server, which
+  // is what removing the email directory was for.
+  it('denies an invite carrying fields beyond the fixed set', async () => {
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'invites/extra'), live({displayName: 'Alice'})),
+    );
+  });
+
+  it('denies an invite that never expires', async () => {
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'invites/forever'), live({expiresAt: Date.now() + 400 * 24 * 3600 * 1000})),
+    );
+    await assertFails(setDoc(doc(asUser('alice'), 'invites/nan'), live({expiresAt: 'soon'})));
+  });
+
+  it('denies an invite born already accepted', async () => {
+    await assertFails(
+      setDoc(doc(asUser('alice'), 'invites/pre'), live({acceptedBy: 'bob'})),
+    );
+  });
+
+  describe('accepting', () => {
+    it('lets the holder claim it once', async () => {
+      await seed(db => setDoc(doc(db, 'invites/tok2'), live()));
+      await assertSucceeds(updateDoc(doc(asUser('bob'), 'invites/tok2'), {acceptedBy: 'bob'}));
+    });
+
+    /**
+     * Single use is enforced here rather than in the client, because the client
+     * is the party holding a link it may have found rather than been given.
+     */
+    it('denies a second claim', async () => {
+      await seed(db => setDoc(doc(db, 'invites/used'), live({acceptedBy: 'bob'})));
+      await assertFails(updateDoc(doc(asUser('carol'), 'invites/used'), {acceptedBy: 'carol'}));
+    });
+
+    it('denies claiming an expired invite', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'invites/old'), live({expiresAt: Date.now() - 1000})),
+      );
+      await assertFails(updateDoc(doc(asUser('bob'), 'invites/old'), {acceptedBy: 'bob'}));
+    });
+
+    it('denies claiming it on behalf of someone else', async () => {
+      await seed(db => setDoc(doc(db, 'invites/tok3'), live()));
+      await assertFails(updateDoc(doc(asUser('mallory'), 'invites/tok3'), {acceptedBy: 'bob'}));
+    });
+
+    /**
+     * The substitution this closes. Without pinning the key, whoever claims an
+     * invite could rewrite the public key it points at — and the inviter would
+     * open a chat believing they were sealed to their own device.
+     */
+    it('denies rewriting the key or the inviter while claiming', async () => {
+      await seed(db => setDoc(doc(db, 'invites/tok4'), live()));
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'invites/tok4'), {acceptedBy: 'bob', inviterKey: 'ZZZZ'}),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'invites/tok4'), {acceptedBy: 'bob', inviterUid: 'mallory'}),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('bob'), 'invites/tok4'), {
+          acceptedBy: 'bob',
+          expiresAt: Date.now() + 400 * 24 * 3600 * 1000,
+        }),
+      );
+    });
+  });
+
+  it('lets the inviter withdraw their own link, and nobody else', async () => {
+    await seed(db => setDoc(doc(db, 'invites/tok5'), live()));
+    await assertFails(deleteDoc(doc(asUser('bob'), 'invites/tok5')));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'invites/tok5')));
+  });
+});
