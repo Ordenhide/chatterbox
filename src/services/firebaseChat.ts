@@ -106,7 +106,7 @@ export async function upsertUserProfile(user: User) {
       photoURL: deleteField(),
       displayName: deleteField(),
       // Push token lives in the owner-only private subcollection now, not on the
-      // public profile (which any signed-in user can read). Strip any stale
+      // public profile (which anyone knowing the uid can read). Strip any stale
       // value left on the public doc from older app versions.
       fcmToken: deleteField(),
       profileVisibility: user.profileVisibility || 'public',
@@ -992,10 +992,12 @@ export async function exportChat(chatId: string) {
  * Exports the signed-in user's own data: their profile, the chats they take
  * part in, and those chats' messages.
  *
- * This previously called `getDocs(usersRef())` with no filter. Because the
- * Firestore rules let any signed-in user read any profile, "export my data"
+ * This previously called `getDocs(usersRef())` with no filter, and the rules at
+ * the time let any signed-in user read any profile — so "export my data"
  * actually pulled *every user account in the database* into the file. The
- * chats query was unscoped too. Both are now filtered to the caller.
+ * chats query was unscoped too. Both are filtered to the caller now, and the
+ * rules no longer permit that read either: `list` on `users` is denied, so the
+ * unfiltered version would be refused today rather than succeed quietly.
  */
 export async function exportAll(userId: string) {
   if (!userId) throw new Error('exportAll requires the signed-in user id');
