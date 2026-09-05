@@ -8,7 +8,6 @@ const en = {
   'app.loading': 'Loading…',
 
   'nav.chats': 'Chats',
-  'nav.moments': 'Moments',
   'nav.store': 'Store',
   'nav.profile': 'Profile',
 
@@ -303,9 +302,9 @@ const en = {
   'account.genericError': 'Something went wrong. Please try again.',
   'account.deleteAccount': 'Delete account',
   'account.deleteDesc':
-    'Permanently deletes your account, profile, moments, saved items and the messages you sent. This cannot be undone.',
+    'Permanently deletes your account, profile, saved items and the messages you sent. This cannot be undone.',
   'account.deleteWhatHappens': 'What gets deleted',
-  'account.deleteBullet1': 'Your profile, moments, saved items and friend connections',
+  'account.deleteBullet1': 'Your profile, saved items and friend connections',
   'account.deleteBullet2': 'Messages and media you sent, in every conversation',
   'account.deleteBullet3': 'Your encryption keys stored in this browser',
   'account.deleteKeepsNote':
@@ -338,7 +337,7 @@ const en = {
   'store.openStore': 'Open Store',
   'account.exportData': 'Download my data',
   'account.exportDataDesc':
-    'Download a copy of your profile, conversations, and moments as a JSON file you can keep or inspect.',
+    'Download a copy of your profile and conversations as a JSON file you can keep or inspect.',
   'account.exportDataFailed': 'Could not prepare your data. Please try again.',
   'profile.appearance': 'Appearance',
   'profile.appearanceDesc': 'Switch between the dark aurora and a light theme.',
@@ -435,8 +434,6 @@ const en = {
     'Open the ⋯ menu in any chat for a media gallery and collaborative lists — both end-to-end encrypted, like the messages.',
   'tour.callsTitle': 'Voice & video calls',
   'tour.callsBody': 'Call anyone right from the chat header — one tap for voice, one for video.',
-  'tour.momentsTitle': 'Moments',
-  'tour.momentsBody': 'Share photos and updates with your friends, and see what they post.',
   'tour.profileTitle': 'You & settings',
   'tour.profileBody': 'Set your name, theme, language and notifications here — and replay this tour anytime.',
   'tour.doneTitle': "You're all set!",
@@ -449,7 +446,6 @@ const zh: Partial<Record<Key, string>> = {
   'app.loading': '加载中…',
 
   'nav.chats': '聊天',
-  'nav.moments': '动态',
   'nav.store': '商店',
   'nav.profile': '我的',
 
@@ -674,6 +670,8 @@ const zh: Partial<Record<Key, string>> = {
   'chat.recipientDeletedComposer': '无法向已注销的账号发送消息。此前的聊天记录仍可查看。',
   'chat.recipientDeletedToast': '发送失败 — 该账号已注销。',
   'chat.verifyNoKey': '对方尚未在设备上启用安全通讯功能，因此没有可验证的密钥。',
+  'chat.verifyNotEnrolled':
+    '这个浏览器还没有你的加密密钥，所以没有可比对的内容。先从这里发一条消息，或者用助记词恢复，然后再试。',
   'chat.safetyNumberDesc': '请与对方当面或通过可信渠道核对此号码。如果双方设备上显示的号码一致，说明这段对话是点对点加密的。',
   'chat.viewOnceExpired': '仅看一次的照片已过期',
   'chat.viewOnceBadge': '仅看一次',
@@ -756,10 +754,13 @@ const zh: Partial<Record<Key, string>> = {
   'store.title': '商店',
   'store.subtitle': '账号升级。',
   'store.openStore': '打开商店',
+  'account.exportData': '下载我的数据',
+  'account.exportDataDesc': '下载一份你的个人资料和对话的 JSON 副本，可自行保存或查看。',
+  'account.exportDataFailed': '无法准备你的数据，请重试。',
   'account.deleteAccount': '删除账号',
-  'account.deleteDesc': '将永久删除你的账号、资料、朋友圈、收藏以及你发送的消息。此操作无法撤销。',
+  'account.deleteDesc': '将永久删除你的账号、资料、收藏以及你发送的消息。此操作无法撤销。',
   'account.deleteWhatHappens': '将被删除的内容',
-  'account.deleteBullet1': '你的个人资料、朋友圈、收藏和好友关系',
+  'account.deleteBullet1': '你的个人资料、收藏和好友关系',
   'account.deleteBullet2': '你在所有会话中发送的消息与媒体文件',
   'account.deleteBullet3': '存储在此浏览器中的加密密钥',
   'account.deleteKeepsNote': '对方发给你的消息仍会保留在他们自己的会话中。',
@@ -863,8 +864,6 @@ const zh: Partial<Record<Key, string>> = {
   'tour.spacesBody': '打开任意聊天的 ⋯ 菜单，即可使用媒体库和协作清单 —— 和消息一样，它们也是端到端加密的。',
   'tour.callsTitle': '语音和视频通话',
   'tour.callsBody': '在聊天顶部即可直接拨打——一键语音，一键视频。',
-  'tour.momentsTitle': '动态',
-  'tour.momentsBody': '与好友分享照片和近况，也能看到他们发布的内容。',
   'tour.profileTitle': '你与设置',
   'tour.profileBody': '在这里设置名称、主题、语言和通知——还能随时重播本教程。',
   'tour.doneTitle': '一切就绪！',

@@ -20,7 +20,6 @@ const STEPS: Step[] = [
   {icon: 'paperclip', title: 'tour.composerTitle', body: 'tour.composerBody'},
   {icon: 'more', title: 'tour.spacesTitle', body: 'tour.spacesBody'},
   {icon: 'phone', title: 'tour.callsTitle', body: 'tour.callsBody'},
-  {target: 'nav-moments', icon: 'heart', title: 'tour.momentsTitle', body: 'tour.momentsBody'},
   {target: 'nav-profile', icon: 'settings', title: 'tour.profileTitle', body: 'tour.profileBody'},
   {icon: 'check', title: 'tour.doneTitle', body: 'tour.doneBody'},
 ];

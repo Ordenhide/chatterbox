@@ -23,7 +23,7 @@ function build(r: Route): string {
 /**
  * Hash-based routing so the current tab and open chat survive a refresh and are
  * shareable/bookmarkable, and the browser back button works. Routes look like
- * `#/chats`, `#/chats/<chatId>`, `#/moments`, `#/store`, `#/profile`.
+ * `#/chats`, `#/chats/<chatId>`, `#/store`, `#/profile`.
  */
 export function useHashRoute() {
   const [route, setRoute] = useState<Route>(parse);

@@ -77,9 +77,9 @@
       "weakPassword": "密码强度不够",
       "networkError": "网络错误，请检查网络连接",
       "tooManyRequests": "尝试次数过多，请稍后再试",
-      "invalidVerificationCode": "验证码不正确,请检查后重试",
+      "invalidVerificationCode": "验证码不正确，请检查后重试",
       "invalidPhoneNumber": "这看起来不是一个有效的手机号",
-      "accountExistsDifferentCredential": "这个邮箱已有账号,但当初是用另一种方式登录的。请改用那种方式登录。"
+      "accountExistsDifferentCredential": "这个邮箱已有账号，但当初是用另一种方式登录的。请改用那种方式登录。"
     },
     "reset": {
       "title": "重置密码",
@@ -111,7 +111,7 @@
       "resendCode": "重新发送验证码",
       "changeNumber": "更换手机号",
       "errors": {
-        "invalidPhone": "请输入有效的手机号,包含国家/地区代码(例如 +86 138 0000 0000)",
+        "invalidPhone": "请输入有效的手机号，包含国家/地区代码（例如 +86 138 0000 0000）",
         "invalidCode": "请输入 6 位验证码"
       }
     },
@@ -121,7 +121,7 @@
     "title": "聊天",
     "searchPlaceholder": "搜索聊天",
     "empty": "暂无聊天",
-    "offlineEmpty": "离线中 — 显示缓存聊天",
+    "offlineEmpty": "离线中——显示缓存聊天",
     "actionsTitle": "聊天操作",
     "pin": "置顶",
     "unpin": "取消置顶",
@@ -246,15 +246,15 @@
       "tooManyRequests": "尝试次数过多，请稍后再试。",
       "genericError": "出错了，请重试。",
       "deleteTitle": "删除账号",
-      "deleteDescription": "将永久删除你的账号、资料、朋友圈、收藏以及你发送的消息。此操作无法撤销。",
-      "deleteWhatHappens": "此操作将永久删除：\n\n• 你的个人资料、朋友圈、收藏和好友关系\n• 你在所有会话中发送的消息与媒体文件\n• 存储在此设备上的加密密钥\n\n对方发给你的消息仍会保留在他们自己的会话中。\n\n此操作无法撤销。",
+      "deleteDescription": "将永久删除你的账号、资料、收藏以及你发送的消息。此操作无法撤销。",
+      "deleteWhatHappens": "此操作将永久删除：\n\n• 你的个人资料、收藏和好友关系\n• 你在所有会话中发送的消息与媒体文件\n• 存储在此设备上的加密密钥\n\n对方发给你的消息仍会保留在他们自己的会话中。\n\n此操作无法撤销。",
       "deleteConfirm": "全部删除",
       "deleteEnterPassword": "请输入密码以永久删除你的账号。",
       "deleting": "正在删除你的数据…",
       "deleteFailed": "无法删除账号，请重试。",
       "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。",
       "downloadDataTitle": "下载我的数据",
-      "downloadDataDesc": "获取你的个人资料和对话的纯文本副本,可自行保存或查看 —— 与下面的「导出备份」不同,那个生成的是用于把账号迁移到新设备的加密文件。",
+      "downloadDataDesc": "获取你的个人资料和对话的纯文本副本，可自行保存或查看——与下面的「导出备份」不同，那个生成的是用于把账号迁移到新设备的加密文件。",
       "downloadDataButton": "下载"
     },
     "modals": {
@@ -287,18 +287,18 @@
       "signOutFailed": "退出登录失败",
       "visibilityUpdateFailed": "无法更新个人资料可见性。",
       "downloadDataFailedTitle": "错误",
-      "downloadDataFailedBody": "无法准备你的数据,请重试。"
+      "downloadDataFailedBody": "无法准备你的数据，请重试。"
     },
     "restartForLayoutTitle": "需要重启才能完成切换",
-    "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox,界面才会按那个方向排布。",
+    "restartForLayoutBody": "{{language}} 是从右向左书写的。关闭并重新打开 Chatterbox，界面才会按那个方向排布。",
     "privacyTitle": "隐私",
-    "privacyDescription": "以下设置只作用于这台设备,不会同步也不会共享。",
+    "privacyDescription": "以下设置只作用于这台设备，不会同步也不会共享。",
     "privacyOn": "开",
     "privacyOff": "关",
     "privacyScreenshotTitle": "阻止截屏",
-    "privacyScreenshotHint": "打开聊天时阻止截屏和录屏,并在最近任务列表中隐藏应用画面。仅 Android。",
+    "privacyScreenshotHint": "打开聊天时阻止截屏和录屏，并在最近任务列表中隐藏应用画面。仅 Android。",
     "privacyNotificationsTitle": "隐藏通知内容",
-    "privacyNotificationsHint": "通知只提示有新消息,不显示发送者和内容。",
+    "privacyNotificationsHint": "通知只提示有新消息，不显示发送者和内容。",
     "privacyExifTitle": "清除照片元数据",
     "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。",
     "shortcutRecovery": "助记词",
@@ -308,9 +308,9 @@
       "private": "私密"
     },
     "privacyTypingTitle": "正在输入提示",
-    "privacyTypingHint": "默认关闭,而且是双向的 —— 打开后,服务器会记录你何时在打字,你也能看到对方在打字。",
+    "privacyTypingHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时在打字，你也能看到对方在打字。",
     "privacyReceiptsTitle": "已读回执",
-    "privacyReceiptsHint": "默认关闭,而且是双向的 —— 打开后,服务器会记录你何时读了消息,你也能看到对方何时读了。"
+    "privacyReceiptsHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时读了消息，你也能看到对方何时读了。"
   },
   "call": {
     "connecting": "连接中...",
@@ -339,7 +339,7 @@
     "cameraUnavailable": "摄像头不可用——仍可用语音接听",
     "unknownCaller": "某人",
     "groupUnsupportedTitle": "群组通话暂不可用",
-    "groupUnsupportedBody": "目前通话只支持一对一聊天。在群里它只会拨给其中一个人,所以在这里关闭了。"
+    "groupUnsupportedBody": "目前通话只支持一对一聊天。在群里它只会拨给其中一个人，所以在这里关闭了。"
   },
   "chatMedia": {
     "seconds": "{{count}}秒"
@@ -362,8 +362,8 @@
     "voiceTooLongTitle": "录音过长",
     "voiceTooLongBody": "录音过长，无法发送。请录制两分钟以内的语音。",
     "channelSealed": "端到端加密。这条消息会被封装给这个聊天里的人。",
-    "channelClear": "未加密。这条消息服务器可读 —— 这个聊天里没有可以封装的密钥。",
-    "channelClearBar": "未加密 —— 你发送的内容服务器可以读取",
+    "channelClear": "未加密。这条消息服务器可读——这个聊天里没有可以封装的密钥。",
+    "channelClearBar": "未加密——你发送的内容服务器可以读取",
     "reportReason": {
       "spam": "垃圾信息",
       "harassment": "骚扰",
@@ -372,13 +372,13 @@
       "impersonation": "冒充他人",
       "other": "其他"
     },
-    "unsafeLink": "该链接已被拦截,因为它不是一个安全的网址。",
+    "unsafeLink": "该链接已被拦截，因为它不是一个安全的网址。",
     "sealedToKeys": "已封装 · {{count}} 个密钥",
     "sealedToKeys_plural": "已封装 · {{count}} 个密钥",
     "protectionNone": "未加密",
-    "protectionNoneA11y": "未加密 —— 这条消息服务器可以读取。",
+    "protectionNoneA11y": "未加密——这条消息服务器可以读取。",
     "protectionStatic": "无前向保密",
-    "protectionStaticA11y": "已加密,但用的是长期密钥:将来拿到该密钥的人可以回溯解密。",
+    "protectionStaticA11y": "已加密，但用的是长期密钥：将来拿到该密钥的人可以回溯解密。",
     "sealedPending": "🔒 …",
     "sealedOtherDevice": "🔒 封装给了另一台设备",
     "sealedNeedsUpdate": "🔒 请更新 app 才能读取",
@@ -396,7 +396,7 @@
     "nameWithValue": "名称：{{name}}",
     "exportChat": "导出聊天 (JSON)",
     "importChat": "导入聊天 (JSON)",
-    "cleanupMedia": "清理媒体 (30 天)",
+    "cleanupMedia": "清理媒体（30 天）",
     "deleteChat": "删除聊天",
     "data": "数据",
     "exportModalTitle": "导出聊天",
@@ -429,11 +429,11 @@
       "deleteFailedBody": "删除聊天失败",
       "copiedTitle": "已复制",
       "copiedBody": "聊天 JSON 已复制到剪贴板",
-      "leaveClearTitle": "退出并删除你的消息?",
-      "leaveClearBody": "你发送的消息会对所有人删除。别人发送的消息会保留,他们也继续留在这个对话里。你在这里安排的定时消息会被取消,并且你会被移出聊天。",
+      "leaveClearTitle": "退出并删除你的消息？",
+      "leaveClearBody": "你发送的消息会对所有人删除。别人发送的消息会保留，他们也继续留在这个对话里。你在这里安排的定时消息会被取消，并且你会被移出聊天。",
       "leaveClearConfirm": "退出",
       "leaveClearFailedTitle": "错误",
-      "leaveClearFailedBody": "未能退出聊天。没有任何改动 —— 请重试。"
+      "leaveClearFailedBody": "未能退出聊天。没有任何改动——请重试。"
     },
     "leaveAndClear": "删除我的消息并退出"
   },
@@ -487,7 +487,7 @@
     "composerTitle": "不只是文字",
     "composerBody": "在聊天中，你可以发送照片、文件、语音和 GIF，回复或 @提及，甚至定时发送消息。",
     "spacesTitle": "共享空间",
-    "spacesBody": "打开聊天的菜单可以使用媒体库和共享清单 —— 和消息一样,它们也是端到端加密的。",
+    "spacesBody": "打开聊天的菜单可以使用媒体库和共享清单——和消息一样，它们也是端到端加密的。",
     "callsTitle": "语音和视频通话",
     "callsBody": "在聊天中即可直接拨打——一键语音，一键视频。",
     "profileTitle": "你与设置",
@@ -508,13 +508,13 @@
     "active": "你的订阅正在生效。",
     "renewsOn": "{{date}} 续订",
     "endsOn": "{{date}} 到期",
-    "pastDue": "上一次扣款没有成功 —— 请在网页端更新银行卡以继续使用 Pro。",
+    "pastDue": "上一次扣款没有成功——请在网页端更新银行卡以继续使用 Pro。",
     "pitch": "解锁 AI 聊天摘要与搜索。",
     "manageOnWeb": "在 Chatterbox 网站订阅或管理你的订阅。",
     "lockedAiMobile": "AI 聊天摘要与搜索属于 Chatterbox Pro。在 Chatterbox 网站订阅后即可在这里使用。"
   },
   "errors": {
-    "generic": "出了点问题,请重试。"
+    "generic": "出了点问题，请重试。"
   },
   "store": {
     "title": "商店",
@@ -523,27 +523,27 @@
   },
   "aiConsent": {
     "title": "AI 功能会把消息发出这台设备",
-    "body": "Chatterbox 会加密你的消息,只有你和对方能读。AI 是唯一的例外。\n\n为了做摘要、翻译或转写,被选中的消息会在这台设备上解密,然后发送到我们的服务器及其 AI 服务商。它们只用于生成你要的结果,不用于训练任何模型 —— 但在传输和处理过程中,它们不是端到端加密的。\n\n其余一切保持加密:你没有对其使用 AI 的消息,以及你的共享清单。\n\n你可以随时在「我的」里关闭它。",
+    "body": "Chatterbox 会加密你的消息，只有你和对方能读。AI 是唯一的例外。\n\n为了做摘要、翻译或转写，被选中的消息会在这台设备上解密，然后发送到我们的服务器及其 AI 服务商。它们只用于生成你要的结果，不用于训练任何模型——但在传输和处理过程中，它们不是端到端加密的。\n\n其余一切保持加密：你没有对其使用 AI 的消息，以及你的共享清单。\n\n你可以随时在「我的」里关闭它。",
     "accept": "允许 AI 功能",
     "decline": "暂不",
     "settingsTitle": "AI 功能",
-    "settingsOn": "已允许 —— 使用 AI 时,被选中的消息会发出这台设备。",
-    "settingsOff": "已关闭 —— 什么都不会发出。任何 AI 功能运行前都会先询问你。",
+    "settingsOn": "已允许——使用 AI 时，被选中的消息会发出这台设备。",
+    "settingsOff": "已关闭——什么都不会发出。任何 AI 功能运行前都会先询问你。",
     "turnOff": "关闭 AI 功能",
     "turnOn": "允许 AI 功能",
     "turnedOff": "已在这台设备上关闭 AI 功能"
   },
   "linkPreview": {
     "settingsTitle": "链接预览",
-    "settingsOn": "已开启 —— 你发送链接时,这台设备会抓取一次它的标题和图片,加密后放进消息里。收到的人不会为这个链接向我们的服务器发起任何请求。",
-    "settingsOff": "已关闭 —— 你发送的链接就是纯链接,我们的服务器不会知道它们。",
+    "settingsOn": "已开启——你发送链接时，这台设备会抓取一次它的标题和图片，加密后放进消息里。收到的人不会为这个链接向我们的服务器发起任何请求。",
+    "settingsOff": "已关闭——你发送的链接就是纯链接，我们的服务器不会知道它们。",
     "turnOff": "关闭链接预览",
     "turnOn": "开启链接预览",
     "turnedOff": "已在这台设备上关闭链接预览"
   },
   "trash": {
     "title": "最近删除",
-    "desc": "已删除的消息可在 24 小时内恢复,超过后将永久消失。只有你能看到和恢复你自己删除的消息。",
+    "desc": "已删除的消息可在 24 小时内恢复，超过后将永久消失。只有你能看到和恢复你自己删除的消息。",
     "empty": "最近没有删除任何内容。",
     "recover": "恢复",
     "expired": "这条消息已无法恢复。",
@@ -559,24 +559,24 @@
     "recover": "恢复聊天",
     "hiddenTitle": "已隐藏的聊天",
     "hiddenEmpty": "没有隐藏的聊天。",
-    "hiddenHint": "隐藏的聊天会一直隐藏,直到你恢复它,即使有新消息到达也一样。"
+    "hiddenHint": "隐藏的聊天会一直隐藏，直到你恢复它，即使有新消息到达也一样。"
   },
   "members": {
     "title": "成员({{count}})",
-    "you": "(你)",
+    "you": "（你）",
     "full": "一个聊天最多容纳 {{max}} 人",
     "leave": "退出聊天",
-    "leaveConfirmTitle": "退出这个聊天?",
-    "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读,之后的不会。以后可以被重新加回来。",
+    "leaveConfirmTitle": "退出这个聊天？",
+    "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读，之后的不会。以后可以被重新加回来。",
     "nobodyToAdd": "没有人可加了。和你有对话的人都已经在这里。",
     "addHint": "只能加已经和你有对话的人。没有别人可加——没有人能被搜到。",
     "addPerson": "添加 {{name}}"
   },
   "keys": {
-    "restoreTitle": "恢复你的消息记录?",
-    "restoreBody": "这看起来是一台新设备,而这个账号已经有加密密钥了。输入助记词恢复,才能继续读到旧消息;也可以直接继续,从头开始。",
+    "restoreTitle": "恢复你的消息记录？",
+    "restoreBody": "这看起来是一台新设备，而这个账号已经有加密密钥了。输入助记词恢复，才能继续读到旧消息；也可以直接继续，从头开始。",
     "supersededTitle": "你的加密密钥变了",
-    "supersededBody": "这台设备的密钥被另一台设备替换了,所以从那之后发给你的消息在这里打不开。输入那台设备的助记词才能读取。",
+    "supersededBody": "这台设备的密钥被另一台设备替换了，所以从那之后发给你的消息在这里打不开。输入那台设备的助记词才能读取。",
     "notNow": "暂不",
     "restore": "恢复"
   },
