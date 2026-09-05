@@ -1,3 +1,28 @@
+/**
+ * Friend requests, friendships and blocks.
+ *
+ * ## Kept on purpose, and on borrowed time
+ *
+ * This is a social graph in plaintext on the server: `friends/{id}.userIds`
+ * and `friendRequests` say who knows whom, in documents Firestore can read,
+ * index and hand over. For an app whose users are chosen for caring about
+ * privacy, that is the wrong shape — metadata like this is often worth more
+ * than the message contents it sits beside, and the contents here are the
+ * part that is already encrypted.
+ *
+ * It survived the removal of Moments (2026-09-05), which is what it mostly
+ * existed to serve — a feed needs a friend graph to decide who can see a post.
+ * It stays because blocking and requests are still wanted, not because this
+ * implementation is right. The intent is to rebuild it under metadata
+ * minimisation rather than to keep it as-is.
+ *
+ * So: **do not build new features on this graph.** Anything that makes more of
+ * the app depend on a server-readable list of who talks to whom makes that
+ * rebuild more expensive, and it is already the largest gap between this app
+ * and what its users would check first. Starting a chat, notably, does not go
+ * through here — it takes an email address — so the graph is not load-bearing
+ * for the messenger itself.
+ */
 import {
   collection,
   deleteDoc,
