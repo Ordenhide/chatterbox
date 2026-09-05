@@ -32,6 +32,6 @@ export function resolveChatMeta(
   const isGroup = chat.participants.length > 2;
   const title = isGroup
     ? custom || chat.name || `${chat.participants.length} members`
-    : custom || other?.displayName || other?.email || chat.name || 'Chat';
+    : custom || other?.displayName || chat.name || 'Chat';
   return {title, seed: otherUid};
 }

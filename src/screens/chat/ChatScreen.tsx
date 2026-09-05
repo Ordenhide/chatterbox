@@ -1874,7 +1874,7 @@ export default function ChatScreen() {
             ? customName ||
               chat.name ||
               t('members.title', {count: chat.participants.length})
-            : customName || otherUser?.displayName || otherUser?.email || 'Chat';
+            : customName || otherUser?.displayName || 'Chat';
           setOtherUserName(name);
           setOtherUser(otherUser);
           setCustomName(customName);

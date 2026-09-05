@@ -30,10 +30,22 @@ export interface VaultItem {
   createdAt: number;
 }
 
+/**
+ * A user as this client holds one in memory.
+ *
+ * `email` and `photoURL` come from Firebase Auth and never leave the device:
+ * they are deliberately **not** in the `users/{uid}` document any more, and
+ * the rules refuse to let either be introduced or changed there (see
+ * upsertUserProfile in services/firebaseChat.ts). A peer profile fetched from
+ * Firestore therefore has neither, whatever this type says is optional —
+ * reading `peer.email` will find nothing.
+ */
 export interface User {
   uid: string;
+  /** From Firebase Auth, for your own account only. Never a peer's. */
   email: string;
   displayName?: string;
+  /** From Firebase Auth, for your own account only. Never a peer's. */
   photoURL?: string;
   fcmToken?: string | null;
   profileVisibility?: 'public' | 'friends' | 'private';

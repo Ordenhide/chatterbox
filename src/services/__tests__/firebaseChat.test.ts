@@ -18,7 +18,7 @@ const mockBatchCommit = jest.fn(async () => undefined);
 
 jest.mock('../firebase/firestore', () => ({
   collection: (..._args: unknown[]) => ({}),
-  deleteField: () => ({}),
+  deleteField: () => 'DELETE_FIELD',
   doc: (_parent: unknown, id: string) => ({path: id}),
   deleteDoc: jest.fn(async () => undefined),
   getDoc: async (ref: {path: string}) => {
@@ -76,7 +76,7 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUsersByIds, setTyping} from '../firebaseChat';
+import {deleteMessages, getUsersByIds, setTyping, upsertUserProfile} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
@@ -249,5 +249,47 @@ describe('setTyping never rejects', () => {
     await setTyping('c1', 'alice', false);
     const [, payload] = mockedSetDoc.mock.calls[0];
     expect((payload as any).typingBy.alice).toBe(0);
+  });
+});
+
+/**
+ * The public profile is the one document about a user that anyone knowing
+ * their uid can read — which is everyone they have shared a group with. What
+ * it does *not* carry is the point.
+ */
+describe('upsertUserProfile', () => {
+  const mockedSetDoc = setDoc as jest.MockedFunction<typeof setDoc>;
+
+  beforeEach(() => mockedSetDoc.mockClear());
+
+  const written = () => mockedSetDoc.mock.calls[0][1] as Record<string, unknown>;
+
+  it('deletes the email rather than omitting it', async () => {
+    // Omitting is not enough: this writes with `merge: true`, which leaves an
+    // absent field exactly where it was. Every account created before this
+    // would have kept its address forever.
+    await upsertUserProfile({uid: 'alice', email: 'alice@example.com'} as never);
+    expect(written().email).toBe('DELETE_FIELD');
+  });
+
+  it('deletes the photo URL the same way', async () => {
+    await upsertUserProfile({uid: 'alice', photoURL: 'https://example.com/a.jpg'} as never);
+    expect(written().photoURL).toBe('DELETE_FIELD');
+  });
+
+  it('writes nothing else that identifies the account off-device', async () => {
+    await upsertUserProfile({
+      uid: 'alice',
+      email: 'alice@example.com',
+      photoURL: 'https://example.com/a.jpg',
+      displayName: 'Alice',
+    } as never);
+    const keys = Object.keys(written()).sort();
+    expect(keys).toEqual(
+      ['displayName', 'email', 'fcmToken', 'photoURL', 'profileVisibility', 'uid', 'updatedAt'].sort(),
+    );
+    // The three that are present only to be removed.
+    expect(written().fcmToken).toBe('DELETE_FIELD');
+    expect(written().uid).toBe('alice');
   });
 });

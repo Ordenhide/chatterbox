@@ -134,44 +134,64 @@ service cloud.firestore {
     }
 
     /**
-     * Stops a profile from claiming an identity its owner does not hold.
+     * Stops a profile from carrying an identity it should not have, and from
+     * claiming a uid that is not its own.
      *
-     * `email` is not decoration: it is what "add friend" and "new chat" search
-     * on (searchUsers / getUserByEmail in services/firebaseChat.ts). Owning
-     * your own document used to be the only requirement for writing it, so any
-     * user could set their profile email to someone else's, and a victim
-     * searching for that address would find the impersonator and start a chat
-     * with them. Trust-on-first-use then does exactly what it is designed to
-     * do — it does not flag a first contact, because every key is unseen once
-     * — so the conversation comes up correctly encrypted, to the wrong person.
-     * The encryption is never broken; the identity layer under it is simply
-     * bypassed, and by any ordinary user rather than a hostile server.
+     * `email` used to be *validated* here rather than refused, because it was
+     * what "add friend" and "new chat" searched on: any user could set their
+     * profile email to someone else's, and a victim searching for that address
+     * found the impersonator and started an encrypted chat with them.
+     * Trust-on-first-use does not flag a first contact — every key is unseen
+     * once — so the conversation came up correctly encrypted, to the wrong
+     * person. The encryption was never broken; the identity layer under it was
+     * bypassed, by an ordinary user rather than a hostile server.
      *
-     * `uid` matters for the same reason one step later: search results are
-     * built from document *data*, so a uid that disagrees with the document it
-     * sits in redirects whoever acts on that result.
+     * The search is gone (invite links), so the field has no purpose left, and
+     * a real-world identifier readable by everyone who knows your uid — which
+     * is everyone you have shared a group with — is worth more to an attacker
+     * than most of what it sits beside. `photoURL` goes with it: a Storage URL
+     * with the same audience and no expiry.
      *
-     * Both are compared against the auth token, which is issued by Firebase
-     * and cannot be forged by the client. Absent and null are allowed: phone
-     * sign-in produces an account with no email at all, and both clients write
-     * null for it rather than omitting the field.
+     * ## Why this forbids *changing* them rather than *having* them
      *
-     * Compared lower-cased on both sides. The clients normalise before writing
-     * (email lookup depends on it), but a rule that rejected a legitimate
-     * difference in case would lock the account out of every future profile
-     * write, since `request.resource.data` is the whole post-write document —
-     * even an update that only touches an FCM token carries the existing email
-     * through this check.
+     * A rule that refused any document containing an email would refuse every
+     * write by an account that already has one — `request.resource.data` is
+     * the whole post-write document, so an update touching only a session id
+     * still carries the stored email through the check. Existing accounts
+     * would have been locked out of their own profile at the next sign-in,
+     * which is the same trap the validating version of this rule was written
+     * to avoid.
+     *
+     * So: neither field may be introduced or changed, and a create may not
+     * carry them at all. An account that already has one keeps working and
+     * clears it the next time its owner opens the app — both clients write
+     * `deleteField()` for both on every sign-in (upsertUserProfile in
+     * services/firebaseChat.ts), which is a change this rule allows because it
+     * removes the field rather than setting it.
+     *
+     * The impersonation is closed either way: a value that can never be
+     * introduced or altered is one that was already checked against the auth
+     * token when it was written.
+     *
+     * `uid` is still checked rather than refused, because it is genuinely
+     * used: a uid that disagrees with the document it sits in redirects
+     * whoever acts on it.
      */
     function identityFieldsHonest(userId) {
       // Deletes carry no resource to inspect.
       return request.resource == null || (
-        (!('email' in request.resource.data) ||
-          request.resource.data.email == null ||
-          request.resource.data.email.lower() ==
-            request.auth.token.get('email', '').lower()) &&
+        unchangedOrAbsent('email') &&
+        unchangedOrAbsent('photoURL') &&
         (!('uid' in request.resource.data) ||
           request.resource.data.uid == userId)
+      );
+    }
+
+    /** True when `field` is absent after the write, or exactly what it already was. */
+    function unchangedOrAbsent(field) {
+      return !(field in request.resource.data) || (
+        resource != null &&
+        request.resource.data.get(field, null) == resource.data.get(field, null)
       );
     }
 

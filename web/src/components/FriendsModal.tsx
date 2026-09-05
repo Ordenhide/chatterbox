@@ -3,7 +3,7 @@ import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
 import {getUserById, listenChatsForUser} from '../services/chat';
-import {contactsFromChats, type Contact} from '../services/contacts';
+import {contactsFromChats, uidLabel, type Contact} from '../services/contacts';
 import {
   acceptFriendRequest,
   blockUser,
@@ -58,7 +58,7 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
     );
   }, [friends, requests, sent, blocked, myUid, names]);
 
-  const nameOf = (uid: string) => names[uid]?.displayName || names[uid]?.email || uid.slice(0, 6);
+  const nameOf = (uid: string) => names[uid]?.displayName || uidLabel(uid);
 
   useEffect(() => listenChatsForUser(myUid, chats => setContacts(contactsFromChats(chats, myUid))), [myUid]);
 

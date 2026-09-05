@@ -153,7 +153,7 @@ export default function CallProvider({
         }
 
         const other = await getUserById(call.createdBy);
-        const callerName = other?.displayName || other?.email || 'Someone';
+        const callerName = other?.displayName || 'Someone';
 
         if (age >= RING_TIMEOUT_MS) {
           logMiss(call, callerName); // stale on arrival (on-open, or caller gone)

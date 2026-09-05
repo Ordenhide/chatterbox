@@ -14,6 +14,7 @@ const {
   addDoc,
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   arrayRemove,
@@ -149,26 +150,50 @@ describe('users/{userId}', () => {
       );
     });
 
-    it('allows writing the account\'s own email', async () => {
+    /**
+     * The address is refused now, not merely validated. Writing your *own*
+     * email used to be allowed and is the case that mattered most, since it is
+     * what every honest client did — so it is the one pinned here.
+     */
+    it('denies a new profile carrying an email, even the account\'s own', async () => {
       const alice = asEmailUser('alice', 'alice@example.com');
-      await assertSucceeds(
+      await assertFails(
         setDoc(doc(alice, 'users/alice'), {email: 'alice@example.com', displayName: 'Alice'}),
       );
     });
 
-    it('ignores case differences between the token and the stored value', async () => {
-      // Rejecting these would lock the account out of *every* future profile
-      // write, because request.resource.data is the whole post-write document
-      // — an update touching only an FCM token still carries the email.
-      const alice = asEmailUser('alice', 'Alice@Example.com');
-      await assertSucceeds(
-        setDoc(doc(alice, 'users/alice'), {email: 'alice@example.com'}),
+    it('denies a profile carrying a photo URL', async () => {
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertFails(
+        setDoc(doc(alice, 'users/alice'), {photoURL: 'https://example.com/a.jpg'}),
       );
     });
 
-    it('allows a null email, which is what phone sign-in produces', async () => {
+    it('denies an empty email as much as a real one — the field is the problem', async () => {
       const phoneUser = testEnv.authenticatedContext('pat', {}).firestore();
-      await assertSucceeds(setDoc(doc(phoneUser, 'users/pat'), {email: null, displayName: 'Pat'}));
+      await assertFails(setDoc(doc(phoneUser, 'users/pat'), {email: null, displayName: 'Pat'}));
+    });
+
+    it('denies changing an email an old account already has', async () => {
+      await seed(db => setDoc(doc(db, 'users/alice'), {email: 'alice@example.com'}));
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertFails(updateDoc(doc(alice, 'users/alice'), {email: 'alice@other.example'}));
+    });
+
+    /**
+     * The migration path. Both clients write `deleteField()` for these on every
+     * sign-in, so an account created before this clears itself the next time
+     * its owner opens the app — no server-side backfill, and nothing the user
+     * has to do.
+     */
+    it('allows deleting an email an old account already has', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'users/alice'), {email: 'alice@example.com', displayName: 'Alice'}),
+      );
+      const alice = asEmailUser('alice', 'alice@example.com');
+      await assertSucceeds(
+        setDoc(doc(alice, 'users/alice'), {email: deleteField(), displayName: 'Alice'}, {merge: true}),
+      );
     });
 
     it('denies an account with no email claiming one', async () => {
@@ -184,19 +209,15 @@ describe('users/{userId}', () => {
     });
 
     it('denies a uid that disagrees with the document it sits in', async () => {
-      // Search results are built from document data, so this redirects
-      // whoever acts on the result at a third party.
+      // Anything acting on a profile's own data — adding its owner to a chat,
+      // sealing to them — would be redirected at a third party.
       const mallory = asEmailUser('mallory', 'mallory@evil.example');
-      await assertFails(
-        setDoc(doc(mallory, 'users/mallory'), {uid: 'bob', email: 'mallory@evil.example'}),
-      );
+      await assertFails(setDoc(doc(mallory, 'users/mallory'), {uid: 'bob'}));
     });
 
     it('allows the matching uid', async () => {
       const alice = asEmailUser('alice', 'alice@example.com');
-      await assertSucceeds(
-        setDoc(doc(alice, 'users/alice'), {uid: 'alice', email: 'alice@example.com'}),
-      );
+      await assertSucceeds(setDoc(doc(alice, 'users/alice'), {uid: 'alice'}));
     });
 
     it('still allows an ordinary update that carries the existing email through', async () => {

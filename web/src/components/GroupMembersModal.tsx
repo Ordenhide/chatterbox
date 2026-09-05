@@ -8,7 +8,7 @@ import {
   leaveChat,
   listenChatsForUser,
 } from '../services/chat';
-import {contactsFromChats, type Contact} from '../services/contacts';
+import {contactsFromChats, uidLabel, type Contact} from '../services/contacts';
 import {MAX_GROUP_MEMBERS} from '../services/e2ee';
 import Icon from './Icon';
 
@@ -58,7 +58,7 @@ export default function GroupMembersModal({
         Object.fromEntries(
           pairs.map(([uid, profile]) => [
             uid,
-            profile?.displayName || profile?.email || uid.slice(0, 6),
+            profile?.displayName || uidLabel(uid),
           ]),
         ),
       );

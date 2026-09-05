@@ -2,11 +2,17 @@
 // fields the web client reads/writes. Kept intentionally narrow.
 import type {Timestamp} from 'firebase/firestore';
 
+/**
+ * The `users/{uid}` document, which is readable by anyone who knows the uid.
+ *
+ * No `email` and no `photoURL`: both were removed on 2026-09-05 and the rules
+ * now refuse to let either be introduced or changed. The address lives in
+ * Firebase Auth, where a credential belongs, and this type omits them so
+ * nothing can quietly start reading them again.
+ */
 export interface UserProfile {
   uid: string;
-  email: string;
   displayName?: string | null;
-  photoURL?: string | null;
   profileVisibility?: 'public' | 'friends' | 'private';
   lastActiveAt?: Timestamp;
 }

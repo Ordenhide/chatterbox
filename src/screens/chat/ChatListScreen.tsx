@@ -308,7 +308,7 @@ export default function ChatListScreen() {
         const otherUser = otherId ? usersById[otherId] : null;
         const customName = chat.nameBy?.[user.uid] || '';
         const displayName =
-          customName || otherUser?.displayName || otherUser?.email || chat.name || 'Chat';
+          customName || otherUser?.displayName || chat.name || 'Chat';
         const typingAt = otherId && typingVisible ? chat.typingBy?.[otherId] || 0 : 0;
         const isTyping = typingAt ? now - typingAt < 3000 : false;
         return {

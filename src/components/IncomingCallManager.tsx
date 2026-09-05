@@ -181,7 +181,7 @@ export default function IncomingCallManager({
 
         const profile = await getUserById(call.createdBy).catch(() => null);
         const callerName =
-          (profile as any)?.displayName || (profile as any)?.email || t('call.unknownCaller');
+          (profile as any)?.displayName || t('call.unknownCaller');
 
         setIncoming(prev => (prev ? prev : {call, callerName}));
         // Ring for whatever remains of the window, then give up.

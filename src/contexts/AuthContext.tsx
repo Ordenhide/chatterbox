@@ -558,9 +558,11 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           doc(db, 'users', userCredential.user.uid),
           {
             uid: userCredential.user.uid,
-            email: normalizedEmail,
+            // No email and no photo: see upsertUserProfile in
+            // services/firebaseChat.ts. Firebase Auth holds the address, which
+            // is where a credential belongs; this document is readable by
+            // anyone who knows the uid.
             displayName: normalizedDisplayName || null,
-            photoURL: userCredential.user.photoURL || null,
             profileVisibility: 'public',
             defaultMomentVisibility: 'friends',
             updatedAt: serverTimestamp(),
@@ -604,9 +606,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           doc(db, 'users', firebaseUser.uid),
           {
             uid: firebaseUser.uid,
-            email: firebaseUser.email || null,
+            // No email and no photo — same reason as signUp above. A Google or
+            // Apple sign-in hands over both, and neither is written down.
             displayName: firebaseUser.displayName || null,
-            photoURL: firebaseUser.photoURL || null,
             profileVisibility: 'public',
             defaultMomentVisibility: 'friends',
             updatedAt: serverTimestamp(),

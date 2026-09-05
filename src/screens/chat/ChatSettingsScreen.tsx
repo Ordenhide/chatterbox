@@ -27,7 +27,7 @@ import {
   GroupFullError,
 } from '../../services/firebaseChat';
 import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
-import {contactsFromChats, type Contact} from '../../services/contacts';
+import {contactsFromChats, uidLabel, type Contact} from '../../services/contacts';
 import {getColors} from '../../theme/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache';
@@ -97,7 +97,7 @@ export default function ChatSettingsScreen() {
           Object.fromEntries(
             participants.map(uid => [
               uid,
-              profiles[uid]?.displayName || profiles[uid]?.email || uid.slice(0, 6),
+              profiles[uid]?.displayName || uidLabel(uid),
             ]),
           ),
         );

@@ -35,7 +35,7 @@ import {
   getUserById,
   getUsersByIds,
 } from '../../services/firebaseChat';
-import {contactsFromChats, type Contact} from '../../services/contacts';
+import {contactsFromChats, uidLabel, type Contact} from '../../services/contacts';
 import {bodyWeight, terminal} from '../../theme/typography';
 
 type UserMap = Record<string, User | null>;
@@ -185,7 +185,7 @@ export default function FriendsScreen() {
         return;
       }
       const otherUser = userMap[otherId] || (await getUserById(otherId));
-      const displayName = otherUser?.displayName || otherUser?.email || t('headers.chat');
+      const displayName = otherUser?.displayName || t('headers.chat');
       const chatId = await createChat([user.uid, otherId], displayName);
       navigation.navigate('Chat', {
         chatId,
@@ -202,7 +202,7 @@ export default function FriendsScreen() {
 
   const renderRequest = ({item}: {item: FriendRequest}) => {
     const fromUser = userMap[item.fromId];
-    const name = fromUser?.displayName || fromUser?.email || item.fromId;
+    const name = fromUser?.displayName || uidLabel(item.fromId);
     return (
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
         <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
@@ -230,7 +230,7 @@ export default function FriendsScreen() {
   const renderFriend = ({item}: {item: Friend}) => {
     const otherId = item.userIds.find(id => id !== user?.uid) || '';
     const otherUser = userMap[otherId];
-    const name = otherUser?.displayName || otherUser?.email || otherId;
+    const name = otherUser?.displayName || uidLabel(otherId);
     return (
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
         <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
@@ -282,7 +282,7 @@ export default function FriendsScreen() {
 
   const renderBlocked = ({item}: {item: BlockRecord}) => {
     const blockedUser = userMap[item.blockedId];
-    const name = blockedUser?.displayName || blockedUser?.email || item.blockedId;
+    const name = blockedUser?.displayName || uidLabel(item.blockedId);
     return (
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
         <Text style={[styles.cardTitle, {color: colors.text}]}>{name}</Text>
@@ -299,7 +299,7 @@ export default function FriendsScreen() {
 
   const renderOutgoing = ({item}: {item: FriendRequest}) => {
     const toUser = userMap[item.toId];
-    const name = toUser?.displayName || toUser?.email || item.toId;
+    const name = toUser?.displayName || uidLabel(item.toId);
     return (
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
         <Text style={[styles.cardTitle, {color: colors.text}]}>

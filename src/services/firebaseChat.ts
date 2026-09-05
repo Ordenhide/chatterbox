@@ -73,17 +73,33 @@ export function clearUserCache() {
   userCache.clear();
 }
 
+/**
+ * The public half of an account: as little as the app can work with.
+ *
+ * `email` and `photoURL` used to live here. The email was the searchable field
+ * the directory ran on, and once the directory went (see the note above
+ * `getUserById`) it was a real-world identifier sitting on the server for no
+ * remaining purpose — readable by anyone who knew the uid, which is everyone
+ * you have ever been in a group with. The photo was a Storage URL with the
+ * same audience and no expiry.
+ *
+ * Both are written as `deleteField()` rather than simply omitted, because
+ * `merge: true` leaves an omitted field exactly where it was: every account
+ * created before this would have kept its address forever. This runs on every
+ * sign-in, so an account clears itself the next time its owner opens the app.
+ *
+ * Firebase Auth still holds the address — it is the credential — and nothing
+ * here changes that. What changes is that it is no longer in a document other
+ * users can read.
+ */
 export async function upsertUserProfile(user: User) {
   await setDoc(
     doc(usersRef(), user.uid),
     {
       uid: user.uid,
-      // Normalize to lowercase so the account stays discoverable by email —
-      // this runs on every login, so a mixed-case value here would clobber the
-      // normalized email from signup and break friend-request/new-chat lookups.
-      email: user.email ? user.email.toLowerCase() : null,
+      email: deleteField(),
+      photoURL: deleteField(),
       displayName: user.displayName || null,
-      photoURL: user.photoURL || null,
       // Push token lives in the owner-only private subcollection now, not on the
       // public profile (which any signed-in user can read). Strip any stale
       // value left on the public doc from older app versions.
