@@ -132,7 +132,9 @@
     "keyMissing": "Ключа нет на этом устройстве",
     "keyUnverified": "Ключ не подтверждён",
     "statChats": "Чатов: {{count}}",
-    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
+    "typing": "Печатает…",
+    "draftPrefix": "Черновик: {{text}}"
   },
   "newChat": {
     "heading": "Начать разговор",

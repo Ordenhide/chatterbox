@@ -191,7 +191,9 @@
     "keyMissing": "Key not on this device",
     "keyUnverified": "Key unverified",
     "statChats": "{{count}} chats",
-    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
+    "typing": "Typing…",
+    "draftPrefix": "Draft: {{text}}"
   },
   "members": {
     "title": "Members ({{count}})",

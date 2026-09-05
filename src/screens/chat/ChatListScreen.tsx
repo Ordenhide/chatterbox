@@ -50,6 +50,9 @@ type ChatListItemProps = {
   unreadCount?: number;
   draft?: string;
   isTyping?: boolean;
+  /** Already translated by the caller — this row renders, it does not resolve. */
+  draftLabel: string;
+  typingLabel: string;
   lastMessage?: ChatRoom['lastMessage'];
   timeLabel?: string;
   avatarText?: string;
@@ -75,6 +78,8 @@ const ChatListItem = memo(
     unreadCount,
     draft,
     isTyping,
+    draftLabel,
+    typingLabel,
     lastMessage,
     timeLabel,
     avatarText,
@@ -118,7 +123,7 @@ const ChatListItem = memo(
           </View>
           {draft ? (
             <Text style={[styles.draftText, {color: warningColor}]} numberOfLines={1}>
-              {isTyping ? 'Typing…' : `Draft: ${draft}`}
+              {isTyping ? typingLabel : draftLabel}
             </Text>
           ) : lastMessage ? (
             <Text style={[styles.lastMessage, {color: textSecondary}]} numberOfLines={1}>
@@ -621,6 +626,8 @@ export default function ChatListScreen() {
             unreadCount={item.unreadCount}
             draft={item.draft}
             isTyping={item.isTyping}
+            draftLabel={t('chatList.draftPrefix', {text: item.draft})}
+            typingLabel={t('chatList.typing')}
             lastMessage={item.lastMessage}
             timeLabel={formatChatTime(item.lastMessage?.createdAt || item.createdAt)}
             avatarText={getInitials(item.displayName || item.name)}
