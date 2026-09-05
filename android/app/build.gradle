@@ -106,6 +106,10 @@ afterEvaluate {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    // Block Store — the E2EE key's automatic restore on a new device.
+    // See KeyBackupModule.java; play-services-auth is already here transitively
+    // via Google Sign-In, this adds only the blockstore artifact.
+    implementation("com.google.android.gms:play-services-auth-blockstore:16.4.0")
 
     // Firebase BoM for consistent SDK versions (aligned with @react-native-firebase 21.7.x)
     implementation platform('com.google.firebase:firebase-bom:34.16.0')

@@ -16,6 +16,7 @@ import {x25519} from '@noble/curves/ed25519.js';
 import {bytesToBase64, base64ToBytes, bytesToHex, hexToBytes} from './crypto';
 import {generateKeypair, type Keypair} from './e2ee';
 import {isValidMnemonic, mnemonicToSecretKey, secretKeyToMnemonic} from './e2eeMnemonic';
+import {clearRecoveryPhrase, loadRecoveryPhrase, saveRecoveryPhrase} from './keyBackup';
 import {mmkvStorage} from './storageMMKV';
 import {
   getSecret,
@@ -108,6 +109,12 @@ async function writeSecretKeyHex(
 export async function clearDeviceKeypair(userId: string): Promise<void> {
   await removeSecret(secretKeyService(userId));
   await mmkvStorage.removeItem(SECRET_KEY_STORAGE_PREFIX + userId);
+  // The platform backup too, and for the same reason the other two go: an
+  // account deleted from this device must not leave a copy of its identity in
+  // iCloud Keychain or Block Store, ready to restore itself onto the next
+  // device the user signs in on — or, worse, to be handed back to this one on
+  // a later reinstall of an account that no longer exists.
+  await clearRecoveryPhrase(userId);
   cached = null;
 }
 
@@ -272,6 +279,12 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
   await writeSecretKeyHex(storageKey, userId, bytesToHex(keypair.secretKey));
   cached = {userId, keypair};
   await publishPublicKey(userId, keypair.publicKey);
+  // After publishing, not before: a backup of a key this account has not
+  // adopted would restore an identity nobody can decrypt to. saveRecoveryPhrase
+  // reports its own failures and returns false rather than throwing, because a
+  // device that cannot back up is a supported state — the phrase still covers
+  // the user, and enrolment must not fail over a convenience.
+  await saveRecoveryPhrase(userId, secretKeyToMnemonic(keypair.secretKey));
   return keypair;
 }
 
@@ -575,7 +588,37 @@ export async function restoreDeviceKeypairFromPhrase(
   await writeSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId, bytesToHex(secretKey));
   cached = {userId, keypair: {secretKey, publicKey}};
   keyGeneration += 1;
+  // A phrase typed in here is now this device's identity, so it is also what a
+  // *next* device should be handed. Without this, restoring by hand would
+  // leave the platform backup holding whatever key it had before — which for
+  // the superseded case above is precisely the key the user just replaced.
+  await saveRecoveryPhrase(userId, phrase);
   return {success: true};
+}
+
+/**
+ * Restores from the platform's own backup — iCloud Keychain or Block Store —
+ * so a new device can enrol itself instead of asking for 24 words.
+ *
+ * Returns false whenever there is nothing to restore from or the restore does
+ * not verify, and the caller then does exactly what it did before: ask for the
+ * phrase. Nothing here weakens that path, and the prompt to write the phrase
+ * down stays as it is — the platform backup is a convenience layered on top of
+ * the guarantee, not a replacement for it.
+ *
+ * `allowKeyMismatch` is deliberately not set. A backed-up phrase that does not
+ * match the published key means some other device has since replaced this
+ * identity, and republishing the old one automatically would strand everything
+ * encrypted to the new one — silently, at launch, with no one having asked for
+ * it. Mismatch is exactly the case a human should be shown, which is what the
+ * phrase screen already does.
+ */
+export async function restoreDeviceKeypairFromBackup(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  const phrase = await loadRecoveryPhrase(userId);
+  if (!phrase) return false;
+  const result = await restoreDeviceKeypairFromPhrase(userId, phrase);
+  return result.success;
 }
 
 /** Test seam — drops the in-memory cache. */
