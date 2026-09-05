@@ -463,7 +463,7 @@ export default function ProfileScreen({user}: {user: User}) {
               style={styles.pwSubmit}
               onClick={() => setShowRecovery(true)}>
               <Icon name="key" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
-              Show or restore phrase
+              {t('recovery.showOrRestore')}
             </button>
           </section>
 

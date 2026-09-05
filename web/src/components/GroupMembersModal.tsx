@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
+import {useT} from '../i18n';
 import {useModal} from '../hooks/useModal';
 import {
   addChatMembers,
@@ -40,6 +41,7 @@ export default function GroupMembersModal({
   onLeft: () => void;
 }) {
   const dialogRef = useModal<HTMLDivElement>(onClose);
+  const {t} = useT();
   const [names, setNames] = useState<Record<string, string>>({});
   // The people you already have a one-to-one chat with. There is no directory
   // to search any more — see services/contacts.ts.
@@ -94,8 +96,8 @@ export default function GroupMembersModal({
     } catch (err) {
       setError(
         err instanceof GroupFullError
-          ? `A chat can hold at most ${MAX_GROUP_MEMBERS} people.`
-          : 'Could not add that person. Please try again.',
+          ? t('members.full', {max: MAX_GROUP_MEMBERS})
+          : t('members.addFailed'),
       );
     } finally {
       setBusy(false);
@@ -142,16 +144,16 @@ export default function GroupMembersModal({
         {(() => {
           const addable = contacts.filter(c => !members.includes(c.uid));
           if (addable.length === 0) {
-            return <p style={styles.hint}>Nobody left to add from your own conversations.</p>;
+            return <p style={styles.hint}>{t('members.nobodyToAdd')}</p>;
           }
           return (
             <div style={styles.addRow}>
               <select
                 style={styles.input}
-                aria-label="Add someone you already chat with"
+                aria-label={t('members.addFromChats')}
                 value={picked}
                 onChange={e => setPicked(e.target.value)}>
-                <option value="">Add someone you already chat with</option>
+                <option value="">{t('members.addFromChats')}</option>
                 {addable.map(contact => (
                   <option key={contact.uid} value={contact.uid}>
                     {contact.label}

@@ -115,9 +115,7 @@ export default function ReportMessageModal({
               onChange={e => setIncludeContent(e.target.checked)}
             />
             <span>
-              Include this message's text in the report. It is sent to the moderators so they
-              can act on it — the rest of this conversation stays encrypted and is not
-              included. Without it, the report may not be actionable.
+              {t('report.includeText')}
             </span>
           </label>
         ) : null}

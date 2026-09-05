@@ -74,6 +74,34 @@ describe('offered languages', () => {
   });
 });
 
+/**
+ * The check that runs the other way.
+ *
+ * Every test here asked whether a language *has* the English keys. None asked
+ * whether it has keys English does not — and that is where the rot collects: a
+ * feature is removed, its strings are deleted from the two locales anyone is
+ * looking at, and the other thirteen keep a translated description of
+ * something that no longer exists.
+ *
+ * That is exactly what happened. Removing the email directory took
+ * `newChat.recipientEmail`, `friends.searchTitle` and eleven others out of
+ * English and Simplified Chinese, because those were the only two offered at
+ * the time. Thirteen files kept all thirteen strings — 169 lines still
+ * explaining how to look somebody up by email — and were then completed to
+ * 100% around them, which made them look finished.
+ *
+ * i18next never surfaces an orphan: nothing reads the key, so nothing fails.
+ * The only way it shows up is a test that asks.
+ */
+describe('no locale carries a string English has dropped', () => {
+  const codes = LANGUAGES.map(l => l.code).filter(c => c !== 'en');
+
+  it.each(codes)('%s has no orphan keys', code => {
+    const orphans = Object.keys(read(code)).filter(k => !(k in en));
+    expect(orphans).toEqual([]);
+  });
+});
+
 describe('every shipped locale is offered', () => {
   /**
    * There used to be thirteen files sitting outside the picker at 42%, and a

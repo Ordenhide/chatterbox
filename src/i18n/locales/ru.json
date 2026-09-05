@@ -139,18 +139,11 @@
   "newChat": {
     "heading": "Начать разговор",
     "subheading": "Введите email человека, с которым хотите общаться.",
-    "recipientEmail": "Email получателя",
-    "emailPlaceholder": "friend@example.com",
     "chatNameLabel": "Название чата (необязательно)",
     "chatNamePlaceholder": "Название чата",
     "helpText": "Получатель должен иметь существующий аккаунт.",
     "creating": "Создание...",
-    "startChat": "Начать чат",
     "errors": {
-      "enterEmail": "Пожалуйста, введите адрес email",
-      "userNotFoundTitle": "Пользователь не найден",
-      "userNotFoundBody": "Такой email не существует на этом устройстве. Сначала создайте другой аккаунт, затем попробуйте снова.",
-      "selfChat": "Вы не можете начать чат с самим собой",
       "createFailed": "Не удалось создать чат",
       "groupFull": "В чате может быть не больше {{max}} человек"
     },
@@ -164,9 +157,6 @@
   "friends": {
     "addFriend": "Добавить друга",
     "uidPlaceholder": "Введите UID пользователя",
-    "emailPlaceholder": "Введите email пользователя",
-    "searchTitle": "Поиск (email или имя)",
-    "searchPlaceholder": "Поиск по email или отображаемому имени",
     "sections": {
       "requests": "Запросы",
       "outgoing": "Исходящие",
@@ -178,11 +168,6 @@
       "outgoing": "Нет исходящих запросов.",
       "friends": "Пока нет друзей.",
       "blocked": "Нет заблокированных пользователей."
-    },
-    "search": {
-      "searching": "Поиск…",
-      "noMatches": "Нет совпадений.",
-      "prompt": "Введите для поиска."
     },
     "buttons": {
       "accept": "Принять",

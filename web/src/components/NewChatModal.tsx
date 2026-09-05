@@ -12,6 +12,7 @@
  */
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
+import {useT} from '../i18n';
 import {useModal} from '../hooks/useModal';
 import {createChat, listenChatsForUser, setChatName} from '../services/chat';
 import {contactsFromChats, type Contact} from '../services/contacts';
@@ -31,6 +32,7 @@ export default function NewChatModal({
   onUseInvite: () => void;
 }) {
   const dialogRef = useModal<HTMLFormElement>(onClose);
+  const {t} = useT();
   const [chats, setChats] = useState<ChatRoom[] | null>(null);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
@@ -57,7 +59,7 @@ export default function NewChatModal({
       if (prev.includes(uid)) return prev.filter(id => id !== uid);
       // You take one of the seats, so only cap-1 others fit.
       if (prev.length >= MAX_GROUP_MEMBERS - 1) {
-        setError(`A chat can hold at most ${MAX_GROUP_MEMBERS} people.`);
+        setError(t('newChat.full', {max: MAX_GROUP_MEMBERS}));
         return prev;
       }
       return [...prev, uid];
@@ -89,7 +91,7 @@ export default function NewChatModal({
       onCreated(chatId);
     } catch (err) {
       console.warn('new chat failed:', err);
-      setError('Could not start the chat. Please try again.');
+      setError(t('newChat.failed'));
       setBusy(false);
     }
   };
@@ -104,26 +106,25 @@ export default function NewChatModal({
         style={styles.modal}
         onClick={e => e.stopPropagation()}
         onSubmit={start}>
-        <h2 style={styles.title}>New chat</h2>
+        <h2 style={styles.title}>{t('newChat.title')}</h2>
         <p style={styles.subtitle}>
-          Send someone an invite link, or put people you already talk to into a group.
+          {t('newChat.subtitle')}
         </p>
 
         <button type="button" className="btn btn-primary" style={styles.invite} onClick={onUseInvite}>
-          Invite someone with a link
+          {t('newChat.invite')}
         </button>
 
         {chats === null ? (
-          <p style={styles.subtitle}>Loading…</p>
+          <p style={styles.subtitle}>{t('newChat.loading')}</p>
         ) : contacts.length === 0 ? (
           <p style={styles.subtitle}>
-            You don’t have any conversations yet. Send someone an invite link above to start one.
+            {t('newChat.noContacts')}
           </p>
         ) : (
           <>
             <p style={styles.subtitle}>
-              Pick from the people you already have a chat with. There is nobody else to pick
-              from — that is the point.
+              {t('newChat.pickHint')}
             </p>
             <ul style={styles.chips}>
               {contacts.map(contact => {
@@ -151,8 +152,8 @@ export default function NewChatModal({
             {selected.length > 1 && (
               <input
                 style={styles.input}
-                placeholder="Group name (optional)"
-                aria-label="Group name"
+                placeholder={t('newChat.groupName')}
+                aria-label={t('newChat.groupName')}
                 value={name}
                 onChange={e => setName(e.target.value)}
               />
@@ -170,7 +171,7 @@ export default function NewChatModal({
             className="btn btn-primary"
             style={styles.start}
             disabled={busy || selected.length === 0}>
-            {busy ? <span className="spinner" /> : selected.length > 1 ? 'Start group' : 'Open chat'}
+            {busy ? <span className="spinner" /> : selected.length > 1 ? t('newChat.startGroup') : t('newChat.openChat')}
           </button>
         </div>
       </form>

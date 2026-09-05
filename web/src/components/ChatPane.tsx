@@ -1984,7 +1984,7 @@ export default function ChatPane({
         <div style={{...styles.locationBanner, background: colors.primary}}>
           <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
             <Icon name="pin" size={13} />
-            Sharing your location
+            {t('location.sharing')}
           </span>
           <button type="button" style={styles.locationBannerStop} onClick={handleStopSharingLocation}>
             Stop

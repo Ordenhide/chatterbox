@@ -438,6 +438,56 @@ const en = {
   'tour.profileBody': 'Set your name, theme, language and notifications here — and replay this tour anytime.',
   'tour.doneTitle': "You're all set!",
   'tour.doneBody': 'That’s the tour. You can replay it whenever you like from Profile.',
+
+  // Invite links, the only way in — see services/invites.ts.
+  'invite.yoursTitle': 'Your invite link',
+  'invite.yoursIntro': 'There is no way to search for someone here, so this is how they reach you. Send the link through anything you already use; the first person to open it can start one conversation with you.',
+  'invite.create': 'Create a link',
+  'invite.copy': 'Copy link',
+  'invite.copied': 'Copied — send it to one person',
+  'invite.copyFailed': 'Could not copy. Select the link above and copy it.',
+  'invite.withdraw': 'Withdraw this link',
+  'invite.statePending': 'Open · single use · {hours}h left',
+  'invite.stateAccepted': 'Someone opened this link. It won’t work again.',
+  'invite.stateGone': 'This link is no longer on the server.',
+  'invite.openTitle': 'Open an invite',
+  'invite.openIntro': 'Paste a link someone sent you. It works once, and only for the person who sent it.',
+  'invite.nameLabel': 'What to call them',
+  'invite.namePlaceholder': 'e.g. Sam',
+  'invite.nameHint': 'This name stays in your chat list. The server is never told who this person is to you.',
+  'invite.open': 'Open the invite',
+  'invite.notEnrolled': 'This browser doesn’t have your encryption key yet, so there’s nothing to invite anyone to. Restore it from your recovery phrase first.',
+  'invite.createFailed': 'Could not create the link. Please try again.',
+  'invite.notALink': 'That isn’t a Chatterbox invite link. It should start with chatterbox://invite#.',
+  'invite.errNotFound': 'This link doesn’t exist. It may have been withdrawn.',
+  'invite.errExpired': 'This link has expired. Ask for a new one.',
+  'invite.errUsed': 'Someone has already opened this link. Ask for a new one.',
+  'invite.errOwn': 'This is your own link. Send it to someone else.',
+  'invite.errFailed': 'Could not open the invite. Please try again.',
+
+  'newChat.title': 'New chat',
+  'newChat.subtitle': 'Send someone an invite link, or put people you already talk to into a group.',
+  'newChat.invite': 'Invite someone with a link',
+  'newChat.loading': 'Loading…',
+  'newChat.noContacts': 'You don’t have any conversations yet. Send someone an invite link above to start one.',
+  'newChat.pickHint': 'Pick from the people you already have a chat with. There is nobody else to pick from — that is the point.',
+  'newChat.groupName': 'Group name (optional)',
+  'newChat.full': 'A chat can hold at most {max} people.',
+  'newChat.failed': 'Could not start the chat. Please try again.',
+  'newChat.startGroup': 'Start group',
+  'newChat.openChat': 'Open chat',
+
+  'members.addFromChats': 'Add someone you already chat with',
+  'members.nobodyToAdd': 'Nobody left to add from your own conversations.',
+  'members.addFailed': 'Could not add that person. Please try again.',
+  'members.full': 'A chat can hold at most {max} people.',
+
+  'location.sharing': 'Sharing your location',
+  'focus.turnOff': 'Turn off focus mode',
+  'recovery.copy': 'Copy to clipboard',
+  'recovery.showOrRestore': 'Show or restore phrase',
+  'report.includeText': "Include this message's text in the report. It is sent to the moderators so they can act on it — the rest of this conversation stays encrypted and is not included. Without it, the report may not be actionable.",
+  'saved.empty': "No saved messages yet. Open a message's actions in any chat and choose Save.",
 };
 
 type Key = keyof typeof en;
@@ -868,6 +918,55 @@ const zh: Partial<Record<Key, string>> = {
   'tour.profileBody': '在这里设置名称、主题、语言和通知——还能随时重播本教程。',
   'tour.doneTitle': '一切就绪！',
   'tour.doneBody': '导览到此结束。你随时可以在「我的」中重新播放。',
+
+  'invite.yoursTitle': '你的邀请链接',
+  'invite.yoursIntro': '这里无法搜索任何人，所以别人只能通过这个链接找到你。用你已经在用的任何方式把它发出去；第一个打开的人可以和你建立一次对话。',
+  'invite.create': '创建链接',
+  'invite.copy': '复制链接',
+  'invite.copied': '已复制——只发给一个人',
+  'invite.copyFailed': '复制失败。请选中上面的链接手动复制。',
+  'invite.withdraw': '撤销这个链接',
+  'invite.statePending': '有效 · 仅限一次 · 剩余 {hours} 小时',
+  'invite.stateAccepted': '已经有人打开了这个链接，它不会再生效。',
+  'invite.stateGone': '这个链接已不在服务器上。',
+  'invite.openTitle': '打开邀请',
+  'invite.openIntro': '粘贴别人发给你的链接。它只能用一次，而且只对发送它的人有效。',
+  'invite.nameLabel': '你怎么称呼对方',
+  'invite.namePlaceholder': '例如 小明',
+  'invite.nameHint': '这个名字只留在你的聊天列表里。服务器永远不会知道这个人对你来说是谁。',
+  'invite.open': '打开邀请',
+  'invite.notEnrolled': '这个浏览器还没有你的加密密钥，因此没有可邀请别人加入的东西。请先用助记词恢复。',
+  'invite.createFailed': '无法创建链接，请重试。',
+  'invite.notALink': '这不是 Chatterbox 邀请链接。它应当以 chatterbox://invite# 开头。',
+  'invite.errNotFound': '这个链接不存在，可能已被撤销。',
+  'invite.errExpired': '这个链接已过期，请索取新的链接。',
+  'invite.errUsed': '已经有人打开过这个链接，请索取新的链接。',
+  'invite.errOwn': '这是你自己的链接，请把它发给别人。',
+  'invite.errFailed': '无法打开邀请，请重试。',
+
+  'newChat.title': '新建聊天',
+  'newChat.subtitle': '给对方发一个邀请链接，或者把已经在聊的人拉进一个群。',
+  'newChat.invite': '用链接邀请别人',
+  'newChat.loading': '加载中…',
+  'newChat.noContacts': '你还没有任何对话。用上面的邀请链接开始第一个。',
+  'newChat.pickHint': '只能从已经和你有对话的人里挑。没有别人可挑——这正是重点。',
+  'newChat.groupName': '群名称（可选）',
+  'newChat.full': '一个聊天最多容纳 {max} 人。',
+  'newChat.failed': '无法开始对话，请重试。',
+  'newChat.startGroup': '创建群聊',
+  'newChat.openChat': '打开对话',
+
+  'members.addFromChats': '添加一位已经在聊的人',
+  'members.nobodyToAdd': '你自己的对话里没有人可加了。',
+  'members.addFailed': '无法添加此人，请重试。',
+  'members.full': '一个聊天最多容纳 {max} 人。',
+
+  'location.sharing': '正在共享你的位置',
+  'focus.turnOff': '关闭专注模式',
+  'recovery.copy': '复制到剪贴板',
+  'recovery.showOrRestore': '查看或恢复助记词',
+  'report.includeText': '在举报中附上这条消息的文字。它会发给审核人员，让他们能够处理——这场对话的其余部分仍然加密，不会被包含。不附上的话，举报可能无法处理。',
+  'saved.empty': '还没有收藏的消息。在任意聊天里打开一条消息的操作菜单，选择「收藏」。',
 };
 
 const DICTS: Record<Lang, Partial<Record<Key, string>>> = {en, zh};
@@ -875,7 +974,13 @@ const DICTS: Record<Lang, Partial<Record<Key, string>>> = {en, zh};
 interface I18nCtx {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (key: Key) => string;
+  /**
+   * `t('newChat.full', {max: 32})` fills `{max}` in the string. A placeholder
+   * with no matching variable is left as written rather than blanked, so a
+   * translation that kept a slot the caller stopped passing shows the slot
+   * instead of a hole.
+   */
+  t: (key: Key, vars?: Record<string, string | number>) => string;
 }
 
 const Ctx = createContext<I18nCtx>({lang: 'en', setLang: () => {}, t: k => en[k] ?? k});
@@ -892,7 +997,13 @@ export function LanguageProvider({children}: {children: React.ReactNode}) {
   const [lang, setLangState] = useState<Lang>(initialLang);
 
   const t = useCallback(
-    (key: Key): string => DICTS[lang][key] ?? en[key] ?? key,
+    (key: Key, vars?: Record<string, string | number>): string => {
+      const raw = DICTS[lang][key] ?? en[key] ?? key;
+      if (!vars) return raw;
+      return raw.replace(/\{(\w+)\}/g, (whole, name) =>
+        name in vars ? String(vars[name]) : whole,
+      );
+    },
     [lang],
   );
 

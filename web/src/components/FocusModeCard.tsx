@@ -9,6 +9,7 @@ import {
   enableFocusMode,
   isFocusActive,
 } from '../services/focusMode';
+import {useT} from '../i18n';
 
 /** Same options the mobile Profile screen offers, so the two read alike. */
 const DURATIONS_MIN = [15, 30, 60, 120];
@@ -25,6 +26,7 @@ const DURATIONS_MIN = [15, 30, 60, 120];
  * snapshot taken at mount would go stale in both cases.
  */
 export default function FocusModeCard({uid}: {uid: string}) {
+  const {t} = useT();
   const toast = useToast();
   const [focus, setFocus] = useState<{enabled?: boolean; until?: number; autoReply?: string} | null>(
     null,
@@ -100,7 +102,7 @@ export default function FocusModeCard({uid}: {uid: string}) {
             style={styles.off}
             onClick={disable}
             disabled={busy}>
-            Turn off focus mode
+            {t('focus.turnOff')}
           </button>
         </>
       ) : (

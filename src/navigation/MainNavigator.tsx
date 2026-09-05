@@ -18,11 +18,11 @@ import {lazyLoad} from '../utils/lazyLoading';
 // ChatListScreen and ChatScreen are deliberately NOT here. The first is what
 // launch renders, and the second is what launch exists to get you to — making
 // either lazy would move cost onto the path being optimised rather than off
-// it. The nine below are ~5,000 lines that a cold start has no reason to
-// evaluate: Profile, Store, Moments, Friends, Call, and the chat sub-screens.
+// it. The twelve below are ~5,000 lines that a cold start has no reason to
+// evaluate: Profile, Store, Friends, Call, and the chat sub-screens.
 const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
 const StoreScreen = lazyLoad(() => import('../screens/StoreScreen'));
-const FriendsScreen = lazyLoad(() => import('../screens/moments/FriendsScreen'));
+const FriendsScreen = lazyLoad(() => import('../screens/chat/FriendsScreen'));
 const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
 const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
 const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));

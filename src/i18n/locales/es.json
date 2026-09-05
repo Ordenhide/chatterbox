@@ -139,18 +139,11 @@
   "newChat": {
     "heading": "Iniciar una conversación",
     "subheading": "Ingresa el correo electrónico de la persona con la que quieres chatear.",
-    "recipientEmail": "Correo del destinatario",
-    "emailPlaceholder": "amigo@ejemplo.com",
     "chatNameLabel": "Nombre del chat (opcional)",
     "chatNamePlaceholder": "Nombre del chat",
     "helpText": "El destinatario debe tener una cuenta existente.",
     "creating": "Creando...",
-    "startChat": "Iniciar chat",
     "errors": {
-      "enterEmail": "Por favor ingresa una dirección de correo electrónico",
-      "userNotFoundTitle": "Usuario no encontrado",
-      "userNotFoundBody": "Ese correo electrónico no existe en este dispositivo. Crea otra cuenta primero, luego intenta de nuevo.",
-      "selfChat": "No puedes iniciar un chat contigo mismo",
       "createFailed": "Error al crear chat",
       "groupFull": "Un chat admite como máximo {{max}} personas"
     },
@@ -164,9 +157,6 @@
   "friends": {
     "addFriend": "Agregar amigo",
     "uidPlaceholder": "Ingresa el UID del usuario",
-    "emailPlaceholder": "Ingresa el correo del usuario",
-    "searchTitle": "Buscar (correo o nombre)",
-    "searchPlaceholder": "Buscar por correo electrónico o nombre de visualización",
     "sections": {
       "requests": "Solicitudes",
       "outgoing": "Enviadas",
@@ -178,11 +168,6 @@
       "outgoing": "No hay solicitudes enviadas.",
       "friends": "Aún no hay amigos.",
       "blocked": "No hay usuarios bloqueados."
-    },
-    "search": {
-      "searching": "Buscando…",
-      "noMatches": "No hay coincidencias.",
-      "prompt": "Escribe para buscar."
     },
     "buttons": {
       "accept": "Aceptar",

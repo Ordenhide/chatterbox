@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {auth} from '../firebase';
 import {colors} from '../theme';
+import {useT} from '../i18n';
 import {useModal} from '../hooks/useModal';
 import {createChat, setChatIntroduction, setChatName} from '../services/chat';
 import {getDeviceKeypairIfEnrolled} from '../services/e2eeKeys';
@@ -44,6 +45,7 @@ export default function InviteModal({
   onCreated: (chatId: string) => void;
 }) {
   const dialogRef = useModal<HTMLDivElement>(onClose);
+  const {t} = useT();
   const [invite, setInvite] = useState<Invite | null>(() => outstandingInvite());
   const [state, setState] = useState<InviteState>('pending');
   const [copied, setCopied] = useState(false);
@@ -73,8 +75,8 @@ export default function InviteModal({
       if (!result.ok) {
         setError(
           result.reason === 'not-enrolled'
-            ? 'This browser doesn’t have your encryption key yet, so there’s nothing to invite anyone to. Restore it from your recovery phrase first.'
-            : 'Could not create the link. Please try again.',
+            ? t('invite.notEnrolled')
+            : t('invite.createFailed'),
         );
         return;
       }
@@ -97,7 +99,7 @@ export default function InviteModal({
     setError(null);
     const token = parseInviteLink(pasted);
     if (!token) {
-      setError('That isn’t a Chatterbox invite link. It should start with chatterbox://invite#.');
+      setError(t('invite.notALink'));
       return;
     }
     setBusy(true);
@@ -106,11 +108,11 @@ export default function InviteModal({
       if (!result.ok) {
         setError(
           {
-            'not-found': 'This link doesn’t exist. It may have been withdrawn.',
-            expired: 'This link has expired. Ask for a new one.',
-            'already-used': 'Someone has already opened this link. Ask for a new one.',
-            'own-invite': 'This is your own link. Send it to someone else.',
-            failed: 'Could not open the invite. Please try again.',
+            'not-found': t('invite.errNotFound'),
+            expired: t('invite.errExpired'),
+            'already-used': t('invite.errUsed'),
+            'own-invite': t('invite.errOwn'),
+            failed: t('invite.errFailed'),
           }[result.reason],
         );
         return;
@@ -135,7 +137,7 @@ export default function InviteModal({
       onCreated(chatId);
     } catch (err) {
       console.warn('accept invite failed:', err);
-      setError('Could not open the invite. Please try again.');
+      setError(t('invite.errFailed'));
     } finally {
       setBusy(false);
     }
@@ -152,13 +154,11 @@ export default function InviteModal({
         aria-label="Invite"
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
-        <h2 style={styles.title}>Your invite link</h2>
+        <h2 style={styles.title}>{t('invite.yoursTitle')}</h2>
         {!invite ? (
           <>
             <p style={styles.subtitle}>
-              There is no way to search for someone here, so this is how they reach you. Send the
-              link through anything you already use; the first person to open it can start one
-              conversation with you.
+              {t('invite.yoursIntro')}
             </p>
             <button
               type="button"
@@ -166,7 +166,7 @@ export default function InviteModal({
               style={styles.wide}
               onClick={mint}
               disabled={busy}>
-              {busy ? <span className="spinner" /> : 'Create a link'}
+              {busy ? <span className="spinner" /> : t('invite.create')}
             </button>
           </>
         ) : (
@@ -176,10 +176,10 @@ export default function InviteModal({
             <code style={styles.link}>{link}</code>
             <p style={{...styles.meta, color: state === 'accepted' ? colors.primary : colors.textSecondary}}>
               {state === 'accepted'
-                ? 'Someone opened this link. It won’t work again.'
+                ? t('invite.stateAccepted')
                 : state === 'gone'
-                  ? 'This link is no longer on the server.'
-                  : `Open · single use · ${hoursLeft(invite.expiresAt)}h left`}
+                  ? t('invite.stateGone')
+                  : t('invite.statePending', {hours: String(hoursLeft(invite.expiresAt))})}
             </p>
             <button
               type="button"
@@ -189,41 +189,41 @@ export default function InviteModal({
                 navigator.clipboard
                   .writeText(link)
                   .then(() => setCopied(true))
-                  .catch(() => setError('Could not copy. Select the link above and copy it.'));
+                  .catch(() => setError(t('invite.copyFailed')));
               }}>
-              {copied ? 'Copied — send it to one person' : 'Copy link'}
+              {copied ? t('invite.copied') : t('invite.copy')}
             </button>
             <button type="button" style={styles.textButton} onClick={withdraw}>
-              Withdraw this link
+              {t('invite.withdraw')}
             </button>
           </>
         )}
 
         <hr style={styles.rule} />
 
-        <h2 style={styles.title}>Open an invite</h2>
+        <h2 style={styles.title}>{t('invite.openTitle')}</h2>
         <p style={styles.subtitle}>
-          Paste a link someone sent you. It works once, and only for the person who sent it.
+          {t('invite.openIntro')}
         </p>
         <input
           style={styles.input}
           placeholder="chatterbox://invite#…"
-          aria-label="Invite link"
+          aria-label={t('invite.openTitle')}
           value={pasted}
           onChange={e => setPasted(e.target.value)}
         />
         <label style={styles.label} htmlFor="invite-name">
-          What to call them
+          {t('invite.nameLabel')}
         </label>
         <input
           id="invite-name"
           style={styles.input}
-          placeholder="e.g. Sam"
+          placeholder={t('invite.namePlaceholder')}
           value={label}
           onChange={e => setLabel(e.target.value)}
         />
         <p style={styles.footnote}>
-          This name stays in your chat list. The server is never told who this person is to you.
+          {t('invite.nameHint')}
         </p>
 
         {error && <div style={styles.error}>{error}</div>}
@@ -237,7 +237,7 @@ export default function InviteModal({
             style={styles.start}
             onClick={open}
             disabled={busy || !pasted.trim()}>
-            {busy ? <span className="spinner" /> : 'Open the invite'}
+            {busy ? <span className="spinner" /> : t('invite.open')}
           </button>
         </div>
       </div>

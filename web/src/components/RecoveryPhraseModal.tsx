@@ -8,6 +8,7 @@ import {
   restoreDeviceKeypairFromPhrase,
   type RestoreKeypairResult,
 } from '../services/e2eeKeys';
+import {useT} from '../i18n';
 
 type Mode = 'reveal' | 'restore';
 
@@ -31,6 +32,7 @@ export default function RecoveryPhraseModal({
   uid: string;
   onClose: () => void;
 }) {
+  const {t} = useT();
   const toast = useToast();
   const [mode, setMode] = useState<Mode>('reveal');
   const [phrase, setPhrase] = useState<string | null>(null);
@@ -152,7 +154,7 @@ export default function RecoveryPhraseModal({
                 </div>
                 {revealed ? (
                   <button className="btn btn-soft" style={styles.action} onClick={copy}>
-                    Copy to clipboard
+                    {t('recovery.copy')}
                   </button>
                 ) : (
                   <button className="btn btn-primary" style={styles.action} onClick={reveal}>

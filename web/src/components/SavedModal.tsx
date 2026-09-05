@@ -4,8 +4,10 @@ import {useModal} from '../hooks/useModal';
 import {listenBookmarks, removeBookmark} from '../services/bookmarks';
 import Icon from './Icon';
 import type {Bookmark} from '../types';
+import {useT} from '../i18n';
 
 export default function SavedModal({myUid, onClose}: {myUid: string; onClose: () => void}) {
+  const {t} = useT();
   const dialogRef = useModal<HTMLDivElement>(onClose);
   const [items, setItems] = useState<Bookmark[]>([]);
 
@@ -30,7 +32,7 @@ export default function SavedModal({myUid, onClose}: {myUid: string; onClose: ()
         <div className="scroll" style={styles.list}>
           {items.length === 0 ? (
             <div style={styles.empty}>
-              No saved messages yet. Open a message's actions in any chat and choose Save.
+              {t('saved.empty')}
             </div>
           ) : (
             items.map(b => (
