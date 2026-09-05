@@ -105,14 +105,23 @@ export function signOut() {
   return fbSignOut(auth);
 }
 
+/**
+ * Renames the account in Firebase Auth, and nowhere else.
+ *
+ * It used to mirror the name into `users/{uid}` as well. The rules refuse that
+ * now — a display name readable by everyone who knows your uid was the last of
+ * the three public identity fields, and it moved to a ciphertext on the chat
+ * (services/introductions.ts). Writing it here would fail with
+ * permission-denied and lose the rename entirely.
+ *
+ * The honest limitation: an introduction is sealed once, when an invite is
+ * accepted, so renaming yourself does not reach conversations that already
+ * exist. The other side keeps whatever they were told, or whatever they chose
+ * to call you — which is the name they are actually using either way.
+ */
 export async function updateDisplayName(displayName: string) {
   if (!auth.currentUser) return;
   await updateProfile(auth.currentUser, {displayName});
-  await setDoc(
-    doc(db, 'users', auth.currentUser.uid),
-    {displayName, updatedAt: serverTimestamp()},
-    {merge: true},
-  );
 }
 
 export async function setProfileVisibility(visibility: 'public' | 'friends' | 'private') {

@@ -14,6 +14,7 @@ const mockDeleteObject = jest.fn();
 const mockTrashMessages = jest.fn();
 const mockPurgeExpiredTrash = jest.fn();
 const mockBatchDelete = jest.fn();
+const mockBatchSet = jest.fn();
 const mockBatchCommit = jest.fn(async () => undefined);
 
 jest.mock('../firebase/firestore', () => ({
@@ -44,6 +45,7 @@ jest.mock('../firebase/firestore', () => ({
   where: () => ({}),
   writeBatch: () => ({
     delete: (...args: unknown[]) => mockBatchDelete(...args),
+    set: (...args: unknown[]) => mockBatchSet(...args),
     commit: () => mockBatchCommit(),
   }),
 }));
@@ -76,7 +78,7 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUsersByIds, setTyping, upsertUserProfile} from '../firebaseChat';
+import {deleteMessages, getUsersByIds, importAll, setTyping, upsertUserProfile} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
@@ -291,5 +293,42 @@ describe('upsertUserProfile', () => {
     // The three that are present only to be removed.
     expect(written().fcmToken).toBe('DELETE_FIELD');
     expect(written().uid).toBe('alice');
+  });
+});
+
+/**
+ * A restore that writes a profile document is a restore that fails.
+ *
+ * Backups made before the identity fields were removed carry an email, a photo
+ * URL and a name, all three of which the rules now refuse. The profile write
+ * ran first, so its refusal aborted the import before the chats and messages a
+ * restore actually exists for — it silently restored nothing.
+ */
+describe('importAll', () => {
+  const mockedSetDoc = setDoc as jest.MockedFunction<typeof setDoc>;
+
+  beforeEach(() => {
+    mockedSetDoc.mockClear();
+    mockBatchSet.mockClear();
+    mockDocs.reads = [];
+  });
+
+  it('does not write profile documents', async () => {
+    await importAll({
+      users: [{uid: 'alice', email: 'alice@example.com', displayName: 'Alice'} as never],
+    });
+    expect(mockBatchSet).not.toHaveBeenCalled();
+  });
+
+  it('still restores the chats and messages, which is the point of a restore', async () => {
+    await importAll({
+      users: [{uid: 'alice', email: 'alice@example.com'} as never],
+      chats: [{id: 'chat1', participants: ['alice', 'bob']} as never],
+      messages: {chat1: [{_id: 'm1', text: 'hi'} as never]},
+    });
+    // The firestore mock's doc() ignores its parent, so these are the ids
+    // rather than full paths: the chat, then the message inside it.
+    const paths = mockBatchSet.mock.calls.map(call => (call[0] as {path: string}).path);
+    expect(paths).toEqual(['chat1', 'm1']);
   });
 });

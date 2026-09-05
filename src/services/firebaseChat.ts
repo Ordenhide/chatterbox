@@ -1087,11 +1087,20 @@ export async function importChat(chatId: string, payload: {chat?: ChatRoom; mess
 
 export async function importAll(payload: {users?: User[]; chats?: ChatRoom[]; messages?: Record<string, Message[]>}) {
   try {
-    if (payload.users) {
-      const batch = writeBatch(db);
-      payload.users.forEach(u => batch.set(doc(usersRef(), u.uid), u, {merge: true}));
-      await batch.commit();
-    }
+    // `payload.users` is deliberately not restored, and skipping it is what
+    // keeps a restore working at all.
+    //
+    // A backup made before 2026-09-05 carries the profile as it was then —
+    // with an email, a photo URL and a display name — and the rules now refuse
+    // all three (see upsertUserProfile). The write threw, and because it ran
+    // first, the chats and messages the restore actually exists for were never
+    // reached: restoring a backup silently restored nothing.
+    //
+    // Nothing of value is lost. The profile is bootstrapped from Firebase Auth
+    // at sign-in, and the one field a backup could still legitimately carry —
+    // `profileVisibility` — is a single toggle the user can set again. Writing
+    // a uid from the payload was never safe either: a tampered file naming
+    // someone else's account produces a refusal that aborts the whole import.
     if (payload.chats) {
       const batch = writeBatch(db);
       payload.chats.forEach(chat => {
