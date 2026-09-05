@@ -30,7 +30,8 @@
   },
   "tabs": {
     "chats": "Chats",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "store": "Tienda"
   },
   "headers": {
     "chats": "Chats",
@@ -39,7 +40,8 @@
     "media": "Medios",
     "chatSettings": "Configuración del chat",
     "call": "Llamada",
-    "friends": "Amigos"
+    "friends": "Amigos",
+    "invite": "Invitación"
   },
   "auth": {
     "login": {
@@ -72,7 +74,12 @@
       "emailInUse": "Ya existe una cuenta con este correo electrónico",
       "weakPassword": "La contraseña es demasiado débil",
       "networkError": "Error de red. Por favor verifica tu conexión",
-      "tooManyRequests": "Demasiados intentos. Por favor intenta de nuevo más tarde"
+      "tooManyRequests": "Demasiados intentos. Por favor intenta de nuevo más tarde",
+      "passwordTooCommon": "Esa contraseña es demasiado común: elige una menos previsible",
+      "passwordTooSimple": "Esa contraseña es demasiado previsible (caracteres repetidos o consecutivos): elige otra",
+      "invalidVerificationCode": "Ese código no es correcto. Compruébalo e inténtalo de nuevo",
+      "invalidPhoneNumber": "Eso no parece un número de teléfono válido",
+      "accountExistsDifferentCredential": "Ya existe una cuenta con este correo, creada con otro método de acceso. Inicia sesión con ese método."
     },
     "reset": {
       "title": "Restablecer contraseña",
@@ -85,7 +92,30 @@
     "session": {
       "title": "Sesión cerrada",
       "message": "Esta cuenta fue iniciada en otro dispositivo."
-    }
+    },
+    "social": {
+      "divider": "o continúa con",
+      "apple": "Iniciar sesión con Apple",
+      "google": "Continuar con Google",
+      "phone": "Continuar con teléfono"
+    },
+    "phone": {
+      "title": "Iniciar sesión con teléfono",
+      "subtitle": "Te enviaremos un código por SMS para comprobar que eres tú.",
+      "phonePlaceholder": "+34 600 123 456",
+      "sendCode": "Enviar código",
+      "codeTitle": "Introduce el código",
+      "codeSubtitle": "Introduce el código de 6 dígitos que enviamos a {{phoneNumber}}",
+      "codePlaceholder": "123456",
+      "verify": "Verificar",
+      "resendCode": "Reenviar código",
+      "changeNumber": "Cambiar número",
+      "errors": {
+        "invalidPhone": "Introduce un número válido, incluido el prefijo del país (p. ej. +34 600 123 456)",
+        "invalidCode": "Introduce el código de 6 dígitos"
+      }
+    },
+    "eyebrow": "Mensajería cifrada"
   },
   "chatList": {
     "title": "Chats",
@@ -94,7 +124,15 @@
     "offlineEmpty": "Sin conexión — mostrando chats en caché.",
     "actionsTitle": "Acciones del chat",
     "pin": "Fijar",
-    "unpin": "Desfijar"
+    "unpin": "Desfijar",
+    "eyebrow": "Mensajería segura",
+    "keyChecking": "Comprobando clave",
+    "keyReady": "Clave lista",
+    "keySuperseded": "Clave sustituida",
+    "keyMissing": "La clave no está en este dispositivo",
+    "keyUnverified": "Clave sin verificar",
+    "statChats": "{{count}} chats",
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
   },
   "newChat": {
     "heading": "Iniciar una conversación",
@@ -111,8 +149,15 @@
       "userNotFoundTitle": "Usuario no encontrado",
       "userNotFoundBody": "Ese correo electrónico no existe en este dispositivo. Crea otra cuenta primero, luego intenta de nuevo.",
       "selfChat": "No puedes iniciar un chat contigo mismo",
-      "createFailed": "Error al crear chat"
-    }
+      "createFailed": "Error al crear chat",
+      "groupFull": "Un chat admite como máximo {{max}} personas"
+    },
+    "invite": "Invitar a alguien con un enlace",
+    "groupLabel": "Crear un grupo",
+    "groupHint": "Elige entre las personas con las que ya hablas. No hay nadie más, y ese es justamente el objetivo.",
+    "noContacts": "Aún no tienes conversaciones. Envía a alguien un enlace de invitación arriba para empezar.",
+    "openChat": "Abrir chat",
+    "startGroup": "Crear chat de grupo"
   },
   "friends": {
     "addFriend": "Agregar amigo",
@@ -170,8 +215,12 @@
       "removeTitle": "Quitar amigo",
       "removeBody": "¿Quitar este amigo?",
       "blockTitle": "Bloquear usuario",
-      "blockBody": "¿Bloquear este usuario? Esto lo eliminará de tus amigos."
-    }
+      "blockBody": "¿Bloquear este usuario? Esto lo eliminará de tus amigos.",
+      "alreadyFriendsBody": "Ya sois amigos.",
+      "alreadyPendingBody": "Ya hay una solicitud pendiente con esta persona."
+    },
+    "contactsTitle": "Personas con las que ya hablas",
+    "contactsEmpty": "Todavía nadie. Empieza una conversación con un enlace de invitación."
   },
   "profile": {
     "defaultName": "Usuario",
@@ -184,14 +233,20 @@
       "feedback": "Enviar comentarios",
       "export": "Exportar respaldo",
       "import": "Importar respaldo",
-      "signOut": "Cerrar sesión"
+      "signOut": "Cerrar sesión",
+      "changePassword": "Cambiar contraseña",
+      "deleteAccount": "Eliminar cuenta"
     },
     "modals": {
       "exportTitle": "Exportar respaldo",
       "importTitle": "Importar respaldo",
       "feedbackTitle": "Comentarios",
       "importPlaceholder": "Pega el JSON del respaldo aquí",
-      "feedbackPlaceholder": "Cuéntanos qué funciona y qué no..."
+      "feedbackPlaceholder": "Cuéntanos qué funciona y qué no...",
+      "exportPassphraseHint": "Elige una contraseña de al menos {{min}} caracteres. Tu copia de seguridad se cifra con ella y no se guarda en ningún sitio: si la pierdes, la copia no se podrá recuperar.",
+      "passphrasePlaceholder": "Contraseña de la copia",
+      "encryptBackup": "Cifrar copia de seguridad",
+      "working": "Procesando…"
     },
     "alerts": {
       "copiedTitle": "Copiado",
@@ -209,8 +264,68 @@
       "signOutTitle": "Cerrar sesión",
       "signOutBody": "¿Estás seguro de que quieres cerrar sesión?",
       "signOutFailed": "Error al cerrar sesión",
-      "visibilityUpdateFailed": "No se pudo actualizar la visibilidad del perfil."
-    }
+      "visibilityUpdateFailed": "No se pudo actualizar la visibilidad del perfil.",
+      "passphraseTooShort": "La contraseña debe tener al menos {{min}} caracteres.",
+      "downloadDataFailedTitle": "Error",
+      "downloadDataFailedBody": "No se pudieron preparar tus datos. Inténtalo de nuevo."
+    },
+    "voiceDiaryTitle": "Diario de voz",
+    "voiceDiaryDescription": "Graba un clip corto como estado. Tus amigos podrán escucharlo.",
+    "recordVoiceDiary": "Grabar diario de voz",
+    "voiceDiaryStop": "Detener",
+    "voiceDiaryPlay": "Reproducir ({{seconds}} s)",
+    "voiceDiaryRemove": "Quitar",
+    "voiceDiaryModalDescription": "Graba un mensaje corto (máx. 15 s) que tus amigos podrán escuchar en tu perfil.",
+    "voiceDiaryRecordButton": "Grabar",
+    "voiceDiarySave": "Guardar",
+    "shortcutsTitle": "Accesos directos",
+    "shortcutSaved": "Guardados",
+    "shortcutPrivacy": "Privacidad",
+    "shortcutRecovery": "Frase de recuperación",
+    "account": {
+      "changePasswordTitle": "Cambiar contraseña",
+      "changePasswordDescription": "Seguirás con la sesión iniciada en este dispositivo.",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Contraseña nueva",
+      "confirmPassword": "Confirmar contraseña nueva",
+      "passwordChanged": "Tu contraseña se ha cambiado.",
+      "passwordMismatch": "Las contraseñas nuevas no coinciden.",
+      "wrongPassword": "La contraseña actual no es correcta.",
+      "tooManyRequests": "Demasiados intentos. Inténtalo más tarde.",
+      "genericError": "Algo salió mal. Inténtalo de nuevo.",
+      "deleteTitle": "Eliminar cuenta",
+      "deleteDescription": "Elimina de forma permanente tu cuenta, tu perfil, los elementos guardados y los mensajes que enviaste. Esto no se puede deshacer.",
+      "deleteWhatHappens": "Esto elimina de forma permanente:\n\n• Tu perfil, los elementos guardados y tus amistades\n• Los mensajes y archivos que enviaste, en todas las conversaciones\n• Las claves de cifrado guardadas en este dispositivo\n\nLos mensajes que otras personas te enviaron seguirán en su propia copia de la conversación.\n\nEsto no se puede deshacer.",
+      "deleteConfirm": "Eliminar todo",
+      "deleteEnterPassword": "Introduce tu contraseña para eliminar tu cuenta de forma permanente.",
+      "deleting": "Eliminando tus datos…",
+      "deleteFailed": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
+      "deletePartial": "Tu cuenta se eliminó, pero no se pudieron borrar algunos datos. Ponte en contacto con soporte.",
+      "downloadDataTitle": "Descargar mis datos",
+      "downloadDataDesc": "Obtén una copia de tu perfil y tus conversaciones en un archivo de texto plano que puedes guardar o revisar; es distinto de «Exportar copia de seguridad», más abajo, que crea un archivo cifrado para mudar tu cuenta a otro dispositivo.",
+      "downloadDataButton": "Descargar"
+    },
+    "restartForLayoutTitle": "Reinicia para terminar el cambio",
+    "restartForLayoutBody": "{{language}} se escribe de derecha a izquierda. Cierra y vuelve a abrir Chatterbox para que la app se organice en esa dirección.",
+    "privacyTitle": "Privacidad",
+    "privacyDescription": "Estos ajustes solo se aplican en este dispositivo. Nada de esto se comparte ni se sincroniza.",
+    "privacyOn": "SÍ",
+    "privacyOff": "NO",
+    "privacyScreenshotTitle": "Bloquear capturas de pantalla",
+    "privacyScreenshotHint": "Impide capturas y grabaciones de pantalla mientras hay una conversación abierta, y oculta la app en la lista de apps recientes. Solo Android.",
+    "privacyNotificationsTitle": "Ocultar el contenido de las notificaciones",
+    "privacyNotificationsHint": "Las notificaciones indican que llegó un mensaje, nunca quién lo envió ni qué dice.",
+    "privacyExifTitle": "Eliminar metadatos de las fotos",
+    "privacyExifHint": "Quita la ubicación, la cámara y la fecha de las fotos antes de enviarlas.",
+    "visibility": {
+      "public": "Público",
+      "friends": "Amigos",
+      "private": "Privado"
+    },
+    "privacyTypingTitle": "Indicador de escritura",
+    "privacyTypingHint": "Desactivado por defecto y recíproco: con esto activado, el servidor registra cuándo escribes, y tú ves cuándo escribe la otra persona.",
+    "privacyReceiptsTitle": "Confirmaciones de lectura",
+    "privacyReceiptsHint": "Desactivadas por defecto y recíprocas: con esto activado, el servidor registra cuándo lees un mensaje, y tú ves cuándo lo leyó la otra persona."
   },
   "call": {
     "connecting": "Conectando...",
@@ -228,7 +343,18 @@
     "errors": {
       "startFailed": "No se pudo iniciar la llamada",
       "videoFailed": "No se pudo habilitar el video"
-    }
+    },
+    "incomingVoice": "Llamada de voz entrante…",
+    "incomingVideo": "Videollamada entrante…",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "cameraOn": "Cámara activada",
+    "cameraOff": "Cámara desactivada",
+    "cameraWillBeOff": "Entrarás con la cámara desactivada",
+    "cameraUnavailable": "Cámara no disponible: aún puedes responder con audio",
+    "unknownCaller": "Alguien",
+    "groupUnsupportedTitle": "Las llamadas de grupo aún no están disponibles",
+    "groupUnsupportedBody": "Por ahora las llamadas funcionan en chats de dos personas. En un grupo solo sonaría para una, así que está desactivado aquí."
   },
   "chatMedia": {
     "seconds": "{{count}}s"
@@ -274,8 +400,14 @@
       "deleteFailedTitle": "Error",
       "deleteFailedBody": "Error al eliminar chat",
       "copiedTitle": "Copiado",
-      "copiedBody": "JSON del chat copiado al portapapeles"
-    }
+      "copiedBody": "JSON del chat copiado al portapapeles",
+      "leaveClearTitle": "¿Salir y eliminar tus mensajes?",
+      "leaveClearBody": "Los mensajes que enviaste se eliminan para todos. Los de las demás personas se quedan, y ellas conservan la conversación. Se cancela todo lo que hubieras programado aquí y se te saca del chat.",
+      "leaveClearConfirm": "Salir",
+      "leaveClearFailedTitle": "Error",
+      "leaveClearFailedBody": "No se pudo salir del chat. No se cambió nada; inténtalo de nuevo."
+    },
+    "leaveAndClear": "Eliminar mis mensajes y salir"
   },
   "burn": {
     "tapToReveal": "Toca para revelar",
@@ -291,5 +423,214 @@
       "1m": "1m",
       "5m": "5m"
     }
+  },
+  "pro": {
+    "title": "Chatterbox Pro",
+    "badge": "PRO",
+    "active": "Tu suscripción está activa.",
+    "renewsOn": "Se renueva el {{date}}",
+    "endsOn": "Termina el {{date}}",
+    "pastDue": "No pudimos procesar tu último pago: actualiza tu tarjeta en la web para conservar Pro.",
+    "pitch": "Desbloquea resúmenes y búsqueda con IA.",
+    "manageOnWeb": "Suscríbete o gestiona tu suscripción en el sitio web de Chatterbox.",
+    "lockedAiMobile": "Los resúmenes y la búsqueda con IA forman parte de Chatterbox Pro. Suscríbete en el sitio web de Chatterbox para desbloquearlos aquí."
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "store": {
+    "title": "Tienda",
+    "subtitle": "Mejoras para tu cuenta.",
+    "openStore": "Abrir tienda"
+  },
+  "aiConsent": {
+    "title": "Las funciones de IA envían mensajes fuera de tu dispositivo",
+    "body": "Chatterbox cifra tus mensajes para que solo tú y la otra persona podáis leerlos. La IA es la única excepción.\n\nPara resumir, traducir o transcribir, los mensajes seleccionados se descifran en este dispositivo y se envían a nuestro servidor y a su proveedor de IA. Se envían para generar tu resultado, no para entrenar nada, pero durante el envío y el procesamiento no están cifrados de extremo a extremo.\n\nTodo lo demás sigue cifrado: los mensajes en los que no uses IA y tus listas compartidas.\n\nPuedes desactivarlo cuando quieras en Perfil.",
+    "accept": "Permitir funciones de IA",
+    "decline": "Ahora no",
+    "settingsTitle": "Funciones de IA",
+    "settingsOn": "Permitidas: los mensajes seleccionados salen de este dispositivo cuando usas IA.",
+    "settingsOff": "Desactivadas: no se envía nada. Te preguntaremos antes de usar cualquier función de IA.",
+    "turnOff": "Desactivar funciones de IA",
+    "turnOn": "Permitir funciones de IA",
+    "turnedOff": "Funciones de IA desactivadas en este dispositivo"
+  },
+  "linkPreview": {
+    "settingsTitle": "Vistas previas de enlaces",
+    "settingsOn": "Activadas: al enviar un enlace, este dispositivo obtiene su título e imagen una vez y los cifra dentro del mensaje. Quien lo recibe nunca consulta a nuestro servidor por ese enlace.",
+    "settingsOff": "Desactivadas: los enlaces que envías quedan como enlaces simples y nuestro servidor nunca se entera de ellos.",
+    "turnOff": "Desactivar vistas previas",
+    "turnOn": "Activar vistas previas",
+    "turnedOff": "Vistas previas desactivadas en este dispositivo"
+  },
+  "trash": {
+    "title": "Eliminados recientemente",
+    "desc": "Los mensajes eliminados se pueden recuperar durante 24 horas. Después desaparecen para siempre. Solo tú puedes ver o recuperar los mensajes que eliminaste.",
+    "empty": "No hay nada eliminado recientemente.",
+    "recover": "Recuperar",
+    "expired": "Ese mensaje ya no se puede recuperar.",
+    "timeLeft": "recuperable durante",
+    "message": "Mensaje",
+    "photo": "Foto",
+    "video": "Vídeo",
+    "voice": "Mensaje de voz",
+    "file": "Archivo"
+  },
+  "chats": {
+    "hide": "Ocultar chat",
+    "recover": "Recuperar chat",
+    "hiddenTitle": "Chats ocultos",
+    "hiddenEmpty": "No hay chats ocultos.",
+    "hiddenHint": "Los chats ocultos siguen ocultos hasta que los recuperes, incluso si llegan mensajes nuevos."
+  },
+  "members": {
+    "title": "Miembros ({{count}})",
+    "you": " (tú)",
+    "full": "Un chat admite como máximo {{max}} personas",
+    "leave": "Salir del chat",
+    "leaveConfirmTitle": "¿Salir de este chat?",
+    "leaveConfirmBody": "Dejarás de recibir mensajes nuevos. Los que ya te enviaron seguirán siendo legibles; los nuevos no. Pueden volver a añadirte más adelante.",
+    "nobodyToAdd": "No queda nadie por añadir. Todas las personas con las que hablas ya están aquí.",
+    "addHint": "Añade a alguien con quien ya tengas un chat. No hay nadie más: a nadie se le puede encontrar buscando.",
+    "addPerson": "Añadir a {{name}}"
+  },
+  "chat": {
+    "reportReason": {
+      "spam": "Spam",
+      "harassment": "Acoso",
+      "threat": "Amenaza o violencia",
+      "sexual-content": "Contenido sexual",
+      "impersonation": "Suplantación de identidad",
+      "other": "Otra cosa"
+    },
+    "unsafeLink": "Ese enlace se bloqueó porque no es una dirección web segura.",
+    "isTyping": "{{name}} está escribiendo…",
+    "search": "Buscar",
+    "done": "Listo",
+    "more": "Más",
+    "attach": "Adjuntar",
+    "composerPlaceholder": "Escribe un mensaje…",
+    "sealedToKeys": "Sellado · {{count}} clave",
+    "sealedToKeys_plural": "Sellado · {{count}} claves",
+    "recipientDeleted": "Esta cuenta se ha eliminado.",
+    "recipientDeletedComposer": "No puedes enviar mensajes a una cuenta eliminada. Tu conversación sigue aquí para leerla.",
+    "replyPreview": {
+      "photo": "[Foto]",
+      "video": "[Vídeo]",
+      "voiceMessage": "[Mensaje de voz]",
+      "file": "[Archivo]"
+    },
+    "voiceTooLongTitle": "Grabación demasiado larga",
+    "voiceTooLongBody": "Esa grabación es demasiado larga para enviarla. Prueba con una de menos de dos minutos.",
+    "channelSealed": "Cifrado de extremo a extremo. Este mensaje se sellará para las personas de este chat.",
+    "channelClear": "Sin cifrar. El servidor podrá leer este mensaje: las personas de este chat no tienen ninguna clave a la que sellarlo.",
+    "channelClearBar": "Sin cifrar: el servidor puede leer lo que envías",
+    "protectionNone": "SIN CIFRAR",
+    "protectionNoneA11y": "Sin cifrar: el servidor puede leer este mensaje.",
+    "protectionStatic": "SIN SECRETO HACIA DELANTE",
+    "protectionStaticA11y": "Cifrado, pero con una clave de larga duración: quien la consiga podrá leerlo más adelante.",
+    "sealedPending": "🔒 …",
+    "sealedOtherDevice": "🔒 Sellado para otro dispositivo",
+    "sealedNeedsUpdate": "🔒 Actualiza la app para leer esto",
+    "sealedDamaged": "🔒 Este mensaje está dañado",
+    "sealedUnknown": "🔒 No se puede descifrar",
+    "sealedBanner": "Algunos mensajes se sellaron en otro dispositivo. Toca para recuperarlos con tu frase de recuperación.",
+    "sealedBannerA11y": "Recuperar tu historial de mensajes cifrados"
+  },
+  "smartReply": {
+    "thumbsUp": "👍",
+    "soundsGood": "¡Me parece bien!",
+    "gotIt": "Entendido",
+    "yes": "¡Sí!",
+    "notSure": "No estoy seguro",
+    "letMeThink": "Déjame pensarlo",
+    "hey": "¡Hola!",
+    "whatsUp": "¿Qué tal?",
+    "howAreYou": "¿Cómo estás?",
+    "youreWelcome": "¡De nada!",
+    "noProblem": "¡Sin problema!",
+    "anytime": "¡Cuando quieras!",
+    "noWorries": "¡Tranquilo!",
+    "itsAllGood": "Todo bien",
+    "dontWorry": "No te preocupes",
+    "laughEmoji": "😂",
+    "hilarious": "Qué bueno",
+    "cantEven": "No puedo 😂",
+    "imIn": "¡Me apunto!",
+    "whatAreYouThinking": "¿Qué estás pensando?",
+    "worksForMe": "Por mí bien",
+    "letMeCheck": "Déjame mirarlo",
+    "whatTime": "¿A qué hora?"
+  },
+  "tutorial": {
+    "welcomeTitle": "Te damos la bienvenida a Chatterbox",
+    "welcomeBody": "Vamos a dar un repaso rápido a lo esencial: son solo unos toques.",
+    "chatsTitle": "Tus chats",
+    "chatsBody": "Todas tus conversaciones están en la pestaña Chats. Los mensajes sin leer aparecen con un indicador.",
+    "newChatTitle": "Empezar un chat",
+    "newChatBody": "Toca el + en Chats para enviar a alguien un enlace de invitación, o abrir uno que te hayan enviado.",
+    "composerTitle": "Di más que palabras",
+    "composerBody": "En un chat puedes enviar fotos, archivos, notas de voz y GIF, responder o @mencionar, e incluso programar un mensaje para más tarde.",
+    "spacesTitle": "Espacios compartidos",
+    "spacesBody": "Abre el menú de un chat para ver la galería y las listas compartidas: ambas cifradas de extremo a extremo, igual que los mensajes.",
+    "callsTitle": "Llamadas de voz y vídeo",
+    "callsBody": "Llama desde el propio chat: un toque para voz, otro para vídeo.",
+    "profileTitle": "Tú y los ajustes",
+    "profileBody": "Aquí eliges tu nombre, el tema, el idioma y la privacidad, y puedes repetir este recorrido cuando quieras.",
+    "doneTitle": "¡Todo listo!",
+    "doneBody": "Esto ha sido el recorrido. Puedes repetirlo cuando quieras desde tu perfil.",
+    "skip": "Saltar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Entendido",
+    "settingsTitle": "Tutorial",
+    "settingsDescription": "¿Nuevo por aquí? Haz el recorrido guiado por Chatterbox.",
+    "replay": "Repetir el tutorial"
+  },
+  "keys": {
+    "restoreTitle": "¿Recuperar tu historial de mensajes?",
+    "restoreBody": "Esto parece un dispositivo nuevo para una cuenta que ya tiene clave de cifrado. Restaura tu frase de recuperación para seguir leyendo los mensajes antiguos, o continúa y empieza de cero.",
+    "supersededTitle": "Tu clave de cifrado ha cambiado",
+    "supersededBody": "La clave de este dispositivo fue sustituida desde otro dispositivo, así que los mensajes que te han enviado desde entonces no se pueden abrir aquí. Introduce la frase de recuperación de aquel dispositivo para leerlos.",
+    "notNow": "Ahora no",
+    "restore": "Restaurar"
+  },
+  "invite": {
+    "yoursTitle": "Tu enlace de invitación",
+    "yoursIntro": "Aquí no se puede buscar a nadie, así que así es como te encuentran. Envía el enlace por cualquier medio que ya uses; la primera persona que lo abra podrá empezar una conversación contigo.",
+    "create": "Crear un enlace",
+    "statePending": "Activo · un solo uso · quedan {{hours}} h",
+    "stateAccepted": "Alguien ha abierto este enlace. Ya no volverá a funcionar.",
+    "stateGone": "Este enlace ya no está en el servidor.",
+    "copy": "Copiar enlace",
+    "copiedTitle": "Copiado",
+    "copiedBody": "Envíaselo a una sola persona. Quien lo abra primero se queda con el chat.",
+    "share": "Enviar con otra app",
+    "revoke": "Retirar este enlace",
+    "revokeTitle": "¿Retirar este enlace?",
+    "revokeBody": "Quien ya lo tenga no podrá abrirlo. Puedes crear uno nuevo.",
+    "openTitle": "Abrir una invitación",
+    "openIntro": "Pega un enlace que te hayan enviado. Funciona una vez, y solo para quien te lo envió.",
+    "linkPlaceholder": "chatterbox://invite#…",
+    "paste": "Pegar del portapapeles",
+    "nameLabel": "Cómo quieres llamarle",
+    "namePlaceholder": "p. ej. Sam",
+    "nameHint": "Este nombre se queda en tu dispositivo y en tu lista de chats. Al servidor nunca se le dice quién es esta persona para ti.",
+    "open": "Abrir la invitación",
+    "defaultChatName": "Chat",
+    "errors": {
+      "noKey": "Este dispositivo aún no tiene tu clave de cifrado, así que no hay nada a lo que invitar a nadie. Restáurala primero con tu frase de recuperación.",
+      "createFailed": "No se pudo crear el enlace. Comprueba tu conexión e inténtalo de nuevo.",
+      "notALink": "Eso no es un enlace de invitación de Chatterbox. Debería empezar por chatterbox://invite#.",
+      "not-found": "Este enlace no existe. Puede que se haya retirado.",
+      "expired": "Este enlace ha caducado. Pide uno nuevo.",
+      "already-used": "Alguien ya ha abierto este enlace. Pide uno nuevo.",
+      "own-invite": "Este es tu propio enlace. Envíaselo a otra persona.",
+      "failed": "No se pudo abrir la invitación. Comprueba tu conexión e inténtalo de nuevo."
+    }
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "lastUpdated": "Última actualización: {{date}}"
   }
 }

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>プライバシーポリシー — Chatterbox</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">機能</a>
+        <a href="index.html#download" class="nav-cta">ダウンロード</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.html">← Chatterbox に戻る</a>
+    <h1>プライバシーポリシー</h1>
+    <p class="meta">最終更新: 2026-09-05</p>
+
+    <section>
+      <h2>0. ひとことで言うと</h2>
+      <p>あなたのメッセージ本文は端末上で暗号化され、送った相手だけが読めます。私たちには読めませんし、サーバーを借りている Google にも読めません。</p>
+      <p>私たちに見えるのは、会話があったという事実です。どのアカウントが参加していて、いつ活動していたか。これを取り除くのは中身を暗号化するより難しく、まだ終わっていません。このポリシーは、その線が今どこにあるのかを正確に述べます。</p>
+    </section>
+
+    <section>
+      <h2>1. エンドツーエンドで暗号化されるもの</h2>
+      <p>端末上で暗号化され、私たちにも Google にも読めません:</p>
+      <ul><li>メッセージの本文。</li><li>添付したファイル・写真・音声・動画の中身。</li><li>共有リスト、保存した引用、リンクプレビュー。</li><li>音声通話とビデオ通話。2 台の端末間で WebRTC が必須とする DTLS-SRTP を使います。</li></ul>
+      <p>1 対 1 とグループのメッセージの多くは、さらにラチェットを使います。メッセージごとに鍵が違うため、端末が侵害されても過去のメッセージまでは読まれません。相手のクライアントが新しい鍵素材を公開していない会話では、単一の長期鍵に戻り、その性質はありません。メッセージの下の表示が、そのメッセージが実際にどちらを通ったかを教えます。</p>
+    </section>
+
+    <section>
+      <h2>2. 暗号化されないもの、私たちに見えるもの</h2>
+      <p>暗号化が守るのは中身であって、会話があったという事実ではありません。次のものは私たちのサーバー上に平文で置かれます:</p>
+      <ul><li>それぞれの会話に誰がいるか、いつ作られ、最後にいつ動いたか。</li><li>すべてのメッセージのタイムスタンプと、未読の件数。</li><li>添付ファイルの名前・種類・サイズ。バイト列は暗号化されますが、その説明は暗号化されず、暗号文の長さは元の長さの上限を示します。</li><li>GIF。これは第三者の公開コンテンツです。</li><li>あなたの友だちと友だちリクエスト。</li><li>通話のシグナリング。通話があったこと、相手、時刻。音声や映像は含みません。</li></ul>
+      <p>入力中の表示と既読は、あなたがオンにしない限りオフで、オフの間は何も記録されません。</p>
+      <p>もうここにないもの: あなたのメールアドレスと名前です。2026 年 9 月以降、アカウントの記録にはアカウント識別子しかありません。アドレスは Firebase Authentication に残り、サインインに使われるだけで、ほかの利用者には読めません。</p>
+      <p>別の話として: このアプリは Google Firebase 上で動くため、あなたの端末がそこへ行う接続の IP アドレスと時刻を Google は見られます。これはホスティングの性質であってアプリの性質ではなく、暗号化で消すことはできません。</p>
+    </section>
+
+    <section>
+      <h2>3. 相手があなたを見つける方法</h2>
+      <p>検索することはできません。ディレクトリはなく、メールアドレス・電話番号・名前のいずれでも探せませんし、サーバーはそれを試みる問い合わせをすべて拒否します。</p>
+      <p>誰かに連絡を取るには、招待リンクをアプリの外から、あなたが普段使っている手段で送ります。リンクは 1 回だけ有効で、24 時間で期限切れになり、取り消せます。相手をどう呼ぶかはあなた自身が付けた呼び名で、あなたのものです。相手が自己紹介した場合、その名前は暗号化されてあなたに届いています。</p>
+    </section>
+
+    <section>
+      <h2>4. 収集するもの</h2>
+      <ul><li>アカウント情報: 登録に使うメールアドレス。Firebase Authentication に保管されます。</li><li>メッセージと添付の暗号文、および第 2 節の関連情報。</li><li>利用データ: Firebase Analytics によるアプリ操作イベント。画面の表示と機能の利用であり、メッセージの中身は決して含みません。開発ビルドでは無効です。</li><li>クラッシュレポート: Firebase Crashlytics による匿名のクラッシュ・エラー情報。</li></ul>
+      <p>分析とクラッシュレポートは、今のところアプリ内で個別にオフにできません。ご自身の分を削除したい場合はご連絡ください。</p>
+    </section>
+
+    <section>
+      <h2>5. 保管場所</h2>
+      <p>Google Firebase 上（Firestore、Storage、Authentication）で、どの文書を誰が読み書きできるかを決めるセキュリティルールのもとに置かれます。</p>
+      <p>あなたの端末では、キャッシュされたメッセージ・設定・アプリロックの PIN が、端末ごとの鍵で暗号化されます。その鍵は通常のアプリ領域ではなく、プラットフォームの鍵保管庫（iOS の Keychain、Android の Keystore）にあります。</p>
+      <p>メッセージを復号する秘密鍵が端末を離れることはありません。例外は、あなた自身が書き留めることを選んだリカバリーフレーズだけです。私たちはそれを保持しておらず、代わりに復元することもできません。失えば、その端末宛てに送られたメッセージは二度と読めません。私たちを含め、誰にも読めません。</p>
+    </section>
+
+    <section>
+      <h2>6. ほかに情報を受け取る先</h2>
+      <p>あなたの個人情報を販売・交換・貸与することはありません。情報が届く先は:</p>
+      <ul><li>Google Firebase — 上記のとおり、当社のホスティング事業者。</li><li>GIPHY — GIF を検索したときだけ。検索語が GIPHY の API に送られます。あなたに関するそれ以外の情報は送られません。</li></ul>
+      <p>法律が要求する場合、保持しているものを開示することがあります。保持しているものは第 2 節の一覧です。メッセージの中身は提出できません。読めないからです。</p>
+    </section>
+
+    <section>
+      <h2>7. プッシュ通知</h2>
+      <p>通知は Firebase Cloud Messaging が配信します。端末トークンは、あなただけが読めるアカウントの非公開領域に保管されます。</p>
+      <p>通知にメッセージ本文は含まれません。端末が手元でメッセージを復号し、表示内容を組み立てます。Google が運ぶのは封筒であって、中身ではありません。</p>
+    </section>
+
+    <section>
+      <h2>8. あなたにできること</h2>
+      <ul><li>プロフィール画面からアカウントを削除する。共有リストや通話記録など、会話の共同の一部である内容は相手側に残ります。それは相手の記録でもあるからです。</li><li>プロフィール画面からデータを書き出す。</li><li>チャットごとにメッセージの有効期限を設定する: 1 時間、24 時間、7 日、30 日。</li><li>入力中の表示と既読をオンまたはオフにする。どちらも初期状態はオフです。</li><li>PIN または生体認証でアプリをロックする。</li><li>配った招待リンクを取り消す。</li></ul>
+      <p>手作業での削除をご希望であれば、ご連絡ください。</p>
+    </section>
+
+    <section>
+      <h2>9. 保存期間</h2>
+      <p>アカウントが存在する間、データを保持します。アカウントを削除すればデータも削除されますが、上記の共同保有の内容は除きます。チャットごとの有効期限は、あなたが設定した期間でメッセージを削除します。</p>
+    </section>
+
+    <section>
+      <h2>10. 知っておくべき限界</h2>
+      <p>ご自身で気づくより、こちらからお伝えしたいことです。</p>
+      <ul><li>鍵は最初に見たときに信頼されます。もし誰かが、あなたたちが一度もメッセージを交わす前に鍵をすり替えていたら、その会話は別人宛てに暗号化され、しかも見た目はまったく普通です。その後に鍵が変わった場合はアプリが警告し、別経路で照合できる安全番号も表示しますが、照合を強制する仕組みはありません。</li><li>1 アカウントにつき 1 台。新しい端末でサインインすると鍵が置き換わり、前の端末は新しいメッセージを読めなくなります。</li><li>暗号化が存在する前に送られたメッセージはそのままです。遡って変換したものはありません。</li><li>このアプリは第三者による独立したセキュリティ監査を受けたことがありません。</li></ul>
+    </section>
+
+    <section>
+      <h2>11. 子どもについて</h2>
+      <p>Chatterbox は 13 歳未満のお子さま向けではなく、その情報を意図的に収集することはありません。お子さまが個人情報を提供したと思われる場合はご連絡ください。削除します。</p>
+    </section>
+
+    <section>
+      <h2>12. 変更について</h2>
+      <p>このポリシーは更新することがあります。重要な変更はアプリ内でお知らせし、上部の日付が最後に変更した日です。</p>
+    </section>
+
+    <section>
+      <h2>13. お問い合わせ</h2>
+      <p>このポリシーに関するお問い合わせ: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="doc-langs" aria-label="プライバシーポリシー">
+        <a href="privacy.html" lang="en">English</a>
+        <a href="privacy.zh-Hans.html" lang="zh-Hans">简体中文</a>
+        <a href="privacy.de.html" lang="de">Deutsch</a>
+        <a href="privacy.es.html" lang="es">Español</a>
+        <a href="privacy.fr.html" lang="fr">Français</a>
+        <a href="privacy.it.html" lang="it">Italiano</a>
+        <a href="privacy.pt.html" lang="pt">Português</a>
+        <a href="privacy.ru.html" lang="ru">Русский</a>
+        <a href="privacy.tr.html" lang="tr">Türkçe</a>
+        <a href="privacy.vi.html" lang="vi">Tiếng Việt</a>
+        <a href="privacy.ko.html" lang="ko">한국어</a>
+        <a href="privacy.zh-Hant.html" lang="zh-Hant">繁體中文</a>
+        <a href="privacy.ar.html" lang="ar">العربية</a>
+        <a href="privacy.hi.html" lang="hi">हिन्दी</a>
+    </nav>
+  </main>
+</body>
+</html>

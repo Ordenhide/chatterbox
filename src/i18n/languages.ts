@@ -17,15 +17,16 @@ export type LanguageCode = 'en' | 'zh-Hans' | 'zh-Hant' | 'zh' | 'es' | 'fr' | '
 /**
  * The languages actually offered in the picker.
  *
- * Not every locale file shipped — i18n/index.ts still loads all fifteen,
- * and a device already set to one keeps it. This is the *offer*, and it is
- * shorter than the file list on purpose: thirteen of those translations are
- * 53.6% complete and have not moved since they were made. i18next falls back
- * to English for the rest, so nothing breaks, but nearly half of what a German
- * user reads would be English — including the sign-in screen, most of Profile,
- * and the line that says a message is going out unencrypted.
+ * All fifteen locale files are now complete, and all fifteen are offered.
  *
- * Offering a language is a claim that the app speaks it. Two do.
+ * They were not always. Thirteen of them sat at 42% for long enough that the
+ * gap covered the sign-in screen, most of Profile, and the line that tells a
+ * user their message is going out unencrypted — and because i18next silently
+ * falls back to English, nothing ever broke loudly enough to be noticed.
+ *
+ * Offering a language is a claim that the app speaks it, and that claim now
+ * includes the privacy policy: i18n/privacyPolicy.ts is keyed by
+ * OfferedLanguage below, so a language cannot be listed here without one.
  *
  * Re-adding one is a line here, and a test enforces the bar rather than
  * trusting this comment: see __tests__/languageCompleteness.test.ts, which
@@ -35,6 +36,19 @@ export type LanguageCode = 'en' | 'zh-Hans' | 'zh-Hant' | 'zh' | 'es' | 'fr' | '
 export const LANGUAGES = [
   {code: 'en', label: 'English', nativeLabel: 'English'},
   {code: 'zh-Hans', label: 'Chinese (Simplified)', nativeLabel: '简体中文'},
+  {code: 'zh-Hant', label: 'Chinese (Traditional)', nativeLabel: '繁體中文'},
+  {code: 'es', label: 'Spanish', nativeLabel: 'Español'},
+  {code: 'fr', label: 'French', nativeLabel: 'Français'},
+  {code: 'de', label: 'German', nativeLabel: 'Deutsch'},
+  {code: 'it', label: 'Italian', nativeLabel: 'Italiano'},
+  {code: 'pt', label: 'Portuguese', nativeLabel: 'Português'},
+  {code: 'ru', label: 'Russian', nativeLabel: 'Русский'},
+  {code: 'tr', label: 'Turkish', nativeLabel: 'Türkçe'},
+  {code: 'vi', label: 'Vietnamese', nativeLabel: 'Tiếng Việt'},
+  {code: 'ja', label: 'Japanese', nativeLabel: '日本語'},
+  {code: 'ko', label: 'Korean', nativeLabel: '한국어'},
+  {code: 'ar', label: 'Arabic', nativeLabel: 'العربية'},
+  {code: 'hi', label: 'Hindi', nativeLabel: 'हिन्दी'},
 ] as const satisfies readonly {code: LanguageCode; label: string; nativeLabel: string}[];
 
 /**

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>개인정보처리방침 — Chatterbox</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">기능</a>
+        <a href="index.html#download" class="nav-cta">다운로드</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.html">← Chatterbox로 돌아가기</a>
+    <h1>개인정보처리방침</h1>
+    <p class="meta">최종 업데이트: 2026-09-05</p>
+
+    <section>
+      <h2>0. 요약</h2>
+      <p>메시지 본문은 당신의 기기에서 암호화되며, 당신이 보낸 사람만 읽을 수 있습니다. 우리도 읽을 수 없고, 서버를 빌려 쓰는 Google도 읽을 수 없습니다.</p>
+      <p>우리가 볼 수 있는 것은 대화가 있었다는 사실입니다. 어떤 계정이 참여했고 언제 활동했는지입니다. 그것까지 없애는 일은 내용을 암호화하는 것보다 어렵고, 아직 끝내지 못했습니다. 이 방침은 그 경계가 지금 어디에 있는지를 정확히 말합니다.</p>
+    </section>
+
+    <section>
+      <h2>1. 종단 간 암호화되는 것</h2>
+      <p>당신의 기기에서 암호화되어 우리도 Google도 읽을 수 없습니다:</p>
+      <ul><li>메시지 본문.</li><li>첨부한 파일, 사진, 오디오, 동영상의 내용.</li><li>공유 목록, 저장한 인용, 링크 미리보기.</li><li>음성·영상 통화. 두 기기 사이에서 WebRTC가 의무화한 DTLS-SRTP를 사용합니다.</li></ul>
+      <p>대부분의 1:1 및 그룹 메시지는 여기에 더해 래칫을 씁니다. 메시지마다 키가 달라서, 기기가 뚫려도 이전 메시지까지 드러나지는 않습니다. 상대의 클라이언트가 새 키 자료를 게시하지 않은 대화는 단일 장기 키로 되돌아가며, 그 키에는 이 성질이 없습니다. 메시지 아래 표시가 그 메시지가 실제로 어느 쪽을 거쳤는지 알려 줍니다.</p>
+    </section>
+
+    <section>
+      <h2>2. 암호화되지 않는 것과 우리가 볼 수 있는 것</h2>
+      <p>암호화는 내용을 보호하지, 대화가 있었다는 사실을 보호하지 않습니다. 다음은 우리 서버에 평문으로 남습니다:</p>
+      <ul><li>각 대화에 누가 있는지, 언제 만들어졌고 마지막으로 언제 활동했는지.</li><li>모든 메시지의 시각과 읽지 않은 개수.</li><li>첨부의 파일 이름, 형식, 크기. 바이트는 암호화되지만 그에 대한 설명은 그렇지 않으며, 암호문의 길이가 원본 길이의 한계를 드러냅니다.</li><li>GIF. 제3자의 공개 콘텐츠입니다.</li><li>당신의 친구와 친구 요청.</li><li>통화 시그널링 — 통화가 있었다는 것, 상대, 시각. 음성이나 영상은 아닙니다.</li></ul>
+      <p>입력 중 표시와 읽음 표시는 켜기 전까지 꺼져 있고, 꺼져 있는 동안에는 아무것도 기록되지 않습니다.</p>
+      <p>더 이상 여기에 없는 것: 당신의 이메일 주소와 이름입니다. 2026년 9월부터 계정 기록에는 계정 식별자만 남습니다. 주소는 Firebase Authentication에 남아 로그인에 쓰이며, 다른 사용자는 읽을 수 없습니다.</p>
+      <p>별개로: 이 앱은 Google Firebase 위에서 돌아가므로, 당신의 기기가 그쪽으로 여는 모든 연결의 IP 주소와 시각을 Google이 볼 수 있습니다. 이는 호스팅의 성질이지 앱의 성질이 아니며, 암호화로 없앨 수 없습니다.</p>
+    </section>
+
+    <section>
+      <h2>3. 다른 사람이 당신을 찾는 방법</h2>
+      <p>검색할 수 없습니다. 디렉터리가 없고 — 이메일, 전화번호, 이름 어느 것으로도 찾을 수 없으며 — 서버는 그런 조회를 모두 거부합니다.</p>
+      <p>누군가에게 닿으려면 앱 밖에서, 당신이 이미 쓰는 어떤 수단으로든 초대 링크를 보냅니다. 링크는 한 번만 동작하고 24시간 뒤 만료되며, 철회할 수 있습니다. 상대를 뭐라고 부르는지는 당신이 붙인 이름표이고 당신 것입니다. 상대가 자기를 소개했다면, 그 이름은 암호화된 채로 당신에게 왔습니다.</p>
+    </section>
+
+    <section>
+      <h2>4. 우리가 수집하는 것</h2>
+      <ul><li>계정 정보: 가입에 쓰는 이메일 주소. Firebase Authentication에 보관됩니다.</li><li>메시지와 첨부의 암호문, 그리고 2절의 메타데이터.</li><li>사용 데이터: Firebase Analytics를 통한 앱 상호작용 이벤트 — 화면 조회와 기능 사용이며, 메시지 내용은 절대 아닙니다. 개발 빌드에서는 꺼져 있습니다.</li><li>오류 보고: Firebase Crashlytics를 통한 익명의 충돌 및 오류 데이터.</li></ul>
+      <p>분석과 오류 보고는 현재 앱 안에서 개별적으로 끌 수 없습니다. 본인 것을 삭제하고 싶으면 연락해 주세요.</p>
+    </section>
+
+    <section>
+      <h2>5. 어디에 저장되는가</h2>
+      <p>Google Firebase — Firestore, Storage, Authentication — 에 저장되며, 각 문서를 누가 읽고 쓸 수 있는지는 보안 규칙이 정합니다.</p>
+      <p>당신의 기기에서는 캐시된 메시지, 설정, 앱 잠금 PIN이 기기별 키로 암호화됩니다. 그 키는 일반 앱 저장소가 아니라 플랫폼 키 저장소(iOS Keychain, Android Keystore)에 있습니다.</p>
+      <p>메시지를 복호화하는 개인 키는 기기를 떠나지 않습니다. 예외는 당신이 적어 두기로 한 복구 문구뿐입니다. 우리는 그것을 갖고 있지 않고 대신 복구해 줄 수도 없습니다. 잃어버리면 그 기기로 보낸 메시지는 다시는 읽을 수 없습니다 — 우리를 포함해 누구도 읽을 수 없습니다.</p>
+    </section>
+
+    <section>
+      <h2>6. 그 밖에 데이터를 받는 곳</h2>
+      <p>우리는 당신의 개인정보를 팔거나 교환하거나 대여하지 않습니다. 데이터가 가는 곳은:</p>
+      <ul><li>Google Firebase — 위에서 설명한 우리의 호스팅 제공자.</li><li>GIPHY — GIF를 검색할 때만. 검색어가 GIPHY의 API로 갑니다. 당신에 대한 다른 것은 가지 않습니다.</li></ul>
+      <p>법이 요구하면 우리가 가진 것을 공개할 수 있습니다. 우리가 가진 것은 2절의 목록입니다. 메시지 내용은 내놓을 수 없습니다. 읽을 수 없기 때문입니다.</p>
+    </section>
+
+    <section>
+      <h2>7. 푸시 알림</h2>
+      <p>알림은 Firebase Cloud Messaging이 전달합니다. 기기 토큰은 당신만 읽을 수 있는 계정의 비공개 영역에 저장됩니다.</p>
+      <p>알림에는 메시지 본문이 담기지 않습니다. 당신의 기기가 메시지를 그 자리에서 복호화해 보이는 내용을 구성합니다. Google이 나르는 것은 봉투이지 내용물이 아닙니다.</p>
+    </section>
+
+    <section>
+      <h2>8. 당신이 할 수 있는 것</h2>
+      <ul><li>프로필 화면에서 계정을 삭제합니다. 공유 목록이나 통화 기록처럼 대화에 공동으로 속한 내용은 상대에게 남습니다. 그것은 그 사람의 기록이기도 하기 때문입니다.</li><li>프로필 화면에서 데이터를 내보냅니다.</li><li>대화별로 메시지 만료를 설정합니다: 1시간, 24시간, 7일, 30일.</li><li>입력 중 표시와 읽음 표시를 켜거나 끕니다. 둘 다 기본값은 꺼짐입니다.</li><li>PIN이나 생체 인식으로 앱을 잠급니다.</li><li>이미 건넨 초대 링크를 철회합니다.</li></ul>
+      <p>직접 손으로 지워 주기를 원하면 연락해 주세요.</p>
+    </section>
+
+    <section>
+      <h2>9. 보관</h2>
+      <p>계정이 존재하는 동안 데이터를 보관합니다. 계정을 삭제하면 데이터도 삭제되지만, 위에서 말한 공동 보유 내용은 제외됩니다. 대화별 만료는 당신이 정한 일정에 따라 메시지를 지웁니다.</p>
+    </section>
+
+    <section>
+      <h2>10. 알아 두어야 할 한계</h2>
+      <p>직접 알아차리게 두기보다 먼저 말씀드립니다.</p>
+      <ul><li>키는 처음 볼 때 신뢰됩니다. 누군가 두 사람이 메시지를 한 번도 주고받기 전에 키를 바꿔치기했다면, 그 대화는 엉뚱한 사람에게 암호화되면서도 완전히 정상으로 보입니다. 그 뒤에 키가 바뀌면 앱이 경고하고, 다른 경로로 대조할 수 있는 안전 번호를 보여 줍니다 — 그러나 대조를 강제하는 장치는 없습니다.</li><li>계정당 기기 하나. 새 기기에서 로그인하면 키가 교체되고, 이전 기기는 새 메시지를 읽지 못하게 됩니다.</li><li>암호화가 생기기 전에 보낸 메시지는 그대로입니다. 소급해서 변환한 것은 없습니다.</li><li>이 앱은 독립적인 보안 감사를 받은 적이 없습니다.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. 아동</h2>
+      <p>Chatterbox는 13세 미만 아동을 위한 앱이 아니며, 그들의 정보를 알면서 수집하지 않습니다. 아동이 개인정보를 제공했다고 생각되면 연락해 주세요. 삭제하겠습니다.</p>
+    </section>
+
+    <section>
+      <h2>12. 변경</h2>
+      <p>이 방침은 갱신될 수 있습니다. 중요한 변경은 앱에서 알리며, 위의 날짜가 마지막으로 바뀐 시점입니다.</p>
+    </section>
+
+    <section>
+      <h2>13. 문의</h2>
+      <p>이 방침에 대한 문의: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="doc-langs" aria-label="개인정보처리방침">
+        <a href="privacy.html" lang="en">English</a>
+        <a href="privacy.zh-Hans.html" lang="zh-Hans">简体中文</a>
+        <a href="privacy.de.html" lang="de">Deutsch</a>
+        <a href="privacy.es.html" lang="es">Español</a>
+        <a href="privacy.fr.html" lang="fr">Français</a>
+        <a href="privacy.it.html" lang="it">Italiano</a>
+        <a href="privacy.pt.html" lang="pt">Português</a>
+        <a href="privacy.ru.html" lang="ru">Русский</a>
+        <a href="privacy.tr.html" lang="tr">Türkçe</a>
+        <a href="privacy.vi.html" lang="vi">Tiếng Việt</a>
+        <a href="privacy.ja.html" lang="ja">日本語</a>
+        <a href="privacy.zh-Hant.html" lang="zh-Hant">繁體中文</a>
+        <a href="privacy.ar.html" lang="ar">العربية</a>
+        <a href="privacy.hi.html" lang="hi">हिन्दी</a>
+    </nav>
+  </main>
+</body>
+</html>

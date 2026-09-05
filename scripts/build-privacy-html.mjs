@@ -66,36 +66,47 @@ function bodyToHtml(body) {
     .join('\n      ');
 }
 
+/**
+ * The page furniture, per language. Everything else on the page comes from the
+ * policy itself, so this is the whole of what has to be written by hand when a
+ * language is added — and the generator throws if a language has a policy but
+ * no entry here, rather than emitting an English page under a Spanish name.
+ */
 const CHROME = {
-  en: {
-    lang: 'en',
-    title: 'Privacy Policy — Chatterbox',
-    heading: 'Privacy Policy',
-    updated: d => `Last updated: ${d}`,
-    back: '← Back to Chatterbox',
-    other: {href: 'privacy.zh.html', label: '简体中文'},
-    features: 'Features',
-    download: 'Download',
-  },
-  'zh-Hans': {
-    lang: 'zh-Hans',
-    title: '隐私政策 — Chatterbox',
-    heading: '隐私政策',
-    updated: d => `最后更新：${d}`,
-    back: '← 返回 Chatterbox',
-    other: {href: 'privacy.html', label: 'English'},
-    features: '功能',
-    download: '下载',
-  },
+  en:        {lang: 'en',      dir: 'ltr', title: 'Privacy Policy — Chatterbox',        heading: 'Privacy Policy',        updated: 'Last updated',       back: 'Back to Chatterbox',      features: 'Features',    download: 'Download',     native: 'English'},
+  'zh-Hans': {lang: 'zh-Hans', dir: 'ltr', title: '隐私政策 — Chatterbox',              heading: '隐私政策',              updated: '最后更新',           back: '返回 Chatterbox',         features: '功能',        download: '下载',         native: '简体中文'},
+  'zh-Hant': {lang: 'zh-Hant', dir: 'ltr', title: '隱私政策 — Chatterbox',              heading: '隱私政策',              updated: '最後更新',           back: '返回 Chatterbox',         features: '功能',        download: '下載',         native: '繁體中文'},
+  es:        {lang: 'es',      dir: 'ltr', title: 'Política de privacidad — Chatterbox', heading: 'Política de privacidad', updated: 'Última actualización', back: 'Volver a Chatterbox',  features: 'Funciones',   download: 'Descargar',    native: 'Español'},
+  fr:        {lang: 'fr',      dir: 'ltr', title: 'Politique de confidentialité — Chatterbox', heading: 'Politique de confidentialité', updated: 'Dernière mise à jour', back: 'Retour à Chatterbox', features: 'Fonctionnalités', download: 'Télécharger', native: 'Français'},
+  de:        {lang: 'de',      dir: 'ltr', title: 'Datenschutzerklärung — Chatterbox',  heading: 'Datenschutzerklärung',  updated: 'Zuletzt aktualisiert', back: 'Zurück zu Chatterbox',  features: 'Funktionen',  download: 'Herunterladen', native: 'Deutsch'},
+  it:        {lang: 'it',      dir: 'ltr', title: 'Informativa sulla privacy — Chatterbox', heading: 'Informativa sulla privacy', updated: 'Ultimo aggiornamento', back: 'Torna a Chatterbox', features: 'Funzioni',  download: 'Scarica',      native: 'Italiano'},
+  pt:        {lang: 'pt',      dir: 'ltr', title: 'Política de Privacidade — Chatterbox', heading: 'Política de Privacidade', updated: 'Última atualização', back: 'Voltar ao Chatterbox', features: 'Funcionalidades', download: 'Transferir', native: 'Português'},
+  ru:        {lang: 'ru',      dir: 'ltr', title: 'Политика конфиденциальности — Chatterbox', heading: 'Политика конфиденциальности', updated: 'Последнее обновление', back: 'Назад в Chatterbox', features: 'Возможности', download: 'Скачать',   native: 'Русский'},
+  tr:        {lang: 'tr',      dir: 'ltr', title: 'Gizlilik Politikası — Chatterbox',   heading: 'Gizlilik Politikası',   updated: 'Son güncelleme',     back: "Chatterbox'a dön",        features: 'Özellikler',  download: 'İndir',        native: 'Türkçe'},
+  vi:        {lang: 'vi',      dir: 'ltr', title: 'Chính sách quyền riêng tư — Chatterbox', heading: 'Chính sách quyền riêng tư', updated: 'Cập nhật lần cuối', back: 'Quay lại Chatterbox', features: 'Tính năng', download: 'Tải xuống',  native: 'Tiếng Việt'},
+  ja:        {lang: 'ja',      dir: 'ltr', title: 'プライバシーポリシー — Chatterbox',   heading: 'プライバシーポリシー',   updated: '最終更新',           back: 'Chatterbox に戻る',       features: '機能',        download: 'ダウンロード', native: '日本語'},
+  ko:        {lang: 'ko',      dir: 'ltr', title: '개인정보처리방침 — Chatterbox',        heading: '개인정보처리방침',       updated: '최종 업데이트',      back: 'Chatterbox로 돌아가기',   features: '기능',        download: '다운로드',     native: '한국어'},
+  ar:        {lang: 'ar',      dir: 'rtl', title: 'سياسة الخصوصية — Chatterbox',        heading: 'سياسة الخصوصية',        updated: 'آخر تحديث',          back: 'العودة إلى Chatterbox',   features: 'المزايا',     download: 'تنزيل',        native: 'العربية'},
+  hi:        {lang: 'hi',      dir: 'ltr', title: 'गोपनीयता नीति — Chatterbox',          heading: 'गोपनीयता नीति',          updated: 'आख़िरी अपडेट',        back: 'Chatterbox पर वापस',      features: 'सुविधाएँ',     download: 'डाउनलोड',      native: 'हिन्दी'},
 };
 
-export function renderPage(code, sections, updated) {
+/** `privacy.html` for English, `privacy.<code>.html` for the rest. */
+const pageName = code => (code === 'en' ? 'privacy.html' : `privacy.${code}.html`);
+
+export function renderPage(code, sections, updated, allCodes) {
   const c = CHROME[code];
+  if (!c) throw new Error(`no page furniture for ${code} — add it to CHROME`);
   const body = sections
     .map(s => `    <section>\n      <h2>${escape(s.title)}</h2>\n      ${bodyToHtml(s.body)}\n    </section>`)
     .join('\n\n');
+  // Every language links to every other, so a reader who landed on the wrong
+  // one is one click away rather than having to guess a filename.
+  const switcher = allCodes
+    .filter(other => other !== code)
+    .map(other => `<a href="${pageName(other)}" lang="${CHROME[other].lang}">${CHROME[other].native}</a>`)
+    .join('\n        ');
   return `<!doctype html>
-<html lang="${c.lang}">
+<html lang="${c.lang}" dir="${c.dir}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -119,18 +130,21 @@ export function renderPage(code, sections, updated) {
       </a>
       <div class="nav-links">
         <a href="index.html#features">${c.features}</a>
-        <a href="${c.other.href}">${c.other.label}</a>
         <a href="index.html#download" class="nav-cta">${c.download}</a>
       </div>
     </div>
   </nav>
 
   <main class="doc">
-    <a class="back-link" href="index.html">${c.back}</a>
+    <a class="back-link" href="index.html">← ${c.back}</a>
     <h1>${c.heading}</h1>
-    <p class="meta">${c.updated(updated)}</p>
+    <p class="meta">${c.updated}: ${updated}</p>
 
 ${body}
+
+    <nav class="doc-langs" aria-label="${c.heading}">
+        ${switcher}
+    </nav>
   </main>
 </body>
 </html>
@@ -139,10 +153,12 @@ ${body}
 
 export function generate() {
   const {languages, updated} = parsePolicy(readFileSync(SOURCE, 'utf8'));
-  return {
-    'website/privacy.html': renderPage('en', languages.en, updated),
-    'website/privacy.zh.html': renderPage('zh-Hans', languages['zh-Hans'], updated),
-  };
+  const codes = Object.keys(languages);
+  const pages = {};
+  for (const code of codes) {
+    pages[`website/${pageName(code)}`] = renderPage(code, languages[code], updated, codes);
+  }
+  return pages;
 }
 
 if (process.argv[1] && process.argv[1].endsWith('build-privacy-html.mjs')) {

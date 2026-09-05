@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="tr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gizlilik Politikası — Chatterbox</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Özellikler</a>
+        <a href="index.html#download" class="nav-cta">İndir</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.html">← Chatterbox'a dön</a>
+    <h1>Gizlilik Politikası</h1>
+    <p class="meta">Son güncelleme: 2026-09-05</p>
+
+    <section>
+      <h2>0. Kısaca</h2>
+      <p>Mesajlarının metni cihazında şifrelenir ve yalnızca gönderdiğin kişiler okuyabilir. Biz okuyamayız; sunucularını kiraladığımız Google da okuyamaz.</p>
+      <p>Görebildiğimiz şey, bir konuşmanın gerçekleştiği: içinde hangi hesapların olduğu ve ne zaman etkin olduklarıdır. Bunu da ortadan kaldırmak, içeriği şifrelemekten daha zor ve henüz bitirmedik. Bu politika, sınırın şu anda tam olarak nerede olduğunu söylüyor.</p>
+    </section>
+
+    <section>
+      <h2>1. Uçtan uca şifreli olanlar</h2>
+      <p>Cihazında şifrelenir; ne biz ne de Google okuyabilir:</p>
+      <ul><li>Mesajlarının metni.</li><li>Eklediğin dosyaların, fotoğrafların, seslerin ve videoların içeriği.</li><li>Paylaşılan listeler, kaydedilen alıntılar ve bağlantı önizlemeleri.</li><li>Sesli ve görüntülü aramalar; iki cihaz arasında WebRTC'nin zorunlu kıldığı DTLS-SRTP kullanılır.</li></ul>
+      <p>Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanır: her mesajın kendi anahtarı vardır, bu yüzden cihazının ele geçirilmesi önceki mesajları açığa çıkarmaz. Birinin istemcisinin daha yeni anahtar malzemesini yayımlamadığı konuşmalar, bu özelliği taşımayan tek bir uzun ömürlü anahtara geri düşer. Mesajın altındaki etiket, o mesajın gerçekte hangisini kullandığını söyler.</p>
+    </section>
+
+    <section>
+      <h2>2. Şifreli olmayanlar ve bizim görebildiklerimiz</h2>
+      <p>Şifreleme içeriği korur, bir konuşmanın var olduğu gerçeğini değil. Şunlar sunucularımızda açık hâlde durur:</p>
+      <ul><li>Her konuşmada kimlerin bulunduğu, ne zaman oluşturulduğu ve en son ne zaman etkin olduğu.</li><li>Her mesajın zaman damgası ve kaç tanesini okumadığın.</li><li>Bir ekin dosya adı, türü ve boyutu. Baytlar şifrelidir; onların tarifi değildir ve şifreli metnin uzunluğu aslının uzunluğunu sınırlar.</li><li>GIF'ler; bunlar üçüncü tarafların herkese açık içerikleridir.</li><li>Arkadaşların ve arkadaşlık istekleri.</li><li>Arama sinyalleşmesi — bir aramanın yapıldığı, kiminle ve ne zaman. Sesi ya da görüntüsü değil.</li></ul>
+      <p>Yazıyor göstergesi ve okundu bilgisi sen açmadıkça kapalıdır ve kapalıyken hiçbir şey yazılmaz.</p>
+      <p>Artık burada olmayanlar: e-posta adresin ve adın. Eylül 2026'dan beri hesap kaydında yalnızca bir hesap tanımlayıcısı bulunur. Adresin, seni oturum açtırmak için kullandığımız ve başka hiçbir kullanıcının okuyamadığı Firebase Authentication içinde kalır.</p>
+      <p>Ayrıca: uygulama Google Firebase üzerinde çalıştığı için Google, cihazının kurduğu her bağlantının IP adresini ve zamanını görebilir. Bu, uygulamanın değil barındırmanın bir özelliğidir ve şifreleyerek yok edemeyiz.</p>
+    </section>
+
+    <section>
+      <h2>3. Seni nasıl buluyorlar</h2>
+      <p>Seni arayamazlar. Bir rehber yok — e-posta, telefon ya da adla arama yok — ve sunucu bunu deneyen her sorguyu reddeder.</p>
+      <p>Birine ulaşmak için ona uygulama dışından, zaten kullandığın herhangi bir yolla bir davet bağlantısı gönderirsin. Bağlantı bir kez çalışır, 24 saat sonra sona erer ve geri çekilebilir. Birine ne dediğin senin kendi etiketindir ve sende kalır; kendini tanıttıysa, o ad sana şifreli olarak ulaşmıştır.</p>
+    </section>
+
+    <section>
+      <h2>4. Neleri topluyoruz</h2>
+      <ul><li>Hesap verisi: kayıt olurken kullandığın e-posta adresi, Firebase Authentication içinde tutulur.</li><li>Mesaj ve eklerin şifreli metni, ayrıca 2. bölümdeki üst veriler.</li><li>Kullanım verisi: Firebase Analytics üzerinden uygulama etkileşim olayları — görüntülenen ekranlar ve kullanılan özellikler; mesaj içeriği asla. Geliştirme sürümlerinde kapalıdır.</li><li>Çökme raporları: Firebase Crashlytics üzerinden anonim çökme ve hata verisi.</li></ul>
+      <p>Analitik ve çökme raporlaması şu an uygulama içinde tek tek kapatılamıyor. Kendi verinin silinmesini istersen bize yaz.</p>
+    </section>
+
+    <section>
+      <h2>5. Nerede saklanıyor</h2>
+      <p>Google Firebase'de — Firestore, Storage ve Authentication — her belgeyi kimin okuyup yazabileceğine karar veren güvenlik kurallarıyla.</p>
+      <p>Cihazında, önbellekteki mesajlar, ayarlar ve uygulama kilidi PIN'in, sıradan uygulama deposunda değil, platformun anahtar deposunda (iOS Keychain, Android Keystore) tutulan cihaza özel bir anahtarla şifrelenir.</p>
+      <p>Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazmayı seçtiğin kurtarma ifadesidir. O anahtar bizde değildir ve senin için geri getiremeyiz. Kaybedersen, o cihaza gönderilen mesajlar bir daha okunamaz — biz dâhil hiç kimse tarafından.</p>
+    </section>
+
+    <section>
+      <h2>6. Veriyi başka kim alıyor</h2>
+      <p>Kişisel bilgilerini satmayız, takas etmeyiz, kiralamayız. Veri şuralara ulaşır:</p>
+      <ul><li>Google Firebase — yukarıda anlatıldığı gibi barındırma sağlayıcımız.</li><li>GIPHY — yalnızca bir GIF aradığında. Arama terimlerin GIPHY'nin API'sine gider; seninle ilgili başka hiçbir şey gitmez.</li></ul>
+      <p>Yasa gerektirirse elimizdekileri açıklayabiliriz. Elimizdeki, 2. bölümdeki listedir. Mesaj içeriğini veremeyiz, çünkü onu okuyamıyoruz.</p>
+    </section>
+
+    <section>
+      <h2>7. Anlık bildirimler</h2>
+      <p>Bildirimleri Firebase Cloud Messaging iletir. Cihaz belirtecin, hesabının yalnızca senin okuyabildiğin özel bir bölümünde saklanır.</p>
+      <p>Bildirimler mesaj metni taşımaz. Mesajı yerel olarak cihazın çözer ve gördüğün şeyi o oluşturur; Google zarfı iletir, içindekini değil.</p>
+    </section>
+
+    <section>
+      <h2>8. Neler yapabilirsin</h2>
+      <ul><li>Profil ekranından hesabını sil. Bir konuşmanın ortak parçası olan içerik — paylaşılan bir liste, bir arama kaydı — karşı tarafta kalır, çünkü o kayıt onun da kaydıdır.</li><li>Profil ekranından verilerini dışa aktar.</li><li>Mesajların sohbet başına süresini ayarla: 1 saat, 24 saat, 7 gün veya 30 gün.</li><li>Yazıyor göstergesini ve okundu bilgisini aç ya da kapat. İkisi de varsayılan olarak kapalıdır.</li><li>Uygulamayı PIN veya biyometriyle kilitle.</li><li>Dağıttığın bir davet bağlantısını geri çek.</li></ul>
+      <p>Bir şeyi elle silmemizi tercih edersen bize yaz.</p>
+    </section>
+
+    <section>
+      <h2>9. Saklama</h2>
+      <p>Hesabın var olduğu sürece verilerini saklarız. Hesabı silmek onları da siler; yukarıda belirtilen ortak içerik hariç. Sohbet başına süre, mesajları belirlediğin takvime göre kaldırır.</p>
+    </section>
+
+    <section>
+      <h2>10. Bilmen gereken sınırlar</h2>
+      <p>Bunları kendin keşfetmen yerine sana söylemeyi tercih ederiz.</p>
+      <ul><li>Anahtarlara ilk görüldüklerinde güvenilir. Biri, siz daha tek bir mesaj alışverişi yapmadan önce bir anahtarı değiştirmiş olsaydı, konuşma yanlış kişiye şifrelenir ve tamamen normal görünürdü. Uygulama, sonrasında bir anahtar değiştiğinde seni uyarır ve başka bir kanaldan karşılaştırabileceğin bir güvenlik numarası gösterir — ama karşılaştırman için seni zorlayan bir şey yoktur.</li><li>Hesap başına bir cihaz. Yeni bir cihazda oturum açmak anahtarı değiştirir ve önceki cihaz yeni mesajları okuyamaz hâle gelir.</li><li>Şifreleme var olmadan önce gönderilen mesajlar olduğu gibi kalır. Geriye dönük hiçbir dönüştürme yapılmadı.</li><li>Bu uygulama hiçbir zaman bağımsız bir güvenlik denetiminden geçmedi.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Çocuklar</h2>
+      <p>Chatterbox 13 yaşından küçük çocuklar için tasarlanmamıştır ve bilerek onların bilgilerini toplamayız. Bir çocuğun bize kişisel bilgi verdiğini düşünüyorsan bizimle iletişime geç, sileriz.</p>
+    </section>
+
+    <section>
+      <h2>12. Değişiklikler</h2>
+      <p>Bu politikayı güncelleyebiliriz. Önemli değişiklikler uygulama içinde duyurulur ve yukarıdaki tarih, en son ne zaman değiştiğini gösterir.</p>
+    </section>
+
+    <section>
+      <h2>13. İletişim</h2>
+      <p>Bu politikayla ilgili sorular: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="doc-langs" aria-label="Gizlilik Politikası">
+        <a href="privacy.html" lang="en">English</a>
+        <a href="privacy.zh-Hans.html" lang="zh-Hans">简体中文</a>
+        <a href="privacy.de.html" lang="de">Deutsch</a>
+        <a href="privacy.es.html" lang="es">Español</a>
+        <a href="privacy.fr.html" lang="fr">Français</a>
+        <a href="privacy.it.html" lang="it">Italiano</a>
+        <a href="privacy.pt.html" lang="pt">Português</a>
+        <a href="privacy.ru.html" lang="ru">Русский</a>
+        <a href="privacy.vi.html" lang="vi">Tiếng Việt</a>
+        <a href="privacy.ja.html" lang="ja">日本語</a>
+        <a href="privacy.ko.html" lang="ko">한국어</a>
+        <a href="privacy.zh-Hant.html" lang="zh-Hant">繁體中文</a>
+        <a href="privacy.ar.html" lang="ar">العربية</a>
+        <a href="privacy.hi.html" lang="hi">हिन्दी</a>
+    </nav>
+  </main>
+</body>
+</html>

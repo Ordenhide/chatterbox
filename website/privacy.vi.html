@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chính sách quyền riêng tư — Chatterbox</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Tính năng</a>
+        <a href="index.html#download" class="nav-cta">Tải xuống</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.html">← Quay lại Chatterbox</a>
+    <h1>Chính sách quyền riêng tư</h1>
+    <p class="meta">Cập nhật lần cuối: 2026-09-05</p>
+
+    <section>
+      <h2>0. Nói ngắn gọn</h2>
+      <p>Nội dung tin nhắn của bạn được mã hoá ngay trên thiết bị và chỉ những người bạn gửi tới mới đọc được. Chúng tôi không đọc được, và Google — bên cho chúng tôi thuê máy chủ — cũng vậy.</p>
+      <p>Thứ chúng tôi thấy được là đã có một cuộc trò chuyện: những tài khoản nào tham gia và họ hoạt động khi nào. Bỏ luôn phần đó khó hơn nhiều so với mã hoá nội dung, và chúng tôi chưa làm xong. Chính sách này nói rõ ranh giới hiện đang nằm ở đâu.</p>
+    </section>
+
+    <section>
+      <h2>1. Những gì được mã hoá đầu cuối</h2>
+      <p>Được mã hoá trên thiết bị của bạn, chúng tôi và Google đều không đọc được:</p>
+      <ul><li>Nội dung tin nhắn của bạn.</li><li>Nội dung các tệp, ảnh, âm thanh và video bạn đính kèm.</li><li>Danh sách chung, trích dẫn đã lưu và bản xem trước liên kết.</li><li>Cuộc gọi thoại và video, dùng DTLS-SRTP bắt buộc của WebRTC giữa hai thiết bị.</li></ul>
+      <p>Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet: mỗi tin nhắn có khoá riêng, nên thiết bị bị xâm nhập cũng không làm lộ những tin nhắn trước đó. Những cuộc trò chuyện mà máy của ai đó chưa công bố vật liệu khoá mới hơn sẽ quay về dùng một khoá dài hạn duy nhất, vốn không có tính chất đó. Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự đi theo đường nào.</p>
+    </section>
+
+    <section>
+      <h2>2. Những gì không được mã hoá, và chúng tôi thấy gì</h2>
+      <p>Mã hoá bảo vệ nội dung, không bảo vệ việc một cuộc trò chuyện có tồn tại. Những thứ sau nằm ở dạng rõ trên máy chủ của chúng tôi:</p>
+      <ul><li>Ai ở trong mỗi cuộc trò chuyện, nó được tạo khi nào và hoạt động lần cuối khi nào.</li><li>Dấu thời gian của từng tin nhắn và số tin bạn chưa đọc.</li><li>Tên tệp, loại và kích thước của tệp đính kèm. Các byte thì được mã hoá; phần mô tả về chúng thì không, và độ dài bản mã cũng giới hạn độ dài bản gốc.</li><li>Ảnh GIF, vốn là nội dung công khai của bên thứ ba.</li><li>Bạn bè và lời mời kết bạn của bạn.</li><li>Tín hiệu cuộc gọi — rằng đã có một cuộc gọi, với ai và khi nào. Không phải âm thanh hay hình ảnh của nó.</li></ul>
+      <p>Báo đang nhập và báo đã đọc đều tắt trừ khi bạn bật, và khi tắt thì không có gì được ghi lại.</p>
+      <p>Những gì không còn ở đây nữa: địa chỉ email và tên của bạn. Từ tháng 9 năm 2026, bản ghi tài khoản chỉ còn một mã định danh tài khoản. Địa chỉ của bạn nằm lại trong Firebase Authentication, nơi chúng tôi dùng nó để đăng nhập cho bạn và không người dùng nào khác đọc được.</p>
+      <p>Một điều riêng: vì ứng dụng chạy trên Google Firebase, Google thấy được địa chỉ IP và thời điểm của mọi kết nối mà thiết bị của bạn mở tới đó. Đó là đặc tính của hạ tầng lưu trữ, không phải của ứng dụng, và chúng tôi không thể mã hoá để nó biến mất.</p>
+    </section>
+
+    <section>
+      <h2>3. Người khác tìm bạn bằng cách nào</h2>
+      <p>Họ không thể tìm kiếm bạn. Không có danh bạ — không tra theo email, số điện thoại hay tên — và máy chủ từ chối mọi truy vấn cố làm điều đó.</p>
+      <p>Bạn liên hệ với ai đó bằng cách gửi cho họ một liên kết mời qua kênh bên ngoài, dùng bất cứ thứ gì bạn vốn đã dùng. Liên kết chỉ dùng được một lần, hết hạn sau 24 giờ, và bạn có thể thu hồi. Bạn gọi ai đó là gì thì đó là nhãn riêng của bạn dành cho họ, và nó thuộc về bạn; nếu họ tự giới thiệu, cái tên ấy đã đến với bạn ở dạng mã hoá.</p>
+    </section>
+
+    <section>
+      <h2>4. Chúng tôi thu thập gì</h2>
+      <ul><li>Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, lưu trong Firebase Authentication.</li><li>Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.</li><li>Dữ liệu sử dụng: các sự kiện tương tác qua Firebase Analytics — màn hình đã xem và tính năng đã dùng, không bao giờ là nội dung tin nhắn. Đã tắt trong bản dựng phát triển.</li><li>Báo cáo sự cố: dữ liệu sự cố và lỗi ẩn danh qua Firebase Crashlytics.</li></ul>
+      <p>Hiện tại phân tích và báo cáo sự cố chưa thể tắt riêng lẻ trong ứng dụng. Hãy viết cho chúng tôi nếu bạn muốn xoá phần của mình.</p>
+    </section>
+
+    <section>
+      <h2>5. Dữ liệu được lưu ở đâu</h2>
+      <p>Trên Google Firebase — Firestore, Storage và Authentication — dưới các quy tắc bảo mật quyết định ai được đọc và ghi từng tài liệu.</p>
+      <p>Trên thiết bị của bạn, tin nhắn trong bộ nhớ đệm, các thiết lập và mã PIN khoá ứng dụng được mã hoá bằng một khoá riêng của thiết bị, giữ trong kho khoá của hệ điều hành (Keychain trên iOS, Keystore trên Android) chứ không phải trong bộ nhớ thông thường của ứng dụng.</p>
+      <p>Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rời khỏi thiết bị, trừ khi ở dạng cụm từ khôi phục mà bạn tự chọn ghi lại. Chúng tôi không giữ nó và không thể khôi phục thay bạn. Mất nó thì những tin nhắn đã gửi tới thiết bị đó sẽ không bao giờ đọc được nữa — không ai đọc được, kể cả chúng tôi.</p>
+    </section>
+
+    <section>
+      <h2>6. Còn ai nhận được dữ liệu</h2>
+      <p>Chúng tôi không bán, trao đổi hay cho thuê thông tin cá nhân của bạn. Dữ liệu đi tới:</p>
+      <ul><li>Google Firebase — nhà cung cấp hạ tầng của chúng tôi, như mô tả ở trên.</li><li>GIPHY — chỉ khi bạn tìm ảnh GIF. Từ khoá tìm kiếm của bạn đi tới API của GIPHY; không có gì khác về bạn.</li></ul>
+      <p>Chúng tôi có thể tiết lộ những gì mình đang giữ nếu pháp luật yêu cầu. Những gì chúng tôi giữ chính là danh sách ở mục 2. Chúng tôi không thể đưa ra nội dung tin nhắn, vì chúng tôi không đọc được.</p>
+    </section>
+
+    <section>
+      <h2>7. Thông báo đẩy</h2>
+      <p>Firebase Cloud Messaging chuyển thông báo. Mã thiết bị của bạn được lưu ở một phần riêng tư trong tài khoản mà chỉ bạn đọc được.</p>
+      <p>Thông báo không mang theo nội dung tin nhắn. Chính thiết bị của bạn giải mã tin nhắn tại chỗ và dựng nên thứ bạn nhìn thấy; Google chỉ chuyển cái phong bì, không phải thứ bên trong.</p>
+    </section>
+
+    <section>
+      <h2>8. Bạn có thể làm gì</h2>
+      <ul><li>Xoá tài khoản ở màn hình Hồ sơ. Nội dung thuộc về cuộc trò chuyện của cả hai — một danh sách chung, một bản ghi cuộc gọi — vẫn ở lại với người kia, vì đó cũng là bản ghi của họ.</li><li>Xuất dữ liệu của bạn ở màn hình Hồ sơ.</li><li>Đặt thời hạn tin nhắn theo từng cuộc trò chuyện: 1 giờ, 24 giờ, 7 ngày hoặc 30 ngày.</li><li>Bật hoặc tắt báo đang nhập và báo đã đọc. Cả hai đều mặc định tắt.</li><li>Khoá ứng dụng bằng mã PIN hoặc sinh trắc học.</li><li>Thu hồi một liên kết mời mà bạn đã gửi đi.</li></ul>
+      <p>Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho chúng tôi.</p>
+    </section>
+
+    <section>
+      <h2>9. Thời gian lưu giữ</h2>
+      <p>Chúng tôi giữ dữ liệu của bạn trong thời gian tài khoản còn tồn tại. Xoá tài khoản sẽ xoá dữ liệu, trừ phần nội dung chung nêu ở trên. Thời hạn theo từng cuộc trò chuyện sẽ xoá tin nhắn theo lịch bạn đặt.</p>
+    </section>
+
+    <section>
+      <h2>10. Những giới hạn bạn nên biết</h2>
+      <p>Chúng tôi thà nói ra còn hơn để bạn tự phát hiện.</p>
+      <ul><li>Khoá được tin cậy ngay lần đầu nhìn thấy. Nếu ai đó tráo khoá trước khi hai bên kịp trao đổi một tin nhắn nào, cuộc trò chuyện sẽ được mã hoá cho nhầm người mà trông vẫn hoàn toàn bình thường. Ứng dụng có cảnh báo khi khoá thay đổi sau đó, và hiện một mã an toàn để hai bên đối chiếu qua kênh khác — nhưng không có gì bắt buộc bạn phải đối chiếu.</li><li>Mỗi tài khoản một thiết bị. Đăng nhập trên thiết bị mới sẽ thay khoá, và thiết bị cũ hết đọc được tin nhắn mới.</li><li>Những tin nhắn gửi trước khi có mã hoá vẫn giữ nguyên như cũ. Không có gì được chuyển đổi hồi tố.</li><li>Ứng dụng này chưa từng được kiểm định an ninh độc lập.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Trẻ em</h2>
+      <p>Chatterbox không dành cho trẻ dưới 13 tuổi, và chúng tôi không cố ý thu thập thông tin của các em. Nếu bạn cho rằng một trẻ em đã cung cấp thông tin cá nhân cho chúng tôi, hãy liên hệ và chúng tôi sẽ xoá.</p>
+    </section>
+
+    <section>
+      <h2>12. Thay đổi</h2>
+      <p>Chúng tôi có thể cập nhật chính sách này. Những thay đổi đáng kể sẽ được thông báo trong ứng dụng, và ngày ở đầu trang là lần sửa gần nhất.</p>
+    </section>
+
+    <section>
+      <h2>13. Liên hệ</h2>
+      <p>Thắc mắc về chính sách này: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="doc-langs" aria-label="Chính sách quyền riêng tư">
+        <a href="privacy.html" lang="en">English</a>
+        <a href="privacy.zh-Hans.html" lang="zh-Hans">简体中文</a>
+        <a href="privacy.de.html" lang="de">Deutsch</a>
+        <a href="privacy.es.html" lang="es">Español</a>
+        <a href="privacy.fr.html" lang="fr">Français</a>
+        <a href="privacy.it.html" lang="it">Italiano</a>
+        <a href="privacy.pt.html" lang="pt">Português</a>
+        <a href="privacy.ru.html" lang="ru">Русский</a>
+        <a href="privacy.tr.html" lang="tr">Türkçe</a>
+        <a href="privacy.ja.html" lang="ja">日本語</a>
+        <a href="privacy.ko.html" lang="ko">한국어</a>
+        <a href="privacy.zh-Hant.html" lang="zh-Hant">繁體中文</a>
+        <a href="privacy.ar.html" lang="ar">العربية</a>
+        <a href="privacy.hi.html" lang="hi">हिन्दी</a>
+    </nav>
+  </main>
+</body>
+</html>

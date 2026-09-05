@@ -74,25 +74,22 @@ describe('offered languages', () => {
   });
 });
 
-describe('locale files that are shipped but not offered', () => {
+describe('every shipped locale is offered', () => {
   /**
-   * They stay loaded: a device already set to one keeps working, and a
-   * finished translation only needs a line in LANGUAGES rather than a file
-   * restored from history. This pins that they are still parseable, so they
-   * do not quietly decay while out of the picker.
+   * There used to be thirteen files sitting outside the picker at 42%, and a
+   * test here that only checked they were still parseable. They are finished
+   * now and all fifteen are offered, so the interesting property flipped: a
+   * locale file that is *not* in LANGUAGES is either an unfinished translation
+   * nobody will see, or a language someone forgot to list.
    */
-  it('are still valid JSON with a non-trivial number of keys', () => {
+  it('has no locale file left out of the picker', () => {
     const offered = new Set<string>(LANGUAGES.map(l => l.code));
-    const files = fs
+    const orphans = fs
       .readdirSync(LOCALES)
       .filter(f => f.endsWith('.json'))
       .map(f => f.replace('.json', ''))
       .filter(code => !offered.has(code));
-
-    expect(files.length).toBeGreaterThan(0);
-    for (const code of files) {
-      expect(Object.keys(read(code)).length).toBeGreaterThan(100);
-    }
+    expect(orphans).toEqual([]);
   });
 });
 

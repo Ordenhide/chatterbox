@@ -30,7 +30,8 @@
   },
   "tabs": {
     "chats": "Chats",
-    "profile": "Profil"
+    "profile": "Profil",
+    "store": "Store"
   },
   "headers": {
     "chats": "Chats",
@@ -39,7 +40,8 @@
     "media": "Medien",
     "chatSettings": "Chat-Einstellungen",
     "call": "Anruf",
-    "friends": "Freunde"
+    "friends": "Freunde",
+    "invite": "Einladung"
   },
   "auth": {
     "login": {
@@ -72,7 +74,12 @@
       "emailInUse": "Ein Konto mit dieser E-Mail existiert bereits",
       "weakPassword": "Das Passwort ist zu schwach",
       "networkError": "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung",
-      "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut"
+      "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
+      "passwordTooCommon": "Dieses Passwort ist zu verbreitet — wähle ein weniger vorhersehbares",
+      "passwordTooSimple": "Dieses Passwort ist zu vorhersehbar (wiederholte oder aufeinanderfolgende Zeichen) — wähle ein anderes",
+      "invalidVerificationCode": "Dieser Code stimmt nicht. Bitte prüfe ihn und versuche es erneut",
+      "invalidPhoneNumber": "Das sieht nicht nach einer gültigen Telefonnummer aus",
+      "accountExistsDifferentCredential": "Mit dieser E-Mail-Adresse besteht bereits ein Konto, das anders angemeldet wurde. Melde dich stattdessen auf diesem Weg an."
     },
     "reset": {
       "title": "Passwort zurücksetzen",
@@ -85,7 +92,30 @@
     "session": {
       "title": "Abgemeldet",
       "message": "Dieses Konto wurde auf einem anderen Gerät angemeldet."
-    }
+    },
+    "social": {
+      "divider": "oder weiter mit",
+      "apple": "Mit Apple anmelden",
+      "google": "Weiter mit Google",
+      "phone": "Weiter mit Telefonnummer"
+    },
+    "phone": {
+      "title": "Mit Telefonnummer anmelden",
+      "subtitle": "Wir schicken dir per SMS einen Code, um dich zu bestätigen.",
+      "phonePlaceholder": "+49 151 12345678",
+      "sendCode": "Code senden",
+      "codeTitle": "Code eingeben",
+      "codeSubtitle": "Gib den 6-stelligen Code ein, den wir an {{phoneNumber}} geschickt haben",
+      "codePlaceholder": "123456",
+      "verify": "Bestätigen",
+      "resendCode": "Code erneut senden",
+      "changeNumber": "Telefonnummer ändern",
+      "errors": {
+        "invalidPhone": "Gib eine gültige Telefonnummer mit Ländervorwahl ein (z. B. +49 151 12345678)",
+        "invalidCode": "Gib den 6-stelligen Code ein"
+      }
+    },
+    "eyebrow": "Verschlüsselter Messenger"
   },
   "chatList": {
     "title": "Chats",
@@ -94,7 +124,15 @@
     "offlineEmpty": "Offline — zeige gecachte Chats.",
     "actionsTitle": "Chat-Aktionen",
     "pin": "Anheften",
-    "unpin": "Loslösen"
+    "unpin": "Loslösen",
+    "eyebrow": "Sicherer Messenger",
+    "keyChecking": "Schlüssel wird geprüft",
+    "keyReady": "Schlüssel bereit",
+    "keySuperseded": "Schlüssel ersetzt",
+    "keyMissing": "Schlüssel nicht auf diesem Gerät",
+    "keyUnverified": "Schlüssel nicht verifiziert",
+    "statChats": "{{count}} Chats",
+    "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256"
   },
   "newChat": {
     "heading": "Unterhaltung starten",
@@ -111,8 +149,15 @@
       "userNotFoundTitle": "Benutzer nicht gefunden",
       "userNotFoundBody": "Diese E-Mail existiert nicht auf diesem Gerät. Erstellen Sie zuerst ein anderes Konto und versuchen Sie es dann erneut.",
       "selfChat": "Sie können keinen Chat mit sich selbst starten",
-      "createFailed": "Chat konnte nicht erstellt werden"
-    }
+      "createFailed": "Chat konnte nicht erstellt werden",
+      "groupFull": "Ein Chat fasst höchstens {{max}} Personen"
+    },
+    "invite": "Jemanden per Link einladen",
+    "groupLabel": "Gruppe erstellen",
+    "groupHint": "Wähle aus den Leuten, mit denen du schon schreibst. Andere gibt es nicht — genau das ist der Punkt.",
+    "noContacts": "Du hast noch keine Unterhaltungen. Schick jemandem oben einen Einladungslink, um anzufangen.",
+    "openChat": "Chat öffnen",
+    "startGroup": "Gruppenchat starten"
   },
   "friends": {
     "addFriend": "Freund hinzufügen",
@@ -170,8 +215,12 @@
       "removeTitle": "Freund entfernen",
       "removeBody": "Diesen Freund entfernen?",
       "blockTitle": "Benutzer blockieren",
-      "blockBody": "Diesen Benutzer blockieren? Dies entfernt ihn aus Ihren Freunden."
-    }
+      "blockBody": "Diesen Benutzer blockieren? Dies entfernt ihn aus Ihren Freunden.",
+      "alreadyFriendsBody": "Ihr seid bereits befreundet.",
+      "alreadyPendingBody": "Mit dieser Person ist bereits eine Anfrage offen."
+    },
+    "contactsTitle": "Leute, mit denen du schon schreibst",
+    "contactsEmpty": "Noch niemand. Starte zuerst eine Unterhaltung über einen Einladungslink."
   },
   "profile": {
     "defaultName": "Benutzer",
@@ -184,14 +233,20 @@
       "feedback": "Feedback senden",
       "export": "Backup exportieren",
       "import": "Backup importieren",
-      "signOut": "Abmelden"
+      "signOut": "Abmelden",
+      "changePassword": "Passwort ändern",
+      "deleteAccount": "Konto löschen"
     },
     "modals": {
       "exportTitle": "Backup exportieren",
       "importTitle": "Backup importieren",
       "feedbackTitle": "Feedback",
       "importPlaceholder": "Backup-JSON hier einfügen",
-      "feedbackPlaceholder": "Teilen Sie uns mit, was funktioniert und was nicht..."
+      "feedbackPlaceholder": "Teilen Sie uns mit, was funktioniert und was nicht...",
+      "exportPassphraseHint": "Wähle eine Passphrase mit mindestens {{min}} Zeichen. Dein Backup wird damit verschlüsselt, und sie wird nirgends gespeichert — geht sie verloren, ist das Backup nicht wiederherstellbar.",
+      "passphrasePlaceholder": "Backup-Passphrase",
+      "encryptBackup": "Backup verschlüsseln",
+      "working": "Wird bearbeitet …"
     },
     "alerts": {
       "copiedTitle": "Kopiert",
@@ -209,8 +264,68 @@
       "signOutTitle": "Abmelden",
       "signOutBody": "Sind Sie sicher, dass Sie sich abmelden möchten?",
       "signOutFailed": "Abmeldung fehlgeschlagen",
-      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden."
-    }
+      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden.",
+      "passphraseTooShort": "Die Passphrase muss mindestens {{min}} Zeichen haben.",
+      "downloadDataFailedTitle": "Fehler",
+      "downloadDataFailedBody": "Deine Daten konnten nicht vorbereitet werden. Bitte versuche es erneut."
+    },
+    "voiceDiaryTitle": "Sprachtagebuch",
+    "voiceDiaryDescription": "Nimm einen kurzen Ton-Clip als Status auf. Freunde können ihn anhören.",
+    "recordVoiceDiary": "Sprachtagebuch aufnehmen",
+    "voiceDiaryStop": "Stopp",
+    "voiceDiaryPlay": "Abspielen ({{seconds}} s)",
+    "voiceDiaryRemove": "Entfernen",
+    "voiceDiaryModalDescription": "Nimm eine kurze Nachricht (max. 15 s) auf, die Freunde in deinem Profil anhören können.",
+    "voiceDiaryRecordButton": "Aufnehmen",
+    "voiceDiarySave": "Speichern",
+    "shortcutsTitle": "Schnellzugriff",
+    "shortcutSaved": "Gespeichert",
+    "shortcutPrivacy": "Privatsphäre",
+    "shortcutRecovery": "Wiederherstellungsphrase",
+    "account": {
+      "changePasswordTitle": "Passwort ändern",
+      "changePasswordDescription": "Auf diesem Gerät bleibst du angemeldet.",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Neues Passwort bestätigen",
+      "passwordChanged": "Dein Passwort wurde geändert.",
+      "passwordMismatch": "Die neuen Passwörter stimmen nicht überein.",
+      "wrongPassword": "Das aktuelle Passwort ist nicht richtig.",
+      "tooManyRequests": "Zu viele Versuche. Bitte versuche es später erneut.",
+      "genericError": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+      "deleteTitle": "Konto löschen",
+      "deleteDescription": "Löscht dein Konto, dein Profil, gespeicherte Elemente und die von dir gesendeten Nachrichten dauerhaft. Das lässt sich nicht rückgängig machen.",
+      "deleteWhatHappens": "Dauerhaft gelöscht werden:\n\n• Dein Profil, gespeicherte Elemente und Freundschaften\n• Nachrichten und Medien, die du gesendet hast, in allen Unterhaltungen\n• Deine auf diesem Gerät gespeicherten Schlüssel\n\nNachrichten, die andere dir geschickt haben, bleiben in deren eigener Kopie der Unterhaltung.\n\nDas lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Alles löschen",
+      "deleteEnterPassword": "Gib dein Passwort ein, um dein Konto dauerhaft zu löschen.",
+      "deleting": "Deine Daten werden gelöscht …",
+      "deleteFailed": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
+      "deletePartial": "Dein Konto wurde gelöscht, aber einige Daten ließen sich nicht entfernen. Bitte wende dich an den Support.",
+      "downloadDataTitle": "Meine Daten herunterladen",
+      "downloadDataDesc": "Hol dir eine Kopie deines Profils und deiner Unterhaltungen als Klartextdatei zum Aufbewahren oder Nachsehen — anders als „Backup exportieren“ weiter unten, das eine verschlüsselte Datei für den Umzug auf ein neues Gerät erzeugt.",
+      "downloadDataButton": "Herunterladen"
+    },
+    "restartForLayoutTitle": "Neu starten, um den Wechsel abzuschließen",
+    "restartForLayoutBody": "{{language}} wird von rechts nach links geschrieben. Schließe Chatterbox und öffne es erneut, damit die App in dieser Richtung angeordnet wird.",
+    "privacyTitle": "Privatsphäre",
+    "privacyDescription": "Diese Einstellungen gelten nur auf diesem Gerät. Nichts davon wird geteilt oder synchronisiert.",
+    "privacyOn": "AN",
+    "privacyOff": "AUS",
+    "privacyScreenshotTitle": "Screenshots blockieren",
+    "privacyScreenshotHint": "Verhindert Screenshots und Bildschirmaufnahmen bei geöffneter Unterhaltung und blendet die App in der Übersicht der letzten Apps aus. Nur Android.",
+    "privacyNotificationsTitle": "Benachrichtigungsinhalt verbergen",
+    "privacyNotificationsHint": "Benachrichtigungen zeigen, dass eine Nachricht kam — nie von wem oder was darin steht.",
+    "privacyExifTitle": "Foto-Metadaten entfernen",
+    "privacyExifHint": "Entfernt Ort, Kamera und Zeitstempel aus Fotos, bevor sie gesendet werden.",
+    "visibility": {
+      "public": "Öffentlich",
+      "friends": "Freunde",
+      "private": "Privat"
+    },
+    "privacyTypingTitle": "Schreibanzeige",
+    "privacyTypingHint": "Standardmäßig aus, und beidseitig — ist sie an, hält der Server fest, wann du schreibst, und du siehst, wann die andere Person schreibt.",
+    "privacyReceiptsTitle": "Lesebestätigungen",
+    "privacyReceiptsHint": "Standardmäßig aus, und beidseitig — sind sie an, hält der Server fest, wann du eine Nachricht gelesen hast, und du siehst, wann die andere Person gelesen hat."
   },
   "call": {
     "connecting": "Verbinden...",
@@ -228,7 +343,18 @@
     "errors": {
       "startFailed": "Anruf konnte nicht gestartet werden",
       "videoFailed": "Video konnte nicht aktiviert werden"
-    }
+    },
+    "incomingVoice": "Eingehender Sprachanruf …",
+    "incomingVideo": "Eingehender Videoanruf …",
+    "accept": "Annehmen",
+    "decline": "Ablehnen",
+    "cameraOn": "Kamera an",
+    "cameraOff": "Kamera aus",
+    "cameraWillBeOff": "Du trittst mit ausgeschalteter Kamera bei",
+    "cameraUnavailable": "Kamera nicht verfügbar — du kannst trotzdem mit Ton annehmen",
+    "unknownCaller": "Jemand",
+    "groupUnsupportedTitle": "Gruppenanrufe gibt es noch nicht",
+    "groupUnsupportedBody": "Anrufe funktionieren vorerst in Einzelchats. In einer Gruppe würde nur eine Person klingeln, deshalb ist es hier abgeschaltet."
   },
   "chatMedia": {
     "seconds": "{{count}}s"
@@ -274,8 +400,14 @@
       "deleteFailedTitle": "Fehler",
       "deleteFailedBody": "Chat konnte nicht gelöscht werden",
       "copiedTitle": "Kopiert",
-      "copiedBody": "Chat-JSON in Zwischenablage kopiert"
-    }
+      "copiedBody": "Chat-JSON in Zwischenablage kopiert",
+      "leaveClearTitle": "Verlassen und deine Nachrichten löschen?",
+      "leaveClearBody": "Die von dir gesendeten Nachrichten werden für alle gelöscht. Nachrichten anderer bleiben, und sie behalten die Unterhaltung. Was du hier geplant hattest, wird abgebrochen, und du wirst aus dem Chat entfernt.",
+      "leaveClearConfirm": "Verlassen",
+      "leaveClearFailedTitle": "Fehler",
+      "leaveClearFailedBody": "Chat konnte nicht verlassen werden. Es wurde nichts geändert — bitte versuche es erneut."
+    },
+    "leaveAndClear": "Meine Nachrichten löschen & verlassen"
   },
   "burn": {
     "tapToReveal": "Tippen zum Anzeigen",
@@ -291,5 +423,214 @@
       "1m": "1m",
       "5m": "5m"
     }
+  },
+  "pro": {
+    "title": "Chatterbox Pro",
+    "badge": "PRO",
+    "active": "Dein Abo ist aktiv.",
+    "renewsOn": "Verlängert sich am {{date}}",
+    "endsOn": "Endet am {{date}}",
+    "pastDue": "Deine letzte Zahlung ist fehlgeschlagen — aktualisiere deine Karte im Web, um Pro zu behalten.",
+    "pitch": "Schalte KI-Zusammenfassungen und -Suche frei.",
+    "manageOnWeb": "Abonniere oder verwalte dein Abo auf der Chatterbox-Website.",
+    "lockedAiMobile": "KI-Zusammenfassungen und -Suche gehören zu Chatterbox Pro. Abonniere auf der Chatterbox-Website, um sie hier freizuschalten."
+  },
+  "errors": {
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  },
+  "store": {
+    "title": "Store",
+    "subtitle": "Erweiterungen für dein Konto.",
+    "openStore": "Store öffnen"
+  },
+  "aiConsent": {
+    "title": "KI-Funktionen senden Nachrichten von deinem Gerät weg",
+    "body": "Chatterbox verschlüsselt deine Nachrichten, sodass nur du und die andere Person sie lesen können. KI ist die einzige Ausnahme.\n\nZum Zusammenfassen, Übersetzen oder Transkribieren werden die ausgewählten Nachrichten auf diesem Gerät entschlüsselt und an unseren Server und dessen KI-Anbieter gesendet. Sie werden gesendet, um dein Ergebnis zu erzeugen, nicht um etwas zu trainieren — aber während der Übertragung und Verarbeitung sind sie nicht Ende-zu-Ende-verschlüsselt.\n\nAlles andere bleibt verschlüsselt: Nachrichten, auf die du keine KI anwendest, und deine geteilten Listen.\n\nDu kannst das jederzeit im Profil abschalten.",
+    "accept": "KI-Funktionen erlauben",
+    "decline": "Jetzt nicht",
+    "settingsTitle": "KI-Funktionen",
+    "settingsOn": "Erlaubt — ausgewählte Nachrichten verlassen dieses Gerät, wenn du KI nutzt.",
+    "settingsOff": "Aus — es wird nichts gesendet. Vor jeder KI-Funktion wirst du gefragt.",
+    "turnOff": "KI-Funktionen abschalten",
+    "turnOn": "KI-Funktionen erlauben",
+    "turnedOff": "KI-Funktionen auf diesem Gerät abgeschaltet"
+  },
+  "linkPreview": {
+    "settingsTitle": "Linkvorschauen",
+    "settingsOn": "An — wenn du einen Link sendest, holt dieses Gerät einmalig Titel und Bild und verschlüsselt sie in die Nachricht. Die empfangende Person fragt unseren Server nie nach dem Link.",
+    "settingsOff": "Aus — gesendete Links bleiben schlichte Links, und unser Server erfährt nie davon.",
+    "turnOff": "Linkvorschauen abschalten",
+    "turnOn": "Linkvorschauen einschalten",
+    "turnedOff": "Linkvorschauen auf diesem Gerät abgeschaltet"
+  },
+  "trash": {
+    "title": "Kürzlich gelöscht",
+    "desc": "Gelöschte Nachrichten lassen sich 24 Stunden lang wiederherstellen. Danach sind sie endgültig weg. Nur du siehst und stellst die Nachrichten wieder her, die du gelöscht hast.",
+    "empty": "Nichts kürzlich gelöscht.",
+    "recover": "Wiederherstellen",
+    "expired": "Diese Nachricht lässt sich nicht mehr wiederherstellen.",
+    "timeLeft": "wiederherstellbar noch",
+    "message": "Nachricht",
+    "photo": "Foto",
+    "video": "Video",
+    "voice": "Sprachnachricht",
+    "file": "Datei"
+  },
+  "chats": {
+    "hide": "Chat ausblenden",
+    "recover": "Chat zurückholen",
+    "hiddenTitle": "Ausgeblendete Chats",
+    "hiddenEmpty": "Keine ausgeblendeten Chats.",
+    "hiddenHint": "Ausgeblendete Chats bleiben ausgeblendet, bis du sie zurückholst — auch wenn neue Nachrichten ankommen."
+  },
+  "members": {
+    "title": "Mitglieder ({{count}})",
+    "you": " (du)",
+    "full": "Ein Chat fasst höchstens {{max}} Personen",
+    "leave": "Chat verlassen",
+    "leaveConfirmTitle": "Diesen Chat verlassen?",
+    "leaveConfirmBody": "Du erhältst keine neuen Nachrichten mehr. Bereits empfangene bleiben lesbar, neue nicht. Du kannst später wieder hinzugefügt werden.",
+    "nobodyToAdd": "Niemand mehr zum Hinzufügen. Alle, mit denen du schreibst, sind schon hier.",
+    "addHint": "Füge jemanden hinzu, mit dem du bereits einen Chat hast. Mehr gibt es nicht — niemand lässt sich über eine Suche finden.",
+    "addPerson": "{{name}} hinzufügen"
+  },
+  "chat": {
+    "reportReason": {
+      "spam": "Spam",
+      "harassment": "Belästigung",
+      "threat": "Drohung oder Gewalt",
+      "sexual-content": "Sexuelle Inhalte",
+      "impersonation": "Identitätsvortäuschung",
+      "other": "Etwas anderes"
+    },
+    "unsafeLink": "Dieser Link wurde blockiert, weil er keine sichere Webadresse ist.",
+    "isTyping": "{{name}} schreibt …",
+    "search": "Suchen",
+    "done": "Fertig",
+    "more": "Mehr",
+    "attach": "Anhängen",
+    "composerPlaceholder": "Nachricht schreiben …",
+    "sealedToKeys": "Versiegelt · {{count}} Schlüssel",
+    "sealedToKeys_plural": "Versiegelt · {{count}} Schlüssel",
+    "recipientDeleted": "Dieses Konto wurde gelöscht.",
+    "recipientDeletedComposer": "An ein gelöschtes Konto kannst du nicht schreiben. Eure bisherige Unterhaltung bleibt lesbar.",
+    "replyPreview": {
+      "photo": "[Foto]",
+      "video": "[Video]",
+      "voiceMessage": "[Sprachnachricht]",
+      "file": "[Datei]"
+    },
+    "voiceTooLongTitle": "Aufnahme zu lang",
+    "voiceTooLongBody": "Diese Aufnahme ist zu lang zum Senden. Versuch es mit weniger als zwei Minuten.",
+    "channelSealed": "Ende-zu-Ende-verschlüsselt. Diese Nachricht wird für die Leute in diesem Chat versiegelt.",
+    "channelClear": "Nicht verschlüsselt. Diese Nachricht ist für den Server lesbar — die Leute in diesem Chat haben keinen Schlüssel, für den sie versiegelt werden könnte.",
+    "channelClearBar": "Nicht verschlüsselt — der Server kann lesen, was du sendest",
+    "protectionNone": "NICHT VERSCHLÜSSELT",
+    "protectionNoneA11y": "Nicht verschlüsselt — der Server kann diese Nachricht lesen.",
+    "protectionStatic": "KEINE FORWARD SECRECY",
+    "protectionStaticA11y": "Verschlüsselt, aber mit einem langlebigen Schlüssel: später lesbar für jeden, der diesen Schlüssel erlangt.",
+    "sealedPending": "🔒 …",
+    "sealedOtherDevice": "🔒 Für ein anderes Gerät versiegelt",
+    "sealedNeedsUpdate": "🔒 App aktualisieren, um das zu lesen",
+    "sealedDamaged": "🔒 Diese Nachricht ist beschädigt",
+    "sealedUnknown": "🔒 Entschlüsseln nicht möglich",
+    "sealedBanner": "Einige Nachrichten wurden für ein anderes Gerät versiegelt. Tippe, um sie mit deiner Wiederherstellungsphrase zurückzuholen.",
+    "sealedBannerA11y": "Verschlüsselten Nachrichtenverlauf wiederherstellen"
+  },
+  "smartReply": {
+    "thumbsUp": "👍",
+    "soundsGood": "Klingt gut!",
+    "gotIt": "Alles klar",
+    "yes": "Ja!",
+    "notSure": "Bin nicht sicher",
+    "letMeThink": "Lass mich kurz überlegen",
+    "hey": "Hey!",
+    "whatsUp": "Was geht?",
+    "howAreYou": "Wie geht's dir?",
+    "youreWelcome": "Gern geschehen!",
+    "noProblem": "Kein Problem!",
+    "anytime": "Jederzeit!",
+    "noWorries": "Kein Ding!",
+    "itsAllGood": "Alles gut",
+    "dontWorry": "Mach dir nichts draus",
+    "laughEmoji": "😂",
+    "hilarious": "Das ist zu komisch",
+    "cantEven": "Ich kann nicht mehr 😂",
+    "imIn": "Ich bin dabei!",
+    "whatAreYouThinking": "Woran denkst du?",
+    "worksForMe": "Passt mir",
+    "letMeCheck": "Ich schau mal",
+    "whatTime": "Um wie viel Uhr?"
+  },
+  "tutorial": {
+    "welcomeTitle": "Willkommen bei Chatterbox",
+    "welcomeBody": "Kurze Tour durch das Wichtigste — dauert nur ein paar Tipps.",
+    "chatsTitle": "Deine Chats",
+    "chatsBody": "Alle Unterhaltungen liegen im Tab „Chats“. Ungelesene Nachrichten zeigen dort ein Abzeichen.",
+    "newChatTitle": "Chat starten",
+    "newChatBody": "Tippe in „Chats“ auf +, um jemandem einen Einladungslink zu schicken oder einen erhaltenen zu öffnen.",
+    "composerTitle": "Mehr als nur Worte",
+    "composerBody": "In einem Chat kannst du Fotos, Dateien, Sprachnachrichten und GIFs senden, antworten oder @erwähnen — und eine Nachricht sogar für später planen.",
+    "spacesTitle": "Gemeinsame Bereiche",
+    "spacesBody": "Im Chat-Menü findest du die Mediengalerie und gemeinsame Listen — beide Ende-zu-Ende-verschlüsselt, wie die Nachrichten.",
+    "callsTitle": "Sprach- & Videoanrufe",
+    "callsBody": "Ruf direkt aus dem Chat an — ein Tipp für Sprache, einer für Video.",
+    "profileTitle": "Du & Einstellungen",
+    "profileBody": "Hier stellst du Name, Design, Sprache und Privatsphäre ein — und kannst diese Tour jederzeit wiederholen.",
+    "doneTitle": "Fertig!",
+    "doneBody": "Das war die Tour. Du kannst sie jederzeit in deinem Profil wiederholen.",
+    "skip": "Überspringen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Alles klar",
+    "settingsTitle": "Einführung",
+    "settingsDescription": "Neu hier? Mach die geführte Tour durch Chatterbox.",
+    "replay": "Einführung wiederholen"
+  },
+  "keys": {
+    "restoreTitle": "Nachrichtenverlauf wiederherstellen?",
+    "restoreBody": "Das sieht nach einem neuen Gerät für ein Konto aus, das bereits einen Schlüssel hat. Stelle deine Wiederherstellungsphrase wieder her, um alte Nachrichten weiter zu lesen — oder mach neu weiter.",
+    "supersededTitle": "Dein Schlüssel hat sich geändert",
+    "supersededBody": "Der Schlüssel dieses Geräts wurde von einem anderen Gerät ersetzt, deshalb lassen sich seither empfangene Nachrichten hier nicht öffnen. Gib die Wiederherstellungsphrase jenes Geräts ein, um sie zu lesen.",
+    "notNow": "Jetzt nicht",
+    "restore": "Wiederherstellen"
+  },
+  "invite": {
+    "yoursTitle": "Dein Einladungslink",
+    "yoursIntro": "Hier lässt sich niemand suchen — so erreichen dich andere. Schick den Link über einen Weg, den du ohnehin nutzt; wer ihn zuerst öffnet, kann eine Unterhaltung mit dir beginnen.",
+    "create": "Link erstellen",
+    "statePending": "Offen · einmalig · noch {{hours}} h",
+    "stateAccepted": "Jemand hat diesen Link geöffnet. Er funktioniert nicht noch einmal.",
+    "stateGone": "Dieser Link liegt nicht mehr auf dem Server.",
+    "copy": "Link kopieren",
+    "copiedTitle": "Kopiert",
+    "copiedBody": "Schick ihn an eine Person. Wer ihn zuerst öffnet, bekommt den Chat.",
+    "share": "Mit einer anderen App senden",
+    "revoke": "Link zurückziehen",
+    "revokeTitle": "Diesen Link zurückziehen?",
+    "revokeBody": "Wer ihn schon bekommen hat, kann ihn nicht mehr öffnen. Du kannst einen neuen erstellen.",
+    "openTitle": "Einladung öffnen",
+    "openIntro": "Füge einen Link ein, den dir jemand geschickt hat. Er funktioniert einmal, und nur für die Person, die ihn geschickt hat.",
+    "linkPlaceholder": "chatterbox://invite#…",
+    "paste": "Aus Zwischenablage einfügen",
+    "nameLabel": "Wie du sie nennst",
+    "namePlaceholder": "z. B. Sam",
+    "nameHint": "Dieser Name bleibt auf deinem Gerät und in deiner Chatliste. Der Server erfährt nie, wer diese Person für dich ist.",
+    "open": "Einladung öffnen",
+    "defaultChatName": "Chat",
+    "errors": {
+      "noKey": "Dieses Gerät hat deinen Schlüssel noch nicht, es gibt also nichts, wozu du jemanden einladen könntest. Stelle ihn zuerst mit deiner Wiederherstellungsphrase wieder her.",
+      "createFailed": "Link konnte nicht erstellt werden. Prüfe deine Verbindung und versuche es erneut.",
+      "notALink": "Das ist kein Chatterbox-Einladungslink. Er sollte mit chatterbox://invite# beginnen.",
+      "not-found": "Diesen Link gibt es nicht. Er wurde vielleicht zurückgezogen.",
+      "expired": "Dieser Link ist abgelaufen. Bitte um einen neuen.",
+      "already-used": "Jemand hat diesen Link bereits geöffnet. Bitte um einen neuen.",
+      "own-invite": "Das ist dein eigener Link. Schick ihn jemand anderem.",
+      "failed": "Einladung konnte nicht geöffnet werden. Prüfe deine Verbindung und versuche es erneut."
+    }
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "lastUpdated": "Zuletzt aktualisiert: {{date}}"
   }
 }

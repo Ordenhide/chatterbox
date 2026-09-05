@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informativa sulla privacy — Chatterbox</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Funzioni</a>
+        <a href="index.html#download" class="nav-cta">Scarica</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.html">← Torna a Chatterbox</a>
+    <h1>Informativa sulla privacy</h1>
+    <p class="meta">Ultimo aggiornamento: 2026-09-05</p>
+
+    <section>
+      <h2>0. In breve</h2>
+      <p>Il testo dei tuoi messaggi viene cifrato sul tuo dispositivo e può essere letto solo dalle persone a cui lo invii. Noi non possiamo leggerlo, e nemmeno Google, di cui affittiamo i server.</p>
+      <p>Quello che possiamo vedere è che una conversazione è avvenuta: quali account ne fanno parte e quando sono stati attivi. Togliere anche questo è più difficile che cifrare i contenuti, e non abbiamo finito. Questa informativa dice esattamente dove passa oggi il confine.</p>
+    </section>
+
+    <section>
+      <h2>1. Che cosa è cifrato end-to-end</h2>
+      <p>Cifrato sul tuo dispositivo, illeggibile per noi e per Google:</p>
+      <ul><li>Il testo dei tuoi messaggi.</li><li>Il contenuto di file, foto, audio e video che alleghi.</li><li>Le liste condivise, le citazioni salvate e le anteprime dei link.</li><li>Le chiamate vocali e video, che tra i due dispositivi usano il DTLS-SRTP obbligatorio di WebRTC.</li></ul>
+      <p>La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: ogni messaggio ha la propria chiave, quindi compromettere il tuo dispositivo non espone quelli precedenti. Le conversazioni in cui il client di qualcuno non ha pubblicato il materiale di chiave più recente ricadono su un'unica chiave di lunga durata, che non ha questa proprietà. L'etichetta sotto un messaggio ti dice quale percorso ha davvero seguito.</p>
+    </section>
+
+    <section>
+      <h2>2. Che cosa non è cifrato, e che cosa vediamo</h2>
+      <p>La cifratura protegge i contenuti, non il fatto che ci sia una conversazione. Questi dati stanno in chiaro sui nostri server:</p>
+      <ul><li>Chi partecipa a ogni conversazione, e quando è stata creata e usata l'ultima volta.</li><li>L'orario di ogni messaggio e quanti non ne hai letti.</li><li>Nome, tipo e dimensione di un allegato. I byte sono cifrati, la loro descrizione no, e la lunghezza del cifrato delimita quella dell'originale.</li><li>Le GIF, che sono contenuti pubblici di terzi.</li><li>I tuoi amici e le richieste di amicizia.</li><li>La segnalazione delle chiamate: che una chiamata c'è stata, con chi e quando. Non il suo audio né il video.</li></ul>
+      <p>Gli indicatori di scrittura e le conferme di lettura sono disattivati finché non li accendi, e mentre sono spenti non viene scritto nulla.</p>
+      <p>Che cosa non c'è più: il tuo indirizzo email e il tuo nome. Da settembre 2026 il record dell'account contiene solo un identificatore. Il tuo indirizzo resta in Firebase Authentication, dove lo usiamo per farti accedere e dove nessun altro utente può leggerlo.</p>
+      <p>A parte questo: poiché l'app gira su Google Firebase, Google può vedere l'indirizzo IP e l'orario di ogni connessione che il tuo dispositivo apre verso di essa. È una caratteristica dell'hosting, non dell'app, e non possiamo eliminarla con la cifratura.</p>
+    </section>
+
+    <section>
+      <h2>3. Come ti trovano</h2>
+      <p>Non possono cercarti. Non esiste un elenco — nessuna ricerca per email, telefono o nome — e il server rifiuta qualsiasi interrogazione che ci provi.</p>
+      <p>Raggiungi qualcuno inviandogli un link d'invito fuori dall'app, con qualunque mezzo tu già usi. Un link funziona una volta, scade dopo 24 ore e può essere ritirato. Come chiami qualcuno è la tua etichetta per quella persona, e resta tua; se si è presentata, quel nome ti è arrivato cifrato.</p>
+    </section>
+
+    <section>
+      <h2>4. Che cosa raccogliamo</h2>
+      <ul><li>Dati dell'account: l'indirizzo email con cui ti registri, conservato in Firebase Authentication.</li><li>Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.</li><li>Dati d'uso: eventi di interazione con l'app tramite Firebase Analytics — schermate viste e funzioni usate, mai il contenuto dei messaggi. Disattivato nelle build di sviluppo.</li><li>Segnalazioni di crash: dati anonimi di crash ed errori tramite Firebase Crashlytics.</li></ul>
+      <p>Al momento analytics e segnalazioni di crash non si possono disattivare singolarmente dentro l'app. Scrivici se vuoi che cancelliamo i tuoi.</p>
+    </section>
+
+    <section>
+      <h2>5. Dove viene conservato</h2>
+      <p>Su Google Firebase — Firestore, Storage e Authentication — con regole di sicurezza che decidono chi può leggere e scrivere ogni documento.</p>
+      <p>Sul tuo dispositivo, i messaggi in cache, le impostazioni e il PIN di blocco sono cifrati con una chiave specifica del dispositivo custodita nel portachiavi della piattaforma (Keychain su iOS, Keystore su Android) e non nella normale memoria dell'app.</p>
+      <p>La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo, se non come la frase di recupero che decidi di annotare. Non la possediamo e non possiamo recuperarla per te. Se la perdi, i messaggi inviati a quel dispositivo non saranno più leggibili — da nessuno, noi compresi.</p>
+    </section>
+
+    <section>
+      <h2>6. Chi altro riceve dati</h2>
+      <p>Non vendiamo, scambiamo né noleggiamo le tue informazioni personali. I dati arrivano a:</p>
+      <ul><li>Google Firebase — il nostro fornitore di hosting, come descritto sopra.</li><li>GIPHY — solo quando cerchi una GIF. I tuoi termini di ricerca vanno all'API di GIPHY; nient'altro che ti riguardi.</li></ul>
+      <p>Possiamo divulgare ciò che deteniamo se la legge lo impone. Ciò che deteniamo è l'elenco della sezione 2. Non possiamo produrre il contenuto dei messaggi, perché non riusciamo a leggerlo.</p>
+    </section>
+
+    <section>
+      <h2>7. Notifiche push</h2>
+      <p>Le notifiche vengono recapitate da Firebase Cloud Messaging. Il token del tuo dispositivo è conservato in una parte privata del tuo account, leggibile solo da te.</p>
+      <p>Le notifiche non contengono il testo del messaggio. È il tuo dispositivo a decifrarlo in locale e a comporre ciò che vedi; Google consegna la busta, non il contenuto.</p>
+    </section>
+
+    <section>
+      <h2>8. Che cosa puoi fare</h2>
+      <ul><li>Eliminare il tuo account dalla schermata Profilo. I contenuti che appartengono in comune a una conversazione — una lista condivisa, un registro di chiamata — restano all'altra persona, perché sono anche il suo archivio.</li><li>Esportare i tuoi dati dalla schermata Profilo.</li><li>Far scadere i messaggi per singola chat: 1 ora, 24 ore, 7 giorni o 30 giorni.</li><li>Attivare o disattivare indicatori di scrittura e conferme di lettura. Entrambi sono disattivati di default.</li><li>Bloccare l'app con un PIN o con la biometria.</li><li>Ritirare un link d'invito che hai già distribuito.</li></ul>
+      <p>Se preferisci che cancelliamo qualcosa a mano, scrivici.</p>
+    </section>
+
+    <section>
+      <h2>9. Conservazione</h2>
+      <p>Conserviamo i tuoi dati finché il tuo account esiste. Eliminarlo li cancella, tranne i contenuti condivisi indicati sopra. La scadenza per chat rimuove i messaggi secondo i tempi che imposti.</p>
+    </section>
+
+    <section>
+      <h2>10. Limiti che dovresti conoscere</h2>
+      <p>Preferiamo dirteli noi piuttosto che fartene accorgere.</p>
+      <ul><li>Le chiavi vengono considerate attendibili la prima volta che si vedono. Se qualcuno avesse sostituito una chiave prima che vi scambiaste anche un solo messaggio, la conversazione sarebbe cifrata verso la persona sbagliata e sembrerebbe del tutto normale. L'app ti avvisa quando una chiave cambia in seguito e mostra un numero di sicurezza che potete confrontare per altre vie — ma nulla ti obbliga a confrontarlo.</li><li>Un dispositivo per account. Accedere da un dispositivo nuovo sostituisce la chiave, e quello precedente smette di poter leggere i messaggi nuovi.</li><li>I messaggi inviati prima che esistesse la cifratura restano com'erano. Nulla è stato convertito retroattivamente.</li><li>Questa app non è mai stata sottoposta a un audit di sicurezza indipendente.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Minori</h2>
+      <p>Chatterbox non è destinata a minori di 13 anni e non raccogliamo consapevolmente le loro informazioni. Se ritieni che un minore ci abbia fornito dati personali, contattaci e li cancelleremo.</p>
+    </section>
+
+    <section>
+      <h2>12. Modifiche</h2>
+      <p>Potremmo aggiornare questa informativa. Le modifiche rilevanti verranno annunciate nell'app, e la data in alto indica l'ultima volta che è cambiata.</p>
+    </section>
+
+    <section>
+      <h2>13. Contatti</h2>
+      <p>Domande su questa informativa: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="doc-langs" aria-label="Informativa sulla privacy">
+        <a href="privacy.html" lang="en">English</a>
+        <a href="privacy.zh-Hans.html" lang="zh-Hans">简体中文</a>
+        <a href="privacy.de.html" lang="de">Deutsch</a>
+        <a href="privacy.es.html" lang="es">Español</a>
+        <a href="privacy.fr.html" lang="fr">Français</a>
+        <a href="privacy.pt.html" lang="pt">Português</a>
+        <a href="privacy.ru.html" lang="ru">Русский</a>
+        <a href="privacy.tr.html" lang="tr">Türkçe</a>
+        <a href="privacy.vi.html" lang="vi">Tiếng Việt</a>
+        <a href="privacy.ja.html" lang="ja">日本語</a>
+        <a href="privacy.ko.html" lang="ko">한국어</a>
+        <a href="privacy.zh-Hant.html" lang="zh-Hant">繁體中文</a>
+        <a href="privacy.ar.html" lang="ar">العربية</a>
+        <a href="privacy.hi.html" lang="hi">हिन्दी</a>
+    </nav>
+  </main>
+</body>
+</html>
