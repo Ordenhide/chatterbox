@@ -121,9 +121,7 @@ const ChatListItem = memo(
           ) : lastMessage ? (
             <Text style={[styles.lastMessage, {color: textSecondary}]} numberOfLines={1}>
               {lastMessage.text ||
-                (lastMessage.moment
-                  ? '[Moment]'
-                  : lastMessage.image
+                (lastMessage.image
                   ? '[Photo]'
                   : lastMessage.video
                   ? '[Video]'

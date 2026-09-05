@@ -143,13 +143,6 @@ export interface Bookmark {
   bookmarkedAt?: Timestamp;
 }
 
-export interface MomentComment {
-  id: string;
-  authorId: string;
-  text: string;
-  createdAt?: Timestamp;
-}
-
 // ---- Shared chat spaces (schema-matched to mobile src/types) ---------------
 
 export interface Reminder {
@@ -174,23 +167,6 @@ export interface SharedList {
   id: string;
   title: string;
   items: SharedListItem[];
-}
-
-export type MomentVisibility = 'public' | 'friends' | 'private';
-
-export interface Moment {
-  id: string;
-  authorId: string;
-  text?: string;
-  mediaUrl?: string | null;
-  mediaType?: 'image' | 'video' | null;
-  visibility: MomentVisibility;
-  createdAt?: Timestamp;
-  clientCreatedAt?: number;
-  likeCount?: number;
-  commentCount?: number;
-  // "Burn after time-up": epoch ms after which the moment auto-disappears.
-  expiresAt?: number | null;
 }
 
 export interface QuoteWallEntry {

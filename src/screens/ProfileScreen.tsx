@@ -91,8 +91,6 @@ export default function ProfileScreen() {
   const [feedbackEnabled, setFeedbackEnabled] = useState(true);
   const [profileVisibility, setProfileVisibility] = useState<'public' | 'friends' | 'private'>('public');
   const [visibilityLoading, setVisibilityLoading] = useState(true);
-  const [defaultMomentVisibility, setDefaultMomentVisibility] = useState<'public' | 'friends' | 'private'>('friends');
-  const [defaultVisibilityLoading, setDefaultVisibilityLoading] = useState(true);
   const [focusEnabled, setFocusEnabled] = useState(false);
   const [focusUntil, setFocusUntil] = useState<number | null>(null);
   const [focusAutoReply, setFocusAutoReply] = useState('');
@@ -201,10 +199,6 @@ export default function ProfileScreen() {
           const next = (data?.profileVisibility as 'public' | 'friends' | 'private') || 'public';
           setProfileVisibility(next);
           setVisibilityLoading(false);
-          const momentVisibility =
-            (data?.defaultMomentVisibility as 'public' | 'friends' | 'private') || 'friends';
-          setDefaultMomentVisibility(momentVisibility);
-          setDefaultVisibilityLoading(false);
           const vs = data?.voiceStatus;
           if (vs?.url && vs?.createdAt && Date.now() - vs.createdAt < 24 * 60 * 60 * 1000) {
             setVoiceStatusUrl(vs.url);
@@ -229,7 +223,6 @@ export default function ProfileScreen() {
             console.error('profile visibility listener failed:', error);
           }
           setVisibilityLoading(false);
-          setDefaultVisibilityLoading(false);
         },
       );
       return () => unsub();
@@ -259,31 +252,6 @@ export default function ProfileScreen() {
       }
     },
     [db, profileVisibility, user?.uid, t],
-  );
-
-  const updateDefaultMomentVisibility = useCallback(
-    async (next: 'public' | 'friends' | 'private') => {
-      if (!user?.uid || next === defaultMomentVisibility) return;
-      setDefaultMomentVisibility(next);
-      try {
-        await setDoc(
-          doc(db, 'users', user.uid),
-          {
-            defaultMomentVisibility: next,
-            updatedAt: serverTimestamp(),
-          },
-          {merge: true},
-        );
-        trackEvent('default_moment_visibility_changed', {visibility: next}).catch(() => undefined);
-      } catch (error) {
-        reportError(error, 'default_moment_visibility_update');
-        if (__DEV__) {
-          console.error('default moment visibility update failed:', error);
-        }
-        Alert.alert(t('common.error'), t('profile.alerts.momentVisibilityUpdateFailed'));
-      }
-    },
-    [db, defaultMomentVisibility, user?.uid, t],
   );
 
   const handleEnableFocus = useCallback(async () => {
@@ -664,17 +632,6 @@ export default function ProfileScreen() {
               <Icon name="bookmark" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutSaved')}</Text>
             </TouchableOpacity>
-            {/* Shortcuts to a personal moments-history screen and a privacy
-                settings dashboard used to live here, but no such screens were
-                ever registered in the navigator — tapping either threw a
-                "not handled by any navigator" error at runtime. "Memories"
-                now goes to the existing Moments tab, the closest real
-                equivalent; the privacy shortcut is removed until a real
-                privacy-settings screen exists to link to. */}
-            <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('MomentsTab')}>
-              <Icon name="camera" size={24} color={colors.text} style={styles.shortcutIcon} />
-              <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutMemories')}</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats', {screen: 'RecoveryPhrase'})}>
               <Icon name="key" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutRecovery', 'Recovery Phrase')}</Text>
@@ -719,44 +676,7 @@ export default function ProfileScreen() {
             </View>
           )}
         </GlassView>
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            {t('profile.defaultVisibilityTitle')}
-          </Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {t('profile.defaultVisibilityDescription')}
-          </Text>
-          {defaultVisibilityLoading ? (
-            <ActivityIndicator color={colors.primary} style={styles.visibilityLoader} />
-          ) : (
-            <View style={styles.visibilityOptions}>
-              {visibilityOptions.map(option => {
-                const selected = defaultMomentVisibility === option;
-                return (
-                  <TouchableOpacity
-                    key={option}
-                    style={[
-                      styles.visibilityOption,
-                      {
-                        backgroundColor: selected ? colors.primary : colors.surface,
-                        borderColor: selected ? colors.primary : colors.border,
-                      },
-                    ]}
-                    onPress={() => updateDefaultMomentVisibility(option)}>
-                    <Text
-                      style={[
-                        styles.visibilityOptionText,
-                        {color: selected ? '#fff' : colors.text},
-                      ]}>
-                      {t(`moments.visibility.${option}`)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-        </GlassView>
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
+       <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('profile.languageTitle')}
           </Text>

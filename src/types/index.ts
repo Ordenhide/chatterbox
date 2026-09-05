@@ -184,13 +184,6 @@ export interface Message {
   };
   reactions?: Record<string, string[]>;
   mentions?: string[];
-  moment?: {
-    id: string;
-    authorId: string;
-    text?: string;
-    mediaUrl?: string;
-    mediaType?: 'image' | 'video';
-  };
   burnAfterReading?: {
     duration: number;
     burnStartedAt?: number;
@@ -354,31 +347,6 @@ export interface Friend {
   userIds: [string, string];
   status: 'accepted';
   createdAt: Date | number | any;
-}
-
-export type MomentVisibility = 'friends' | 'public' | 'private';
-
-export interface Moment {
-  id: string;
-  authorId: string;
-  text?: string;
-  mediaUrl?: string;
-  mediaType?: 'image' | 'video';
-  visibility: MomentVisibility;
-  createdAt: Date | number | any;
-  clientCreatedAt?: number;
-  updatedAt?: Date | number | any;
-  likeCount?: number;
-  commentCount?: number;
-}
-
-export interface MomentComment {
-  id: string;
-  momentId: string;
-  authorId: string;
-  text: string;
-  createdAt: Date | number | any;
-  mentions?: string[];
 }
 
 export interface BlockRecord {

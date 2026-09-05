@@ -30,7 +30,6 @@
   },
   "tabs": {
     "chats": "Chats",
-    "moments": "Momente",
     "profile": "Profil"
   },
   "headers": {
@@ -40,7 +39,6 @@
     "media": "Medien",
     "chatSettings": "Chat-Einstellungen",
     "call": "Anruf",
-    "moments": "Momente",
     "friends": "Freunde"
   },
   "auth": {
@@ -116,60 +114,6 @@
       "createFailed": "Chat konnte nicht erstellt werden"
     }
   },
-  "moments": {
-    "title": "Momente",
-    "friends": "Freunde",
-    "post": "Veröffentlichen",
-    "refresh": "Aktualisieren",
-    "empty": "Noch keine Momente.",
-    "sharedMoment": "Einen Moment geteilt",
-    "visibilityLabel": "Sichtbarkeit: {{visibility}}",
-    "actions": {
-      "like": "Gefällt mir",
-      "liked": "Gefällt mir",
-      "comment": "Kommentieren",
-      "share": "Teilen"
-    },
-    "visibility": {
-      "public": "Öffentlich",
-      "friends": "Freunde",
-      "private": "Privat"
-    },
-    "modal": {
-      "newTitle": "Neuer Moment",
-      "editTitle": "Moment bearbeiten",
-      "placeholder": "Woran denkst du?",
-      "addMedia": "Foto/Video hinzufügen",
-      "changeMedia": "Medien ändern",
-      "uploading": "Hochladen {{percent}}%"
-    },
-    "alerts": {
-      "deleteTitle": "Moment löschen",
-      "deleteConfirm": "Diesen Moment löschen?",
-      "postFailed": "Moment konnte nicht veröffentlicht werden.",
-      "deleteFailed": "Moment konnte nicht gelöscht werden.",
-      "commentFailed": "Kommentar konnte nicht hinzugefügt werden.",
-      "shareSuccessTitle": "Geteilt",
-      "shareSuccessBody": "Moment an Chat gesendet.",
-      "shareFailedTitle": "Fehler",
-      "shareFailedBody": "Moment konnte nicht geteilt werden.",
-      "refreshFailed": "Momente konnten nicht aktualisiert werden."
-    },
-    "comments": {
-      "delete": "Löschen",
-      "deleteTitle": "Kommentar löschen?",
-      "deleteBody": "Das lässt sich nicht rückgängig machen.",
-      "title": "Kommentare",
-      "placeholder": "Kommentar hinzufügen...",
-      "empty": "Noch keine Kommentare.",
-      "post": "Veröffentlichen",
-      "close": "Schließen"
-    },
-    "share": {
-      "title": "Im Chat teilen",
-      "close": "Schließen"
-    }
-  },
   "friends": {
     "addFriend": "Freund hinzufügen",
     "uidPlaceholder": "Benutzer-UID eingeben",
@@ -234,8 +178,6 @@
     "memberBadge": "Mitglied",
     "visibilityTitle": "Profil-Sichtbarkeit",
     "visibilityDescription": "Steuern Sie, wer Ihre Profildetails sehen kann.",
-    "defaultVisibilityTitle": "Standard-Moment-Sichtbarkeit",
-    "defaultVisibilityDescription": "Legt die Standard-Zielgruppe fest, wenn Sie einen neuen Moment erstellen.",
     "languageTitle": "Sprache",
     "languageDescription": "Wählen Sie Ihre bevorzugte Sprache.",
     "buttons": {
@@ -267,8 +209,7 @@
       "signOutTitle": "Abmelden",
       "signOutBody": "Sind Sie sicher, dass Sie sich abmelden möchten?",
       "signOutFailed": "Abmeldung fehlgeschlagen",
-      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden.",
-      "momentVisibilityUpdateFailed": "Standard-Moment-Sichtbarkeit konnte nicht aktualisiert werden."
+      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden."
     }
   },
   "notifications": {

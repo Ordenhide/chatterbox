@@ -14,6 +14,7 @@ import {EntitlementProvider} from '../context/EntitlementContext';
 import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
 import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
 import {emitShortcut, type ShortcutId} from '../services/shortcuts';
+import FriendsModal from '../components/FriendsModal';
 import ShortcutsHelp from '../components/ShortcutsHelp';
 import QuickSwitcher from '../components/QuickSwitcher';
 import HomeScreen from './HomeScreen';
@@ -22,7 +23,6 @@ import TourOverlay from '../components/TourOverlay';
 
 // Moments and Profile load on demand — they're not the default tab, so their
 // code (and the Moments/Friends Firestore paths) stay out of the initial chunk.
-const MomentsScreen = lazy(() => import('./MomentsScreen'));
 const StoreScreen = lazy(() => import('./StoreScreen'));
 const ProfileScreen = lazy(() => import('./ProfileScreen'));
 
@@ -33,15 +33,6 @@ const ICONS: Record<Tab, React.ReactNode> = {
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  ),
-  moments: (
-    <>
-      <path
-        d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="12" r="4" />
-    </>
   ),
   store: (
     <>
@@ -57,7 +48,7 @@ const ICONS: Record<Tab, React.ReactNode> = {
   ),
 };
 
-const TAB_KEYS = ['chats', 'moments', 'store', 'profile'] as const;
+const TAB_KEYS = ['chats', 'store', 'profile'] as const;
 
 export default function MainApp({user}: {user: User}) {
   const {route, navigate} = useHashRoute();
@@ -97,6 +88,7 @@ export default function MainApp({user}: {user: User}) {
 
   // ---- Keyboard shortcuts ---------------------------------------------------
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [friendsOpen, setFriendsOpen] = useState(false);
   const [quickSwitcherOpen, setQuickSwitcherOpen] = useState(false);
 
   const onShortcut = useCallback(
@@ -124,8 +116,8 @@ export default function MainApp({user}: {user: User}) {
         case 'tabChats':
           navigate({tab: 'chats', chatId: undefined});
           return;
-        case 'tabMoments':
-          navigate({tab: 'moments', chatId: undefined});
+        case 'tabFriends':
+          setFriendsOpen(true);
           return;
         case 'tabStore':
           navigate({tab: 'store', chatId: undefined});
@@ -174,9 +166,6 @@ export default function MainApp({user}: {user: User}) {
       {key === 'chats' && unread > 0 && (
         <span className="nav-badge">{unread > 99 ? '99+' : unread}</span>
       )}
-      {key === 'moments' && requestCount > 0 && (
-        <span className="nav-badge">{requestCount > 99 ? '99+' : requestCount}</span>
-      )}
     </span>
   );
 
@@ -202,6 +191,10 @@ export default function MainApp({user}: {user: User}) {
         />
       )}
       {shortcutsOpen && <ShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
+      {/* Rehoused from the Moments screen, which is gone. Contacts are not a
+          feed, and they were only ever in there because the feed needed them
+          to decide who could see a post. */}
+      {friendsOpen && <FriendsModal myUid={user.uid} onClose={() => setFriendsOpen(false)} />}
       {quickSwitcherOpen && (
         <QuickSwitcher
           myUid={user.uid}
@@ -209,7 +202,6 @@ export default function MainApp({user}: {user: User}) {
           onSelect={chatId => navigate({tab: 'chats', chatId})}
         />
       )}
-      {tab === 'moments' && <MomentsScreen user={user} requestCount={requestCount} />}
       {tab === 'store' && <StoreScreen />}
       {tab === 'profile' && <ProfileScreen user={user} />}
     </Suspense>

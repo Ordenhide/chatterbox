@@ -44,7 +44,6 @@
   },
   "tabs": {
     "chats": "Chats",
-    "moments": "Moments",
     "store": "Store",
     "profile": "Profile"
   },
@@ -60,7 +59,6 @@
     "media": "Media",
     "chatSettings": "Chat Settings",
     "call": "Call",
-    "moments": "Moments",
     "friends": "Friends"
   },
   "auth": {
@@ -230,61 +228,6 @@
       "createFailed": "Failed to create chat"
     }
   },
-  "moments": {
-    "title": "Moments",
-    "friends": "Friends",
-    "post": "Post",
-    "refresh": "Refresh",
-    "empty": "No moments yet.",
-    "sharedMoment": "Shared a moment",
-    "visibilityLabel": "Visibility: {{visibility}}",
-    "actions": {
-      "like": "Like",
-      "liked": "Liked",
-      "comment": "Comment",
-      "share": "Share",
-      "viewPhoto": "View photo"
-    },
-    "visibility": {
-      "public": "Public",
-      "friends": "Friends",
-      "private": "Private"
-    },
-    "modal": {
-      "newTitle": "New Moment",
-      "editTitle": "Edit Moment",
-      "placeholder": "What's on your mind?",
-      "addMedia": "Add Photo/Video",
-      "changeMedia": "Change Media",
-      "uploading": "Uploading {{percent}}%"
-    },
-    "alerts": {
-      "deleteTitle": "Delete Moment",
-      "deleteConfirm": "Delete this moment?",
-      "postFailed": "Failed to post moment.",
-      "deleteFailed": "Failed to delete moment.",
-      "commentFailed": "Failed to add comment.",
-      "shareSuccessTitle": "Shared",
-      "shareSuccessBody": "Moment sent to chat.",
-      "shareFailedTitle": "Error",
-      "shareFailedBody": "Failed to share moment.",
-      "refreshFailed": "Unable to refresh moments."
-    },
-    "comments": {
-      "delete": "Delete",
-      "deleteTitle": "Delete comment?",
-      "deleteBody": "This can't be undone.",
-      "title": "Comments",
-      "placeholder": "Add a comment...",
-      "empty": "No comments yet.",
-      "post": "Post",
-      "close": "Close"
-    },
-    "share": {
-      "title": "Share to Chat",
-      "close": "Close"
-    }
-  },
   "friends": {
     "addFriend": "Add Friend",
     "uidPlaceholder": "Enter user UID",
@@ -351,8 +294,6 @@
     "memberBadge": "Member",
     "visibilityTitle": "Profile visibility",
     "visibilityDescription": "Control who can see your profile details.",
-    "defaultVisibilityTitle": "Default moment visibility",
-    "defaultVisibilityDescription": "Sets the default audience when you create a new moment.",
     "languageTitle": "Language",
     "languageDescription": "Choose your preferred language.",
     "voiceDiaryTitle": "Voice Diary",
@@ -366,7 +307,6 @@
     "voiceDiarySave": "Save",
     "shortcutsTitle": "Shortcuts",
     "shortcutSaved": "Saved",
-    "shortcutMemories": "Memories",
     "shortcutPrivacy": "Privacy",
     "shortcutRecovery": "Recovery Phrase",
     "buttons": {
@@ -429,7 +369,6 @@
       "signOutBody": "Are you sure you want to sign out?",
       "signOutFailed": "Failed to sign out",
       "visibilityUpdateFailed": "Unable to update profile visibility.",
-      "momentVisibilityUpdateFailed": "Unable to update default moment visibility.",
       "downloadDataFailedTitle": "Error",
       "downloadDataFailedBody": "Unable to prepare your data. Please try again."
     },

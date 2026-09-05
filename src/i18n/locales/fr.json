@@ -30,7 +30,6 @@
   },
   "tabs": {
     "chats": "Chats",
-    "moments": "Moments",
     "profile": "Profil"
   },
   "headers": {
@@ -40,7 +39,6 @@
     "media": "Médias",
     "chatSettings": "Paramètres du chat",
     "call": "Appel",
-    "moments": "Moments",
     "friends": "Amis"
   },
   "auth": {
@@ -116,60 +114,6 @@
       "createFailed": "Échec de la création du chat"
     }
   },
-  "moments": {
-    "title": "Moments",
-    "friends": "Amis",
-    "post": "Publier",
-    "refresh": "Actualiser",
-    "empty": "Aucun moment pour le moment.",
-    "sharedMoment": "A partagé un moment",
-    "visibilityLabel": "Visibilité : {{visibility}}",
-    "actions": {
-      "like": "J'aime",
-      "liked": "J'ai aimé",
-      "comment": "Commenter",
-      "share": "Partager"
-    },
-    "visibility": {
-      "public": "Public",
-      "friends": "Amis",
-      "private": "Privé"
-    },
-    "modal": {
-      "newTitle": "Nouveau moment",
-      "editTitle": "Modifier le moment",
-      "placeholder": "À quoi pensez-vous ?",
-      "addMedia": "Ajouter photo/vidéo",
-      "changeMedia": "Changer les médias",
-      "uploading": "Chargement {{percent}}%"
-    },
-    "alerts": {
-      "deleteTitle": "Supprimer le moment",
-      "deleteConfirm": "Supprimer ce moment ?",
-      "postFailed": "Échec de la publication du moment.",
-      "deleteFailed": "Échec de la suppression du moment.",
-      "commentFailed": "Échec de l'ajout du commentaire.",
-      "shareSuccessTitle": "Partagé",
-      "shareSuccessBody": "Moment envoyé au chat.",
-      "shareFailedTitle": "Erreur",
-      "shareFailedBody": "Échec du partage du moment.",
-      "refreshFailed": "Impossible d'actualiser les moments."
-    },
-    "comments": {
-      "delete": "Supprimer",
-      "deleteTitle": "Supprimer le commentaire ?",
-      "deleteBody": "Cette action est irréversible.",
-      "title": "Commentaires",
-      "placeholder": "Ajouter un commentaire...",
-      "empty": "Aucun commentaire pour le moment.",
-      "post": "Publier",
-      "close": "Fermer"
-    },
-    "share": {
-      "title": "Partager au chat",
-      "close": "Fermer"
-    }
-  },
   "friends": {
     "addFriend": "Ajouter un ami",
     "uidPlaceholder": "Entrez l'UID de l'utilisateur",
@@ -234,8 +178,6 @@
     "memberBadge": "Membre",
     "visibilityTitle": "Visibilité du profil",
     "visibilityDescription": "Contrôlez qui peut voir les détails de votre profil.",
-    "defaultVisibilityTitle": "Visibilité par défaut des moments",
-    "defaultVisibilityDescription": "Définit l'audience par défaut lorsque vous créez un nouveau moment.",
     "languageTitle": "Langue",
     "languageDescription": "Choisissez votre langue préférée.",
     "buttons": {
@@ -267,8 +209,7 @@
       "signOutTitle": "Se déconnecter",
       "signOutBody": "Êtes-vous sûr de vouloir vous déconnecter ?",
       "signOutFailed": "Échec de la déconnexion",
-      "visibilityUpdateFailed": "Impossible de mettre à jour la visibilité du profil.",
-      "momentVisibilityUpdateFailed": "Impossible de mettre à jour la visibilité par défaut des moments."
+      "visibilityUpdateFailed": "Impossible de mettre à jour la visibilité du profil."
     }
   },
   "notifications": {

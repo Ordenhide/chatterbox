@@ -30,7 +30,6 @@
   },
   "tabs": {
     "chats": "聊天",
-    "moments": "动态",
     "profile": "我的",
     "store": "商店"
   },
@@ -41,7 +40,6 @@
     "media": "媒体",
     "chatSettings": "聊天设置",
     "call": "通话",
-    "moments": "动态",
     "friends": "好友"
   },
   "auth": {
@@ -160,61 +158,6 @@
     "removePerson": "移除 {{name}}",
     "startGroup": "创建群聊"
   },
-  "moments": {
-    "title": "动态",
-    "friends": "好友",
-    "post": "发布",
-    "refresh": "刷新",
-    "empty": "暂无动态",
-    "sharedMoment": "分享了一条动态",
-    "visibilityLabel": "可见范围：{{visibility}}",
-    "actions": {
-      "like": "点赞",
-      "liked": "已赞",
-      "comment": "评论",
-      "share": "分享",
-      "viewPhoto": "查看照片"
-    },
-    "visibility": {
-      "public": "公开",
-      "friends": "好友",
-      "private": "私密"
-    },
-    "modal": {
-      "newTitle": "发布动态",
-      "editTitle": "编辑动态",
-      "placeholder": "此刻想说点什么？",
-      "addMedia": "添加图片/视频",
-      "changeMedia": "更换图片/视频",
-      "uploading": "上传中 {{percent}}%"
-    },
-    "alerts": {
-      "deleteTitle": "删除动态",
-      "deleteConfirm": "确定删除这条动态？",
-      "postFailed": "发布失败。",
-      "deleteFailed": "删除失败。",
-      "commentFailed": "评论失败。",
-      "shareSuccessTitle": "已分享",
-      "shareSuccessBody": "已分享到聊天。",
-      "shareFailedTitle": "错误",
-      "shareFailedBody": "分享失败。",
-      "refreshFailed": "无法刷新动态。"
-    },
-    "comments": {
-      "delete": "删除",
-      "deleteTitle": "删除这条评论？",
-      "deleteBody": "此操作无法撤销。",
-      "title": "评论",
-      "placeholder": "添加评论...",
-      "empty": "暂无评论",
-      "post": "发布",
-      "close": "关闭"
-    },
-    "share": {
-      "title": "分享至聊天",
-      "close": "关闭"
-    }
-  },
   "friends": {
     "addFriend": "添加好友",
     "uidPlaceholder": "输入用户 UID",
@@ -281,8 +224,6 @@
     "memberBadge": "会员",
     "visibilityTitle": "资料可见性",
     "visibilityDescription": "控制谁可以查看你的资料。",
-    "defaultVisibilityTitle": "动态默认可见性",
-    "defaultVisibilityDescription": "创建动态时默认的可见范围。",
     "languageTitle": "语言",
     "languageDescription": "选择你偏好的语言。",
     "voiceDiaryTitle": "语音日记",
@@ -296,7 +237,6 @@
     "voiceDiarySave": "保存",
     "shortcutsTitle": "快捷入口",
     "shortcutSaved": "收藏",
-    "shortcutMemories": "回忆",
     "shortcutPrivacy": "隐私",
     "buttons": {
       "feedback": "发送反馈",
@@ -358,7 +298,6 @@
       "signOutBody": "确定要退出登录吗？",
       "signOutFailed": "退出登录失败",
       "visibilityUpdateFailed": "无法更新个人资料可见性。",
-      "momentVisibilityUpdateFailed": "无法更新默认动态可见性。",
       "downloadDataFailedTitle": "错误",
       "downloadDataFailedBody": "无法准备你的数据,请重试。"
     },

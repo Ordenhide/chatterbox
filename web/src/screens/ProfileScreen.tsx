@@ -230,7 +230,7 @@ export default function ProfileScreen({user}: {user: User}) {
                   key={v}
                   onClick={() => changeVis(v)}
                   style={{...styles.visChip, ...(vis === v ? styles.chipOn : styles.chipOff)}}>
-                  {t(`moments.${v === 'friends' ? 'friendsVis' : v}` as 'moments.public')}
+                  {t(`profile.vis${v[0].toUpperCase()}${v.slice(1)}` as 'profile.visPublic')}
                 </button>
               ))}
             </div>

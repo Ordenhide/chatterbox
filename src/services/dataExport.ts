@@ -203,6 +203,9 @@ async function fetchChatExport(
   return chat;
 }
 
+// Moments the feature is gone; moments the *documents* are not. An account
+// that posted before the removal still has them, and "download my data" has to
+// reach data this build can no longer create — that is the point of an export.
 async function fetchMomentExport(
   momentId: string,
   momentData: Record<string, unknown>,

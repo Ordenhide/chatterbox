@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useState} from 'react';
 
-export type Tab = 'chats' | 'moments' | 'store' | 'profile';
+export type Tab = 'chats' | 'store' | 'profile';
 export interface Route {
   tab: Tab;
   chatId?: string;
 }
 
-const TABS: Tab[] = ['chats', 'moments', 'store', 'profile'];
+const TABS: Tab[] = ['chats', 'store', 'profile'];
 
 function parse(): Route {
   const raw = window.location.hash.replace(/^#\/?/, '');

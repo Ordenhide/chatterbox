@@ -34,28 +34,3 @@ const emitter = new EventEmitter<NotificationEvents>();
 
 const momentsKey = (userId: string) => `${STORAGE_KEYS.MOMENTS_LAST_SEEN}:${userId}`;
 
-export async function getMomentsLastSeen(userId: string): Promise<number> {
-  if (!userId) return 0;
-  try {
-    const value = await AsyncStorage.getItem(momentsKey(userId));
-    return value ? Number(value) || 0 : 0;
-  } catch {
-    return 0;
-  }
-}
-
-export async function setMomentsLastSeen(userId: string, timestamp: number): Promise<void> {
-  if (!userId) return;
-  try {
-    await AsyncStorage.setItem(momentsKey(userId), String(timestamp));
-    emitter.emit('momentsSeen', {userId, timestamp});
-  } catch {
-    // Storage write failed; skip emit to avoid inconsistent state
-  }
-}
-
-export function onMomentsLastSeen(listener: Listener<NotificationEvents['momentsSeen']>) {
-  emitter.on('momentsSeen', listener);
-  return () => emitter.off('momentsSeen', listener);
-}
-

@@ -281,6 +281,9 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
   }
 
   try {
+    // Moments the feature is gone, but moments the *documents* are not: an
+    // account that posted before the removal still has them, and deletion has
+    // to reach data this build can no longer create.
     const moments = await getDocs(query(collection(db, 'moments'), where('authorId', '==', uid)));
     for (const m of moments.docs) {
       for (const sub of ['likes', 'comments']) {

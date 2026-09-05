@@ -22,7 +22,6 @@ import {lazyLoad} from '../utils/lazyLoading';
 // evaluate: Profile, Store, Moments, Friends, Call, and the chat sub-screens.
 const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
 const StoreScreen = lazyLoad(() => import('../screens/StoreScreen'));
-const MomentsScreen = lazyLoad(() => import('../screens/moments/MomentsScreen'));
 const FriendsScreen = lazyLoad(() => import('../screens/moments/FriendsScreen'));
 const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
 const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsScreen'));
@@ -34,10 +33,8 @@ const PrivacyPolicyScreen = lazyLoad(() => import('../screens/PrivacyPolicyScree
 const RecoveryPhraseScreen = lazyLoad(() => import('../screens/RecoveryPhraseScreen'));
 import {useAuth} from '../contexts/AuthContext';
 import {listenFriends, listenFriendRequests} from '../services/friends';
-import {listenMomentsForAuthors} from '../services/moments';
 import {listenChatsForUser} from '../services/firebaseChat';
-import {getMomentsLastSeen, onMomentsLastSeen} from '../services/notifications';
-import {Friend, Moment} from '../types';
+import {Friend} from '../types';
 import {getColors} from '../theme/colors';
 import GlassView from '../components/GlassView';
 import TabIcon from '../components/TabIcon';
@@ -52,48 +49,17 @@ export default function MainNavigator() {
   const {user} = useAuth();
   const {t} = useTranslation();
   const [friends, setFriends] = useState<Friend[]>([]);
-  const [momentsLastSeen, setMomentsLastSeen] = useState(0);
-  const [momentsReady, setMomentsReady] = useState(false);
-  const [hasNewMoments, setHasNewMoments] = useState(false);
   const [hasUnreadChats, setHasUnreadChats] = useState(false);
   const [hasFriendRequests, setHasFriendRequests] = useState(false);
 
+  // Clears the badges on sign-out. The listeners below each bail on a missing
+  // uid, but they do not run their cleanups until the *next* uid arrives, so
+  // without this the previous account's badges survive the sign-out.
   useEffect(() => {
-    if (!user?.uid) {
-      setFriends([]);
-      setMomentsLastSeen(0);
-      setMomentsReady(false);
-      setHasNewMoments(false);
-      setHasUnreadChats(false);
-      setHasFriendRequests(false);
-      return;
-    }
-    let active = true;
-    getMomentsLastSeen(user.uid)
-      .then(timestamp => {
-        if (active) {
-          setMomentsLastSeen(timestamp);
-          setMomentsReady(true);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setMomentsLastSeen(0);
-          setMomentsReady(true);
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, [user?.uid]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-    return onMomentsLastSeen(({userId, timestamp}) => {
-      if (userId === user.uid) {
-        setMomentsLastSeen(timestamp);
-      }
-    });
+    if (user?.uid) return;
+    setFriends([]);
+    setHasUnreadChats(false);
+    setHasFriendRequests(false);
   }, [user?.uid]);
 
   useEffect(() => {
@@ -128,26 +94,10 @@ export default function MainNavigator() {
 
   const friendIdsKey = useMemo(() => friendIds.join(','), [friendIds]);
 
-  useEffect(() => {
-    if (!user?.uid || !momentsReady) return;
-    const getMomentTime = (moment: Moment) => {
-      const raw = (moment.updatedAt as any) ?? (moment.createdAt as any);
-      if (raw?.toMillis) return raw.toMillis();
-      if (raw?.toDate) return raw.toDate().getTime();
-      if (typeof raw === 'number') return raw;
-      if (typeof moment.clientCreatedAt === 'number') return moment.clientCreatedAt;
-      return 0;
-    };
-    const unsubscribe = listenMomentsForAuthors(user.uid, friendIds, moments => {
-      const latest = moments.reduce((max, moment) => Math.max(max, getMomentTime(moment)), 0);
-      setHasNewMoments(latest > momentsLastSeen);
-    });
-    return () => unsubscribe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid, friendIdsKey, momentsLastSeen, momentsReady]);
-
   const showChatsBadge = hasUnreadChats;
-  const showMomentsBadge = hasNewMoments || hasFriendRequests;
+  // Friend requests were one of two things this badge meant; the other was
+  // new moments, which no longer exist.
+  const showFriendsBadge = hasFriendRequests;
 
   const headerTitleStyle = useMemo(
     () => ({color: colors.text, fontSize: 17, fontWeight: '700' as const, letterSpacing: -0.2}),
@@ -194,7 +144,6 @@ export default function MainNavigator() {
     [colors.glassBorder, tabBarInset],
   );
   const chatIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="chats" color={color} />, []);
-  const momentsIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="moments" color={color} />, []);
   const storeIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="store" color={color} />, []);
   const profileIcon = React.useCallback(({color}: {color: string}) => <TabIcon name="profile" color={color} />, []);
 
@@ -254,22 +203,17 @@ export default function MainNavigator() {
             component={RecoveryPhraseScreen}
             options={{title: 'Recovery Phrase'}}
           />
+          {/* Rehoused from the Moments tab, which is gone. Contacts belong
+              next to the conversations they start, not behind a feed. */}
+          <Stack.Screen
+            name="Friends"
+            component={FriendsScreen}
+            options={{title: t('headers.friends')}}
+          />
         </Stack.Navigator>
       );
     }
     return _ChatStack;
-  }, [stackScreenOptions, t]);
-
-  const MomentsStack = useMemo(() => {
-    function _MomentsStack() {
-      return (
-        <Stack.Navigator screenOptions={stackScreenOptions}>
-          <Stack.Screen name="Moments" component={MomentsScreen} options={{title: t('headers.moments'), headerShown: false}} />
-          <Stack.Screen name="Friends" component={FriendsScreen} options={{title: t('headers.friends')}} />
-        </Stack.Navigator>
-      );
-    }
-    return _MomentsStack;
   }, [stackScreenOptions, t]);
 
   return (
@@ -289,16 +233,6 @@ export default function MainNavigator() {
           tabBarLabel: t('tabs.chats'),
           tabBarIcon: chatIcon,
           tabBarBadge: showChatsBadge ? ' ' : undefined,
-          tabBarBadgeStyle: styles.tabBadge,
-        }}
-      />
-      <Tab.Screen
-        name="MomentsTab"
-        component={MomentsStack}
-        options={{
-          tabBarLabel: t('tabs.moments'),
-          tabBarIcon: momentsIcon,
-          tabBarBadge: showMomentsBadge ? ' ' : undefined,
           tabBarBadgeStyle: styles.tabBadge,
         }}
       />

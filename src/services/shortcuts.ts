@@ -26,7 +26,7 @@ export type ShortcutId =
   | 'nextChat'
   | 'closeOrClear'
   | 'tabChats'
-  | 'tabMoments'
+  | 'tabFriends'
   | 'tabStore'
   | 'tabProfile';
 
@@ -66,7 +66,7 @@ export function matchShortcut(e: KeyLike, opts: {typing: boolean} = {typing: fal
     if (k === 'n' && e.shiftKey) return 'newChat';
     if (!e.shiftKey) {
       if (e.key === '1') return 'tabChats';
-      if (e.key === '2') return 'tabMoments';
+      if (e.key === '2') return 'tabFriends';
       if (e.key === '3') return 'tabStore';
       if (e.key === '4') return 'tabProfile';
     }
@@ -125,7 +125,7 @@ export const SHORTCUT_HELP: Array<{keys: string[]; i18nKey: string}> = [
   {keys: ['⌥', '↑'], i18nKey: 'shortcuts.prevChat'},
   {keys: ['⌥', '↓'], i18nKey: 'shortcuts.nextChat'},
   {keys: ['⌘', '1'], i18nKey: 'shortcuts.tabChats'},
-  {keys: ['⌘', '2'], i18nKey: 'shortcuts.tabMoments'},
+  {keys: ['⌘', '2'], i18nKey: 'shortcuts.tabFriends'},
   {keys: ['⌘', '3'], i18nKey: 'shortcuts.tabStore'},
   {keys: ['⌘', '4'], i18nKey: 'shortcuts.tabProfile'},
   {keys: ['⏎'], i18nKey: 'shortcuts.send'},

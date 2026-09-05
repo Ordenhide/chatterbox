@@ -312,6 +312,9 @@ export async function purgeUserData(uid: string): Promise<PurgeReport> {
   // Moments authored by this user.
   try {
     const moments = await getDocs(
+      // The feature is gone; the documents are not. Accounts that posted
+      // before the removal still have them, and deletion has to reach data
+      // this build can no longer create.
       query(collection(db, 'moments'), where('authorId', '==', uid)),
     );
     for (const m of moments.docs) {

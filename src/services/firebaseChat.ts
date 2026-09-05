@@ -478,14 +478,12 @@ export async function sendMessage(chatId: string, message: Message) {
       {
         lastMessage: {
           text:
-            message.text ||
-            (message.moment ? 'Shared a moment' : isEncrypted ? '🔒 Encrypted message' : ''),
+            message.text || (isEncrypted ? '🔒 Encrypted message' : ''),
           createdAt: serverTimestamp(),
           image: message.image || null,
           video: message.video || null,
           audio: message.audio || null,
           file: message.file || null,
-          moment: message.moment || null,
         },
         updatedAt: serverTimestamp(),
         unreadCountBy,
@@ -537,7 +535,7 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
   if (snap.empty) {
     await setDoc(
       chatRef,
-      {lastMessage: {text: '', createdAt: null, image: null, video: null, audio: null, file: null, moment: null}},
+      {lastMessage: {text: '', createdAt: null, image: null, video: null, audio: null, file: null}},
       {merge: true},
     );
     return;
@@ -547,13 +545,12 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
     chatRef,
     {
       lastMessage: {
-        text: m.text || (m.moment ? 'Shared a moment' : ''),
+        text: m.text || '',
         createdAt: m.createdAt ?? serverTimestamp(),
         image: m.image || null,
         video: m.video || null,
         audio: m.audio || null,
         file: m.file || null,
-        moment: m.moment || null,
       },
     },
     {merge: true},

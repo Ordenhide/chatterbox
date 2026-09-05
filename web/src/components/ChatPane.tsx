@@ -2707,7 +2707,7 @@ export default function ChatPane({
           <button
             type="button"
             style={styles.composerIcon}
-            title={t('moments.addPhoto')}
+            title={t('chat.attachPhoto')}
             disabled={uploadPct !== null}
             onClick={() => imageInputRef.current?.click()}>
             <Icon name="image" size={20} />

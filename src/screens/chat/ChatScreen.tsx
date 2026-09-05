@@ -969,8 +969,7 @@ export default function ChatScreen() {
             replyTo: msg.replyTo,
             reactions: msg.reactions,
             mentions: msg.mentions,
-            moment: msg.moment,
-            burnAfterReading: msg.burnAfterReading,
+              burnAfterReading: msg.burnAfterReading,
             sharedList: (msg as any).sharedList,
             transcription: (msg as any).transcription,
             expense: (msg as any).expense,
@@ -1651,7 +1650,6 @@ export default function ChatScreen() {
           replyTo: msg.replyTo,
           reactions: msg.reactions,
           mentions: msg.mentions,
-          moment: msg.moment,
           burnAfterReading: msg.burnAfterReading,
           sharedList: (msg as any).sharedList,
           transcription: (msg as any).transcription,
@@ -3698,29 +3696,6 @@ export default function ChatScreen() {
     );
   };
 
-  const renderMomentCard = (moment: ChatMessage['moment']) => {
-    if (!moment) return null;
-    return (
-      <Pressable
-        style={[styles.momentCard, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}
-        onPress={() => navigation.navigate('MomentsTab')}
-      >
-        <Text style={[styles.momentTitle, {color: colors.text}]}>Shared a moment</Text>
-        {moment.text ? (
-          <Text style={[styles.momentText, {color: colors.text}]} numberOfLines={2}>
-            {moment.text}
-          </Text>
-        ) : null}
-        {moment.mediaUrl && moment.mediaType === 'image' ? (
-          <Image source={{uri: moment.mediaUrl}} style={styles.momentMedia} resizeMode="cover" />
-        ) : null}
-        {moment.mediaUrl && moment.mediaType === 'video' ? (
-          <Video source={{uri: moment.mediaUrl}} style={styles.momentMedia} resizeMode="cover" paused />
-        ) : null}
-      </Pressable>
-    );
-  };
-
   const renderMessageText = useCallback(
     (props: any) => {
       const current = props?.currentMessage || {};
@@ -4367,7 +4342,6 @@ export default function ChatScreen() {
               </Text>
             </View>
           ) : null}
-          {renderMomentCard(current.moment)}
           {/* No audio here: it is already drawn inside the Bubble above by
               GiftedChat's renderMessageAudio slot, the same way image and video
               are. Rendering it here as well put a second, detached copy under
@@ -6278,29 +6252,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 9,
     paddingBottom: 3,
-  },
-  momentCard: {
-    marginTop: 6,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 2,
-    padding: 12,
-    maxWidth: 260,
-    overflow: 'hidden',
-  },
-  momentTitle: {
-    fontSize: 13,
-    fontFamily: bodyWeight('700'),
-    marginBottom: 4,
-  },
-  momentText: {
-    fontSize: 13,
-    marginBottom: 6,
-    lineHeight: 18,
-  },
-  momentMedia: {
-    width: '100%',
-    height: 140,
-    borderRadius: 2,
   },
   accessoryBar: {
     flexDirection: 'row',
