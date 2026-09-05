@@ -5439,14 +5439,6 @@ export default function ChatScreen() {
               style={styles.actionSheetItem}
               onPress={() => {
                 setActionsModalVisible(false);
-                navigation.navigate('Whiteboard', {chatId});
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Whiteboard</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
                 navigation.navigate('Playlist', {chatId});
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>Playlist</Text>

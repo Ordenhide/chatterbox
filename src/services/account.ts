@@ -187,7 +187,7 @@ async function purgeChat(
   }
 
   /**
-   * Deliberately left: sharedLists, whiteboards, expenses, quoteWall, playlist,
+   * Deliberately left: sharedLists, expenses, quoteWall, playlist,
    * countdowns and calls. Those are joint artifacts of the chat, not this
    * user's own documents — an expense split between two people does not stop
    * being the other person's record because one of them left, and deleting a

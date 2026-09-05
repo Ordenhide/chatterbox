@@ -101,7 +101,6 @@ import CipherText from './CipherText';
 import QuickSwitcher from './QuickSwitcher';
 import Icon from './Icon';
 import AudioMessage from './AudioMessage';
-import WhiteboardModal from './WhiteboardModal';
 import GifPicker from './GifPicker';
 import GroupMembersModal from './GroupMembersModal';
 import ChatLockModal from './ChatLockModal';
@@ -193,7 +192,6 @@ export default function ChatPane({
   const [burnDuration, setBurnDuration] = useState(10);
   const [viewOnceMode, setViewOnceMode] = useState(false);
   const [expiryOpen, setExpiryOpen] = useState(false);
-  const [whiteboardOpen, setWhiteboardOpen] = useState(false);
   const [burnCountdowns, setBurnCountdowns] = useState<Record<string, number>>({});
   const [replyTarget, setReplyTarget] = useState<ChatMessage | null>(null);
   // The message currently being forwarded — set while the destination-chat
@@ -1811,14 +1809,6 @@ export default function ChatPane({
                 <button
                   style={styles.menuItemRow}
                   onClick={() => {
-                    setWhiteboardOpen(true);
-                    setMenuOpen(false);
-                  }}>
-                  <Icon name="edit" size={15} /> {t('chat.whiteboard')}
-                </button>
-                <button
-                  style={styles.menuItemRow}
-                  onClick={() => {
                     setScheduleOpen(true);
                     setMenuOpen(false);
                   }}>
@@ -2794,9 +2784,6 @@ export default function ChatPane({
         </form>
       )}
 
-      {whiteboardOpen && (
-        <WhiteboardModal chatId={chatId} myUid={me.uid} onClose={() => setWhiteboardOpen(false)} />
-      )}
       {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
       {reportTarget && (
         <ReportMessageModal

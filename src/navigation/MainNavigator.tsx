@@ -29,7 +29,6 @@ const ChatSettingsScreen = lazyLoad(() => import('../screens/chat/ChatSettingsSc
 const ChatMediaScreen = lazyLoad(() => import('../screens/chat/ChatMediaScreen'));
 const NewChatScreen = lazyLoad(() => import('../screens/chat/NewChatScreen'));
 const RecentlyDeletedScreen = lazyLoad(() => import('../screens/chat/RecentlyDeletedScreen'));
-const WhiteboardScreen = lazyLoad(() => import('../screens/chat/WhiteboardScreen'));
 const PlaylistScreen = lazyLoad(() => import('../screens/chat/PlaylistScreen'));
 const CountdownScreen = lazyLoad(() => import('../screens/chat/CountdownScreen'));
 const BookmarksScreen = lazyLoad(() => import('../screens/BookmarksScreen'));
@@ -241,11 +240,6 @@ export default function MainNavigator() {
             name="Call"
             component={CallScreen}
             options={{title: t('headers.call')}}
-          />
-          <Stack.Screen
-            name="Whiteboard"
-            component={WhiteboardScreen}
-            options={{title: 'Whiteboard'}}
           />
           <Stack.Screen
             name="Bookmarks"

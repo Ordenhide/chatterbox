@@ -83,14 +83,6 @@ export interface Reminder {
   sent?: boolean;
 }
 
-export interface WhiteboardStroke {
-  id: string;
-  userId: string;
-  color: string;
-  width: number;
-  points: Array<{x: number; y: number}>;
-}
-
 /** An E2EE-sealed value — see services/e2ee.ts. */
 export interface EncryptedField {
   alg: string;

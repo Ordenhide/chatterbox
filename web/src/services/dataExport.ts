@@ -182,7 +182,6 @@ async function fetchChatExport(
     'calls',
     'scheduledMessages',
     'sharedLists',
-    'whiteboards',
     'quoteWall',
     'playlist',
     'countdowns',

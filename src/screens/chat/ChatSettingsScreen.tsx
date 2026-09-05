@@ -362,11 +362,6 @@ export default function ChatSettingsScreen() {
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>
-        <TouchableOpacity
-          style={styles.row}
-          onPress={() => navigation.navigate('Whiteboard', {chatId})}>
-          <Text style={[styles.rowLabel, {color: colors.text}]}>Whiteboard</Text>
-        </TouchableOpacity>
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>

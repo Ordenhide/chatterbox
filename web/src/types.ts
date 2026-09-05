@@ -150,14 +150,6 @@ export interface MomentComment {
   createdAt?: Timestamp;
 }
 
-export interface WhiteboardStroke {
-  id: string;
-  userId: string;
-  color: string;
-  width: number;
-  points: Array<{x: number; y: number}>;
-}
-
 // ---- Shared chat spaces (schema-matched to mobile src/types) ---------------
 
 export interface Reminder {
