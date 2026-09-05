@@ -166,11 +166,13 @@ import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {
   applyScreenshotProtection,
-  isScreenshotProtectionEnabled,
-  isLinkPreviewEnabled,
-  isStealthMode,
   generateWatermark,
   isExifStrippingEnabled,
+  isLinkPreviewEnabled,
+  isReadReceiptsEnabled,
+  isScreenshotProtectionEnabled,
+  isStealthMode,
+  isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
 import {SharedListItem, GifResult, ContextCard, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
@@ -1877,10 +1879,14 @@ export default function ChatScreen() {
           setOtherUser(otherUser);
           setCustomName(customName);
           setOtherUserId(otherId);
-          setOtherLastReadAt(chat.lastReadAt?.[otherId] || 0);
+          // Reciprocal: someone who does not send read receipts does not see
+          // them either. Reading theirs while withholding yours is taking the
+          // signal without giving it, and it makes the setting impossible to
+          // describe in one sentence.
+          setOtherLastReadAt(isReadReceiptsEnabled() ? chat.lastReadAt?.[otherId] || 0 : 0);
         }
         setPinnedMessageIds(chat.pinnedMessageIds || []);
-        const typingAt = chat.typingBy?.[otherId || ''] || 0;
+        const typingAt = isTypingIndicatorEnabled() ? chat.typingBy?.[otherId || ''] || 0 : 0;
         if (typingAt && Date.now() - typingAt < 3000) {
           setIsTyping(true);
           if (timeout) clearTimeout(timeout);

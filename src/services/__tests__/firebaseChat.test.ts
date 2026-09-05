@@ -48,7 +48,12 @@ jest.mock('../firebase/storage', () => ({
 }));
 
 jest.mock('../telemetry', () => ({reportError: jest.fn()}));
-jest.mock('../privacyGuard', () => ({isStealthMode: jest.fn(() => false)}));
+// Typing indicators default to *off* in the real module. These tests are about
+// the write path, so the flag is on here and its own gate is tested below.
+jest.mock('../privacyGuard', () => ({
+  isStealthMode: jest.fn(() => false),
+  isTypingIndicatorEnabled: jest.fn(() => true),
+}));
 jest.mock('../crypto', () => ({
   decryptWithPassphrase: jest.fn(),
   encryptWithPassphrase: jest.fn(),
@@ -148,6 +153,43 @@ describe('user lookup takes the uid from the document id', () => {
   it('keeps the rest of the profile intact', async () => {
     mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
     expect((await getUserByEmail('x@example.com'))?.email).toBe('x@example.com');
+  });
+});
+
+/**
+ * The indicator is opt-in, and the gate has to be on the *write*, not on the
+ * render. Suppressing it only in the UI would leave `typingBy` accumulating on
+ * the server — a plaintext record of when this person was at their phone —
+ * while the app claimed the feature was off.
+ */
+describe('setTyping respects the opt-in', () => {
+  const mockedSetDoc = setDoc as unknown as jest.Mock;
+  const {isTypingIndicatorEnabled} = require('../privacyGuard');
+
+  // Reset going *in*, not only coming out: setDoc is shared with every other
+  // block in this file, and "was never called" is only meaningful from zero.
+  beforeEach(() => {
+    mockedSetDoc.mockReset();
+    mockedSetDoc.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockedSetDoc.mockReset();
+    mockedSetDoc.mockResolvedValue(undefined);
+    isTypingIndicatorEnabled.mockReturnValue(true);
+  });
+
+  it('writes nothing at all when the indicator is off', async () => {
+    isTypingIndicatorEnabled.mockReturnValue(false);
+    await setTyping('chat-1', 'me', true);
+    await setTyping('chat-1', 'me', false);
+    expect(mockedSetDoc).not.toHaveBeenCalled();
+  });
+
+  it('writes when it is on', async () => {
+    isTypingIndicatorEnabled.mockReturnValue(true);
+    await setTyping('chat-1', 'me', true);
+    expect(mockedSetDoc).toHaveBeenCalled();
   });
 });
 

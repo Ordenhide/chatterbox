@@ -1,3 +1,4 @@
+import {isReadReceiptsEnabled, isTypingIndicatorEnabled} from './privacyPrefs';
 import {
   arrayRemove,
   arrayUnion,
@@ -382,9 +383,15 @@ export async function getInitialUnread(chatId: string, uid: string): Promise<num
 
 /** Clears this user's unread counter when they open a chat. */
 export async function markChatRead(chatId: string, uid: string): Promise<void> {
+  // The unread counter always clears — that is this function's job and it is
+  // this user's own field. `lastReadAt` is the part the other person sees, and
+  // it is opt-in: see services/privacyPrefs.
   await setDoc(
     doc(db, 'chats', chatId),
-    {unreadCountBy: {[uid]: 0}, lastReadAt: {[uid]: Date.now()}},
+    {
+      unreadCountBy: {[uid]: 0},
+      ...(isReadReceiptsEnabled() ? {lastReadAt: {[uid]: Date.now()}} : null),
+    },
     {merge: true},
   );
 }
@@ -685,6 +692,10 @@ export async function sweepExpiredMessages(chatId: string, hours: number, since?
 
 let typingTimer: ReturnType<typeof setTimeout> | null = null;
 export function setTyping(chatId: string, uid: string, isTyping: boolean): void {
+  // Opt-in, and gated on the write rather than the render: suppressing it only
+  // in the UI would leave the server accumulating a record of when this person
+  // was at their keyboard while the app said the feature was off.
+  if (!isTypingIndicatorEnabled()) return;
   setDoc(doc(db, 'chats', chatId), {typingBy: {[uid]: isTyping ? Date.now() : 0}}, {merge: true}).catch(
     () => undefined,
   );

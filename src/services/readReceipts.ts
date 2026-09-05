@@ -4,6 +4,7 @@
  * Similar to WeChat's approach: update read receipts in batches
  */
 
+import {isReadReceiptsEnabled} from './privacyGuard';
 import {doc, getFirestore, serverTimestamp, setDoc} from './firebase/firestore';
 
 const db = getFirestore();
@@ -141,6 +142,10 @@ export const readReceiptBatcher = new ReadReceiptBatcher();
  * Update read receipt (batched)
  */
 export function updateReadReceipt(chatId: string, userId: string): void {
+  // Off by default, and reciprocal — see privacyGuard. `lastReadAt` records
+  // when this person read and therefore how long they took to answer, which is
+  // a social signal the server has no need for.
+  if (!isReadReceiptsEnabled()) return;
   readReceiptBatcher.queue(chatId, userId);
 }
 

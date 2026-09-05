@@ -35,6 +35,7 @@ import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/telemetry';
 import {avatarNeutral, getInitials} from '../../utils/avatar';
 import {isDecoyMode} from '../../services/appLock';
+import {isTypingIndicatorEnabled} from '../../services/privacyGuard';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
 import {enrollmentReadiness, hasRevealedRecoveryPhrase, restoreDeviceKeypairFromBackup, type EnrollmentReadiness} from '../../services/e2eeKeys';
@@ -252,6 +253,10 @@ export default function ChatListScreen() {
     [user],
   );
 
+  // Read once per pass rather than per chat: the flag is a synchronous MMKV
+  // read and this runs over every conversation. Reciprocal — see privacyGuard.
+  const typingVisible = isTypingIndicatorEnabled();
+
   const loadChats = async (userChats: ChatRoom[]) => {
     if (!user) return;
 
@@ -274,7 +279,7 @@ export default function ChatListScreen() {
       const signature = userChats
         .map(chat => {
           const otherId = chat.participants.find(id => id !== user.uid);
-          const typingAt = otherId ? chat.typingBy?.[otherId] || 0 : 0;
+          const typingAt = otherId && typingVisible ? chat.typingBy?.[otherId] || 0 : 0;
           const lastMessageTime = chat.lastMessage?.createdAt
             ? toMillis(chat.lastMessage.createdAt as any)
             : toMillis(chat.createdAt);
@@ -304,7 +309,7 @@ export default function ChatListScreen() {
         const customName = chat.nameBy?.[user.uid] || '';
         const displayName =
           customName || otherUser?.displayName || otherUser?.email || chat.name || 'Chat';
-        const typingAt = otherId ? chat.typingBy?.[otherId] || 0 : 0;
+        const typingAt = otherId && typingVisible ? chat.typingBy?.[otherId] || 0 : 0;
         const isTyping = typingAt ? now - typingAt < 3000 : false;
         return {
           ...chat,

@@ -388,7 +388,11 @@
       "public": "Public",
       "friends": "Friends",
       "private": "Private"
-    }
+    },
+    "privacyTypingTitle": "Typing indicators",
+    "privacyTypingHint": "Off by default, and reciprocal — with this on, the server records when you are composing, and you can see when they are.",
+    "privacyReceiptsTitle": "Read receipts",
+    "privacyReceiptsHint": "Off by default, and reciprocal — with this on, the server records when you read a message, and you can see when they did."
   },
   "notifications": {
     "newMessageTitle": "New message",

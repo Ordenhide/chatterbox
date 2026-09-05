@@ -129,6 +129,43 @@ export function applyScreenshotProtection(enabled: boolean): boolean {
   }
 }
 
+/**
+ * Typing indicators and read receipts, both **off by default** and both
+ * reciprocal.
+ *
+ * These are the two fields that put behaviour, not content, on the server in
+ * the clear: `typingBy` records when you picked up your phone and how long you
+ * spent composing, `lastReadAt` records when you read and how long you took to
+ * answer. That is a schedule, an attention map and a social ranking, none of
+ * which the message encryption touches — and unlike the participant list, they
+ * are entirely optional.
+ *
+ * Off by default because the audience this app is for would turn them off, and
+ * a privacy default that has to be found in a settings screen is not a default.
+ *
+ * Reciprocal because the alternative is taking the signal without giving it:
+ * one flag governs both sending yours and seeing theirs. It also makes the
+ * setting explainable in one sentence, which a send-only switch is not.
+ *
+ * Turning either off stops new writes; it does not erase what a chat already
+ * holds from before.
+ */
+export function isTypingIndicatorEnabled(): boolean {
+  return mmkvStorage.getBoolean('typing_indicator') ?? false;
+}
+
+export function setTypingIndicatorEnabled(enabled: boolean): void {
+  mmkvStorage.setBoolean('typing_indicator', enabled);
+}
+
+export function isReadReceiptsEnabled(): boolean {
+  return mmkvStorage.getBoolean('read_receipts') ?? false;
+}
+
+export function setReadReceiptsEnabled(enabled: boolean): void {
+  mmkvStorage.setBoolean('read_receipts', enabled);
+}
+
 export function isNotificationContentHidden(): boolean {
   return mmkvStorage.getBoolean('hide_notification_content') ?? false;
 }

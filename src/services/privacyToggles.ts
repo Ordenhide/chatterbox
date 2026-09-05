@@ -1,9 +1,13 @@
 import {
   isExifStrippingEnabled,
   isNotificationContentHidden,
+  isReadReceiptsEnabled,
+  isTypingIndicatorEnabled,
   isScreenshotProtectionEnabled,
   setExifStripping,
   setNotificationContentHidden,
+  setReadReceiptsEnabled,
+  setTypingIndicatorEnabled,
   setScreenshotProtection,
 } from './privacyGuard';
 
@@ -31,6 +35,20 @@ export const PRIVACY_TOGGLES = [
     hint: 'profile.privacyNotificationsHint',
     read: isNotificationContentHidden,
     write: setNotificationContentHidden,
+  },
+  {
+    key: 'typing' as const,
+    title: 'profile.privacyTypingTitle',
+    hint: 'profile.privacyTypingHint',
+    read: isTypingIndicatorEnabled,
+    write: setTypingIndicatorEnabled,
+  },
+  {
+    key: 'receipts' as const,
+    title: 'profile.privacyReceiptsTitle',
+    hint: 'profile.privacyReceiptsHint',
+    read: isReadReceiptsEnabled,
+    write: setReadReceiptsEnabled,
   },
   {
     key: 'exif' as const,

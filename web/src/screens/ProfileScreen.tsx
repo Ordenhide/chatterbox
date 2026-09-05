@@ -12,6 +12,12 @@ import {downloadJson} from '../utils/downloadFile';
 import {createBillingPortalSession} from '../services/billing';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/linkPreview';
+import {
+  isReadReceiptsEnabled,
+  isTypingIndicatorEnabled,
+  setReadReceiptsEnabled,
+  setTypingIndicatorEnabled,
+} from '../services/privacyPrefs';
 import {useEntitlement} from '../context/EntitlementContext';
 import {checkPasswordStrength} from '../services/passwordPolicy';
 import {getUserById} from '../services/chat';
@@ -57,6 +63,8 @@ export default function ProfileScreen({user}: {user: User}) {
   // Per-device, so this reflects the browser you're sitting at.
   const [aiAllowed, setAiAllowed] = useState(hasAiConsent);
   const [previewsOn, setPreviewsOn] = useState(isLinkPreviewEnabled);
+  const [typingOn, setTypingOn] = useState(isTypingIndicatorEnabled);
+  const [receiptsOn, setReceiptsOn] = useState(isReadReceiptsEnabled);
 
   useEffect(() => {
     getUserById(user.uid).then(p => {
@@ -342,6 +350,44 @@ export default function ProfileScreen({user}: {user: User}) {
           </section>
 
           <FocusModeCard uid={user.uid} />
+
+          {/* Both off by default and both reciprocal — the switch governs
+              sending yours and seeing theirs. Mirrors the mobile privacy card;
+              without these the mobile switches were a half-covering promise,
+              since this client writes the same two fields. */}
+          <section style={styles.card}>
+            <div style={styles.cardTitle}>{t('signals.typingTitle')}</div>
+            <div style={styles.cardDesc}>
+              {typingOn ? t('signals.typingOn') : t('signals.typingOff')}
+            </div>
+            <button
+              type="button"
+              className={typingOn ? 'btn' : 'btn btn-primary'}
+              style={typingOn ? styles.deleteBtn : styles.pwSubmit}
+              onClick={() => {
+                setTypingIndicatorEnabled(!typingOn);
+                setTypingOn(!typingOn);
+              }}>
+              {typingOn ? t('signals.turnOff') : t('signals.turnOn')}
+            </button>
+          </section>
+
+          <section style={styles.card}>
+            <div style={styles.cardTitle}>{t('signals.receiptsTitle')}</div>
+            <div style={styles.cardDesc}>
+              {receiptsOn ? t('signals.receiptsOn') : t('signals.receiptsOff')}
+            </div>
+            <button
+              type="button"
+              className={receiptsOn ? 'btn' : 'btn btn-primary'}
+              style={receiptsOn ? styles.deleteBtn : styles.pwSubmit}
+              onClick={() => {
+                setReadReceiptsEnabled(!receiptsOn);
+                setReceiptsOn(!receiptsOn);
+              }}>
+              {receiptsOn ? t('signals.turnOff') : t('signals.turnOn')}
+            </button>
+          </section>
 
           <section style={styles.card}>
             <div style={styles.cardTitle}>{t('linkPreview.settingsTitle')}</div>

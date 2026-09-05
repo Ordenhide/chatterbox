@@ -1,3 +1,4 @@
+import {isReadReceiptsEnabled, isTypingIndicatorEnabled} from '../services/privacyPrefs';
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {avatarColor, colors} from '../theme';
 import {
@@ -881,7 +882,8 @@ export default function ChatPane({
       ? t('chat.online')
       : `${t('chat.lastSeen')} ${formatRelative(otherLastActive, t)}`;
 
-  const otherTypingTs = otherUid ? chat?.typingBy?.[otherUid] || 0 : 0;
+  // Reciprocal — see services/privacyPrefs.
+  const otherTypingTs = otherUid && isTypingIndicatorEnabled() ? chat?.typingBy?.[otherUid] || 0 : 0;
   const otherTyping = otherTypingTs > Date.now() - TYPING_WINDOW_MS;
   const isPinned = !!chat?.pinnedBy?.includes(me.uid);
   const isMuted = !!chat?.mutedBy?.includes(me.uid);
@@ -890,7 +892,7 @@ export default function ChatPane({
   const latestPinned = latestPinnedId ? messages.find(m => m._id === latestPinnedId) : null;
 
   const myLastMsg = [...messages].reverse().find(m => m.user?._id === me.uid);
-  const otherRead = otherUid ? chat?.lastReadAt?.[otherUid] || 0 : 0;
+  const otherRead = otherUid && isReadReceiptsEnabled() ? chat?.lastReadAt?.[otherUid] || 0 : 0;
   const seen = !!myLastMsg && !!myLastMsg.createdAt && myLastMsg.createdAt.toMillis() <= otherRead;
   // "Seen 3:42 PM" — the read-receipt timestamp is when the other side last
   // marked the chat read (lastReadAt), matching the mobile read-receipt data.

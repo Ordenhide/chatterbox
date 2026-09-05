@@ -31,7 +31,7 @@ import {
   onListenerError,
 } from './listenerErrors';
 import {stripUndefined} from './firestoreValues';
-import {isStealthMode} from './privacyGuard';
+import {isStealthMode, isTypingIndicatorEnabled} from './privacyGuard';
 import {decryptWithPassphrase, encryptWithPassphrase} from './crypto';
 import {assertRecipientReachable} from './recipient';
 import {resolveMessageMediaUrls} from './messageMedia';
@@ -917,6 +917,10 @@ export async function setLastRead(chatId: string, userId: string) {
  */
 export async function setTyping(chatId: string, userId: string, isTyping: boolean) {
   if (isStealthMode()) return;
+  // Off by default. `typingBy` is a plaintext record of when this person was at
+  // their phone and how long they spent composing — behaviour the message
+  // encryption does not cover — so it is written only when asked for.
+  if (!isTypingIndicatorEnabled()) return;
   try {
     await setDoc(
       doc(chatsRef(), chatId),
