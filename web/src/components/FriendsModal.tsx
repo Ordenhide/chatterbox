@@ -2,7 +2,8 @@ import {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
-import {getUserByEmail, getUserById} from '../services/chat';
+import {getUserById, listenChatsForUser} from '../services/chat';
+import {contactsFromChats, type Contact} from '../services/contacts';
 import {
   acceptFriendRequest,
   blockUser,
@@ -27,7 +28,11 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
   const [sent, setSent] = useState<FriendRequest[]>([]);
   const [blocked, setBlocked] = useState<BlockRecord[]>([]);
   const [names, setNames] = useState<Record<string, UserProfile>>({});
-  const [email, setEmail] = useState('');
+  // Who can be added. Not a search: the people you already have a one-to-one
+  // chat with, projected from chats this client is already subscribed to. See
+  // services/contacts.ts for why there is nothing to type here any more.
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [picked, setPicked] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => listenFriends(myUid, setFriends), [myUid]);
@@ -55,25 +60,15 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
 
   const nameOf = (uid: string) => names[uid]?.displayName || names[uid]?.email || uid.slice(0, 6);
 
+  useEffect(() => listenChatsForUser(myUid, chats => setContacts(contactsFromChats(chats, myUid))), [myUid]);
+
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     setMsg(null);
-    const target = email.trim().toLowerCase();
-    if (!target) return;
-    // Look up and send in separate try/catch blocks so failures are attributed
-    // to the right step (a denied users query vs a denied request write).
-    let user: UserProfile | null = null;
+    if (!picked || picked === myUid) return;
     try {
-      user = await getUserByEmail(target);
-    } catch (err) {
-      console.warn('getUserByEmail failed:', err);
-      return setMsg(t('friends.lookupFailed'));
-    }
-    if (!user) return setMsg(t('friends.noUserFound'));
-    if (user.uid === myUid) return setMsg(t('friends.cantAddSelf'));
-    try {
-      const result = await sendFriendRequest(myUid, user.uid);
-      setEmail('');
+      const result = await sendFriendRequest(myUid, picked);
+      setPicked('');
       setMsg(
         result === 'friends'
           ? t('friends.alreadyFriends')
@@ -104,18 +99,27 @@ export default function FriendsModal({myUid, onClose}: {myUid: string; onClose: 
           </button>
         </div>
 
-        <form onSubmit={add} style={styles.addRow}>
-          <input
-            style={styles.input}
-            placeholder={t('friends.addByEmail')}
-            aria-label={t('friends.addByEmail')}
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-          <button type="submit" style={styles.addBtn}>
-            {t('friends.add')}
-          </button>
-        </form>
+        {contacts.length === 0 ? (
+          <p style={styles.hint}>{t('friends.nobodyToAdd')}</p>
+        ) : (
+          <form onSubmit={add} style={styles.addRow}>
+            <select
+              style={styles.input}
+              aria-label={t('friends.addFromChats')}
+              value={picked}
+              onChange={e => setPicked(e.target.value)}>
+              <option value="">{t('friends.addFromChats')}</option>
+              {contacts.map(contact => (
+                <option key={contact.uid} value={contact.uid}>
+                  {contact.label}
+                </option>
+              ))}
+            </select>
+            <button type="submit" style={styles.addBtn} disabled={!picked}>
+              {t('friends.add')}
+            </button>
+          </form>
+        )}
         {msg && <div style={styles.msg}>{msg}</div>}
 
         <div style={styles.tabs}>
@@ -267,6 +271,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   addBtn: {padding: '0 18px', borderRadius: 2, border: 'none', background: colors.primary, color: colors.textOnPrimary, fontWeight: 700},
   msg: {fontSize: 13, color: colors.primary, marginTop: 6},
+  hint: {fontSize: 13, lineHeight: 1.5, color: colors.textSecondary, margin: '4px 0 0'},
   tabs: {display: 'flex', gap: 4, borderBottom: `1px solid ${colors.border}`, margin: '14px 0 4px'},
   tab: {
     background: 'none',

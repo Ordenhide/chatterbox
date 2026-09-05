@@ -64,9 +64,59 @@ function anon() {
 }
 
 describe('users/{userId}', () => {
-  it('lets any signed-in user read any profile (required for email lookup — see rules comment)', async () => {
+  it('lets a signed-in user read a profile they can name', async () => {
     await seed(db => setDoc(doc(db, 'users/alice'), {email: 'alice@example.com'}));
     await assertSucceeds(getDoc(doc(asUser('bob'), 'users/alice')));
+  });
+
+  /**
+   * The directory, closed. `get` and `list` are separate permissions and only
+   * the second makes this collection searchable: with it denied, no query
+   * returns anyone — which is why getUserByEmail and searchUsersByEmailOrName
+   * could be deleted from both clients rather than merely unused.
+   *
+   * All three shapes are covered because a rule that forgot one would still
+   * look closed. The email query is the one that used to power "new chat by
+   * email"; the unfiltered list is the one that enumerates everybody.
+   */
+  it('refuses to let profiles be queried, by email, by name, or at all', async () => {
+    await seed(async db => {
+      await setDoc(doc(db, 'users/alice'), {email: 'alice@example.com', displayName: 'Alice'});
+      await setDoc(doc(db, 'users/bob'), {email: 'bob@example.com', displayName: 'Bob'});
+    });
+    const bob = asUser('bob');
+    await assertFails(getDocs(query(collection(bob, 'users'))));
+    await assertFails(
+      getDocs(query(collection(bob, 'users'), where('email', '==', 'alice@example.com'))),
+    );
+    await assertFails(
+      getDocs(query(collection(bob, 'users'), where('displayName', '==', 'Alice'))),
+    );
+  });
+
+  /**
+   * `where('__name__', 'in', [...])` is the batch read the mobile client used
+   * to use for group member profiles. Firestore evaluates it as a list, so it
+   * is refused too — which is why services/firebaseChat.ts now reads those
+   * profiles one document at a time. Pinned here so the batch is not
+   * reintroduced as an optimisation.
+   */
+  it('refuses a batch read by document id, even for your own group', async () => {
+    await seed(async db => {
+      await setDoc(doc(db, 'users/alice'), {displayName: 'Alice'});
+      await setDoc(doc(db, 'users/bob'), {displayName: 'Bob'});
+    });
+    await assertFails(
+      getDocs(query(collection(asUser('bob'), 'users'), where('__name__', 'in', ['alice', 'bob']))),
+    );
+  });
+
+  it('still lets you read your own profile without a current session', async () => {
+    // The displaced-client carve-out below. It survives the split into
+    // get/list: a client that has been signed out elsewhere still needs to
+    // read the one document that tells it so.
+    await seed(db => setDoc(doc(db, 'users/alice'), {activeSessionId: 'newer'}));
+    await assertSucceeds(getDoc(doc(asUser('alice'), 'users/alice')));
   });
 
   it('denies reads to unauthenticated clients', async () => {

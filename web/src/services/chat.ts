@@ -47,14 +47,20 @@ function profileFromDoc(snap: {id: string; data: () => unknown}): UserProfile {
   return {...(snap.data() as UserProfile), uid: snap.id};
 }
 
-export async function getUserByEmail(email: string): Promise<UserProfile | null> {
-  const snap = await getDocs(
-    query(collection(db, 'users'), where('email', '==', email.trim().toLowerCase()), limit(1)),
-  );
-  if (snap.empty) return null;
-  return profileFromDoc(snap.docs[0]);
-}
-
+/**
+ * There is no lookup by email or by name, on purpose.
+ *
+ * `getUserByEmail` lived here and queried `users` on an indexed plaintext
+ * field, which meant any signed-in client could turn a person into the
+ * conversations they were in. It was removed on 2026-09-05 together with its
+ * mobile twin and with `list` on `users` (see firestore.rules). Reaching
+ * someone new is an invite link (services/invites.ts); reaching someone you
+ * already know is services/contacts.ts, which is a projection of chats rather
+ * than a query.
+ *
+ * Do not add either back. A search box here is a directory whatever it is
+ * called, and the rules will refuse the query anyway.
+ */
 export async function getUserById(uid: string): Promise<UserProfile | null> {
   const snap = await getDoc(doc(db, 'users', uid));
   return snap.exists() ? profileFromDoc(snap) : null;
@@ -147,21 +153,6 @@ export async function leaveChat(chatId: string, myUserId: string): Promise<void>
 }
 
 /** Find an existing 1:1 chat with the other user, or create one. */
-export async function findOrCreateDirectChat(
-  myUid: string,
-  other: UserProfile,
-): Promise<string> {
-  const snap = await getDocs(
-    query(collection(db, 'chats'), where('participants', 'array-contains', myUid)),
-  );
-  const existing = snap.docs.find(d => {
-    const p = (d.data().participants as string[]) || [];
-    return p.length === 2 && p.includes(other.uid);
-  });
-  if (existing) return existing.id;
-  return createChat([myUid, other.uid], other.displayName || other.email);
-}
-
 // ---- Messages --------------------------------------------------------------
 
 export type MessageCursor = QueryDocumentSnapshot;

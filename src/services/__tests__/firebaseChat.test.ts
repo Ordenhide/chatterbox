@@ -2,7 +2,11 @@
 // over variables prefixed with `mock` (case-insensitive).
 const mockDocs: {
   data: Map<string, Record<string, unknown> | undefined>;
-} = {data: new Map()};
+  /** Paths the rules refuse — how a profile you may not read behaves. */
+  denied: Set<string>;
+  /** Every path `getDoc` was asked for, so a reintroduced query is visible. */
+  reads: string[];
+} = {data: new Map(), denied: new Set(), reads: []};
 
 const mockResolveMessageMediaUrls = jest.fn();
 const mockGetOrCreateDeviceKeypair = jest.fn();
@@ -18,8 +22,14 @@ jest.mock('../firebase/firestore', () => ({
   doc: (_parent: unknown, id: string) => ({path: id}),
   deleteDoc: jest.fn(async () => undefined),
   getDoc: async (ref: {path: string}) => {
+    mockDocs.reads.push(ref.path);
+    if (mockDocs.denied.has(ref.path)) {
+      throw Object.assign(new Error('Missing or insufficient permissions.'), {
+        code: 'firestore/permission-denied',
+      });
+    }
     const data = mockDocs.data.get(ref.path);
-    return {exists: () => !!data, data: () => data};
+    return {exists: () => !!data, data: () => data, id: ref.path};
   },
   getDocs: jest.fn(async () => ({docs: [], empty: true})),
   getFirestore: () => ({}),
@@ -66,7 +76,7 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUserByEmail, searchUsersByEmailOrName, setTyping} from '../firebaseChat';
+import {deleteMessages, getUsersByIds, setTyping} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
@@ -74,6 +84,8 @@ const KEYPAIR = {secretKey: new Uint8Array([1, 2, 3]), publicKey: new Uint8Array
 
 beforeEach(() => {
   mockDocs.data = new Map();
+  mockDocs.denied = new Set();
+  mockDocs.reads = [];
   mockResolveMessageMediaUrls.mockReset().mockReturnValue([]);
   mockGetOrCreateDeviceKeypair.mockReset().mockResolvedValue(KEYPAIR);
   mockDeleteObject.mockReset().mockResolvedValue(undefined);
@@ -121,38 +133,43 @@ describe('deleteMessages', () => {
 });
 
 
-describe('user lookup takes the uid from the document id', () => {
+describe('profiles are read one document at a time', () => {
+  const mockedGetDocs = getDocs as jest.MockedFunction<typeof getDocs>;
+
+  beforeEach(() => {
+    mockedGetDocs.mockClear();
+  });
+
   /**
    * A profile whose `uid` field disagrees with the document it sits in.
    *
-   * The rules now reject writing one, but the lookup should not depend on
-   * that: the id is where the document lives and cannot be written, while the
-   * field is something a client wrote. Callers act on the uid by starting a
-   * chat with it, so it has to come from the half that cannot be wrong.
+   * The rules reject writing one, but the read should not depend on that: the
+   * id is where the document lives and cannot be written, while the field is
+   * something a client wrote. Callers act on the uid by starting a chat with
+   * it, so it has to come from the half that cannot be wrong.
    */
-  const mismatched = {id: 'mallory', data: () => ({uid: 'bob', email: 'x@example.com'})};
-  const mockedGetDocs = getDocs as jest.MockedFunction<typeof getDocs>;
-
-  afterEach(() => {
-    mockedGetDocs.mockReset();
-    mockedGetDocs.mockResolvedValue({docs: [], empty: true} as never);
+  it('takes the uid from the document id, keeping the rest of the profile', async () => {
+    mockDocs.data.set('mallory', {uid: 'bob', email: 'x@example.com'});
+    const found = (await getUsersByIds(['mallory'])).mallory;
+    expect(found?.uid).toBe('mallory');
+    expect(found?.email).toBe('x@example.com');
   });
 
-  it('getUserByEmail returns the document id, not the uid field', async () => {
-    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
-    expect((await getUserByEmail('x@example.com'))?.uid).toBe('mallory');
+  /**
+   * The reason this is not a batch. `where('__name__', 'in', ...)` is a *list*
+   * to Firestore, and `list` on `users` is denied — allowing it would allow
+   * enumerating the directory the invite work removed. A batch reintroduced
+   * here would be refused in production and pass in every test that mocks it.
+   */
+  it('never issues a query, only document reads', async () => {
+    await getUsersByIds(['fresh-a', 'fresh-b', 'fresh-c']);
+    expect(mockDocs.reads).toEqual(['fresh-a', 'fresh-b', 'fresh-c']);
+    expect(mockedGetDocs).not.toHaveBeenCalled();
   });
 
-  it('searchUsersByEmailOrName returns the document id, not the uid field', async () => {
-    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
-    const results = await searchUsersByEmailOrName('x@example.com');
-    expect(results).toHaveLength(1);
-    expect(results[0].uid).toBe('mallory');
-  });
-
-  it('keeps the rest of the profile intact', async () => {
-    mockedGetDocs.mockResolvedValue({docs: [mismatched], empty: false} as never);
-    expect((await getUserByEmail('x@example.com'))?.email).toBe('x@example.com');
+  it('reports a profile it may not read as absent, like one that is not there', async () => {
+    mockDocs.denied.add('secretive');
+    expect((await getUsersByIds(['secretive'])).secretive).toBeNull();
   });
 });
 

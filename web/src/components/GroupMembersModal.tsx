@@ -1,7 +1,14 @@
 import {useEffect, useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
-import {addChatMembers, getUserById, getUserByEmail, GroupFullError, leaveChat} from '../services/chat';
+import {
+  addChatMembers,
+  getUserById,
+  GroupFullError,
+  leaveChat,
+  listenChatsForUser,
+} from '../services/chat';
+import {contactsFromChats, type Contact} from '../services/contacts';
 import {MAX_GROUP_MEMBERS} from '../services/e2ee';
 import Icon from './Icon';
 
@@ -33,7 +40,10 @@ export default function GroupMembersModal({
 }) {
   const dialogRef = useModal<HTMLDivElement>(onClose);
   const [names, setNames] = useState<Record<string, string>>({});
-  const [email, setEmail] = useState('');
+  // The people you already have a one-to-one chat with. There is no directory
+  // to search any more — see services/contacts.ts.
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [picked, setPicked] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<string[]>(participants);
@@ -58,24 +68,20 @@ export default function GroupMembersModal({
     };
   }, [members]);
 
+  useEffect(() => listenChatsForUser(myUid, chats => setContacts(contactsFromChats(chats, myUid))), [myUid]);
+
   const add = async () => {
-    const target = email.trim().toLowerCase();
-    if (!target) return;
+    if (!picked) return;
     setError(null);
     setBusy(true);
     try {
-      const person = await getUserByEmail(target);
-      if (!person) {
-        setError('No Chatterbox user found with that email.');
-        return;
-      }
-      if (members.includes(person.uid)) {
-        setError('That person is already in this chat.');
-        return;
-      }
-      await addChatMembers(chatId, [person.uid]);
-      setMembers(prev => [...prev, person.uid]);
-      setEmail('');
+      await addChatMembers(chatId, [picked]);
+      setMembers(prev => [...prev, picked]);
+      // The label is your own name for them, already on this device. No profile
+      // is fetched, because none was needed to add them.
+      const label = contacts.find(c => c.uid === picked)?.label;
+      if (label) setNames(prev => ({...prev, [picked]: label}));
+      setPicked('');
     } catch (err) {
       setError(
         err instanceof GroupFullError
@@ -124,30 +130,36 @@ export default function GroupMembersModal({
           ))}
         </ul>
 
-        <div style={styles.addRow}>
-          <input
-            style={styles.input}
-            placeholder="Add by email"
-            aria-label="Add member by email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                add();
-              }
-            }}
-          />
-          <button
-            type="button"
-            className="btn btn-soft"
-            style={styles.add}
-            onClick={add}
-            disabled={busy || !email.trim()}>
-            Add
-          </button>
-        </div>
+        {(() => {
+          const addable = contacts.filter(c => !members.includes(c.uid));
+          if (addable.length === 0) {
+            return <p style={styles.hint}>Nobody left to add from your own conversations.</p>;
+          }
+          return (
+            <div style={styles.addRow}>
+              <select
+                style={styles.input}
+                aria-label="Add someone you already chat with"
+                value={picked}
+                onChange={e => setPicked(e.target.value)}>
+                <option value="">Add someone you already chat with</option>
+                {addable.map(contact => (
+                  <option key={contact.uid} value={contact.uid}>
+                    {contact.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn btn-soft"
+                style={styles.add}
+                onClick={add}
+                disabled={busy || !picked}>
+                Add
+              </button>
+            </div>
+          );
+        })()}
 
         {error && <div style={styles.error}>{error}</div>}
 
@@ -214,6 +226,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: colors.text,
   },
   add: {padding: '10px 16px', borderRadius: 2, whiteSpace: 'nowrap'},
+  hint: {fontSize: 13, lineHeight: 1.5, color: colors.textSecondary, margin: '4px 0 0'},
   error: {color: colors.danger, fontSize: 13},
   leave: {
     width: '100%',

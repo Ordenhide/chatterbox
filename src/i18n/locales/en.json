@@ -196,46 +196,35 @@
   "members": {
     "title": "Members ({{count}})",
     "you": " (you)",
-    "add": "+ Add member",
-    "adding": "Adding...",
-    "addPlaceholder": "Add by email",
     "full": "A chat can hold at most {{max}} people",
     "leave": "Leave chat",
     "leaveConfirmTitle": "Leave this chat?",
-    "leaveConfirmBody": "You'll stop receiving new messages. Messages already sent to you stay readable, and new ones won't be. You can be added back later."
+    "leaveConfirmBody": "You'll stop receiving new messages. Messages already sent to you stay readable, and new ones won't be. You can be added back later.",
+    "nobodyToAdd": "Nobody left to add. Everyone you have a conversation with is already here.",
+    "addHint": "Add someone you already have a chat with. There is nobody else to add — nobody can be found by searching.",
+    "addPerson": "Add {{name}}"
   },
   "newChat": {
     "heading": "Start a Conversation",
-    "subheading": "Add one person for a direct chat, or several for a group.",
-    "recipientEmail": "Recipient Email",
-    "emailPlaceholder": "friend@example.com",
+    "subheading": "Send someone an invite link, or put people you already talk to into a group.",
+    "invite": "Invite someone with a link",
+    "groupLabel": "Make a group",
+    "groupHint": "Pick from the people you already have a chat with. There is nobody else to pick from — that is the point.",
+    "noContacts": "You don't have any conversations yet. Send someone an invite link above to start one.",
     "chatNameLabel": "Chat Name (optional)",
     "chatNamePlaceholder": "Chat name",
-    "helpText": "The recipient must have an existing account.",
+    "helpText": "Nobody can find you by searching. A link is the only way in, and it works once.",
     "creating": "Creating...",
-    "adding": "Adding...",
-    "addPerson": "+ Add person",
-    "removePerson": "Remove {{name}}",
-    "startChat": "Start Chat",
+    "openChat": "Open Chat",
     "startGroup": "Start Group Chat",
     "errors": {
-      "enterEmail": "Please enter an email address",
-      "noInvitees": "Add at least one person to start a chat",
-      "userNotFoundTitle": "User not found",
-      "userNotFoundBody": "That email does not exist on this device. Create another account first, then try again.",
-      "selfChat": "You cannot start a chat with yourself",
-      "alreadyAdded": "That person is already in this chat",
       "groupFull": "A chat can hold at most {{max}} people",
       "createFailed": "Failed to create chat"
-    },
-    "useInvite": "Invite with a link instead"
+    }
   },
   "friends": {
     "addFriend": "Add Friend",
     "uidPlaceholder": "Enter user UID",
-    "emailPlaceholder": "Enter user email",
-    "searchTitle": "Search (email or name)",
-    "searchPlaceholder": "Search by email or display name",
     "sections": {
       "requests": "Requests",
       "outgoing": "Outgoing",
@@ -247,11 +236,6 @@
       "outgoing": "No outgoing requests.",
       "friends": "No friends yet.",
       "blocked": "No blocked users."
-    },
-    "search": {
-      "searching": "Searching…",
-      "noMatches": "No matches.",
-      "prompt": "Type to search."
     },
     "buttons": {
       "accept": "Accept",
@@ -289,7 +273,9 @@
       "removeBody": "Remove this friend?",
       "blockTitle": "Block User",
       "blockBody": "Block this user? This will remove them from your friends."
-    }
+    },
+    "contactsTitle": "People you already chat with",
+    "contactsEmpty": "Nobody yet. Start a conversation with an invite link first."
   },
   "profile": {
     "defaultName": "User",

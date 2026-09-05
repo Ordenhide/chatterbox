@@ -16,6 +16,9 @@ export interface ChatRoom {
   participants: string[];
   name?: string;
   nameBy?: Record<string, string>;
+  /** Written by createChat and never changed; the fallback when a chat has
+   *  never been used. Mirrors the mobile ChatRoom. */
+  createdAt?: Timestamp;
   updatedAt?: Timestamp;
   lastMessage?: {
     text?: string;

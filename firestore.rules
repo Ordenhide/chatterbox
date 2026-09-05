@@ -94,12 +94,19 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      // Any signed-in user can read profiles. This is required for user
-      // discovery: "add friend / new chat by email" runs a query filtered by
-      // email, and Firestore rejects a whole query if the read rule gates on a
-      // field the query doesn't filter (profileVisibility) — so a visibility-
-      // gated rule makes email lookup fail with permission-denied. It also lets
-      // a request recipient read the (not-yet-friend) sender's name.
+      // A signed-in user can read a profile they can *name*, and cannot ask for
+      // a list of them. `get` and `list` are separate permissions, and only the
+      // second is what makes a collection a directory: with `list` denied there
+      // is no query — by email, by name, or unfiltered — that returns anyone,
+      // so knowing a uid is the only way to read a profile, and a uid is
+      // something you get by already being in a chat with someone.
+      //
+      // This used to be a bare `read`, allowing both, because "new chat by
+      // email" queried this collection. That entry point is gone (invite links,
+      // services/invites.ts), and so are getUserByEmail and
+      // searchUsersByEmailOrName on both clients. Nothing left needs a query
+      // here — services/firebaseChat.ts reads profiles one document at a time
+      // for exactly this reason. Restoring `list` would restore the directory.
       //
       // Reading *your own* profile deliberately requires only authentication,
       // not a current session. isSignedIn() folds in hasCurrentSession(), so a
@@ -116,8 +123,9 @@ service cloud.firestore {
       // precisely what a displaced client needs to conclude it has been
       // displaced. Writes still require a current session, so a stale client
       // cannot reclaim itself by writing.
-      allow read: if isSignedIn() ||
+      allow get: if isSignedIn() ||
         (request.auth != null && request.auth.uid == userId);
+      allow list: if false;
       // Owning the document is not enough on its own, because two of its
       // fields are *identity claims* that other users act on. See
       // identityFieldsHonest().

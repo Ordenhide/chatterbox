@@ -46,7 +46,6 @@ const usersRef = () => collection(db, 'users');
 const callsRef = (chatId: string) => collection(doc(chatsRef(), chatId), 'calls');
 const USER_CACHE_MAX = 200;
 const userCache = new Map<string, Promise<User | null>>();
-const USER_QUERY_BATCH = 10;
 
 function userCacheSet(key: string, value: Promise<User | null>) {
   if (userCache.size >= USER_CACHE_MAX) {
@@ -108,54 +107,19 @@ export async function setUserFcmToken(userId: string, token: string | null) {
 }
 
 /**
- * A profile, with its uid taken from the document id rather than the body.
+ * There is no lookup by email or by name, on purpose.
  *
- * The two should always agree — the rules now require it — but they are not
- * the same kind of fact. The id is where the document *is* and cannot be
- * written; the field is something a client wrote. Callers act on the uid by
- * starting a chat with it, so it is read from the half that cannot be wrong.
+ * Both used to live here, and both worked by querying `users` on an indexed
+ * plaintext field — which meant any signed-in client could turn a person into
+ * the conversations they were in, and meant the server had to keep that field
+ * searchable. They were removed on 2026-09-05 along with `list` on `users`
+ * (see firestore.rules): reaching someone new is an invite link
+ * (services/invites.ts), and reaching someone you already know is
+ * services/contacts.ts, which is a projection of chats rather than a query.
+ *
+ * Do not add either back. A search box here is a directory, whatever it is
+ * called, and the rules will refuse the query anyway.
  */
-function profileFromDoc(docSnap: {id: string; data: () => unknown}): User {
-  return {...(docSnap.data() as User), uid: docSnap.id};
-}
-
-export async function getUserByEmail(email: string) {
-  // Stored emails are lowercased (see upsertUserProfile); normalize the query
-  // so lookups are case-insensitive, matching the web client.
-  const snapshot = await getDocs(query(usersRef(), where('email', '==', email.trim().toLowerCase()), limit(1)));
-  if (snapshot.empty) return null;
-  return profileFromDoc(snapshot.docs[0]);
-}
-
-export async function searchUsersByEmailOrName(searchTerm: string, maxResults = 5) {
-  const trimmed = searchTerm.trim();
-  if (!trimmed) return [];
-  // Emails are stored lowercased; names are matched as-typed.
-  const emailTerm = trimmed.toLowerCase();
-  const results: User[] = [];
-  const seen = new Set<string>();
-  const addResult = (user: User) => {
-    if (!user?.uid || seen.has(user.uid)) return;
-    seen.add(user.uid);
-    results.push(user);
-  };
-
-  if (trimmed.includes('@')) {
-    const snapshot = await getDocs(query(usersRef(), where('email', '==', emailTerm), limit(maxResults)));
-    snapshot.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
-    return results;
-  }
-
-  const [emailSnap, nameSnap] = await Promise.all([
-    getDocs(query(usersRef(), where('email', '==', emailTerm), limit(maxResults))),
-    getDocs(query(usersRef(), where('displayName', '==', trimmed), limit(maxResults))),
-  ]);
-
-  emailSnap.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
-  nameSnap.docs.forEach(docSnap => addResult(profileFromDoc(docSnap)));
-  return results.slice(0, maxResults);
-}
-
 export async function getUserById(uid: string) {
   if (!uid) return null;
   const cached = userCache.get(uid);
@@ -177,70 +141,42 @@ export async function getUserById(uid: string) {
   return fetchPromise;
 }
 
+/**
+ * Profiles for a set of uids, one `get` each.
+ *
+ * This used to batch with `where('__name__', 'in', chunk)`, which Firestore
+ * evaluates as a *list* — and `list` on `users` is now denied, because a rule
+ * that allows it allows enumerating the directory this app spent a release
+ * removing (see firestore.rules and the note above `getUserById`). Every batch
+ * would have been refused and fallen through to exactly the per-uid reads
+ * below, one round trip later and one permission error louder.
+ *
+ * The cost is real — N reads instead of N/30 — and it is bounded by the group
+ * size cap, paid once, and served from `userCache` afterwards. A read that
+ * names the document it wants cannot be turned into a query for everyone.
+ */
 export async function getUsersByIds(userIds: string[]): Promise<Record<string, User | null>> {
   const uniqueIds = Array.from(new Set(userIds)).filter(Boolean);
   const results: Record<string, User | null> = {};
-  const pending: string[] = [];
 
   await Promise.all(
     uniqueIds.map(async id => {
       const cached = userCache.get(id);
       if (cached) {
         results[id] = await cached;
-      } else {
-        pending.push(id);
+        return;
       }
-    }),
-  );
-
-  if (!pending.length) {
-    return results;
-  }
-
-  const chunks: string[][] = [];
-  for (let i = 0; i < pending.length; i += USER_QUERY_BATCH) {
-    chunks.push(pending.slice(i, i + USER_QUERY_BATCH));
-  }
-
-  await Promise.all(
-    chunks.map(async chunk => {
       try {
-        const snapshot = await getDocs(query(usersRef(), where('__name__', 'in', chunk)));
-        const found = new Set<string>();
-        snapshot.docs.forEach(docSnap => {
-          const data = {...(docSnap.data() as User), uid: docSnap.id};
-          results[docSnap.id] = data;
-          userCacheSet(docSnap.id, Promise.resolve(data));
-          found.add(docSnap.id);
-        });
-        chunk.forEach(id => {
-          if (!found.has(id)) {
-            results[id] = null;
-            userCacheSet(id, Promise.resolve(null));
-          }
-        });
+        const snap = await getDoc(doc(usersRef(), id));
+        const data = snap.exists() ? ({...(snap.data() as User), uid: snap.id}) : null;
+        results[id] = data;
+        userCacheSet(id, Promise.resolve(data));
       } catch (error: any) {
-        if (!isPermissionDenied(error)) {
-          throw error;
-        }
-        // If batch query is blocked by rules for some users, fall back to per-user reads.
-        await Promise.all(
-          chunk.map(async id => {
-            try {
-              const snap = await getDoc(doc(usersRef(), id));
-              const data = snap.exists() ? ({...(snap.data() as User), uid: snap.id}) : null;
-              results[id] = data;
-              userCacheSet(id, Promise.resolve(data));
-            } catch (singleError: any) {
-              if (isPermissionDenied(singleError)) {
-                results[id] = null;
-                userCacheSet(id, Promise.resolve(null));
-                return;
-              }
-              throw singleError;
-            }
-          }),
-        );
+        // A profile this user may not read is indistinguishable from one that
+        // is not there, and both mean the same thing to the caller.
+        if (!isPermissionDenied(error)) throw error;
+        results[id] = null;
+        userCacheSet(id, Promise.resolve(null));
       }
     }),
   );

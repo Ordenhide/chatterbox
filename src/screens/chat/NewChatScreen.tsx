@@ -1,142 +1,120 @@
-import React, {useState} from 'react';
+/**
+ * Starting a conversation, without a directory to search.
+ *
+ * This screen used to take an email address. That worked because `users` held
+ * a plaintext, indexed email for every account and any signed-in client could
+ * query it — which also meant anyone could turn a person into the list of
+ * conversations they were in. Invite links replaced it (services/invites.ts).
+ *
+ * What is left here is the *second* thing that box did: getting several people
+ * into one group. Those people all already have a one-to-one chat with you, so
+ * their uids are in documents this client is holding anyway. No lookup runs;
+ * the list is a projection (services/contacts.ts), not a query.
+ *
+ * Picking exactly one person opens the chat you already have with them, since
+ * having that chat is what put them on this list.
+ */
+import React, {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
   useColorScheme,
 } from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useAuth} from '../../contexts/AuthContext';
-import {createChat, getChatsForUser, getUserByEmail} from '../../services/firebaseChat';
-import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
-import type {User} from '../../types';
-import {useNavigation} from '@react-navigation/native';
-import {getColors} from '../../theme/colors';
-import {reportError} from '../../services/telemetry';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
-import {bodyWeight} from '../../theme/typography';
+import {contactsFromChats, type Contact} from '../../services/contacts';
+import {createChat, getChatsForUser} from '../../services/firebaseChat';
+import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
+import {reportError} from '../../services/telemetry';
+import {getColors} from '../../theme/colors';
+import type {ChatRoom} from '../../types';
+import {bodyWeight, terminal} from '../../theme/typography';
 
 export default function NewChatScreen() {
   const {t} = useTranslation();
   const {user} = useAuth();
   const navigation = useNavigation<any>();
-  const [email, setEmail] = useState('');
-  const [chatName, setChatName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [adding, setAdding] = useState(false);
-  // People queued for the new chat. One makes a 1:1, more makes a group —
-  // there is no separate "create group" mode to pick up front.
-  const [invitees, setInvitees] = useState<User[]>([]);
   const colors = getColors(useColorScheme());
 
-  /** Resolves the typed email to an account and queues it. */
-  const handleAddInvitee = async () => {
-    if (!user) return;
-    const trimmedEmail = email.trim().toLowerCase();
-    if (!trimmedEmail) {
-      Alert.alert(t('common.error'), t('newChat.errors.enterEmail'));
-      return;
-    }
-    // The signed-in user occupies one of the seats, so only cap-1 others fit.
-    if (invitees.length >= MAX_GROUP_MEMBERS - 1) {
-      Alert.alert(t('common.error'), t('newChat.errors.groupFull', {max: MAX_GROUP_MEMBERS}));
-      return;
-    }
+  const [chats, setChats] = useState<ChatRoom[] | null>(null);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [chatName, setChatName] = useState('');
+  const [creating, setCreating] = useState(false);
 
-    setAdding(true);
-    try {
-      const otherUser = await getUserByEmail(trimmedEmail);
-      if (!otherUser) {
-        Alert.alert(t('newChat.errors.userNotFoundTitle'), t('newChat.errors.userNotFoundBody'));
-        return;
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) return;
+      let cancelled = false;
+      getChatsForUser(user.uid)
+        .then(found => {
+          if (cancelled) return;
+          setChats(found);
+          setContacts(contactsFromChats(found, user.uid));
+        })
+        .catch(error => {
+          reportError(error, 'new_chat_load_contacts_failed');
+          if (!cancelled) setChats([]);
+        });
+      return () => {
+        cancelled = true;
+      };
+    }, [user]),
+  );
+
+  const toggle = (uid: string) => {
+    setSelected(prev => {
+      if (prev.includes(uid)) return prev.filter(id => id !== uid);
+      // You occupy one of the seats, so only cap-1 others fit.
+      if (prev.length >= MAX_GROUP_MEMBERS - 1) {
+        Alert.alert(t('common.error'), t('newChat.errors.groupFull', {max: MAX_GROUP_MEMBERS}));
+        return prev;
       }
-      if (otherUser.uid === user.uid) {
-        Alert.alert(t('common.error'), t('newChat.errors.selfChat'));
-        return;
-      }
-      if (invitees.some(i => i.uid === otherUser.uid)) {
-        Alert.alert(t('common.error'), t('newChat.errors.alreadyAdded'));
-        return;
-      }
-      setInvitees(prev => [...prev, otherUser]);
-      setEmail('');
-    } catch (error) {
-      reportError(error, 'new_chat_add_invitee_failed');
-      Alert.alert(t('common.error'), t('newChat.errors.createFailed'));
-    } finally {
-      setAdding(false);
-    }
+      return [...prev, uid];
+    });
   };
 
-  const handleCreateChat = async () => {
-    if (!user) return;
-    if (invitees.length === 0) {
-      // Not enterEmail, which this shared with: the field can hold a
-      // perfectly good address that was never added to the list, and
-      // "Please enter an email address" then contradicts what the user is
-      // looking at while saying nothing about the Add step they missed.
-      Alert.alert(t('common.error'), t('newChat.errors.noInvitees'));
-      return;
+  const handleStart = async () => {
+    if (!user || creating || selected.length === 0) return;
+
+    // One person means the chat that put them on this list. Making a second
+    // one would split the history across two threads for no reason.
+    if (selected.length === 1) {
+      const existing = (chats || []).find(chat => {
+        const p = chat.participants || [];
+        return p.length === 2 && p.includes(user.uid) && p.includes(selected[0]);
+      });
+      if (existing) {
+        navigation.replace('Chat', {
+          chatId: existing.id,
+          chatName: existing.nameBy?.[user.uid] || existing.name,
+        });
+        return;
+      }
     }
 
-    setLoading(true);
+    setCreating(true);
     try {
-      const otherUser = invitees[0];
-      const isGroup = invitees.length > 1;
-
-      // Only 1:1 chats are de-duplicated. Two groups with the same members are
-      // legitimately different conversations (different topics, different
-      // names), so reusing one would be wrong.
-      if (!isGroup) {
-        const existingChats = await getChatsForUser(user.uid);
-        const existing = existingChats.find(chat => {
-          const participants = chat.participants || [];
-          return (
-            participants.includes(user.uid) &&
-            participants.includes(otherUser.uid) &&
-            participants.length === 2
-          );
-        });
-
-        if (existing) {
-          navigation.navigate('Chat', {
-            chatId: existing.id,
-            chatName: existing.name,
-          });
-          return;
-        }
-      }
-
-      const displayName =
-        chatName.trim() ||
-        (isGroup
-          ? invitees.map(i => i.displayName || i.email).join(', ')
-          : otherUser.displayName || otherUser.email);
-
-      const chatId = await createChat(
-        [user.uid, ...invitees.map(i => i.uid)],
-        displayName,
-      );
-
-      navigation.navigate('Chat', {
-        chatId,
-        chatName: displayName,
-      });
-    } catch (error: any) {
+      const picked = contacts.filter(c => selected.includes(c.uid));
+      const name = chatName.trim() || picked.map(c => c.label).join(', ');
+      const chatId = await createChat([user.uid, ...selected], name);
+      navigation.replace('Chat', {chatId, chatName: name});
+    } catch (error) {
       reportError(error, 'create_chat_failed');
-      if (__DEV__) {
-        console.error('Failed to create chat:', error);
-      }
-      const message = error instanceof Error ? error.message : t('newChat.errors.createFailed');
-      Alert.alert(t('common.error'), message);
+      Alert.alert(t('common.error'), t('newChat.errors.createFailed'));
     } finally {
-      setLoading(false);
+      setCreating(false);
     }
   };
 
@@ -145,134 +123,131 @@ export default function NewChatScreen() {
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={styles.content}>
-        <Text style={[styles.heading, {color: colors.text}]}>{t('newChat.heading')}</Text>
-        <Text style={[styles.headingSub, {color: colors.textSecondary}]}>
-          {t('newChat.subheading')}
-        </Text>
-        {/* Above the email field, not below it: this is the path that is
-            replacing it, and email lookup only reaches people who already have
-            an account and whose address you know. */}
-        <TouchableOpacity
-          style={[styles.inviteButton, {borderColor: colors.primary}]}
-          accessibilityRole="button"
-          onPress={() => navigation.navigate('Invite')}>
-          <Text style={[styles.inviteButtonText, {color: colors.primary}]}>
-            {t('newChat.useInvite')}
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <Text style={[styles.heading, {color: colors.text}]}>{t('newChat.heading')}</Text>
+          <Text style={[styles.headingSub, {color: colors.textSecondary}]}>
+            {t('newChat.subheading')}
           </Text>
-        </TouchableOpacity>
-
-        <GlassView style={[styles.formCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.label, {color: colors.textSecondary}]}>{t('newChat.recipientEmail')}</Text>
-          <TextInput
-            style={[
-              styles.input,
-              {backgroundColor: colors.inputBackground, color: colors.text},
-            ]}
-            placeholder={t('newChat.emailPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            onSubmitEditing={handleAddInvitee}
-            returnKeyType="done"
-          />
 
           <TouchableOpacity
-            style={[styles.addButton, {borderColor: colors.primary}, adding && styles.buttonDisabled]}
-            onPress={handleAddInvitee}
-            disabled={adding}>
-            <Text style={[styles.addButtonText, {color: colors.primary}]}>
-              {adding ? t('newChat.adding') : t('newChat.addPerson')}
+            style={[styles.inviteButton, {backgroundColor: colors.primary}]}
+            accessibilityRole="button"
+            onPress={() => navigation.navigate('Invite')}>
+            <Text style={[styles.inviteButtonText, {color: colors.textOnPrimary}]}>
+              {t('newChat.invite')}
             </Text>
           </TouchableOpacity>
 
-          {invitees.length > 0 && (
-            <View style={styles.chipRow}>
-              {invitees.map(person => (
+          <GlassView style={[styles.formCard, {borderColor: colors.glassBorder}]}>
+            <Text style={[styles.label, {color: colors.textSecondary}]}>
+              {t('newChat.groupLabel')}
+            </Text>
+
+            {chats === null ? (
+              <ActivityIndicator color={colors.primary} style={styles.loader} />
+            ) : contacts.length === 0 ? (
+              <Text style={[styles.empty, {color: colors.textSecondary}]}>
+                {t('newChat.noContacts')}
+              </Text>
+            ) : (
+              <>
+                <Text style={[styles.hint, {color: colors.textSecondary}]}>
+                  {t('newChat.groupHint')}
+                </Text>
+                <View style={styles.chipRow}>
+                  {contacts.map(contact => {
+                    const on = selected.includes(contact.uid);
+                    return (
+                      <TouchableOpacity
+                        key={contact.uid}
+                        style={[
+                          styles.chip,
+                          {
+                            borderColor: on ? colors.primary : colors.glassBorder,
+                            backgroundColor: on ? colors.primary : 'transparent',
+                          },
+                        ]}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{checked: on}}
+                        onPress={() => toggle(contact.uid)}>
+                        <Text
+                          style={[
+                            styles.chipText,
+                            {color: on ? colors.textOnPrimary : colors.text},
+                          ]}>
+                          {contact.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                {selected.length > 1 && (
+                  <>
+                    <Text style={[styles.label, {color: colors.textSecondary}]}>
+                      {t('newChat.chatNameLabel')}
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {backgroundColor: colors.inputBackground, color: colors.text},
+                      ]}
+                      placeholder={t('newChat.chatNamePlaceholder')}
+                      placeholderTextColor={colors.textSecondary}
+                      value={chatName}
+                      onChangeText={setChatName}
+                    />
+                  </>
+                )}
+
                 <TouchableOpacity
-                  key={person.uid}
-                  style={[styles.chip, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}
-                  onPress={() => setInvitees(prev => prev.filter(p => p.uid !== person.uid))}
-                  accessibilityLabel={t('newChat.removePerson', {
-                    name: person.displayName || person.email,
-                  })}>
-                  <Text style={[styles.chipText, {color: colors.text}]}>
-                    {person.displayName || person.email} ✕
-                  </Text>
+                  style={[
+                    styles.button,
+                    {backgroundColor: colors.primary},
+                    (creating || selected.length === 0) && styles.buttonDisabled,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityState={{disabled: creating || selected.length === 0}}
+                  disabled={creating || selected.length === 0}
+                  onPress={handleStart}>
+                  {creating ? (
+                    <ActivityIndicator color={colors.textOnPrimary} />
+                  ) : (
+                    <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+                      {selected.length > 1 ? t('newChat.startGroup') : t('newChat.openChat')}
+                    </Text>
+                  )}
                 </TouchableOpacity>
-              ))}
-            </View>
-          )}
+              </>
+            )}
+          </GlassView>
 
-          <Text style={[styles.label, {color: colors.textSecondary}]}>{t('newChat.chatNameLabel')}</Text>
-          <TextInput
-            style={[
-              styles.input,
-              {backgroundColor: colors.inputBackground, color: colors.text},
-            ]}
-            placeholder={t('newChat.chatNamePlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            value={chatName}
-            onChangeText={setChatName}
-          />
-
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {backgroundColor: colors.primary},
-              loading && styles.buttonDisabled,
-            ]}
-            onPress={handleCreateChat}
-            disabled={loading}>
-            <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-              {loading ? t('newChat.creating') : invitees.length > 1 ? t('newChat.startGroup') : t('newChat.startChat')}
-            </Text>
-          </TouchableOpacity>
-        </GlassView>
-
-        <Text style={[styles.helpText, {color: colors.textSecondary}]}>
-          {t('newChat.helpText')}
-        </Text>
-        </View>
+          <Text style={[styles.helpText, {color: colors.textSecondary}]}>
+            {t('newChat.helpText')}
+          </Text>
+        </ScrollView>
       </KeyboardAvoidingView>
     </GlassScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-  },
+  container: {flex: 1},
+  content: {paddingHorizontal: 24, paddingTop: 20, paddingBottom: 32},
   heading: {
     fontSize: 24,
     fontFamily: bodyWeight('800'),
     marginBottom: 6,
     letterSpacing: 0.3,
   },
-  headingSub: {
-    fontSize: 15,
-    lineHeight: 21,
-    marginBottom: 24,
-  },
-  formCard: {
-    borderRadius: 2,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: 20,
-  },
-  label: {
-    fontSize: 13,
-    fontFamily: bodyWeight('600'),
-    marginBottom: 8,
-    letterSpacing: 0.2,
-    textTransform: 'uppercase',
-  },
+  headingSub: {fontSize: 15, lineHeight: 21, marginBottom: 20},
+  inviteButton: {borderRadius: 2, paddingVertical: 16, alignItems: 'center', marginBottom: 24},
+  inviteButtonText: {fontSize: 16, fontFamily: bodyWeight('700'), letterSpacing: 0.3},
+  formCard: {borderRadius: 2, borderWidth: StyleSheet.hairlineWidth, padding: 20},
+  label: {...terminal.label, marginBottom: 8},
+  hint: {fontSize: 13, lineHeight: 18, marginBottom: 14},
+  empty: {fontSize: 14, lineHeight: 20},
+  loader: {marginVertical: 12},
   input: {
     borderRadius: 2,
     paddingHorizontal: 16,
@@ -281,50 +256,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 0,
   },
-  button: {
-    borderRadius: 2,
-    paddingVertical: 17,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  addButton: {
-    borderWidth: 1,
-    borderRadius: 2,
-    paddingVertical: 10,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  addButtonText: {fontSize: 14, fontFamily: bodyWeight('600')},
-  inviteButton: {
-    borderWidth: 1,
-    borderRadius: 2,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  inviteButtonText: {fontSize: 15, fontFamily: bodyWeight('600')},
-  chipRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14},
-  chip: {
-    borderWidth: 1,
-    borderRadius: 2,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
+  button: {borderRadius: 2, paddingVertical: 17, alignItems: 'center', marginTop: 4},
+  chipRow: {flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 18},
+  chip: {borderWidth: 1, borderRadius: 2, paddingHorizontal: 12, paddingVertical: 8},
   chipText: {fontSize: 13, fontFamily: bodyWeight('600')},
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontFamily: bodyWeight('700'),
-    letterSpacing: 0.3,
-  },
-  helpText: {
-    marginTop: 20,
-    fontSize: 13,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
+  buttonDisabled: {opacity: 0.4},
+  buttonText: {fontSize: 17, fontFamily: bodyWeight('700'), letterSpacing: 0.3},
+  helpText: {marginTop: 20, fontSize: 13, textAlign: 'center', lineHeight: 18},
 });
-

@@ -32,11 +32,10 @@ import {BlockRecord, Friend, FriendRequest, User} from '../../types';
 import {
   createChat,
   getChatsForUser,
-  getUserByEmail,
   getUserById,
   getUsersByIds,
-  searchUsersByEmailOrName,
 } from '../../services/firebaseChat';
+import {contactsFromChats, type Contact} from '../../services/contacts';
 import {bodyWeight, terminal} from '../../theme/typography';
 
 type UserMap = Record<string, User | null>;
@@ -53,10 +52,10 @@ export default function FriendsScreen() {
   const [blockedMe, setBlockedMe] = useState<BlockRecord[]>([]);
   const [userMap, setUserMap] = useState<UserMap>({});
   const [targetUid, setTargetUid] = useState('');
-  const [targetEmail, setTargetEmail] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [searching, setSearching] = useState(false);
+  // The people you already have a one-to-one chat with. This is the whole
+  // addressable set now that there is no directory to search — and it is
+  // derived from chats this client already holds, so nothing is looked up.
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -123,37 +122,17 @@ export default function FriendsScreen() {
   const outgoingIds = useMemo(() => new Set(outgoingRequests.map(req => req.toId)), [outgoingRequests]);
 
   useEffect(() => {
-    const trimmed = searchQuery.trim();
-    if (!trimmed) {
-      setSearchResults([]);
-      setSearching(false);
-      return;
-    }
-
+    if (!user?.uid) return;
     let active = true;
-    const timer = setTimeout(async () => {
-      try {
-        setSearching(true);
-        const results = await searchUsersByEmailOrName(trimmed, 5);
-        if (!active) return;
-        const filtered = results.filter(result => result.uid && result.uid !== user?.uid);
-        setSearchResults(filtered);
-      } catch (error) {
-        reportError(error, 'searchUsersByEmailOrName');
-        if (__DEV__) {
-          console.error('searchUsersByEmailOrName error:', error);
-        }
-        if (active) setSearchResults([]);
-      } finally {
-        if (active) setSearching(false);
-      }
-    }, 350);
-
+    getChatsForUser(user.uid)
+      .then(chats => {
+        if (active) setContacts(contactsFromChats(chats, user.uid));
+      })
+      .catch(error => reportError(error, 'friends_load_contacts_failed'));
     return () => {
       active = false;
-      clearTimeout(timer);
     };
-  }, [searchQuery, user?.uid]);
+  }, [user?.uid]);
 
   const formatTimestamp = (value: any) => {
     const date = value?.toDate ? value.toDate() : typeof value === 'number' ? new Date(value) : null;
@@ -184,32 +163,6 @@ export default function FriendsScreen() {
     const result = await sendFriendRequest(user.uid, trimmed);
     if (result !== 'error' && result !== 'invalid') setTargetUid('');
     notifySendResult(result);
-  };
-
-  const handleSendRequestByEmail = async () => {
-    if (!user?.uid) return;
-    const trimmedEmail = targetEmail.trim().toLowerCase();
-    if (!trimmedEmail) return;
-    try {
-      const target = await getUserByEmail(trimmedEmail);
-      if (!target) {
-        Alert.alert(t('friends.alerts.userNotFoundTitle'), t('friends.alerts.userNotFoundBody'));
-        return;
-      }
-      if (blockedByMeIds.has(target.uid) || blockedMeIds.has(target.uid)) {
-        Alert.alert(t('friends.alerts.blockedTitle'), t('friends.alerts.blockedSend'));
-        return;
-      }
-      const result = await sendFriendRequest(user.uid, target.uid);
-      if (result !== 'error' && result !== 'invalid') setTargetEmail('');
-      notifySendResult(result);
-    } catch (error) {
-      reportError(error, 'sendFriendRequestByEmail');
-      if (__DEV__) {
-        console.error('sendFriendRequestByEmail error:', error);
-      }
-      Alert.alert(t('friends.alerts.sendFailedTitle'), t('friends.alerts.sendFailedBody'));
-    }
   };
 
   const handleStartChat = async (otherId: string) => {
@@ -366,7 +319,7 @@ export default function FriendsScreen() {
     );
   };
 
-  const renderSearchResult = ({item}: {item: User}) => {
+  const renderContact = ({item}: {item: Contact}) => {
     const status = friendIds.has(item.uid)
       ? 'friend'
       : incomingIds.has(item.uid)
@@ -376,12 +329,10 @@ export default function FriendsScreen() {
       : 'none';
     return (
       <GlassView blur={false} style={[styles.card, {backgroundColor: colors.surface, borderColor: colors.glassBorder}]}>
-        <Text style={[styles.cardTitle, {color: colors.text}]}>
-          {item.displayName || item.email || item.uid}
-        </Text>
-        {item.email ? (
-          <Text style={[styles.cardMeta, {color: colors.textSecondary}]}>{item.email}</Text>
-        ) : null}
+        {/* Your own name for them, taken from the chat. Never a profile field
+            — that is the whole difference between this list and the search box
+            it replaced. */}
+        <Text style={[styles.cardTitle, {color: colors.text}]}>{item.label}</Text>
         {status === 'none' ? (
           <TouchableOpacity
             style={[styles.actionButton, {backgroundColor: colors.primary}]}
@@ -419,36 +370,11 @@ export default function FriendsScreen() {
           <Text style={[styles.sendText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.input, {borderColor: colors.glassBorder, color: colors.text}]}
-          placeholder={t('friends.emailPlaceholder')}
-          placeholderTextColor={colors.textSecondary}
-          value={targetEmail}
-          onChangeText={setTargetEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        <TouchableOpacity
-          style={[styles.sendButton, {backgroundColor: colors.primary}]}
-          onPress={handleSendRequestByEmail}>
-          <Text style={[styles.sendText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.searchTitle')}</Text>
-      <TextInput
-        style={[styles.input, {borderColor: colors.glassBorder, color: colors.text}]}
-        placeholder={t('friends.searchPlaceholder')}
-        placeholderTextColor={colors.textSecondary}
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        autoCapitalize="none"
-      />
+      <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('friends.contactsTitle')}</Text>
       <FlatList
-        data={searchResults}
+        data={contacts}
         keyExtractor={item => item.uid}
-        renderItem={renderSearchResult}
+        renderItem={renderContact}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -457,21 +383,9 @@ export default function FriendsScreen() {
         windowSize={7}
         removeClippedSubviews={Platform.OS === 'android'}
         ListEmptyComponent={
-          searchQuery.trim().length ? (
-            searching ? (
-              <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
-                {t('friends.search.searching')}
-              </Text>
-            ) : (
-              <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
-                {t('friends.search.noMatches')}
-              </Text>
-            )
-          ) : (
-            <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
-              {t('friends.search.prompt')}
-            </Text>
-          )
+          <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+            {t('friends.contactsEmpty')}
+          </Text>
         }
       />
 

@@ -21,12 +21,13 @@ import {
   setChatName,
   getChat,
   addChatMembers,
+  getChatsForUser,
   leaveChat,
-  getUserByEmail,
   getUsersByIds,
   GroupFullError,
 } from '../../services/firebaseChat';
 import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
+import {contactsFromChats, type Contact} from '../../services/contacts';
 import {getColors} from '../../theme/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache';
@@ -70,7 +71,10 @@ export default function ChatSettingsScreen() {
   const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
   const [members, setMembers] = useState<string[]>([]);
   const [memberNames, setMemberNames] = useState<Record<string, string>>({});
-  const [memberEmail, setMemberEmail] = useState('');
+  // Who this chat can be grown with. Not a search: the people you already have
+  // a one-to-one chat with, projected from chats this client already holds —
+  // see services/contacts.ts for why there is nothing to type here any more.
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [addingMember, setAddingMember] = useState(false);
   const [chatLocked, setChatLocked] = useState(false);
   const [expiryHours, setExpiryHours] = useState(0);
@@ -97,6 +101,10 @@ export default function ChatSettingsScreen() {
             ]),
           ),
         );
+
+        // Loaded here rather than on demand so the list is already there when
+        // the members section is scrolled to.
+        setContacts(contactsFromChats(await getChatsForUser(user.uid), user.uid));
       } catch (err) {
         if (__DEV__) {
           console.warn('ChatSettingsScreen: failed to load chat', err);
@@ -214,31 +222,18 @@ export default function ChatSettingsScreen() {
 
 
 
-  const handleAddMember = async () => {
-    const email = memberEmail.trim().toLowerCase();
-    if (!email) return;
+  const handleAddMember = async (contact: Contact) => {
     if (members.length >= MAX_GROUP_MEMBERS) {
       Alert.alert(t('common.error'), t('members.full', {max: MAX_GROUP_MEMBERS}));
       return;
     }
     setAddingMember(true);
     try {
-      const person = await getUserByEmail(email);
-      if (!person) {
-        Alert.alert(t('common.error'), t('newChat.errors.userNotFoundBody'));
-        return;
-      }
-      if (members.includes(person.uid)) {
-        Alert.alert(t('common.error'), t('newChat.errors.alreadyAdded'));
-        return;
-      }
-      await addChatMembers(chatId, [person.uid]);
-      setMembers(prev => [...prev, person.uid]);
-      setMemberNames(prev => ({
-        ...prev,
-        [person.uid]: person.displayName || person.email || person.uid.slice(0, 6),
-      }));
-      setMemberEmail('');
+      await addChatMembers(chatId, [contact.uid]);
+      setMembers(prev => [...prev, contact.uid]);
+      // The label is the user's own name for them, already on this device. No
+      // profile is fetched, because none was ever needed to add them.
+      setMemberNames(prev => ({...prev, [contact.uid]: contact.label}));
     } catch (error) {
       Alert.alert(
         t('common.error'),
@@ -334,23 +329,36 @@ export default function ChatSettingsScreen() {
           </View>
         ))}
 
-        <TextInput
-          style={[styles.input, {color: colors.text, borderColor: colors.glassBorder}]}
-          placeholder={t('members.addPlaceholder')}
-          placeholderTextColor={colors.textSecondary}
-          value={memberEmail}
-          onChangeText={setMemberEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={[styles.row, addingMember && {opacity: 0.5}]}
-          disabled={addingMember}
-          onPress={handleAddMember}>
-          <Text style={[styles.rowLabel, {color: colors.primary}]}>
-            {addingMember ? t('members.adding') : t('members.add')}
-          </Text>
-        </TouchableOpacity>
+        {(() => {
+          const addable = contacts.filter(c => !members.includes(c.uid));
+          if (addable.length === 0) {
+            return (
+              <Text style={[styles.memberHint, {color: colors.textSecondary}]}>
+                {t('members.nobodyToAdd')}
+              </Text>
+            );
+          }
+          return (
+            <>
+              <Text style={[styles.memberHint, {color: colors.textSecondary}]}>
+                {t('members.addHint')}
+              </Text>
+              {addable.map(contact => (
+                <TouchableOpacity
+                  key={contact.uid}
+                  style={[styles.row, addingMember && {opacity: 0.5}]}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('members.addPerson', {name: contact.label})}
+                  disabled={addingMember}
+                  onPress={() => handleAddMember(contact)}>
+                  <Text style={[styles.rowLabel, {color: colors.primary}]}>
+                    + {contact.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </>
+          );
+        })()}
 
         {/* Only yourself — the rules reject removing anyone else, since there
             are no admin roles yet. */}
@@ -612,5 +620,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 10,
   },
+  memberHint: {fontSize: 13, lineHeight: 18, marginTop: 12, marginBottom: 4},
 });
 

@@ -136,36 +136,25 @@
   },
   "newChat": {
     "heading": "开始对话",
-    "subheading": "输入你想与之聊天的人的邮箱。",
-    "recipientEmail": "收件人邮箱",
-    "emailPlaceholder": "friend@example.com",
-    "chatNameLabel": "聊天名称（可选）",
-    "chatNamePlaceholder": "聊天名称",
-    "helpText": "收件人必须已有账号。",
+    "subheading": "给对方发一个邀请链接，或者把已经在聊的人拉进一个群。",
+    "invite": "用链接邀请别人",
+    "groupLabel": "建一个群",
+    "groupHint": "只能从已经和你有对话的人里挑。没有别人可挑——这正是重点。",
+    "noContacts": "你还没有任何对话。用上面的邀请链接开始第一个。",
+    "chatNameLabel": "群名称（可选）",
+    "chatNamePlaceholder": "群名称",
+    "helpText": "没有人能靠搜索找到你。链接是唯一的入口，而且只能用一次。",
     "creating": "创建中...",
-    "startChat": "开始聊天",
-    "errors": {
-      "enterEmail": "请输入邮箱地址",
-      "userNotFoundTitle": "未找到用户",
-      "userNotFoundBody": "该邮箱在此设备上不存在。请先创建账号后再试。",
-      "selfChat": "不能与自己聊天",
-      "createFailed": "创建聊天失败",
-      "noInvitees": "至少添加一个人才能创建聊天",
-      "alreadyAdded": "这个人已经在聊天里了",
-      "groupFull": "一个聊天最多容纳 {{max}} 人"
-    },
-    "adding": "添加中…",
-    "addPerson": "+ 添加成员",
-    "removePerson": "移除 {{name}}",
+    "openChat": "打开对话",
     "startGroup": "创建群聊",
-    "useInvite": "改用邀请链接"
+    "errors": {
+      "groupFull": "一个对话最多容纳 {{max}} 人",
+      "createFailed": "创建对话失败"
+    }
   },
   "friends": {
     "addFriend": "添加好友",
     "uidPlaceholder": "输入用户 UID",
-    "emailPlaceholder": "输入用户邮箱",
-    "searchTitle": "搜索（邮箱或昵称）",
-    "searchPlaceholder": "按邮箱或昵称搜索",
     "sections": {
       "requests": "好友请求",
       "outgoing": "已发送",
@@ -177,11 +166,6 @@
       "outgoing": "暂无已发送请求。",
       "friends": "暂无好友。",
       "blocked": "暂无拉黑用户。"
-    },
-    "search": {
-      "searching": "搜索中…",
-      "noMatches": "没有匹配结果。",
-      "prompt": "输入关键词开始搜索。"
     },
     "buttons": {
       "accept": "接受",
@@ -219,7 +203,9 @@
       "removeBody": "确定删除该好友？",
       "blockTitle": "拉黑用户",
       "blockBody": "确定拉黑该用户？将同时解除好友关系。"
-    }
+    },
+    "contactsTitle": "已经在聊的人",
+    "contactsEmpty": "还没有。先用邀请链接开始一个对话。"
   },
   "profile": {
     "defaultName": "用户",
@@ -589,13 +575,13 @@
   "members": {
     "title": "成员({{count}})",
     "you": "(你)",
-    "add": "+ 添加成员",
-    "adding": "添加中…",
-    "addPlaceholder": "通过邮箱添加",
     "full": "一个聊天最多容纳 {{max}} 人",
     "leave": "退出聊天",
     "leaveConfirmTitle": "退出这个聊天?",
-    "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读,之后的不会。以后可以被重新加回来。"
+    "leaveConfirmBody": "你将不再收到新消息。已经发给你的消息仍然可读,之后的不会。以后可以被重新加回来。",
+    "nobodyToAdd": "没有人可加了。和你有对话的人都已经在这里。",
+    "addHint": "只能加已经和你有对话的人。没有别人可加——没有人能被搜到。",
+    "addPerson": "添加 {{name}}"
   },
   "keys": {
     "restoreTitle": "恢复你的消息记录?",
