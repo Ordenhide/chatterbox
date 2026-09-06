@@ -1,4 +1,24 @@
+// Jest hoists jest.mock() factories above imports and only lets them close
+// over variables prefixed with `mock` (case-insensitive).
+const mockStore = new Map<string, string>();
+
+jest.mock('../storageMMKV', () => ({
+  mmkvStorage: {
+    getItem: async (k: string) => (mockStore.has(k) ? mockStore.get(k)! : null),
+    setItem: async (k: string, v: string) => {
+      mockStore.set(k, v);
+    },
+    removeItem: async (k: string) => {
+      mockStore.delete(k);
+    },
+  },
+}));
+
 import {getContextCards} from '../contextCards';
+import {
+  __resetContextCardConsentCache,
+  grantContextCardConsent,
+} from '../contextCardConsent';
 
 /**
  * Guards the entity extraction, which is shared verbatim with the web client.
@@ -27,7 +47,43 @@ afterEach(() => {
   delete (global as any).fetch;
 });
 
+beforeEach(() => {
+  mockStore.clear();
+  __resetContextCardConsentCache();
+});
+
+/**
+ * The lookups go to Wikipedia, with the device's IP, carrying proper nouns
+ * lifted out of decrypted messages. Nothing about the trigger is deliberate —
+ * it fires because a thread is open — so the guard has to hold on a code path
+ * nobody is looking at. These two cases are the ones worth breaking the line
+ * for: they assert on `fetch` not being called, not on the return value, since
+ * an empty list is also what "no names in this text" looks like.
+ */
+describe('consent gate', () => {
+  it('makes no request at all until consent is granted', async () => {
+    const fetched = mockWikipedia({
+      'Eiffel Tower': 'A wrought-iron lattice tower on the Champ de Mars in Paris, France.',
+    });
+    expect(await getContextCards('Have you seen the Eiffel Tower at night?')).toEqual([]);
+    expect(fetched).toEqual([]);
+    expect((global as any).fetch).not.toHaveBeenCalled();
+  });
+
+  it('checks consent before the text is even scanned for names', async () => {
+    // Nothing is read from the message — not the entities, not the length —
+    // before the answer is "no".
+    const fetched = mockWikipedia({});
+    await getContextCards('Tel Aviv and Dana Weiss and House of Cards');
+    expect(fetched).toEqual([]);
+  });
+});
+
 describe('getContextCards entity extraction', () => {
+  beforeEach(async () => {
+    await grantContextCardConsent();
+  });
+
   it('detects a plain two-word name', async () => {
     const fetched = mockWikipedia({
       'Eiffel Tower': 'A wrought-iron lattice tower on the Champ de Mars in Paris, France.',

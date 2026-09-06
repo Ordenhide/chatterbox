@@ -1594,6 +1594,11 @@ export default function ChatScreen() {
   );
 
   useEffect(() => {
+    // Gated on the same flag as the cards themselves (see the render below).
+    // Fetching for something that cannot be displayed is a network request
+    // made on a private message's behalf in exchange for nothing; the consent
+    // check inside getContextCards is the other half of this.
+    if (!SHOW_NATIVE_ONLY_FEATURES) return;
     if (!messages.length) return;
     const recent = messages.slice(0, 15);
     const toCheck = recent.filter(m => {

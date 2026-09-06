@@ -928,5 +928,16 @@
     "saveTitle": "Enregistrez votre phrase de récupération",
     "savedIt": "Je l’ai enregistrée",
     "copiedBody": "Phrase de récupération copiée dans le presse-papiers."
+  },
+  "contextCards": {
+    "settingsTitle": "Fiches de contexte",
+    "settingsOn": "Activées — les noms présents dans vos messages sont recherchés sur Wikipédia depuis cet appareil.",
+    "settingsOff": "Désactivées — rien n’est recherché, et rien de vos messages ne quitte cet appareil.",
+    "turnOn": "Activer les fiches de contexte",
+    "turnOff": "Désactiver les fiches de contexte",
+    "confirmTitle": "Les fiches de contexte recherchent des noms sur Wikipédia",
+    "confirmBody": "Vos messages sont déchiffrés sur cet appareil. Avec les fiches activées, les noms qui s’y trouvent — personnes, lieux, films — sont envoyés à Wikipédia, qui renvoie un court résumé affiché sous le message.\n\nWikipédia voit le nom demandé et l’adresse IP de votre appareil. Elle ne voit pas de quel message il vient, qui l’a envoyé, ni quoi que ce soit d’autre dans la conversation. Rien n’est conservé sur nos serveurs, et rien ne nous parvient.\n\nC’est désactivé tant que vous ne l’activez pas, et cela ne vaut que pour cet appareil.",
+    "accept": "Les activer",
+    "turnedOff": "Fiches de contexte désactivées sur cet appareil"
   }
 }

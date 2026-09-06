@@ -1,4 +1,5 @@
 import {ContextCard} from '../types';
+import {hasContextCardConsent} from './contextCardConsent';
 
 const WIKI_API = 'https://en.wikipedia.org/api/rest_v1';
 const CACHE_MAX = 100;
@@ -146,8 +147,20 @@ function buildCard(entity: string, data: any, cacheKey: string): ContextCard | n
 /**
  * Analyze a message text and return context cards for any recognized entities.
  * Only processes messages longer than 10 chars with capitalized words.
+ *
+ * The consent check is the first thing that happens, before the text is even
+ * scanned for names. It lives here rather than at the call site because the
+ * call site is a `useEffect` that fires on every thread it renders: whoever
+ * adds the second one will not remember to ask, and the cost of forgetting is
+ * a private conversation's proper nouns arriving at a third party.
+ *
+ * Returns an empty list rather than throwing. There is no user action to
+ * attach a prompt to — the trigger is "a thread is open" — so the disclosure
+ * belongs beside the switch in Profile, and this path simply does nothing
+ * until that switch is on.
  */
 export async function getContextCards(text: string): Promise<ContextCard[]> {
+  if (!(await hasContextCardConsent())) return [];
   if (!text || text.length < 5) return [];
 
   const entities = extractEntities(text);
