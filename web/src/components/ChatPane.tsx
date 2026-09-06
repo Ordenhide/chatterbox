@@ -18,7 +18,7 @@ import {
   revealBurnMessage,
   sendMessage,
   setChatExpiryPolicy,
-  setMessageLinkPreview,
+  patchMessage,
   setTyping,
   sweepExpiredMessages,
   toggleMuteChat,
@@ -76,7 +76,13 @@ import {getCurrentPosition, watchMyPosition, LocationError} from '../utils/geolo
 import {formatCoordinates, staticMapTileUrl} from '../utils/mapTile';
 import ShareLocationModal from './ShareLocationModal';
 import {addBookmark} from '../services/bookmarks';
-import {fetchLinkPreview, summarizeChat, transcribeVoiceMessage, translateMessage} from '../services/ai';
+import {
+  buildTranscriptionPatch,
+  fetchLinkPreview,
+  summarizeChat,
+  transcribeVoiceMessage,
+  translateMessage,
+} from '../services/ai';
 import {isAiConsentError} from '../services/aiConsent';
 import AiConsentModal from './AiConsentModal';
 import {getDraft, setDraft} from '../services/drafts';
@@ -266,6 +272,7 @@ export default function ChatPane({
   // Link previews decrypt to a JSON blob rather than a URL, so this cache
   // holds the parsed card (or null when the payload is unreadable/invalid).
   const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
+  const decryptedTranscriptRef = useRef<Map<string, string | null>>(new Map());
   // The caches above are keyed by message id, not by the key that decrypted
   // them, so they'd survive a key change and keep serving results (including
   // "couldn't decrypt" placeholders) produced under the old key. Tracking the
@@ -556,6 +563,7 @@ export default function ChatPane({
       decryptedAudioRef.current.clear();
       decryptedFileUriRef.current.clear();
       decryptedPreviewRef.current.clear();
+      decryptedTranscriptRef.current.clear();
     }
 
     const needsDecrypt = (m: ChatMessage) => {
@@ -566,7 +574,8 @@ export default function ChatPane({
         (isSealed(m.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
         (isSealed(m.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
         (isSealed(m.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
-        (isSealed(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
+        (isSealed(m.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id)) ||
+        (isSealed(m.encryptedTranscription) && !decryptedTranscriptRef.current.has(id))
       );
     };
     const toDecrypt = messages.filter(needsDecrypt);
@@ -601,6 +610,7 @@ export default function ChatPane({
             if (isSealed(m.encryptedAudio)) decryptedAudioRef.current.set(id, '');
             if (isSealed(m.encryptedFileUri)) decryptedFileUriRef.current.set(id, '');
             if (isSealed(m.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
+            if (isSealed(m.encryptedTranscription)) decryptedTranscriptRef.current.set(id, null);
             if (!isSealed(m.encrypted)) {
               decryptedTextRef.current.set(id, '🔒 Sealed to another device');
             }
@@ -650,6 +660,20 @@ export default function ChatPane({
             }
           }
 
+          // Same treatment, same reason: cached as null on failure so this
+          // does not retry on every render, and a transcript that will not
+          // open never masks a message that reads perfectly well without it.
+          if (isSealed(m.encryptedTranscription) && !decryptedTranscriptRef.current.has(id)) {
+            try {
+              decryptedTranscriptRef.current.set(
+                id,
+                openSealed(m.encryptedTranscription, secretKey, me.uid, chatId),
+              );
+            } catch {
+              decryptedTranscriptRef.current.set(id, null);
+            }
+          }
+
           // A media-only message has no `encrypted` text of its own to carry
           // a failure message, so surface it the same way a text decrypt
           // failure does.
@@ -672,6 +696,9 @@ export default function ChatPane({
               }
               if (decryptedPreviewRef.current.has(id)) {
                 patch.linkPreview = decryptedPreviewRef.current.get(id);
+              }
+              if (decryptedTranscriptRef.current.has(id)) {
+                patch.transcription = decryptedTranscriptRef.current.get(id) || undefined;
               }
               return Object.keys(patch).length ? {...item, ...patch} : item;
             }),
@@ -1030,7 +1057,7 @@ export default function ChatPane({
       const preview = normalizePreview(await fetchLinkPreview(url));
       if (!preview || !hasPreviewContent(preview)) return;
       const crypto = await makeArtifactCrypto(me.uid, otherUid, chatId);
-      await setMessageLinkPreview(chatId, messageId, buildLinkPreviewPatch(preview, crypto));
+      await patchMessage(chatId, messageId, buildLinkPreviewPatch(preview, crypto));
     } catch (err) {
       // A site with no metadata, a blocked host, or a rate limit — the message
       // is already delivered, so this is cosmetic.
@@ -1265,8 +1292,21 @@ export default function ChatPane({
     }
     setTranscribing(prev => new Set(prev).add(m._id));
     try {
-      // writes onto the message → arrives via listener
-      await transcribeVoiceMessage(chatId, m._id, m.audio, lang, m.audioSampleRateHertz, m.audioChannelCount);
+      const text = await transcribeVoiceMessage(
+        chatId,
+        m._id,
+        m.audio,
+        lang,
+        m.audioSampleRateHertz,
+        m.audioChannelCount,
+      );
+      // Stored from here, sealed. The callable returns it and no longer writes
+      // it — see buildTranscriptionPatch. Still arrives via the listener,
+      // because this write is a write like any other.
+      if (text) {
+        const crypto = await makeArtifactCrypto(me.uid, otherUid, chatId);
+        await patchMessage(chatId, m._id, buildTranscriptionPatch(text, crypto));
+      }
     } catch (err) {
       // Not an error the user caused: they haven't been shown the disclosure
       // yet. Prompt, then re-run exactly what they asked for.

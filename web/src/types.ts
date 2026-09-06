@@ -77,7 +77,10 @@ export interface ChatMessage {
   replyTo?: {_id: string; text?: string; image?: string; video?: string; user?: {_id: string; name?: string}} | null;
   // @mentions — uids mentioned in the text.
   mentions?: string[];
-  // Voice-message transcription (from the transcribeVoiceMessage function).
+  // Voice-message transcription. Written by the client, sealed — the callable
+  // returns it and stores nothing, because a function with the Admin SDK has
+  // no key to seal a transcript with. Older messages still carry the plaintext
+  // field; both are read, only encryptedTranscription is written.
   transcription?: string;
   // System event rendered as a centered notice rather than a normal message.
   system?: boolean;
@@ -105,6 +108,8 @@ export interface ChatMessage {
   // to encrypt to; ChatPane's decrypt pass fills it in from the sealed copy.
   linkPreview?: {url: string; title?: string | null; description?: string | null; image?: string | null} | null;
   encryptedLinkPreview?: EncryptedField | null;
+  // The sealed form of `transcription` above.
+  encryptedTranscription?: EncryptedField | null;
 }
 
 /**

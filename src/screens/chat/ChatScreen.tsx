@@ -151,7 +151,7 @@ import {
 import {scheduleMessage, listenScheduledMessages} from '../../services/scheduledMessages';
 import {createSharedList, updateSharedListItem} from '../../services/sharedLists';
 import {createReminder} from '../../services/reminders';
-import {transcribeVoiceMessage} from '../../services/transcription';
+import {buildTranscriptionPatch, transcribeVoiceMessage} from '../../services/transcription';
 import {
   encodeAudioForInline,
   isDataUri,
@@ -536,6 +536,7 @@ export default function ChatScreen() {
   // Link previews decrypt to a JSON blob rather than a URL, so this cache
   // holds the parsed card (or null when the payload is unreadable/invalid).
   const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
+  const decryptedTranscriptRef = useRef<Map<string, string | null>>(new Map());
   // Content keys recovered from a decrypted body, awaiting the download-and-
   // decrypt pass. Separate from the caches above because opening the body and
   // fetching the object are different costs: the first is local and instant,
@@ -887,6 +888,7 @@ export default function ChatScreen() {
         decryptedAudioRef.current.clear();
         decryptedFileUriRef.current.clear();
         decryptedPreviewRef.current.clear();
+        decryptedTranscriptRef.current.clear();
         // The restore this banner was offering has happened. Retract the offer
         // and let the re-decrypt below decide whether it's still warranted —
         // if the restored key opens everything, it never comes back.
@@ -969,7 +971,6 @@ export default function ChatScreen() {
             transcription: (msg as any).transcription,
             expense: (msg as any).expense,
             location: (msg as any).location,
-            translations: (msg as any).translations,
             scheduledFor: (msg as any).scheduledFor,
             timeCapsule: (msg as any).timeCapsule,
             // E2EE: substitute cached plaintext once decrypted (below); until
@@ -1019,6 +1020,13 @@ export default function ChatScreen() {
               ? {
                   linkPreview: decryptedPreviewRef.current.get(String(msg._id)) ?? undefined,
                   encryptedLinkPreview: (msg as any).encryptedLinkPreview,
+                }
+              : null),
+            ...(isSealed((msg as any).encryptedTranscription)
+              ? {
+                  transcription:
+                    decryptedTranscriptRef.current.get(String(msg._id)) ?? undefined,
+                  encryptedTranscription: (msg as any).encryptedTranscription,
                 }
               : null),
             // Attachment bytes are encrypted at rest, so the URL on the wire
@@ -1125,7 +1133,8 @@ export default function ChatScreen() {
             (isSealed(em.encryptedVideo) && !decryptedVideoRef.current.has(id)) ||
             (isSealed(em.encryptedAudio) && !decryptedAudioRef.current.has(id)) ||
             (isSealed(em.encryptedFileUri) && !decryptedFileUriRef.current.has(id)) ||
-            (isSealed(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id))
+            (isSealed(em.encryptedLinkPreview) && !decryptedPreviewRef.current.has(id)) ||
+            (isSealed(em.encryptedTranscription) && !decryptedTranscriptRef.current.has(id))
           );
         };
         /**
@@ -1172,6 +1181,9 @@ export default function ChatScreen() {
               }
               if (decryptedPreviewRef.current.has(id)) {
                 patch.linkPreview = decryptedPreviewRef.current.get(id) ?? undefined;
+              }
+              if (decryptedTranscriptRef.current.has(id)) {
+                patch.transcription = decryptedTranscriptRef.current.get(id) ?? undefined;
               }
               return Object.keys(patch).length ? {...item, ...patch} : item;
             }),
@@ -1265,6 +1277,9 @@ export default function ChatScreen() {
                   mediaCacheForSlot(slot).current.set(id, '');
                 }
                 if (isSealed(em.encryptedLinkPreview)) decryptedPreviewRef.current.set(id, null);
+                if (isSealed(em.encryptedTranscription)) {
+                  decryptedTranscriptRef.current.set(id, null);
+                }
                 // A message whose only sealed field is its link preview keeps
                 // its real text — losing the card is not worth overwriting a
                 // perfectly readable message with a padlock.
@@ -1423,6 +1438,24 @@ export default function ChatScreen() {
                   );
                 } catch {
                   decryptedPreviewRef.current.set(id, null);
+                }
+              }
+
+              // Same treatment as the preview above, and for the same reason:
+              // a transcript that will not open is cached as null so this does
+              // not retry it on every snapshot, and its absence never masks a
+              // message that is otherwise perfectly readable.
+              if (
+                isSealed(em.encryptedTranscription) &&
+                !decryptedTranscriptRef.current.has(id)
+              ) {
+                try {
+                  decryptedTranscriptRef.current.set(
+                    id,
+                    openSealed(em.encryptedTranscription, secretKey, user.uid, chatId),
+                  );
+                } catch {
+                  decryptedTranscriptRef.current.set(id, null);
                 }
               }
 
@@ -1667,7 +1700,6 @@ export default function ChatScreen() {
           transcription: (msg as any).transcription,
           expense: (msg as any).expense,
           location: (msg as any).location,
-          translations: (msg as any).translations,
           scheduledFor: (msg as any).scheduledFor,
           user: {
             _id: msg.user._id,
@@ -2406,6 +2438,15 @@ export default function ChatScreen() {
           (message as any).audioSampleRateHertz,
           (message as any).audioChannelCount,
         );
+        // Stored from here, sealed: the callable returns the transcript and
+        // deliberately does not write it (see transcription.ts).
+        if (text) {
+          await updateMessage(
+            chatId,
+            message._id,
+            buildTranscriptionPatch(text, artifactCrypto) as any,
+          ).catch(() => undefined);
+        }
         Alert.alert(t('chat.transcriptionTitle'), text);
       } catch (err) {
         // Not a failure the user caused: they haven't seen the disclosure yet.

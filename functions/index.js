@@ -584,6 +584,9 @@ exports.transcribeVoiceMessage = callable().onCall(async (data, context) => {
     throw new functions.https.HttpsError('not-found', 'Message not found.');
   }
   const msg = msgSnap.data();
+  // Only ever true for a document written before transcripts were sealed.
+  // Kept so those messages don't pay for the same call twice; the sealed
+  // field this function now leaves alone is checked by the caller instead.
   if (msg.transcription) {
     return {transcription: msg.transcription};
   }
@@ -613,8 +616,13 @@ exports.transcribeVoiceMessage = callable().onCall(async (data, context) => {
     throw new functions.https.HttpsError('internal', 'Transcription failed. Please try again.');
   }
 
+  // Returned, not stored. This function runs with the Admin SDK and has no
+  // access to anyone's keys, so anything it writes to the message document is
+  // written in the clear — and a transcript is the message. The caller seals
+  // it to the chat and writes it back itself (services/transcription.ts's
+  // buildTranscriptionPatch), which is the same route link previews and
+  // shared lists take.
   const transcription = extractTranscript(response) || '[No speech detected]';
-  await msgRef.update({transcription});
   return {transcription};
 });
 
@@ -713,6 +721,8 @@ exports.translateMessage = callable().onCall(async (data, context) => {
     throw new functions.https.HttpsError('not-found', 'Message not found.');
   }
   const msg = msgSnap.data();
+  // Only ever true for a document written before translations stopped being
+  // stored. Reading it back is free and saves a call; nothing writes it now.
   if (msg.translations?.[targetLanguage]) {
     return {translation: msg.translations[targetLanguage]};
   }
@@ -735,10 +745,13 @@ exports.translateMessage = callable().onCall(async (data, context) => {
     throw new functions.https.HttpsError('internal', 'Translation failed. Please try again.');
   }
 
+  // Returned, not stored — same reason as transcribeVoiceMessage above. A
+  // translation is a readable rendering of a message whose text is ciphertext
+  // in this very document, and storing one here undid the encryption for that
+  // message permanently. Neither client ever displayed the stored copy: both
+  // hold the result in session state and re-ask on the next launch, which
+  // costs one call against a 20/minute limit.
   const translation = extractTranslation(result);
-  await msgRef.update({
-    [`translations.${targetLanguage}`]: translation,
-  });
   return {translation};
 });
 

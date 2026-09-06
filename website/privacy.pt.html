@@ -44,6 +44,7 @@
       <p>Cifrado no teu dispositivo, ilegível para nós e para a Google:</p>
       <ul><li>O texto das tuas mensagens.</li><li>O conteúdo de ficheiros, fotos, áudio e vídeo que anexas.</li><li>As listas partilhadas, as citações guardadas e as pré-visualizações de ligações.</li><li>As chamadas de voz e vídeo, que usam o DTLS-SRTP obrigatório do WebRTC entre os dois dispositivos.</li></ul>
       <p>A maioria das mensagens individuais e de grupo usa ainda um roquete: cada mensagem tem a sua própria chave, por isso comprometer o teu dispositivo não expõe as anteriores. As conversas em que o cliente de alguém não publicou o material de chave mais recente recaem numa única chave de longa duração, que não tem essa propriedade. A etiqueta por baixo de uma mensagem diz-te qual delas ela realmente seguiu.</p>
+      <p>Uma coisa atravessa esta linha, e só quando tu pedes. Resumir, traduzir ou transcrever uma mensagem descifra-a no teu aparelho e envia-a para fora — a secção 6 diz a quem. A app pergunta antes da primeira vez, e o interruptor está no Perfil. Com ele desligado, não sai nada.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Quem mais recebe dados</h2>
       <p>Não vendemos, trocamos nem alugamos as tuas informações pessoais. Os dados chegam a:</p>
-      <ul><li>Google Firebase — o nosso fornecedor de alojamento, como descrito acima.</li></ul>
+      <ul><li>Google Firebase — o nosso fornecedor de alojamento, como descrito acima.</li><li>Google Cloud Speech-to-Text — o áudio de uma mensagem de voz, quando pedes uma transcrição.</li><li>Google Cloud Translation — o texto de uma mensagem, quando pedes uma tradução.</li><li>Cloudflare Workers AI — até às últimas 50 mensagens de uma conversa, quando pedes um resumo ou fazes uma pergunta sobre ela.</li></ul>
+      <p>Os últimos três só correm se tiveres ligado as funcionalidades de IA, e apenas sobre o que selecionaste nesse momento. O que é enviado é enviado para produzir o teu resultado, não para treinar seja o que for. Nem a transcrição nem a tradução ficam nos nossos servidores: a transcrição volta ao teu aparelho e é cifrada aí antes de ser guardada, e a tradução não é guardada de todo.</p>
       <p>Podemos divulgar o que temos se a lei o exigir. O que temos é a lista da secção 2. Não conseguimos entregar o conteúdo das mensagens, porque não o conseguimos ler.</p>
     </section>
 

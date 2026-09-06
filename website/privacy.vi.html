@@ -44,6 +44,7 @@
       <p>Được mã hoá trên thiết bị của bạn, chúng tôi và Google đều không đọc được:</p>
       <ul><li>Nội dung tin nhắn của bạn.</li><li>Nội dung các tệp, ảnh, âm thanh và video bạn đính kèm.</li><li>Danh sách chung, trích dẫn đã lưu và bản xem trước liên kết.</li><li>Cuộc gọi thoại và video, dùng DTLS-SRTP bắt buộc của WebRTC giữa hai thiết bị.</li></ul>
       <p>Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet: mỗi tin nhắn có khoá riêng, nên thiết bị bị xâm nhập cũng không làm lộ những tin nhắn trước đó. Những cuộc trò chuyện mà máy của ai đó chưa công bố vật liệu khoá mới hơn sẽ quay về dùng một khoá dài hạn duy nhất, vốn không có tính chất đó. Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự đi theo đường nào.</p>
+      <p>Chỉ một thứ vượt qua ranh giới này, và chỉ khi bạn yêu cầu. Tóm tắt, dịch hay chuyển một tin nhắn thành văn bản sẽ giải mã nó trên thiết bị của bạn rồi gửi đi — mục 6 nói rõ gửi cho ai. Ứng dụng hỏi trước lần đầu tiên, và công tắc nằm trong phần Hồ sơ. Khi tắt, không có gì được gửi đi.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Còn ai nhận được dữ liệu</h2>
       <p>Chúng tôi không bán, trao đổi hay cho thuê thông tin cá nhân của bạn. Dữ liệu đi tới:</p>
-      <ul><li>Google Firebase — nhà cung cấp hạ tầng của chúng tôi, như mô tả ở trên.</li></ul>
+      <ul><li>Google Firebase — nhà cung cấp hạ tầng của chúng tôi, như mô tả ở trên.</li><li>Google Cloud Speech-to-Text — phần âm thanh của một tin nhắn thoại, khi bạn yêu cầu chuyển thành văn bản.</li><li>Google Cloud Translation — phần chữ của một tin nhắn, khi bạn yêu cầu dịch.</li><li>Cloudflare Workers AI — tối đa 50 tin nhắn gần nhất của một cuộc trò chuyện, khi bạn yêu cầu tóm tắt hoặc đặt câu hỏi về nó.</li></ul>
+      <p>Ba mục cuối chỉ chạy khi bạn đã bật các tính năng AI, và chỉ trên phần bạn chọn ngay lúc đó. Những gì được gửi đi là để tạo ra kết quả cho bạn, không phải để huấn luyện bất cứ thứ gì. Cả bản chuyển văn bản lẫn bản dịch đều không nằm trên máy chủ của chúng tôi: bản chuyển văn bản quay về thiết bị của bạn và được mã hoá ở đó trước khi lưu, còn bản dịch thì không được lưu.</p>
       <p>Chúng tôi có thể tiết lộ những gì mình đang giữ nếu pháp luật yêu cầu. Những gì chúng tôi giữ chính là danh sách ở mục 2. Chúng tôi không thể đưa ra nội dung tin nhắn, vì chúng tôi không đọc được.</p>
     </section>
 

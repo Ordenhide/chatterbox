@@ -44,6 +44,7 @@
       <p>Chiffré sur votre appareil, illisible pour nous comme pour Google :</p>
       <ul><li>Le texte de vos messages.</li><li>Le contenu des fichiers, photos, audios et vidéos que vous joignez.</li><li>Les listes partagées, les citations enregistrées et les aperçus de liens.</li><li>Les appels audio et vidéo, qui utilisent le DTLS-SRTP obligatoire de WebRTC entre les deux appareils.</li></ul>
       <p>La plupart des messages individuels et de groupe utilisent en plus un cliquet : chaque message a sa propre clé, si bien qu'un appareil compromis n'expose pas les messages précédents. Les conversations où le client de quelqu'un n'a pas publié le matériel de clé plus récent retombent sur une seule clé de longue durée, qui n'a pas cette propriété. La mention sous un message vous dit lequel il a réellement emprunté.</p>
+      <p>Une seule chose franchit cette ligne, et seulement quand vous le demandez. Résumer, traduire ou transcrire un message le déchiffre sur votre appareil et l’envoie plus loin — la section 6 dit à qui. L’application demande avant la première fois, et l’interrupteur se trouve dans Profil. Désactivé, rien n’est envoyé.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Qui d'autre reçoit des données</h2>
       <p>Nous ne vendons, n'échangeons ni ne louons vos informations personnelles. Des données parviennent à :</p>
-      <ul><li>Google Firebase — notre hébergeur, comme décrit ci-dessus.</li></ul>
+      <ul><li>Google Firebase — notre hébergeur, comme décrit ci-dessus.</li><li>Google Cloud Speech-to-Text — l’audio d’un message vocal, lorsque vous demandez une transcription.</li><li>Google Cloud Translation — le texte d’un message, lorsque vous demandez une traduction.</li><li>Cloudflare Workers AI — jusqu’aux 50 derniers messages d’une conversation, lorsque vous demandez un résumé ou posez une question à son sujet.</li></ul>
+      <p>Les trois derniers ne s’exécutent que si vous avez activé les fonctions d’IA, et uniquement sur ce que vous avez sélectionné à ce moment-là. Ce qui est envoyé l’est pour produire votre résultat, pas pour entraîner quoi que ce soit. Ni la transcription ni la traduction ne sont conservées sur nos serveurs : une transcription revient sur votre appareil et y est chiffrée avant d’être enregistrée, et une traduction n’est pas enregistrée du tout.</p>
       <p>Nous pouvons divulguer ce que nous détenons si la loi l'exige. Ce que nous détenons, c'est la liste de la section 2. Nous ne pouvons pas produire le contenu des messages, puisque nous ne pouvons pas le lire.</p>
     </section>
 

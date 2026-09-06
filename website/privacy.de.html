@@ -44,6 +44,7 @@
       <p>Auf deinem Gerät verschlüsselt, für uns und für Google unlesbar:</p>
       <ul><li>Der Text deiner Nachrichten.</li><li>Die Inhalte von Dateien, Fotos, Audio und Video, die du anhängst.</li><li>Geteilte Listen, gespeicherte Zitate und Linkvorschauen.</li><li>Sprach- und Videoanrufe, die zwischen den beiden Geräten das verpflichtende DTLS-SRTP von WebRTC nutzen.</li></ul>
       <p>Die meisten Einzel- und Gruppennachrichten nutzen zusätzlich eine Ratsche: Jede Nachricht hat ihren eigenen Schlüssel, sodass ein kompromittiertes Gerät frühere Nachrichten nicht preisgibt. Gespräche, in denen jemandes Client das neuere Schlüsselmaterial nicht veröffentlicht hat, fallen auf einen einzelnen langlebigen Schlüssel zurück, der diese Eigenschaft nicht hat. Die Kennzeichnung unter einer Nachricht sagt dir, welchen Weg sie tatsächlich genommen hat.</p>
+      <p>Eine Sache überschreitet diese Linie, und nur, wenn du es verlangst. Eine Nachricht zusammenzufassen, zu übersetzen oder zu transkribieren entschlüsselt sie auf deinem Gerät und schickt sie weiter — an wen, steht in Abschnitt 6. Die App fragt vor dem ersten Mal, und der Schalter sitzt im Profil. Ausgeschaltet wird nichts gesendet.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Wer sonst Daten erhält</h2>
       <p>Wir verkaufen, tauschen oder vermieten deine personenbezogenen Daten nicht. Daten erreichen:</p>
-      <ul><li>Google Firebase — unseren Hosting-Anbieter, wie oben beschrieben.</li></ul>
+      <ul><li>Google Firebase — unseren Hosting-Anbieter, wie oben beschrieben.</li><li>Google Cloud Speech-to-Text — die Audioaufnahme einer Sprachnachricht, wenn du ein Transkript anforderst.</li><li>Google Cloud Translation — den Text einer Nachricht, wenn du eine Übersetzung anforderst.</li><li>Cloudflare Workers AI — bis zu die letzten 50 Nachrichten eines Gesprächs, wenn du eine Zusammenfassung anforderst oder eine Frage dazu stellst.</li></ul>
+      <p>Die letzten drei laufen nur, wenn du KI-Funktionen eingeschaltet hast, und nur mit dem, was du in dem Moment ausgewählt hast. Was gesendet wird, wird gesendet, um dein Ergebnis zu erzeugen, nicht um irgendetwas zu trainieren. Weder das Transkript noch die Übersetzung liegt auf unseren Servern: ein Transkript kommt auf dein Gerät zurück und wird dort verschlüsselt, bevor es gespeichert wird, und eine Übersetzung wird gar nicht gespeichert.</p>
       <p>Wir können offenlegen, was wir haben, wenn das Gesetz es verlangt. Was wir haben, ist die Liste aus Abschnitt 2. Nachrichteninhalte können wir nicht herausgeben, weil wir sie nicht lesen können.</p>
     </section>
 

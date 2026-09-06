@@ -222,7 +222,6 @@ export interface Message {
     isLive?: boolean;
     expiresAt?: number;
   };
-  translations?: Record<string, string>;
   timeCapsule?: {
     unlocksAt: number;
   };
@@ -289,6 +288,13 @@ export interface Message {
    * chat screen's decrypt pass fills it back in for rendering.
    */
   encryptedLinkPreview?: EncryptedField;
+  /**
+   * The sealed form of `transcription` above. Written by the client, never by
+   * the Cloud Function — a transcript is the message, and a function running
+   * with the Admin SDK has no key to seal one with. Older messages still carry
+   * the plaintext field; both are read, only this one is written.
+   */
+  encryptedTranscription?: EncryptedField;
   user: {
     _id: string;
     name?: string;

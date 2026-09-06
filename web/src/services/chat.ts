@@ -350,7 +350,15 @@ export async function sendMessage(
  * `patch` comes from buildLinkPreviewPatch and is one of two shapes — sealed
  * or plaintext — so this function stays out of the crypto decision.
  */
-export async function setMessageLinkPreview(
+/**
+ * Merges a patch into one message document.
+ *
+ * Was setMessageLinkPreview; renamed when transcripts started being written
+ * the same way — both are a field the client computes after the message is
+ * already sent, and both go through a builder that decides between a sealed
+ * field and a plaintext fallback.
+ */
+export async function patchMessage(
   chatId: string,
   messageId: string,
   patch: Record<string, unknown>,

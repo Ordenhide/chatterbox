@@ -44,6 +44,7 @@
       <p>Encrypted on your device, unreadable to us and to Google:</p>
       <ul><li>The text of your messages.</li><li>The contents of files, photos, audio and video you attach.</li><li>Shared lists, saved quotes and link previews.</li><li>Voice and video calls, which use WebRTC's mandatory DTLS-SRTP between the two devices.</li></ul>
       <p>Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.</p>
+      <p>One thing crosses this line, and only when you ask it to. Summarising, translating or transcribing a message decrypts it on your device and sends it onward — section 6 says to whom. The app asks before the first time, and the switch is in Profile. With it off, nothing is sent.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Who else receives data</h2>
       <p>We do not sell, trade or rent your personal information. Data reaches:</p>
-      <ul><li>Google Firebase — our hosting provider, as described above.</li></ul>
+      <ul><li>Google Firebase — our hosting provider, as described above.</li><li>Google Cloud Speech-to-Text — the audio of one voice message, when you ask for a transcript.</li><li>Google Cloud Translation — the text of one message, when you ask for a translation.</li><li>Cloudflare Workers AI — up to the last 50 messages of one conversation, when you ask for a summary or ask a question about it.</li></ul>
+      <p>The last three run only when you have turned AI features on, and only on what you selected at that moment. What is sent is sent to produce your result, not to train anything. Neither the transcript nor the translation is stored on our servers: a transcript comes back to your device and is encrypted there before it is saved, and a translation is not saved at all.</p>
       <p>We may disclose what we hold if the law requires it. What we hold is the list in section 2. We cannot produce message contents, because we cannot read them.</p>
     </section>
 

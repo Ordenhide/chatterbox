@@ -2,6 +2,7 @@ import {getFunctions, httpsCallable} from 'firebase/functions';
 import {assertAiConsent} from './aiConsent';
 import {getApp} from 'firebase/app';
 import type {Lang} from '../i18n';
+import type {ArtifactCrypto} from './e2eeArtifacts';
 
 // The mobile Cloud Functions were deployed without an explicit region, so they
 // live in the default us-central1. These are the same callables the app uses.
@@ -89,9 +90,12 @@ export async function translateMessage(
 }
 
 /**
- * Transcribes a voice message via the transcribeVoiceMessage function. The
- * function writes `transcription` onto the message doc (so it also arrives via
- * the listener) and returns it. Requires the function to be deployed.
+ * Transcribes a voice message via the transcribeVoiceMessage function, which
+ * returns the transcript and deliberately does not store it: a transcript is
+ * the message, and a function running with the Admin SDK has no key to seal
+ * one with, so anything it wrote sat in the clear beside the ciphertext it
+ * came from. Pass the result through buildTranscriptionPatch and write it from
+ * the caller. Requires the function to be deployed.
  *
  * `audio` is the already-decrypted plaintext clip (a data: URI) the caller
  * holds for playback — voice messages are normally end-to-end encrypted, so
@@ -136,4 +140,22 @@ export async function fetchLinkPreview(url: string): Promise<LinkPreview> {
   const fn = httpsCallable<{url: string}, {preview: LinkPreview}>(functions, 'fetchLinkPreview');
   const res = await fn({url});
   return res.data.preview;
+}
+
+/**
+ * The patch that stores a transcript, sealed to the chat.
+ *
+ * Mirrors src/services/transcription.ts on mobile and buildLinkPreviewPatch
+ * here, fallback included: a chat with no peer key has nothing to encrypt to,
+ * and a server-readable transcript is where this feature sat for its whole
+ * life — no worse than before, and the same degradation shared lists and link
+ * previews already accept.
+ */
+export function buildTranscriptionPatch(
+  transcription: string,
+  crypto: ArtifactCrypto,
+): Record<string, unknown> {
+  const sealed = crypto.seal(transcription);
+  if (sealed) return {encryptedTranscription: sealed};
+  return {transcription};
 }

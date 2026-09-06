@@ -44,6 +44,7 @@
       <p>Cifrato sul tuo dispositivo, illeggibile per noi e per Google:</p>
       <ul><li>Il testo dei tuoi messaggi.</li><li>Il contenuto di file, foto, audio e video che alleghi.</li><li>Le liste condivise, le citazioni salvate e le anteprime dei link.</li><li>Le chiamate vocali e video, che tra i due dispositivi usano il DTLS-SRTP obbligatorio di WebRTC.</li></ul>
       <p>La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: ogni messaggio ha la propria chiave, quindi compromettere il tuo dispositivo non espone quelli precedenti. Le conversazioni in cui il client di qualcuno non ha pubblicato il materiale di chiave più recente ricadono su un'unica chiave di lunga durata, che non ha questa proprietà. L'etichetta sotto un messaggio ti dice quale percorso ha davvero seguito.</p>
+      <p>Una cosa sola attraversa questa linea, e solo quando lo chiedi tu. Riassumere, tradurre o trascrivere un messaggio lo decifra sul tuo dispositivo e lo manda altrove — a chi, lo dice la sezione 6. L’app chiede prima della prima volta, e l’interruttore è nel Profilo. Se è spento, non parte nulla.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Chi altro riceve dati</h2>
       <p>Non vendiamo, scambiamo né noleggiamo le tue informazioni personali. I dati arrivano a:</p>
-      <ul><li>Google Firebase — il nostro fornitore di hosting, come descritto sopra.</li></ul>
+      <ul><li>Google Firebase — il nostro fornitore di hosting, come descritto sopra.</li><li>Google Cloud Speech-to-Text — l’audio di un messaggio vocale, quando chiedi una trascrizione.</li><li>Google Cloud Translation — il testo di un messaggio, quando chiedi una traduzione.</li><li>Cloudflare Workers AI — fino agli ultimi 50 messaggi di una conversazione, quando chiedi un riassunto o fai una domanda su di essa.</li></ul>
+      <p>Gli ultimi tre si attivano solo se hai acceso le funzioni di IA, e solo su ciò che hai selezionato in quel momento. Ciò che viene inviato serve a produrre il tuo risultato, non ad addestrare nulla. Né la trascrizione né la traduzione restano sui nostri server: la trascrizione torna sul tuo dispositivo e lì viene cifrata prima di essere salvata, e la traduzione non viene salvata affatto.</p>
       <p>Possiamo divulgare ciò che deteniamo se la legge lo impone. Ciò che deteniamo è l'elenco della sezione 2. Non possiamo produrre il contenuto dei messaggi, perché non riusciamo a leggerlo.</p>
     </section>
 

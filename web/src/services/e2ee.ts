@@ -52,7 +52,9 @@
  *      only the access pointer (image/video/audio/file.uri) is sealed, not
  *      those fields. Gestures, lottery, and shared-list content are not
  *      sealed at all: they live in their own subcollections regardless of what
- *      the message preview text says.
+ *      the message preview text says. Transcripts are sealed — the callable
+ *      returns one and stores nothing, since a function with the Admin SDK has
+ *      no key to seal it with.
  *
  * It is a working demonstration of the shape, not a security guarantee.
  * ─────────────────────────────────────────────────────────────────────────────

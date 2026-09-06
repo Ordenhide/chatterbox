@@ -79,7 +79,9 @@
  *      original's. Only the upload's object name is randomised, so the
  *      filename does not additionally leak to anyone listing the bucket.
  *      Gestures and lottery content are not sealed: neither carries text of
- *      its own.
+ *      its own. A transcript *is* text and is sealed like any artifact — the
+ *      Cloud Function returns it and stores nothing, because a function
+ *      running with the Admin SDK has no key to seal one with.
  *
  * Keep this list honest. Everything above is checked against the code as of
  * the last edit, because a caveat that has quietly become false is worse than

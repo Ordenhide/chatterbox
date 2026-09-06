@@ -1,6 +1,7 @@
 import {getFunctions, httpsCallable} from './firebase/functions';
 import type {LanguageCode} from '../i18n';
 import {assertAiConsent} from './aiConsent';
+import type {ArtifactCrypto} from './e2eeArtifacts';
 
 const functions = getFunctions();
 
@@ -39,6 +40,12 @@ export function toSpeechLanguageCode(appLanguage: string): string {
  * the server has no way to read this itself. Sending it here is a deliberate,
  * per-message, user-initiated exception to that, not a change to how
  * messages are stored or synced.
+ *
+ * The transcript comes back from the callable and is *not* stored by it. A
+ * transcript is the message, and the Cloud Function has no keys, so anything
+ * it wrote would have been a plaintext copy of a message whose text is
+ * ciphertext two fields away. Pass the result through buildTranscriptionPatch
+ * and write it from here instead.
  */
 export async function transcribeVoiceMessage(
   chatId: string,
@@ -61,4 +68,22 @@ export async function transcribeVoiceMessage(
     audioChannelCount,
   });
   return (result.data as {transcription: string}).transcription;
+}
+
+/**
+ * The patch that stores a transcript, sealed to the chat.
+ *
+ * Mirrors linkPreview.ts's buildLinkPreviewPatch, including the fallback: a
+ * chat with no peer key yet has nothing to encrypt to, and a transcript the
+ * server can read is the state this feature was in for its whole life — worse
+ * than sealed, no worse than before, and visible in the same place the rest of
+ * the app reports an unsealed chat.
+ */
+export function buildTranscriptionPatch(
+  transcription: string,
+  crypto: ArtifactCrypto,
+): Record<string, unknown> {
+  const sealed = crypto.seal(transcription);
+  if (sealed) return {encryptedTranscription: sealed};
+  return {transcription};
 }

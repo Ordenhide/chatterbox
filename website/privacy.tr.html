@@ -44,6 +44,7 @@
       <p>Cihazında şifrelenir; ne biz ne de Google okuyabilir:</p>
       <ul><li>Mesajlarının metni.</li><li>Eklediğin dosyaların, fotoğrafların, seslerin ve videoların içeriği.</li><li>Paylaşılan listeler, kaydedilen alıntılar ve bağlantı önizlemeleri.</li><li>Sesli ve görüntülü aramalar; iki cihaz arasında WebRTC'nin zorunlu kıldığı DTLS-SRTP kullanılır.</li></ul>
       <p>Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanır: her mesajın kendi anahtarı vardır, bu yüzden cihazının ele geçirilmesi önceki mesajları açığa çıkarmaz. Birinin istemcisinin daha yeni anahtar malzemesini yayımlamadığı konuşmalar, bu özelliği taşımayan tek bir uzun ömürlü anahtara geri düşer. Mesajın altındaki etiket, o mesajın gerçekte hangisini kullandığını söyler.</p>
+      <p>Bu çizgiyi tek bir şey aşar, o da yalnızca sen istediğinde. Bir mesajı özetlemek, çevirmek ya da yazıya dökmek onu cihazında çözer ve dışarı gönderir — kime gittiği 6. bölümde yazıyor. Uygulama ilk seferden önce sorar, düğme de Profil'de. Kapalıyken hiçbir şey gönderilmez.</p>
     </section>
 
     <section>
@@ -77,7 +78,8 @@
     <section>
       <h2>6. Veriyi başka kim alıyor</h2>
       <p>Kişisel bilgilerini satmayız, takas etmeyiz, kiralamayız. Veri şuralara ulaşır:</p>
-      <ul><li>Google Firebase — yukarıda anlatıldığı gibi barındırma sağlayıcımız.</li></ul>
+      <ul><li>Google Firebase — yukarıda anlatıldığı gibi barındırma sağlayıcımız.</li><li>Google Cloud Speech-to-Text — bir yazıya dökme istediğinde, tek bir sesli mesajın ses kaydı.</li><li>Google Cloud Translation — bir çeviri istediğinde, tek bir mesajın metni.</li><li>Cloudflare Workers AI — bir özet istediğinde ya da bir konuşma hakkında soru sorduğunda, o konuşmanın son 50 mesajına kadarı.</li></ul>
+      <p>Son üçü yalnızca yapay zekâ özelliklerini açtıysan ve yalnızca o anda seçtiğin şey üzerinde çalışır. Gönderilen şey senin sonucunu üretmek için gönderilir, herhangi bir şeyi eğitmek için değil. Ne yazıya dökülen metin ne de çeviri sunucularımızda durur: yazıya dökülen metin cihazına döner ve kaydedilmeden önce orada şifrelenir, çeviri ise hiç kaydedilmez.</p>
       <p>Yasa gerektirirse elimizdekileri açıklayabiliriz. Elimizdeki, 2. bölümdeki listedir. Mesaj içeriğini veremeyiz, çünkü onu okuyamıyoruz.</p>
     </section>
 
