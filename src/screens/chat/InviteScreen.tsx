@@ -11,7 +11,7 @@
  * That cost is the feature. There is no way to find a Chatterbox user you do
  * not already know, which is also to say there is no way for anyone else to.
  */
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   ActivityIndicator,
@@ -25,7 +25,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import {useAuth} from '../../contexts/AuthContext';
@@ -58,6 +58,7 @@ export default function InviteScreen() {
   const {t} = useTranslation();
   const {user} = useAuth();
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const colors = getColors(useColorScheme());
 
   const [invite, setInvite] = useState<Invite | null>(null);
@@ -84,6 +85,20 @@ export default function InviteScreen() {
   }, []);
 
   useFocusEffect(refresh);
+
+  /**
+   * A token that arrived by tapped link (App.tsx routes it here) lands in the
+   * paste field, filled in and waiting.
+   *
+   * Filled rather than accepted: accepting is single-use and irreversible, and
+   * the field below it asks what to call this person — a name that stays on
+   * this device and is the one thing about them the server never learns. Both
+   * are reasons to let the person look before they commit.
+   */
+  useEffect(() => {
+    const token = route.params?.token;
+    if (typeof token === 'string' && token) setPasted(inviteLink(token));
+  }, [route.params?.token]);
 
   const handleCreate = async () => {
     if (!user || minting) return;

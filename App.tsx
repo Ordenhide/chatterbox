@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {AppState, DeviceEventEmitter, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {AppState, DeviceEventEmitter, Linking, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {NavigationContainer, createNavigationContainerRef} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -23,6 +23,7 @@ import ErrorBoundary from './src/components/ErrorBoundary';
 import TutorialTour from './src/components/TutorialTour';
 import IncomingCallManager from './src/components/IncomingCallManager';
 import {hasSeenTutorial, markTutorialSeen, TUTORIAL_EVENT} from './src/services/tutorial';
+import {captureInviteUrl, takePendingInvite} from './src/services/inviteDeepLink';
 
 const APP_START_TS = Date.now();
 
@@ -54,6 +55,68 @@ function AppContent() {
     const sub = DeviceEventEmitter.addListener(TUTORIAL_EVENT, () => setTutorialVisible(true));
     return () => sub.remove();
   }, [user]);
+
+  /**
+   * `chatterbox://invite#<token>` — the only way into a conversation now that
+   * there is no directory to search.
+   *
+   * Two sources, because a link reaches an app two different ways: the URL
+   * that launched it (cold start, the usual case — the recipient is installing
+   * the app *because* of this link) and the event while it is already running.
+   *
+   * Capture is separate from routing because the link routinely arrives before
+   * there is an account to accept with: the token is parked, and whichever of
+   * the two effects below can act on it does. Nothing is accepted here — the
+   * screen still asks, because accepting is single-use and a mis-tap on launch
+   * burns a link the inviter then has to notice and reissue.
+   */
+  const userRef = useRef(user);
+  userRef.current = user;
+
+  const routePendingInvite = useCallback(() => {
+    if (!userRef.current) return;
+    const token = takePendingInvite();
+    if (!token) return;
+    // Waits for the navigator: on a cold start this runs while the container
+    // is still mounting, and navigating then is a no-op that loses the token
+    // for good.
+    let timer: ReturnType<typeof setTimeout>;
+    const go = () => {
+      if (navigationRef.isReady()) {
+        // Cast because createNavigationContainerRef() is untyped here — the
+        // navigator's param list lives in MainNavigator and is not exported.
+        (navigationRef as any).navigate('Chats', {screen: 'Invite', params: {token}});
+        return;
+      }
+      timer = setTimeout(go, 120);
+    };
+    timer = setTimeout(go, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    Linking.getInitialURL()
+      .then(url => {
+        if (captureInviteUrl(url)) routePendingInvite();
+      })
+      .catch(() => undefined);
+    // Routed from inside the listener rather than left for the effect below:
+    // a link tapped while the app is already open changes neither `user` nor
+    // `loading`, so nothing downstream would ever run. That is exactly how
+    // the first version of this failed on the emulator — the token was
+    // captured and then sat there.
+    const sub = Linking.addEventListener('url', ({url}) => {
+      if (captureInviteUrl(url)) routePendingInvite();
+    });
+    return () => sub.remove();
+  }, [routePendingInvite]);
+
+  // The other half: a token parked before sign-in, acted on once there is an
+  // account to accept with.
+  useEffect(() => {
+    if (loading) return;
+    return routePendingInvite();
+  }, [user, loading, routePendingInvite]);
 
 
   useEffect(() => {

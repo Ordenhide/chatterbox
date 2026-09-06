@@ -67,6 +67,20 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <!-- Invite links. A custom scheme rather than https on purpose: an
+             https link is resolved by whatever app opens it, so the token
+             would travel through a browser, a preview fetcher and any link
+             scanner in between. See services/invites.ts.
+
+             launchMode is singleTask above, so a tap while the app is already
+             running delivers onNewIntent rather than a second activity — which
+             is what Linking's 'url' event is listening for. -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="chatterbox" android:host="invite" />
+        </intent-filter>
       </activity>
     </application>
 </manifest>
