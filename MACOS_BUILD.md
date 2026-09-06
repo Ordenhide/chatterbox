@@ -46,12 +46,12 @@ Mac**, because it changes which pods are integrated.
 CHATTERBOX_CATALYST=1 pod install --project-directory=ios
 
 # 2. Build for the Mac Catalyst destination
-xcodebuild -workspace ios/ChatterboxTemp.xcworkspace \
-  -scheme ChatterboxTemp -configuration Debug \
+xcodebuild -workspace ios/Chatterbox.xcworkspace \
+  -scheme Chatterbox -configuration Debug \
   -destination 'platform=macOS,variant=Mac Catalyst' build
 
 # 3. Or open in Xcode and pick "My Mac (Mac Catalyst)" as the run destination:
-open ios/ChatterboxTemp.xcworkspace
+open ios/Chatterbox.xcworkspace
 ```
 
 Metro must be running (`npm start`) for a Debug build, same as iOS.
@@ -67,7 +67,7 @@ pod install --project-directory=ios
 
 All reversible, all confined to build config / patches (no app logic changed):
 
-1. **`ios/ChatterboxTemp.xcodeproj`** — enabled `SUPPORTS_MACCATALYST=YES` and
+1. **`ios/Chatterbox.xcodeproj`** — enabled `SUPPORTS_MACCATALYST=YES` and
    `TARGETED_DEVICE_FAMILY=1,2,6` on the app target.
 2. **`ios/Podfile`**:
    - `:mac_catalyst_enabled => true` in `react_native_post_install`.

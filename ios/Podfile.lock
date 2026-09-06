@@ -1207,8 +1207,6 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.37):
     - BoringSSL-GRPC/Interface (= 0.0.37)
   - BoringSSL-GRPC/Interface (0.0.37)
-  - BVLinearGradient (2.8.3):
-    - React-Core
   - DoubleConversion (1.1.6)
   - fast_float (8.0.0)
   - FBLazyVector (0.84.1)
@@ -3946,6 +3944,28 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - RNKeychain (10.0.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - RNLocalize (3.6.1):
     - hermes-engine
     - RCTRequired
@@ -3968,6 +3988,11 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - RNNotifee (9.1.8):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
+    - React-Core
   - RNReactNativeHapticFeedback (2.3.3):
     - hermes-engine
     - RCTRequired
@@ -4086,7 +4111,6 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -4195,7 +4219,9 @@ DEPENDENCIES:
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNLocalize (from `../node_modules/react-native-localize`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -4248,8 +4274,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
-  BVLinearGradient:
-    :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   fast_float:
@@ -4463,8 +4487,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-google-signin/google-signin"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNScreens:
@@ -4480,7 +4508,6 @@ SPEC CHECKSUMS:
   AppCheckCore: e215d35177a9cf469927863e69c13e220df32a8b
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
-  BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
   FBLazyVector: e97c19a5a442429d1988f182a1940fb08df514da
@@ -4624,12 +4651,14 @@ SPEC CHECKSUMS:
   RNFBStorage: a5c258167f7726f7653e3ee69de0d7fc9b215b7b
   RNGestureHandler: d9e942967ed2a9a555c41591c4ee9dfeabee1f01
   RNGoogleSignin: 25e4cdb071e87417af764fccdb6e646400ae2214
+  RNKeychain: ce2cee63eab83888c3da68684da50b9c83c33461
   RNLocalize: c8bcaf5ad46c4b2e8f402ea7f11ec9c3777bcb59
+  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNReactNativeHapticFeedback: 68db345e43f221a12c408f1490da31c4067ecb6f
   RNScreens: 6c5b8c41580fe6b54ee1b332c96b782ee360e73f
   RNSVG: 4a9f0b92f0a95bf3af7f787fd36a9c762d4d3d42
   Yoga: 846fbe6f595136be802ad81d05688ff748839764
 
-PODFILE CHECKSUM: 6bb1c8777eadf348a1b96f870cefbe6102e0bdb1
+PODFILE CHECKSUM: a9f7b7523da298163df843936cd2b4720dec6a69
 
 COCOAPODS: 1.17.0

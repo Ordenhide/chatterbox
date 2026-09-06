@@ -63,7 +63,7 @@ linkage = ENV['USE_FRAMEWORKS'] || 'static'
 Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
 use_frameworks! :linkage => linkage.to_sym
 
-target 'ChatterboxTemp' do
+target 'Chatterbox' do
   config = use_native_modules!
 
   # Every autolinked third-party module's podspec calls install_modules_dependencies(s)
@@ -95,7 +95,7 @@ target 'ChatterboxTemp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'ChatterboxTempTests' do
+  target 'ChatterboxTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -19,8 +19,8 @@ Android, and the button does not appear there.
 | `src/services/appleAuth.ts` | Nonce generation, native-module loading, credential request |
 | `src/contexts/AuthContext.tsx` | `signInWithApple()`, alongside the Google flow |
 | `src/components/SocialSignInButtons.tsx` | The button, iOS-only |
-| `ios/ChatterboxTemp/ChatterboxTemp.entitlements` | `com.apple.developer.applesignin` |
-| `ios/ChatterboxTemp.xcodeproj` | `CODE_SIGN_ENTITLEMENTS` set on both configurations |
+| `ios/Chatterbox/Chatterbox.entitlements` | `com.apple.developer.applesignin` |
+| `ios/Chatterbox.xcodeproj` | `CODE_SIGN_ENTITLEMENTS` set on both configurations |
 | `package.json` | `@invertase/react-native-apple-authentication@^2.5.1` |
 | `src/i18n/locales/en.json` | `auth.social.apple` |
 

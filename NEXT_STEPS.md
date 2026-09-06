@@ -25,15 +25,15 @@ sudo gem install cocoapods
 ## Step 3: Open in Xcode
 
 ```bash
-open ios/ChatterboxTemp.xcworkspace
+open ios/Chatterbox.xcworkspace
 ```
 
 **Important:** Always use `.xcworkspace`, not `.xcodeproj`!
 
 ## Step 4: Configure for Your iPhone
 
-1. In Xcode, select the **ChatterboxTemp** project (left sidebar)
-2. Select the **ChatterboxTemp** target
+1. In Xcode, select the **Chatterbox** project (left sidebar)
+2. Select the **Chatterbox** target
 3. Go to **Signing & Capabilities** tab
 4. Check **"Automatically manage signing"**
 5. Select your **Team** (your Apple ID)
@@ -71,9 +71,14 @@ Keep this running while developing.
 
 ## Note About Project Name
 
-The iOS project is currently named "ChatterboxTemp" (from the React Native init). This is fine for development. If you want to rename it later, you can do so in Xcode, but it's not necessary for the app to work.
+The project, target, scheme and source folder are all `Chatterbox`. They were
+`ChatterboxTemp` — the name React Native's template left behind — until that
+name turned up on the launch screen in 36pt bold, which is where the stock
+storyboard puts it.
 
-The important thing is the **Bundle Identifier** which you'll set in Step 4.
+The **Bundle Identifier** (`com.chatterbox`, set in Step 4) is the thing
+signing and Firebase actually key off; it was never affected by the project
+name and did not change with it.
 
 ## Troubleshooting
 

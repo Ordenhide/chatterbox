@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface ChatterboxTempTests : XCTestCase
+@interface ChatterboxTests : XCTestCase
 
 @end
 
-@implementation ChatterboxTempTests
+@implementation ChatterboxTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

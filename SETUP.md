@@ -18,7 +18,7 @@ npm install
    - iOS bundle id: `com.chatterbox`
    - Android package name: `com.chatterbox.app`
 6. Download config files:
-   - `GoogleService-Info.plist` → place in `ios/ChatterboxTemp/`
+   - `GoogleService-Info.plist` → place in `ios/Chatterbox/`
    - `google-services.json` → place in `android/app/`
 
 ## Step 3: Install iOS Dependencies (iOS only)

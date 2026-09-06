@@ -229,7 +229,7 @@ def main():
         )
     print(f"        {os.path.relpath(bg, ROOT)}")
 
-    icon_set = os.path.join(ROOT, "ios/ChatterboxTemp/Images.xcassets/AppIcon.appiconset")
+    icon_set = os.path.join(ROOT, "ios/Chatterbox/Images.xcassets/AppIcon.appiconset")
     if os.path.isdir(icon_set):
         print("iOS:")
         # Regenerate exactly the files already declared in Contents.json, at the

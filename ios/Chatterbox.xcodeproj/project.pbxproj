@@ -7,33 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* ChatterboxTempTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChatterboxTempTests.m */; };
+		00E356F31AD99517003FC87E /* ChatterboxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChatterboxTests.m */; };
+		053A89174E9147CEBD1D2D5C /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */; };
+		07A6BCA0ADAB4A8FA9A9E8BB /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D537EADA4E014765B9225A6D /* IBMPlexSans-SemiBold.ttf */; };
+		0AECE054AC6542428A5AED8A /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1DCDDA75F67D439C8261ABB1 /* ChakraPetch-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */; };
+		36A391B2C91348E2A3AAEDD9 /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */; };
+		3A1464177DBF4D9393FC2506 /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */; };
+		5B96F273107B4E8AACD1AF17 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */; };
 		67837A0AB94FDE0EB5B98346 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */; };
-		7CF5421E16070FBF5AD193B4 /* Pods_ChatterboxTemp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */; };
+		696E468FCA07428EA2FF80BF /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */; };
+		7CF5421E16070FBF5AD193B4 /* Pods_Chatterbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 815C475C22E16122DBA5428D /* Pods_Chatterbox.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8FE77A534A7BCEC734196E7C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */; };
+		88596A4CFA6943EA8AB588D8 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */; };
+		8FE77A534A7BCEC734196E7C /* Pods_Chatterbox_ChatterboxTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B32F6B6180D5BCFE44147C /* Pods_Chatterbox_ChatterboxTests.framework */; };
+		95754675886E4E1A8C4DDE86 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */; };
+		A222C8C2B5FF43BE8EBFD6EC /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */; };
 		A2C1D2E3F4A5B60718293D04 /* GlassBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D2E3F4A5B60718293D02 /* GlassBlurView.m */; };
 		A2C1D2E3F4A5B60718293D05 /* GlassBlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D2E3F4A5B60718293D03 /* GlassBlurViewManager.m */; };
-		D3A1B2C3D4E5F60718293A4B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */; };
-		696E468FCA07428EA2FF80BF /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */; };
-		A222C8C2B5FF43BE8EBFD6EC /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */; };
-		0AECE054AC6542428A5AED8A /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */; };
-		3A1464177DBF4D9393FC2506 /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */; };
-		88596A4CFA6943EA8AB588D8 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */; };
-		E049291AFEA446998DAE7D48 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */; };
-		D1BD5757127E472D80733324 /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */; };
-		053A89174E9147CEBD1D2D5C /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */; };
 		A5B7B63FB7DF40538E447946 /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D537EADA4E014765B9225A6D /* IBMPlexSans-SemiBold.ttf */; };
-		07A6BCA0ADAB4A8FA9A9E8BB /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D537EADA4E014765B9225A6D /* IBMPlexSans-SemiBold.ttf */; };
-		BF16A0CCDE83445AAB0E959C /* ChakraPetch-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */; };
-		1DCDDA75F67D439C8261ABB1 /* ChakraPetch-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */; };
-		95754675886E4E1A8C4DDE86 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */; };
-		5B96F273107B4E8AACD1AF17 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */; };
-		36A391B2C91348E2A3AAEDD9 /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */; };
 		AD9FD9C953064407A5DC3392 /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */; };
+		BF16A0CCDE83445AAB0E959C /* ChakraPetch-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */; };
+		D1BD5757127E472D80733324 /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */; };
+		D3A1B2C3D4E5F60718293A4B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */; };
+		E049291AFEA446998DAE7D48 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,41 +42,41 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = ChatterboxTemp;
+			remoteInfo = Chatterbox;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* ChatterboxTempTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatterboxTempTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* ChatterboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatterboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* ChatterboxTempTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatterboxTempTests.m; sourceTree = "<group>"; };
-		0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* ChatterboxTemp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatterboxTemp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ChatterboxTemp/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ChatterboxTemp/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ChatterboxTemp/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ChatterboxTemp/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ChatterboxTemp/main.m; sourceTree = "<group>"; };
-		17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp_ChatterboxTempTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.debug.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.debug.xcconfig"; sourceTree = "<group>"; };
-		64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp.release.xcconfig"; sourceTree = "<group>"; };
-		815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatterboxTemp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ChatterboxTemp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; path = "Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig"; sourceTree = "<group>"; };
-		A2C1D2E3F4A5B60718293D01 /* GlassBlurView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GlassBlurView.h; path = ChatterboxTemp/GlassBlurView.h; sourceTree = "<group>"; };
-		A2C1D2E3F4A5B60718293D02 /* GlassBlurView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurView.m; path = ChatterboxTemp/GlassBlurView.m; sourceTree = "<group>"; };
-		A2C1D2E3F4A5B60718293D03 /* GlassBlurViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurViewManager.m; path = ChatterboxTemp/GlassBlurViewManager.m; sourceTree = "<group>"; };
-		D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ChatterboxTemp/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* ChatterboxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatterboxTests.m; sourceTree = "<group>"; };
+		0B3D653B912F3BE6F0A1C09C /* Pods-Chatterbox-ChatterboxTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatterbox-ChatterboxTests.debug.xcconfig"; path = "Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests.debug.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Chatterbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chatterbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Chatterbox/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Chatterbox/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Chatterbox/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Chatterbox/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Chatterbox/main.m; sourceTree = "<group>"; };
+		17B32F6B6180D5BCFE44147C /* Pods_Chatterbox_ChatterboxTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chatterbox_ChatterboxTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35EBDB76A0F1E115485744CD /* Pods-Chatterbox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatterbox.debug.xcconfig"; path = "Target Support Files/Pods-Chatterbox/Pods-Chatterbox.debug.xcconfig"; sourceTree = "<group>"; };
+		45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Medium.ttf"; path = "../src/assets/fonts/IBMPlexSans-Medium.ttf"; sourceTree = "<group>"; };
+		52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ChakraPetch-SemiBold.ttf"; path = "../src/assets/fonts/ChakraPetch-SemiBold.ttf"; sourceTree = "<group>"; };
+		64AFE6FD57CD4940D4E3B11A /* Pods-Chatterbox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatterbox.release.xcconfig"; path = "Target Support Files/Pods-Chatterbox/Pods-Chatterbox.release.xcconfig"; sourceTree = "<group>"; };
+		66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ChakraPetch-Bold.ttf"; path = "../src/assets/fonts/ChakraPetch-Bold.ttf"; sourceTree = "<group>"; };
+		815C475C22E16122DBA5428D /* Pods_Chatterbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chatterbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Chatterbox/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		93A9045E96A8CA66DD943089 /* Pods-Chatterbox-ChatterboxTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatterbox-ChatterboxTests.release.xcconfig"; path = "Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests.release.xcconfig"; sourceTree = "<group>"; };
+		A2C1D2E3F4A5B60718293D01 /* GlassBlurView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GlassBlurView.h; path = Chatterbox/GlassBlurView.h; sourceTree = "<group>"; };
+		A2C1D2E3F4A5B60718293D02 /* GlassBlurView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurView.m; path = Chatterbox/GlassBlurView.m; sourceTree = "<group>"; };
+		A2C1D2E3F4A5B60718293D03 /* GlassBlurViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GlassBlurViewManager.m; path = Chatterbox/GlassBlurViewManager.m; sourceTree = "<group>"; };
+		C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Regular.ttf"; path = "../src/assets/fonts/IBMPlexSans-Regular.ttf"; sourceTree = "<group>"; };
+		CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexMono-Medium.ttf"; path = "../src/assets/fonts/IBMPlexMono-Medium.ttf"; sourceTree = "<group>"; };
+		CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexMono-Regular.ttf"; path = "../src/assets/fonts/IBMPlexMono-Regular.ttf"; sourceTree = "<group>"; };
+		D3A1B2C3D4E5F60718293A4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Chatterbox/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D537EADA4E014765B9225A6D /* IBMPlexSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-SemiBold.ttf"; path = "../src/assets/fonts/IBMPlexSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ChatterboxTemp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-Medium.ttf"; path = "../src/assets/fonts/IBMPlexSans-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */ = {isa = PBXFileReference; name = "ChakraPetch-Bold.ttf"; path = "../src/assets/fonts/ChakraPetch-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		CB6C8EA362604850920F11B8 /* IBMPlexMono-Medium.ttf */ = {isa = PBXFileReference; name = "IBMPlexMono-Medium.ttf"; path = "../src/assets/fonts/IBMPlexMono-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		CDD92D5E4386429DBCDBFF1C /* IBMPlexMono-Regular.ttf */ = {isa = PBXFileReference; name = "IBMPlexMono-Regular.ttf"; path = "../src/assets/fonts/IBMPlexMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		D537EADA4E014765B9225A6D /* IBMPlexSans-SemiBold.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-SemiBold.ttf"; path = "../src/assets/fonts/IBMPlexSans-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		52441D9E3C07496CB1A19FB6 /* ChakraPetch-SemiBold.ttf */ = {isa = PBXFileReference; name = "ChakraPetch-SemiBold.ttf"; path = "../src/assets/fonts/ChakraPetch-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C5A187C267F841F6B9ADEBF7 /* IBMPlexSans-Regular.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-Regular.ttf"; path = "../src/assets/fonts/IBMPlexSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-Bold.ttf"; path = "../src/assets/fonts/IBMPlexSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Bold.ttf"; path = "../src/assets/fonts/IBMPlexSans-Bold.ttf"; sourceTree = "<group>"; };
+		FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Chatterbox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FE77A534A7BCEC734196E7C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework in Frameworks */,
+				8FE77A534A7BCEC734196E7C /* Pods_Chatterbox_ChatterboxTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,20 +92,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CF5421E16070FBF5AD193B4 /* Pods_ChatterboxTemp.framework in Frameworks */,
+				7CF5421E16070FBF5AD193B4 /* Pods_Chatterbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* ChatterboxTempTests */ = {
+		00E356EF1AD99517003FC87E /* ChatterboxTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* ChatterboxTempTests.m */,
+				00E356F21AD99517003FC87E /* ChatterboxTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = ChatterboxTempTests;
+			path = ChatterboxTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -116,7 +116,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* ChatterboxTemp */ = {
+		13B07FAE1A68108700A75B9A /* Chatterbox */ = {
 			isa = PBXGroup;
 			children = (
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -131,15 +131,15 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				FC9A4929C78C6C63481522BD /* PrivacyInfo.xcprivacy */,
 			);
-			name = ChatterboxTemp;
+			name = Chatterbox;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				815C475C22E16122DBA5428D /* Pods_ChatterboxTemp.framework */,
-				17B32F6B6180D5BCFE44147C /* Pods_ChatterboxTemp_ChatterboxTempTests.framework */,
+				815C475C22E16122DBA5428D /* Pods_Chatterbox.framework */,
+				17B32F6B6180D5BCFE44147C /* Pods_Chatterbox_ChatterboxTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -154,9 +154,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* ChatterboxTemp */,
+				13B07FAE1A68108700A75B9A /* Chatterbox */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* ChatterboxTempTests */,
+				00E356EF1AD99517003FC87E /* ChatterboxTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -170,8 +170,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* ChatterboxTemp.app */,
-				00E356EE1AD99517003FC87E /* ChatterboxTempTests.xctest */,
+				13B07F961A680F5B00A75B9A /* Chatterbox.app */,
+				00E356EE1AD99517003FC87E /* ChatterboxTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,16 +179,16 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */,
-				64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */,
-				0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */,
-				93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */,
+				35EBDB76A0F1E115485744CD /* Pods-Chatterbox.debug.xcconfig */,
+				64AFE6FD57CD4940D4E3B11A /* Pods-Chatterbox.release.xcconfig */,
+				0B3D653B912F3BE6F0A1C09C /* Pods-Chatterbox-ChatterboxTests.debug.xcconfig */,
+				93A9045E96A8CA66DD943089 /* Pods-Chatterbox-ChatterboxTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
 		D81B413FED7C4AB78A7B835E /* Resources */ = {
-			isa = "PBXGroup";
+			isa = PBXGroup;
 			children = (
 				45C7565EC5014CAB90695638 /* IBMPlexSans-Medium.ttf */,
 				66F1471DFCAF4F4798DC7A5A /* ChakraPetch-Bold.ttf */,
@@ -200,15 +200,15 @@
 				F3AD430EC1874EBABAB14798 /* IBMPlexSans-Bold.ttf */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
 			path = "";
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* ChatterboxTempTests */ = {
+		00E356ED1AD99517003FC87E /* ChatterboxTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChatterboxTempTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChatterboxTests" */;
 			buildPhases = (
 				552C9C95996108B42D46FCC8 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -222,14 +222,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = ChatterboxTempTests;
-			productName = ChatterboxTempTests;
-			productReference = 00E356EE1AD99517003FC87E /* ChatterboxTempTests.xctest */;
+			name = ChatterboxTests;
+			productName = ChatterboxTests;
+			productReference = 00E356EE1AD99517003FC87E /* ChatterboxTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* ChatterboxTemp */ = {
+		13B07F861A680F5B00A75B9A /* Chatterbox */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ChatterboxTemp" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Chatterbox" */;
 			buildPhases = (
 				A7DD7EC0584174C4F643BF4F /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -245,9 +245,9 @@
 			);
 			dependencies = (
 			);
-			name = ChatterboxTemp;
-			productName = ChatterboxTemp;
-			productReference = 13B07F961A680F5B00A75B9A /* ChatterboxTemp.app */;
+			name = Chatterbox;
+			productName = Chatterbox;
+			productReference = 13B07F961A680F5B00A75B9A /* Chatterbox.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -267,7 +267,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ChatterboxTemp" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Chatterbox" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -280,8 +280,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* ChatterboxTemp */,
-				00E356ED1AD99517003FC87E /* ChatterboxTempTests */,
+				13B07F861A680F5B00A75B9A /* Chatterbox */,
+				00E356ED1AD99517003FC87E /* ChatterboxTests */,
 			);
 		};
 /* End PBXProject section */
@@ -346,15 +346,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		44063A71D48F5EB6A358AA80 /* [CP] Embed Pods Frameworks */ = {
@@ -363,15 +363,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		552C9C95996108B42D46FCC8 /* [CP] Check Pods Manifest.lock */ = {
@@ -389,7 +389,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ChatterboxTemp-ChatterboxTempTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Chatterbox-ChatterboxTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -402,15 +402,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp/Pods-ChatterboxTemp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chatterbox/Pods-Chatterbox-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A7DD7EC0584174C4F643BF4F /* [CP] Check Pods Manifest.lock */ = {
@@ -428,7 +428,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ChatterboxTemp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Chatterbox-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -455,15 +455,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatterboxTemp-ChatterboxTempTests/Pods-ChatterboxTemp-ChatterboxTempTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chatterbox-ChatterboxTests/Pods-Chatterbox-ChatterboxTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F513F8D789C0F1288CA05D80 /* [CP-User] [RNFB] Core Configuration */ = {
@@ -486,7 +486,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* ChatterboxTempTests.m in Sources */,
+				00E356F31AD99517003FC87E /* ChatterboxTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,7 +506,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* ChatterboxTemp */;
+			target = 13B07F861A680F5B00A75B9A /* Chatterbox */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -514,7 +514,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B3D653B912F3BE6F0A1C09C /* Pods-ChatterboxTemp-ChatterboxTempTests.debug.xcconfig */;
+			baseConfigurationReference = 0B3D653B912F3BE6F0A1C09C /* Pods-Chatterbox-ChatterboxTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEAD_CODE_STRIPPING = YES;
@@ -522,8 +522,8 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = ChatterboxTempTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				INFOPLIST_FILE = ChatterboxTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -542,19 +542,19 @@
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatterboxTemp.app/ChatterboxTemp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chatterbox.app/Chatterbox";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 93A9045E96A8CA66DD943089 /* Pods-ChatterboxTemp-ChatterboxTempTests.release.xcconfig */;
+			baseConfigurationReference = 93A9045E96A8CA66DD943089 /* Pods-Chatterbox-ChatterboxTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
-				INFOPLIST_FILE = ChatterboxTempTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				INFOPLIST_FILE = ChatterboxTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -573,23 +573,23 @@
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chatterbox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatterboxTemp.app/ChatterboxTemp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chatterbox.app/Chatterbox";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35EBDB76A0F1E115485744CD /* Pods-ChatterboxTemp.debug.xcconfig */;
+			baseConfigurationReference = 35EBDB76A0F1E115485744CD /* Pods-Chatterbox.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Chatterbox/Chatterbox.entitlements;
 				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 7M8ZL97P5L;
 				ENABLE_BITCODE = NO;
-				CODE_SIGN_ENTITLEMENTS = ChatterboxTemp/ChatterboxTemp.entitlements;
-				INFOPLIST_FILE = ChatterboxTemp/Info.plist;
+				INFOPLIST_FILE = Chatterbox/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -618,16 +618,16 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 64AFE6FD57CD4940D4E3B11A /* Pods-ChatterboxTemp.release.xcconfig */;
+			baseConfigurationReference = 64AFE6FD57CD4940D4E3B11A /* Pods-Chatterbox.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Chatterbox/Chatterbox.entitlements;
 				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_TEAM = 7M8ZL97P5L;
-				CODE_SIGN_ENTITLEMENTS = ChatterboxTemp/ChatterboxTemp.entitlements;
-				INFOPLIST_FILE = ChatterboxTemp/Info.plist;
+				INFOPLIST_FILE = Chatterbox/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -736,7 +736,7 @@
 					"${PODS_ROOT}/React-graphics",
 					"${PODS_ROOT}/React-graphics/react/renderer/graphics/platform/ios",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -845,7 +845,7 @@
 					"${PODS_ROOT}/React-graphics",
 					"${PODS_ROOT}/React-graphics/react/renderer/graphics/platform/ios",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -880,7 +880,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChatterboxTempTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChatterboxTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -889,7 +889,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ChatterboxTemp" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Chatterbox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -898,7 +898,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ChatterboxTemp" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Chatterbox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
