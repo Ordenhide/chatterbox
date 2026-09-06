@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Release-only overrides.
+
+      SYSTEM_ALERT_WINDOW ("display over other apps") comes from React Native
+      itself, which needs it for the dev menu overlay and the red box. Neither
+      exists in a release build, so what ships is a sensitive permission the
+      app never exercises — one that Play flags, and one a user reading the
+      permission list has to weigh against an app that asks them to trust it.
+
+      Scoped to release rather than removed outright so the dev overlay still
+      works in debug builds, which is the only thing that ever wanted it.
+    -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />
+</manifest>

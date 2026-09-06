@@ -24,18 +24,24 @@ const GOOGLE_WEB_CLIENT_ID =
   '916000207469-i1ot1ll5qlelh5aka3st788ns8ph5ue7.apps.googleusercontent.com';
 
 /**
- * Fixed rather than auto-generated debug tokens.
+ * Debug App Check tokens are not written down here.
  *
- * Left auto-generated, the SDK mints a new random token on every fresh
- * install or data wipe, and each one has to be re-registered in Firebase
- * Console > App Check > Manage debug tokens before App Check-gated calls work
- * again — including plain email/password reauth, since changePassword and
- * account deletion both route through App Check. That breaks on every fresh
- * simulator with no error pointing back here. A fixed token is registered once
- * per platform, ever.
- */
-const DEBUG_APP_CHECK_TOKEN_ANDROID = '6c53c9a1-98b6-432f-96b2-a37aaa69bc30';
-const DEBUG_APP_CHECK_TOKEN_APPLE = '77904aef-75a2-4069-98a2-00c7bc76e80b';
+ * Two fixed ones used to be, for a real convenience: left auto-generated, the
+ * SDK mints a new token on every fresh install or data wipe, and each one has
+ * to be registered in Firebase Console > App Check > Manage debug tokens
+ * before App Check-gated calls work again — including plain email/password
+ * reauth, since changePassword and account deletion both route through it.
+ *
+ * The cost was worse than the annoyance. A registered debug token bypasses App
+ * Check completely: anyone holding the string can attest as this app and call
+ * the production backend from a script. Writing it in the source made the
+ * control that is supposed to stop scripted abuse only as strong as the repo,
+ * and it stayed true for every developer, every fork, and every future day the
+ * repo is opened up.
+ *
+ * So the provider auto-generates. On a fresh install, look for
+ * "Enter this debug secret into the allow list" in the native log, register
+ * that token, and delete it again when you are done with that simulator.
 
 /**
  * Initialises the default Firebase app and App Check. Returns the app's name
@@ -66,11 +72,9 @@ export function initFirebase(): string {
   appCheckProvider.configure({
     android: {
       provider: __DEV__ ? 'debug' : 'playIntegrity',
-      debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_ANDROID : undefined,
     },
     apple: {
       provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
-      debugToken: __DEV__ ? DEBUG_APP_CHECK_TOKEN_APPLE : undefined,
     },
   });
   initializeAppCheck(app, {provider: appCheckProvider, isTokenAutoRefreshEnabled: true});

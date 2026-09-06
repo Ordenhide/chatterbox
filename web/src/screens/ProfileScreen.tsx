@@ -379,6 +379,23 @@ export default function ProfileScreen({user}: {user: User}) {
               {previewsOn ? t('linkPreview.turnOff') : t('linkPreview.turnOn')}
             </button>
           </section>
+
+          {/* The policy was reachable only from the sign-up page, so anyone
+              with an account could not read the document describing what the
+              app does with their messages. Opens the same generated page the
+              website serves, in the reader's language where one exists. */}
+          <section style={styles.card}>
+            <div style={styles.cardTitle}>{t('privacyPolicy.title')}</div>
+            <div style={styles.cardDesc}>{t('privacyPolicy.desc')}</div>
+            <a
+              className="btn btn-soft"
+              style={{...styles.pwSubmit, display: 'inline-block', textAlign: 'center'}}
+              href={lang === 'zh' ? '/privacy.zh-Hans.html' : '/privacy.html'}
+              target="_blank"
+              rel="noopener noreferrer">
+              {t('privacyPolicy.open')}
+            </a>
+          </section>
         </>
       ),
     },

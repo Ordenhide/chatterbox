@@ -23,7 +23,7 @@ import {getBooleanFlag} from '../services/featureFlags';
 import {submitFeedback} from '../services/feedback';
 import {reportError, trackEvent} from '../services/telemetry';
 import {useFocusEffect} from '@react-navigation/native';
-import {doc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
+import {doc, getFirestore, onSnapshot} from '../services/firebase/firestore';
 import GlassView from '../components/GlassView';
 import GlassScreen from '../components/GlassScreen';
 import Icon from '../components/Icon';
@@ -603,6 +603,18 @@ export default function ProfileScreen() {
             <TouchableOpacity style={[styles.shortcutItem, {backgroundColor: colors.surface}]} onPress={() => navigation.navigate('Chats', {screen: 'RecoveryPhrase'})}>
               <Icon name="key" size={24} color={colors.text} style={styles.shortcutIcon} />
               <Text style={[styles.shortcutLabel, {color: colors.text}]}>{t('profile.shortcutRecovery', 'Recovery Phrase')}</Text>
+            </TouchableOpacity>
+            {/* The only way to read the policy from inside the app used to be
+                the link on the sign-up screen — so once you had an account,
+                the document describing what the app does with your messages
+                was unreachable from it. */}
+            <TouchableOpacity
+              style={[styles.shortcutItem, {backgroundColor: colors.surface}]}
+              onPress={() => navigation.navigate('Chats', {screen: 'PrivacyPolicy'})}>
+              <Icon name="shield" size={24} color={colors.text} style={styles.shortcutIcon} />
+              <Text style={[styles.shortcutLabel, {color: colors.text}]}>
+                {t('profile.shortcutPrivacy')}
+              </Text>
             </TouchableOpacity>
           </View>
         </GlassView>

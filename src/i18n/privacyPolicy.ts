@@ -32,7 +32,7 @@
  */
 import type {OfferedLanguage} from './languages';
 
-export const POLICY_LAST_UPDATED = '2026-09-05';
+export const POLICY_LAST_UPDATED = '2026-09-06';
 export const POLICY_CONTACT_EMAIL = 'privacy@chatterbox.app';
 
 export type PolicySection = {
@@ -94,7 +94,7 @@ You reach someone by sending them an invite link out of band, through whatever y
       body: `• Account data: the email address you register with, held in Firebase Authentication.
 • Message and attachment ciphertext, plus the metadata in section 2.
 • Usage data: app interaction events via Firebase Analytics — screen views and feature usage, never message contents. Disabled in development builds.
-• Crash reports: anonymous crash and error data via Firebase Crashlytics.
+• Crash reports: crash and error data via Firebase Crashlytics. Both this and the usage data above carry your account identifier, so neither is anonymous: we can see which account an event or a crash came from. Neither carries message contents.
 
 Analytics and crash reporting cannot currently be switched off individually inside the app. Write to us if you want yours deleted.`,
     },
@@ -210,7 +210,7 @@ If you would rather we deleted something by hand, write to us.`,
       body: `• 账号数据：你注册用的邮箱地址，保存在 Firebase Authentication 里。
 • 消息和附件的密文，以及第 2 节列出的元数据。
 • 使用数据：通过 Firebase Analytics 收集的应用交互事件——页面浏览和功能使用，绝不包括消息内容。开发版本中已禁用。
-• 崩溃报告：通过 Firebase Crashlytics 收集的匿名崩溃和错误数据。
+• 崩溃报告：通过 Firebase Crashlytics 收集的崩溃和错误数据。这一项和上面的使用数据都带着你的账号标识，所以两者都不是匿名的：我们看得出某个事件或某次崩溃来自哪个账号。两者都不包含消息内容。
 
 目前应用内还不能单独关闭分析和崩溃上报。如果你想删除自己的这部分数据，写信给我们。`,
     },
@@ -325,7 +325,7 @@ Du erreichst jemanden, indem du ihm außerhalb der App einen Einladungslink schi
       body: `• Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gespeichert in Firebase Authentication.
 • Chiffrat von Nachrichten und Anhängen sowie die Metadaten aus Abschnitt 2.
 • Nutzungsdaten: App-Interaktionsereignisse über Firebase Analytics — Bildschirmaufrufe und Funktionsnutzung, nie Nachrichteninhalte. In Entwicklungs-Builds deaktiviert.
-• Absturzberichte: anonyme Absturz- und Fehlerdaten über Firebase Crashlytics.
+• Absturzberichte: Absturz- und Fehlerdaten über Firebase Crashlytics. Sowohl diese als auch die Nutzungsdaten oben tragen deine Konto-Kennung, keines von beiden ist also anonym: wir sehen, von welchem Konto ein Ereignis oder ein Absturz kam. Nachrichteninhalte enthält keines von beiden.
 
 Analytics und Absturzberichte lassen sich derzeit nicht einzeln in der App abschalten. Schreib uns, wenn du deine gelöscht haben möchtest.`,
     },
@@ -440,7 +440,7 @@ Llegas a alguien enviándole un enlace de invitación por fuera de la app, a tra
       body: `• Datos de la cuenta: la dirección de correo con la que te registras, guardada en Firebase Authentication.
 • El texto cifrado de mensajes y adjuntos, más los metadatos de la sección 2.
 • Datos de uso: eventos de interacción con la app vía Firebase Analytics —pantallas vistas y uso de funciones, nunca el contenido de los mensajes. Desactivado en compilaciones de desarrollo.
-• Informes de fallos: datos anónimos de fallos y errores vía Firebase Crashlytics.
+• Informes de fallos: datos de fallos y errores vía Firebase Crashlytics. Tanto estos como los datos de uso de arriba llevan el identificador de tu cuenta, así que ninguno es anónimo: podemos ver de qué cuenta vino un evento o un fallo. Ninguno lleva el contenido de los mensajes.
 
 Ahora mismo, la analítica y los informes de fallos no se pueden desactivar por separado dentro de la app. Escríbenos si quieres que borremos los tuyos.`,
     },
@@ -555,7 +555,7 @@ Vous joignez quelqu'un en lui envoyant un lien d'invitation en dehors de l'appli
       body: `• Données de compte : l'adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.
 • Le chiffré des messages et des pièces jointes, ainsi que les métadonnées de la section 2.
 • Données d'usage : événements d'interaction via Firebase Analytics — écrans consultés et fonctionnalités utilisées, jamais le contenu des messages. Désactivé dans les versions de développement.
-• Rapports de plantage : données anonymes de plantage et d'erreur via Firebase Crashlytics.
+• Rapports de plantage : données de plantage et d'erreur via Firebase Crashlytics. Ces données comme celles d'usage ci-dessus portent l'identifiant de votre compte : ni les unes ni les autres ne sont anonymes, nous voyons de quel compte vient un événement ou un plantage. Aucune ne contient le contenu des messages.
 
 L'analytique et les rapports de plantage ne peuvent pas encore être désactivés séparément dans l'application. Écrivez-nous si vous souhaitez la suppression des vôtres.`,
     },
@@ -670,7 +670,7 @@ Raggiungi qualcuno inviandogli un link d'invito fuori dall'app, con qualunque me
       body: `• Dati dell'account: l'indirizzo email con cui ti registri, conservato in Firebase Authentication.
 • Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.
 • Dati d'uso: eventi di interazione con l'app tramite Firebase Analytics — schermate viste e funzioni usate, mai il contenuto dei messaggi. Disattivato nelle build di sviluppo.
-• Segnalazioni di crash: dati anonimi di crash ed errori tramite Firebase Crashlytics.
+• Segnalazioni di crash: dati di crash ed errori tramite Firebase Crashlytics. Sia questi sia i dati d’uso qui sopra portano l’identificativo del tuo account, quindi nessuno dei due è anonimo: vediamo da quale account arriva un evento o un crash. Nessuno dei due contiene il contenuto dei messaggi.
 
 Al momento analytics e segnalazioni di crash non si possono disattivare singolarmente dentro l'app. Scrivici se vuoi che cancelliamo i tuoi.`,
     },
@@ -785,7 +785,7 @@ Chegas a alguém enviando-lhe uma ligação de convite fora da app, por aquilo q
       body: `• Dados da conta: o endereço de email com que te registas, guardado no Firebase Authentication.
 • O texto cifrado de mensagens e anexos, mais os metadados da secção 2.
 • Dados de utilização: eventos de interação com a app via Firebase Analytics — ecrãs vistos e funcionalidades usadas, nunca o conteúdo das mensagens. Desativado nas compilações de desenvolvimento.
-• Relatórios de falhas: dados anónimos de falhas e erros via Firebase Crashlytics.
+• Relatórios de falhas: dados de falhas e erros via Firebase Crashlytics. Tanto estes como os dados de utilização acima levam o identificador da tua conta, por isso nenhum é anónimo: vemos de que conta veio um evento ou uma falha. Nenhum leva o conteúdo das mensagens.
 
 De momento, a analítica e os relatórios de falhas não podem ser desligados separadamente dentro da app. Escreve-nos se quiseres que apaguemos os teus.`,
     },
@@ -900,7 +900,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
       body: `• Данные аккаунта: адрес электронной почты, с которым вы регистрируетесь, хранится в Firebase Authentication.
 • Шифртекст сообщений и вложений, а также метаданные из раздела 2.
 • Данные использования: события взаимодействия с приложением через Firebase Analytics — просмотры экранов и использование функций, но никогда содержимое сообщений. В отладочных сборках отключено.
-• Отчёты о сбоях: анонимные данные о сбоях и ошибках через Firebase Crashlytics.
+• Отчёты о сбоях: данные о сбоях и ошибках через Firebase Crashlytics. И они, и данные об использовании выше несут идентификатор вашей учётной записи, так что ни то ни другое не анонимно: мы видим, из какой учётной записи пришло событие или сбой. Содержимого сообщений не несёт ни то ни другое.
 
 Аналитику и отчёты о сбоях пока нельзя отключить по отдельности внутри приложения. Напишите нам, если хотите, чтобы ваши данные удалили.`,
     },
@@ -1015,7 +1015,7 @@ Birine ulaşmak için ona uygulama dışından, zaten kullandığın herhangi bi
       body: `• Hesap verisi: kayıt olurken kullandığın e-posta adresi, Firebase Authentication içinde tutulur.
 • Mesaj ve eklerin şifreli metni, ayrıca 2. bölümdeki üst veriler.
 • Kullanım verisi: Firebase Analytics üzerinden uygulama etkileşim olayları — görüntülenen ekranlar ve kullanılan özellikler; mesaj içeriği asla. Geliştirme sürümlerinde kapalıdır.
-• Çökme raporları: Firebase Crashlytics üzerinden anonim çökme ve hata verisi.
+• Çökme raporları: Firebase Crashlytics üzerinden çökme ve hata verisi. Hem bunlar hem de yukarıdaki kullanım verisi hesap tanımlayıcını taşır, yani ikisi de anonim değildir: bir olayın ya da çökmenin hangi hesaptan geldiğini görebiliriz. İkisi de mesaj içeriği taşımaz.
 
 Analitik ve çökme raporlaması şu an uygulama içinde tek tek kapatılamıyor. Kendi verinin silinmesini istersen bize yaz.`,
     },
@@ -1130,7 +1130,7 @@ Bạn liên hệ với ai đó bằng cách gửi cho họ một liên kết m�
       body: `• Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, lưu trong Firebase Authentication.
 • Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.
 • Dữ liệu sử dụng: các sự kiện tương tác qua Firebase Analytics — màn hình đã xem và tính năng đã dùng, không bao giờ là nội dung tin nhắn. Đã tắt trong bản dựng phát triển.
-• Báo cáo sự cố: dữ liệu sự cố và lỗi ẩn danh qua Firebase Crashlytics.
+• Báo cáo sự cố: dữ liệu sự cố và lỗi qua Firebase Crashlytics. Cả mục này lẫn dữ liệu sử dụng ở trên đều mang mã định danh tài khoản của bạn, nên không mục nào là ẩn danh: chúng tôi thấy được một sự kiện hay một sự cố đến từ tài khoản nào. Không mục nào mang nội dung tin nhắn.
 
 Hiện tại phân tích và báo cáo sự cố chưa thể tắt riêng lẻ trong ứng dụng. Hãy viết cho chúng tôi nếu bạn muốn xoá phần của mình.`,
     },
@@ -1245,7 +1245,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `• アカウント情報: 登録に使うメールアドレス。Firebase Authentication に保管されます。
 • メッセージと添付の暗号文、および第 2 節の関連情報。
 • 利用データ: Firebase Analytics によるアプリ操作イベント。画面の表示と機能の利用であり、メッセージの中身は決して含みません。開発ビルドでは無効です。
-• クラッシュレポート: Firebase Crashlytics による匿名のクラッシュ・エラー情報。
+• クラッシュレポート: Firebase Crashlytics によるクラッシュ・エラー情報。これも上の利用データも、あなたのアカウント識別子を伴います。どちらも匿名ではなく、ある操作やクラッシュがどのアカウントのものかは分かります。どちらもメッセージの内容は含みません。
 
 分析とクラッシュレポートは、今のところアプリ内で個別にオフにできません。ご自身の分を削除したい場合はご連絡ください。`,
     },
@@ -1360,7 +1360,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `• 계정 정보: 가입에 쓰는 이메일 주소. Firebase Authentication에 보관됩니다.
 • 메시지와 첨부의 암호문, 그리고 2절의 메타데이터.
 • 사용 데이터: Firebase Analytics를 통한 앱 상호작용 이벤트 — 화면 조회와 기능 사용이며, 메시지 내용은 절대 아닙니다. 개발 빌드에서는 꺼져 있습니다.
-• 오류 보고: Firebase Crashlytics를 통한 익명의 충돌 및 오류 데이터.
+• 오류 보고: Firebase Crashlytics를 통한 충돌 및 오류 데이터. 이것도 위의 사용 데이터도 당신의 계정 식별자를 함께 담고 있어서 둘 다 익명이 아닙니다. 어떤 계정에서 나온 이벤트인지, 어떤 계정이 충돌했는지 우리는 알 수 있습니다. 둘 다 메시지 내용은 담지 않습니다.
 
 분석과 오류 보고는 현재 앱 안에서 개별적으로 끌 수 없습니다. 본인 것을 삭제하고 싶으면 연락해 주세요.`,
     },
@@ -1475,7 +1475,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `• 帳號資料：你註冊用的電子郵件地址，保存在 Firebase Authentication 裡。
 • 訊息和附件的密文，以及第 2 節列出的相關資料。
 • 使用資料：透過 Firebase Analytics 收集的應用程式互動事件——頁面瀏覽和功能使用，絕不包括訊息內容。開發版本中已停用。
-• 當機報告：透過 Firebase Crashlytics 收集的匿名當機和錯誤資料。
+• 當機報告：透過 Firebase Crashlytics 收集的當機和錯誤資料。這一項和上面的使用資料都帶著你的帳號識別碼，所以兩者都不是匿名的：我們看得出某個事件或某次當機來自哪個帳號。兩者都不包含訊息內容。
 
 目前應用程式內還不能單獨關閉分析和當機回報。如果你想刪除自己的這部分資料，寫信給我們。`,
     },
@@ -1590,7 +1590,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `• بيانات الحساب: البريد الإلكتروني الذي تسجّل به، محفوظ في Firebase Authentication.
 • النص المُعمّى للرسائل والمرفقات، إضافة إلى البيانات الوصفية في القسم 2.
 • بيانات الاستخدام: أحداث التفاعل مع التطبيق عبر Firebase Analytics — الشاشات المعروضة والميزات المستخدمة، ولا محتوى الرسائل أبدًا. مُعطّل في نسخ التطوير.
-• تقارير الأعطال: بيانات مجهولة عن الأعطال والأخطاء عبر Firebase Crashlytics.
+• تقارير الأعطال: بيانات عن الأعطال والأخطاء عبر Firebase Crashlytics. وهذه وبيانات الاستخدام أعلاه تحمل مُعرّف حسابك، فليست أيٌّ منهما مجهولة: نستطيع أن نرى من أي حساب جاء الحدث أو العطل. ولا تحمل أيٌّ منهما محتوى الرسائل.
 
 لا يمكن حاليًا إيقاف التحليلات وتقارير الأعطال كلٌّ على حدة داخل التطبيق. راسلنا إن أردت حذف ما يخصّك.`,
     },
@@ -1705,7 +1705,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `• खाता डेटा: जिस ईमेल पते से आप पंजीकरण करते हैं, वह Firebase Authentication में रखा जाता है।
 • संदेशों और अनुलग्नकों का सिफरटेक्स्ट, साथ ही खंड 2 का मेटाडेटा।
 • उपयोग डेटा: Firebase Analytics के ज़रिए ऐप इंटरैक्शन की घटनाएँ — कौन-सी स्क्रीन देखी और कौन-सी सुविधा इस्तेमाल की; संदेशों की सामग्री कभी नहीं। डेवलपमेंट बिल्ड में बंद।
-• क्रैश रिपोर्ट: Firebase Crashlytics के ज़रिए गुमनाम क्रैश और त्रुटि डेटा।
+• क्रैश रिपोर्ट: Firebase Crashlytics के ज़रिए क्रैश और त्रुटि डेटा। यह भी और ऊपर का उपयोग डेटा भी आपके खाते का पहचानकर्ता साथ लेकर जाता है, इसलिए दोनों में से कोई गुमनाम नहीं है: हमें दिखता है कि कोई घटना या कोई क्रैश किस खाते से आया। दोनों में से कोई संदेश की सामग्री नहीं ले जाता।
 
 फ़िलहाल एनालिटिक्स और क्रैश रिपोर्टिंग को ऐप के भीतर अलग-अलग बंद नहीं किया जा सकता। अपना डेटा हटवाना चाहें तो हमें लिखें।`,
     },

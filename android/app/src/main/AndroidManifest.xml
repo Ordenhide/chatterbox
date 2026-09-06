@@ -27,8 +27,25 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <!-- FOREGROUND_SERVICE_MICROPHONE and FOREGROUND_SERVICE_CAMERA were
+         declared here and used by nothing: the merged manifest has no service
+         of either type (WebRTC contributes mediaProjection, Notifee
+         shortService, and this app declares no service of its own). A
+         permission on the store listing that the app cannot exercise is a
+         question at review time and a line in the permission list a user has
+         to weigh, in exchange for nothing.
+
+         Removed rather than left: calls do not survive backgrounding here,
+         which is what a camera or microphone foreground service would be for.
+         Add the matching service first if that changes. -->
+
+    <!-- Firebase Analytics pulls in the advertising ID. Nothing in this app
+         reads it, and shipping it would put "collects advertising ID" on the
+         Play data-safety form of a messenger whose argument is that it holds
+         as little as possible. Analytics itself keeps working. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" tools:node="remove" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
