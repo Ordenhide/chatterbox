@@ -10,7 +10,7 @@
  * for `Le Caf`. Nothing failed; the menu row simply never appeared, which is
  * the kind of bug a test suite has to be asked to look for.
  */
-import {extractEntities, wikipediaSearchUrl} from '../wikipediaLookup';
+import {extractEntities, wikipediaSearchUrl} from './wikipediaLookup';
 
 describe('scripts without ASCII capitals', () => {
   // Chinese marks a work with 《》, which is a stronger signal than a capital.

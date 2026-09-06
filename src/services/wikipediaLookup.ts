@@ -17,9 +17,35 @@
  * themselves, which is a thing they can already do and already understand —
  * and there is nothing left for this app to disclose, consent to, or cache.
  *
- * Everything here is pure and offline. The entity extraction is kept from the
- * old service (it is what makes the action worth offering rather than a
- * full-text search of a whole sentence) and never touched the network.
+ * Everything here is pure and offline. The extraction never touched the
+ * network and still does not.
+ *
+ * ## Which languages this actually works in
+ *
+ * The extraction inherited from the old service was `[A-Z][a-z]+` twice over:
+ * ASCII, and a two-word minimum. In a fifteen-language app that meant the
+ * action never once appeared for a Chinese, Japanese, Korean, Russian, Arabic
+ * or Hindi message — seven of the fifteen, silently — and in the Latin
+ * languages it stopped at the first diacritic, so `Le Café de Flore` offered
+ * to search for `Le Caf`. It also demanded two capitalised words in a row,
+ * which is not how `Oppenheimer` or `Kubernetes` are written.
+ *
+ * Three signals replace it, in falling order of precision:
+ *
+ *   1. Bracketed titles — 《…》〈…〉『…』. In Chinese and Japanese these mark a
+ *      work by name, which is about as unambiguous as a proper noun gets.
+ *   2. Capitalised runs, Unicode-aware: `\p{Lu}` and `\p{Ll}` rather than
+ *      A-Z, so Cyrillic, Greek and every accented Latin language work. A
+ *      lone capitalised word counts only mid-sentence, where the capital is
+ *      a name rather than grammar — which is also what makes a Latin word
+ *      embedded in Chinese ("推荐你看 Oppenheimer") register.
+ *   3. Katakana runs of four or more. Japanese writes foreign names and
+ *      titles in katakana; it also writes コーヒー that way, so this is the
+ *      loosest of the three and sits last.
+ *
+ * Arabic and Hindi still get nothing: neither script has case, and neither
+ * has a bracketing convention to stand in for it. Recognising a name in them
+ * needs a dictionary or a model, and this file is neither.
  */
 
 const STOP_WORDS = new Set([
@@ -44,39 +70,101 @@ const STOP_WORDS = new Set([
   'shouldn\'t', 'wouldn\'t', 'isn\'t', 'aren\'t', 'wasn\'t', 'weren\'t', 'haven\'t',
   'hasn\'t', 'hadn\'t', 'tonight', 'today', 'tomorrow', 'yesterday', 'morning',
   'evening', 'night', 'soon', 'later', 'at', 'in', 'by', 'down',
+  // Calendar words are capitalised mid-sentence in English and are never what
+  // anyone wanted an encyclopaedia article about: "see you Monday Morning"
+  // used to offer a lookup.
+  'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+  'january', 'february', 'march', 'april', 'june', 'july', 'august',
+  'september', 'october', 'november', 'december',
 ]);
 
 /**
- * Extract capitalized multi-word phrases that may be named entities.
- * Returns phrases with 2-4 capitalized words (e.g. "Eiffel Tower", "Star Wars").
+ * A run of capitalised words, in any script that has capitals.
+ *
+ * `\p{Lu}`/`\p{Ll}` rather than `A-Z`/`a-z`: that one change is what makes
+ * München, São Paulo, Hà Nội, İstanbul, México and Кремль visible at all.
+ * `\p{M}` is in the word body for the scripts that write a diacritic as a
+ * separate combining mark rather than a precomposed character — without it a
+ * Vietnamese name is cut at its first tone mark.
+ *
+ * The lookarounds mean a match cannot start or end inside a word, so the
+ * capital in `McDonald` yields nothing rather than the fragment `Mc`.
+ *
+ * An internal capital is allowed only when lowercase follows it, so McDonald
+ * and YouTube are one word each while a line of SHOUTED CAPITALS is not a
+ * name.
+ *
+ * `and`, `in`, `at` and `for` are deliberately not connectors. They were,
+ * and because the pattern repeats they chained list items into one phrase:
+ * a message naming five films offered to search for `Tel Aviv and Dana
+ * Weiss and House`. `of` and the romance particles stay, since `House of
+ * Cards` and `Café de Flore` are single names.
+ *
+ * The `{0,4}` tail makes the second word optional: a single capitalised word
+ * is a candidate here and is filtered on position below, rather than being
+ * unrepresentable as it was before.
+ */
+const CAPPED_RUN =
+  /(?<![\p{L}\p{M}])\p{Lu}[\p{Ll}\p{M}'’]+(?:\p{Lu}[\p{Ll}\p{M}]+)*(?:(?:\s+(?:of|the|de|del|la|le|les|el|di|da|do|von|van|der|du|des)){0,2}\s+\p{Lu}[\p{Ll}\p{M}'’]+(?:\p{Lu}[\p{Ll}\p{M}]+)*){0,4}(?![\p{L}\p{M}])/gu;
+
+/** 《…》〈…〉『…』 — a work named as a work. */
+const BRACKETED_TITLE = /[《〈『]([^》〉』\n]{1,30})[》〉』]/gu;
+
+/** Katakana, where Japanese puts foreign names and titles. */
+const KATAKANA_RUN = /[ァ-ヿ]{4,}/gu;
+
+/**
+ * Whether the capital at `index` is the start of a sentence, where a capital
+ * is grammar rather than a name.
+ *
+ * This is what separates "I watched Oppenheimer last night" from "Tomorrow
+ * works for me". It is also, usefully, why a Latin word sitting in Chinese
+ * text registers: the character before it is 看, not a full stop.
+ */
+function isSentenceInitial(text: string, index: number): boolean {
+  let i = index - 1;
+  while (i >= 0 && /\s/.test(text[i])) i--;
+  if (i < 0) return true;
+  return /[.!?;:…\n]/.test(text[i]);
+}
+
+/** Neither every word a stop word, nor long enough to be worth a menu row. */
+function isWorthOffering(phrase: string): boolean {
+  if (phrase.length < 4) return false;
+  const words = phrase.toLowerCase().split(/\s+/);
+  return !words.every(w => STOP_WORDS.has(w));
+}
+
+/**
+ * Names in a message that are worth offering a Wikipedia search for.
+ *
+ * Ordered by how much the signal can be trusted rather than by position, so
+ * that when the sheet shows four the likeliest is first.
  */
 export function extractEntities(text: string): string[] {
-  if (!text || text.length < 5) return [];
+  if (!text) return [];
+  const found: string[] = [];
 
-  // Capitalized phrase pattern: 2-5 consecutive capitalized words
-  // The `\s+` sits *outside* the optional connector group. It used to be inside
-  // it, which meant a plain two-word name had no space to match on: "House of
-  // Cards" worked (connector present) but "Eiffel Tower" and "Star Wars" — the
-  // examples in this function's own doc comment — never matched at all.
-  const phraseRegex = /\b([A-Z][a-z]+(?:\s+(?:of|the|and|in|at|de|la|le|el|di|von|van|for))?\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\b/g;
-  const phrases: string[] = [];
-  let match;
-  while ((match = phraseRegex.exec(text)) !== null) {
-    const phrase = match[1].trim();
-    // Reject when *every* word is a stop word ("Thanks Bye Okay"), not just when
-    // the joined phrase happens to be one. The list is a list of words, so
-    // testing only the concatenation let ordinary sentence-initial
-    // capitalisation through and sent it to Wikipedia.
-    const words = phrase.toLowerCase().split(/\s+/);
-    const allStopWords = words.every(w => STOP_WORDS.has(w));
-    if (phrase.length >= 4 && !allStopWords && !STOP_WORDS.has(phrase.toLowerCase())) {
-      phrases.push(phrase);
-    }
+  for (const m of text.matchAll(BRACKETED_TITLE)) {
+    const inner = m[1].trim();
+    if (inner) found.push(inner);
   }
+
+  for (const m of text.matchAll(CAPPED_RUN)) {
+    const phrase = m[0].trim();
+    if (!isWorthOffering(phrase)) continue;
+    // A single capital opening a sentence is grammar. Two in a row is not, so
+    // the position test applies only to the one-word case.
+    const oneWord = !/\s/.test(phrase);
+    if (oneWord && isSentenceInitial(text, m.index ?? 0)) continue;
+    found.push(phrase);
+  }
+
+  for (const m of text.matchAll(KATAKANA_RUN)) found.push(m[0]);
 
   // Four rather than two: nothing is fetched now, so a longer list costs an
   // extra row in a sheet the user is already reading, not four more requests.
-  return [...new Set(phrases)].slice(0, 4);
+  return [...new Set(found)].slice(0, 4);
 }
 
 /**
