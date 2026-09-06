@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import {useColorScheme} from 'react-native';
 import {getRecoveryPhrase, markRecoveryPhraseRevealed} from '../services/e2eeKeys';
@@ -21,6 +22,7 @@ type Props = {
  * again, so the only exit is the explicit "I've saved it" acknowledgement.
  */
 export default function RecoveryPhraseRevealModal({visible, userId, onDone}: Props) {
+  const {t} = useTranslation();
   const colors = getColors(useColorScheme());
   const [phrase, setPhrase] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
@@ -53,7 +55,7 @@ export default function RecoveryPhraseRevealModal({visible, userId, onDone}: Pro
       onDone();
     } catch (error) {
       reportError(error, 'e2ee_recovery_phrase_mark_revealed_failed');
-      Alert.alert('Something went wrong', 'Please try again.');
+      Alert.alert(t('errors.genericTitle'), t('errors.genericBody'));
     } finally {
       setConfirming(false);
     }
@@ -62,27 +64,26 @@ export default function RecoveryPhraseRevealModal({visible, userId, onDone}: Pro
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={() => {}}>
       <View style={[styles.container, {backgroundColor: colors.background}]}>
-        <Text style={[styles.title, {color: colors.text}]}>Save your recovery phrase</Text>
+        <Text style={[styles.title, {color: colors.text}]}>{t('recovery.saveTitle')}</Text>
         {failed ? (
           <>
             <Text style={[styles.body, {color: colors.textSecondary}]}>
-              We couldn't prepare your recovery phrase just now. Your messages are unaffected —
-              you can try again any time from Settings.
+              {t('recovery.prepareFailed')}
             </Text>
             <View style={styles.actions}>
               <TouchableOpacity
                 style={[styles.button, {backgroundColor: colors.primary}]}
                 onPress={onDone}>
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>Close</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+                  {t('common.close')}
+                </Text>
               </TouchableOpacity>
             </View>
           </>
         ) : (
           <>
             <Text style={[styles.body, {color: colors.textSecondary}]}>
-              This phrase can restore your encrypted message history if you ever reinstall the app
-              or switch devices. Anyone who has it can read your messages, so write it down and
-              keep it somewhere private — it will not be shown again.
+              {t('recovery.whatItDoes')}
             </Text>
             {phrase ? (
               <TextInput
@@ -102,9 +103,9 @@ export default function RecoveryPhraseRevealModal({visible, userId, onDone}: Pro
                 disabled={!phrase}
                 onPress={() => {
                   Clipboard.setString(phrase as string);
-                  Alert.alert('Copied', 'Recovery phrase copied to clipboard.');
+                  Alert.alert(t('profile.alerts.copiedTitle'), t('recovery.copiedBody'));
                 }}>
-                <Text style={[styles.buttonText, {color: colors.text}]}>Copy</Text>
+                <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.copy')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, {backgroundColor: colors.primary}]}
@@ -114,7 +115,7 @@ export default function RecoveryPhraseRevealModal({visible, userId, onDone}: Pro
                   <ActivityIndicator color={colors.textOnPrimary} />
                 ) : (
                   <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                    I've saved it
+                    {t('recovery.savedIt')}
                   </Text>
                 )}
               </TouchableOpacity>

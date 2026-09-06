@@ -9,6 +9,7 @@ import {
   FlatList,
   Platform,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors} from '../theme/colors';
 import {listenBookmarks, removeBookmark} from '../services/bookmarks';
@@ -19,6 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 import {bodyWeight} from '../theme/typography';
 
 export default function BookmarksScreen() {
+  const {t} = useTranslation();
   const {user} = useAuth();
   const colors = getColors(useColorScheme());
   const navigation = useNavigation<any>();
@@ -32,16 +34,16 @@ export default function BookmarksScreen() {
   const handleRemove = useCallback(
     (bookmark: BookmarkedMessage) => {
       if (!user?.uid) return;
-      Alert.alert('Remove Bookmark', 'Remove this saved message?', [
-        {text: 'Cancel', style: 'cancel'},
+      Alert.alert(t('bookmarks.removeTitle'), t('bookmarks.removeBody'), [
+        {text: t('common.cancel'), style: 'cancel'},
         {
-          text: 'Remove',
+          text: t('common.remove'),
           style: 'destructive',
           onPress: () => removeBookmark(user.uid, bookmark.id).catch(() => undefined),
         },
       ]);
     },
-    [user?.uid],
+    [t, user?.uid],
   );
 
   const handleNavigateToChat = useCallback(
@@ -68,29 +70,34 @@ export default function BookmarksScreen() {
         <GlassView style={[styles.card, {borderColor: colors.glassBorder}]}>
           <View style={styles.cardHeader}>
             <Text style={[styles.senderName, {color: colors.primary}]}>
-              {item.senderName || 'Unknown'}
+              {item.senderName || t('bookmarks.unknownSender')}
             </Text>
             <Text style={[styles.date, {color: colors.textSecondary}]}>
               {formatDate(item.createdAt)}
             </Text>
           </View>
           <Text style={[styles.messageText, {color: colors.text}]} numberOfLines={4}>
-            {item.text || (item.image ? '[Image]' : item.audio ? '[Voice]' : '[Message]')}
+            {item.text ||
+              (item.image
+                ? t('bookmarks.image')
+                : item.audio
+                ? t('bookmarks.voice')
+                : t('bookmarks.message'))}
           </Text>
           <View style={styles.cardFooter}>
             <Text style={[styles.tapHint, {color: colors.textSecondary}]}>
-              Tap to open chat
+              {t('bookmarks.tapToOpen')}
             </Text>
             <TouchableOpacity
               hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
               onPress={() => handleRemove(item)}>
-              <Text style={[styles.removeBtn, {color: colors.danger}]}>Remove</Text>
+              <Text style={[styles.removeBtn, {color: colors.danger}]}>{t('common.remove')}</Text>
             </TouchableOpacity>
           </View>
         </GlassView>
       </TouchableOpacity>
     ),
-    [colors, handleNavigateToChat, handleRemove],
+    [colors, handleNavigateToChat, handleRemove, t],
   );
 
   return (
@@ -98,10 +105,10 @@ export default function BookmarksScreen() {
       {bookmarks.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
-            No bookmarks yet
+            {t('bookmarks.empty')}
           </Text>
           <Text style={[styles.emptyHint, {color: colors.textSecondary}]}>
-            Long-press a message in any chat and tap "Bookmark" to save it here.
+            {t('bookmarks.emptyHint')}
           </Text>
         </View>
       ) : (

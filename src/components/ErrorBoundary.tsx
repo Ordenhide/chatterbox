@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, useColorScheme} from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import {reportError} from '../services/telemetry';
 import {bodyWeight} from '../theme/typography';
@@ -43,17 +44,20 @@ export default class ErrorBoundary extends React.Component<Props, State> {
 
 function ErrorFallback({onReset}: {onReset: () => void}) {
   const colors = getColors(useColorScheme());
+  const {t} = useTranslation();
   return (
     <View style={[styles.container, {backgroundColor: colors.backdrop}]}>
-      <Text style={[styles.title, {color: colors.text}]}>Something went wrong</Text>
+      <Text style={[styles.title, {color: colors.text}]}>{t('errorBoundary.title')}</Text>
       <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
-        The app hit an unexpected error. Your data is safe — try again.
+        {t('errorBoundary.body')}
       </Text>
       <TouchableOpacity
         style={[styles.button, {backgroundColor: colors.primary}]}
         onPress={onReset}
         accessibilityRole="button">
-        <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>Try Again</Text>
+        <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+          {t('errorBoundary.retry')}
+        </Text>
       </TouchableOpacity>
     </View>
   );

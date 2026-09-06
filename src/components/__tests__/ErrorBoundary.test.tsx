@@ -36,7 +36,10 @@ describe('ErrorBoundary', () => {
     });
     const json = tree!.toJSON();
     expect(json).toBeTruthy();
-    expect(JSON.stringify(json)).toContain('Something went wrong');
+    // The key, not the sentence: the fallback speaks through the dictionary
+    // now, and i18next is not initialised in the test environment, so `t`
+    // returns what it was asked for.
+    expect(JSON.stringify(json)).toContain('errorBoundary.title');
     consoleError.mockRestore();
   });
 });

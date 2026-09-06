@@ -2316,8 +2316,8 @@ export default function ChatScreen() {
     }
     setComposerText('');
     setSchedulePickerVisible(false);
-    Alert.alert('Scheduled', `Message will be sent in ${mins} minute${mins > 1 ? 's' : ''}.`);
-  }, [chatId, user, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
+    Alert.alert(t('chat.scheduledTitle'), t('chat.scheduledBody', {count: mins}));
+  }, [chatId, t, user, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
 
   const handleCreateList = useCallback(async () => {
     if (!chatId || !user) return;
@@ -2385,10 +2385,10 @@ export default function ChatScreen() {
         createdAt: Date.now(),
       };
       createReminder(user.uid, reminder)
-        .then(() => Alert.alert('Reminder Set', `You'll be reminded in ${minutes} minute${minutes > 1 ? 's' : ''}.`))
-        .catch(() => Alert.alert('Error', 'Failed to set reminder.'));
+        .then(() => Alert.alert(t('chat.reminderTitle'), t('chat.reminderBody', {count: minutes})))
+        .catch(() => Alert.alert(t('common.error'), t('chat.reminderFailed')));
     },
-    [user, chatId],
+    [t, user, chatId],
   );
 
   const handleTranscribe = useCallback(
@@ -3854,11 +3854,9 @@ export default function ChatScreen() {
       return;
     }
     Alert.alert(
-      'Delete messages',
-      `Permanently delete ${ids.length} message${ids.length > 1 ? 's' : ''} for everyone? This cannot be undone.` +
-        (skipped > 0
-          ? `\n\n${skipped} message${skipped > 1 ? 's were' : ' was'} left out — you can only delete your own.`
-          : ''),
+      t('chat.deleteMessagesTitle'),
+      t('chat.deleteForEveryone', {count: ids.length}) +
+        (skipped > 0 ? '\n\n' + t('chat.deleteSkipped', {count: skipped}) : ''),
       [
         {text: 'Cancel', style: 'cancel'},
         {
@@ -4529,7 +4527,9 @@ export default function ChatScreen() {
                 </>
               ) : (
                 <>
-                  <Text style={[styles.lotteryTitle, {color: colors.text}]}>Mystery Box</Text>
+                  <Text style={[styles.lotteryTitle, {color: colors.text}]}>
+                    {t('chat.mysteryBox')}
+                  </Text>
                   <Text style={[styles.lotteryHint, {color: colors.textSecondary}]}>
                     {current.lottery.options.length} options inside - tap to reveal!
                   </Text>
@@ -4676,7 +4676,9 @@ export default function ChatScreen() {
             ]}>
             <Icon name="mic" size={14} color={colors.danger} style={styles.burnAccessoryIcon} />
             <Text style={[styles.burnAccessoryText, {color: colors.danger}]}>
-              {`Recording ${Math.floor(dictationSeconds / 60)}:${String(dictationSeconds % 60).padStart(2, '0')}`}
+              {t('chat.recordingTime', {
+                time: `${Math.floor(dictationSeconds / 60)}:${String(dictationSeconds % 60).padStart(2, '0')}`,
+              })}
             </Text>
             <TouchableOpacity
               style={[styles.burnDurationButton, {marginStart: 'auto', backgroundColor: colors.warning}]}
@@ -4709,7 +4711,7 @@ export default function ChatScreen() {
           <View style={[styles.accessoryBar, {backgroundColor: colors.surface, borderTopColor: colors.border}]}>
             <View style={styles.accessoryTextWrap}>
               <Text style={[styles.accessoryTitle, {color: colors.primary}]}>
-                Replying to
+                {t('chat.replyingTo')}
               </Text>
               <Text style={[styles.accessoryText, {color: colors.text}]} numberOfLines={1}>
                 {`${replyTo?.user?.name || 'User'}: ${getReplyPreviewText(replyTo)}`}
@@ -4810,7 +4812,7 @@ export default function ChatScreen() {
         <View style={[styles.offlineBanner, {backgroundColor: colors.surfaceStrong}]}>
           <Icon name="blocked" size={13} color={colors.textSecondary} />
           <Text style={[styles.offlineText, {color: colors.text}]}>
-            Incognito — no previews, no cache, no read receipts
+            {t('chat.incognitoBanner')}
           </Text>
         </View>
       ) : null}
@@ -4875,12 +4877,11 @@ export default function ChatScreen() {
         <TouchableOpacity
           style={[styles.offlineBanner, {backgroundColor: colors.warning}]}
           accessibilityRole="button"
-          accessibilityLabel="This contact's encryption session changed. Tap to verify."
+          accessibilityLabel={t('chat.sessionChangedA11y')}
           onPress={verifyContact}>
           <Icon name="lock" size={13} color={colors.textOnWarning} />
           <Text style={[styles.offlineText, {color: colors.textOnWarning}]}>
-            This contact's encryption session changed — usually a reinstall. Tap to verify their
-            safety number.
+            {t('chat.sessionChanged')}
           </Text>
         </TouchableOpacity>
       ) : null}
@@ -4889,10 +4890,10 @@ export default function ChatScreen() {
           style={[styles.pinnedBar, {backgroundColor: colors.surface, borderBottomColor: colors.border}]}
           onPress={() => scrollToMessageId(pinnedMessageIds[0])}>
           <Text style={[styles.pinnedTitle, {color: colors.primary}]}>
-            Pinned {pinnedMessageIds.length}
+            {t('chat.pinned', {count: pinnedMessageIds.length})}
           </Text>
           <Text style={[styles.pinnedText, {color: colors.text}]} numberOfLines={1}>
-            Tap to jump
+            {t('chat.tapToJump')}
           </Text>
         </Pressable>
       ) : null}
@@ -5515,7 +5516,9 @@ export default function ChatScreen() {
                 setActionsModalVisible(false);
                 setLotteryModalVisible(true);
               }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>Mystery Box</Text>
+              <Text style={[styles.actionSheetText, {color: colors.text}]}>
+                {t('chat.mysteryBox')}
+              </Text>
             </TouchableOpacity>
               </>
             )}
@@ -5740,10 +5743,10 @@ export default function ChatScreen() {
             onPress={() => setSchedulePickerVisible(false)}>
             <View style={[styles.burnPickerSheet, {backgroundColor: colors.background}]}>
               <Text style={[styles.burnPickerTitle, {color: colors.text}]}>
-                Schedule Message
+                {t('chat.scheduleTitle')}
               </Text>
               <Text style={[styles.burnPickerSub, {color: colors.textSecondary}]}>
-                Send in how many minutes?
+                {t('chat.scheduleAsk')}
               </Text>
               <TextInput
                 style={[styles.scheduleInput, {color: colors.text, borderColor: colors.glassBorder}]}
@@ -5962,7 +5965,7 @@ export default function ChatScreen() {
               <View style={styles.summarySheetTitleRow}>
                 <Icon name="gift" size={18} color={colors.text} />
                 <Text style={[styles.summarySheetTitle, {color: colors.text, marginBottom: 0}]}>
-                  Mystery Box
+                  {t('chat.mysteryBox')}
                 </Text>
               </View>
               <Text style={[{color: colors.textSecondary, fontSize: 13, marginBottom: 12}]}>
@@ -5972,7 +5975,7 @@ export default function ChatScreen() {
                 <TextInput
                   key={i}
                   style={[styles.scheduleInput, {color: colors.text, borderColor: colors.border, marginBottom: 8}]}
-                  placeholder={`Option ${i + 1}`}
+                  placeholder={t('chat.pollOption', {n: i + 1})}
                   placeholderTextColor={colors.textSecondary}
                   value={opt}
                   onChangeText={(val) => setLotteryOptions(prev => { const n = [...prev]; n[i] = val; return n; })}

@@ -10,6 +10,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import GlassScreen from '../components/GlassScreen';
 import GlassView from '../components/GlassView';
@@ -26,6 +27,7 @@ import {reportError} from '../services/telemetry';
 import {bodyWeight, terminal} from '../theme/typography';
 
 export default function RecoveryPhraseScreen() {
+  const {t} = useTranslation();
   const colors = getColors(useColorScheme());
   const {user} = useAuth();
   const [revealed, setRevealed] = useState<boolean | null>(null);
@@ -68,27 +70,13 @@ export default function RecoveryPhraseScreen() {
         inputRef.current?.clear();
         setRestorePhrase('');
         refreshStatus();
-        Alert.alert(
-          'Recovery phrase restored',
-          "Reopen your chats to see any messages that couldn't be decrypted before.",
-        );
+        Alert.alert(t('recovery.restoredTitle'), t('recovery.restoredBody'));
       } else if (result.reason === 'invalid-phrase') {
-        Alert.alert(
-          "That doesn't look right",
-          'Check that all 24 words are spelled correctly and in order, then try again.',
-        );
+        Alert.alert(t('recovery.invalidTitle'), t('recovery.invalidBody'));
       } else if (result.reason === 'verification-unavailable') {
-        Alert.alert(
-          "Couldn't check your phrase",
-          "We couldn't reach the server to confirm this phrase belongs to your account, so " +
-            'nothing has been changed. Check your connection and try again.',
-        );
+        Alert.alert(t('recovery.unverifiableTitle'), t('recovery.unverifiableBody'));
       } else if (result.reason === 'publish-failed') {
-        Alert.alert(
-          "Couldn't finish restoring",
-          'Your phrase was correct, but we couldn\'t save the change. Nothing has been ' +
-            'changed on this device — check your connection and try again.',
-        );
+        Alert.alert(t('recovery.publishFailedTitle'), t('recovery.publishFailedBody'));
       } else {
         // Not an error so much as a fork. The phrase is a valid one; it just
         // isn't the key currently on file. That is precisely what a phrase
@@ -97,22 +85,18 @@ export default function RecoveryPhraseScreen() {
         // also what a phrase from the wrong account looks like. Nothing on
         // this device can tell the two apart, but the person holding the
         // phrase can, so say what each choice means and let them pick.
-        Alert.alert(
-          "This phrase isn't the key on file",
-          'It may be from an older device, in which case restoring it is exactly what you ' +
-            'want — it will bring back messages this device cannot read.\n\n' +
-            'Your account will go back to using that older key. Anything sealed to the ' +
-            'current key since then will stop being readable here, and your other devices ' +
-            'will need this same phrase.',
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Restore anyway', style: 'destructive', onPress: () => handleRestore(true)},
-          ],
-        );
+        Alert.alert(t('recovery.mismatchTitle'), t('recovery.mismatchBody'), [
+          {text: t('common.cancel'), style: 'cancel'},
+          {
+            text: t('recovery.restoreAnyway'),
+            style: 'destructive',
+            onPress: () => handleRestore(true),
+          },
+        ]);
       }
     } catch (error) {
       reportError(error, 'e2ee_recovery_phrase_restore_failed');
-      Alert.alert('Something went wrong', 'Please try again.');
+      Alert.alert(t('errors.genericTitle'), t('errors.genericBody'));
     } finally {
       setRestoring(false);
     }
@@ -122,7 +106,9 @@ export default function RecoveryPhraseScreen() {
     <GlassScreen style={styles.container} textureSeed="recovery-phrase">
       <ScrollView contentContainerStyle={styles.content}>
         <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.sectionTitle, {color: colors.text}]}>Your recovery phrase</Text>
+          <Text style={[styles.sectionTitle, {color: colors.text}]}>
+            {t('recovery.yoursTitle')}
+          </Text>
           {offer === 'checking' ? (
             <ActivityIndicator color={colors.primary} style={styles.statusLoader} />
           ) : offer === 'superseded' ? (
@@ -132,16 +118,11 @@ export default function RecoveryPhraseScreen() {
             // the account's — a user who saved it would be filing away the
             // exact key that is failing to open their messages.
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-              This device's encryption key was replaced from another device, so messages sent to
-              you since then can't be opened here. Sending still works. Enter the recovery phrase
-              from that other device below to read the rest.
+              {t('recovery.superseded')}
             </Text>
           ) : offer === 'already-revealed' ? (
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-              You've already saved your recovery phrase on this device. For your security it
-              won't be shown again — if you still have it, keep it somewhere safe. If you lost
-              it, this device keeps working normally; you'll only need it to restore old messages
-              on a different device.
+              {t('recovery.alreadyRevealed')}
             </Text>
           ) : offer === 'restore-first' ? (
             // No button here on purpose. Revealing would enroll this device and
@@ -150,27 +131,22 @@ export default function RecoveryPhraseScreen() {
             // someone reaches *in order to restore* meant the first tap could
             // strand the history they came to recover.
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-              This device doesn't have your account's encryption key yet, so there's no phrase to
-              show — the one you want was saved on your other device. Enter it below to restore
-              your message history. Once that's done, this phrase becomes available here too.
+              {t('recovery.restoreFirst')}
             </Text>
           ) : offer === 'unavailable' ? (
             <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-              We couldn't check this device's encryption status, so the phrase isn't being shown
-              yet — revealing it now could overwrite a key you may still need. Check your
-              connection and come back.
+              {t('recovery.unavailable')}
             </Text>
           ) : (
             <>
               <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-                Back up the key that protects your messages. Anyone who sees this phrase can read
-                your message history, so only reveal it somewhere private.
+                {t('recovery.backUp')}
               </Text>
               <TouchableOpacity
                 style={[styles.button, {backgroundColor: colors.primary}]}
                 onPress={() => setRevealModalVisible(true)}>
                 <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                  View recovery phrase
+                  {t('recovery.view')}
                 </Text>
               </TouchableOpacity>
             </>
@@ -178,10 +154,11 @@ export default function RecoveryPhraseScreen() {
         </GlassView>
 
         <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.sectionTitle, {color: colors.text}]}>Restore from a phrase</Text>
+          <Text style={[styles.sectionTitle, {color: colors.text}]}>
+            {t('recovery.restoreTitle')}
+          </Text>
           <Text style={[styles.sectionBody, {color: colors.textSecondary}]}>
-            Entering a previously saved recovery phrase replaces this device's key, so it can
-            decrypt messages sealed to that phrase.
+            {t('recovery.restoreBody')}
           </Text>
           {/* Uncontrolled: defaultValue, never value.
               A controlled TextInput round-trips each keystroke out to state and
@@ -198,7 +175,7 @@ export default function RecoveryPhraseScreen() {
             style={[styles.input, {color: colors.text, borderColor: colors.glassBorder}]}
             defaultValue=""
             onChangeText={setRestorePhrase}
-            placeholder="Enter your 24-word recovery phrase"
+            placeholder={t('recovery.phrasePlaceholder')}
             placeholderTextColor={colors.textSecondary}
             multiline
             autoCapitalize="none"
@@ -228,7 +205,7 @@ export default function RecoveryPhraseScreen() {
             {restoring ? (
               <ActivityIndicator color={colors.primary} />
             ) : (
-              <Text style={[styles.buttonText, {color: colors.text}]}>Restore</Text>
+              <Text style={[styles.buttonText, {color: colors.text}]}>{t('recovery.restore')}</Text>
             )}
           </TouchableOpacity>
         </GlassView>

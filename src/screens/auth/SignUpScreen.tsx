@@ -63,6 +63,9 @@ export default function SignUpScreen() {
     }
   };
 
+  // A marker no translation contains, so the split is unambiguous.
+  const [termsBefore, termsAfter] = t('auth.signup.terms', {policy: '\u0000'}).split('\u0000');
+
   return (
     <GlassScreen style={styles.container} textureSeed="signup">
       <KeyboardAvoidingView
@@ -151,12 +154,16 @@ export default function SignUpScreen() {
             </Text>
           </TouchableOpacity>
           <Text style={[styles.termsText, {color: colors.textSecondary}]}>
-            By creating an account you agree to our{' '}
+            {/* Split on the slot rather than concatenating a prefix: the link
+                sits mid-sentence in some languages and at the end in others,
+                and only the translation knows which. */}
+            {termsBefore}
             <Text
               style={[styles.termsLink, {color: colors.primary}]}
               onPress={() => (navigation as any).navigate('PrivacyPolicy')}>
-              Privacy Policy
+              {t('auth.signup.privacyPolicy')}
             </Text>
+            {termsAfter}
           </Text>
         </Cascade>
         </ScrollView>

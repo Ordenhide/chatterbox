@@ -60,7 +60,9 @@ describe('ActionSheet', () => {
     for (const {label} of FOURTEEN) {
       expect(rendered).toContain(label);
     }
-    expect(rendered).toContain('Cancel');
+    // The cancel row is the component's own, so it is translated and comes
+    // back as its key here — see ErrorBoundary.test.tsx.
+    expect(rendered).toContain('common.cancel');
   });
 
   test('closes before running the action, so a submenu is not presented under a dismissing sheet', () => {

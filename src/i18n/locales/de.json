@@ -58,7 +58,9 @@
       "subtitle": "Registrieren Sie sich, um zu beginnen",
       "displayNamePlaceholder": "Anzeigename (optional)",
       "passwordPlaceholder": "Passwort (min. 6 Zeichen)",
-      "hasAccount": "Bereits ein Konto?"
+      "hasAccount": "Bereits ein Konto?",
+      "privacyPolicy": "Datenschutzerklärung",
+      "terms": "Mit dem Erstellen eines Kontos stimmst du unserer {{policy}} zu"
     },
     "errors": {
       "missingFields": "Bitte füllen Sie alle Felder aus",
@@ -134,7 +136,8 @@
     "statChats": "{{count}} Chats",
     "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
     "typing": "Schreibt …",
-    "draftPrefix": "Entwurf: {{text}}"
+    "draftPrefix": "Entwurf: {{text}}",
+    "pinnedLabel": "Angeheftet"
   },
   "newChat": {
     "heading": "Unterhaltung starten",
@@ -395,7 +398,11 @@
       "leaveClearFailedTitle": "Fehler",
       "leaveClearFailedBody": "Chat konnte nicht verlassen werden. Es wurde nichts geändert — bitte versuche es erneut."
     },
-    "leaveAndClear": "Meine Nachrichten löschen & verlassen"
+    "leaveAndClear": "Meine Nachrichten löschen & verlassen",
+    "soundscape": "Klangkulisse",
+    "features": "Funktionen",
+    "security": "Sicherheit",
+    "messageExpiry": "Nachrichtenablauf"
   },
   "burn": {
     "tapToReveal": "Tippen zum Anzeigen",
@@ -424,7 +431,9 @@
     "lockedAiMobile": "KI-Zusammenfassungen und -Suche gehören zu Chatterbox Pro. Abonniere auf der Chatterbox-Website, um sie hier freizuschalten."
   },
   "errors": {
-    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "genericTitle": "Etwas ist schiefgelaufen",
+    "genericBody": "Bitte versuch es noch einmal."
   },
   "store": {
     "title": "Store",
@@ -523,7 +532,30 @@
     "sealedDamaged": "🔒 Diese Nachricht ist beschädigt",
     "sealedUnknown": "🔒 Entschlüsseln nicht möglich",
     "sealedBanner": "Einige Nachrichten wurden für ein anderes Gerät versiegelt. Tippe, um sie mit deiner Wiederherstellungsphrase zurückzuholen.",
-    "sealedBannerA11y": "Verschlüsselten Nachrichtenverlauf wiederherstellen"
+    "sealedBannerA11y": "Verschlüsselten Nachrichtenverlauf wiederherstellen",
+    "scheduledTitle": "Geplant",
+    "scheduledBody": "Nachricht wird in {{count}} Minute gesendet.",
+    "scheduledBody_plural": "Nachricht wird in {{count}} Minuten gesendet.",
+    "reminderTitle": "Erinnerung gesetzt",
+    "reminderBody": "Wir erinnern dich in {{count}} Minute.",
+    "reminderBody_plural": "Wir erinnern dich in {{count}} Minuten.",
+    "deleteForEveryone": "{{count}} Nachricht für alle endgültig löschen? Das lässt sich nicht rückgängig machen.",
+    "deleteForEveryone_plural": "{{count}} Nachrichten für alle endgültig löschen? Das lässt sich nicht rückgängig machen.",
+    "replyingTo": "Antwort an",
+    "incognitoBanner": "Inkognito — keine Vorschauen, kein Cache, keine Lesebestätigungen",
+    "sessionChanged": "Die Verschlüsselungssitzung dieses Kontakts hat sich geändert — meist eine Neuinstallation. Tippe, um die Sicherheitsnummer zu prüfen.",
+    "tapToJump": "Zum Springen tippen",
+    "scheduleTitle": "Nachricht planen",
+    "scheduleAsk": "In wie vielen Minuten senden?",
+    "mysteryBox": "Überraschungsbox",
+    "pollOption": "Option {{n}}",
+    "recordingTime": "Aufnahme {{time}}",
+    "sessionChangedA11y": "Die Verschlüsselungssitzung dieses Kontakts hat sich geändert. Zum Prüfen tippen.",
+    "pinned": "Angeheftet {{count}}",
+    "reminderFailed": "Erinnerung konnte nicht gesetzt werden.",
+    "deleteMessagesTitle": "Nachrichten löschen",
+    "deleteSkipped": "{{count}} Nachricht wurde ausgelassen — du kannst nur deine eigenen löschen.",
+    "deleteSkipped_plural": "{{count}} Nachrichten wurden ausgelassen — du kannst nur deine eigenen löschen."
   },
   "smartReply": {
     "thumbsUp": "👍",
@@ -620,5 +652,67 @@
   "privacy": {
     "title": "Datenschutzerklärung",
     "lastUpdated": "Zuletzt aktualisiert: {{date}}"
+  },
+  "bookmarks": {
+    "tapToOpen": "Zum Öffnen des Chats tippen",
+    "empty": "Noch nichts gespeichert",
+    "removeTitle": "Lesezeichen entfernen",
+    "removeBody": "Diese gespeicherte Nachricht entfernen?",
+    "unknownSender": "Unbekannt",
+    "image": "[Bild]",
+    "voice": "[Sprachnachricht]",
+    "message": "[Nachricht]",
+    "emptyHint": "Halte in einem Chat eine Nachricht gedrückt und tippe auf „Lesezeichen“, um sie hier zu sichern."
+  },
+  "focus": {
+    "title": "Fokusmodus",
+    "enabledFor": "Für {{minutes}} Minuten aktiviert. Eingehende Nachrichten erhalten eine automatische Antwort.",
+    "subtitle": "Automatisch antworten, solange du beschäftigt bist",
+    "activeUntil": "Aktiv bis {{time}}",
+    "autoReplyPreview": "Automatische Antwort: „{{message}}“",
+    "enable": "Fokusmodus einschalten",
+    "disable": "Fokusmodus ausschalten",
+    "duration": "Dauer (Minuten)",
+    "autoReplyLabel": "Automatische Antwort",
+    "autoReplyPlaceholder": "Ich bin gerade beschäftigt …",
+    "enableButton": "Einschalten",
+    "invalidTitle": "Ungültig",
+    "invalidBody": "Gib eine gültige Dauer in Minuten ein.",
+    "enableFailed": "Fokusmodus konnte nicht eingeschaltet werden.",
+    "disableFailed": "Fokusmodus konnte nicht ausgeschaltet werden."
+  },
+  "errorBoundary": {
+    "body": "Die App ist auf einen unerwarteten Fehler gestoßen. Deine Daten sind sicher — versuch es noch einmal.",
+    "title": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen"
+  },
+  "recovery": {
+    "yoursTitle": "Deine Wiederherstellungsphrase",
+    "superseded": "Der Schlüssel dieses Geräts wurde von einem anderen Gerät ersetzt, deshalb lassen sich seither empfangene Nachrichten hier nicht öffnen. Senden funktioniert weiterhin. Gib unten die Wiederherstellungsphrase jenes Geräts ein, um den Rest zu lesen.",
+    "alreadyRevealed": "Du hast deine Wiederherstellungsphrase auf diesem Gerät bereits gesichert. Aus Sicherheitsgründen wird sie nicht erneut angezeigt — falls du sie noch hast, bewahre sie sicher auf. Ist sie weg, funktioniert dieses Gerät normal weiter; du brauchst sie nur, um alte Nachrichten auf einem anderen Gerät wiederherzustellen.",
+    "restoreFirst": "Dieses Gerät hat den Schlüssel deines Kontos noch nicht, es gibt also keine Phrase zu zeigen — die gesuchte wurde auf deinem anderen Gerät gesichert. Gib sie unten ein, um deinen Nachrichtenverlauf wiederherzustellen. Danach ist diese Phrase auch hier verfügbar.",
+    "unavailable": "Wir konnten den Verschlüsselungsstatus dieses Geräts nicht prüfen, deshalb wird die Phrase noch nicht gezeigt — sie jetzt anzuzeigen könnte einen Schlüssel überschreiben, den du noch brauchst. Prüfe deine Verbindung und komm zurück.",
+    "backUp": "Sichere den Schlüssel, der deine Nachrichten schützt. Wer diese Phrase sieht, kann deinen Nachrichtenverlauf lesen — zeige sie also nur an einem privaten Ort.",
+    "view": "Wiederherstellungsphrase ansehen",
+    "restoreTitle": "Aus einer Phrase wiederherstellen",
+    "restoreBody": "Eine zuvor gesicherte Wiederherstellungsphrase einzugeben ersetzt den Schlüssel dieses Geräts, sodass es für jene Phrase versiegelte Nachrichten entschlüsseln kann.",
+    "phrasePlaceholder": "Gib deine 24-Wort-Wiederherstellungsphrase ein",
+    "restore": "Wiederherstellen",
+    "prepareFailed": "Wir konnten deine Wiederherstellungsphrase gerade nicht vorbereiten. Deine Nachrichten sind davon unberührt — du kannst es jederzeit in den Einstellungen erneut versuchen.",
+    "whatItDoes": "Mit dieser Phrase lässt sich dein verschlüsselter Nachrichtenverlauf wiederherstellen, falls du die App neu installierst oder das Gerät wechselst. Wer sie hat, kann deine Nachrichten lesen — schreib sie also auf und bewahre sie an einem privaten Ort auf; sie wird nicht noch einmal angezeigt.",
+    "restoredTitle": "Wiederherstellungsphrase übernommen",
+    "restoredBody": "Öffne deine Chats neu, um Nachrichten zu sehen, die sich vorher nicht entschlüsseln ließen.",
+    "invalidTitle": "Das sieht nicht richtig aus",
+    "invalidBody": "Prüfe, ob alle 24 Wörter richtig geschrieben und in der richtigen Reihenfolge sind, und versuch es noch einmal.",
+    "unverifiableTitle": "Phrase konnte nicht geprüft werden",
+    "unverifiableBody": "Wir konnten den Server nicht erreichen, um zu bestätigen, dass diese Phrase zu deinem Konto gehört, deshalb wurde nichts geändert. Prüfe deine Verbindung und versuch es noch einmal.",
+    "publishFailedTitle": "Wiederherstellung nicht abgeschlossen",
+    "publishFailedBody": "Deine Phrase war richtig, aber wir konnten die Änderung nicht speichern. Auf diesem Gerät wurde nichts geändert — prüfe deine Verbindung und versuch es noch einmal.",
+    "mismatchTitle": "Diese Phrase ist nicht der hinterlegte Schlüssel",
+    "mismatchBody": "Sie kann von einem älteren Gerät stammen — dann ist sie wiederherzustellen genau das Richtige und bringt Nachrichten zurück, die dieses Gerät nicht lesen kann.\n\nDein Konto nutzt danach wieder jenen älteren Schlüssel. Alles, was seither für den aktuellen Schlüssel versiegelt wurde, ist hier nicht mehr lesbar, und deine anderen Geräte brauchen dieselbe Phrase.",
+    "restoreAnyway": "Trotzdem wiederherstellen",
+    "saveTitle": "Sichere deine Wiederherstellungsphrase",
+    "savedIt": "Ich habe sie gesichert",
+    "copiedBody": "Wiederherstellungsphrase in die Zwischenablage kopiert."
   }
 }

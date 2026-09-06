@@ -40,7 +40,9 @@
     "hidePassword": "Hide password"
   },
   "errors": {
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "genericTitle": "Something went wrong",
+    "genericBody": "Please try again."
   },
   "tabs": {
     "chats": "Chats",
@@ -99,7 +101,9 @@
       "subtitle": "Sign up to get started",
       "displayNamePlaceholder": "Display Name (optional)",
       "passwordPlaceholder": "Password (min 8 characters)",
-      "hasAccount": "Already have an account?"
+      "hasAccount": "Already have an account?",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "By creating an account you agree to our {{policy}}"
     },
     "errors": {
       "missingFields": "Please fill in all fields",
@@ -193,7 +197,8 @@
     "statChats": "{{count}} chats",
     "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
     "typing": "Typing…",
-    "draftPrefix": "Draft: {{text}}"
+    "draftPrefix": "Draft: {{text}}",
+    "pinnedLabel": "Pinned"
   },
   "members": {
     "title": "Members ({{count}})",
@@ -458,7 +463,30 @@
     "sealedDamaged": "🔒 This message is damaged",
     "sealedUnknown": "🔒 Unable to decrypt",
     "sealedBanner": "Some messages were sealed on another device. Tap to restore with your recovery phrase.",
-    "sealedBannerA11y": "Restore your encrypted message history"
+    "sealedBannerA11y": "Restore your encrypted message history",
+    "scheduledTitle": "Scheduled",
+    "scheduledBody": "Message will be sent in {{count}} minute.",
+    "scheduledBody_plural": "Message will be sent in {{count}} minutes.",
+    "reminderTitle": "Reminder Set",
+    "reminderBody": "You'll be reminded in {{count}} minute.",
+    "reminderBody_plural": "You'll be reminded in {{count}} minutes.",
+    "deleteForEveryone": "Permanently delete {{count}} message for everyone? This cannot be undone.",
+    "deleteForEveryone_plural": "Permanently delete {{count}} messages for everyone? This cannot be undone.",
+    "replyingTo": "Replying to",
+    "incognitoBanner": "Incognito — no previews, no cache, no read receipts",
+    "sessionChanged": "This contact's encryption session changed — usually a reinstall. Tap to verify their safety number.",
+    "tapToJump": "Tap to jump",
+    "scheduleTitle": "Schedule Message",
+    "scheduleAsk": "Send in how many minutes?",
+    "mysteryBox": "Mystery Box",
+    "pollOption": "Option {{n}}",
+    "recordingTime": "Recording {{time}}",
+    "sessionChangedA11y": "This contact's encryption session changed. Tap to verify.",
+    "pinned": "Pinned {{count}}",
+    "reminderFailed": "Failed to set reminder.",
+    "deleteMessagesTitle": "Delete messages",
+    "deleteSkipped": "{{count}} message was left out — you can only delete your own.",
+    "deleteSkipped_plural": "{{count}} messages were left out — you can only delete your own."
   },
   "chatSettings": {
     "notifications": "Notifications",
@@ -508,7 +536,11 @@
       "leaveClearFailedBody": "Could not leave the chat. Nothing was changed — please try again.",
       "copiedTitle": "Copied",
       "copiedBody": "Chat JSON copied to clipboard"
-    }
+    },
+    "soundscape": "Soundscape",
+    "features": "Features",
+    "security": "Security",
+    "messageExpiry": "Message Expiry"
   },
   "burn": {
     "tapToReveal": "Tap to reveal",
@@ -620,5 +652,67 @@
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: {{date}}"
+  },
+  "bookmarks": {
+    "tapToOpen": "Tap to open chat",
+    "empty": "No bookmarks yet",
+    "removeTitle": "Remove Bookmark",
+    "removeBody": "Remove this saved message?",
+    "unknownSender": "Unknown",
+    "image": "[Image]",
+    "voice": "[Voice]",
+    "message": "[Message]",
+    "emptyHint": "Long-press a message in any chat and tap \"Bookmark\" to save it here."
+  },
+  "focus": {
+    "title": "Focus Mode",
+    "enabledFor": "Enabled for {{minutes}} minutes. Auto-reply will be sent to incoming messages.",
+    "subtitle": "Auto-reply to messages while you're busy",
+    "activeUntil": "Active until {{time}}",
+    "autoReplyPreview": "Auto-reply: \"{{message}}\"",
+    "enable": "Enable Focus Mode",
+    "disable": "Disable Focus Mode",
+    "duration": "Duration (minutes)",
+    "autoReplyLabel": "Auto-Reply Message",
+    "autoReplyPlaceholder": "I'm busy right now...",
+    "enableButton": "Enable",
+    "invalidTitle": "Invalid",
+    "invalidBody": "Enter a valid duration in minutes.",
+    "enableFailed": "Failed to enable focus mode.",
+    "disableFailed": "Failed to disable focus mode."
+  },
+  "errorBoundary": {
+    "body": "The app hit an unexpected error. Your data is safe — try again.",
+    "title": "Something went wrong",
+    "retry": "Try Again"
+  },
+  "recovery": {
+    "yoursTitle": "Your recovery phrase",
+    "superseded": "This device's encryption key was replaced from another device, so messages sent to you since then can't be opened here. Sending still works. Enter the recovery phrase from that other device below to read the rest.",
+    "alreadyRevealed": "You've already saved your recovery phrase on this device. For your security it won't be shown again — if you still have it, keep it somewhere safe. If you lost it, this device keeps working normally; you'll only need it to restore old messages on a different device.",
+    "restoreFirst": "This device doesn't have your account's encryption key yet, so there's no phrase to show — the one you want was saved on your other device. Enter it below to restore your message history. Once that's done, this phrase becomes available here too.",
+    "unavailable": "We couldn't check this device's encryption status, so the phrase isn't being shown yet — revealing it now could overwrite a key you may still need. Check your connection and come back.",
+    "backUp": "Back up the key that protects your messages. Anyone who sees this phrase can read your message history, so only reveal it somewhere private.",
+    "view": "View recovery phrase",
+    "restoreTitle": "Restore from a phrase",
+    "restoreBody": "Entering a previously saved recovery phrase replaces this device's key, so it can decrypt messages sealed to that phrase.",
+    "phrasePlaceholder": "Enter your 24-word recovery phrase",
+    "restore": "Restore",
+    "prepareFailed": "We couldn't prepare your recovery phrase just now. Your messages are unaffected — you can try again any time from Settings.",
+    "whatItDoes": "This phrase can restore your encrypted message history if you ever reinstall the app or switch devices. Anyone who has it can read your messages, so write it down and keep it somewhere private — it will not be shown again.",
+    "restoredTitle": "Recovery phrase restored",
+    "restoredBody": "Reopen your chats to see any messages that couldn't be decrypted before.",
+    "invalidTitle": "That doesn't look right",
+    "invalidBody": "Check that all 24 words are spelled correctly and in order, then try again.",
+    "unverifiableTitle": "Couldn't check your phrase",
+    "unverifiableBody": "We couldn't reach the server to confirm this phrase belongs to your account, so nothing has been changed. Check your connection and try again.",
+    "publishFailedTitle": "Couldn't finish restoring",
+    "publishFailedBody": "Your phrase was correct, but we couldn't save the change. Nothing has been changed on this device — check your connection and try again.",
+    "mismatchTitle": "This phrase isn't the key on file",
+    "mismatchBody": "It may be from an older device, in which case restoring it is exactly what you want — it will bring back messages this device cannot read.\n\nYour account will go back to using that older key. Anything sealed to the current key since then will stop being readable here, and your other devices will need this same phrase.",
+    "restoreAnyway": "Restore anyway",
+    "saveTitle": "Save your recovery phrase",
+    "savedIt": "I've saved it",
+    "copiedBody": "Recovery phrase copied to clipboard."
   }
 }

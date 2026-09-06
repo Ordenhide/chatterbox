@@ -58,7 +58,9 @@
       "subtitle": "注册后开始使用",
       "displayNamePlaceholder": "昵称（可选）",
       "passwordPlaceholder": "密码（至少8位）",
-      "hasAccount": "已有账号？"
+      "hasAccount": "已有账号？",
+      "privacyPolicy": "隐私政策",
+      "terms": "创建账号即表示你同意我们的{{policy}}"
     },
     "errors": {
       "missingFields": "请填写所有字段",
@@ -134,7 +136,8 @@
     "statChats": "{{count}} 个聊天",
     "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
     "typing": "正在输入…",
-    "draftPrefix": "草稿：{{text}}"
+    "draftPrefix": "草稿：{{text}}",
+    "pinnedLabel": "已置顶"
   },
   "newChat": {
     "heading": "开始对话",
@@ -388,7 +391,30 @@
     "sealedDamaged": "🔒 这条消息已损坏",
     "sealedUnknown": "🔒 无法解密",
     "sealedBanner": "有些消息封装给了另一台设备。点击用助记词恢复。",
-    "sealedBannerA11y": "恢复你的加密消息记录"
+    "sealedBannerA11y": "恢复你的加密消息记录",
+    "scheduledTitle": "已排定",
+    "scheduledBody": "消息将在 {{count}} 分钟后发送。",
+    "scheduledBody_plural": "消息将在 {{count}} 分钟后发送。",
+    "reminderTitle": "提醒已设置",
+    "reminderBody": "{{count}} 分钟后提醒你。",
+    "reminderBody_plural": "{{count}} 分钟后提醒你。",
+    "deleteForEveryone": "要对所有人永久删除 {{count}} 条消息吗？此操作无法撤销。",
+    "deleteForEveryone_plural": "要对所有人永久删除 {{count}} 条消息吗？此操作无法撤销。",
+    "replyingTo": "正在回复",
+    "incognitoBanner": "隐身——不预览、不缓存、不发已读回执",
+    "sessionChanged": "这位联系人的加密会话变了——通常是重装了应用。点击核对他们的安全码。",
+    "tapToJump": "点击跳转",
+    "scheduleTitle": "定时发送",
+    "scheduleAsk": "几分钟后发送？",
+    "mysteryBox": "神秘盒子",
+    "pollOption": "选项 {{n}}",
+    "recordingTime": "录音中 {{time}}",
+    "sessionChangedA11y": "这位联系人的加密会话变了。点击核对。",
+    "pinned": "已置顶 {{count}}",
+    "reminderFailed": "设置提醒失败。",
+    "deleteMessagesTitle": "删除消息",
+    "deleteSkipped": "有 {{count}} 条消息没有删除——你只能删除自己发的。",
+    "deleteSkipped_plural": "有 {{count}} 条消息没有删除——你只能删除自己发的。"
   },
   "chatSettings": {
     "notifications": "通知",
@@ -438,7 +464,11 @@
       "leaveClearFailedTitle": "错误",
       "leaveClearFailedBody": "未能退出聊天。没有任何改动——请重试。"
     },
-    "leaveAndClear": "删除我的消息并退出"
+    "leaveAndClear": "删除我的消息并退出",
+    "soundscape": "环境音",
+    "features": "功能",
+    "security": "安全",
+    "messageExpiry": "消息保留时长"
   },
   "burn": {
     "tapToReveal": "点击查看",
@@ -517,7 +547,9 @@
     "lockedAiMobile": "AI 聊天摘要与搜索属于 Chatterbox Pro。在 Chatterbox 网站订阅后即可在这里使用。"
   },
   "errors": {
-    "generic": "出了点问题，请重试。"
+    "generic": "出了点问题，请重试。",
+    "genericTitle": "出了点问题",
+    "genericBody": "请重试。"
   },
   "store": {
     "title": "商店",
@@ -620,5 +652,67 @@
   "privacy": {
     "title": "隐私政策",
     "lastUpdated": "最后更新：{{date}}"
+  },
+  "bookmarks": {
+    "tapToOpen": "点击打开对话",
+    "empty": "还没有收藏",
+    "removeTitle": "移除收藏",
+    "removeBody": "要移除这条已保存的消息吗？",
+    "unknownSender": "未知",
+    "image": "[图片]",
+    "voice": "[语音]",
+    "message": "[消息]",
+    "emptyHint": "在任意对话里长按一条消息，点“收藏”，它就会出现在这里。"
+  },
+  "focus": {
+    "title": "专注模式",
+    "enabledFor": "已开启 {{minutes}} 分钟。收到的消息会自动回复。",
+    "subtitle": "忙碌时自动回复消息",
+    "activeUntil": "持续到 {{time}}",
+    "autoReplyPreview": "自动回复：“{{message}}”",
+    "enable": "开启专注模式",
+    "disable": "关闭专注模式",
+    "duration": "时长（分钟）",
+    "autoReplyLabel": "自动回复内容",
+    "autoReplyPlaceholder": "我现在有点忙……",
+    "enableButton": "开启",
+    "invalidTitle": "无效",
+    "invalidBody": "请输入有效的分钟数。",
+    "enableFailed": "开启专注模式失败。",
+    "disableFailed": "关闭专注模式失败。"
+  },
+  "errorBoundary": {
+    "body": "应用遇到了意外错误。你的数据是安全的——请重试。",
+    "title": "出了点问题",
+    "retry": "重试"
+  },
+  "recovery": {
+    "yoursTitle": "你的助记词",
+    "superseded": "这台设备的加密密钥被另一台设备替换了，所以从那之后发给你的消息在这里打不开。发送仍然正常。在下面输入那台设备的助记词，就能读到其余的消息。",
+    "alreadyRevealed": "你已经在这台设备上保存过助记词了。出于安全考虑，它不会再显示——如果还留着，请妥善保管。如果弄丢了，这台设备仍然正常工作；只有在另一台设备上恢复旧消息时才需要它。",
+    "restoreFirst": "这台设备还没有你账号的加密密钥，所以没有可显示的助记词——你要的那一条保存在你的另一台设备上。在下面输入它来恢复你的消息记录。完成之后，这里也能看到这条助记词。",
+    "unavailable": "我们无法确认这台设备的加密状态，所以暂时不显示助记词——现在显示可能会覆盖掉一把你仍然需要的密钥。请检查网络后再回来。",
+    "backUp": "备份保护你消息的那把密钥。任何看到这条助记词的人都能读你的消息记录，所以只在私密的地方显示它。",
+    "view": "查看助记词",
+    "restoreTitle": "用助记词恢复",
+    "restoreBody": "输入之前保存的助记词会替换掉这台设备的密钥，让它能解密封装给那条助记词的消息。",
+    "phrasePlaceholder": "输入你的 24 个助记词",
+    "restore": "恢复",
+    "prepareFailed": "我们暂时无法准备你的助记词。你的消息不受影响——随时可以在设置里再试一次。",
+    "whatItDoes": "如果你重装应用或更换设备，这条助记词可以恢复你的加密消息记录。任何拿到它的人都能读你的消息，所以请抄下来收在私密的地方——它不会再显示第二次。",
+    "restoredTitle": "助记词已恢复",
+    "restoredBody": "重新打开对话，就能看到之前解不开的消息了。",
+    "invalidTitle": "这串词不太对",
+    "invalidBody": "请确认 24 个词拼写无误、顺序正确，然后重试。",
+    "unverifiableTitle": "没能核对你的助记词",
+    "unverifiableBody": "我们联系不上服务器，无法确认这条助记词属于你的账号，所以什么都没有改动。请检查网络后重试。",
+    "publishFailedTitle": "恢复没能完成",
+    "publishFailedBody": "助记词是对的，但这次改动没能保存。这台设备上什么都没有改动——请检查网络后重试。",
+    "mismatchTitle": "这条助记词不是记录在案的密钥",
+    "mismatchBody": "它可能来自更早的一台设备——如果是，恢复它正是你想要的，会把这台设备读不了的消息找回来。\n\n你的账号会退回使用那把旧密钥。此后用当前密钥封装的内容在这里将无法阅读，你的其他设备也需要同一条助记词。",
+    "restoreAnyway": "仍然恢复",
+    "saveTitle": "保存你的助记词",
+    "savedIt": "我已保存",
+    "copiedBody": "助记词已复制到剪贴板。"
   }
 }

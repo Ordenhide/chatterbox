@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getColors} from '../theme/colors';
 import {SPRING, useReduceMotion} from '../utils/motion';
@@ -51,6 +52,7 @@ type Props = {
  * bottom of the screen.
  */
 export default function ActionSheet({visible, title, message, actions, onClose}: Props) {
+  const {t} = useTranslation();
   const colors = getColors(useColorScheme());
   const insets = useSafeAreaInsets();
   const {height} = useWindowDimensions();
@@ -142,7 +144,7 @@ export default function ActionSheet({visible, title, message, actions, onClose}:
                 {backgroundColor: pressed ? colors.border : colors.surface},
               ]}
               onPress={onClose}>
-              <Text style={[styles.cancelText, {color: colors.text}]}>Cancel</Text>
+              <Text style={[styles.cancelText, {color: colors.text}]}>{t('common.cancel')}</Text>
             </Pressable>
           </Animated.View>
         </Pressable>

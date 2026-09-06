@@ -258,18 +258,18 @@ export default function ProfileScreen() {
     if (!user?.uid) return;
     const mins = parseInt(focusDuration, 10);
     if (isNaN(mins) || mins <= 0) {
-      Alert.alert('Invalid', 'Enter a valid duration in minutes.');
+      Alert.alert(t('focus.invalidTitle'), t('focus.invalidBody'));
       return;
     }
     try {
       await enableFocusMode(user.uid, mins * 60 * 1000, focusMessage);
       // State will be updated by the Firestore snapshot listener
       setFocusModalVisible(false);
-      Alert.alert('Focus Mode', `Enabled for ${mins} minutes. Auto-reply will be sent to incoming messages.`);
+      Alert.alert(t('focus.title'), t('focus.enabledFor', {minutes: mins}));
     } catch {
-      Alert.alert('Error', 'Failed to enable focus mode.');
+      Alert.alert(t('common.error'), t('focus.enableFailed'));
     }
-  }, [user?.uid, focusDuration, focusMessage]);
+  }, [t, user?.uid, focusDuration, focusMessage]);
 
   const handleDisableFocus = useCallback(async () => {
     if (!user?.uid) return;
@@ -277,9 +277,9 @@ export default function ProfileScreen() {
       await disableFocusMode(user.uid);
       // State will be updated by the Firestore snapshot listener
     } catch {
-      Alert.alert('Error', 'Failed to disable focus mode.');
+      Alert.alert(t('common.error'), t('focus.disableFailed'));
     }
-  }, [user?.uid]);
+  }, [t, user?.uid]);
 
   const handleVsStartRecording = useCallback(async () => {
     try {
@@ -749,35 +749,41 @@ export default function ProfileScreen() {
         </GlassView>
         {SHOW_NATIVE_ONLY_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            Focus Mode
-          </Text>
+          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('focus.title')}</Text>
           <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            Auto-reply to messages while you're busy
+            {t('focus.subtitle')}
           </Text>
           {focusEnabled ? (
             <View>
               <View style={[styles.focusActiveBar, {backgroundColor: `${colors.success}20`}]}>
                 <Text style={[styles.focusActiveText, {color: colors.success}]}>
-                  Active until {focusUntil ? new Date(focusUntil).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : '—'}
+                  {t('focus.activeUntil', {
+                    time: focusUntil
+                      ? new Date(focusUntil).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                      : '—',
+                  })}
                 </Text>
               </View>
               {focusAutoReply ? (
                 <Text style={[styles.focusReplyPreview, {color: colors.textSecondary}]}>
-                  Auto-reply: "{focusAutoReply}"
+                  {t('focus.autoReplyPreview', {message: focusAutoReply})}
                 </Text>
               ) : null}
               <TouchableOpacity
                 style={[styles.focusBtn, {backgroundColor: colors.danger}]}
                 onPress={handleDisableFocus}>
-                <Text style={[styles.focusBtnText, {color: colors.textOnDanger}]}>Disable Focus Mode</Text>
+                <Text style={[styles.focusBtnText, {color: colors.textOnDanger}]}>
+                  {t('focus.disable')}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
               style={[styles.focusBtn, {backgroundColor: colors.primary}]}
               onPress={() => setFocusModalVisible(true)}>
-              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>Enable Focus Mode</Text>
+              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>
+                {t('focus.enable')}
+              </Text>
             </TouchableOpacity>
           )}
         </GlassView>
@@ -1112,8 +1118,10 @@ export default function ProfileScreen() {
       {focusModalVisible && (
         <Modal visible animationType="slide" onRequestClose={() => setFocusModalVisible(false)}>
           <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>Enable Focus Mode</Text>
-            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>Duration (minutes)</Text>
+            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('focus.enable')}</Text>
+            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
+              {t('focus.duration')}
+            </Text>
             <View style={styles.focusDurationRow}>
               {[15, 30, 60, 120].map(m => (
                 <TouchableOpacity
@@ -1136,12 +1144,14 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>Auto-Reply Message</Text>
+            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
+              {t('focus.autoReplyLabel')}
+            </Text>
             <TextInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, maxHeight: 120}]}
               value={focusMessage}
               onChangeText={setFocusMessage}
-              placeholder="I'm busy right now..."
+              placeholder={t('focus.autoReplyPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               multiline
             />
@@ -1149,12 +1159,16 @@ export default function ProfileScreen() {
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.primary}]}
                 onPress={handleEnableFocus}>
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>Enable</Text>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+                  {t('focus.enableButton')}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, {backgroundColor: colors.surface}]}
                 onPress={() => setFocusModalVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>Cancel</Text>
+                <Text style={[styles.modalButtonText, {color: colors.text}]}>
+                  {t('common.cancel')}
+                </Text>
               </TouchableOpacity>
             </View>
           </SafeAreaView>

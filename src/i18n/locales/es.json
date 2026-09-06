@@ -58,7 +58,9 @@
       "subtitle": "Regístrate para comenzar",
       "displayNamePlaceholder": "Nombre de visualización (opcional)",
       "passwordPlaceholder": "Contraseña (mín. 6 caracteres)",
-      "hasAccount": "¿Ya tienes una cuenta?"
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "privacyPolicy": "Política de privacidad",
+      "terms": "Al crear una cuenta aceptas nuestra {{policy}}"
     },
     "errors": {
       "missingFields": "Por favor completa todos los campos",
@@ -134,7 +136,8 @@
     "statChats": "{{count}} chats",
     "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
     "typing": "Escribiendo…",
-    "draftPrefix": "Borrador: {{text}}"
+    "draftPrefix": "Borrador: {{text}}",
+    "pinnedLabel": "Fijado"
   },
   "newChat": {
     "heading": "Iniciar una conversación",
@@ -395,7 +398,11 @@
       "leaveClearFailedTitle": "Error",
       "leaveClearFailedBody": "No se pudo salir del chat. No se cambió nada; inténtalo de nuevo."
     },
-    "leaveAndClear": "Eliminar mis mensajes y salir"
+    "leaveAndClear": "Eliminar mis mensajes y salir",
+    "soundscape": "Ambiente sonoro",
+    "features": "Funciones",
+    "security": "Seguridad",
+    "messageExpiry": "Caducidad de mensajes"
   },
   "burn": {
     "tapToReveal": "Toca para revelar",
@@ -424,7 +431,9 @@
     "lockedAiMobile": "Los resúmenes y la búsqueda con IA forman parte de Chatterbox Pro. Suscríbete en el sitio web de Chatterbox para desbloquearlos aquí."
   },
   "errors": {
-    "generic": "Algo salió mal. Inténtalo de nuevo."
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "genericTitle": "Algo salió mal",
+    "genericBody": "Inténtalo de nuevo."
   },
   "store": {
     "title": "Tienda",
@@ -523,7 +532,30 @@
     "sealedDamaged": "🔒 Este mensaje está dañado",
     "sealedUnknown": "🔒 No se puede descifrar",
     "sealedBanner": "Algunos mensajes se sellaron en otro dispositivo. Toca para recuperarlos con tu frase de recuperación.",
-    "sealedBannerA11y": "Recuperar tu historial de mensajes cifrados"
+    "sealedBannerA11y": "Recuperar tu historial de mensajes cifrados",
+    "scheduledTitle": "Programado",
+    "scheduledBody": "El mensaje se enviará en {{count}} minuto.",
+    "scheduledBody_plural": "El mensaje se enviará en {{count}} minutos.",
+    "reminderTitle": "Recordatorio puesto",
+    "reminderBody": "Te avisaremos en {{count}} minuto.",
+    "reminderBody_plural": "Te avisaremos en {{count}} minutos.",
+    "deleteForEveryone": "¿Eliminar {{count}} mensaje para todos de forma permanente? No se puede deshacer.",
+    "deleteForEveryone_plural": "¿Eliminar {{count}} mensajes para todos de forma permanente? No se puede deshacer.",
+    "replyingTo": "Respondiendo a",
+    "incognitoBanner": "Incógnito: sin vistas previas, sin caché, sin confirmaciones de lectura",
+    "sessionChanged": "La sesión de cifrado de este contacto ha cambiado, normalmente por una reinstalación. Toca para verificar su número de seguridad.",
+    "tapToJump": "Toca para ir",
+    "scheduleTitle": "Programar mensaje",
+    "scheduleAsk": "¿En cuántos minutos lo envío?",
+    "mysteryBox": "Caja misteriosa",
+    "pollOption": "Opción {{n}}",
+    "recordingTime": "Grabando {{time}}",
+    "sessionChangedA11y": "La sesión de cifrado de este contacto ha cambiado. Toca para verificar.",
+    "pinned": "Fijados {{count}}",
+    "reminderFailed": "No se pudo crear el recordatorio.",
+    "deleteMessagesTitle": "Eliminar mensajes",
+    "deleteSkipped": "Se dejó fuera {{count}} mensaje: solo puedes eliminar los tuyos.",
+    "deleteSkipped_plural": "Se dejaron fuera {{count}} mensajes: solo puedes eliminar los tuyos."
   },
   "smartReply": {
     "thumbsUp": "👍",
@@ -620,5 +652,67 @@
   "privacy": {
     "title": "Política de privacidad",
     "lastUpdated": "Última actualización: {{date}}"
+  },
+  "bookmarks": {
+    "tapToOpen": "Toca para abrir el chat",
+    "empty": "Aún no hay guardados",
+    "removeTitle": "Quitar de guardados",
+    "removeBody": "¿Quitar este mensaje guardado?",
+    "unknownSender": "Desconocido",
+    "image": "[Imagen]",
+    "voice": "[Voz]",
+    "message": "[Mensaje]",
+    "emptyHint": "Mantén pulsado un mensaje en cualquier chat y toca «Guardar» para tenerlo aquí."
+  },
+  "focus": {
+    "title": "Modo concentración",
+    "enabledFor": "Activado durante {{minutes}} minutos. Los mensajes que lleguen recibirán una respuesta automática.",
+    "subtitle": "Responde automáticamente mientras estás ocupado",
+    "activeUntil": "Activo hasta las {{time}}",
+    "autoReplyPreview": "Respuesta automática: «{{message}}»",
+    "enable": "Activar modo concentración",
+    "disable": "Desactivar modo concentración",
+    "duration": "Duración (minutos)",
+    "autoReplyLabel": "Mensaje de respuesta automática",
+    "autoReplyPlaceholder": "Ahora mismo estoy ocupado…",
+    "enableButton": "Activar",
+    "invalidTitle": "No válido",
+    "invalidBody": "Introduce una duración válida en minutos.",
+    "enableFailed": "No se pudo activar el modo concentración.",
+    "disableFailed": "No se pudo desactivar el modo concentración."
+  },
+  "errorBoundary": {
+    "body": "La app se topó con un error inesperado. Tus datos están a salvo: inténtalo de nuevo.",
+    "title": "Algo salió mal",
+    "retry": "Reintentar"
+  },
+  "recovery": {
+    "yoursTitle": "Tu frase de recuperación",
+    "superseded": "La clave de este dispositivo fue sustituida desde otro, así que los mensajes que te han llegado desde entonces no se pueden abrir aquí. Enviar sigue funcionando. Introduce abajo la frase de recuperación de ese otro dispositivo para leer el resto.",
+    "alreadyRevealed": "Ya guardaste tu frase de recuperación en este dispositivo. Por seguridad no volverá a mostrarse: si aún la tienes, guárdala en un lugar seguro. Si la perdiste, este dispositivo sigue funcionando con normalidad; solo la necesitarás para recuperar mensajes antiguos en otro dispositivo.",
+    "restoreFirst": "Este dispositivo todavía no tiene la clave de tu cuenta, así que no hay ninguna frase que mostrar: la que buscas se guardó en tu otro dispositivo. Introdúcela abajo para recuperar tu historial. Una vez hecho, esta frase también estará disponible aquí.",
+    "unavailable": "No pudimos comprobar el estado de cifrado de este dispositivo, así que aún no mostramos la frase: revelarla ahora podría sobrescribir una clave que quizá todavía necesites. Revisa tu conexión y vuelve.",
+    "backUp": "Haz una copia de la clave que protege tus mensajes. Cualquiera que vea esta frase puede leer tu historial, así que muéstrala solo en un lugar privado.",
+    "view": "Ver la frase de recuperación",
+    "restoreTitle": "Restaurar con una frase",
+    "restoreBody": "Introducir una frase de recuperación guardada antes sustituye la clave de este dispositivo, de modo que pueda descifrar los mensajes sellados con esa frase.",
+    "phrasePlaceholder": "Introduce tus 24 palabras de recuperación",
+    "restore": "Restaurar",
+    "prepareFailed": "Ahora mismo no pudimos preparar tu frase de recuperación. Tus mensajes no se ven afectados: puedes volver a intentarlo cuando quieras desde Ajustes.",
+    "whatItDoes": "Esta frase puede restaurar tu historial de mensajes cifrados si reinstalas la app o cambias de dispositivo. Cualquiera que la tenga puede leer tus mensajes, así que anótala y guárdala en un lugar privado: no volverá a mostrarse.",
+    "restoredTitle": "Frase de recuperación restaurada",
+    "restoredBody": "Vuelve a abrir tus chats para ver los mensajes que antes no se podían descifrar.",
+    "invalidTitle": "Esto no cuadra",
+    "invalidBody": "Comprueba que las 24 palabras estén bien escritas y en orden, y vuelve a intentarlo.",
+    "unverifiableTitle": "No pudimos comprobar tu frase",
+    "unverifiableBody": "No pudimos contactar con el servidor para confirmar que esta frase pertenece a tu cuenta, así que no se ha cambiado nada. Revisa tu conexión e inténtalo de nuevo.",
+    "publishFailedTitle": "No se pudo terminar la restauración",
+    "publishFailedBody": "Tu frase era correcta, pero no pudimos guardar el cambio. En este dispositivo no se ha modificado nada: revisa tu conexión e inténtalo de nuevo.",
+    "mismatchTitle": "Esta frase no es la clave registrada",
+    "mismatchBody": "Puede ser de un dispositivo anterior, en cuyo caso restaurarla es justo lo que quieres: traerá de vuelta mensajes que este dispositivo no puede leer.\n\nTu cuenta volverá a usar esa clave antigua. Todo lo sellado con la clave actual desde entonces dejará de leerse aquí, y tus otros dispositivos necesitarán esta misma frase.",
+    "restoreAnyway": "Restaurar de todos modos",
+    "saveTitle": "Guarda tu frase de recuperación",
+    "savedIt": "Ya la guardé",
+    "copiedBody": "Frase de recuperación copiada al portapapeles."
   }
 }

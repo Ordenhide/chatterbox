@@ -53,6 +53,7 @@ type ChatListItemProps = {
   /** Already translated by the caller — this row renders, it does not resolve. */
   draftLabel: string;
   typingLabel: string;
+  pinnedLabel: string;
   lastMessage?: ChatRoom['lastMessage'];
   timeLabel?: string;
   avatarText?: string;
@@ -80,6 +81,7 @@ const ChatListItem = memo(
     isTyping,
     draftLabel,
     typingLabel,
+    pinnedLabel,
     lastMessage,
     timeLabel,
     avatarText,
@@ -110,7 +112,9 @@ const ChatListItem = memo(
               <Text style={[styles.chatName, {color: textColor}]} numberOfLines={1}>
                 {displayName || name}
               </Text>
-              {isPinned ? <Text style={[styles.pinLabel, {color: textSecondary}]}>Pinned</Text> : null}
+              {isPinned ? (
+                <Text style={[styles.pinLabel, {color: textSecondary}]}>{pinnedLabel}</Text>
+              ) : null}
             </View>
             <View style={styles.metaGroup}>
               {timeLabel ? <Text style={[styles.timeText, {color: textSecondary}]}>{timeLabel}</Text> : null}
@@ -628,6 +632,7 @@ export default function ChatListScreen() {
             isTyping={item.isTyping}
             draftLabel={t('chatList.draftPrefix', {text: item.draft})}
             typingLabel={t('chatList.typing')}
+            pinnedLabel={t('chatList.pinnedLabel')}
             lastMessage={item.lastMessage}
             timeLabel={formatChatTime(item.lastMessage?.createdAt || item.createdAt)}
             avatarText={getInitials(item.displayName || item.name)}

@@ -58,7 +58,9 @@
       "subtitle": "Inscrivez-vous pour commencer",
       "displayNamePlaceholder": "Nom d'affichage (optionnel)",
       "passwordPlaceholder": "Mot de passe (min 6 caractères)",
-      "hasAccount": "Vous avez déjà un compte ?"
+      "hasAccount": "Vous avez déjà un compte ?",
+      "privacyPolicy": "Politique de confidentialité",
+      "terms": "En créant un compte, vous acceptez notre {{policy}}"
     },
     "errors": {
       "missingFields": "Veuillez remplir tous les champs",
@@ -134,7 +136,8 @@
     "statChats": "{{count}} conversations",
     "cipherSuite": "X25519 · XChaCha20-Poly1305 · HKDF-SHA256",
     "typing": "Écrit…",
-    "draftPrefix": "Brouillon : {{text}}"
+    "draftPrefix": "Brouillon : {{text}}",
+    "pinnedLabel": "Épinglé"
   },
   "newChat": {
     "heading": "Commencer une conversation",
@@ -395,7 +398,11 @@
       "leaveClearFailedTitle": "Erreur",
       "leaveClearFailedBody": "Impossible de quitter la conversation. Rien n'a été modifié — veuillez réessayer."
     },
-    "leaveAndClear": "Supprimer mes messages et quitter"
+    "leaveAndClear": "Supprimer mes messages et quitter",
+    "soundscape": "Ambiance sonore",
+    "features": "Fonctionnalités",
+    "security": "Sécurité",
+    "messageExpiry": "Expiration des messages"
   },
   "burn": {
     "tapToReveal": "Tapez pour révéler",
@@ -424,7 +431,9 @@
     "lockedAiMobile": "Les résumés et la recherche par IA font partie de Chatterbox Pro. Abonnez-vous sur le site Chatterbox pour les débloquer ici."
   },
   "errors": {
-    "generic": "Une erreur est survenue. Veuillez réessayer."
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "genericTitle": "Une erreur est survenue",
+    "genericBody": "Veuillez réessayer."
   },
   "store": {
     "title": "Boutique",
@@ -523,7 +532,30 @@
     "sealedDamaged": "🔒 Ce message est endommagé",
     "sealedUnknown": "🔒 Déchiffrement impossible",
     "sealedBanner": "Certains messages ont été scellés sur un autre appareil. Touchez pour les récupérer avec votre phrase de récupération.",
-    "sealedBannerA11y": "Récupérer votre historique de messages chiffrés"
+    "sealedBannerA11y": "Récupérer votre historique de messages chiffrés",
+    "scheduledTitle": "Programmé",
+    "scheduledBody": "Le message sera envoyé dans {{count}} minute.",
+    "scheduledBody_plural": "Le message sera envoyé dans {{count}} minutes.",
+    "reminderTitle": "Rappel enregistré",
+    "reminderBody": "Nous vous rappellerons dans {{count}} minute.",
+    "reminderBody_plural": "Nous vous rappellerons dans {{count}} minutes.",
+    "deleteForEveryone": "Supprimer définitivement {{count}} message pour tout le monde ? C’est irréversible.",
+    "deleteForEveryone_plural": "Supprimer définitivement {{count}} messages pour tout le monde ? C’est irréversible.",
+    "replyingTo": "Réponse à",
+    "incognitoBanner": "Navigation privée — pas d’aperçus, pas de cache, pas d’accusés de lecture",
+    "sessionChanged": "La session de chiffrement de ce contact a changé — le plus souvent une réinstallation. Touchez pour vérifier son numéro de sécurité.",
+    "tapToJump": "Touchez pour y aller",
+    "scheduleTitle": "Programmer le message",
+    "scheduleAsk": "Envoyer dans combien de minutes ?",
+    "mysteryBox": "Boîte mystère",
+    "pollOption": "Option {{n}}",
+    "recordingTime": "Enregistrement {{time}}",
+    "sessionChangedA11y": "La session de chiffrement de ce contact a changé. Touchez pour vérifier.",
+    "pinned": "Épinglés {{count}}",
+    "reminderFailed": "Impossible de créer le rappel.",
+    "deleteMessagesTitle": "Supprimer les messages",
+    "deleteSkipped": "{{count}} message a été ignoré — vous ne pouvez supprimer que les vôtres.",
+    "deleteSkipped_plural": "{{count}} messages ont été ignorés — vous ne pouvez supprimer que les vôtres."
   },
   "smartReply": {
     "thumbsUp": "👍",
@@ -620,5 +652,67 @@
   "privacy": {
     "title": "Politique de confidentialité",
     "lastUpdated": "Dernière mise à jour : {{date}}"
+  },
+  "bookmarks": {
+    "tapToOpen": "Touchez pour ouvrir la conversation",
+    "empty": "Rien d’enregistré pour l’instant",
+    "removeTitle": "Retirer des favoris",
+    "removeBody": "Retirer ce message enregistré ?",
+    "unknownSender": "Inconnu",
+    "image": "[Image]",
+    "voice": "[Message vocal]",
+    "message": "[Message]",
+    "emptyHint": "Appuyez longuement sur un message dans une conversation puis touchez « Enregistrer » pour le retrouver ici."
+  },
+  "focus": {
+    "title": "Mode concentration",
+    "enabledFor": "Activé pour {{minutes}} minutes. Les messages entrants recevront une réponse automatique.",
+    "subtitle": "Répondre automatiquement quand vous êtes occupé",
+    "activeUntil": "Actif jusqu’à {{time}}",
+    "autoReplyPreview": "Réponse automatique : « {{message}} »",
+    "enable": "Activer le mode concentration",
+    "disable": "Désactiver le mode concentration",
+    "duration": "Durée (minutes)",
+    "autoReplyLabel": "Message de réponse automatique",
+    "autoReplyPlaceholder": "Je suis occupé pour le moment…",
+    "enableButton": "Activer",
+    "invalidTitle": "Non valide",
+    "invalidBody": "Saisissez une durée valide en minutes.",
+    "enableFailed": "Impossible d’activer le mode concentration.",
+    "disableFailed": "Impossible de désactiver le mode concentration."
+  },
+  "errorBoundary": {
+    "body": "L’application a rencontré une erreur inattendue. Vos données sont intactes — réessayez.",
+    "title": "Une erreur est survenue",
+    "retry": "Réessayer"
+  },
+  "recovery": {
+    "yoursTitle": "Votre phrase de récupération",
+    "superseded": "La clé de cet appareil a été remplacée depuis un autre appareil : les messages reçus depuis ne peuvent pas être ouverts ici. L’envoi fonctionne toujours. Saisissez ci-dessous la phrase de récupération de cet autre appareil pour lire le reste.",
+    "alreadyRevealed": "Vous avez déjà enregistré votre phrase de récupération sur cet appareil. Par sécurité, elle ne sera plus affichée — si vous l’avez encore, gardez-la en lieu sûr. Si vous l’avez perdue, cet appareil continue de fonctionner normalement ; elle ne sert qu’à restaurer d’anciens messages sur un autre appareil.",
+    "restoreFirst": "Cet appareil n’a pas encore la clé de votre compte : il n’y a donc aucune phrase à afficher — celle qu’il vous faut a été enregistrée sur votre autre appareil. Saisissez-la ci-dessous pour restaurer votre historique. Une fois fait, cette phrase sera aussi disponible ici.",
+    "unavailable": "Nous n’avons pas pu vérifier l’état de chiffrement de cet appareil, la phrase n’est donc pas encore affichée — la révéler maintenant pourrait écraser une clé dont vous avez peut-être encore besoin. Vérifiez votre connexion et revenez.",
+    "backUp": "Sauvegardez la clé qui protège vos messages. Quiconque voit cette phrase peut lire votre historique : ne l’affichez que dans un endroit privé.",
+    "view": "Voir la phrase de récupération",
+    "restoreTitle": "Restaurer à partir d’une phrase",
+    "restoreBody": "Saisir une phrase de récupération enregistrée auparavant remplace la clé de cet appareil, afin qu’il puisse déchiffrer les messages scellés pour cette phrase.",
+    "phrasePlaceholder": "Saisissez vos 24 mots de récupération",
+    "restore": "Restaurer",
+    "prepareFailed": "Nous n’avons pas pu préparer votre phrase de récupération pour le moment. Vos messages ne sont pas affectés — vous pouvez réessayer à tout moment depuis les Réglages.",
+    "whatItDoes": "Cette phrase permet de restaurer votre historique de messages chiffrés si vous réinstallez l’application ou changez d’appareil. Quiconque la détient peut lire vos messages : notez-la et gardez-la dans un endroit privé — elle ne sera plus affichée.",
+    "restoredTitle": "Phrase de récupération restaurée",
+    "restoredBody": "Rouvrez vos conversations pour voir les messages qui ne pouvaient pas être déchiffrés jusqu’ici.",
+    "invalidTitle": "Cela ne semble pas correct",
+    "invalidBody": "Vérifiez que les 24 mots sont bien orthographiés et dans le bon ordre, puis réessayez.",
+    "unverifiableTitle": "Impossible de vérifier votre phrase",
+    "unverifiableBody": "Nous n’avons pas pu joindre le serveur pour confirmer que cette phrase appartient à votre compte : rien n’a été modifié. Vérifiez votre connexion et réessayez.",
+    "publishFailedTitle": "Restauration non terminée",
+    "publishFailedBody": "Votre phrase était correcte, mais nous n’avons pas pu enregistrer le changement. Rien n’a été modifié sur cet appareil — vérifiez votre connexion et réessayez.",
+    "mismatchTitle": "Cette phrase n’est pas la clé enregistrée",
+    "mismatchBody": "Elle vient peut-être d’un appareil plus ancien : dans ce cas, la restaurer est exactement ce que vous voulez — cela ramènera des messages que cet appareil ne peut pas lire.\n\nVotre compte reviendra à cette ancienne clé. Tout ce qui a été scellé pour la clé actuelle depuis ne sera plus lisible ici, et vos autres appareils auront besoin de cette même phrase.",
+    "restoreAnyway": "Restaurer quand même",
+    "saveTitle": "Enregistrez votre phrase de récupération",
+    "savedIt": "Je l’ai enregistrée",
+    "copiedBody": "Phrase de récupération copiée dans le presse-papiers."
   }
 }

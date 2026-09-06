@@ -293,7 +293,7 @@ export default function ChatSettingsScreen() {
 
       {SHOW_NATIVE_ONLY_FEATURES && (
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>Soundscape</Text>
+        <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.soundscape')}</Text>
         <View style={styles.optionRow}>
           {SOUNDSCAPES.map(s => (
             <TouchableOpacity
@@ -373,11 +373,11 @@ export default function ChatSettingsScreen() {
 
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>Features</Text>
+        <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.features')}</Text>
       </GlassView>
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>Security</Text>
+        <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.security')}</Text>
         {SHOW_NATIVE_ONLY_FEATURES && (
         <TouchableOpacity
           style={styles.row}
@@ -404,7 +404,9 @@ export default function ChatSettingsScreen() {
           </Text>
         </TouchableOpacity>
         )}
-        <Text style={[styles.sectionTitle, {color: colors.text, marginTop: 12}]}>Message Expiry</Text>
+        <Text style={[styles.sectionTitle, {color: colors.text, marginTop: 12}]}>
+          {t('chatSettings.messageExpiry')}
+        </Text>
         <View style={styles.optionRow}>
           {getExpiryOptions().map(opt => (
             <TouchableOpacity
