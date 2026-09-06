@@ -1269,6 +1269,48 @@ exports.sweepExpiredLiveLocations = functions.pubsub
     return null;
   });
 
+/**
+ * Deletes invite tokens once they are past their 24-hour life.
+ *
+ * Nothing else removes them. `revokeInvite` fires only if the inviter
+ * withdraws a link by hand, and accepting one stamps `acceptedBy` and leaves
+ * the document sitting there — so `invites` accumulated, permanently, a row
+ * per invitation reading "this uid invited someone, and that uid accepted".
+ *
+ * That is the social graph the whole invite design exists to avoid publishing.
+ * The token cannot be enumerated (rules allow `get`, refuse `list`), so this
+ * was not readable by another user — but it was readable by us, it grew
+ * without bound, and "we cannot see who talks to whom" is a claim the policy
+ * makes. A document whose only remaining purpose is to say `expired` to a
+ * client that already knows the expiry is not worth that.
+ *
+ * Accepted invites are swept on the same clock rather than on accept: the
+ * inviter's screen polls `inviteState` to show that someone took the link,
+ * and deleting it at that moment would turn "accepted" into "gone" — the one
+ * state that reads as "your link failed".
+ */
+exports.sweepExpiredInvites = functions.pubsub
+  .schedule('every 60 minutes')
+  .onRun(async () => {
+    try {
+      const now = Date.now();
+      const snap = await db
+        .collection('invites')
+        .where('expiresAt', '<=', now)
+        .limit(500)
+        .get();
+      if (snap.empty) return null;
+
+      const batch = db.batch();
+      snap.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+      functions.logger.info(`Deleted ${snap.size} expired invite(s)`);
+    } catch (error) {
+      functions.logger.error('sweepExpiredInvites failed', error);
+    }
+    return null;
+  });
+
 // ─── Chatterbox Pro: Stripe subscriptions ───────────────────────────────────
 // Purchase happens on the web client only. Apple and Google require their own
 // in-app purchase for digital goods sold inside a mobile app, so the mobile
