@@ -122,12 +122,12 @@ export default function GroupMembersModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Chat members"
+        aria-label={t('members.title')}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
         <div style={styles.head}>
-          <div style={styles.title}>Members ({members.length})</div>
-          <button style={styles.close} onClick={onClose} aria-label="Close">
+          <div style={styles.title}>{t('members.count', {count: members.length})}</div>
+          <button style={styles.close} onClick={onClose} aria-label={t('common.close')}>
             <Icon name="close" size={18} />
           </button>
         </div>
@@ -136,7 +136,7 @@ export default function GroupMembersModal({
           {members.map(uid => (
             <li key={uid} style={styles.member}>
               {names[uid] || uid.slice(0, 6)}
-              {uid === myUid && <span style={styles.you}> (you)</span>}
+              {uid === myUid && <span style={styles.you}> {t('members.you')}</span>}
             </li>
           ))}
         </ul>

@@ -365,14 +365,14 @@ export default function CallModal({
           <button
             style={{...styles.ctrl, background: micOn ? 'rgba(255,255,255,0.12)' : colors.danger}}
             onClick={toggleMic}
-            title={micOn ? 'Mute' : 'Unmute'}>
+            title={micOn ? t('call.mute') : t('call.unmute')}>
             <Icon name={micOn ? 'mic' : 'micOff'} size={22} />
           </button>
           {type === 'video' && (
             <button
               style={{...styles.ctrl, background: camOn ? 'rgba(255,255,255,0.12)' : colors.danger}}
               onClick={toggleCam}
-              title={camOn ? 'Camera off' : 'Camera on'}>
+              title={camOn ? t('call.turnCameraOff') : t('call.turnCameraOn')}>
               <Icon name={camOn ? 'camera' : 'cameraOff'} size={22} />
             </button>
           )}
@@ -387,7 +387,7 @@ export default function CallModal({
               <Icon name="screenShare" size={22} />
             </button>
           )}
-          <button style={{...styles.ctrl, ...styles.hangup}} onClick={hangUp} title="Hang up">
+          <button style={{...styles.ctrl, ...styles.hangup}} onClick={hangUp} title={t('call.hangUp')}>
             <Icon name="phoneOff" size={22} />
           </button>
         </div>

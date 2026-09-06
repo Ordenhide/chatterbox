@@ -1682,7 +1682,7 @@ export default function ChatPane({
       <div style={styles.header}>
         <div style={styles.headerLeft}>
           {onBack && (
-            <button style={styles.backBtn} onClick={onBack} title="Back">
+            <button style={styles.backBtn} onClick={onBack} title={t('chat.back')}>
               <Icon name="back" size={22} strokeWidth={2.2} />
             </button>
           )}
@@ -1725,7 +1725,7 @@ export default function ChatPane({
           <div ref={menuWrapRef} style={{position: 'relative'}}>
             <button
               style={styles.menuBtn}
-              title="More"
+              title={t('chat.more')}
               aria-haspopup="menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(o => !o)}>
@@ -1762,7 +1762,7 @@ export default function ChatPane({
                     setShowLockSettings(true);
                     setMenuOpen(false);
                   }}>
-                  <Icon name="lock" size={15} /> {isChatLocked(chatId) ? 'Chat lock' : 'Lock chat'}
+                  <Icon name="lock" size={15} /> {isChatLocked(chatId) ? t('chatLock.title') : t('chatLock.lockChat')}
                 </button>
                 <button style={styles.menuItem} onClick={() => toggleMuteChat(chatId, me.uid, isMuted)}>
                   {isMuted ? t('chat.unmute') : t('chat.mute')}
@@ -1901,14 +1901,14 @@ export default function ChatPane({
             }}>
             <input
               style={styles.summaryAskInput}
-              placeholder="Ask about this chat (e.g. what did we decide about the trip?)"
-              aria-label="Ask about this chat"
+              placeholder={t('chat.askPlaceholder')}
+              aria-label={t('chat.askAbout')}
               value={summaryQuestion}
               onChange={e => setSummaryQuestion(e.target.value)}
               disabled={summarizing}
             />
             <button type="submit" style={styles.summaryAskBtn} disabled={summarizing}>
-              {summaryQuestion.trim() ? 'Ask' : 'Regenerate'}
+              {summaryQuestion.trim() ? t('chat.ask') : t('chat.regenerate')}
             </button>
           </form>
         </div>
@@ -2011,7 +2011,10 @@ export default function ChatPane({
               {formatCoordinates(peerLiveLocation.position.latitude, peerLiveLocation.position.longitude)}
             </span>
             <span style={styles.locationPreviewMeta}>
-              Updated {Math.max(0, Math.round((Date.now() - peerLiveLocation.updatedAt) / 1000))}s ago · Open in Maps
+              {t('chat.locationUpdated', {
+                seconds: Math.max(0, Math.round((Date.now() - peerLiveLocation.updatedAt) / 1000)),
+              })}{' '}
+              · {t('chat.openInMaps')}
             </span>
           </span>
         </button>
@@ -2458,7 +2461,7 @@ export default function ChatPane({
                           // action on someone else's message is to report it.
                           <button
                             style={styles.smallAction}
-                            title="Report"
+                            title={t('chat.report')}
                             onClick={() => {
                               setReportTarget({
                                 messageId: m._id,
@@ -2717,7 +2720,7 @@ export default function ChatPane({
           <button
             type="button"
             style={styles.composerIcon}
-            title="Attach a file"
+            title={t('chat.attachFile')}
             disabled={uploadPct !== null}
             onClick={() => fileInputRef.current?.click()}>
             <Icon name="paperclip" size={20} />
@@ -2732,7 +2735,7 @@ export default function ChatPane({
           <button
             type="button"
             style={{...styles.composerIcon, ...(sharingLocation ? {color: colors.primary} : null)}}
-            title={sharingLocation ? 'Stop sharing location' : 'Share live location'}
+            title={sharingLocation ? t('chat.stopSharingLocation') : t('chat.shareLiveLocation')}
             onClick={() => (sharingLocation ? handleStopSharingLocation() : setShareLocationModalOpen(true))}>
             <Icon name="pin" size={18} />
           </button>
@@ -2759,7 +2762,7 @@ export default function ChatPane({
               {t('common.send')}
             </button>
           ) : (
-            <button type="button" style={styles.composerIcon} title="Record a voice message" onClick={startRecording}>
+            <button type="button" style={styles.composerIcon} title={t('chat.recordVoice')} onClick={startRecording}>
               <Icon name="mic" size={20} />
             </button>
           )}

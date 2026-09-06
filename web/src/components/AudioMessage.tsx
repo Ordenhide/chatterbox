@@ -1,6 +1,7 @@
 import {useRef, useState} from 'react';
 import {colors} from '../theme';
 import Icon from './Icon';
+import {useT} from '../i18n';
 
 /**
  * A voice message, drawn inside the bubble rather than on top of one.
@@ -42,13 +43,14 @@ export default function AudioMessage({
 
   // On the inverted fill the accent is not legible, so the ink is; on the
   // app's own ground the accent is exactly where it belongs.
+  const {t} = useT();
   const accent = mine ? 'var(--cb-text-on-primary)' : colors.primary;
   return (
     <div style={mine ? styles.wrapPlain : styles.wrap}>
       <button
         onClick={toggle}
         style={mine ? {...styles.play, ...styles.playPlain} : styles.play}
-        aria-label={playing ? 'Pause' : 'Play'}>
+        aria-label={playing ? t('audio.pause') : t('audio.play')}>
         <Icon name={playing ? 'pause' : 'play'} size={15} />
       </button>
       <div style={styles.bars}>

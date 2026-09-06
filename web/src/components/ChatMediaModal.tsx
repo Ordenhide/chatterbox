@@ -54,7 +54,7 @@ export default function ChatMediaModal({
               <button
                 key={m._id}
                 style={styles.cell}
-                aria-label={m.image ? 'Open photo full size' : 'Play video'}
+                aria-label={m.image ? t('media.openPhoto') : t('media.playVideo')}
                 onClick={() => (m.image ? lightbox.open(m.image) : setVideo(m.video || null))}>
                 {m.image ? (
                   <img src={m.image} alt="" loading="lazy" style={styles.thumb} />

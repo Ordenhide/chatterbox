@@ -19,13 +19,13 @@ export default function SavedModal({myUid, onClose}: {myUid: string; onClose: ()
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Saved messages"
+        aria-label={t('saved.title')}
         tabIndex={-1}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
         <div style={styles.head}>
-          <h2 style={styles.title}>Saved messages</h2>
-          <button style={styles.close} onClick={onClose} title="Close">
+          <h2 style={styles.title}>{t('saved.title')}</h2>
+          <button style={styles.close} onClick={onClose} title={t('common.close')}>
             <Icon name="close" size={18} />
           </button>
         </div>

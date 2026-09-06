@@ -61,6 +61,13 @@ const TERNARY_LABEL = /\?\s*'([A-Z][^']{1,40})'\s*:\s*'([A-Z][^']{1,40})'/g;
  */
 const LABEL_THEN_EXPRESSION = /^[A-Z][A-Za-z]+(?: [A-Za-z()]+)*\s*\{/;
 
+/** Strips `{…}` repeatedly, so a nested call like `t('k', {n: x})` clears. */
+function withoutExpressions(text: string): string {
+  let out = text;
+  for (let i = 0; i < 5 && out.includes('{'); i++) out = out.replace(/\{[^{}]*\}/g, '');
+  return out.trim();
+}
+
 function scan(file: string): {prose: string[]; nodes: string[]} {
   const prose: string[] = [];
   const nodes: string[] = [];
@@ -78,7 +85,10 @@ function scan(file: string): {prose: string[]; nodes: string[]} {
       if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
       if (PROSE.test(trimmed)) prose.push(`${file}:${i + 1}  ${trimmed.slice(0, 60)}`);
       for (const match of line.matchAll(TEXT_NODE)) {
-        const text = match[1].replace(/\{[^{}]*\}/g, '').trim();
+        const text = withoutExpressions(match[1]);
+        // A leftover brace means the `>` that started this match was a
+        // comparison inside an expression (`{unread > 99 ? …}`), not a tag.
+        if (/[{}]/.test(text)) continue;
         if (/[A-Za-z]{2}/.test(text)) nodes.push(`${file}:${i + 1}  ${text.slice(0, 40)}`);
       }
       for (const match of line.matchAll(TERNARY_LABEL)) {

@@ -1,10 +1,11 @@
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
+import {useT, type TKey} from '../i18n';
 
-const DURATIONS: {label: string; ms: number}[] = [
-  {label: '15 minutes', ms: 15 * 60 * 1000},
-  {label: '1 hour', ms: 60 * 60 * 1000},
-  {label: '8 hours', ms: 8 * 60 * 60 * 1000},
+const DURATIONS: {key: TKey; ms: number}[] = [
+  {key: 'location.15min', ms: 15 * 60 * 1000},
+  {key: 'location.1hour', ms: 60 * 60 * 1000},
+  {key: 'location.8hours', ms: 8 * 60 * 60 * 1000},
 ];
 
 export default function ShareLocationModal({
@@ -14,6 +15,7 @@ export default function ShareLocationModal({
   onClose: () => void;
   onChoose: (durationMs: number) => void;
 }) {
+  const {t} = useT();
   const dialogRef = useModal<HTMLDivElement>(onClose);
 
   return (
@@ -22,20 +24,25 @@ export default function ShareLocationModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Share live location"
+        aria-label={t('location.shareAria')}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
-        <h2 style={styles.title}>Share Live Location</h2>
-        <p style={styles.subtitle}>How long do you want to share your location?</p>
+        <h2 style={styles.title}>{t('location.shareTitle')}</h2>
+        <p style={styles.subtitle}>{t('location.howLong')}</p>
         <div style={styles.options}>
           {DURATIONS.map(d => (
-            <button key={d.label} type="button" className="btn btn-primary" style={styles.option} onClick={() => onChoose(d.ms)}>
-              {d.label}
+            <button
+              key={d.key}
+              type="button"
+              className="btn btn-primary"
+              style={styles.option}
+              onClick={() => onChoose(d.ms)}>
+              {t(d.key)}
             </button>
           ))}
         </div>
         <button type="button" style={styles.cancel} onClick={onClose}>
-          Cancel
+          {t('common.cancel')}
         </button>
       </div>
     </div>

@@ -3,6 +3,7 @@ import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {isChatLocked, removeChatLock, setChatLockPIN, verifyChatPIN} from '../services/appLock';
 import Icon from './Icon';
+import {useT} from '../i18n';
 
 type Mode = 'unlock' | 'manage';
 
@@ -36,22 +37,24 @@ export default function ChatLockModal({
   const [error, setError] = useState<string | null>(null);
   const locked = isChatLocked(chatId);
 
+  const {t} = useT();
+
   const submitUnlock = () => {
     if (verifyChatPIN(chatId, pin)) {
       onUnlocked?.();
       return;
     }
-    setError('Incorrect PIN.');
+    setError(t('chatLock.incorrect'));
     setPin('');
   };
 
   const submitSet = () => {
     if (pin.length < 4) {
-      setError('Use at least 4 digits.');
+      setError(t('chatLock.tooShort'));
       return;
     }
     if (pin !== confirm) {
-      setError('Those PINs do not match.');
+      setError(t('chatLock.mismatch'));
       return;
     }
     setChatLockPIN(chatId, pin);
@@ -63,7 +66,7 @@ export default function ChatLockModal({
     // simply remove the lock instead of entering it, which would make the whole
     // feature decorative.
     if (!verifyChatPIN(chatId, pin)) {
-      setError('Enter the current PIN to remove the lock.');
+      setError(t('chatLock.enterCurrent'));
       setPin('');
       return;
     }
@@ -77,7 +80,7 @@ export default function ChatLockModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={mode === 'unlock' ? 'Enter chat PIN' : 'Chat lock'}
+        aria-label={mode === 'unlock' ? t('chatLock.enterPin') : t('chatLock.title')}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
         <div style={styles.icon}>
@@ -86,16 +89,16 @@ export default function ChatLockModal({
 
         {mode === 'unlock' ? (
           <>
-            <div style={styles.title}>This chat is locked</div>
-            <div style={styles.desc}>Enter its PIN to open it.</div>
+            <div style={styles.title}>{t('chatLock.locked')}</div>
+            <div style={styles.desc}>{t('chatLock.enterToOpen')}</div>
           </>
         ) : (
           <>
-            <div style={styles.title}>{locked ? 'Chat lock' : 'Lock this chat'}</div>
+            <div style={styles.title}>{locked ? t('chatLock.title') : t('chatLock.lockThis')}</div>
             <div style={styles.desc}>
               {locked
-                ? 'Enter the current PIN to remove the lock.'
-                : 'Ask for a PIN before this chat opens in this browser.'}
+                ? t('chatLock.enterCurrent')
+                : t('chatLock.askBefore')}
             </div>
           </>
         )}
@@ -105,8 +108,8 @@ export default function ChatLockModal({
           type="password"
           inputMode="numeric"
           autoComplete="off"
-          placeholder="PIN"
-          aria-label="PIN"
+          placeholder={t('chatLock.pin')}
+          aria-label={t('chatLock.pin')}
           value={pin}
           onChange={e => {
             setPin(e.target.value);
@@ -128,8 +131,8 @@ export default function ChatLockModal({
             type="password"
             inputMode="numeric"
             autoComplete="off"
-            placeholder="Confirm PIN"
-            aria-label="Confirm PIN"
+            placeholder={t('chatLock.confirmPin')}
+            aria-label={t('chatLock.confirmPin')}
             value={confirm}
             onChange={e => {
               setConfirm(e.target.value);
@@ -145,7 +148,7 @@ export default function ChatLockModal({
               behind it, which is the thing the PIN is gating. */}
           {mode !== 'unlock' && (
             <button type="button" style={styles.cancel} onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </button>
           )}
           <button
@@ -154,7 +157,7 @@ export default function ChatLockModal({
             style={styles.primary}
             onClick={mode === 'unlock' ? submitUnlock : locked ? clear : submitSet}
             disabled={!pin}>
-            {mode === 'unlock' ? 'Unlock' : locked ? 'Remove lock' : 'Set PIN'}
+            {mode === 'unlock' ? t('chatLock.unlock') : locked ? t('chatLock.removeLock') : t('chatLock.setPin')}
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import {AnimatePresence, motion, useReducedMotion} from 'framer-motion';
 import Icon from './Icon';
+import {useT} from '../i18n';
 
 /**
  * The animated half of the lightbox, split out from context/LightboxContext so
@@ -30,6 +31,7 @@ export default function LightboxOverlay({
   layoutId?: string;
   onClose: () => void;
 }) {
+  const {t} = useT();
   const reduced = useReducedMotion();
 
   return (
@@ -45,7 +47,7 @@ export default function LightboxOverlay({
           exit={{opacity: 0}}
           transition={{duration: 0.18}}
           onClick={onClose}>
-          <button className="lightbox-close" onClick={onClose} aria-label="Close">
+          <button className="lightbox-close" onClick={onClose} aria-label={t('common.close')}>
             <Icon name="close" size={20} />
           </button>
           <motion.img

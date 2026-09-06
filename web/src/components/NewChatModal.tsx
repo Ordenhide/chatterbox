@@ -102,7 +102,7 @@ export default function NewChatModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="New chat"
+        aria-label={t('newChat.aria')}
         style={styles.modal}
         onClick={e => e.stopPropagation()}
         onSubmit={start}>

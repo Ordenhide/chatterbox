@@ -1,6 +1,7 @@
 import {Component, type ReactNode} from 'react';
 import {colors} from '../theme';
 import BrandMark from './BrandMark';
+import {tStandalone as t} from '../i18n';
 
 interface State {
   error: Error | null;
@@ -20,17 +21,25 @@ export default class ErrorBoundary extends Component<{children: ReactNode}, Stat
 
   render() {
     if (!this.state.error) return this.props.children;
-    return (
-      <div style={styles.wrap}>
-        <BrandMark size={52} />
-        <h1 style={styles.title}>Something went wrong</h1>
-        <p style={styles.msg}>The app hit an unexpected error. Reloading usually fixes it.</p>
-        <button className="btn btn-primary" style={styles.btn} onClick={() => window.location.reload()}>
-          Reload
-        </button>
-      </div>
-    );
+    return <ErrorFallback />;
   }
+}
+
+/**
+ * Reads the dictionary without the hook: this boundary sits outside
+ * LanguageProvider so that it can catch a crash in the providers themselves.
+ */
+function ErrorFallback() {
+  return (
+    <div style={styles.wrap}>
+      <BrandMark size={52} />
+      <h1 style={styles.title}>{t('errorBoundary.title')}</h1>
+      <p style={styles.msg}>{t('errorBoundary.body')}</p>
+      <button className="btn btn-primary" style={styles.btn} onClick={() => window.location.reload()}>
+        {t('errorBoundary.reload')}
+      </button>
+    </div>
+  );
 }
 
 const styles: Record<string, React.CSSProperties> = {

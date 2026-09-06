@@ -79,13 +79,13 @@ export default function RecoveryPhraseModal({
   const restoreErrorMessage = (result: Extract<RestoreKeypairResult, {success: false}>) => {
     switch (result.reason) {
       case 'invalid-phrase':
-        return 'That is not a valid 24-word recovery phrase. Check for typos or missing words.';
+        return t('recovery.errInvalid');
       case 'key-mismatch':
-        return 'That phrase belongs to a different account, so it would not decrypt anything here. Nothing was changed.';
+        return t('recovery.errMismatch');
       case 'verification-unavailable':
-        return 'Could not reach the server to check the phrase, so nothing was changed. Try again when you are back online.';
+        return t('recovery.errUnverifiable');
       case 'publish-failed':
-        return 'The phrase was correct, but saving it failed. Nothing was changed — please try again.';
+        return t('recovery.errPublishFailed');
     }
   };
 
@@ -113,8 +113,8 @@ export default function RecoveryPhraseModal({
     <div style={styles.overlay} onClick={busy ? undefined : onClose}>
       <div style={styles.modal} onClick={e => e.stopPropagation()}>
         <div style={styles.head}>
-          <div style={styles.title}>Recovery phrase</div>
-          <button style={styles.close} onClick={onClose} disabled={busy} aria-label="Close">
+          <div style={styles.title}>{t('recovery.title')}</div>
+          <button style={styles.close} onClick={onClose} disabled={busy} aria-label={t('common.close')}>
             <Icon name="close" size={18} />
           </button>
         </div>
@@ -126,23 +126,19 @@ export default function RecoveryPhraseModal({
               className="btn"
               style={{...styles.tab, ...(mode === m ? styles.tabOn : styles.tabOff)}}
               onClick={() => setMode(m)}>
-              {m === 'reveal' ? 'Show mine' : 'Restore'}
+              {m === 'reveal' ? t('recovery.showMine') : t('recovery.restore')}
             </button>
           ))}
         </div>
 
         {mode === 'reveal' ? (
           <>
-            <div style={styles.warnBox}>
-              These 24 words are the only way to read your encrypted messages again if you
-              clear this browser's data. They are never uploaded — if you lose them, that
-              history is gone permanently. Write them down and keep them somewhere private.
-            </div>
+            <div style={styles.warnBox}>{t('recovery.warn')}</div>
 
             {loadError ? (
-              <div style={styles.error}>Could not load your recovery phrase. Please try again.</div>
+              <div style={styles.error}>{t('recovery.loadFailed')}</div>
             ) : !phrase ? (
-              <div style={styles.muted}>Loading…</div>
+              <div style={styles.muted}>{t('recovery.loading')}</div>
             ) : (
               <>
                 <div
@@ -158,7 +154,7 @@ export default function RecoveryPhraseModal({
                   </button>
                 ) : (
                   <button className="btn btn-primary" style={styles.action} onClick={reveal}>
-                    Reveal phrase
+                    {t('recovery.reveal')}
                   </button>
                 )}
               </>
@@ -166,15 +162,11 @@ export default function RecoveryPhraseModal({
           </>
         ) : (
           <>
-            <div style={styles.muted}>
-              Enter the 24-word phrase from your other device to read this account's
-              encrypted history here. Your current key is only replaced once the phrase
-              checks out.
-            </div>
+            <div style={styles.muted}>{t('recovery.restoreIntro')}</div>
             <textarea
               style={styles.input}
               rows={4}
-              placeholder="word word word …"
+              placeholder={t('recovery.phrasePlaceholder')}
               value={input}
               onChange={e => setInput(e.target.value)}
               spellCheck={false}
@@ -187,7 +179,7 @@ export default function RecoveryPhraseModal({
               style={styles.action}
               disabled={busy || !input.trim()}
               onClick={submitRestore}>
-              {busy ? <span className="spinner" /> : 'Restore'}
+              {busy ? <span className="spinner" /> : t('recovery.restore')}
             </button>
           </>
         )}

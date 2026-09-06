@@ -82,15 +82,13 @@ export default function FocusModeCard({uid}: {uid: string}) {
 
   return (
     <section style={styles.card}>
-      <div style={styles.title}>Focus mode</div>
-      <div style={styles.desc}>
-        Auto-reply to anyone who messages you, so people know you'll get back to them.
-      </div>
+      <div style={styles.title}>{t('focus.title')}</div>
+      <div style={styles.desc}>{t('focus.desc')}</div>
 
       {active ? (
         <>
           <div style={styles.activeBar}>
-            Active until{' '}
+            {t('focus.activeUntil')}{' '}
             {focus?.until
               ? new Date(focus.until).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
               : '—'}
@@ -107,7 +105,7 @@ export default function FocusModeCard({uid}: {uid: string}) {
         </>
       ) : (
         <>
-          <div style={styles.label}>Duration</div>
+          <div style={styles.label}>{t('focus.duration')}</div>
           <div style={styles.chips}>
             {DURATIONS_MIN.map(m => (
               <button
@@ -116,14 +114,14 @@ export default function FocusModeCard({uid}: {uid: string}) {
                 className="btn"
                 style={{...styles.chip, ...(minutes === m ? styles.chipOn : styles.chipOff)}}
                 onClick={() => setMinutes(m)}>
-                {m < 60 ? `${m} min` : `${m / 60} hr`}
+                {m < 60 ? t('focus.minutes', {n: m}) : t('focus.hours', {n: m / 60})}
               </button>
             ))}
           </div>
           <input
             style={styles.input}
             placeholder={DEFAULT_AUTO_REPLY}
-            aria-label="Auto-reply message"
+            aria-label={t('focus.autoReplyMessage')}
             value={message}
             onChange={e => setMessage(e.target.value)}
             maxLength={200}
@@ -134,7 +132,7 @@ export default function FocusModeCard({uid}: {uid: string}) {
             style={styles.on}
             onClick={enable}
             disabled={busy}>
-            {busy ? <span className="spinner" /> : 'Turn on focus mode'}
+            {busy ? <span className="spinner" /> : t('focus.turnOn')}
           </button>
         </>
       )}

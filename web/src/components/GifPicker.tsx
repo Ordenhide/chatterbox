@@ -78,7 +78,7 @@ export default function GifPicker({
           ) : (
             <div style={styles.masonry}>
               {gifs.map(g => (
-                <button key={g.id} style={styles.gifBtn} aria-label="Choose this GIF" onClick={() => onPick(g)}>
+                <button key={g.id} style={styles.gifBtn} aria-label={t('gif.choose')} onClick={() => onPick(g)}>
                   <img src={g.previewUrl} alt="" loading="lazy" style={styles.gifImg} />
                 </button>
               ))}

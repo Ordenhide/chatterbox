@@ -76,7 +76,7 @@ export default function ReportMessageModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Report message"
+        aria-label={t('report.aria')}
         tabIndex={-1}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
@@ -90,7 +90,7 @@ export default function ReportMessageModal({
         </div>
 
         <div style={styles.section}>
-          <div style={styles.label}>Why are you reporting this?</div>
+          <div style={styles.label}>{t('report.why')}</div>
           <div style={styles.reasons}>
             {REPORT_REASONS.map(r => (
               <button

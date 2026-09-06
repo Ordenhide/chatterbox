@@ -452,11 +452,8 @@ export default function ProfileScreen({user}: {user: User}) {
           </form>
 
           <section style={styles.card}>
-            <div style={styles.cardTitle}>Recovery phrase</div>
-            <div style={styles.cardDesc}>
-              The 24 words that let you read your encrypted messages again if you clear
-              this browser's data. Nothing else can recover them.
-            </div>
+            <div style={styles.cardTitle}>{t('recovery.title')}</div>
+            <div style={styles.cardDesc}>{t('recovery.cardDesc')}</div>
             <button
               type="button"
               className="btn btn-soft"

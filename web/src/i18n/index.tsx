@@ -488,6 +488,96 @@ const en = {
   'recovery.showOrRestore': 'Show or restore phrase',
   'report.includeText': "Include this message's text in the report. It is sent to the moderators so they can act on it — the rest of this conversation stays encrypted and is not included. Without it, the report may not be actionable.",
   'saved.empty': "No saved messages yet. Open a message's actions in any chat and choose Save.",
+
+  // Wired after the same sweep on mobile: these were rendering English
+  // regardless of the switcher, most of them inside ternaries and aria
+  // labels, where a text-node scan could not see them.
+  'audio.pause': 'Pause',
+  'audio.play': 'Play',
+  'call.mute': 'Mute',
+  'call.unmute': 'Unmute',
+  // Distinct from call.cameraOn/cameraOff, which describe the state. These
+  // are what the button does when you press it.
+  'call.turnCameraOff': 'Camera off',
+  'call.turnCameraOn': 'Camera on',
+  'call.hangUp': 'Hang up',
+  'chatLock.enterPin': 'Enter chat PIN',
+  'chatLock.title': 'Chat lock',
+  'chatLock.locked': 'This chat is locked',
+  'chatLock.enterToOpen': 'Enter its PIN to open it.',
+  'chatLock.lockThis': 'Lock this chat',
+  'chatLock.lockChat': 'Lock chat',
+  'chatLock.pin': 'PIN',
+  'chatLock.confirmPin': 'Confirm PIN',
+  'chatLock.removeLock': 'Remove lock',
+  'chatLock.setPin': 'Set PIN',
+  'chatLock.unlock': 'Unlock',
+  'chatLock.enterCurrent': 'Enter the current PIN to remove the lock.',
+  'chatLock.askBefore': 'Ask for a PIN before this chat opens in this browser.',
+  'chatLock.incorrect': 'Incorrect PIN.',
+  'chatLock.tooShort': 'Use at least 4 digits.',
+  'chatLock.mismatch': 'Those PINs do not match.',
+  'media.openPhoto': 'Open photo full size',
+  'media.playVideo': 'Play video',
+  'chat.back': 'Back',
+  'chat.more': 'More',
+  'chat.askAbout': 'Ask about this chat',
+  'chat.ask': 'Ask',
+  'chat.regenerate': 'Regenerate',
+  'chat.locationUpdated': 'Updated {seconds}s ago',
+  'chat.report': 'Report',
+  'chat.attachFile': 'Attach a file',
+  'chat.recordVoice': 'Record a voice message',
+  'chat.stopSharingLocation': 'Stop sharing location',
+  'chat.shareLiveLocation': 'Share live location',
+  'chat.askPlaceholder': 'Ask about this chat (e.g. what did we decide about the trip?)',
+  'chat.openInMaps': 'Open in Maps',
+  'recovery.cardDesc':
+    "The 24 words that let you read your encrypted messages again if you clear this browser's data. Nothing else can recover them.",
+  'errorBoundary.title': 'Something went wrong',
+  'errorBoundary.body': 'The app hit an unexpected error. Reloading usually fixes it.',
+  'focus.title': 'Focus mode',
+  'focus.activeUntil': 'Active until',
+  'focus.duration': 'Duration',
+  'focus.autoReplyMessage': 'Auto-reply message',
+  'focus.desc': "Auto-reply to anyone who messages you, so people know you'll get back to them.",
+  'focus.turnOn': 'Turn on focus mode',
+  'focus.minutes': '{n} min',
+  'focus.hours': '{n} hr',
+  'errorBoundary.reload': 'Reload',
+  'gif.choose': 'Choose this GIF',
+  'members.title': 'Chat members',
+  'members.count': 'Members ({count})',
+  'members.you': '(you)',
+  'invite.aria': 'Invite',
+  'newChat.aria': 'New chat',
+  'recovery.title': 'Recovery phrase',
+  'recovery.showMine': 'Show mine',
+  'recovery.restore': 'Restore',
+  'recovery.loadFailed': 'Could not load your recovery phrase. Please try again.',
+  'recovery.loading': 'Loading…',
+  'recovery.phrasePlaceholder': 'word word word …',
+  'recovery.warn':
+    "These 24 words are the only way to read your encrypted messages again if you clear this browser's data. They are never uploaded — if you lose them, that history is gone permanently. Write them down and keep them somewhere private.",
+  'recovery.reveal': 'Reveal phrase',
+  'recovery.restoreIntro':
+    "Enter the 24-word phrase from your other device to read this account's encrypted history here. Your current key is only replaced once the phrase checks out.",
+  'recovery.errInvalid': 'That is not a valid 24-word recovery phrase. Check for typos or missing words.',
+  'recovery.errMismatch':
+    'That phrase belongs to a different account, so it would not decrypt anything here. Nothing was changed.',
+  'recovery.errUnverifiable':
+    'Could not reach the server to check the phrase, so nothing was changed. Try again when you are back online.',
+  'recovery.errPublishFailed':
+    'The phrase was correct, but saving it failed. Nothing was changed — please try again.',
+  'report.aria': 'Report message',
+  'report.why': 'Why are you reporting this?',
+  'saved.title': 'Saved messages',
+  'location.shareAria': 'Share live location',
+  'location.shareTitle': 'Share Live Location',
+  'location.howLong': 'How long do you want to share your location?',
+  'location.15min': '15 minutes',
+  'location.1hour': '1 hour',
+  'location.8hours': '8 hours',
 };
 
 type Key = keyof typeof en;
@@ -967,6 +1057,87 @@ const zh: Partial<Record<Key, string>> = {
   'recovery.showOrRestore': '查看或恢复助记词',
   'report.includeText': '在举报中附上这条消息的文字。它会发给审核人员，让他们能够处理——这场对话的其余部分仍然加密，不会被包含。不附上的话，举报可能无法处理。',
   'saved.empty': '还没有收藏的消息。在任意聊天里打开一条消息的操作菜单，选择「收藏」。',
+
+  'audio.pause': '暂停',
+  'audio.play': '播放',
+  'call.mute': '静音',
+  'call.unmute': '取消静音',
+  'call.turnCameraOff': '关闭摄像头',
+  'call.turnCameraOn': '打开摄像头',
+  'call.hangUp': '挂断',
+  'chatLock.enterPin': '输入对话 PIN 码',
+  'chatLock.title': '对话锁',
+  'chatLock.locked': '这个对话已锁定',
+  'chatLock.enterToOpen': '输入 PIN 码打开它。',
+  'chatLock.lockThis': '锁定这个对话',
+  'chatLock.lockChat': '锁定对话',
+  'chatLock.pin': 'PIN 码',
+  'chatLock.confirmPin': '确认 PIN 码',
+  'chatLock.removeLock': '移除锁定',
+  'chatLock.setPin': '设置 PIN 码',
+  'chatLock.unlock': '解锁',
+  'chatLock.enterCurrent': '输入当前 PIN 码以移除锁定。',
+  'chatLock.askBefore': '在这个浏览器里打开这个对话前先要求输入 PIN 码。',
+  'chatLock.incorrect': 'PIN 码不正确。',
+  'chatLock.tooShort': '至少要 4 位数字。',
+  'chatLock.mismatch': '两次输入的 PIN 码不一致。',
+  'media.openPhoto': '全屏查看照片',
+  'media.playVideo': '播放视频',
+  'chat.back': '返回',
+  'chat.more': '更多',
+  'chat.askAbout': '问问这个对话',
+  'chat.ask': '提问',
+  'chat.regenerate': '重新生成',
+  'chat.locationUpdated': '{seconds} 秒前更新',
+  'chat.report': '举报',
+  'chat.attachFile': '添加文件',
+  'chat.recordVoice': '录一条语音消息',
+  'chat.stopSharingLocation': '停止分享位置',
+  'chat.shareLiveLocation': '分享实时位置',
+  'chat.askPlaceholder': '问问这个对话（例如：关于那次旅行我们定了什么？）',
+  'chat.openInMaps': '在地图中打开',
+  'recovery.cardDesc': '如果你清空这个浏览器的数据，这 24 个词能让你重新读到加密消息。除此之外没有别的办法找回。',
+  'errorBoundary.title': '出了点问题',
+  'errorBoundary.body': '应用遇到了意外错误。刷新一下通常就能恢复。',
+  'focus.title': '专注模式',
+  'focus.activeUntil': '持续到',
+  'focus.duration': '时长',
+  'focus.autoReplyMessage': '自动回复内容',
+  'focus.desc': '自动回复给你发消息的人，让他们知道你稍后会回。',
+  'focus.turnOn': '开启专注模式',
+  'focus.minutes': '{n} 分钟',
+  'focus.hours': '{n} 小时',
+  'errorBoundary.reload': '重新加载',
+  'gif.choose': '选择这张 GIF',
+  'members.title': '对话成员',
+  'members.count': '成员（{count}）',
+  'members.you': '（你）',
+  'invite.aria': '邀请',
+  'newChat.aria': '新建对话',
+  'recovery.title': '助记词',
+  'recovery.showMine': '查看我的',
+  'recovery.restore': '恢复',
+  'recovery.loadFailed': '没能载入你的助记词，请重试。',
+  'recovery.loading': '加载中…',
+  'recovery.phrasePlaceholder': '单词 单词 单词 …',
+  'recovery.warn':
+    '如果你清空这个浏览器的数据，这 24 个词是重新读到你加密消息的唯一途径。它们从不上传——一旦弄丢，那段记录就永久没有了。请抄下来，收在私密的地方。',
+  'recovery.reveal': '显示助记词',
+  'recovery.restoreIntro':
+    '输入你另一台设备上的 24 个助记词，就能在这里读到这个账号的加密记录。只有在助记词核对通过之后，当前的密钥才会被替换。',
+  'recovery.errInvalid': '这不是有效的 24 词助记词。请检查拼写或是否漏词。',
+  'recovery.errMismatch': '这条助记词属于另一个账号，在这里解不开任何东西。什么都没有改动。',
+  'recovery.errUnverifiable': '联系不上服务器来核对这条助记词，所以什么都没有改动。等网络恢复后再试。',
+  'recovery.errPublishFailed': '助记词是对的，但保存失败了。什么都没有改动——请重试。',
+  'report.aria': '举报消息',
+  'report.why': '你为什么要举报这条消息？',
+  'saved.title': '收藏的消息',
+  'location.shareAria': '分享实时位置',
+  'location.shareTitle': '分享实时位置',
+  'location.howLong': '你想分享多久的位置？',
+  'location.15min': '15 分钟',
+  'location.1hour': '1 小时',
+  'location.8hours': '8 小时',
 };
 
 const DICTS: Record<Lang, Partial<Record<Key, string>>> = {en, zh};
@@ -988,9 +1159,27 @@ const Ctx = createContext<I18nCtx>({lang: 'en', setLang: () => {}, t: k => en[k]
 const KEY = 'cb_web_lang';
 
 function initialLang(): Lang {
-  const stored = localStorage.getItem(KEY);
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(KEY);
+  } catch {
+    // A private window or blocked site data. The browser's own language is a
+    // better guess than throwing on the way up.
+  }
   if (stored === 'en' || stored === 'zh') return stored;
   return (navigator.language || 'en').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+}
+
+/**
+ * The dictionary without a provider above you.
+ *
+ * ErrorBoundary sits outside LanguageProvider on purpose — it has to catch a
+ * crash in the providers themselves — so its fallback cannot use the hook, and
+ * would otherwise be the one screen that is always English: the screen you
+ * reach when something has already gone wrong.
+ */
+export function tStandalone(key: Key): string {
+  return DICTS[initialLang()][key] ?? en[key] ?? key;
 }
 
 export function LanguageProvider({children}: {children: React.ReactNode}) {

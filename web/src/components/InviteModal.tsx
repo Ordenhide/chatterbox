@@ -151,7 +151,7 @@ export default function InviteModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Invite"
+        aria-label={t('invite.aria')}
         style={styles.modal}
         onClick={e => e.stopPropagation()}>
         <h2 style={styles.title}>{t('invite.yoursTitle')}</h2>
