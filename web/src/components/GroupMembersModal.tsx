@@ -105,13 +105,13 @@ export default function GroupMembersModal({
   };
 
   const leave = async () => {
-    if (!window.confirm('Leave this chat? You will stop receiving new messages.')) return;
+    if (!window.confirm(t('members.leaveConfirm'))) return;
     setBusy(true);
     try {
       await leaveChat(chatId, myUid);
       onLeft();
     } catch {
-      setError('Could not leave the chat. Please try again.');
+      setError(t('members.leaveFailed'));
       setBusy(false);
     }
   };
