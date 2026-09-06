@@ -45,9 +45,9 @@ left nav rail.
 - **Unread divider** ("New messages") and a **jump-to-latest** button (with a
   new-message count) when you've scrolled up.
 - **Reply / quote**, **@mentions** (with autocomplete + highlight), **pin
-  messages** (pinned banner + jump-to), **GIF messages** (GIPHY picker), and
-  **voice-message transcription** — all schema-matched to mobile (`replyTo`,
-  `mentions`, `chat.pinnedMessageIds`, `gif`, `transcription`).
+  messages** (pinned banner + jump-to), and **voice-message transcription** —
+  all schema-matched to mobile (`replyTo`, `mentions`,
+  `chat.pinnedMessageIds`, `transcription`).
 - **Scheduled messages** — pick a future time; delivered by a client-side sweep
   (the sender's open tab) that mirrors the mobile `processScheduledMessages`
   Cloud Function, so it works without that function deployed.

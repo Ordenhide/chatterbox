@@ -87,7 +87,6 @@ import {
   scheduleMessage,
   type ScheduledMessage,
 } from '../services/scheduledMessages';
-import type {GifResult} from '../services/gifSearch';
 import {getSmartReplies} from '../services/smartReply';
 import {createReminder} from '../services/reminders';
 import {useCall} from '../call/CallProvider';
@@ -102,7 +101,6 @@ import CipherText from './CipherText';
 import QuickSwitcher from './QuickSwitcher';
 import Icon from './Icon';
 import AudioMessage from './AudioMessage';
-import GifPicker from './GifPicker';
 import GroupMembersModal from './GroupMembersModal';
 import ChatLockModal from './ChatLockModal';
 import ReportMessageModal from './ReportMessageModal';
@@ -201,7 +199,6 @@ export default function ChatPane({
     authorUid: string;
     content: string;
   } | null>(null);
-  const [gifOpen, setGifOpen] = useState(false);
   const [transcribing, setTranscribing] = useState<Set<string>>(new Set());
   const [scheduled, setScheduled] = useState<ScheduledMessage[]>([]);
   const [scheduleOpen, setScheduleOpen] = useState(false);
@@ -1250,31 +1247,6 @@ export default function ChatPane({
     }
   };
 
-  const onGifPick = async (g: GifResult) => {
-    setGifOpen(false);
-    const reply = replyTarget ? buildReplyTo(replyTarget) : undefined;
-    setReplyTarget(null);
-    try {
-      await sendMessage(
-        chatId,
-        {
-          gif: {
-            url: g.url,
-            previewUrl: g.previewUrl,
-            mp4Url: g.mp4Url,
-            mp4PreviewUrl: g.mp4PreviewUrl,
-            width: g.width,
-            height: g.height,
-          },
-          ...(reply ? {replyTo: reply} : {}),
-        },
-        me,
-      );
-    } catch (err) {
-      toast.error(t(sendErrorKey(err, 'chat.sendFailed')));
-    }
-  };
-
   const onTogglePin = (m: ChatMessage) => {
     togglePinMessage(chatId, m._id).catch(() => undefined);
     setActiveMsg(null);
@@ -1355,7 +1327,7 @@ export default function ChatPane({
     const sealed = isSealed(reminderFor.encrypted);
     const raw = sealed
       ? ''
-      : reminderFor.text || (reminderFor.gif ? '[GIF]' : reminderFor.image ? '[Photo]' : '');
+      : reminderFor.text || (reminderFor.image ? '[Photo]' : '');
     const preview = raw ? raw.slice(0, 80) : t('reminder.default');
     const reminder: Reminder = {
       id: `${chatId}_${reminderFor._id}_${remindAt}`,
@@ -2226,18 +2198,6 @@ export default function ChatPane({
                                 </button>
                               </div>
                             ))}
-                          {m.gif && (
-                            <button
-                              type="button"
-                              style={styles.imageBtn}
-                              aria-label={`GIF from ${m.user?.name || 'User'}, open full size`}
-                              onClick={e => {
-                                e.stopPropagation();
-                                if (m.gif?.url) lightbox.open(m.gif.url);
-                              }}>
-                              <img src={m.gif.previewUrl || m.gif.url} alt="" style={styles.gifMsg} />
-                            </button>
-                          )}
                           {m.audio && <AudioMessage url={m.audio} duration={m.audioDuration} mine={mine} />}
                           {m.audio && (transcribing.has(m._id) || m.transcription) && (
                             <div style={styles.transcription}>
@@ -2641,7 +2601,7 @@ export default function ChatPane({
             </span>
             <span style={styles.replyBarText}>
               {replyTarget.text ||
-                (replyTarget.image ? '[Photo]' : replyTarget.gif ? '[GIF]' : replyTarget.audio ? '[Voice message]' : '[Media]')}
+                (replyTarget.image ? '[Photo]' : replyTarget.audio ? '[Voice message]' : '[Media]')}
             </span>
           </div>
           <button style={styles.ephemClose} onClick={() => setReplyTarget(null)} title={t('common.cancel')}>
@@ -2727,13 +2687,6 @@ export default function ChatPane({
           </button>
           <button
             type="button"
-            style={styles.composerIcon}
-            title={t('chat.sendGif')}
-            onClick={() => setGifOpen(true)}>
-            <Icon name="gif" size={22} />
-          </button>
-          <button
-            type="button"
             style={{...styles.composerIcon, ...(sharingLocation ? {color: colors.primary} : null)}}
             title={sharingLocation ? t('chat.stopSharingLocation') : t('chat.shareLiveLocation')}
             onClick={() => (sharingLocation ? handleStopSharingLocation() : setShareLocationModalOpen(true))}>
@@ -2769,7 +2722,6 @@ export default function ChatPane({
         </form>
       )}
 
-      {gifOpen && <GifPicker onPick={onGifPick} onClose={() => setGifOpen(false)} />}
       {reportTarget && (
         <ReportMessageModal
           chatId={chatId}
@@ -2895,7 +2847,6 @@ function buildReplyTo(m: ChatMessage): NonNullable<ChatMessage['replyTo']> {
   };
   if (m.text) r.text = m.text;
   else if (m.image) r.text = '[Photo]';
-  else if (m.gif) r.text = '[GIF]';
   else if (m.audio) r.text = '[Voice message]';
   else if (m.file) r.text = '[File]';
   else if (m.encrypted || m.encryptedImage || m.encryptedVideo || m.encryptedAudio || m.encryptedFileUri) {
@@ -3244,7 +3195,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   msgText: {whiteSpace: 'pre-wrap'},
   inlineMeta: {marginLeft: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
-  gifMsg: {display: 'block', maxWidth: 260, width: '100%', borderRadius: 2, margin: '4px 0', cursor: 'zoom-in'},
   transcription: {
     margin: '4px 0',
     padding: '7px 11px',
@@ -3380,7 +3330,7 @@ const styles: Record<string, React.CSSProperties> = {
   image: {display: 'block', maxWidth: 360, width: '100%', borderRadius: 2, margin: '4px 0', cursor: 'zoom-in'},
   // Resets default button chrome so wrapping a message image in a real
   // <button> (for keyboard access) doesn't change how it looks — the image's
-  // own style (image/gifMsg) still controls sizing.
+  // own style still controls sizing.
   imageBtn: {display: 'block', border: 'none', background: 'none', padding: 0, margin: 0, cursor: 'zoom-in'},
   fileCard: {
     display: 'inline-flex',

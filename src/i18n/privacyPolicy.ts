@@ -72,7 +72,6 @@ Most one-to-one and group messages additionally use a ratchet, meaning each mess
 • Who is in each conversation, and when it was created and last active.
 • The timestamp of every message, and how many you have not read.
 • An attachment's file name, type and size. The bytes are encrypted; the description of them is not, and the length of the ciphertext bounds the length of the original.
-• GIFs, which are public third-party content.
 • Your friends and friend requests.
 • Call signalling — that a call was placed, to whom, and when. Not its audio or video.
 
@@ -110,7 +109,6 @@ The private key that decrypts your messages never leaves your device, except as 
       body: `We do not sell, trade or rent your personal information. Data reaches:
 
 • Google Firebase — our hosting provider, as described above.
-• GIPHY — only when you search for a GIF. Your search terms go to GIPHY's API; nothing else about you does.
 
 We may disclose what we hold if the law requires it. What we hold is the list in section 2. We cannot produce message contents, because we cannot read them.`,
     },
@@ -183,7 +181,6 @@ If you would rather we deleted something by hand, write to us.`,
 • 每场对话里有谁，以及它何时创建、何时最后活跃。
 • 每条消息的时间戳，以及你有多少条没读。
 • 附件的文件名、类型和大小。字节是加密的，对它的描述不是；密文的长度也框定了原文的长度。
-• GIF，它本身就是公开的第三方内容。
 • 你的好友和好友请求。
 • 通话信令——有过一次通话、打给谁、什么时候。不包括音频和视频内容。
 
@@ -221,7 +218,6 @@ If you would rather we deleted something by hand, write to us.`,
       body: `我们不出售、不交易、不出租你的个人信息。数据会到达：
 
 • Google Firebase——我们的托管服务商，如上所述。
-• GIPHY——只在你搜索 GIF 的时候。你的搜索词会发给 GIPHY 的接口；关于你的其他信息不会。
 
 如果法律要求，我们可能披露我们持有的内容。我们持有的就是第 2 节那份清单。我们拿不出消息内容，因为我们读不了。`,
     },
@@ -293,7 +289,6 @@ Die meisten Einzel- und Gruppennachrichten nutzen zusätzlich eine Ratsche: Jede
 • Wer an welchem Gespräch beteiligt ist und wann es erstellt wurde und zuletzt aktiv war.
 • Der Zeitstempel jeder Nachricht und wie viele du nicht gelesen hast.
 • Dateiname, Typ und Größe eines Anhangs. Die Bytes sind verschlüsselt, ihre Beschreibung nicht, und die Länge des Chiffrats begrenzt die Länge des Originals.
-• GIFs, die öffentliche Inhalte Dritter sind.
 • Deine Freunde und Freundschaftsanfragen.
 • Anrufsignalisierung — dass ein Anruf geführt wurde, mit wem und wann. Nicht dessen Ton oder Bild.
 
@@ -331,7 +326,6 @@ Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Ger
       body: `Wir verkaufen, tauschen oder vermieten deine personenbezogenen Daten nicht. Daten erreichen:
 
 • Google Firebase — unseren Hosting-Anbieter, wie oben beschrieben.
-• GIPHY — nur wenn du nach einem GIF suchst. Deine Suchbegriffe gehen an die API von GIPHY; sonst nichts über dich.
 
 Wir können offenlegen, was wir haben, wenn das Gesetz es verlangt. Was wir haben, ist die Liste aus Abschnitt 2. Nachrichteninhalte können wir nicht herausgeben, weil wir sie nicht lesen können.`,
     },
@@ -403,7 +397,6 @@ La mayoría de los mensajes individuales y de grupo usan además un trinquete: c
 • Quién participa en cada conversación, y cuándo se creó y estuvo activa por última vez.
 • La marca de tiempo de cada mensaje y cuántos no has leído.
 • El nombre, el tipo y el tamaño de un archivo adjunto. Los bytes están cifrados; su descripción no, y la longitud del texto cifrado acota la del original.
-• Los GIF, que son contenido público de terceros.
 • Tus amistades y solicitudes de amistad.
 • La señalización de llamadas: que se hizo una llamada, a quién y cuándo. No su audio ni su vídeo.
 
@@ -441,7 +434,6 @@ La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo c
       body: `No vendemos, intercambiamos ni alquilamos tu información personal. Los datos llegan a:
 
 • Google Firebase, nuestro proveedor de alojamiento, como se describe arriba.
-• GIPHY, solo cuando buscas un GIF. Tus términos de búsqueda van a la API de GIPHY; nada más sobre ti.
 
 Podemos revelar lo que tenemos si la ley lo exige. Lo que tenemos es la lista de la sección 2. No podemos entregar el contenido de los mensajes, porque no podemos leerlo.`,
     },
@@ -513,7 +505,6 @@ La plupart des messages individuels et de groupe utilisent en plus un cliquet : 
 • Qui participe à chaque conversation, quand elle a été créée et quand elle a été active pour la dernière fois.
 • L'horodatage de chaque message et le nombre de messages non lus.
 • Le nom, le type et la taille d'une pièce jointe. Les octets sont chiffrés ; leur description ne l'est pas, et la longueur du chiffré borne celle de l'original.
-• Les GIF, qui sont des contenus publics de tiers.
 • Vos amis et vos demandes d'ami.
 • La signalisation des appels — qu'un appel a eu lieu, avec qui et quand. Ni son audio ni sa vidéo.
 
@@ -551,7 +542,6 @@ La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sau
       body: `Nous ne vendons, n'échangeons ni ne louons vos informations personnelles. Des données parviennent à :
 
 • Google Firebase — notre hébergeur, comme décrit ci-dessus.
-• GIPHY — uniquement lorsque vous cherchez un GIF. Vos termes de recherche vont à l'API de GIPHY ; rien d'autre vous concernant.
 
 Nous pouvons divulguer ce que nous détenons si la loi l'exige. Ce que nous détenons, c'est la liste de la section 2. Nous ne pouvons pas produire le contenu des messages, puisque nous ne pouvons pas le lire.`,
     },
@@ -623,7 +613,6 @@ La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: og
 • Chi partecipa a ogni conversazione, e quando è stata creata e usata l'ultima volta.
 • L'orario di ogni messaggio e quanti non ne hai letti.
 • Nome, tipo e dimensione di un allegato. I byte sono cifrati, la loro descrizione no, e la lunghezza del cifrato delimita quella dell'originale.
-• Le GIF, che sono contenuti pubblici di terzi.
 • I tuoi amici e le richieste di amicizia.
 • La segnalazione delle chiamate: che una chiamata c'è stata, con chi e quando. Non il suo audio né il video.
 
@@ -661,7 +650,6 @@ La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo,
       body: `Non vendiamo, scambiamo né noleggiamo le tue informazioni personali. I dati arrivano a:
 
 • Google Firebase — il nostro fornitore di hosting, come descritto sopra.
-• GIPHY — solo quando cerchi una GIF. I tuoi termini di ricerca vanno all'API di GIPHY; nient'altro che ti riguardi.
 
 Possiamo divulgare ciò che deteniamo se la legge lo impone. Ciò che deteniamo è l'elenco della sezione 2. Non possiamo produrre il contenuto dei messaggi, perché non riusciamo a leggerlo.`,
     },
@@ -733,7 +721,6 @@ A maioria das mensagens individuais e de grupo usa ainda um roquete: cada mensag
 • Quem está em cada conversa, e quando foi criada e usada pela última vez.
 • A data e hora de cada mensagem e quantas não leste.
 • O nome, o tipo e o tamanho de um anexo. Os bytes estão cifrados; a descrição deles não, e o comprimento do cifrado limita o do original.
-• Os GIF, que são conteúdo público de terceiros.
 • Os teus amigos e pedidos de amizade.
 • A sinalização de chamadas — que houve uma chamada, com quem e quando. Não o áudio nem o vídeo.
 
@@ -771,7 +758,6 @@ A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo, exce
       body: `Não vendemos, trocamos nem alugamos as tuas informações pessoais. Os dados chegam a:
 
 • Google Firebase — o nosso fornecedor de alojamento, como descrito acima.
-• GIPHY — apenas quando procuras um GIF. Os teus termos de pesquisa vão para a API da GIPHY; mais nada sobre ti.
 
 Podemos divulgar o que temos se a lei o exigir. O que temos é a lista da secção 2. Não conseguimos entregar o conteúdo das mensagens, porque não o conseguimos ler.`,
     },
@@ -843,7 +829,6 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
 • Кто участвует в каждом разговоре, когда он создан и когда был активен в последний раз.
 • Время каждого сообщения и сколько вы не прочитали.
 • Имя файла, тип и размер вложения. Байты зашифрованы, а их описание — нет, и длина шифртекста ограничивает длину оригинала.
-• GIF-файлы — это публичный контент третьих лиц.
 • Ваши друзья и заявки в друзья.
 • Сигнализация звонков — что звонок был, кому и когда. Не его звук и не видео.
 
@@ -881,7 +866,6 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
       body: `Мы не продаём, не обмениваем и не сдаём в аренду вашу личную информацию. Данные попадают:
 
 • В Google Firebase — нашему хостинг-провайдеру, как описано выше.
-• В GIPHY — только когда вы ищете GIF. Ваши поисковые запросы уходят в API GIPHY; ничего другого о вас — нет.
 
 Мы можем раскрыть то, чем располагаем, если этого требует закон. Располагаем мы списком из раздела 2. Содержимое сообщений мы предоставить не можем, потому что прочитать его не в состоянии.`,
     },
@@ -953,7 +937,6 @@ Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanı
 • Her konuşmada kimlerin bulunduğu, ne zaman oluşturulduğu ve en son ne zaman etkin olduğu.
 • Her mesajın zaman damgası ve kaç tanesini okumadığın.
 • Bir ekin dosya adı, türü ve boyutu. Baytlar şifrelidir; onların tarifi değildir ve şifreli metnin uzunluğu aslının uzunluğunu sınırlar.
-• GIF'ler; bunlar üçüncü tarafların herkese açık içerikleridir.
 • Arkadaşların ve arkadaşlık istekleri.
 • Arama sinyalleşmesi — bir aramanın yapıldığı, kiminle ve ne zaman. Sesi ya da görüntüsü değil.
 
@@ -991,7 +974,6 @@ Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazm
       body: `Kişisel bilgilerini satmayız, takas etmeyiz, kiralamayız. Veri şuralara ulaşır:
 
 • Google Firebase — yukarıda anlatıldığı gibi barındırma sağlayıcımız.
-• GIPHY — yalnızca bir GIF aradığında. Arama terimlerin GIPHY'nin API'sine gider; seninle ilgili başka hiçbir şey gitmez.
 
 Yasa gerektirirse elimizdekileri açıklayabiliriz. Elimizdeki, 2. bölümdeki listedir. Mesaj içeriğini veremeyiz, çünkü onu okuyamıyoruz.`,
     },
@@ -1063,7 +1045,6 @@ Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet
 • Ai ở trong mỗi cuộc trò chuyện, nó được tạo khi nào và hoạt động lần cuối khi nào.
 • Dấu thời gian của từng tin nhắn và số tin bạn chưa đọc.
 • Tên tệp, loại và kích thước của tệp đính kèm. Các byte thì được mã hoá; phần mô tả về chúng thì không, và độ dài bản mã cũng giới hạn độ dài bản gốc.
-• Ảnh GIF, vốn là nội dung công khai của bên thứ ba.
 • Bạn bè và lời mời kết bạn của bạn.
 • Tín hiệu cuộc gọi — rằng đã có một cuộc gọi, với ai và khi nào. Không phải âm thanh hay hình ảnh của nó.
 
@@ -1101,7 +1082,6 @@ Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rờ
       body: `Chúng tôi không bán, trao đổi hay cho thuê thông tin cá nhân của bạn. Dữ liệu đi tới:
 
 • Google Firebase — nhà cung cấp hạ tầng của chúng tôi, như mô tả ở trên.
-• GIPHY — chỉ khi bạn tìm ảnh GIF. Từ khoá tìm kiếm của bạn đi tới API của GIPHY; không có gì khác về bạn.
 
 Chúng tôi có thể tiết lộ những gì mình đang giữ nếu pháp luật yêu cầu. Những gì chúng tôi giữ chính là danh sách ở mục 2. Chúng tôi không thể đưa ra nội dung tin nhắn, vì chúng tôi không đọc được.`,
     },
@@ -1173,7 +1153,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • それぞれの会話に誰がいるか、いつ作られ、最後にいつ動いたか。
 • すべてのメッセージのタイムスタンプと、未読の件数。
 • 添付ファイルの名前・種類・サイズ。バイト列は暗号化されますが、その説明は暗号化されず、暗号文の長さは元の長さの上限を示します。
-• GIF。これは第三者の公開コンテンツです。
 • あなたの友だちと友だちリクエスト。
 • 通話のシグナリング。通話があったこと、相手、時刻。音声や映像は含みません。
 
@@ -1211,7 +1190,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `あなたの個人情報を販売・交換・貸与することはありません。情報が届く先は:
 
 • Google Firebase — 上記のとおり、当社のホスティング事業者。
-• GIPHY — GIF を検索したときだけ。検索語が GIPHY の API に送られます。あなたに関するそれ以外の情報は送られません。
 
 法律が要求する場合、保持しているものを開示することがあります。保持しているものは第 2 節の一覧です。メッセージの中身は提出できません。読めないからです。`,
     },
@@ -1283,7 +1261,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • 각 대화에 누가 있는지, 언제 만들어졌고 마지막으로 언제 활동했는지.
 • 모든 메시지의 시각과 읽지 않은 개수.
 • 첨부의 파일 이름, 형식, 크기. 바이트는 암호화되지만 그에 대한 설명은 그렇지 않으며, 암호문의 길이가 원본 길이의 한계를 드러냅니다.
-• GIF. 제3자의 공개 콘텐츠입니다.
 • 당신의 친구와 친구 요청.
 • 통화 시그널링 — 통화가 있었다는 것, 상대, 시각. 음성이나 영상은 아닙니다.
 
@@ -1321,7 +1298,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `우리는 당신의 개인정보를 팔거나 교환하거나 대여하지 않습니다. 데이터가 가는 곳은:
 
 • Google Firebase — 위에서 설명한 우리의 호스팅 제공자.
-• GIPHY — GIF를 검색할 때만. 검색어가 GIPHY의 API로 갑니다. 당신에 대한 다른 것은 가지 않습니다.
 
 법이 요구하면 우리가 가진 것을 공개할 수 있습니다. 우리가 가진 것은 2절의 목록입니다. 메시지 내용은 내놓을 수 없습니다. 읽을 수 없기 때문입니다.`,
     },
@@ -1393,7 +1369,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • 每場對話裡有誰，以及它何時建立、何時最後活躍。
 • 每則訊息的時間戳記，以及你有多少則沒讀。
 • 附件的檔名、類型和大小。位元組是加密的，對它的描述不是；密文的長度也框定了原文的長度。
-• GIF，它本身就是公開的第三方內容。
 • 你的好友和好友邀請。
 • 通話信令——有過一次通話、打給誰、什麼時候。不包括音訊和視訊內容。
 
@@ -1431,7 +1406,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `我們不出售、不交易、不出租你的個人資訊。資料會到達：
 
 • Google Firebase——我們的託管服務商，如上所述。
-• GIPHY——只在你搜尋 GIF 的時候。你的搜尋詞會傳給 GIPHY 的介面；關於你的其他資訊不會。
 
 如果法律要求，我們可能揭露我們持有的內容。我們持有的就是第 2 節那份清單。我們拿不出訊息內容，因為我們讀不了。`,
     },
@@ -1503,7 +1477,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • من في كل محادثة، ومتى أُنشئت، ومتى كانت نشطة آخر مرة.
 • الطابع الزمني لكل رسالة، وكم رسالة لم تقرأها.
 • اسم الملف المرفق ونوعه وحجمه. البايتات مُعمّاة، أما وصفها فلا، وطول النص المُعمّى يحدّ طول الأصل.
-• صور GIF، وهي محتوى عام لأطراف ثالثة.
 • أصدقاؤك وطلبات الصداقة.
 • إشارات المكالمات — أن مكالمة جرت، ومع من، ومتى. لا صوتها ولا صورتها.
 
@@ -1541,7 +1514,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `لا نبيع معلوماتك الشخصية ولا نقايضها ولا نؤجّرها. تصل البيانات إلى:
 
 • Google Firebase — مزوّد الاستضافة لدينا، كما ورد أعلاه.
-• GIPHY — فقط حين تبحث عن صورة GIF. تذهب كلمات بحثك إلى واجهة GIPHY؛ ولا شيء آخر عنك.
 
 قد نُفصح عمّا بحوزتنا إن اقتضى القانون. وما بحوزتنا هو قائمة القسم 2. لا نستطيع تقديم محتوى الرسائل، لأننا لا نستطيع قراءته.`,
     },
@@ -1613,7 +1585,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • हर बातचीत में कौन है, वह कब बनी और आख़िरी बार कब सक्रिय थी।
 • हर संदेश का समय, और आपने कितने नहीं पढ़े।
 • अनुलग्नक का फ़ाइल नाम, प्रकार और आकार। बाइट एन्क्रिप्टेड हैं; उनका विवरण नहीं, और सिफरटेक्स्ट की लंबाई मूल की लंबाई की सीमा बता देती है।
-• GIF, जो तीसरे पक्ष की सार्वजनिक सामग्री हैं।
 • आपके दोस्त और मित्रता अनुरोध।
 • कॉल सिग्नलिंग — कि कॉल हुई, किससे और कब। उसका ऑडियो या वीडियो नहीं।
 
@@ -1651,7 +1622,6 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `हम आपकी निजी जानकारी न बेचते हैं, न उसका व्यापार करते हैं, न किराए पर देते हैं। डेटा यहाँ पहुँचता है:
 
 • Google Firebase — हमारा होस्टिंग प्रदाता, जैसा ऊपर बताया गया।
-• GIPHY — सिर्फ़ तब जब आप कोई GIF खोजते हैं। आपके खोज शब्द GIPHY के API को जाते हैं; आपके बारे में और कुछ नहीं।
 
 क़ानून की माँग पर हम जो हमारे पास है उसे बता सकते हैं। हमारे पास खंड 2 की सूची है। संदेशों की सामग्री हम पेश नहीं कर सकते, क्योंकि हम उसे पढ़ नहीं सकते।`,
     },

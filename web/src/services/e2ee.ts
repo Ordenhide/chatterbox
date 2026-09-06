@@ -50,10 +50,9 @@
  *      all readable server-side, as are the `lastMessage` chat previews and
  *      push notification bodies. Media file name/type/size stay visible too —
  *      only the access pointer (image/video/audio/file.uri) is sealed, not
- *      those fields. GIFs, gestures, lottery, and shared-list content are not
- *      sealed at all: GIFs are public third-party content with nothing to
- *      protect, and the others live in their own subcollections regardless of
- *      what the message preview text says.
+ *      those fields. Gestures, lottery, and shared-list content are not
+ *      sealed at all: they live in their own subcollections regardless of what
+ *      the message preview text says.
  *
  * It is a working demonstration of the shape, not a security guarantee.
  * ─────────────────────────────────────────────────────────────────────────────

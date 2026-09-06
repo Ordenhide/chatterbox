@@ -223,14 +223,6 @@ export interface Message {
     expiresAt?: number;
   };
   translations?: Record<string, string>;
-  gif?: {
-    url: string;
-    previewUrl?: string;
-    mp4Url?: string;
-    mp4PreviewUrl?: string;
-    width?: number;
-    height?: number;
-  };
   timeCapsule?: {
     unlocksAt: number;
   };
@@ -471,13 +463,3 @@ export interface LotteryMessage {
   revealedBy?: string;
 }
 
-export interface GifResult {
-  id: string;
-  url: string;
-  previewUrl: string;
-  mp4Url?: string;
-  mp4PreviewUrl?: string;
-  width: number;
-  height: number;
-  title?: string;
-}

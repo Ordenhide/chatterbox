@@ -41,7 +41,6 @@ export type IconName =
   | 'eraser'
   | 'undo'
   | 'reply'
-  | 'gif'
   | 'settings'
   | 'music'
   | 'calendar'
@@ -280,12 +279,6 @@ const PATHS: Record<IconName, React.ReactNode> = {
     </>
   ),
   reply: <path d="M9 17l-5-5 5-5M4 12h11a5 5 0 0 1 5 5v2" />,
-  gif: (
-    <>
-      <rect x="2" y="5" width="20" height="14" rx="3" />
-      <path d="M9 10.5a2.2 2.2 0 1 0 0 3h.6V12M13 9.5v5M16 9.5h3M16 12h2.4" />
-    </>
-  ),
   settings: (
     <>
       <circle cx="12" cy="12" r="3" />

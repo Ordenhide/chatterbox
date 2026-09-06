@@ -16,8 +16,6 @@ interface ImportMetaEnv {
   readonly VITE_TURN_CREDENTIAL?: string;
   // Web push
   readonly VITE_FIREBASE_VAPID_KEY?: string;
-  // GIPHY GIF search
-  readonly VITE_GIPHY_API_KEY?: string;
   // Native app download links (Profile → Get the app). macOS installs as a PWA.
   readonly VITE_DOWNLOAD_IOS?: string;
   readonly VITE_DOWNLOAD_ANDROID?: string;

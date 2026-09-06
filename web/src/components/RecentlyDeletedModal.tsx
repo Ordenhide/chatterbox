@@ -34,7 +34,7 @@ function preview(
       /* fall through to a kind label */
     }
   }
-  if (p.image || p.encryptedImage || p.gif) return t('trash.photo');
+  if (p.image || p.encryptedImage) return t('trash.photo');
   if (p.video || p.encryptedVideo) return t('trash.video');
   if (p.audio || p.encryptedAudio) return t('trash.voice');
   if (p.file || p.encryptedFileUri) return t('trash.file');

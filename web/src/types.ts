@@ -77,8 +77,6 @@ export interface ChatMessage {
   replyTo?: {_id: string; text?: string; image?: string; video?: string; user?: {_id: string; name?: string}} | null;
   // @mentions — uids mentioned in the text.
   mentions?: string[];
-  // GIF message (GIPHY).
-  gif?: {url: string; previewUrl?: string; mp4Url?: string; mp4PreviewUrl?: string; width?: number; height?: number} | null;
   // Voice-message transcription (from the transcribeVoiceMessage function).
   transcription?: string;
   // System event rendered as a centered notice rather than a normal message.

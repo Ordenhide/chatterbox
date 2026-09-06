@@ -392,7 +392,7 @@ export async function leaveChat(chatId: string, myUserId: string): Promise<void>
  *
  * Throws RecipientUnreachableError if the other participant deleted their
  * account. The check lives here rather than in the composer because this screen
- * has more than a dozen send paths — text, GIF, image, video, voice, gesture,
+ * has more than a dozen send paths — text, image, video, voice, gesture,
  * lottery, scheduled, moment share — and a guard in the UI would have to be
  * repeated correctly at every one of them.
  */

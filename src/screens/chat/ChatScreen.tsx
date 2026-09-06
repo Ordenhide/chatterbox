@@ -161,7 +161,6 @@ import {getChatSummary} from '../../services/aiSummary';
 import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
 import {addToQuoteWall} from '../../services/quoteWall';
-import {searchGifs, getTrendingGifs} from '../../services/gifSearch';
 import {getContextCards} from '../../services/contextCards';
 import {getSmartReplies} from '../../services/smartReply';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
@@ -175,7 +174,7 @@ import {
   isStealthMode,
   isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
-import {SharedListItem, GifResult, ContextCard, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
+import {SharedListItem, ContextCard, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
@@ -379,10 +378,6 @@ export default function ChatScreen() {
   const [summaryQuestion, setSummaryQuestion] = useState('');
   const [summaryAskedQuestion, setSummaryAskedQuestion] = useState('');
   const [translatedTexts, setTranslatedTexts] = useState<Record<string, string>>({});
-  const [gifPickerVisible, setGifPickerVisible] = useState(false);
-  const [gifResults, setGifResults] = useState<GifResult[]>([]);
-  const [gifSearch, setGifSearch] = useState('');
-  const [gifLoading, setGifLoading] = useState(false);
   const [timeCapsuleMode, setTimeCapsuleMode] = useState(false);
   const [capsuleHours, setCapsuleHours] = useState(24);
   const [capsulePickerVisible, setCapsulePickerVisible] = useState(false);
@@ -976,7 +971,6 @@ export default function ChatScreen() {
             location: (msg as any).location,
             translations: (msg as any).translations,
             scheduledFor: (msg as any).scheduledFor,
-            gif: (msg as any).gif,
             timeCapsule: (msg as any).timeCapsule,
             // E2EE: substitute cached plaintext once decrypted (below); until
             // then, the plain field is genuinely empty — the sender clears it
@@ -2544,67 +2538,6 @@ export default function ChatScreen() {
       }
     },
     [user, chatId, t],
-  );
-
-  const loadTrendingGifs = useCallback(async () => {
-    setGifLoading(true);
-    try {
-      const results = await getTrendingGifs();
-      setGifResults(results);
-    } catch {
-      setGifResults([]);
-    } finally {
-      setGifLoading(false);
-    }
-  }, []);
-
-  const handleGifSearch = useCallback(async (q: string) => {
-    setGifSearch(q);
-    if (!q.trim()) {
-      loadTrendingGifs();
-      return;
-    }
-    setGifLoading(true);
-    try {
-      const results = await searchGifs(q.trim());
-      setGifResults(results);
-    } catch {
-      setGifResults([]);
-    } finally {
-      setGifLoading(false);
-    }
-  }, [loadTrendingGifs]);
-
-  const handleSendGif = useCallback(
-    async (gif: GifResult) => {
-      if (!chatId || !user) return;
-      setGifPickerVisible(false);
-      const messageData = {
-        _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-        text: '',
-        createdAt: new Date(),
-        gif: {
-          url: gif.url,
-          previewUrl: gif.previewUrl,
-          mp4Url: gif.mp4Url,
-          mp4PreviewUrl: gif.mp4PreviewUrl,
-          width: gif.width,
-          height: gif.height,
-        },
-        user: {
-          _id: user.uid,
-          name: user.displayName || user.email || 'User',
-          avatar: user.photoURL,
-        },
-      };
-      try {
-        await sendMessage(chatId, messageData as any);
-        haptic('commit');
-      } catch {
-        Alert.alert(t('common.error'), t('chat.gifFailed'));
-      }
-    },
-    [chatId, user, t],
   );
 
   const startDictation = useCallback(async () => {
@@ -4335,32 +4268,6 @@ export default function ChatScreen() {
               }}
             />
           )}
-          {current.gif ? (
-            <View style={[styles.gifCard, {borderColor: colors.border}]}>
-              {(current.gif.mp4Url || current.gif.mp4PreviewUrl) ? (
-                <Video
-                  source={{uri: current.gif.mp4PreviewUrl || current.gif.mp4Url}}
-                  style={[styles.gifImage, {
-                    width: Math.min(current.gif.width || 220, 250),
-                    height: Math.min(current.gif.height || 220, 200),
-                  }]}
-                  resizeMode="cover"
-                  repeat
-                  muted
-                  paused={false}
-                />
-              ) : (
-                <Image
-                  source={{uri: current.gif.previewUrl || current.gif.url}}
-                  style={[styles.gifImage, {
-                    width: Math.min(current.gif.width || 220, 250),
-                    height: Math.min(current.gif.height || 220, 200),
-                  }]}
-                  resizeMode="cover"
-                />
-              )}
-            </View>
-          ) : null}
           {current.timeCapsule && Date.now() < current.timeCapsule.unlocksAt ? (
             <View style={[styles.capsuleOverlay, {backgroundColor: colors.surface, borderColor: colors.secondary}]}>
               <Icon name="timer" size={36} color={colors.secondary} style={styles.capsuleIcon} />
@@ -5357,10 +5264,6 @@ export default function ChatScreen() {
                     <Icon name="camera" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{t('chat.photo')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { setGifPickerVisible(true); loadTrendingGifs(); })}>
-                    <Text style={styles.attachOptionIcon}>{t('chat.gif')}</Text>
-                    <Text style={[styles.attachOptionText, {color: colors.text}]}>{t('chat.gif')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { dictating ? stopDictation() : startDictation(); })}>
                     <Icon name="mic" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? t('chat.stop') : t('chat.sourceVoice')}</Text>
@@ -5572,70 +5475,6 @@ export default function ChatScreen() {
           </View>
         </Pressable>
       </Modal>
-      )}
-      {gifPickerVisible && (
-        <Modal visible animationType="slide" onRequestClose={() => setGifPickerVisible(false)}>
-          <View style={[styles.modalContainer, {backgroundColor: colors.background}]}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('chat.gifsTitle')}</Text>
-          <TextInput
-            style={[styles.gifSearchInput, {color: colors.text, borderColor: colors.glassBorder, backgroundColor: colors.surface}]}
-            value={gifSearch}
-            onChangeText={handleGifSearch}
-            placeholder={t('chat.searchGifsPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            autoCorrect={false}
-          />
-          {gifLoading ? (
-            <View style={styles.gifLoading}>
-              <Text style={[styles.gifLoadingText, {color: colors.textSecondary}]}>{t('chat.loading')}</Text>
-            </View>
-          ) : (
-            <FlatList
-              data={gifResults}
-              numColumns={2}
-              keyExtractor={item => item.id}
-              contentContainerStyle={styles.gifGrid}
-              columnWrapperStyle={styles.gifRow}
-              initialNumToRender={8}
-              maxToRenderPerBatch={6}
-              windowSize={5}
-              removeClippedSubviews={Platform.OS === 'android'}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  accessibilityRole="button"
-                  accessibilityLabel={item.title || 'GIF'}
-                  style={[styles.gifItem, {backgroundColor: colors.surface}]}
-                  onPress={() => handleSendGif(item)}>
-                  {item.mp4PreviewUrl ? (
-                    <Video
-                      source={{uri: item.mp4PreviewUrl}}
-                      style={styles.gifPreview}
-                      resizeMode="cover"
-                      repeat
-                      muted
-                      paused={false}
-                    />
-                  ) : (
-                    <Image
-                      source={{uri: item.previewUrl}}
-                      style={styles.gifPreview}
-                      resizeMode="cover"
-                    />
-                  )}
-                </TouchableOpacity>
-              )}
-              ListEmptyComponent={
-                <Text style={[styles.gifEmptyText, {color: colors.textSecondary}]}>{t('chat.noGifs')}</Text>
-              }
-            />
-          )}
-          <TouchableOpacity
-            style={[styles.modalButton, {backgroundColor: colors.surface, marginTop: 10}]}
-            onPress={() => { setGifPickerVisible(false); setGifSearch(''); }}>
-            <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.close')}</Text>
-          </TouchableOpacity>
-          </View>
-        </Modal>
       )}
       {capsulePickerVisible && (
         <Modal visible transparent animationType="fade" onRequestClose={() => setCapsulePickerVisible(false)}>
@@ -6961,52 +6800,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: bodyWeight('800'),
     color: '#888',
-  },
-  gifCard: {
-    borderRadius: 2,
-    overflow: 'hidden',
-    borderWidth: StyleSheet.hairlineWidth,
-    marginTop: 4,
-  },
-  gifImage: {
-    borderRadius: 2,
-  },
-  gifSearchInput: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 15,
-    marginBottom: 12,
-  },
-  gifGrid: {
-    paddingBottom: 20,
-  },
-  gifRow: {
-    gap: 8,
-  },
-  gifItem: {
-    flex: 1,
-    borderRadius: 2,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  gifPreview: {
-    width: '100%',
-    height: 130,
-  },
-  gifLoading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  gifLoadingText: {
-    fontSize: 15,
-  },
-  gifEmptyText: {
-    textAlign: 'center',
-    paddingVertical: 40,
-    fontSize: 15,
   },
   capsuleOverlay: {
     borderRadius: 2,

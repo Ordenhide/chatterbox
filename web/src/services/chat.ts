@@ -240,7 +240,6 @@ export interface OutgoingMedia {
   call?: {type: 'voice' | 'video'; outcome: 'missed' | 'declined'};
   replyTo?: ChatMessage['replyTo'];
   mentions?: string[];
-  gif?: ChatMessage['gif'];
   // E2EE — set by ChatPane's encryptOutgoingMessage in place of the plain
   // field it seals (see services/e2ee.ts). sendMessage below only persists
   // whatever it's given; it has no key material and does no sealing itself.
@@ -257,7 +256,7 @@ export interface OutgoingMedia {
  *
  * Throws RecipientUnreachableError if the other participant deleted their
  * account. The check lives here rather than in the composer because every send
- * path — text, image, file, voice, GIF, scheduled — funnels through this one
+ * path — text, image, file, voice, scheduled — funnels through this one
  * function, and a guard in the UI would have to be repeated at each of them.
  *
  * Returns the new message's id, which the composer needs to attach a link
@@ -293,7 +292,6 @@ export async function sendMessage(
   if (media.call) doc_.call = media.call;
   if (media.replyTo) doc_.replyTo = media.replyTo;
   if (media.mentions && media.mentions.length) doc_.mentions = media.mentions;
-  if (media.gif) doc_.gif = media.gif;
   if (media.encrypted) doc_.encrypted = media.encrypted;
   if (media.encryptedImage) doc_.encryptedImage = media.encryptedImage;
   if (media.encryptedAudio) doc_.encryptedAudio = media.encryptedAudio;
@@ -304,7 +302,7 @@ export async function sendMessage(
   // Never leak burn-message text into the chat-list preview. An encrypted
   // send clears the plain field it seals (see ChatPane's
   // encryptOutgoingMessage), so without this branch the preview would go
-  // blank instead of falling through to '[GIF]' / '[Photo]' / etc.
+  // blank instead of falling through to '[Photo]' / etc.
   const isEncrypted = !!(
     media.encrypted ||
     media.encryptedImage ||
@@ -316,7 +314,7 @@ export async function sendMessage(
     : isEncrypted
     ? '🔒 Encrypted message'
     : media.text ||
-      (media.gif ? '[GIF]' : media.image ? '[Photo]' : media.audio ? '[Voice message]' : media.file ? '[File]' : '');
+      (media.image ? '[Photo]' : media.audio ? '[Voice message]' : media.file ? '[File]' : '');
 
   await runTransaction(db, async tx => {
     const chatRef = doc(db, 'chats', chatId);
@@ -455,7 +453,7 @@ function messagePreview(m: ChatMessage): string {
   if (m.burnAfterReading) return '🔥';
   return (
     m.text ||
-    (m.gif ? '[GIF]' : m.image ? '[Photo]' : m.audio ? '[Voice message]' : m.file ? '[File]' : '')
+    (m.image ? '[Photo]' : m.audio ? '[Voice message]' : m.file ? '[File]' : '')
   );
 }
 

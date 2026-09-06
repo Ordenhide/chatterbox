@@ -78,9 +78,8 @@
  *      message has one at all; the ciphertext's length also bounds the
  *      original's. Only the upload's object name is randomised, so the
  *      filename does not additionally leak to anyone listing the bucket.
- *      GIFs, gestures and lottery content are not sealed: GIFs are public
- *      third-party content with nothing to protect, and the others carry no
- *      text of their own.
+ *      Gestures and lottery content are not sealed: neither carries text of
+ *      its own.
  *
  * Keep this list honest. Everything above is checked against the code as of
  * the last edit, because a caveat that has quietly become false is worse than
