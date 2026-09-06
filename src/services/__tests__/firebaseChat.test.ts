@@ -287,10 +287,14 @@ describe('upsertUserProfile', () => {
       displayName: 'Alice',
     } as never);
     const keys = Object.keys(written()).sort();
+    // A uid, a timestamp, and four fields written only as deletes. The
+    // profile document holds nothing else — `profileVisibility` used to be
+    // here, a setting no rule and no query ever read once the user directory
+    // was removed.
     expect(keys).toEqual(
-      ['displayName', 'email', 'fcmToken', 'photoURL', 'profileVisibility', 'uid', 'updatedAt'].sort(),
+      ['displayName', 'email', 'fcmToken', 'photoURL', 'uid', 'updatedAt'].sort(),
     );
-    // The three that are present only to be removed.
+    // The four that are present only to be removed.
     expect(written().fcmToken).toBe('DELETE_FIELD');
     expect(written().uid).toBe('alice');
   });

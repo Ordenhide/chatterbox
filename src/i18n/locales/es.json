@@ -217,8 +217,6 @@
   "profile": {
     "defaultName": "Usuario",
     "memberBadge": "Miembro",
-    "visibilityTitle": "Visibilidad del perfil",
-    "visibilityDescription": "Controla quién puede ver los detalles de tu perfil.",
     "languageTitle": "Idioma",
     "languageDescription": "Elige tu idioma preferido.",
     "buttons": {
@@ -256,7 +254,6 @@
       "signOutTitle": "Cerrar sesión",
       "signOutBody": "¿Estás seguro de que quieres cerrar sesión?",
       "signOutFailed": "Error al cerrar sesión",
-      "visibilityUpdateFailed": "No se pudo actualizar la visibilidad del perfil.",
       "passphraseTooShort": "La contraseña debe tener al menos {{min}} caracteres.",
       "downloadDataFailedTitle": "Error",
       "downloadDataFailedBody": "No se pudieron preparar tus datos. Inténtalo de nuevo.",
@@ -314,11 +311,6 @@
     "privacyNotificationsHint": "Las notificaciones indican que llegó un mensaje, nunca quién lo envió ni qué dice.",
     "privacyExifTitle": "Eliminar metadatos de las fotos",
     "privacyExifHint": "Quita la ubicación, la cámara y la fecha de las fotos antes de enviarlas.",
-    "visibility": {
-      "public": "Público",
-      "friends": "Amigos",
-      "private": "Privado"
-    },
     "privacyTypingTitle": "Indicador de escritura",
     "privacyTypingHint": "Desactivado por defecto y recíproco: con esto activado, el servidor registra cuándo escribes, y tú ves cuándo escribe la otra persona.",
     "privacyReceiptsTitle": "Confirmaciones de lectura",

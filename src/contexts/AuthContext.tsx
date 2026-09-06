@@ -563,7 +563,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             // the name, which is where a credential belongs; this document is
             // readable by anyone who knows the uid. The name reaches the other
             // side of a conversation sealed (services/introductions.ts).
-            profileVisibility: 'public',
             defaultMomentVisibility: 'friends',
             updatedAt: serverTimestamp(),
           },
@@ -609,7 +608,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             // No email, no photo, no name — same reason as signUp above. A
             // Google or Apple sign-in hands all three over, and none is
             // written down.
-            profileVisibility: 'public',
             defaultMomentVisibility: 'friends',
             updatedAt: serverTimestamp(),
           },

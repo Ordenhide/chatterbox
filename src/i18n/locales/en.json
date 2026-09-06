@@ -289,8 +289,6 @@
   "profile": {
     "defaultName": "User",
     "memberBadge": "Member",
-    "visibilityTitle": "Profile visibility",
-    "visibilityDescription": "Control who can see your profile details.",
     "languageTitle": "Language",
     "languageDescription": "Choose your preferred language.",
     "voiceDiaryTitle": "Voice Diary",
@@ -365,7 +363,6 @@
       "signOutTitle": "Sign Out",
       "signOutBody": "Are you sure you want to sign out?",
       "signOutFailed": "Failed to sign out",
-      "visibilityUpdateFailed": "Unable to update profile visibility.",
       "downloadDataFailedTitle": "Error",
       "downloadDataFailedBody": "Unable to prepare your data. Please try again.",
       "voiceRecordFailed": "Failed to start recording.",
@@ -386,11 +383,6 @@
     "privacyNotificationsHint": "Notifications show that a message arrived, never who sent it or what it says.",
     "privacyExifTitle": "Strip photo metadata",
     "privacyExifHint": "Removes location, camera and timestamp data from photos before they are sent.",
-    "visibility": {
-      "public": "Public",
-      "friends": "Friends",
-      "private": "Private"
-    },
     "privacyTypingTitle": "Typing indicators",
     "privacyTypingHint": "Off by default, and reciprocal — with this on, the server records when you are composing, and you can see when they are.",
     "privacyReceiptsTitle": "Read receipts",

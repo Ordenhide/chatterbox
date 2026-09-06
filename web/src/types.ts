@@ -13,7 +13,6 @@ import type {Timestamp} from 'firebase/firestore';
 export interface UserProfile {
   uid: string;
   displayName?: string | null;
-  profileVisibility?: 'public' | 'friends' | 'private';
   lastActiveAt?: Timestamp;
 }
 

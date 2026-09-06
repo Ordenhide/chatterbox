@@ -217,8 +217,6 @@
   "profile": {
     "defaultName": "用户",
     "memberBadge": "会员",
-    "visibilityTitle": "资料可见性",
-    "visibilityDescription": "控制谁可以查看你的资料。",
     "languageTitle": "语言",
     "languageDescription": "选择你偏好的语言。",
     "voiceDiaryTitle": "语音日记",
@@ -292,7 +290,6 @@
       "signOutTitle": "退出登录",
       "signOutBody": "确定要退出登录吗？",
       "signOutFailed": "退出登录失败",
-      "visibilityUpdateFailed": "无法更新个人资料可见性。",
       "downloadDataFailedTitle": "错误",
       "downloadDataFailedBody": "无法准备你的数据，请重试。",
       "voiceRecordFailed": "开始录音失败。",
@@ -314,11 +311,6 @@
     "privacyExifTitle": "清除照片元数据",
     "privacyExifHint": "发送前移除照片中的位置、相机型号和拍摄时间。",
     "shortcutRecovery": "助记词",
-    "visibility": {
-      "public": "公开",
-      "friends": "好友",
-      "private": "私密"
-    },
     "privacyTypingTitle": "正在输入提示",
     "privacyTypingHint": "默认关闭，而且是双向的——打开后，服务器会记录你何时在打字，你也能看到对方在打字。",
     "privacyReceiptsTitle": "已读回执",

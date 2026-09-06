@@ -89,8 +89,6 @@ export default function ProfileScreen() {
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackEnabled, setFeedbackEnabled] = useState(true);
-  const [profileVisibility, setProfileVisibility] = useState<'public' | 'friends' | 'private'>('public');
-  const [visibilityLoading, setVisibilityLoading] = useState(true);
   const [focusEnabled, setFocusEnabled] = useState(false);
   const [focusUntil, setFocusUntil] = useState<number | null>(null);
   const [focusAutoReply, setFocusAutoReply] = useState('');
@@ -109,7 +107,6 @@ export default function ProfileScreen() {
   const vsRecorderRef = useRef(new AudioRecorderPlayer());
   const db = useMemo(() => getFirestore(), []);
   const navigation = useNavigation<any>();
-  const visibilityOptions = useMemo(() => ['public', 'friends', 'private'] as const, []);
 
   useEffect(() => {
     const recorder = vsRecorderRef.current;
@@ -194,11 +191,8 @@ export default function ProfileScreen() {
       if (!user?.uid) return;
       const unsub = onSnapshot(
         doc(db, 'users', user.uid),
-        guardDocSnapshot('listen_profile_visibility', snapshot => {
+        guardDocSnapshot('listen_profile', snapshot => {
           const data = snapshot.data() as any;
-          const next = (data?.profileVisibility as 'public' | 'friends' | 'private') || 'public';
-          setProfileVisibility(next);
-          setVisibilityLoading(false);
           const vs = data?.voiceStatus;
           if (vs?.url && vs?.createdAt && Date.now() - vs.createdAt < 24 * 60 * 60 * 1000) {
             setVoiceStatusUrl(vs.url);
@@ -218,40 +212,14 @@ export default function ProfileScreen() {
           }
         }),
         error => {
-          reportError(error, 'profile_visibility_listener');
+          reportError(error, 'profile_listener');
           if (__DEV__) {
-            console.error('profile visibility listener failed:', error);
+            console.error('profile listener failed:', error);
           }
-          setVisibilityLoading(false);
         },
       );
       return () => unsub();
     }, [user?.uid, db]),
-  );
-
-  const updateVisibility = useCallback(
-    async (next: 'public' | 'friends' | 'private') => {
-      if (!user?.uid || next === profileVisibility) return;
-      setProfileVisibility(next);
-      try {
-        await setDoc(
-          doc(db, 'users', user.uid),
-          {
-            profileVisibility: next,
-            updatedAt: serverTimestamp(),
-          },
-          {merge: true},
-        );
-        trackEvent('profile_visibility_changed', {visibility: next}).catch(() => undefined);
-      } catch (error) {
-        reportError(error, 'profile_visibility_update');
-        if (__DEV__) {
-          console.error('profile visibility update failed:', error);
-        }
-        Alert.alert(t('common.error'), t('profile.alerts.visibilityUpdateFailed'));
-      }
-    },
-    [db, profileVisibility, user?.uid, t],
   );
 
   const handleEnableFocus = useCallback(async () => {
@@ -639,43 +607,6 @@ export default function ProfileScreen() {
           </View>
         </GlassView>
 
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            {t('profile.visibilityTitle')}
-          </Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {t('profile.visibilityDescription')}
-          </Text>
-          {visibilityLoading ? (
-            <ActivityIndicator color={colors.primary} style={styles.visibilityLoader} />
-          ) : (
-            <View style={styles.visibilityOptions}>
-              {visibilityOptions.map(option => {
-                const selected = profileVisibility === option;
-                return (
-                  <TouchableOpacity
-                    key={option}
-                    style={[
-                      styles.visibilityOption,
-                      {
-                        backgroundColor: selected ? colors.primary : colors.surface,
-                        borderColor: selected ? colors.primary : colors.border,
-                      },
-                    ]}
-                    onPress={() => updateVisibility(option)}>
-                    <Text
-                      style={[
-                        styles.visibilityOptionText,
-                        {color: selected ? '#fff' : colors.text},
-                      ]}>
-                      {t(`profile.visibility.${option}`)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-        </GlassView>
        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('profile.languageTitle')}
@@ -1433,24 +1364,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 14,
     lineHeight: 18,
-  },
-  visibilityOptions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  visibilityOption: {
-    flex: 1,
-    borderRadius: 2,
-    paddingVertical: 11,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  visibilityOptionText: {
-    fontSize: 13,
-    fontFamily: bodyWeight('700'),
-  },
-  visibilityLoader: {
-    paddingVertical: 8,
   },
   buttonSecondary: {
     borderRadius: 2,

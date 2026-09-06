@@ -41,7 +41,6 @@ async function completeCredentialSignIn(cred: UserCredential) {
         // three over and none is written down — see upsertUserProfile in the
         // mobile client's services/firebaseChat.ts for why, and
         // services/introductions.ts for where the name goes instead.
-        profileVisibility: 'public',
         updatedAt: serverTimestamp(),
       },
       {merge: true},
@@ -92,7 +91,6 @@ export async function signUp(email: string, password: string, displayName?: stri
     doc(db, 'users', cred.user.uid),
     {
       uid: cred.user.uid,
-      profileVisibility: 'public',
       updatedAt: serverTimestamp(),
     },
     {merge: true},
@@ -122,13 +120,4 @@ export function signOut() {
 export async function updateDisplayName(displayName: string) {
   if (!auth.currentUser) return;
   await updateProfile(auth.currentUser, {displayName});
-}
-
-export async function setProfileVisibility(visibility: 'public' | 'friends' | 'private') {
-  if (!auth.currentUser) return;
-  await setDoc(
-    doc(db, 'users', auth.currentUser.uid),
-    {profileVisibility: visibility, updatedAt: serverTimestamp()},
-    {merge: true},
-  );
 }

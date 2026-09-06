@@ -5,7 +5,7 @@ import {avatarColor, colors} from '../theme';
 import {useTheme} from '../context/ThemeContext';
 import {useToast} from '../context/ToastContext';
 import {useT, type Lang} from '../i18n';
-import {setProfileVisibility, signOut, updateDisplayName} from '../services/auth';
+import {signOut, updateDisplayName} from '../services/auth';
 import {changePassword, type PasswordChangeError} from '../services/account';
 import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
@@ -31,7 +31,6 @@ import DownloadAppCard from '../components/DownloadAppCard';
 import Icon from '../components/Icon';
 import PasswordInput from '../components/PasswordInput';
 
-type Vis = 'public' | 'friends' | 'private';
 type SectionId = 'profile' | 'preferences' | 'privacy' | 'account' | 'subscription' | 'support';
 
 export default function ProfileScreen({user}: {user: User}) {
@@ -42,7 +41,6 @@ export default function ProfileScreen({user}: {user: User}) {
   const toast = useToast();
   const [name, setName] = useState(user.displayName || '');
   const [savedName, setSavedName] = useState(user.displayName || '');
-  const [vis, setVis] = useState<Vis>('public');
   const [savingName, setSavingName] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
   const [pushSupported, setPushSupported] = useState(false);
@@ -68,7 +66,6 @@ export default function ProfileScreen({user}: {user: User}) {
 
   useEffect(() => {
     getUserById(user.uid).then(p => {
-      if (p?.profileVisibility) setVis(p.profileVisibility as Vis);
       if (p?.displayName) {
         setName(p.displayName);
         setSavedName(p.displayName);
@@ -90,15 +87,6 @@ export default function ProfileScreen({user}: {user: User}) {
       toast.error(t('chat.sendFailed'));
     } finally {
       setSavingName(false);
-    }
-  };
-
-  const changeVis = async (v: Vis) => {
-    setVis(v);
-    try {
-      await setProfileVisibility(v);
-    } catch (err) {
-      console.warn('visibility update failed:', err);
     }
   };
 
@@ -226,21 +214,6 @@ export default function ProfileScreen({user}: {user: User}) {
                 disabled={savingName || !name.trim() || name.trim() === savedName}>
                 {savingName ? <span className="spinner" /> : t('common.save')}
               </button>
-            </div>
-          </section>
-
-          <section style={styles.card}>
-            <div style={styles.cardTitle}>{t('profile.visibility')}</div>
-            <div style={styles.cardDesc}>{t('profile.visibilityDesc')}</div>
-            <div style={styles.visRow}>
-              {(['public', 'friends', 'private'] as Vis[]).map(v => (
-                <button
-                  key={v}
-                  onClick={() => changeVis(v)}
-                  style={{...styles.visChip, ...(vis === v ? styles.chipOn : styles.chipOff)}}>
-                  {t(`profile.visibility.${v}` as 'profile.visibility.public')}
-                </button>
-              ))}
             </div>
           </section>
 

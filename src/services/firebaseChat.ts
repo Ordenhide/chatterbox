@@ -109,7 +109,6 @@ export async function upsertUserProfile(user: User) {
       // public profile (which anyone knowing the uid can read). Strip any stale
       // value left on the public doc from older app versions.
       fcmToken: deleteField(),
-      profileVisibility: user.profileVisibility || 'public',
       updatedAt: serverTimestamp(),
     },
     {merge: true},
@@ -1099,10 +1098,10 @@ export async function importAll(payload: {users?: User[]; chats?: ChatRoom[]; me
     // reached: restoring a backup silently restored nothing.
     //
     // Nothing of value is lost. The profile is bootstrapped from Firebase Auth
-    // at sign-in, and the one field a backup could still legitimately carry —
-    // `profileVisibility` — is a single toggle the user can set again. Writing
-    // a uid from the payload was never safe either: a tampered file naming
-    // someone else's account produces a refusal that aborts the whole import.
+    // at sign-in and holds nothing else a backup could legitimately carry.
+    // Writing a uid from the payload was never safe either: a tampered file
+    // naming someone else's account produces a refusal that aborts the whole
+    // import.
     if (payload.chats) {
       const batch = writeBatch(db);
       payload.chats.forEach(chat => {

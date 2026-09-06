@@ -217,8 +217,6 @@
   "profile": {
     "defaultName": "Benutzer",
     "memberBadge": "Mitglied",
-    "visibilityTitle": "Profil-Sichtbarkeit",
-    "visibilityDescription": "Steuern Sie, wer Ihre Profildetails sehen kann.",
     "languageTitle": "Sprache",
     "languageDescription": "Wählen Sie Ihre bevorzugte Sprache.",
     "buttons": {
@@ -256,7 +254,6 @@
       "signOutTitle": "Abmelden",
       "signOutBody": "Sind Sie sicher, dass Sie sich abmelden möchten?",
       "signOutFailed": "Abmeldung fehlgeschlagen",
-      "visibilityUpdateFailed": "Profil-Sichtbarkeit konnte nicht aktualisiert werden.",
       "passphraseTooShort": "Die Passphrase muss mindestens {{min}} Zeichen haben.",
       "downloadDataFailedTitle": "Fehler",
       "downloadDataFailedBody": "Deine Daten konnten nicht vorbereitet werden. Bitte versuche es erneut.",
@@ -314,11 +311,6 @@
     "privacyNotificationsHint": "Benachrichtigungen zeigen, dass eine Nachricht kam — nie von wem oder was darin steht.",
     "privacyExifTitle": "Foto-Metadaten entfernen",
     "privacyExifHint": "Entfernt Ort, Kamera und Zeitstempel aus Fotos, bevor sie gesendet werden.",
-    "visibility": {
-      "public": "Öffentlich",
-      "friends": "Freunde",
-      "private": "Privat"
-    },
     "privacyTypingTitle": "Schreibanzeige",
     "privacyTypingHint": "Standardmäßig aus, und beidseitig — ist sie an, hält der Server fest, wann du schreibst, und du siehst, wann die andere Person schreibt.",
     "privacyReceiptsTitle": "Lesebestätigungen",

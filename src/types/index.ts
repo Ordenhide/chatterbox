@@ -48,7 +48,6 @@ export interface User {
   /** From Firebase Auth, for your own account only. Never a peer's. */
   photoURL?: string;
   fcmToken?: string | null;
-  profileVisibility?: 'public' | 'friends' | 'private';
   defaultMomentVisibility?: 'public' | 'friends' | 'private';
   focusMode?: {
     enabled: boolean;
