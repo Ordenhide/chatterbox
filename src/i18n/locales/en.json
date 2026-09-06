@@ -696,7 +696,9 @@
     "ask": "Ask",
     "regenerateSummary": "Regenerate Summary",
     "capsuleOpens": "Opens {{when}}",
-    "scheduleMessageCount": "Schedule Message{{suffix}}"
+    "scheduleMessageCount": "Schedule Message{{suffix}}",
+    "menuLookUp": "Look up on Wikipedia",
+    "lookUpPick": "Which one?"
   },
   "chatSettings": {
     "notifications": "Notifications",
@@ -928,16 +930,5 @@
     "saveTitle": "Save your recovery phrase",
     "savedIt": "I've saved it",
     "copiedBody": "Recovery phrase copied to clipboard."
-  },
-  "contextCards": {
-    "settingsTitle": "Context cards",
-    "settingsOn": "On — names in your messages are looked up on Wikipedia from this device.",
-    "settingsOff": "Off — nothing is looked up, and nothing about your messages leaves this device.",
-    "turnOn": "Turn on context cards",
-    "turnOff": "Turn off context cards",
-    "confirmTitle": "Context cards look names up on Wikipedia",
-    "confirmBody": "Your messages are decrypted on this device. With context cards on, the names in them — people, places, films — are sent to Wikipedia, which sends back a short summary to show under the message.\n\nWikipedia sees the name it was asked about and your device's IP address. It does not see the message the name came from, who sent it, or anything else in the conversation. Nothing is stored on our servers, and nothing is sent to us.\n\nThis is off until you turn it on, and it applies to this device only.",
-    "accept": "Turn them on",
-    "turnedOff": "Context cards turned off on this device"
   }
 }

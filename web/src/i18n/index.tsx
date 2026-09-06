@@ -524,6 +524,8 @@ const en = {
   'chat.stopSharingLocation': 'Stop sharing location',
   'chat.shareLiveLocation': 'Share live location',
   'chat.askPlaceholder': 'Ask about this chat (e.g. what did we decide about the trip?)',
+  'chat.lookUp': 'Look up on Wikipedia',
+  'chat.lookUpPick': 'Which one?',
   'chat.openInMaps': 'Open in Maps',
   'recovery.cardDesc':
     "The 24 words that let you read your encrypted messages again if you clear this browser's data. Nothing else can recover them.",
@@ -1082,6 +1084,8 @@ const zh: Partial<Record<Key, string>> = {
   'chat.stopSharingLocation': '停止分享位置',
   'chat.shareLiveLocation': '分享实时位置',
   'chat.askPlaceholder': '问问这个对话（例如：关于那次旅行我们定了什么？）',
+  'chat.lookUp': '在维基百科查一下',
+  'chat.lookUpPick': '查哪一个？',
   'chat.openInMaps': '在地图中打开',
   'recovery.cardDesc': '如果你清空这个浏览器的数据，这 24 个词能让你重新读到加密消息。除此之外没有别的办法找回。',
   'errorBoundary.title': '出了点问题',

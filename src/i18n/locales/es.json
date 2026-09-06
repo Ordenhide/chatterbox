@@ -769,7 +769,9 @@
     "ask": "Preguntar",
     "regenerateSummary": "Volver a generar el resumen",
     "capsuleOpens": "Se abre el {{when}}",
-    "scheduleMessageCount": "Programar mensaje{{suffix}}"
+    "scheduleMessageCount": "Programar mensaje{{suffix}}",
+    "menuLookUp": "Buscar en Wikipedia",
+    "lookUpPick": "¿Cuál?"
   },
   "smartReply": {
     "thumbsUp": "👍",
@@ -928,16 +930,5 @@
     "saveTitle": "Guarda tu frase de recuperación",
     "savedIt": "Ya la guardé",
     "copiedBody": "Frase de recuperación copiada al portapapeles."
-  },
-  "contextCards": {
-    "settingsTitle": "Tarjetas de contexto",
-    "settingsOn": "Activadas: los nombres de tus mensajes se consultan en Wikipedia desde este dispositivo.",
-    "settingsOff": "Desactivadas: no se consulta nada y nada sobre tus mensajes sale de este dispositivo.",
-    "turnOn": "Activar las tarjetas de contexto",
-    "turnOff": "Desactivar las tarjetas de contexto",
-    "confirmTitle": "Las tarjetas de contexto consultan nombres en Wikipedia",
-    "confirmBody": "Tus mensajes se descifran en este dispositivo. Con las tarjetas activadas, los nombres que aparecen en ellos —personas, lugares, películas— se envían a Wikipedia, que devuelve un resumen breve para mostrarlo bajo el mensaje.\n\nWikipedia ve el nombre consultado y la dirección IP de tu dispositivo. No ve de qué mensaje salió, quién lo envió, ni nada más de la conversación. En nuestros servidores no se guarda nada, y a nosotros no llega nada.\n\nEsto está desactivado hasta que tú lo actives, y solo se aplica a este dispositivo.",
-    "accept": "Activarlas",
-    "turnedOff": "Tarjetas de contexto desactivadas en este dispositivo"
   }
 }

@@ -4,7 +4,7 @@
 // so they can be restored by flipping it back to `true`.
 //
 // Features gated off when this is `false` (hidden from the UI, code retained):
-//   context cards · chat-lock (PIN) · quote-wall action · safety number ·
+//   chat-lock (PIN) · quote-wall action · safety number ·
 //   invisible ink · message styles · anonymous mode · gesture messages ·
 //   lottery/decision · voice filters · soundscapes · incognito · screenshot
 //   protection/watermark · Focus Mode · Voice Diary

@@ -199,12 +199,3 @@ export interface QuoteWallEntry {
   pinnedAt: number;
 }
 
-export interface ContextCard {
-  id: string;
-  entity: string;
-  type: 'place' | 'film' | 'person' | 'topic';
-  title: string;
-  description: string;
-  image?: string;
-  url?: string;
-}

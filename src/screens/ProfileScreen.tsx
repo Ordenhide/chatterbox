@@ -47,11 +47,6 @@ import {
 import {exportUserData} from '../services/dataExport';
 import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
-import {
-  grantContextCardConsent,
-  hasContextCardConsent,
-  revokeContextCardConsent,
-} from '../services/contextCardConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
 import {shareTextFile} from '../utils/shareFile';
 import {checkPasswordStrength} from '../services/passwordPolicy';
@@ -85,13 +80,11 @@ export default function ProfileScreen() {
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   // Per device, so this reflects the phone in your hand.
   const [aiAllowed, setAiAllowed] = useState(false);
-  const [contextCardsAllowed, setContextCardsAllowed] = useState(false);
   // MMKV-backed and synchronous, unlike AI consent — no effect needed.
   const [previewsOn, setPreviewsOn] = useState(isLinkPreviewEnabled);
 
   useEffect(() => {
     hasAiConsent().then(setAiAllowed);
-    hasContextCardConsent().then(setContextCardsAllowed);
   }, []);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
@@ -820,50 +813,6 @@ export default function ProfileScreen() {
             </Text>
           </TouchableOpacity>
         </GlassView>
-        {/* Behind the parity flag, like the cards themselves: a switch for a
-            feature whose UI is hidden would promise something that cannot
-            happen. The fetch is gated on both (ChatScreen's effect on the
-            flag, contextCards.ts on the consent). */}
-        {SHOW_NATIVE_ONLY_FEATURES && (
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            {t('contextCards.settingsTitle')}
-          </Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {contextCardsAllowed ? t('contextCards.settingsOn') : t('contextCards.settingsOff')}
-          </Text>
-          <TouchableOpacity
-            accessibilityRole="button"
-            style={[
-              styles.focusBtn,
-              {backgroundColor: contextCardsAllowed ? colors.danger : colors.primary},
-            ]}
-            onPress={() => {
-              if (contextCardsAllowed) {
-                revokeContextCardConsent().then(() => {
-                  setContextCardsAllowed(false);
-                  Alert.alert(t('contextCards.settingsTitle'), t('contextCards.turnedOff'));
-                });
-                return;
-              }
-              // The disclosure is shown when switching on, not when the
-              // feature runs: it runs on its own whenever a thread is open,
-              // and there is no moment there to interrupt.
-              Alert.alert(t('contextCards.confirmTitle'), t('contextCards.confirmBody'), [
-                {text: t('common.cancel'), style: 'cancel'},
-                {
-                  text: t('contextCards.accept'),
-                  onPress: () =>
-                    grantContextCardConsent().then(() => setContextCardsAllowed(true)),
-                },
-              ]);
-            }}>
-            <Text style={styles.focusBtnText}>
-              {contextCardsAllowed ? t('contextCards.turnOff') : t('contextCards.turnOn')}
-            </Text>
-          </TouchableOpacity>
-        </GlassView>
-        )}
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('linkPreview.settingsTitle')}

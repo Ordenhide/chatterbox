@@ -161,8 +161,8 @@ import {getChatSummary} from '../../services/aiSummary';
 import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
 import {addToQuoteWall} from '../../services/quoteWall';
-import {getContextCards} from '../../services/contextCards';
 import {getSmartReplies} from '../../services/smartReply';
+import {extractEntities, wikipediaSearchUrl} from '../../services/wikipediaLookup';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {
   applyScreenshotProtection,
@@ -174,7 +174,7 @@ import {
   isStealthMode,
   isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
-import {SharedListItem, ContextCard, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
+import {SharedListItem, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
@@ -386,7 +386,6 @@ export default function ChatScreen() {
   // applied.
   const [dictating, setDictating] = useState(false);
   const [dictationSeconds, setDictationSeconds] = useState(0);
-  const [contextCards, setContextCards] = useState<Record<string, ContextCard[]>>({});
   // The message currently having a reaction picked for it, or null.
   const [arcTarget, setArcTarget] = useState<IMessage | null>(null);
   // The message currently being forwarded — set while the destination-chat
@@ -1625,36 +1624,6 @@ export default function ChatScreen() {
       // understand. Re-subscribing on a language change is a rare cost for it.
     }, [chatId, user, t]),
   );
-
-  useEffect(() => {
-    // Gated on the same flag as the cards themselves (see the render below).
-    // Fetching for something that cannot be displayed is a network request
-    // made on a private message's behalf in exchange for nothing; the consent
-    // check inside getContextCards is the other half of this.
-    if (!SHOW_NATIVE_ONLY_FEATURES) return;
-    if (!messages.length) return;
-    const recent = messages.slice(0, 15);
-    const toCheck = recent.filter(m => {
-      const text = (m as any).text || '';
-      return text.length >= 10 && !contextCards[String(m._id)];
-    });
-    if (!toCheck.length) return;
-    let cancelled = false;
-    (async () => {
-      const entries: Record<string, ContextCard[]> = {};
-      for (const msg of toCheck) {
-        if (cancelled) break;
-        try {
-          const cards = await getContextCards((msg as any).text || '');
-          if (cards.length) entries[String(msg._id)] = cards;
-        } catch { /* ignore */ }
-      }
-      if (!cancelled && Object.keys(entries).length) {
-        setContextCards(prev => ({...prev, ...entries}));
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [messages.length]);
 
   useEffect(() => {
     if (!messages.length) { setSmartReplies([]); return; }
@@ -3395,7 +3364,7 @@ export default function ChatScreen() {
 
   /**
    * Opens a link that came from the other participant (file URIs, link
-   * previews, context cards). Anything outside the safe-scheme allowlist is
+   * previews, Wikipedia lookups). Anything outside the safe-scheme allowlist is
    * dropped rather than handed to whatever app claims that scheme.
    */
   const openExternal = useCallback(
@@ -3408,6 +3377,38 @@ export default function ChatScreen() {
       Linking.openURL(url).catch(() => {});
     },
     [t],
+  );
+
+  /**
+   * Hands one name to the browser.
+   *
+   * The app makes no request of its own: `wikipediaSearchUrl` builds a URL and
+   * `openExternal` opens it, so what reaches Wikipedia is a visit the person
+   * made, from a browser they can see, rather than a background fetch this
+   * app performed on their behalf out of a decrypted message. That is the
+   * whole difference between this and the context cards it replaced.
+   *
+   * With more than one candidate it asks which, rather than picking — the
+   * extraction is a regex over capitalised words and is wrong often enough
+   * that guessing would send people to an article about the wrong thing.
+   */
+  const handleLookUp = useCallback(
+    (targets: string[]) => {
+      if (!targets.length) return;
+      if (targets.length === 1) {
+        openExternal(wikipediaSearchUrl(targets[0], i18n.language));
+        return;
+      }
+      setSheet({
+        title: t('chat.menuLookUp'),
+        message: t('chat.lookUpPick'),
+        actions: targets.map(name => ({
+          label: name,
+          onPress: () => openExternal(wikipediaSearchUrl(name, i18n.language)),
+        })),
+      });
+    },
+    [i18n.language, openExternal, t],
   );
 
   // Pause the outgoing watch on blur (foreground-only tracking) — the share
@@ -3943,6 +3944,7 @@ export default function ChatScreen() {
     // reported instead — offering a Delete that the server would refuse would
     // just be a button that fails.
     const isOwnMessage = String(message.user?._id) === user.uid;
+    const lookupTargets = extractEntities(String(message.text || ''));
     const actions: SheetAction[] = [
       {label: t('chat.menuReply'), onPress: () => setReplyTo(message)},
       ...(message.text
@@ -4012,6 +4014,13 @@ export default function ChatScreen() {
         label: t('chat.menuTranslate'),
         onPress: () => handleTranslateMessage(message),
       },
+      // Only offered when this message actually contains something that looks
+      // like a name. A "look up" that searches a whole sentence is a worse
+      // search than the user would have typed, and an entry that is usually
+      // useless makes the fourteen above it harder to find.
+      ...(lookupTargets.length
+        ? [{label: t('chat.menuLookUp'), onPress: () => handleLookUp(lookupTargets)}]
+        : []),
       {
         label: t('chat.menuBookmark'),
         onPress: () => handleBookmarkMessage(message),
@@ -4414,44 +4423,6 @@ export default function ChatScreen() {
               </Text>
             </View>
           ) : null}
-          {SHOW_NATIVE_ONLY_FEATURES && contextCards[String(current._id)]?.map(card => (
-            <TouchableOpacity
-              key={card.id}
-              activeOpacity={0.7}
-              onPress={() => openExternal(card.url)}
-              style={[styles.contextCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              {card.image ? (
-                <Image source={{uri: card.image}} style={styles.contextCardImage} />
-              ) : null}
-              <View style={styles.contextCardBody}>
-                <View style={styles.contextCardHeader}>
-                  <Icon
-                    name={
-                      card.type === 'place'
-                        ? 'pin'
-                        : card.type === 'film'
-                        ? 'play'
-                        : card.type === 'person'
-                        ? 'person'
-                        : 'book'
-                    }
-                    size={11}
-                    color={colors.primary}
-                    style={styles.contextCardTypeIcon}
-                  />
-                  <Text style={[styles.contextCardType, {color: colors.primary}]}>
-                    {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
-                  </Text>
-                </View>
-                <Text style={[styles.contextCardTitle, {color: colors.text}]} numberOfLines={1}>
-                  {card.title}
-                </Text>
-                <Text style={[styles.contextCardDesc, {color: colors.textSecondary}]} numberOfLines={3}>
-                  {card.description}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
           {current.gesture?.length ? (
             <View style={[styles.gestureCard, {borderColor: colors.border}]}>
               {current.gesture.map((stroke: GestureStroke, si: number) => (
@@ -4568,7 +4539,7 @@ export default function ChatScreen() {
         </View>
       </SwipeToReply>
     );
-  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, contextCards, msgSelectMode, msgSelected, t]);
+  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, msgSelectMode, msgSelected, t]);
 
   // GiftedChat keys the accessory bar off whether this *prop is passed*, not off
   // what it returns: InputToolbar renders a fixed 44dp <View> around it, and
@@ -6695,48 +6666,6 @@ const styles = StyleSheet.create({
   },
   translationText: {
     fontSize: 14,
-  },
-  contextCard: {
-    flexDirection: 'row',
-    borderRadius: 2,
-    borderWidth: StyleSheet.hairlineWidth,
-    overflow: 'hidden',
-    marginTop: 6,
-    marginHorizontal: 4,
-    maxWidth: 280,
-  },
-  contextCardImage: {
-    width: 70,
-    height: '100%' as any,
-    minHeight: 70,
-  },
-  contextCardBody: {
-    flex: 1,
-    padding: 8,
-  },
-  contextCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 3,
-  },
-  contextCardTypeIcon: {
-    fontSize: 11,
-    marginEnd: 4,
-  },
-  contextCardType: {
-    fontSize: 10,
-    fontFamily: bodyWeight('700'),
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  contextCardTitle: {
-    fontSize: 13,
-    fontFamily: bodyWeight('700'),
-    marginBottom: 2,
-  },
-  contextCardDesc: {
-    fontSize: 11,
-    lineHeight: 15,
   },
   scheduleInput: {
     borderWidth: StyleSheet.hairlineWidth,

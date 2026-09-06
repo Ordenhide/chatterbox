@@ -769,7 +769,9 @@
     "ask": "Fragen",
     "regenerateSummary": "Neu zusammenfassen",
     "capsuleOpens": "Öffnet {{when}}",
-    "scheduleMessageCount": "Nachricht planen{{suffix}}"
+    "scheduleMessageCount": "Nachricht planen{{suffix}}",
+    "menuLookUp": "Bei Wikipedia nachschlagen",
+    "lookUpPick": "Welches?"
   },
   "smartReply": {
     "thumbsUp": "👍",
@@ -928,16 +930,5 @@
     "saveTitle": "Sichere deine Wiederherstellungsphrase",
     "savedIt": "Ich habe sie gesichert",
     "copiedBody": "Wiederherstellungsphrase in die Zwischenablage kopiert."
-  },
-  "contextCards": {
-    "settingsTitle": "Kontextkarten",
-    "settingsOn": "An — Namen aus deinen Nachrichten werden von diesem Gerät aus bei Wikipedia nachgeschlagen.",
-    "settingsOff": "Aus — es wird nichts nachgeschlagen, und nichts über deine Nachrichten verlässt dieses Gerät.",
-    "turnOn": "Kontextkarten einschalten",
-    "turnOff": "Kontextkarten ausschalten",
-    "confirmTitle": "Kontextkarten schlagen Namen bei Wikipedia nach",
-    "confirmBody": "Deine Nachrichten werden auf diesem Gerät entschlüsselt. Mit eingeschalteten Kontextkarten gehen die Namen darin — Personen, Orte, Filme — an Wikipedia, das eine kurze Zusammenfassung zurückschickt, die unter der Nachricht erscheint.\n\nWikipedia sieht den angefragten Namen und die IP-Adresse deines Geräts. Es sieht nicht, aus welcher Nachricht der Name stammt, wer sie geschickt hat, oder irgendetwas anderes aus dem Gespräch. Auf unseren Servern wird nichts gespeichert, und an uns geht nichts.\n\nDas bleibt aus, bis du es einschaltest, und gilt nur für dieses Gerät.",
-    "accept": "Einschalten",
-    "turnedOff": "Kontextkarten auf diesem Gerät ausgeschaltet"
   }
 }

@@ -49,6 +49,8 @@ import {
   isEncryptionUnavailable,
 } from '../services/e2eeKeys';
 import {makeArtifactCrypto} from '../services/e2eeArtifacts';
+import {extractEntities, wikipediaSearchUrl} from '../services/wikipediaLookup';
+import LookUpPickerModal from './LookUpPickerModal';
 import {sealAndSendText} from '../services/e2eeMessages';
 import {
   buildLinkPreviewPatch,
@@ -167,6 +169,7 @@ export default function ChatPane({
   /** Text of the send currently in flight, for synchronous double-submit detection. */
   const inFlightTextRef = useRef<string | null>(null);
   const [activeMsg, setActiveMsg] = useState<string | null>(null);
+  const [lookUpTargets, setLookUpTargets] = useState<string[] | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
   const [showLockSettings, setShowLockSettings] = useState(false);
@@ -1485,6 +1488,30 @@ export default function ChatPane({
     }
   };
 
+  /**
+   * Hands one name to the browser.
+   *
+   * This client makes no request of its own — `wikipediaSearchUrl` builds a
+   * URL and `window.open` opens it, so Wikipedia sees a visit the reader made
+   * rather than a fetch performed on their behalf out of a decrypted message.
+   *
+   * With more than one candidate it asks which. The extraction is a regex over
+   * capitalised words and is wrong often enough that guessing would open an
+   * article about the wrong thing.
+   */
+  const doLookUp = (m: ChatMessage) => {
+    setActiveMsg(null);
+    const targets = extractEntities(m.text || '');
+    if (!targets.length) return;
+    const open = (name: string) =>
+      window.open(wikipediaSearchUrl(name, lang), '_blank', 'noopener,noreferrer');
+    if (targets.length === 1) {
+      open(targets[0]);
+      return;
+    }
+    setLookUpTargets(targets);
+  };
+
   // Calls are pointless once the account is gone: there is no device left to
   // ring. `otherUid` already goes undefined when the peer leaves participants,
   // but not in the partial-purge case where only the profile is deleted.
@@ -2435,6 +2462,18 @@ export default function ChatPane({
                             <Icon name="globe" size={15} />
                           </button>
                         )}
+                        {/* Only when the message holds something that reads as
+                            a name. Nothing is fetched here: the URL goes to
+                            the browser, so Wikipedia sees a visit the reader
+                            made and this app sends nothing. */}
+                        {!contentHidden && extractEntities(m.text || '').length > 0 && (
+                          <button
+                            style={styles.smallAction}
+                            title={t('chat.lookUp')}
+                            onClick={() => doLookUp(m)}>
+                            <Icon name="book" size={15} />
+                          </button>
+                        )}
                         {!contentHidden && mine && m.text && !m.burnAfterReading && (
                           <button style={styles.smallAction} title={t('chat.edit')} onClick={() => startEdit(m)}>
                             <Icon name="edit" size={15} />
@@ -2802,6 +2841,16 @@ export default function ChatPane({
       {proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
       {shareLocationModalOpen && (
         <ShareLocationModal onClose={() => setShareLocationModalOpen(false)} onChoose={beginSharingLocation} />
+      )}
+      {lookUpTargets && (
+        <LookUpPickerModal
+          names={lookUpTargets}
+          onClose={() => setLookUpTargets(null)}
+          onChoose={name => {
+            setLookUpTargets(null);
+            window.open(wikipediaSearchUrl(name, lang), '_blank', 'noopener,noreferrer');
+          }}
+        />
       )}
       {aiConsentRetry && (
         <AiConsentModal
