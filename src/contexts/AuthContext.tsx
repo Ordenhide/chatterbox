@@ -413,7 +413,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       if (active && !signingOutRef.current) {
         Alert.alert(
           i18n.t('auth.session.title'),
-          'Unable to establish session. Please sign out and try again.',
+          i18n.t('auth.session.unavailable'),
         );
         // Allow the user to at least sign out by marking session ready.
         setSessionReady(true);

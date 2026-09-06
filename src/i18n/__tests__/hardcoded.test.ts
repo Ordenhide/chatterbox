@@ -5,8 +5,9 @@
  * The web half of the app already has this test (web/src/i18n/hardcoded.test.ts,
  * written after thirty such strings shipped in three modals). Mobile had the
  * same problem and no test: RecoveryPhraseScreen's entire copy, the bookmark
- * empty state, Focus Mode, the error boundary — all English in a fifteen
- * language app, because i18next falls back silently and nothing ever failed.
+ * empty state, Focus Mode, the error boundary, and two hundred strings in
+ * ChatScreen — all English in a fifteen-language app, because i18next falls
+ * back silently and nothing ever failed.
  *
  * This reads the source rather than rendering, because the failure is not a
  * wrong render — it is a string that was never wired to anything.
@@ -36,14 +37,6 @@ const PROSE = /^[A-Z][a-z]+(?: [A-Za-z(),.!?'’…—-]+){2,14}[.?!]?$/;
  * label anyone reads.
  */
 const TEXT_NODE = />([^<>{}\n]+)<\//g;
-
-/**
- * ChatScreen is six thousand lines and still holds eighty-one of these, plus
- * its alert copy. Translating it is its own piece of work; until then this
- * number is a ratchet — it may fall, and a change that raises it fails here.
- */
-const CHAT_SCREEN = join('screens', 'chat', 'ChatScreen.tsx');
-const CHAT_SCREEN_BUDGET = 81;
 
 function scan(file: string): {prose: string[]; nodes: string[]} {
   const prose: string[] = [];
@@ -81,16 +74,8 @@ describe('screens speak through the dictionary', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('no screen but ChatScreen renders an untranslated label', () => {
-    const offenders = files
-      .filter(f => !f.endsWith(CHAT_SCREEN))
-      .flatMap(f => scan(f).nodes.map(s => s.replace(ROOT, 'src')));
+  it('no screen renders an untranslated label', () => {
+    const offenders = files.flatMap(f => scan(f).nodes.map(s => s.replace(ROOT, 'src')));
     expect(offenders).toEqual([]);
-  });
-
-  it("ChatScreen's backlog only shrinks", () => {
-    const file = files.find(f => f.endsWith(CHAT_SCREEN));
-    expect(file).toBeDefined();
-    expect(scan(file as string).nodes.length).toBeLessThanOrEqual(CHAT_SCREEN_BUDGET);
   });
 });

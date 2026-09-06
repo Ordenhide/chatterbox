@@ -290,9 +290,9 @@ export default function ProfileScreen() {
         setVsRecordedDuration(Math.floor((e.currentPosition || 0) / 1000));
       });
     } catch {
-      Alert.alert('Error', 'Failed to start recording.');
+      Alert.alert(t('common.error'), t('profile.alerts.voiceRecordFailed'));
     }
-  }, []);
+  }, [t]);
 
   const handleVsStopRecording = useCallback(async () => {
     try {
@@ -311,20 +311,20 @@ export default function ProfileScreen() {
       await uploadVoiceStatus(user.uid, vsRecordedUri, vsRecordedDuration);
       setVsModalVisible(false);
       setVsRecordedUri(null);
-      Alert.alert('Voice Status', 'Your voice diary has been set! It will expire in 24 hours.');
+      Alert.alert(t('profile.alerts.voiceStatusTitle'), t('profile.alerts.voiceStatusBody'));
     } catch {
-      Alert.alert('Error', 'Failed to upload voice status.');
+      Alert.alert(t('common.error'), t('profile.alerts.voiceUploadFailed'));
     }
-  }, [user?.uid, vsRecordedUri, vsRecordedDuration]);
+  }, [t, user?.uid, vsRecordedUri, vsRecordedDuration]);
 
   const handleVsRemove = useCallback(async () => {
     if (!user?.uid) return;
     try {
       await removeVoiceStatus(user.uid);
     } catch {
-      Alert.alert('Error', 'Failed to remove voice status.');
+      Alert.alert(t('common.error'), t('profile.alerts.voiceRemoveFailed'));
     }
-  }, [user?.uid]);
+  }, [t, user?.uid]);
 
   const handleVsPlay = useCallback(async () => {
     if (!voiceStatusUrl) return;

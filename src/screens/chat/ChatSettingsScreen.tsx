@@ -383,9 +383,9 @@ export default function ChatSettingsScreen() {
           style={styles.row}
           onPress={() => {
             if (chatLocked) {
-              Alert.alert('Remove Lock', 'Remove PIN lock from this chat?', [
-                {text: 'Cancel', style: 'cancel'},
-                {text: 'Remove', style: 'destructive', onPress: async () => {
+              Alert.alert(t('chatSettings.alerts.removeLockTitle'), t('chatSettings.alerts.removeLockBody'), [
+                {text: t('common.cancel'), style: 'cancel'},
+                {text: t('common.remove'), style: 'destructive', onPress: async () => {
                   await removeChatLock(chatId);
                   setChatLocked(false);
                 }},
