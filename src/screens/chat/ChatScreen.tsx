@@ -4366,7 +4366,14 @@ export default function ChatScreen() {
               <Icon name="timer" size={36} color={colors.secondary} style={styles.capsuleIcon} />
               <Text style={[styles.capsuleTitle, {color: colors.secondary}]}>{t('chat.timeCapsule')}</Text>
               <Text style={[styles.capsuleSub, {color: colors.textSecondary}]}>
-                Opens {new Date(current.timeCapsule.unlocksAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                {t('chat.capsuleOpens', {
+                  when: new Date(current.timeCapsule.unlocksAt).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  }),
+                })}
               </Text>
             </View>
           ) : null}
@@ -5236,7 +5243,7 @@ export default function ChatScreen() {
           <View style={styles.previewBackdrop}>
             <View style={[styles.recordModal, {backgroundColor: colors.background}]}>
               <Text style={styles.recordTitle}>
-                {recording ? 'Recording...' : 'Voice Message'}
+                {recording ? t('chat.recordingLabel') : t('chat.voiceMessage')}
               </Text>
             <Text style={[styles.recordTimer, {color: colors.textSecondary}]}>
               {recordedDuration ? `${recordedDuration}s` : '0s'}
@@ -5356,13 +5363,13 @@ export default function ChatScreen() {
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { dictating ? stopDictation() : startDictation(); })}>
                     <Icon name="mic" size={22} color={colors.text} style={styles.attachOptionIcon} />
-                    <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? 'Stop' : 'Voice'}</Text>
+                    <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? t('chat.stop') : t('chat.sourceVoice')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.attachOption, sharingLocation && {backgroundColor: colors.primary}]}
                     onPress={() => closeAttachSheetThen(() => { sharingLocation ? handleStopSharingLocation() : handleShareLocation(); })}>
                     <Icon name="pin" size={22} color={sharingLocation ? '#fff' : colors.text} style={styles.attachOptionIcon} />
-                    <Text style={[styles.attachOptionText, {color: sharingLocation ? '#fff' : colors.text}]}>{sharingLocation ? 'Stop' : 'Location'}</Text>
+                    <Text style={[styles.attachOptionText, {color: sharingLocation ? '#fff' : colors.text}]}>{sharingLocation ? t('chat.stop') : t('chat.location')}</Text>
                   </TouchableOpacity>
                 </View>
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>{t('chat.sectionMessageStyle')}</Text>
@@ -5415,7 +5422,7 @@ export default function ChatScreen() {
                 setShowTimestamps(prev => !prev);
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>
-                {showTimestamps ? 'Hide Timestamps' : 'Show Timestamps'}
+                {showTimestamps ? t('chat.hideTimestamps') : t('chat.showTimestamps')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -5459,7 +5466,12 @@ export default function ChatScreen() {
                 setSchedulePickerVisible(true);
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>
-                Schedule Message {scheduledCount > 0 ? `(${scheduledCount})` : ''}
+                {/* `suffix`, not `count`: i18next treats `count` as the plural
+                    selector, and this is a parenthesised badge, not a number
+                    the sentence agrees with. */}
+                {t('chat.scheduleMessageCount', {
+                  suffix: scheduledCount > 0 ? ` (${scheduledCount})` : '',
+                })}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -5490,7 +5502,7 @@ export default function ChatScreen() {
                 setAnonymousMode(prev => !prev);
               }}>
               <Text style={[styles.actionSheetText, {color: anonymousMode ? colors.secondary : colors.text}]}>
-                {anonymousMode ? 'Anonymous ON' : 'Anonymous'}
+                {anonymousMode ? t('chat.anonymousOn') : t('chat.anonymous')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -5500,7 +5512,7 @@ export default function ChatScreen() {
                 setIncognitoMode(prev => !prev);
               }}>
               <Text style={[styles.actionSheetText, {color: incognitoMode ? colors.success : colors.text}]}>
-                {incognitoMode ? 'Incognito ON' : 'Incognito'}
+                {incognitoMode ? t('chat.incognitoOn') : t('chat.incognito')}
               </Text>
             </TouchableOpacity>
             {otherUserId && user ? (
@@ -5865,7 +5877,7 @@ export default function ChatScreen() {
               </Text>
               {summaryLoading ? (
                 <Text style={[styles.summaryLoading, {color: colors.textSecondary}]}>
-                  {summaryAskedQuestion ? 'Searching this chat...' : 'Generating summary...'}
+                  {summaryAskedQuestion ? t('chat.searchingChat') : t('chat.generatingSummary')}
                 </Text>
               ) : (
                 <Text style={[styles.summaryBody, {color: colors.text}]}>{summaryText}</Text>
@@ -5885,7 +5897,7 @@ export default function ChatScreen() {
                 {summaryLoading ? (
                   <ActivityIndicator color={colors.textOnPrimary} />
                 ) : (
-                  <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{summaryQuestion.trim() ? 'Ask' : 'Regenerate Summary'}</Text>
+                  <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{summaryQuestion.trim() ? t('chat.ask') : t('chat.regenerateSummary')}</Text>
                 )}
               </TouchableOpacity>
               <TouchableOpacity

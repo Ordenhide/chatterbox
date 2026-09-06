@@ -355,7 +355,9 @@
     "groupUnsupportedBody": "Пока звонки работают в чатах на двоих. В группе вызов дошёл бы только до одного человека, поэтому здесь он отключён."
   },
   "chatMedia": {
-    "seconds": "{{count}}с"
+    "seconds": "{{count}}с",
+    "openPhoto": "Открыть фото во весь экран",
+    "playVideo": "Воспроизвести видео"
   },
   "chatSettings": {
     "notifications": "Уведомления",
@@ -411,7 +413,9 @@
     "soundscape": "Звуковой фон",
     "features": "Возможности",
     "security": "Безопасность",
-    "messageExpiry": "Срок хранения сообщений"
+    "messageExpiry": "Срок хранения сообщений",
+    "on": "ВКЛ",
+    "off": "ВЫКЛ"
   },
   "burn": {
     "tapToReveal": "Нажмите, чтобы открыть",
@@ -756,7 +760,21 @@
     "uploadingImage": "Загружаем изображение",
     "uploadingFile": "Загружаем файл",
     "uploadingVoice": "Загружаем голосовое сообщение",
-    "uploadingDictation": "Загружаем диктовку"
+    "uploadingDictation": "Загружаем диктовку",
+    "location": "Геопозиция",
+    "recordingLabel": "Запись…",
+    "voiceMessage": "Голосовое сообщение",
+    "hideTimestamps": "Скрыть время",
+    "showTimestamps": "Показать время",
+    "anonymousOn": "Аноним вкл.",
+    "incognito": "Инкогнито",
+    "incognitoOn": "Инкогнито вкл.",
+    "searchingChat": "Ищем в этом чате…",
+    "generatingSummary": "Составляем сводку…",
+    "ask": "Спросить",
+    "regenerateSummary": "Пересобрать сводку",
+    "capsuleOpens": "Откроется {{when}}",
+    "scheduleMessageCount": "Отложенная отправка{{suffix}}"
   },
   "smartReply": {
     "thumbsUp": "👍",

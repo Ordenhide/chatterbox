@@ -400,7 +400,7 @@ export default function ChatSettingsScreen() {
             }
           }}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>
-            Chat Lock: {chatLocked ? 'ON' : 'OFF'}
+            Chat Lock: {chatLocked ? t('chatSettings.on') : t('chatSettings.off')}
           </Text>
         </TouchableOpacity>
         )}

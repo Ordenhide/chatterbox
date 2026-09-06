@@ -355,7 +355,9 @@
     "groupUnsupportedBody": "Anrufe funktionieren vorerst in Einzelchats. In einer Gruppe würde nur eine Person klingeln, deshalb ist es hier abgeschaltet."
   },
   "chatMedia": {
-    "seconds": "{{count}}s"
+    "seconds": "{{count}}s",
+    "openPhoto": "Foto in voller Größe öffnen",
+    "playVideo": "Video abspielen"
   },
   "chatSettings": {
     "notifications": "Benachrichtigungen",
@@ -411,7 +413,9 @@
     "soundscape": "Klangkulisse",
     "features": "Funktionen",
     "security": "Sicherheit",
-    "messageExpiry": "Nachrichtenablauf"
+    "messageExpiry": "Nachrichtenablauf",
+    "on": "AN",
+    "off": "AUS"
   },
   "burn": {
     "tapToReveal": "Tippen zum Anzeigen",
@@ -756,7 +760,21 @@
     "uploadingImage": "Bild wird hochgeladen",
     "uploadingFile": "Datei wird hochgeladen",
     "uploadingVoice": "Sprachnachricht wird hochgeladen",
-    "uploadingDictation": "Diktat wird hochgeladen"
+    "uploadingDictation": "Diktat wird hochgeladen",
+    "location": "Standort",
+    "recordingLabel": "Aufnahme …",
+    "voiceMessage": "Sprachnachricht",
+    "hideTimestamps": "Zeiten ausblenden",
+    "showTimestamps": "Zeiten anzeigen",
+    "anonymousOn": "Anonym AN",
+    "incognito": "Inkognito",
+    "incognitoOn": "Inkognito AN",
+    "searchingChat": "Dieser Chat wird durchsucht …",
+    "generatingSummary": "Zusammenfassung wird erstellt …",
+    "ask": "Fragen",
+    "regenerateSummary": "Neu zusammenfassen",
+    "capsuleOpens": "Öffnet {{when}}",
+    "scheduleMessageCount": "Nachricht planen{{suffix}}"
   },
   "smartReply": {
     "thumbsUp": "👍",

@@ -355,7 +355,9 @@
     "groupUnsupportedBody": "Por ahora las llamadas funcionan en chats de dos personas. En un grupo solo sonaría para una, así que está desactivado aquí."
   },
   "chatMedia": {
-    "seconds": "{{count}}s"
+    "seconds": "{{count}}s",
+    "openPhoto": "Abrir la foto a tamaño completo",
+    "playVideo": "Reproducir el vídeo"
   },
   "chatSettings": {
     "notifications": "Notificaciones",
@@ -411,7 +413,9 @@
     "soundscape": "Ambiente sonoro",
     "features": "Funciones",
     "security": "Seguridad",
-    "messageExpiry": "Caducidad de mensajes"
+    "messageExpiry": "Caducidad de mensajes",
+    "on": "SÍ",
+    "off": "NO"
   },
   "burn": {
     "tapToReveal": "Toca para revelar",
@@ -756,7 +760,21 @@
     "uploadingImage": "Subiendo la imagen",
     "uploadingFile": "Subiendo el archivo",
     "uploadingVoice": "Subiendo el mensaje de voz",
-    "uploadingDictation": "Subiendo el dictado"
+    "uploadingDictation": "Subiendo el dictado",
+    "location": "Ubicación",
+    "recordingLabel": "Grabando…",
+    "voiceMessage": "Mensaje de voz",
+    "hideTimestamps": "Ocultar horas",
+    "showTimestamps": "Mostrar horas",
+    "anonymousOn": "Anónimo activado",
+    "incognito": "Incógnito",
+    "incognitoOn": "Incógnito activado",
+    "searchingChat": "Buscando en este chat…",
+    "generatingSummary": "Generando el resumen…",
+    "ask": "Preguntar",
+    "regenerateSummary": "Volver a generar el resumen",
+    "capsuleOpens": "Se abre el {{when}}",
+    "scheduleMessageCount": "Programar mensaje{{suffix}}"
   },
   "smartReply": {
     "thumbsUp": "👍",

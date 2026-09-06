@@ -35,8 +35,31 @@ const PROSE = /^[A-Z][a-z]+(?: [A-Za-z(),.!?'’…—-]+){2,14}[.?!]?$/;
  * `>text</` — a JSX text node. The closing `</` is what separates it from a
  * TypeScript generic: `Promise<void>` has the same `>…<` shape and is not a
  * label anyone reads.
+ *
+ * Braces are allowed inside and stripped before the check, because
+ * `>Schedule Message {count ? \`(${count})\` : ''}</Text>` is an English label
+ * with an expression after it — and requiring a brace-free segment let that
+ * one through the whole first pass.
  */
-const TEXT_NODE = />([^<>{}\n]+)<\//g;
+const TEXT_NODE = />([^<>\n]+)<\//g;
+
+/**
+ * `{cond ? 'Stop' : 'Voice'}` — a label inside an expression, which the text
+ * node pattern above cannot see because the words never sit between the tags.
+ * Eight of these hid in ChatScreen through the whole first pass, including the
+ * attach sheet's Voice and Location buttons; the emulator found them, not the
+ * test. Both branches quoted and capitalised, which is what a pair of labels
+ * looks like and what an icon name ('lock' : 'alertTriangle') does not.
+ */
+const TERNARY_LABEL = /\?\s*'([A-Z][^']{1,40})'\s*:\s*'([A-Z][^']{1,40})'/g;
+
+/**
+ * A label on its own line with an expression after it — `Schedule Message
+ * {count ? …}`, `Opens {new Date(…)}`. Neither of the patterns above can see
+ * these: the words touch no tag on their own line, and the braces stop the
+ * prose pattern from matching the whole line.
+ */
+const LABEL_THEN_EXPRESSION = /^[A-Z][A-Za-z]+(?: [A-Za-z()]+)*\s*\{/;
 
 function scan(file: string): {prose: string[]; nodes: string[]} {
   const prose: string[] = [];
@@ -55,8 +78,14 @@ function scan(file: string): {prose: string[]; nodes: string[]} {
       if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
       if (PROSE.test(trimmed)) prose.push(`${file}:${i + 1}  ${trimmed.slice(0, 60)}`);
       for (const match of line.matchAll(TEXT_NODE)) {
-        const text = match[1].trim();
+        const text = match[1].replace(/\{[^{}]*\}/g, '').trim();
         if (/[A-Za-z]{2}/.test(text)) nodes.push(`${file}:${i + 1}  ${text.slice(0, 40)}`);
+      }
+      for (const match of line.matchAll(TERNARY_LABEL)) {
+        nodes.push(`${file}:${i + 1}  ${match[1]} / ${match[2]}`);
+      }
+      if (LABEL_THEN_EXPRESSION.test(trimmed)) {
+        nodes.push(`${file}:${i + 1}  ${trimmed.slice(0, 40)}`);
       }
     });
   return {prose, nodes};

@@ -427,7 +427,9 @@
     "groupUnsupportedBody": "Calling works in one-to-one chats for now. In a group it would only ring one person, so it's turned off here."
   },
   "chatMedia": {
-    "seconds": "{{count}}s"
+    "seconds": "{{count}}s",
+    "openPhoto": "Open photo full size",
+    "playVideo": "Play video"
   },
   "chat": {
     "reportReason": {
@@ -685,7 +687,21 @@
     "uploadingImage": "Uploading image",
     "uploadingFile": "Uploading file",
     "uploadingVoice": "Uploading voice message",
-    "uploadingDictation": "Uploading dictation"
+    "uploadingDictation": "Uploading dictation",
+    "location": "Location",
+    "recordingLabel": "Recording…",
+    "voiceMessage": "Voice Message",
+    "hideTimestamps": "Hide Timestamps",
+    "showTimestamps": "Show Timestamps",
+    "anonymousOn": "Anonymous ON",
+    "incognito": "Incognito",
+    "incognitoOn": "Incognito ON",
+    "searchingChat": "Searching this chat…",
+    "generatingSummary": "Generating summary…",
+    "ask": "Ask",
+    "regenerateSummary": "Regenerate Summary",
+    "capsuleOpens": "Opens {{when}}",
+    "scheduleMessageCount": "Schedule Message{{suffix}}"
   },
   "chatSettings": {
     "notifications": "Notifications",
@@ -741,7 +757,9 @@
     "soundscape": "Soundscape",
     "features": "Features",
     "security": "Security",
-    "messageExpiry": "Message Expiry"
+    "messageExpiry": "Message Expiry",
+    "on": "ON",
+    "off": "OFF"
   },
   "burn": {
     "tapToReveal": "Tap to reveal",

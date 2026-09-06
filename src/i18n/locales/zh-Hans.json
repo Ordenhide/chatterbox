@@ -355,7 +355,9 @@
     "groupUnsupportedBody": "目前通话只支持一对一聊天。在群里它只会拨给其中一个人，所以在这里关闭了。"
   },
   "chatMedia": {
-    "seconds": "{{count}}秒"
+    "seconds": "{{count}}秒",
+    "openPhoto": "全屏查看照片",
+    "playVideo": "播放视频"
   },
   "chat": {
     "isTyping": "{{name}} 正在输入…",
@@ -574,7 +576,7 @@
     "styleGlyph": "Aa",
     "style": "样式",
     "burn": "阅后即焚",
-    "viewOnce": "阅后即焚",
+    "viewOnce": "仅看一次",
     "chatActions": "对话操作",
     "sectionView": "查看",
     "rename": "改名",
@@ -613,7 +615,21 @@
     "uploadingImage": "正在上传图片",
     "uploadingFile": "正在上传文件",
     "uploadingVoice": "正在上传语音消息",
-    "uploadingDictation": "正在上传听写"
+    "uploadingDictation": "正在上传听写",
+    "location": "位置",
+    "recordingLabel": "录音中…",
+    "voiceMessage": "语音消息",
+    "hideTimestamps": "隐藏时间戳",
+    "showTimestamps": "显示时间戳",
+    "anonymousOn": "匿名已开",
+    "incognito": "隐身",
+    "incognitoOn": "隐身已开",
+    "searchingChat": "正在这个对话里查找…",
+    "generatingSummary": "正在生成摘要…",
+    "ask": "提问",
+    "regenerateSummary": "重新生成摘要",
+    "capsuleOpens": "{{when}} 开启",
+    "scheduleMessageCount": "定时发送{{suffix}}"
   },
   "chatSettings": {
     "notifications": "通知",
@@ -669,7 +685,9 @@
     "soundscape": "环境音",
     "features": "功能",
     "security": "安全",
-    "messageExpiry": "消息保留时长"
+    "messageExpiry": "消息保留时长",
+    "on": "开",
+    "off": "关"
   },
   "burn": {
     "tapToReveal": "点击查看",
