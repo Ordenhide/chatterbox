@@ -763,7 +763,15 @@
     "capsuleOpens": "S’ouvre le {{when}}",
     "scheduleMessageCount": "Programmer le message{{suffix}}",
     "menuLookUp": "Chercher sur Wikipédia",
-    "lookUpPick": "Lequel ?"
+    "lookUpPick": "Lequel ?",
+    "lookUpLoading": "Recherche…",
+    "lookUpNotFound": "Aucun article Wikipédia pour « {{name}} ».",
+    "lookUpFailed": "Impossible de joindre Wikipédia.",
+    "lookUpAmbiguous": "Ce nom a plusieurs significations.",
+    "lookUpOpen": "Ouvrir sur Wikipédia",
+    "lookUpSearch": "Rechercher sur Wikipédia",
+    "lookUpRetry": "Réessayer",
+    "lookUpAttribution": "D'après Wikipédia, CC BY-SA"
   },
   "smartReply": {
     "thumbsUp": "👍",

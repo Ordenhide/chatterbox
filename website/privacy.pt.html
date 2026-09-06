@@ -31,7 +31,7 @@
   <main class="doc">
     <a class="back-link" href="index.html">← Voltar ao Chatterbox</a>
     <h1>Política de Privacidade</h1>
-    <p class="meta">Última atualização: 2026-09-06</p>
+    <p class="meta">Última atualização: 2026-09-07</p>
 
     <section>
       <h2>0. Em resumo</h2>
@@ -44,7 +44,7 @@
       <p>Cifrado no teu dispositivo, ilegível para nós e para a Google:</p>
       <ul><li>O texto das tuas mensagens.</li><li>O conteúdo de ficheiros, fotos, áudio e vídeo que anexas.</li><li>As listas partilhadas, as citações guardadas e as pré-visualizações de ligações.</li><li>As chamadas de voz e vídeo, que usam o DTLS-SRTP obrigatório do WebRTC entre os dois dispositivos.</li></ul>
       <p>A maioria das mensagens individuais e de grupo usa ainda um roquete: cada mensagem tem a sua própria chave, por isso comprometer o teu dispositivo não expõe as anteriores. As conversas em que o cliente de alguém não publicou o material de chave mais recente recaem numa única chave de longa duração, que não tem essa propriedade. A etiqueta por baixo de uma mensagem diz-te qual delas ela realmente seguiu.</p>
-      <p>Uma coisa atravessa esta linha, e só quando tu pedes. Resumir, traduzir ou transcrever uma mensagem descifra-a no teu aparelho e envia-a para fora — a secção 6 diz a quem. A app pergunta antes da primeira vez, e o interruptor está no Perfil. Com ele desligado, não sai nada.</p>
+      <p>Duas coisas atravessam esta linha, e apenas quando as pedes. Resumir, traduzir ou transcrever uma mensagem decifra-a no teu dispositivo e envia-a; procurar um nome na Wikipédia envia esse único nome, não a mensagem de onde saiu. A secção 6 diz quem recebe o quê. As funcionalidades de IA perguntam antes da primeira vez e têm um interruptor no Perfil; a procura acontece no toque e não de outra forma, portanto não há nada permanente para desligar.</p>
     </section>
 
     <section>
@@ -78,8 +78,9 @@
     <section>
       <h2>6. Quem mais recebe dados</h2>
       <p>Não vendemos, trocamos nem alugamos as tuas informações pessoais. Os dados chegam a:</p>
-      <ul><li>Google Firebase — o nosso fornecedor de alojamento, como descrito acima.</li><li>Google Cloud Speech-to-Text — o áudio de uma mensagem de voz, quando pedes uma transcrição.</li><li>Google Cloud Translation — o texto de uma mensagem, quando pedes uma tradução.</li><li>Cloudflare Workers AI — até às últimas 50 mensagens de uma conversa, quando pedes um resumo ou fazes uma pergunta sobre ela.</li></ul>
+      <ul><li>Google Firebase — o nosso fornecedor de alojamento, como descrito acima.</li><li>A Wikimedia Foundation — um único nome, quando lhe tocas para o procurar na Wikipédia.</li><li>Google Cloud Speech-to-Text — o áudio de uma mensagem de voz, quando pedes uma transcrição.</li><li>Google Cloud Translation — o texto de uma mensagem, quando pedes uma tradução.</li><li>Cloudflare Workers AI — até às últimas 50 mensagens de uma conversa, quando pedes um resumo ou fazes uma pergunta sobre ela.</li></ul>
       <p>Os últimos três só correm se tiveres ligado as funcionalidades de IA, e apenas sobre o que selecionaste nesse momento. O que é enviado é enviado para produzir o teu resultado, não para treinar seja o que for. Nem a transcrição nem a tradução ficam nos nossos servidores: a transcrição volta ao teu aparelho e é cifrada aí antes de ser guardada, e a tradução não é guardada de todo.</p>
+      <p>Esta procura não tem interruptor porque não há nada permanente para desligar: corre no toque e não de outra forma. A Wikipédia recebe esse nome e o teu endereço IP, tal como se o tivesses escrito na caixa de pesquisa dela — nenhuma conta, nenhuma mensagem, nenhuma conversa. O que volta é mostrado e não guardado, e nada disso é escrito na conversa.</p>
       <p>Podemos divulgar o que temos se a lei o exigir. O que temos é a lista da secção 2. Não conseguimos entregar o conteúdo das mensagens, porque não o conseguimos ler.</p>
     </section>
 

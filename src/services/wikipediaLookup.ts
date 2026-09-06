@@ -195,6 +195,15 @@ const WIKI_SUBDOMAIN: Record<string, string> = {
 };
 
 /**
+ * The wiki this reader's language belongs to. Exported so that the summary
+ * fetcher cannot drift from the search link: both have to name the same wiki
+ * or the card and the "open on Wikipedia" button below it disagree.
+ */
+export function wikipediaSubdomain(appLanguage?: string): string {
+  return WIKI_SUBDOMAIN[appLanguage ?? ''] ?? 'en';
+}
+
+/**
  * The search URL for a phrase.
  *
  * A search rather than a direct article link: a phrase pulled out of a
@@ -202,6 +211,6 @@ const WIKI_SUBDOMAIN: Record<string, string> = {
  * and disambiguation the way a wrong /wiki/ URL does not.
  */
 export function wikipediaSearchUrl(phrase: string, appLanguage?: string): string {
-  const sub = WIKI_SUBDOMAIN[appLanguage ?? ''] ?? 'en';
+  const sub = wikipediaSubdomain(appLanguage);
   return `https://${sub}.wikipedia.org/w/index.php?search=${encodeURIComponent(phrase)}`;
 }

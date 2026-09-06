@@ -618,7 +618,15 @@
     "capsuleOpens": "{{when}} 开启",
     "scheduleMessageCount": "定时发送{{suffix}}",
     "menuLookUp": "在维基百科查一下",
-    "lookUpPick": "查哪一个？"
+    "lookUpPick": "查哪一个？",
+    "lookUpLoading": "查询中…",
+    "lookUpNotFound": "维基百科上没有「{{name}}」的条目。",
+    "lookUpFailed": "连不上维基百科。",
+    "lookUpAmbiguous": "这个名字有多个含义。",
+    "lookUpOpen": "在维基百科打开",
+    "lookUpSearch": "在维基百科搜索",
+    "lookUpRetry": "重试",
+    "lookUpAttribution": "来自维基百科，CC BY-SA"
   },
   "chatSettings": {
     "notifications": "通知",

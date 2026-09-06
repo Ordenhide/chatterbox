@@ -690,7 +690,15 @@
     "capsuleOpens": "Opens {{when}}",
     "scheduleMessageCount": "Schedule Message{{suffix}}",
     "menuLookUp": "Look up on Wikipedia",
-    "lookUpPick": "Which one?"
+    "lookUpPick": "Which one?",
+    "lookUpLoading": "Looking up…",
+    "lookUpNotFound": "No Wikipedia article for “{{name}}”.",
+    "lookUpFailed": "Couldn't reach Wikipedia.",
+    "lookUpAmbiguous": "This name means several things.",
+    "lookUpOpen": "Open on Wikipedia",
+    "lookUpSearch": "Search Wikipedia",
+    "lookUpRetry": "Try again",
+    "lookUpAttribution": "From Wikipedia, CC BY-SA"
   },
   "chatSettings": {
     "notifications": "Notifications",

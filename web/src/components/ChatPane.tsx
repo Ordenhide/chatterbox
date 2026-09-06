@@ -49,8 +49,9 @@ import {
   isEncryptionUnavailable,
 } from '../services/e2eeKeys';
 import {makeArtifactCrypto} from '../services/e2eeArtifacts';
-import {extractEntities, wikipediaSearchUrl} from '../services/wikipediaLookup';
+import {extractEntities} from '../services/wikipediaLookup';
 import LookUpPickerModal from './LookUpPickerModal';
+import WikipediaCardModal from './WikipediaCardModal';
 import {sealAndSendText} from '../services/e2eeMessages';
 import {
   buildLinkPreviewPatch,
@@ -170,6 +171,7 @@ export default function ChatPane({
   const inFlightTextRef = useRef<string | null>(null);
   const [activeMsg, setActiveMsg] = useState<string | null>(null);
   const [lookUpTargets, setLookUpTargets] = useState<string[] | null>(null);
+  const [lookUpCard, setLookUpCard] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
   const [showLockSettings, setShowLockSettings] = useState(false);
@@ -1503,10 +1505,8 @@ export default function ChatPane({
     setActiveMsg(null);
     const targets = extractEntities(m.text || '');
     if (!targets.length) return;
-    const open = (name: string) =>
-      window.open(wikipediaSearchUrl(name, lang), '_blank', 'noopener,noreferrer');
     if (targets.length === 1) {
-      open(targets[0]);
+      setLookUpCard(targets[0]);
       return;
     }
     setLookUpTargets(targets);
@@ -2848,9 +2848,12 @@ export default function ChatPane({
           onClose={() => setLookUpTargets(null)}
           onChoose={name => {
             setLookUpTargets(null);
-            window.open(wikipediaSearchUrl(name, lang), '_blank', 'noopener,noreferrer');
+            setLookUpCard(name);
           }}
         />
+      )}
+      {lookUpCard && (
+        <WikipediaCardModal phrase={lookUpCard} lang={lang} onClose={() => setLookUpCard(null)} />
       )}
       {aiConsentRetry && (
         <AiConsentModal

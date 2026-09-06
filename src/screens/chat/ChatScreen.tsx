@@ -118,6 +118,7 @@ import {
 } from '../../services/groupRatchetMessages';
 import {messageProtection, sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
+import WikipediaCardModal from '../../components/WikipediaCardModal';
 import {bodyWeight, fonts, terminal} from '../../theme/typography';
 import {runPool} from '../../utils/pool';
 import {startTrace} from '../../utils/loadTrace';
@@ -162,7 +163,7 @@ import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
 import {addToQuoteWall} from '../../services/quoteWall';
 import {getSmartReplies} from '../../services/smartReply';
-import {extractEntities, wikipediaSearchUrl} from '../../services/wikipediaLookup';
+import {extractEntities} from '../../services/wikipediaLookup';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {
   applyScreenshotProtection,
@@ -391,6 +392,8 @@ export default function ChatScreen() {
   // The message currently being forwarded — set while the destination-chat
   // picker (ChatPickerModal) is open, null otherwise.
   const [forwardTarget, setForwardTarget] = useState<IMessage | null>(null);
+  // The name whose Wikipedia card is open, null otherwise.
+  const [lookUpCard, setLookUpCard] = useState<string | null>(null);
   const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('none');
   const [invisibleInkMode, setInvisibleInkMode] = useState(false);
   const [revealedMessages, setRevealedMessages] = useState<Set<string>>(new Set());
@@ -3380,35 +3383,32 @@ export default function ChatScreen() {
   );
 
   /**
-   * Hands one name to the browser.
+   * Opens the card for one name.
    *
-   * The app makes no request of its own: `wikipediaSearchUrl` builds a URL and
-   * `openExternal` opens it, so what reaches Wikipedia is a visit the person
-   * made, from a browser they can see, rather than a background fetch this
-   * app performed on their behalf out of a decrypted message. That is the
-   * whole difference between this and the context cards it replaced.
+   * The fetch lives in the card and runs on mount, so it happens once, here,
+   * because someone asked — which is the whole difference between this and the
+   * context cards it replaced. Those fetched for every thread that opened and
+   * displayed nothing, since their markup sat behind a parity flag that has
+   * never been `true`.
    *
    * With more than one candidate it asks which, rather than picking — the
    * extraction is a regex over capitalised words and is wrong often enough
-   * that guessing would send people to an article about the wrong thing.
+   * that guessing would open an article about the wrong thing.
    */
   const handleLookUp = useCallback(
     (targets: string[]) => {
       if (!targets.length) return;
       if (targets.length === 1) {
-        openExternal(wikipediaSearchUrl(targets[0], i18n.language));
+        setLookUpCard(targets[0]);
         return;
       }
       setSheet({
         title: t('chat.menuLookUp'),
         message: t('chat.lookUpPick'),
-        actions: targets.map(name => ({
-          label: name,
-          onPress: () => openExternal(wikipediaSearchUrl(name, i18n.language)),
-        })),
+        actions: targets.map(name => ({label: name, onPress: () => setLookUpCard(name)})),
       });
     },
-    [i18n.language, openExternal, t],
+    [t],
   );
 
   // Pause the outgoing watch on blur (foreground-only tracking) — the share
@@ -5150,6 +5150,14 @@ export default function ChatScreen() {
         actions={sheet?.actions ?? []}
         onClose={() => setSheet(null)}
       />
+      {lookUpCard && (
+        <WikipediaCardModal
+          phrase={lookUpCard}
+          language={i18n.language}
+          onOpenUrl={openExternal}
+          onClose={() => setLookUpCard(null)}
+        />
+      )}
       {forwardTarget && user && (
         <ChatPickerModal
           myUid={user.uid}

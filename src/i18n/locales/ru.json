@@ -763,7 +763,15 @@
     "capsuleOpens": "Откроется {{when}}",
     "scheduleMessageCount": "Отложенная отправка{{suffix}}",
     "menuLookUp": "Найти в Википедии",
-    "lookUpPick": "Что именно?"
+    "lookUpPick": "Что именно?",
+    "lookUpLoading": "Поиск…",
+    "lookUpNotFound": "В Википедии нет статьи «{{name}}».",
+    "lookUpFailed": "Не удалось связаться с Википедией.",
+    "lookUpAmbiguous": "У этого названия несколько значений.",
+    "lookUpOpen": "Открыть в Википедии",
+    "lookUpSearch": "Искать в Википедии",
+    "lookUpRetry": "Повторить",
+    "lookUpAttribution": "Из Википедии, CC BY-SA"
   },
   "smartReply": {
     "thumbsUp": "👍",

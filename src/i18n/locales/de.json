@@ -763,7 +763,15 @@
     "capsuleOpens": "Öffnet {{when}}",
     "scheduleMessageCount": "Nachricht planen{{suffix}}",
     "menuLookUp": "Bei Wikipedia nachschlagen",
-    "lookUpPick": "Welches?"
+    "lookUpPick": "Welches?",
+    "lookUpLoading": "Wird gesucht…",
+    "lookUpNotFound": "Kein Wikipedia-Artikel zu „{{name}}“.",
+    "lookUpFailed": "Wikipedia ist nicht erreichbar.",
+    "lookUpAmbiguous": "Dieser Name hat mehrere Bedeutungen.",
+    "lookUpOpen": "Auf Wikipedia öffnen",
+    "lookUpSearch": "Wikipedia durchsuchen",
+    "lookUpRetry": "Erneut versuchen",
+    "lookUpAttribution": "Aus Wikipedia, CC BY-SA"
   },
   "smartReply": {
     "thumbsUp": "👍",
