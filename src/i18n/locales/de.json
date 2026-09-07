@@ -81,7 +81,7 @@
       "passwordTooSimple": "Dieses Passwort ist zu vorhersehbar (wiederholte oder aufeinanderfolgende Zeichen) — wähle ein anderes",
       "invalidVerificationCode": "Dieser Code stimmt nicht. Bitte prüfe ihn und versuche es erneut",
       "invalidPhoneNumber": "Das sieht nicht nach einer gültigen Telefonnummer aus",
-      "accountExistsDifferentCredential": "Mit dieser E-Mail-Adresse besteht bereits ein Konto, das anders angemeldet wurde. Melde dich stattdessen auf diesem Weg an."
+      "phraseNotRecognized": "Das sind keine 24 Wörter einer Chatterbox-Wiederherstellungsphrase. Prüfen Sie Schreibweise und Reihenfolge.", "noAccountForPhrase": "Mit diesen Wörtern lässt sich kein Konto öffnen. Prüfen Sie sie erneut oder erstellen Sie ein neues Konto.", "accountExistsDifferentCredential": "Mit dieser E-Mail-Adresse besteht bereits ein Konto, das anders angemeldet wurde. Melde dich stattdessen auf diesem Weg an."
     },
     "reset": {
       "title": "Passwort zurücksetzen",

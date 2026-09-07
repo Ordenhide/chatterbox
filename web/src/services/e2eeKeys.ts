@@ -157,6 +157,47 @@ export async function getDeviceKeypairIfEnrolled(userId: string): Promise<Keypai
   return keypair;
 }
 
+/**
+ * Installs `seed` as this browser's key for `userId`, because for this account
+ * the seed *is* the account (services/anonymousIdentity.ts).
+ *
+ * Twin of the mobile client's adoptSeedAsDeviceKey — see that one for the full
+ * reasoning. The short version: getOrCreateDeviceKeypair's contract is
+ * "whatever key is already here, or a new random one", which is right when the
+ * key is incidental to the account and wrong when it is derived from the same
+ * phrase that opened it. This one overwrites and republishes unconditionally,
+ * and throws if it cannot publish, so a sign-in never succeeds while leaving
+ * an account nobody can encrypt to. Retrying is the recovery, and retrying
+ * works because the same phrase always reaches the same account.
+ */
+export async function adoptSeedAsDeviceKey(userId: string, seed: Uint8Array): Promise<void> {
+  const keypair = keypairFromSecret(seed);
+  writeLocal(`${SECRET_KEY_PREFIX}:${userId}`, bytesToHex(seed));
+  cached.set(userId, keypair);
+  markActiveKey(userId);
+  await publishPublicKey(userId, keypair.publicKey);
+}
+
+/**
+ * Republishes this browser's key if the account is advertising none.
+ *
+ * Repairs the one hole adoptSeedAsDeviceKey leaves — a local write that
+ * succeeded followed by a publish that did not — and cannot do anything else:
+ * it never mints, and it never writes over a key some other device published,
+ * because that is the superseded case and belongs to the user. Failures are
+ * swallowed; nothing is waiting on this.
+ */
+export async function republishKeyIfAccountHasNone(userId: string): Promise<void> {
+  try {
+    const local = await getDeviceKeypairIfEnrolled(userId);
+    if (!local) return;
+    if (await fetchPublishedKeyOrThrow(userId)) return;
+    await publishPublicKey(userId, local.publicKey);
+  } catch (error) {
+    console.warn('e2ee republish missing key failed:', error);
+  }
+}
+
 function keypairFromSecret(secretKey: Uint8Array): Keypair {
   // Recomputing the public half is cheap and avoids storing it twice, so the
   // secret key remains the single source of truth.

@@ -81,7 +81,7 @@
       "tooManyRequests": "尝试次数过多，请稍后再试",
       "invalidVerificationCode": "验证码不正确，请检查后重试",
       "invalidPhoneNumber": "这看起来不是一个有效的手机号",
-      "accountExistsDifferentCredential": "这个邮箱已有账号，但当初是用另一种方式登录的。请改用那种方式登录。"
+      "phraseNotRecognized": "这不是 Chatterbox 的 24 个助记词。请检查拼写和顺序。", "noAccountForPhrase": "没有账号能用这组词打开。请再核对一遍，或创建新账号。", "accountExistsDifferentCredential": "这个邮箱已有账号，但当初是用另一种方式登录的。请改用那种方式登录。"
     },
     "reset": {
       "title": "重置密码",

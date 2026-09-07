@@ -14,6 +14,8 @@ import {
 } from 'firebase/auth';
 import {doc, serverTimestamp, setDoc} from 'firebase/firestore';
 import {auth, db} from '../firebase';
+import {credentialsFromSeed, seedFromPhrase} from './anonymousIdentity';
+import {adoptSeedAsDeviceKey, markRecoveryPhraseRevealed} from './e2eeKeys';
 import {claimSession} from './session';
 
 export async function signIn(email: string, password: string) {
@@ -97,6 +99,93 @@ export async function signUp(email: string, password: string, displayName?: stri
   );
   await claimSession(cred.user.uid);
   return cred.user;
+}
+
+/**
+ * Thrown when a typed phrase is not a Chatterbox recovery phrase at all —
+ * wrong words, wrong order, wrong length. Distinct from a phrase that decodes
+ * correctly but names no account, which comes back from Firebase as a
+ * credential error, because the two mean different things to the person
+ * typing: one is a transcription mistake, the other is the wrong account.
+ */
+export class UnrecognizedPhraseError extends Error {
+  constructor() {
+    super('unrecognized recovery phrase');
+    this.name = 'UnrecognizedPhraseError';
+  }
+}
+
+/**
+ * Everything a phrase sign-in and a phrase sign-up do identically: adopt the
+ * key the phrase encodes, then claim the session.
+ *
+ * Adoption is awaited and its failure propagates, because for these accounts
+ * opening the account and being able to read it are the same act — the seed
+ * *is* the account (services/anonymousIdentity.ts). Signing in without the key
+ * would leave a browser that looks connected and silently cannot decrypt, and
+ * would leave the account advertising nothing for peers to encrypt to. The
+ * caller's recovery is to try again, which works because the same phrase
+ * always reaches the same account.
+ */
+async function completePhraseSignIn(cred: UserCredential, seed: Uint8Array) {
+  await adoptSeedAsDeviceKey(cred.user.uid, seed);
+  await claimSession(cred.user.uid);
+  return cred.user;
+}
+
+/**
+ * Creates the account a freshly generated phrase names.
+ *
+ * The caller must have shown the phrase and had the user confirm they kept it
+ * first. There is no reset email and no support address; an account created
+ * before its phrase was written down is already lost.
+ *
+ * `email-already-in-use` is not an error here. A fresh seed is 256 bits, so it
+ * is never a real collision — it means an earlier attempt created the auth
+ * account and then failed further along. Signing in instead is what makes the
+ * whole path retryable.
+ */
+export async function createAccount(phrase: string, displayName?: string) {
+  const seed = seedFromPhrase(phrase);
+  if (!seed) throw new UnrecognizedPhraseError();
+  const {address, secret} = credentialsFromSeed(seed);
+
+  let cred: UserCredential;
+  try {
+    cred = await createUserWithEmailAndPassword(auth, address, secret);
+  } catch (error) {
+    if ((error as {code?: string})?.code !== 'auth/email-already-in-use') throw error;
+    cred = await signInWithEmailAndPassword(auth, address, secret);
+  }
+
+  if (displayName) {
+    await updateProfile(cred.user, {displayName});
+  }
+  await completePhraseSignIn(cred, seed);
+  // The phrase has just been shown; without this the app opens on a prompt to
+  // go and reveal the words the user is still holding.
+  markRecoveryPhraseRevealed(cred.user.uid);
+  await setDoc(
+    doc(db, 'users', cred.user.uid),
+    {
+      uid: cred.user.uid,
+      // No email, no photo, no name — and now no email to leave out either:
+      // Firebase Auth holds a random handle under a domain that cannot
+      // receive mail. See the mobile client's upsertUserProfile.
+      updatedAt: serverTimestamp(),
+    },
+    {merge: true},
+  );
+  return cred.user;
+}
+
+/** Opens the account a phrase names, restoring its key in the same step. */
+export async function signInWithPhrase(phrase: string) {
+  const seed = seedFromPhrase(phrase);
+  if (!seed) throw new UnrecognizedPhraseError();
+  const {address, secret} = credentialsFromSeed(seed);
+  const cred = await signInWithEmailAndPassword(auth, address, secret);
+  return completePhraseSignIn(cred, seed);
 }
 
 export function signOut() {

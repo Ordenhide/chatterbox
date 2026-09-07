@@ -26,7 +26,13 @@ import {clearSessionId, getSessionId, rotateSessionId} from '../services/session
 import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
-import {_resetKeypairCache, enrollmentReadiness, getOrCreateDeviceKeypair} from '../services/e2eeKeys';
+import {
+  _resetKeypairCache,
+  adoptSeedAsDeviceKey,
+  markRecoveryPhraseRevealed,
+  republishKeyIfAccountHasNone,
+} from '../services/e2eeKeys';
+import {credentialsFromSeed, seedFromPhrase} from '../services/anonymousIdentity';
 import {clearBodies} from '../services/messageBodyStore';
 import {clearMediaCache} from '../services/mediaVault';
 import {guardDocSnapshot} from '../services/snapshotGuard';
@@ -61,6 +67,12 @@ function getAuthErrorMessage(error: any): string {
     'auth/account-exists-with-different-credential': i18n.t(
       'auth.errors.accountExistsDifferentCredential',
     ),
+    // Firebase collapses "no such account" and "wrong password" into this one
+    // code when email-enumeration protection is on. For a phrase sign-in both
+    // halves of that come from the same 24 words, so there is only one thing
+    // it can mean: those words do not open an account here.
+    'auth/invalid-credential': i18n.t('auth.errors.noAccountForPhrase'),
+    'auth/invalid-login-credentials': i18n.t('auth.errors.noAccountForPhrase'),
   };
   return map[code] || error?.message || i18n.t('auth.errors.generic');
 }
@@ -70,6 +82,10 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  /** Creates the account a freshly generated phrase names. See createAccount. */
+  createAccount: (phrase: string, displayName?: string) => Promise<void>;
+  /** Opens the account a phrase names, and restores its keys in the same step. */
+  signInWithPhrase: (phrase: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
   sendPhoneCode: (phoneNumber: string) => Promise<ConfirmationResult>;
@@ -184,27 +200,21 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             reportError(error, 'startup_profile_sync');
           }
         })();
-        // Enrolls (or loads) this device's E2EE keypair and publishes the
-        // public half, so peers can encrypt to this user. Fire-and-forget:
+        // Publishes this device's existing public key if the account is
+        // advertising none, so peers can encrypt to this user. Fire-and-forget:
         // messaging still works as plaintext if this hasn't completed yet —
         // see e2eeMessages.ts, which falls back when a peer key is missing.
         //
-        // Enrolls only when that's known to be safe. On a reinstall/new
-        // device for an account that already published a key elsewhere,
-        // enrolling here would happen within milliseconds of login — long
-        // before the user could reach Settings to restore — and would
-        // silently overwrite the very key restore needs to match against.
-        // Held off, this device just stays unenrolled (the same
-        // plaintext-fallback state as before first-ever enrollment) until
-        // the user restores or explicitly sends a message.
-        (async () => {
-          try {
-            if ((await enrollmentReadiness(firebaseUser.uid)) !== 'safe') return;
-            await getOrCreateDeviceKeypair(firebaseUser.uid);
-          } catch (error) {
-            reportError(error, 'e2ee_enroll_failed');
-          }
-        })();
+        // This used to *enrol* — mint a keypair when this device had none —
+        // gated on enrollmentReadiness saying it was safe. It can't any more.
+        // An account's identity is now its recovery phrase, and sign-in adopts
+        // the key derived from that phrase (adoptSeedAsDeviceKey); both start
+        // from the same moment, because Firebase fires this callback as soon
+        // as sign-in resolves. A minted key whose publish happened to land
+        // second would leave the account advertising a public key its own
+        // phrase cannot match — permanently, and silently. No ordering fixes
+        // that, so the minting is gone rather than sequenced.
+        republishKeyIfAccountHasNone(firebaseUser.uid);
       } else {
         setUser(null);
         clearUserCache();
@@ -586,6 +596,157 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }
   }, [auth, db]);
 
+  /**
+   * Everything a phrase sign-in and a phrase sign-up do identically.
+   *
+   * Both end with this device holding the key the phrase encodes and the
+   * account advertising its public half, because for these accounts those are
+   * not two facts — the seed *is* the account (services/anonymousIdentity.ts),
+   * so opening one and being able to read it are the same act. There is no
+   * separate "restore your keys" step to forget, and no window in which a user
+   * is signed in and silently unable to decrypt.
+   *
+   * Adoption is awaited, and its failure fails the sign-in, because the
+   * alternative is an account nobody can encrypt to and nothing would retry.
+   * That is only tolerable because the account is deterministic: the same
+   * phrase reaches the same account, so "try again" re-runs the whole thing.
+   */
+  const completePhraseSignIn = useCallback(
+    async (firebaseUser: FirebaseUser, seed: Uint8Array, nextSessionId: string) => {
+      await adoptSeedAsDeviceKey(firebaseUser.uid, seed);
+      await claimNewSession(firebaseUser.uid, nextSessionId);
+      await waitForSessionConfirmed(firebaseUser.uid, nextSessionId);
+    },
+    // claimNewSession / waitForSessionConfirmed are plain closures over auth,
+    // db and functions rather than callbacks, so those are the dependencies.
+    [auth, db, functions],
+  );
+
+  /**
+   * Creates the account that a freshly generated phrase names.
+   *
+   * The caller must have shown the user the phrase and had them confirm they
+   * kept it *before* calling this. There is no reset email, no support
+   * address, and no second factor — an account created before its phrase was
+   * written down is an account already lost, and nothing downstream can
+   * detect that or repair it.
+   *
+   * `email-already-in-use` is treated as success-by-another-route rather than
+   * an error. A fresh seed is 256 bits, so it is never a genuine collision;
+   * what it actually means is that a previous attempt got as far as creating
+   * the auth account and then failed at a later step. Signing in instead is
+   * what makes that retryable, and retrying is the documented recovery for
+   * every failure in this path.
+   */
+  const createAccount = useCallback(
+    async (phrase: string, displayName?: string) => {
+      const seed = seedFromPhrase(phrase);
+      if (!seed) {
+        throw new Error(i18n.t('auth.errors.phraseNotRecognized'));
+      }
+      const {address, secret} = credentialsFromSeed(seed);
+      setSessionReady(false);
+      claimInProgressRef.current = true;
+      let success = false;
+      try {
+        const nextSessionId = await rotateSessionId();
+        sessionIdRef.current = nextSessionId;
+
+        let firebaseUser: FirebaseUser;
+        try {
+          firebaseUser = (await createUserWithEmailAndPassword(auth, address, secret)).user;
+        } catch (error: any) {
+          if (error?.code !== 'auth/email-already-in-use') throw error;
+          firebaseUser = (await signInWithEmailAndPassword(auth, address, secret)).user;
+        }
+
+        const normalizedDisplayName = displayName?.trim();
+        if (normalizedDisplayName) {
+          await updateProfile(firebaseUser, {displayName: normalizedDisplayName});
+        }
+
+        await completePhraseSignIn(firebaseUser, seed, nextSessionId);
+        // Sign-up is the one moment the phrase is shown, and it has just been
+        // shown. Without this the app would open on a prompt to go and reveal
+        // the phrase the user is still holding.
+        await markRecoveryPhraseRevealed(firebaseUser.uid);
+
+        await setDoc(
+          doc(db, 'users', firebaseUser.uid),
+          {
+            uid: firebaseUser.uid,
+            // No email, no photo, no name — see upsertUserProfile in
+            // services/firebaseChat.ts. There is now no email to leave out:
+            // Firebase Auth holds a random handle under a domain that cannot
+            // receive mail, and nothing else.
+            defaultMomentVisibility: 'friends',
+            updatedAt: serverTimestamp(),
+          },
+          {merge: true},
+        );
+        success = true;
+      } catch (error) {
+        sessionIdRef.current = null;
+        try {
+          await clearSessionId();
+          await firebaseSignOut(auth);
+        } catch {
+          // ignore cleanup failures
+        }
+        const friendlyError = new Error(getAuthErrorMessage(error));
+        (friendlyError as any).code = (error as any)?.code;
+        throw friendlyError;
+      } finally {
+        claimInProgressRef.current = false;
+        if (!success) {
+          setSessionReady(true);
+        }
+      }
+    },
+    [auth, db, completePhraseSignIn],
+  );
+
+  /** Opens the account a phrase names, restoring its keys in the same step. */
+  const signInWithPhrase = useCallback(
+    async (phrase: string) => {
+      // Checked before anything is attempted, so a mistyped word is answered
+      // by the screen rather than by a round trip that comes back as a
+      // credential error and reads as "your account does not exist".
+      const seed = seedFromPhrase(phrase);
+      if (!seed) {
+        throw new Error(i18n.t('auth.errors.phraseNotRecognized'));
+      }
+      const {address, secret} = credentialsFromSeed(seed);
+      setSessionReady(false);
+      claimInProgressRef.current = true;
+      let success = false;
+      try {
+        const nextSessionId = await rotateSessionId();
+        sessionIdRef.current = nextSessionId;
+        const credential = await signInWithEmailAndPassword(auth, address, secret);
+        await completePhraseSignIn(credential.user, seed, nextSessionId);
+        success = true;
+      } catch (error) {
+        sessionIdRef.current = null;
+        try {
+          await clearSessionId();
+          await firebaseSignOut(auth);
+        } catch {
+          // ignore cleanup failures
+        }
+        const friendlyError = new Error(getAuthErrorMessage(error));
+        (friendlyError as any).code = (error as any)?.code;
+        throw friendlyError;
+      } finally {
+        claimInProgressRef.current = false;
+        if (!success) {
+          setSessionReady(true);
+        }
+      }
+    },
+    [auth, completePhraseSignIn],
+  );
+
   // Shared by signInWithGoogle and confirmPhoneCode: both are single-step
   // credential exchanges that can either sign in an existing account or
   // silently create a new one, unlike email/password where sign-in and
@@ -815,6 +976,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       loading: loading || !sessionReady,
       signIn,
       signUp,
+      createAccount,
+      signInWithPhrase,
       signInWithGoogle,
       signInWithApple,
       sendPhoneCode,
@@ -828,6 +991,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       sessionReady,
       signIn,
       signUp,
+      createAccount,
+      signInWithPhrase,
       signInWithGoogle,
       signInWithApple,
       sendPhoneCode,

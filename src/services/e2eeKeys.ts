@@ -288,6 +288,85 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
   return keypair;
 }
 
+/**
+ * Installs `seed` as this account's device key, because for this account the
+ * seed *is* the account (services/anonymousIdentity.ts).
+ *
+ * The difference from getOrCreateDeviceKeypair is that this one is
+ * authoritative rather than lazy. That function's contract is "whatever key
+ * this device already has, or a new random one" — correct when the key is
+ * incidental to the account, wrong when it is derived from the same phrase
+ * that opened it. Here there is exactly one key this account may hold, so an
+ * existing local key is overwritten rather than preferred, and the public half
+ * is republished even when it looks unchanged.
+ *
+ * ## Failure is safe, and retrying is the fix
+ *
+ * Throws if the public key cannot be published, which fails the sign-in that
+ * called it. That is the intended behaviour, and it is only tolerable because
+ * the account is deterministic: the same phrase reaches the same account, so
+ * "try again" re-runs this in full. The alternative — letting sign-in succeed
+ * with an unpublished key — leaves an account nobody can encrypt to, and
+ * nothing would ever retry it, because getOrCreateDeviceKeypair publishes only
+ * on first generation and this device would by then hold a stored key.
+ *
+ * The local write happens before the publish so that a failure here leaves the
+ * device holding the right key, not a half-swapped one.
+ */
+export async function adoptSeedAsDeviceKey(userId: string, seed: Uint8Array): Promise<void> {
+  const keypair = keypairFromSecret(seed);
+  await writeSecretKeyHex(SECRET_KEY_STORAGE_PREFIX + userId, userId, bytesToHex(seed));
+  cached = {userId, keypair};
+  // Screens cache decrypt failures by message id, not by the key that failed,
+  // so a device that just changed keys has to be told to retry.
+  keyGeneration += 1;
+  await publishPublicKey(userId, keypair.publicKey);
+  // Best-effort, and deliberately after the publish: saveRecoveryPhrase
+  // reports its own failures rather than throwing, because a device that
+  // cannot reach iCloud Keychain or Block Store is a supported state — the
+  // user still holds the phrase, which is the actual guarantee.
+  await saveRecoveryPhrase(userId, secretKeyToMnemonic(seed));
+}
+
+/**
+ * Republishes this device's public key if the account is advertising none.
+ *
+ * This is what runs on every launch in place of the automatic enrolment that
+ * used to. That enrolment *minted* a keypair when this device had none, which
+ * an account whose identity is its recovery phrase cannot tolerate: sign-in
+ * and the auth-state callback that triggers enrolment start at the same
+ * moment, so a minted key could be published after the seed's and leave the
+ * account permanently advertising a key its own phrase does not match. There
+ * is no ordering to arrange here that fixes that, only a racer to remove — so
+ * this one cannot mint. It publishes a key this device already holds, or does
+ * nothing at all.
+ *
+ * Only the "nothing published" case is acted on. A published key that
+ * *differs* is the 'superseded' state — another device replaced this account's
+ * key — and republishing over it would strand whatever was encrypted to the
+ * newer one. That case belongs to the user, and the restore screen already
+ * puts it in front of them.
+ *
+ * What it exists to repair is the one hole adoptSeedAsDeviceKey leaves: if its
+ * publish failed, this device holds the right key and the account advertises
+ * nothing, and nothing else would ever try again — getOrCreateDeviceKeypair
+ * publishes only on the call that generates, and by then a stored key exists.
+ * Failures here are swallowed, because this is a repair, not a step anything
+ * is waiting on.
+ */
+export async function republishKeyIfAccountHasNone(userId: string): Promise<void> {
+  try {
+    const local = await getDeviceKeypairIfEnrolled(userId);
+    // No local key means this device is not enrolled and has nothing to
+    // publish. The user restores from their phrase; that path publishes.
+    if (!local) return;
+    if (await fetchPublishedKeyOrThrow(userId)) return;
+    await publishPublicKey(userId, local.publicKey);
+  } catch (error) {
+    reportError(error, 'e2ee_republish_missing_key');
+  }
+}
+
 function keypairFromSecret(secretKey: Uint8Array): Keypair {
   // Recomputing the public half is cheap and avoids storing it twice, so the
   // secret key remains the single source of truth.

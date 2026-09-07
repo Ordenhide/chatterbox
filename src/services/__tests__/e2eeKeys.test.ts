@@ -99,6 +99,7 @@ import {generateKeypair} from '../e2ee';
 import {secretKeyToMnemonic} from '../e2eeMnemonic';
 import {
   _resetKeypairCache,
+  adoptSeedAsDeviceKey,
   clearDeviceKeypair,
   enrollmentReadiness,
   fetchPeerPublicKeyChecked,
@@ -108,6 +109,7 @@ import {
   getRecoveryPhrase,
   hasRevealedRecoveryPhrase,
   markRecoveryPhraseRevealed,
+  republishKeyIfAccountHasNone,
   restoreDeviceKeypairFromBackup,
   restoreDeviceKeypairFromPhrase,
 } from '../e2eeKeys';
@@ -822,5 +824,132 @@ describe('fetchPeerPublicKeyChecked distinguishes unreachable from unenrolled', 
     await fetchPeerPublicKeyChecked(PEER);
     publishPeerKey(generateKeypair().publicKey);
     expect((await fetchPeerPublicKeyChecked(PEER)).status).toBe('changed');
+  });
+});
+
+describe('adoptSeedAsDeviceKey', () => {
+  const ME = 'seed-uid';
+  const SEED = new Uint8Array(32).map((_, i) => (i * 7 + 3) & 0xff);
+  const MMKV_KEY = `e2ee_secret_key_v1_${ME}`;
+
+  it('installs the seed itself as the key, and publishes its public half', async () => {
+    await adoptSeedAsDeviceKey(ME, SEED);
+
+    expect(mockMmkvStore.get(MMKV_KEY)).toBe(bytesToHex(SEED));
+    const enrolled = await getDeviceKeypairIfEnrolled(ME);
+    expect(bytesToHex(enrolled!.secretKey)).toBe(bytesToHex(SEED));
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).toBe(
+      bytesToBase64(enrolled!.publicKey),
+    );
+  });
+
+  it('overwrites a key this device already had', async () => {
+    // The lazy path's contract is "keep whatever you have". This one's is
+    // "the account has exactly one key", so a device that enrolled a random
+    // one first has to be corrected rather than left as it is.
+    const stray = await getOrCreateDeviceKeypair(ME);
+    expect(bytesToHex(stray.secretKey)).not.toBe(bytesToHex(SEED));
+
+    await adoptSeedAsDeviceKey(ME, SEED);
+
+    expect(bytesToHex((await getDeviceKeypairIfEnrolled(ME))!.secretKey)).toBe(bytesToHex(SEED));
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).not.toBe(
+      bytesToBase64(stray.publicKey),
+    );
+  });
+
+  it('bumps the key generation so cached decrypt failures are retried', async () => {
+    const before = getKeyGeneration();
+    await adoptSeedAsDeviceKey(ME, SEED);
+    expect(getKeyGeneration()).toBeGreaterThan(before);
+  });
+
+  it('backs the phrase up to the platform store', async () => {
+    await adoptSeedAsDeviceKey(ME, SEED);
+    expect(mockBackupStore.get(ME)).toBe(secretKeyToMnemonic(SEED));
+  });
+
+  it('throws when the public key cannot be published', async () => {
+    // Sign-in must fail rather than leave an account nobody can encrypt to.
+    // Nothing would retry it: getOrCreateDeviceKeypair publishes only when it
+    // generates, and by now this device holds a stored key.
+    mockOutage.write = true;
+    await expect(adoptSeedAsDeviceKey(ME, SEED)).rejects.toThrow();
+  });
+
+  it('can be retried after a failure, because the account is deterministic', async () => {
+    mockOutage.write = true;
+    await expect(adoptSeedAsDeviceKey(ME, SEED)).rejects.toThrow();
+
+    mockOutage.write = false;
+    await adoptSeedAsDeviceKey(ME, SEED);
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).toBe(
+      bytesToBase64((await getDeviceKeypairIfEnrolled(ME))!.publicKey),
+    );
+  });
+
+  it('leaves the right key on the device even when publishing fails', async () => {
+    mockOutage.write = true;
+    await expect(adoptSeedAsDeviceKey(ME, SEED)).rejects.toThrow();
+    expect(mockMmkvStore.get(MMKV_KEY)).toBe(bytesToHex(SEED));
+  });
+});
+
+describe('republishKeyIfAccountHasNone', () => {
+  const ME = 'republish-uid';
+  const SEED = new Uint8Array(32).map((_, i) => (i * 11 + 5) & 0xff);
+
+  it('publishes the key this device holds when the account advertises none', async () => {
+    // The hole it exists for: adoption wrote the key locally and then failed
+    // to publish it. Nothing else retries — getOrCreateDeviceKeypair publishes
+    // only on the call that generates, and this device now holds a stored key.
+    mockOutage.write = true;
+    await expect(adoptSeedAsDeviceKey(ME, SEED)).rejects.toThrow();
+    mockOutage.write = false;
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))).toBeUndefined();
+
+    await republishKeyIfAccountHasNone(ME);
+
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).toBe(
+      bytesToBase64((await getDeviceKeypairIfEnrolled(ME))!.publicKey),
+    );
+  });
+
+  it('never mints a key, however unenrolled the device is', async () => {
+    // This is the whole reason the automatic enrolment it replaced had to go:
+    // a minted key published after the phrase-derived one leaves the account
+    // advertising a key its own recovery phrase cannot match.
+    await republishKeyIfAccountHasNone(ME);
+
+    expect(await getDeviceKeypairIfEnrolled(ME)).toBeNull();
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))).toBeUndefined();
+  });
+
+  it('leaves a key published by another device alone', async () => {
+    // A published key that differs is the superseded state, and republishing
+    // over it would strand everything encrypted to the newer one. That
+    // decision belongs to the user, via the restore screen.
+    await adoptSeedAsDeviceKey(ME, SEED);
+    const otherDevice = generateKeypair();
+    mockFirestoreDocs.set(publicKeyPathFor(ME), {
+      publicKey: bytesToBase64(otherDevice.publicKey),
+    });
+
+    await republishKeyIfAccountHasNone(ME);
+
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).toBe(
+      bytesToBase64(otherDevice.publicKey),
+    );
+  });
+
+  it('does nothing, and reports nothing, when the lookup fails', async () => {
+    // A repair no one is waiting on must not turn a network blip into a
+    // publish decision made on missing information.
+    await adoptSeedAsDeviceKey(ME, SEED);
+    mockFirestoreDocs.delete(publicKeyPathFor(ME));
+    mockOutage.read = true;
+
+    await expect(republishKeyIfAccountHasNone(ME)).resolves.toBeUndefined();
+    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))).toBeUndefined();
   });
 });

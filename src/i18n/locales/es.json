@@ -81,7 +81,7 @@
       "passwordTooSimple": "Esa contraseña es demasiado previsible (caracteres repetidos o consecutivos): elige otra",
       "invalidVerificationCode": "Ese código no es correcto. Compruébalo e inténtalo de nuevo",
       "invalidPhoneNumber": "Eso no parece un número de teléfono válido",
-      "accountExistsDifferentCredential": "Ya existe una cuenta con este correo, creada con otro método de acceso. Inicia sesión con ese método."
+      "phraseNotRecognized": "Esas no son 24 palabras de una frase de recuperación de Chatterbox. Revisa la ortografía y el orden.", "noAccountForPhrase": "Ninguna cuenta se abre con esas palabras. Vuelve a comprobarlas o crea una cuenta nueva.", "accountExistsDifferentCredential": "Ya existe una cuenta con este correo, creada con otro método de acceso. Inicia sesión con ese método."
     },
     "reset": {
       "title": "Restablecer contraseña",

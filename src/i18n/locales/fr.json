@@ -81,7 +81,7 @@
       "passwordTooSimple": "Ce mot de passe est trop prévisible (caractères répétés ou consécutifs) — choisissez-en un autre",
       "invalidVerificationCode": "Ce code n'est pas correct. Vérifiez-le et réessayez",
       "invalidPhoneNumber": "Cela ne ressemble pas à un numéro de téléphone valide",
-      "accountExistsDifferentCredential": "Un compte existe déjà avec cette adresse e-mail, créé avec une autre méthode de connexion. Connectez-vous plutôt de cette façon."
+      "phraseNotRecognized": "Ce ne sont pas les 24 mots d'une phrase de récupération Chatterbox. Vérifiez l'orthographe et l'ordre.", "noAccountForPhrase": "Aucun compte ne s'ouvre avec ces mots. Vérifiez-les ou créez un nouveau compte.", "accountExistsDifferentCredential": "Un compte existe déjà avec cette adresse e-mail, créé avec une autre méthode de connexion. Connectez-vous plutôt de cette façon."
     },
     "reset": {
       "title": "Réinitialiser le mot de passe",

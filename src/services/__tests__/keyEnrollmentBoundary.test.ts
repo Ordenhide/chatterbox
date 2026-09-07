@@ -6,8 +6,14 @@ import path from 'path';
  * replacing whatever key the account had published before. That makes calling
  * it an act of enrollment, and enrollment is destructive: every message any
  * peer ever sealed to the previous key becomes permanently unopenable, and the
- * recovery phrase the user wrote down stops matching. AuthContext therefore
- * refuses to enroll unless enrollmentReadiness says it is safe.
+ * recovery phrase the user wrote down stops matching.
+ *
+ * Since an account's identity became its recovery phrase
+ * (services/anonymousIdentity.ts) there is no longer any *automatic* caller at
+ * all. Sign-in adopts the key the phrase encodes, and the launch path only
+ * republishes a key this device already holds — neither can mint. What remains
+ * on this list is code that enrolls because a user asked it to do something
+ * that requires a key.
  *
  * A read path that reaches for it walks straight around that gate. It happened
  * here, repeatedly, because the enrolling call is the obvious-looking one and
@@ -23,7 +29,6 @@ import path from 'path';
 const MAY_ENROLL: Record<string, string> = {
   'src/services/e2eeKeys.ts':
     'defines it, and getRecoveryPhrase — revealing a phrase is not a read',
-  'src/contexts/AuthContext.tsx': 'the one gated enrollment, behind enrollmentReadiness',
   'src/services/e2eeMessages.ts': 'sealing an outgoing message',
   'src/services/liveLocation.ts': 'sealing an outgoing position',
   'src/screens/chat/ChatScreen.tsx': 'sealing an outgoing message',

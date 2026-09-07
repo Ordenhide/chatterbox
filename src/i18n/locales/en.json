@@ -113,7 +113,7 @@
       "tooManyRequests": "Too many attempts. Please try again later",
       "invalidVerificationCode": "That code isn't right. Please check and try again",
       "invalidPhoneNumber": "That doesn't look like a valid phone number",
-      "accountExistsDifferentCredential": "An account already exists with this email, signed in a different way. Try signing in with that method instead."
+      "phraseNotRecognized": "Those aren't 24 words from a Chatterbox recovery phrase. Check the spelling and the order.", "noAccountForPhrase": "No account opens with those words. Check them again, or create a new account.", "accountExistsDifferentCredential": "An account already exists with this email, signed in a different way. Try signing in with that method instead."
     },
     "reset": {
       "title": "Reset Password",
