@@ -142,11 +142,20 @@ describe('claimSession', () => {
   it('calls the same claimSession Cloud Function the mobile app uses, not a direct Firestore write', async () => {
     await claimSession('uid1');
     expect(claimSessionFnSpy).toHaveBeenCalledTimes(1);
-    expect(claimSessionFnSpy.mock.calls[0][0]).toMatchObject({
-      sessionId: getSessionId(),
-      deviceInfo: {platform: 'web', deviceId: getSessionId()},
-    });
+    expect(claimSessionFnSpy.mock.calls[0][0]).toEqual({sessionId: getSessionId()});
     expect(setDocSpy).not.toHaveBeenCalled();
+  });
+
+  it('sends the session id and nothing describing this device', async () => {
+    // It used to send a deviceInfo object carrying 120 characters of user
+    // agent, which claimSession wrote onto `users/{uid}` — a document any
+    // signed-in user who knows the uid can read. Asserted as an exact payload
+    // rather than a shape, because the failure mode is a field being *added*
+    // back, which toMatchObject would not notice.
+    await claimSession('uid1');
+    const payload = claimSessionFnSpy.mock.calls[0][0] as Record<string, unknown>;
+    expect(Object.keys(payload)).toEqual(['sessionId']);
+    expect(JSON.stringify(payload)).not.toContain('Mozilla');
   });
 
   it('falls back to a direct write if the function is unreachable, so sign-in still succeeds', async () => {

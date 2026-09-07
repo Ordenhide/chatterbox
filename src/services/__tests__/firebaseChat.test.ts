@@ -287,15 +287,20 @@ describe('upsertUserProfile', () => {
       displayName: 'Alice',
     } as never);
     const keys = Object.keys(written()).sort();
-    // A uid, a timestamp, and four fields written only as deletes. The
+    // A uid, a timestamp, and five fields written only as deletes. The
     // profile document holds nothing else — `profileVisibility` used to be
     // here, a setting no rule and no query ever read once the user directory
     // was removed.
     expect(keys).toEqual(
-      ['displayName', 'email', 'fcmToken', 'photoURL', 'uid', 'updatedAt'].sort(),
+      ['deviceInfo', 'displayName', 'email', 'fcmToken', 'photoURL', 'uid', 'updatedAt'].sort(),
     );
-    // The four that are present only to be removed.
+    // The five that are present only to be removed.
     expect(written().fcmToken).toBe('DELETE_FIELD');
+    // claimSession recorded a device description here through the Admin SDK,
+    // which the rules do not police: platform, a stable device id, and the OS
+    // device name — on iOS typically the owner's first name. It is no longer
+    // written, and this clears it off accounts that already carry one.
+    expect(written().deviceInfo).toBe('DELETE_FIELD');
     expect(written().uid).toBe('alice');
   });
 });

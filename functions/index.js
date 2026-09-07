@@ -257,11 +257,6 @@ exports.claimSession = callable().onCall(async (data, context) => {
   }
 
   const uid = context.auth.uid;
-  const deviceInfo = data.deviceInfo && typeof data.deviceInfo === 'object' ? data.deviceInfo : {};
-  const deviceInfoStr = JSON.stringify(deviceInfo);
-  if (deviceInfoStr.length > 4096) {
-    throw new functions.https.HttpsError('invalid-argument', 'deviceInfo too large.');
-  }
 
   try {
     // Set custom claims with new session ID
@@ -273,16 +268,18 @@ exports.claimSession = callable().onCall(async (data, context) => {
     // Overwrite the activeSessionId in Firestore.
     // The previous device's real-time listener will detect this change
     // and sign itself out automatically.
+    // The device description that used to sit here is gone: platform, a stable
+    // device id, and the OS device name, which on iOS is typically
+    // "<first name>'s iPhone". `users/{uid}` is readable by any signed-in user
+    // who knows the uid — everyone you share a chat with — and this write goes
+    // through the Admin SDK, so identityFieldsHonest(), the rule that exists to
+    // keep exactly this kind of identifier off this document, never saw it.
+    // Nothing read it back: no screen, no function, no export. It was a
+    // real-world identifier handed to every contact in exchange for nothing.
     const sessionData = {
       activeSessionId: sessionId,
       sessionUpdatedAt: FieldValue.serverTimestamp(),
       sessionClaimedAt: FieldValue.serverTimestamp(),
-      deviceInfo: {
-        platform: deviceInfo.platform || 'unknown',
-        deviceId: deviceInfo.deviceId || null,
-        deviceName: deviceInfo.deviceName || null,
-        appVersion: deviceInfo.appVersion || null,
-      },
     };
     
     await admin
@@ -292,7 +289,6 @@ exports.claimSession = callable().onCall(async (data, context) => {
 
     functions.logger.info(`Session claimed for user ${uid}`, {
       sessionId,
-      deviceInfo,
       timestamp: Date.now(),
     });
 

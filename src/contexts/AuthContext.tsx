@@ -15,7 +15,6 @@ import {sameUser} from '../utils/sameUser';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
 import {reportError} from '../services/errorLog';
 import {clearSessionId, getSessionId, rotateSessionId} from '../services/session';
-import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '../services/firebase/functions';
 import i18n from '../i18n';
 import {
@@ -435,17 +434,10 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
    */
   const claimNewSession = async (uid: string, sessionId: string) => {
     try {
-      const deviceInfo = await getDeviceInfo();
       const claimSessionFn = httpsCallable(functions, 'claimSession', {timeout: CLAIM_FUNCTION_TIMEOUT_MS});
-      await claimSessionFn({
-        sessionId,
-        deviceInfo: {
-          platform: deviceInfo.platform,
-          deviceId: deviceInfo.deviceId,
-          deviceName: deviceInfo.deviceName,
-          appVersion: deviceInfo.appVersion,
-        },
-      });
+      // Session id only. A device description used to travel with it and land
+      // on the public profile document — see claimSession in functions/index.js.
+      await claimSessionFn({sessionId});
 
       // The Cloud Function sets custom claims on the auth token. Force-refresh
       // the token so the client picks up the new claims immediately. Without

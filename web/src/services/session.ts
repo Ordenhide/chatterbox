@@ -144,14 +144,10 @@ async function performClaim(uid: string): Promise<string> {
 
   try {
     const claimSessionFn = httpsCallable(functions, 'claimSession', {timeout: CLAIM_FUNCTION_TIMEOUT_MS});
-    await claimSessionFn({
-      sessionId,
-      deviceInfo: {
-        platform: 'web',
-        deviceId: sessionId,
-        deviceName: typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 120) : undefined,
-      },
-    });
+    // Session id only. This used to carry a device description including 120
+    // characters of user agent, which landed on the public profile document —
+    // a fingerprint readable by every contact. See functions/index.js.
+    await claimSessionFn({sessionId});
     // The function just rotated this account's custom claims; force-refresh
     // so this tab's token reflects them immediately rather than waiting up
     // to an hour for its natural refresh. Non-critical if it fails — the

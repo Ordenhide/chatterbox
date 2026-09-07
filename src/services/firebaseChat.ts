@@ -109,6 +109,12 @@ export async function upsertUserProfile(user: User) {
       // public profile (which anyone knowing the uid can read). Strip any stale
       // value left on the public doc from older app versions.
       fcmToken: deleteField(),
+      // Same treatment, and the same reason. claimSession used to record a
+      // device description here — platform, a stable device id and the OS
+      // device name — through the Admin SDK, which the rules do not police.
+      // It is no longer written; this clears it off the accounts that already
+      // carry one, on their next sign-in.
+      deviceInfo: deleteField(),
       updatedAt: serverTimestamp(),
     },
     {merge: true},
