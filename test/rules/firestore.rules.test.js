@@ -621,10 +621,21 @@ describe('blocks/{blockId}', () => {
 });
 
 describe('moments/{momentId}', () => {
-  it('lets a user create a moment authored as themself, denies authoring as someone else', async () => {
-    await assertSucceeds(
+  /**
+   * Moments is gone from both clients, and the rules now say so.
+   *
+   * Read and delete survive because account deletion and data export still
+   * sweep this collection for whatever an account accumulated while the
+   * feature existed — removing those would strand that data on the server,
+   * which is the opposite of what deleting an account promises. Every write is
+   * refused, because nothing in either client can produce one, and an open
+   * `create` on a collection no client touches is not inert: it is writable
+   * server storage the app does not know about.
+   */
+  it('refuses every create, authored as yourself or not', async () => {
+    await expect(
       addDoc(collection(asUser('alice'), 'moments'), {authorId: 'alice', visibility: 'public'}),
-    );
+    ).rejects.toBeDefined();
     await expect(
       addDoc(collection(asUser('alice'), 'moments'), {authorId: 'bob', visibility: 'public'}),
     ).rejects.toBeDefined();
@@ -660,11 +671,11 @@ describe('moments/{momentId}', () => {
     await assertFails(getDoc(doc(asUser('bob'), 'moments/m1')));
   });
 
-  it('a non-author viewer may bump like/comment counters but not edit content', async () => {
+  it('refuses every update, including the author\'s own and a counter bump', async () => {
     await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public', likeCount: 0}));
-    const bob = asUser('bob');
-    await assertSucceeds(updateDoc(doc(bob, 'moments/m1'), {likeCount: 1}));
-    await assertFails(updateDoc(doc(bob, 'moments/m1'), {text: 'edited by bob'}));
+    await assertFails(updateDoc(doc(asUser('bob'), 'moments/m1'), {likeCount: 1}));
+    await assertFails(updateDoc(doc(asUser('bob'), 'moments/m1'), {text: 'edited by bob'}));
+    await assertFails(updateDoc(doc(asUser('alice'), 'moments/m1'), {text: 'edited by author'}));
   });
 
   it('only the author can delete', async () => {
@@ -674,94 +685,43 @@ describe('moments/{momentId}', () => {
   });
 
   describe('likes and comments', () => {
-    it('lets a user like as themself only', async () => {
+    it('refuses new likes and comments outright', async () => {
       await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'}));
-      await assertSucceeds(setDoc(doc(asUser('bob'), 'moments/m1/likes/bob'), {}));
-      await assertFails(setDoc(doc(asUser('mallory'), 'moments/m1/likes/bob'), {}));
-    });
-
-    it('lets a user comment authored as themself only', async () => {
-      await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'}));
-      await assertSucceeds(
-        addDoc(collection(asUser('bob'), 'moments/m1/comments'), {authorId: 'bob', text: 'hi'}),
-      );
+      await assertFails(setDoc(doc(asUser('bob'), 'moments/m1/likes/bob'), {}));
       await expect(
-        addDoc(collection(asUser('mallory'), 'moments/m1/comments'), {authorId: 'bob', text: 'hi'}),
+        addDoc(collection(asUser('bob'), 'moments/m1/comments'), {authorId: 'bob', text: 'hi'}),
       ).rejects.toBeDefined();
     });
 
-    /**
-     * Reading a moment and writing to it used to be gated differently: every
-     * one of these succeeded, because create asked only "are you authoring as
-     * yourself" and never "are you allowed near this moment at all".
-     *
-     * Note every pre-existing test above uses a *public* moment, which is why
-     * the gap survived — the visibility model was thoroughly tested on read
-     * and not exercised once on write.
-     */
-    describe('writing to a moment you cannot read', () => {
-      it('denies a blocked user commenting, which is the whole point of a block', async () => {
-        // No id-guessing needed for this one: comment on a public moment, get
-        // blocked, keep commenting — the id is already known.
-        await seed(async db => {
-          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
-          await setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'});
-        });
-        await assertFails(
-          addDoc(collection(asUser('mallory'), 'moments/m1/comments'), {
-            authorId: 'mallory',
-            text: 'still here',
-          }),
-        );
+    it('still lets someone remove a like or a comment they left', async () => {
+      // Delete stays for the same reason read does: whatever the feature left
+      // behind has to remain removable, by its owner and by account deletion.
+      await seed(async db => {
+        await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
+        await setDoc(doc(db, 'moments/m1/likes/bob'), {});
+        await setDoc(doc(db, 'moments/m1/comments/c1'), {authorId: 'bob', text: 'hi'});
       });
-
-      it('denies a blocked user liking', async () => {
-        await seed(async db => {
-          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'public'});
-          await setDoc(doc(db, 'blocks/alice_mallory'), {blockerId: 'alice', blockedId: 'mallory'});
-        });
-        await assertFails(setDoc(doc(asUser('mallory'), 'moments/m1/likes/mallory'), {}));
-      });
-
-      it('denies a stranger commenting on a private moment', async () => {
-        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'private'}));
-        await assertFails(
-          addDoc(collection(asUser('stranger'), 'moments/m1/comments'), {
-            authorId: 'stranger',
-            text: 'hi',
-          }),
-        );
-      });
-
-      it('denies a non-friend commenting on a friends-only moment', async () => {
-        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'friends'}));
-        await assertFails(
-          addDoc(collection(asUser('stranger'), 'moments/m1/comments'), {
-            authorId: 'stranger',
-            text: 'hi',
-          }),
-        );
-      });
-
-      it('still lets an actual friend comment on a friends-only moment', async () => {
-        // The gate has to be the visibility model, not a blanket refusal.
-        await seed(async db => {
-          await setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'friends'});
-          await setDoc(doc(db, 'friends/alice_bob'), {userIds: ['alice', 'bob'], status: 'accepted'});
-        });
-        await assertSucceeds(
-          addDoc(collection(asUser('bob'), 'moments/m1/comments'), {authorId: 'bob', text: 'nice'}),
-        );
-        await assertSucceeds(setDoc(doc(asUser('bob'), 'moments/m1/likes/bob'), {}));
-      });
-
-      it('still lets the author comment on their own private moment', async () => {
-        await seed(db => setDoc(doc(db, 'moments/m1'), {authorId: 'alice', visibility: 'private'}));
-        await assertSucceeds(
-          addDoc(collection(asUser('alice'), 'moments/m1/comments'), {authorId: 'alice', text: 'note'}),
-        );
-      });
+      await assertSucceeds(deleteDoc(doc(asUser('bob'), 'moments/m1/likes/bob')));
+      await assertSucceeds(deleteDoc(doc(asUser('bob'), 'moments/m1/comments/c1')));
     });
+
+    /**
+     * A block of six tests lived here, asserting that the visibility model
+     * gated *writes* as well as reads — a blocked user could not comment, a
+     * stranger could not comment on a private moment, an actual friend still
+     * could. It closed a real gap: create once asked only "are you authoring
+     * as yourself" and never "are you allowed near this moment at all".
+     *
+     * Removed with the writes themselves. Four of the six asserted a denial,
+     * and every denial is now unconditional — they would have stayed green
+     * while proving nothing, which is worse than absent, because a suite of
+     * vacuous passes reads as coverage. The other two asserted writes that no
+     * longer happen.
+     *
+     * If Moments returns, these come back with it. The gap they closed is a
+     * property of the visibility model, not of this collection, and it will be
+     * just as easy to get wrong the second time.
+     */
 
     describe('taking things back', () => {
       // Delete is deliberately not gated on read access: losing access must
@@ -1197,12 +1157,17 @@ describe('chat subcollections gated only by isChatParticipant', () => {
   // since the features went; the test was asserting that a participant could
   // still write into four collections the app no longer knows about.
   //
+  // sharedLists and quoteWall followed them out with f83e2c4 and were left
+  // here, which is why this suite has been failing ever since — and why nobody
+  // noticed that `moments` still had open write rules. A red suite reports
+  // nothing.
+  //
   // scheduledMessages used to be on this list and no longer belongs: it
   // carries an author, so it is held to the same "author as yourself" rule as
   // a message and has its own block above. Leaving it here would have
   // asserted that any participant may write one, which is the forgery that
   // block exists to prevent.
-  const subcollections = ['calls', 'sharedLists', 'quoteWall'];
+  const subcollections = ['calls'];
 
   beforeEach(async () => {
     await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']}));
@@ -1256,54 +1221,17 @@ describe('feedback/{feedbackId}', () => {
   });
 });
 
-describe('entitlements/{userId}', () => {
-  // This is the paywall. Everything else about Pro (UI locks, catalog flags)
-  // is presentation; the only thing actually stopping a user from taking the
-  // paid features for free is that they cannot write this document.
-  const PAID = {status: 'active', currentPeriodEnd: 4102444800000, priceId: 'price_x'};
-
-  it('lets the owner read their own entitlement', async () => {
-    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
-    await assertSucceeds(getDoc(doc(asUser('alice'), 'entitlements/alice')));
-  });
-
-  it('denies reading someone else\'s entitlement', async () => {
-    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
-    await assertFails(getDoc(doc(asUser('mallory'), 'entitlements/alice')));
-  });
-
-  it('denies an unauthenticated read', async () => {
-    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
-    await assertFails(getDoc(doc(anon(), 'entitlements/alice')));
-  });
-
-  it('denies the OWNER granting themselves Pro — the core paywall assertion', async () => {
-    // The attack this rule exists to stop: a signed-in user opens the
-    // console and writes their own entitlement. Note this is exactly what
-    // /users/{uid} and /users/{uid}/private/* WOULD have allowed, which is
-    // why the entitlement lives in its own top-level collection instead.
-    await assertFails(setDoc(doc(asUser('alice'), 'entitlements/alice'), PAID));
-  });
-
-  it('denies the owner upgrading an existing entitlement (update, not just create)', async () => {
-    await seed(db =>
-      setDoc(doc(db, 'entitlements/alice'), {status: 'canceled', currentPeriodEnd: 0}),
-    );
-    // Extending your own expiry is the same exploit as creating one outright.
-    await assertFails(
-      updateDoc(doc(asUser('alice'), 'entitlements/alice'), {
-        status: 'active',
-        currentPeriodEnd: 4102444800000,
-      }),
-    );
-  });
-
-  it('denies the owner deleting their entitlement, and denies third-party writes', async () => {
-    await seed(db => setDoc(doc(db, 'entitlements/alice'), PAID));
-    await assertFails(deleteDoc(doc(asUser('alice'), 'entitlements/alice')));
-    await assertFails(setDoc(doc(asUser('mallory'), 'entitlements/alice'), PAID));
-  });
-});
+/*
+ * The entitlements suite lived here — six tests around the Pro paywall,
+ * removed with the collection itself in af4d5f6.
+ *
+ * Worth recording how it failed, because it is the same shape as the Moments
+ * hole this commit closes. Exactly one of the six went red when the rules were
+ * deleted: the one that asserted the owner *could* read their entitlement. The
+ * other five asserted denials, and a collection with no rules at all denies
+ * everything — so five tests kept passing while testing nothing, and the one
+ * honest failure sat in a suite nobody was running.
+ */
 
 describe('chats/{chatId}/trash/{messageId} — recently deleted messages', () => {
   beforeEach(async () => {

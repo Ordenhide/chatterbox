@@ -121,9 +121,12 @@ service firebase.storage {
     match /moments/{userId}/{momentId}/{fileName} {
       allow read: if hasActiveSession() &&
         (request.auth.uid == userId || canReadMoment(momentId));
-      // Images only, and downscaled by the client before upload.
-      allow write: if hasActiveSession() && request.auth.uid == userId &&
-        uploadAllowed(25 * 1024 * 1024);
+      // Writes are refused: Moments is gone from both clients, so nothing in
+      // the app can produce an upload here. Left open it was a 25 MB-per-object
+      // write channel into a path no screen renders and no sweep visits, billed
+      // to this project. Reads stay so account deletion and data export can
+      // still reach objects left behind by the feature — see firestore.rules.
+      allow write: if false;
     }
 
     // Objects uploaded before the path carried a moment id. Nothing in the

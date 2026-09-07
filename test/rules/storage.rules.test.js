@@ -103,8 +103,18 @@ describe('moments/{userId}/{momentId}/{fileName}', () => {
   const alice = () => asUser('alice', Math.floor(NOW_MS / 1000));
   const bob = () => asUser('bob', Math.floor(NOW_MS / 1000));
 
-  it('the author can upload and read their own moment media', async () => {
-    await assertSucceeds(uploadBytes(ref(alice(), PATH), BYTES));
+  it('refuses every upload, including the author\'s own', async () => {
+    // Moments has no screen on either client, so nothing in the app can
+    // produce this upload. Left open it was a 25 MB-per-object write channel
+    // into a path no screen renders and no sweep visits.
+    await assertFails(uploadBytes(ref(alice(), PATH), BYTES));
+    await assertFails(uploadBytes(ref(bob(), PATH), BYTES));
+  });
+
+  it('still lets the author read objects the feature left behind', async () => {
+    // Account deletion and data export both still sweep this path. Taking read
+    // away would strand that data on the server permanently.
+    await seed(context => uploadBytes(ref(context.storage(), PATH), BYTES));
     await assertSucceeds(getBytes(ref(alice(), PATH)));
   });
 
@@ -233,6 +243,16 @@ describe('chats/{chatId}/{allPaths=**}', () => {
 });
 
 describe('session currency (hasCurrentSessionForUid)', () => {
+  // These exercise the session check, not any particular path — they just need
+  // somewhere writable to aim at. That used to be the moment-media path, which
+  // is now write-denied outright (Moments is gone from both clients). Three of
+  // the assertFails below would have kept passing on that path for the wrong
+  // reason, proving nothing about session currency; the chat path still gates
+  // on hasActiveSession(), so it keeps them honest.
+  beforeEach(async () => {
+    await seedChat('c1', ['alice', 'bob']);
+  });
+
   it('a displaced device — auth_time well before the latest claim — is denied', async () => {
     // The actual scenario this whole mechanism exists for: alice signed in
     // an hour ago (auth_time = an hour ago) on device A; device B has since
@@ -244,7 +264,7 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     // token.sessionId == activeSessionId check would have let that through.
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const anHourAgo = Math.floor((NOW_MS - 60 * 60 * 1000) / 1000);
-    await assertFails(uploadBytes(ref(asUser('alice', anHourAgo), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', anHourAgo), 'chats/c1/photo1.jpg'), BYTES));
   });
 
   it('an account that has never claimed a session (no sessionClaimedAt) is not enforced — fail-open by design', async () => {
@@ -253,21 +273,21 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     // from an account's first claimSession call onward.
     await seedUser('alice'); // no sessionClaimedAtMs
     const longAgo = Math.floor((NOW_MS - 30 * 24 * 60 * 60 * 1000) / 1000);
-    await assertSucceeds(uploadBytes(ref(asUser('alice', longAgo), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', longAgo), 'chats/c1/photo1.jpg'), BYTES));
   });
 
   it('auth_time just inside the grace window (network delay between sign-in and claimSession) is allowed', async () => {
     const claimedAt = NOW_MS;
     const authTime = Math.floor((NOW_MS - 90 * 1000) / 1000); // 90s before the claim
     await seedUser('alice', {sessionClaimedAtMs: claimedAt});
-    await assertSucceeds(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', authTime), 'chats/c1/photo1.jpg'), BYTES));
   });
 
   it('auth_time well outside the grace window is denied even though it is "close"', async () => {
     const claimedAt = NOW_MS;
     const authTime = Math.floor((NOW_MS - 10 * 60 * 1000) / 1000); // 10 minutes before the claim
     await seedUser('alice', {sessionClaimedAtMs: claimedAt});
-    await assertFails(uploadBytes(ref(asUser('alice', authTime), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', authTime), 'chats/c1/photo1.jpg'), BYTES));
   });
 
   it('a fresh re-authentication after being displaced is allowed again', async () => {
@@ -277,12 +297,12 @@ describe('session currency (hasCurrentSessionForUid)', () => {
     const firstClaim = NOW_MS - 60 * 60 * 1000;
     await seedUser('alice', {sessionClaimedAtMs: firstClaim});
     const staleAuthTime = Math.floor((firstClaim - 60 * 60 * 1000) / 1000);
-    await assertFails(uploadBytes(ref(asUser('alice', staleAuthTime), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertFails(uploadBytes(ref(asUser('alice', staleAuthTime), 'chats/c1/photo1.jpg'), BYTES));
 
     // alice re-authenticates and reclaims.
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const freshAuthTime = Math.floor(NOW_MS / 1000);
-    await assertSucceeds(uploadBytes(ref(asUser('alice', freshAuthTime), 'moments/alice/m1/photo1.jpg'), BYTES));
+    await assertSucceeds(uploadBytes(ref(asUser('alice', freshAuthTime), 'chats/c1/photo1.jpg'), BYTES));
   });
 });
 
@@ -371,13 +391,18 @@ describe('upload ceilings', () => {
     await assertSucceeds(deleteObject(ref(alice, 'chats/c1/gone.jpg')));
   });
 
-  it('applies the ceiling to moments as well', async () => {
+  it('refuses moment uploads regardless of size or type, ceiling or no ceiling', async () => {
+    // This used to assert the ceiling applied to the moment path too. Moments
+    // is write-denied now, so the "oversized/active content is refused" half
+    // would pass for the wrong reason and the "ordinary jpeg is accepted" half
+    // simply fails. The ceiling is still covered on the chat path above, which
+    // is the only path that still takes uploads.
     await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
     const alice = asUser('alice', authTime());
     await assertFails(
       uploadBytes(ref(alice, 'moments/alice/m1/evil.svg'), BYTES, {contentType: 'image/svg+xml'}),
     );
-    await assertSucceeds(
+    await assertFails(
       uploadBytes(ref(alice, 'moments/alice/m1/ok.jpg'), BYTES, {contentType: 'image/jpeg'}),
     );
   });

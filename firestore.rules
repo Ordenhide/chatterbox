@@ -290,15 +290,28 @@ service cloud.firestore {
         request.auth.uid in resource.data.userIds;
     }
 
+    /**
+     * Moments is gone from both clients. These rules are not.
+     *
+     * Read and delete stay because two code paths still name the collection on
+     * purpose: account deletion and data export, both of which sweep whatever
+     * documents an account accumulated while the feature existed. Taking those
+     * away would strand that data on the server permanently, which is the
+     * opposite of what deleting an account promises.
+     *
+     * Every write is refused. Nothing in either client can produce one, so a
+     * create or an update reaching here is by definition not the app — and the
+     * warning at the top of this file applies exactly: a rule for a collection
+     * no client touches is not inert, it is writable server storage the app
+     * does not know about. With `create` open, any account could fill this
+     * collection, and the matching Storage path with 25 MB objects, into a
+     * surface no screen renders and no sweep visits.
+     *
+     * If Moments ever comes back, these come back with it, in the same commit.
+     */
     match /moments/{momentId} {
-      allow create: if isSignedIn() &&
-        request.resource.data.authorId == request.auth.uid;
+      allow create, update: if false;
       allow read: if canReadMomentResource();
-      allow update: if isSignedIn() && (
-        resource.data.authorId == request.auth.uid ||
-        (canReadMomentById(momentId) &&
-         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount', 'commentCount']))
-      );
       allow delete: if isSignedIn() &&
         resource.data.authorId == request.auth.uid;
 
@@ -326,15 +339,13 @@ service cloud.firestore {
        */
       match /likes/{userId} {
         allow read: if canReadMomentById(momentId);
-        allow create: if isSignedIn() && request.auth.uid == userId &&
-          canReadMomentById(momentId);
+        allow create: if false;
         allow delete: if isSignedIn() && request.auth.uid == userId;
       }
 
       match /comments/{commentId} {
         allow read: if canReadMomentById(momentId);
-        allow create: if isSignedIn() && request.auth.uid == request.resource.data.authorId &&
-          canReadMomentById(momentId);
+        allow create: if false;
         // The moment's author may delete too. Without that, a comment on your
         // own post could only ever be removed by the person who left it —
         // which, for the case this rule block exists to handle, is nobody.
