@@ -770,22 +770,6 @@ service cloud.firestore {
       );
     }
 
-    // Paid-subscription entitlement. Deliberately a TOP-LEVEL collection
-    // rather than a field on /users/{uid} or a doc under /users/{uid}/private:
-    // both of those grant the owner blanket write access (see the rules
-    // above), so an entitlement living there could be self-granted with a
-    // one-line write from the browser console. Rules are a permissive union —
-    // a narrower `allow write: if false` does NOT revoke a broader allow — so
-    // isolation, not nesting, is what makes this safe.
-    //
-    // Written exclusively by the Stripe webhook (functions/index.js) through
-    // the Admin SDK, which bypasses rules entirely. No client, including the
-    // owner, may write it.
-    match /entitlements/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
-      allow write: if false;
-    }
-
     // ── Invites ──────────────────────────────────────────────────────────
     //
     // Replaces lookup by email. The document id *is* the capability: 32 random

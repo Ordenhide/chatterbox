@@ -31,8 +31,7 @@
   },
   "tabs": {
     "chats": "Chats",
-    "profile": "Profil",
-    "store": "Boutique"
+    "profile": "Profil"
   },
   "headers": {
     "chats": "Chats",
@@ -423,17 +422,6 @@
       "1m": "1m",
       "5m": "5m"
     }
-  },
-  "pro": {
-    "title": "Chatterbox Pro",
-    "badge": "PRO",
-    "active": "Votre abonnement est actif.",
-    "renewsOn": "Renouvellement le {{date}}",
-    "endsOn": "Se termine le {{date}}",
-    "pastDue": "Nous n'avons pas pu traiter votre dernier paiement — mettez votre carte à jour sur le web pour conserver Pro.",
-    "pitch": "Débloquez les résumés et la recherche par IA.",
-    "manageOnWeb": "Abonnez-vous ou gérez votre abonnement sur le site Chatterbox.",
-    "lockedAiMobile": "Les résumés et la recherche par IA font partie de Chatterbox Pro. Abonnez-vous sur le site Chatterbox pour les débloquer ici."
   },
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer.",

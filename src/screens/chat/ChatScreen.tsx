@@ -64,7 +64,6 @@ import {
   updateSharedLocation,
   type LiveLocationShare,
 } from '../../services/liveLocation';
-import {isProActive, listenEntitlement, type Entitlement} from '../../services/entitlement';
 import {useArtifactCrypto} from '../../hooks/useArtifactCrypto';
 import {isAiConsentError} from '../../services/aiConsent';
 import {promptAiConsent} from '../../utils/aiConsentPrompt';
@@ -432,7 +431,6 @@ export default function ChatScreen() {
   const pendingAttachActionRef = useRef<(() => void) | null>(null);
   const [msgSelectMode, setMsgSelectMode] = useState(false);
   const [msgSelected, setMsgSelected] = useState<Set<string>>(new Set());
-  const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   const [sharingLocation, setSharingLocation] = useState(false);
   const [peerLiveLocation, setPeerLiveLocation] = useState<LiveLocationShare | null>(null);
   const stopLocationWatchRef = useRef<(() => void) | null>(null);
@@ -2435,32 +2433,9 @@ export default function ChatScreen() {
     [chatId, i18n.language, t],
   );
 
-  // Chatterbox Pro entitlement. Declared HERE, above the first callback whose
-  // dependency array names `isPro` — a dep array is evaluated synchronously
-  // during render at the line the useCallback appears on, so declaring this
-  // further down would be a real temporal-dead-zone crash, not a lint nit
-  // (the same trap ChatPane.tsx documents for `otherUid`).
-  //
-  // `isPro` is recomputed per render rather than stored, because an
-  // entitlement expires by the passage of time, not by an event.
-  useEffect(() => {
-    if (!user?.uid) return;
-    return listenEntitlement(user.uid, setEntitlement);
-  }, [user?.uid]);
-  const isPro = isProActive(entitlement);
-
   const handleSummarize = useCallback(
     async (question?: string) => {
       if (!chatId) return;
-      // Pro gate. The server enforces this too (functions/index.js's
-      // requirePro); this only spares non-subscribers a raw permission
-      // error. Purchase happens on the web — Apple and Google require their
-      // own in-app purchase for digital goods sold inside the app, so this
-      // explains rather than sells.
-      if (!isPro) {
-        Alert.alert(t('pro.title'), t('pro.lockedAiMobile'));
-        return;
-      }
       setSummaryLoading(true);
       setSummaryModalVisible(true);
       setSummaryAskedQuestion(question?.trim() || '');
@@ -2485,7 +2460,7 @@ export default function ChatScreen() {
         setSummaryLoading(false);
       }
     },
-    [chatId, messages, isPro, t],
+    [chatId, messages, t],
   );
 
   const handleTranslateMessage = useCallback(

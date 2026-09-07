@@ -10,11 +10,6 @@ const {Translate} = require('@google-cloud/translate').v2;
 const {validateTranslateInput, extractTranslation} = require('./translate');
 const {buildPrompt, extractAnswer} = require('./aiChat');
 const {isAutoReplyTrigger, autoReplyDecision} = require('./focusAutoReply');
-const {
-  isProActive,
-  entitlementFromSubscription,
-  shouldApplyEvent,
-} = require('./entitlement');
 
 admin.initializeApp();
 
@@ -42,38 +37,6 @@ const CLOUDFLARE_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 // of which generation transcribeVoiceMessage ends up deployed as.
 const GCP_PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 
-// Chatterbox Pro billing — same functions/.env loading as the Cloudflare keys
-// above. Absent in an unconfigured environment, which the billing callables
-// detect and report as failed-precondition rather than crashing at load time
-// (every other function in this file must keep deploying without them).
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
-const STRIPE_PRICE_MONTHLY = process.env.STRIPE_PRICE_MONTHLY;
-const STRIPE_PRICE_YEARLY = process.env.STRIPE_PRICE_YEARLY;
-const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:5173';
-
-// Constructed lazily so a missing key can't throw during module load and
-// take every unrelated function in this file down with it.
-// Pinned rather than left to the SDK default. stripe-node already sends its
-// own bundled version, so "no pin" really means "whatever the next `npm
-// update` decides" — and the basil→dahlia move relocated
-// subscription.current_period_end onto items, which silently breaks
-// entitlement mapping (see entitlement.js). Pinning makes the version an
-// explicit, reviewable choice; bump it deliberately and re-read the changelog.
-const STRIPE_API_VERSION = '2026-07-29.dahlia';
-
-// Labels Checkout Sessions so flows can be compared in the Dashboard. Fixed,
-// not per-request: a value that changed every call couldn't be grouped.
-const STRIPE_INTEGRATION_ID = 'chatterbox_pro_qvbnmxkd';
-
-let stripeClient = null;
-function getStripe() {
-  if (!stripeClient) {
-    // eslint-disable-next-line global-require
-    stripeClient = require('stripe')(STRIPE_SECRET_KEY, {apiVersion: STRIPE_API_VERSION});
-  }
-  return stripeClient;
-}
 
 /**
  * Checkout/portal redirect targets are attacker-influenceable (they arrive in
@@ -407,28 +370,6 @@ async function verifyChatParticipant(chatId, uid) {
   return chat;
 }
 
-/**
- * Server-side Chatterbox Pro gate. This is the actual paywall for paid
- * features; client-side checks only decide whether to render a lock.
- *
- * Reads entitlements/{uid}, which no client can write (firestore.rules) —
- * only the Stripe webhook does, via the Admin SDK. A missing document is the
- * normal free-tier state, not an error.
- *
- * Throws `permission-denied` with a stable `reason` the clients key off to
- * show an upgrade prompt rather than a generic failure.
- */
-async function requirePro(uid) {
-  const snap = await db.doc(`entitlements/${uid}`).get();
-  if (!isProActive(snap.exists ? snap.data() : null)) {
-    throw new functions.https.HttpsError(
-      'permission-denied',
-      'Chatterbox Pro is required for this feature.',
-      {reason: 'pro-required'},
-    );
-  }
-}
-
 // ─── Feature 1: Scheduled Messages ─────────────────────────────────────────
 exports.processScheduledMessages = functions.pubsub
   .schedule('every 1 minutes')
@@ -637,17 +578,14 @@ exports.transcribeVoiceMessage = callable().onCall(async (data, context) => {
 // `question` is optional: omitted, this produces a general summary; given,
 // it answers that question using only the supplied conversation.
 //
-// Chatterbox Pro only. The entitlement check here IS the paywall — the
-// client's matching check (services/entitlement.ts) merely renders a lock
-// instead of an error, and can be bypassed by calling this callable directly
-// with any signed-in token. Checked first, before the rate-limit write and
-// well before any billable Cloudflare AI call, so an unentitled caller costs
-// one Firestore read and nothing else.
+// This was behind a paid tier. The tier is gone, so the only limits left are
+// the rate limit and verifyChatParticipant — which is the check that actually
+// matters here, since it is what stops a signed-in stranger summarising a
+// conversation they are not in by calling this callable directly.
 exports.summarizeChat = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
-  await requirePro(context.auth.uid);
   await checkRateLimit(context.auth.uid, 'summarizeChat', {maxCalls: 5, windowMs: 60000});
   const {chatId, messages, question} = data || {};
   if (!chatId || !messages) {
@@ -1310,234 +1248,6 @@ exports.sweepExpiredInvites = functions.pubsub
     }
     return null;
   });
-
-// ─── Chatterbox Pro: Stripe subscriptions ───────────────────────────────────
-// Purchase happens on the web client only. Apple and Google require their own
-// in-app purchase for digital goods sold inside a mobile app, so the mobile
-// client reads the resulting entitlement but never sells it.
-
-/** Resolves the Stripe customer for a uid, creating one on first checkout. */
-async function getOrCreateStripeCustomer(stripe, uid, email) {
-  const entRef = db.doc(`entitlements/${uid}`);
-  const existing = await entRef.get();
-  const existingId = existing.exists ? existing.data().stripeCustomerId : null;
-  if (existingId) return existingId;
-
-  // `metadata.uid` is the only link from a Stripe object back to a Chatterbox
-  // account — the webhook relies on it to know whose entitlement to write.
-  const customer = await stripe.customers.create({email: email || undefined, metadata: {uid}});
-  await entRef.set({stripeCustomerId: customer.id, updatedAt: Date.now()}, {merge: true});
-  return customer.id;
-}
-
-exports.createCheckoutSession = callable().onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
-  }
-  if (!STRIPE_SECRET_KEY) {
-    throw new functions.https.HttpsError('failed-precondition', 'Billing is not configured.');
-  }
-  await checkRateLimit(context.auth.uid, 'createCheckoutSession', {maxCalls: 5, windowMs: 60000});
-
-  // The plan is chosen from a server-side allowlist, never taken as a raw
-  // price id from the client — otherwise a caller could substitute any price
-  // in the account (including a $0 one) and self-provision a subscription.
-  const plan = data?.plan === 'yearly' ? 'yearly' : 'monthly';
-  const priceId = plan === 'yearly' ? STRIPE_PRICE_YEARLY : STRIPE_PRICE_MONTHLY;
-  if (!priceId) {
-    throw new functions.https.HttpsError('failed-precondition', `No price configured for ${plan}.`);
-  }
-
-  const returnUrl = typeof data?.returnUrl === 'string' ? data.returnUrl : APP_BASE_URL;
-  if (!isAllowedReturnUrl(returnUrl)) {
-    throw new functions.https.HttpsError('invalid-argument', 'Invalid return URL.');
-  }
-
-  try {
-    const stripe = getStripe();
-    const customerId = await getOrCreateStripeCustomer(stripe, context.auth.uid, context.auth.token?.email);
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      customer: customerId,
-      // `payment_method_types` is deliberately absent: omitting it enables
-      // dynamic payment methods, so Apple Pay / Google Pay / Link and
-      // regional options are controlled from the Dashboard. Hardcoding it
-      // would lock the flow to cards and cost conversion.
-      line_items: [{price: priceId, quantity: 1}],
-      integration_identifier: STRIPE_INTEGRATION_ID,
-      success_url: `${returnUrl}?pro=success`,
-      cancel_url: `${returnUrl}?pro=canceled`,
-      // Duplicated onto the subscription so subscription.* events (which do
-      // not carry the checkout session) can still resolve the uid.
-      metadata: {uid: context.auth.uid},
-      subscription_data: {metadata: {uid: context.auth.uid}},
-    });
-    return {url: session.url};
-  } catch (error) {
-    functions.logger.error('createCheckoutSession failed', {
-      message: error?.message,
-      type: error?.type,
-      code: error?.code,
-    });
-    throw new functions.https.HttpsError('internal', 'Could not start checkout.');
-  }
-});
-
-exports.createBillingPortalSession = callable().onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
-  }
-  if (!STRIPE_SECRET_KEY) {
-    throw new functions.https.HttpsError('failed-precondition', 'Billing is not configured.');
-  }
-  await checkRateLimit(context.auth.uid, 'createBillingPortalSession', {maxCalls: 5, windowMs: 60000});
-
-  const snap = await db.doc(`entitlements/${context.auth.uid}`).get();
-  const customerId = snap.exists ? snap.data().stripeCustomerId : null;
-  if (!customerId) {
-    throw new functions.https.HttpsError('failed-precondition', 'No subscription to manage.');
-  }
-
-  const returnUrl = typeof data?.returnUrl === 'string' ? data.returnUrl : APP_BASE_URL;
-  if (!isAllowedReturnUrl(returnUrl)) {
-    throw new functions.https.HttpsError('invalid-argument', 'Invalid return URL.');
-  }
-
-  try {
-    const session = await getStripe().billingPortal.sessions.create({
-      customer: customerId,
-      return_url: returnUrl,
-    });
-    return {url: session.url};
-  } catch (error) {
-    functions.logger.error('createBillingPortalSession failed', {
-      message: error?.message,
-      type: error?.type,
-      code: error?.code,
-    });
-    throw new functions.https.HttpsError('internal', 'Could not open the billing portal.');
-  }
-});
-
-/**
- * Writes the entitlement for whichever account a Stripe subscription belongs
- * to. `uid` comes from subscription metadata (set at checkout); if that is
- * missing the customer record is consulted as a fallback.
- */
-async function applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs) {
-  let uid = subscription.metadata?.uid;
-  if (!uid) {
-    const customerId =
-      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id;
-    if (customerId) {
-      const customer = await stripe.customers.retrieve(customerId);
-      uid = customer?.metadata?.uid;
-    }
-  }
-  if (!uid) {
-    functions.logger.error('Stripe subscription has no resolvable uid', {
-      subscriptionId: subscription.id,
-    });
-    return;
-  }
-
-  const ref = db.doc(`entitlements/${uid}`);
-  const existing = await ref.get();
-  if (!shouldApplyEvent(existing.exists ? existing.data() : null, eventCreatedMs)) {
-    functions.logger.info('Ignoring out-of-order Stripe event', {
-      uid,
-      subscriptionId: subscription.id,
-    });
-    return;
-  }
-
-  await ref.set(
-    {
-      ...entitlementFromSubscription(subscription),
-      lastEventAt: eventCreatedMs,
-      updatedAt: Date.now(),
-    },
-    {merge: true},
-  );
-}
-
-/**
- * Stripe webhook. Every request is signature-verified against the raw body
- * before anything is trusted — without that check, anyone who learns this
- * URL could POST a forged "subscription active" event and grant themselves
- * Pro, which would defeat the entire paywall.
- *
- * Note this reads `req.rawBody` (Firebase provides it) rather than `req.body`:
- * Stripe's signature covers the exact bytes sent, so a re-serialized parsed
- * body will not verify.
- */
-exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
-  if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SECRET) {
-    functions.logger.error('stripeWebhook called but billing env vars are missing');
-    res.status(500).send('Billing not configured');
-    return;
-  }
-
-  let event;
-  try {
-    event = getStripe().webhooks.constructEvent(
-      req.rawBody,
-      req.headers['stripe-signature'],
-      STRIPE_WEBHOOK_SECRET,
-    );
-  } catch (error) {
-    // Includes replayed/expired signatures, not just forgeries.
-    functions.logger.warn('Rejected Stripe webhook with bad signature', {message: error?.message});
-    res.status(400).send('Invalid signature');
-    return;
-  }
-
-  const eventCreatedMs = (event.created || 0) * 1000;
-  try {
-    const stripe = getStripe();
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object;
-        if (session.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription);
-          // Checkout sessions carry the uid even when the subscription's own
-          // metadata hasn't propagated yet.
-          if (!subscription.metadata?.uid && session.metadata?.uid) {
-            subscription.metadata = {...subscription.metadata, uid: session.metadata.uid};
-          }
-          await applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs);
-        }
-        break;
-      }
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted':
-        await applySubscriptionToEntitlement(stripe, event.data.object, eventCreatedMs);
-        break;
-      case 'invoice.payment_succeeded':
-      case 'invoice.payment_failed': {
-        // The invoice itself carries no period/status we can trust for
-        // entitlement; re-read the subscription as the source of truth.
-        const invoice = event.data.object;
-        if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-          await applySubscriptionToEntitlement(stripe, subscription, eventCreatedMs);
-        }
-        break;
-      }
-      default:
-        break; // Unhandled event types are acknowledged, not retried.
-    }
-    res.json({received: true});
-  } catch (error) {
-    functions.logger.error('stripeWebhook handler failed', {
-      eventType: event?.type,
-      message: error?.message,
-    });
-    // 500 asks Stripe to retry — correct for a transient failure on our side.
-    res.status(500).send('Webhook handler failed');
-  }
-});
 
 // Strip scheduled functions from exports unless explicitly enabled — see the
 // SCHEDULED_ENABLED note near the top. firebase-tools inspects module.exports

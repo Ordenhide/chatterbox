@@ -2,20 +2,15 @@
  * Features held back from the first release.
  *
  * Separate from parity.ts, which is about native/web feature parity and asks
- * a different question. This one asks: is this ready to be sold and
- * supported on day one?
+ * a different question. This one asks: is this ready to ship on day one?
  *
- * ## Why AI and Pro are one flag
+ * Hidden: summaries, message translation, voice transcription, the AI consent
+ * row in Profile, and the disclosure prompt in front of the first use.
  *
- * They cannot move independently. Chat summaries are the only thing behind
- * `requirePro` (functions/index.js) — so Pro with AI off sells nothing, and
- * AI with Pro off leaves the summarise action failing on a server permission
- * check the client cannot satisfy. One switch, two surfaces:
- *
- *   AI: summaries, message translation, voice transcription, the AI consent
- *       row in Profile, and the disclosure prompt in front of the first use.
- *   Pro: the Store screen and its route, the upgrade prompt, the Pro badge
- *       and pitch in Profile, and the Pro tag on the gated menu item.
+ * The paid tier that used to sell summaries is not behind this flag — it was
+ * deleted. Stripe was a third-party recipient of a name, an email address and
+ * a card, in an app whose argument is that the server does not even keep your
+ * email; summaries are simply free now, and `requirePro` is gone with it.
  *
  * Smart replies are deliberately NOT here. They look like the same category
  * and are not: smartReply.ts is keyword matching over the last three messages
@@ -24,9 +19,8 @@
  *
  * ## What this does not do
  *
- * The code stays, the Cloud Functions stay deployed, and the Stripe webhook
- * keeps writing entitlements for anyone who already has one. This hides the
- * ways in, so nothing can be reached from the UI; it is not a teardown, and
+ * The code stays and the Cloud Functions stay deployed. This hides the ways
+ * in, so nothing can be reached from the UI; it is not a teardown, and
  * flipping it back to `true` restores all of it.
  *
  * The privacy policy and the marketing site are NOT driven by this flag —

@@ -40,11 +40,6 @@ naming exactly which are missing, so it is visible rather than assumed.
 
 | Secret | Without it |
 |---|---|
-| `STRIPE_SECRET_KEY` | **Missing.** Subscriptions cannot be created or charged. |
-| `STRIPE_WEBHOOK_SECRET` | **Missing.** Stripe events are rejected, so entitlements never update after payment. |
-| `STRIPE_PRICE_MONTHLY` | **Missing.** Monthly plan unavailable. |
-| `STRIPE_PRICE_YEARLY` | **Missing.** Yearly plan unavailable. |
-| `APP_BASE_URL` | **Missing.** Checkout return links point nowhere. |
 | `CLOUDFLARE_ACCOUNT_ID` | **Missing.** Media transforms disabled. |
 | `CLOUDFLARE_API_TOKEN` | **Missing.** Media transforms disabled. |
 

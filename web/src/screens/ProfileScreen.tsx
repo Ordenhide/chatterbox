@@ -9,7 +9,6 @@ import {signOut, updateDisplayName} from '../services/auth';
 import {changePassword, type PasswordChangeError} from '../services/account';
 import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
-import {createBillingPortalSession} from '../services/billing';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {SHOW_AI_FEATURES} from '../config/launch';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/linkPreview';
@@ -19,7 +18,6 @@ import {
   setReadReceiptsEnabled,
   setTypingIndicatorEnabled,
 } from '../services/privacyPrefs';
-import {useEntitlement} from '../context/EntitlementContext';
 import {checkPasswordStrength} from '../services/passwordPolicy';
 import {getUserById} from '../services/chat';
 import {currentPermission, enablePush, notificationsSupported} from '../services/push';
@@ -32,7 +30,7 @@ import DownloadAppCard from '../components/DownloadAppCard';
 import Icon from '../components/Icon';
 import PasswordInput from '../components/PasswordInput';
 
-type SectionId = 'profile' | 'preferences' | 'privacy' | 'account' | 'subscription' | 'support';
+type SectionId = 'profile' | 'preferences' | 'privacy' | 'account' | 'support';
 
 export default function ProfileScreen({user}: {user: User}) {
   const {t, lang, setLang} = useT();
@@ -56,9 +54,6 @@ export default function ProfileScreen({user}: {user: User}) {
   const [showRecovery, setShowRecovery] = useState(false);
   const [exportingData, setExportingData] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
-  const {entitlement, isPro} = useEntitlement();
-  const [billingBusy, setBillingBusy] = useState(false);
-  const [billingError, setBillingError] = useState<string | null>(null);
   // Per-device, so this reflects the browser you're sitting at.
   const [aiAllowed, setAiAllowed] = useState(hasAiConsent);
   const [previewsOn, setPreviewsOn] = useState(isLinkPreviewEnabled);
@@ -163,30 +158,6 @@ export default function ProfileScreen({user}: {user: User}) {
       setExportingData(false);
     }
   };
-
-  // Both billing actions hand off to a Stripe-hosted page, so card details
-  // never touch this app.
-  const startBilling = async (getUrl: () => Promise<string>) => {
-    setBillingBusy(true);
-    setBillingError(null);
-    try {
-      window.location.assign(await getUrl());
-    } catch (err) {
-      console.warn('billing action failed:', err);
-      setBillingError(t('pro.error'));
-      setBillingBusy(false); // stays busy on success — we're navigating away
-    }
-  };
-
-  const handleManageBilling = () => startBilling(createBillingPortalSession);
-
-  const proStatusText = (() => {
-    if (!entitlement) return t('pro.active');
-    const renews = new Date(entitlement.currentPeriodEnd).toLocaleDateString();
-    if (entitlement.cancelAtPeriodEnd) return `${t('pro.endsOn')} ${renews}`;
-    if (entitlement.status === 'past_due') return t('pro.pastDue');
-    return `${t('pro.renewsOn')} ${renews}`;
-  })();
 
   const initial = (savedName || user.email || '?').charAt(0).toUpperCase();
 
@@ -493,44 +464,6 @@ export default function ProfileScreen({user}: {user: User}) {
         </>
       ),
     },
-    ...(SHOW_AI_FEATURES ? [{
-      id: 'subscription' as SectionId,
-      label: t('profile.sectionSubscription'),
-      node: (
-        <section style={styles.card}>
-          <div style={styles.cardTitle}>
-            {t('pro.title')}
-            {isPro && <span style={styles.proBadge}>{t('pro.badge')}</span>}
-          </div>
-          <div style={styles.cardDesc}>
-            {isPro ? proStatusText : t('pro.pitch')}
-          </div>
-          {billingError && <div style={styles.pwError}>{billingError}</div>}
-          {isPro ? (
-            <button
-              type="button"
-              className="btn btn-soft"
-              style={styles.pwSubmit}
-              disabled={billingBusy}
-              onClick={handleManageBilling}>
-              {billingBusy ? <span className="spinner" /> : t('pro.manage')}
-            </button>
-          ) : (
-            /* Buying happens in one place — the Store. This card only reports
-               status and points there, so there's a single commerce surface. */
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={styles.pwSubmit}
-              onClick={() => {
-                window.location.hash = '#/store';
-              }}>
-              {t('store.openStore')}
-            </button>
-          )}
-        </section>
-      ),
-    }] : []),
     {
       id: 'support',
       label: t('profile.sectionSupport'),
@@ -742,16 +675,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   pwError: {color: colors.danger, fontSize: 13, marginBottom: 8},
   pwSubmit: {width: '100%', padding: '12px', borderRadius: 2, fontSize: 14.5, marginTop: 2},
-  proBadge: {
-    marginLeft: 8,
-    padding: '2px 8px',
-    borderRadius: 999,
-    background: colors.primary,
-    color: colors.textOnPrimary,
-    fontSize: 11,
-    fontWeight: 700,
-    verticalAlign: 'middle',
-  },
   proPlanRow: {display: 'flex', gap: 10},
   proPlanBtn: {flex: 1, padding: '12px', borderRadius: 2, fontSize: 14.5, marginTop: 2},
   // Visually separated from the rest of the settings so the irreversible

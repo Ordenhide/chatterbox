@@ -37,7 +37,7 @@ describe('bindings', () => {
     expect(matchShortcut(key('ArrowUp', {altKey: true}), mac)).toBe('prevChat');
     expect(matchShortcut(key('ArrowDown', {altKey: true}), mac)).toBe('nextChat');
     expect(matchShortcut(key('1', {metaKey: true}), mac)).toBe('tabChats');
-    expect(matchShortcut(key('4', {metaKey: true}), mac)).toBe('tabProfile');
+    expect(matchShortcut(key('3', {metaKey: true}), mac)).toBe('tabProfile');
     expect(matchShortcut(key('?'), mac)).toBe('help');
     expect(matchShortcut(key('Escape'), mac)).toBe('closeOrClear');
   });

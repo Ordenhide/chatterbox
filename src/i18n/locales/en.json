@@ -2,17 +2,6 @@
   "app": {
     "name": "Chatterbox"
   },
-  "pro": {
-    "title": "Chatterbox Pro",
-    "badge": "PRO",
-    "active": "Your subscription is active.",
-    "renewsOn": "Renews on {{date}}",
-    "endsOn": "Ends on {{date}}",
-    "pastDue": "We couldn't process your last payment — update your card on the web to keep Pro.",
-    "pitch": "Unlock AI chat summaries and search.",
-    "manageOnWeb": "Subscribe or manage your subscription on the Chatterbox website.",
-    "lockedAiMobile": "AI chat summaries and search are part of Chatterbox Pro. Subscribe on the Chatterbox website to unlock them here."
-  },
   "common": {
     "continue": "Continue",
     "signIn": "Sign In",
@@ -47,7 +36,6 @@
   },
   "tabs": {
     "chats": "Chats",
-    "store": "Store",
     "profile": "Profile"
   },
   "store": {

@@ -70,11 +70,9 @@ import {
   updateSharedLocation,
   type LiveLocationShare,
 } from '../services/liveLocation';
-import {useEntitlement} from '../context/EntitlementContext';
 import {SHOW_AI_FEATURES} from '../config/launch';
 import {safeExternalUrl} from '../utils/safeUrl';
 import {formatDayLabel, isSameDay} from '../utils/messageDay';
-import ProUpsellModal from './ProUpsellModal';
 import RecentlyDeletedModal from './RecentlyDeletedModal';
 import {getCurrentPosition, watchMyPosition, LocationError} from '../utils/geolocation';
 import {formatCoordinates, staticMapTileUrl} from '../utils/mapTile';
@@ -162,7 +160,6 @@ export default function ChatPane({
   const toast = useToast();
   const lightbox = useLightbox();
   const {startCall} = useCall();
-  const {isPro} = useEntitlement();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chat, setChat] = useState<ChatRoom | null>(null);
@@ -233,7 +230,6 @@ export default function ChatPane({
   const [peerKeyChanged, setPeerKeyChanged] = useState(false);
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [peerProfileGone, setPeerProfileGone] = useState(false);
-  const [proPromptOpen, setProPromptOpen] = useState(false);
   const [sharingLocation, setSharingLocation] = useState(false);
   const [shareLocationModalOpen, setShareLocationModalOpen] = useState(false);
   const [peerLiveLocation, setPeerLiveLocation] = useState<LiveLocationShare | null>(null);
@@ -1448,13 +1444,6 @@ export default function ChatPane({
 
   const doSummarize = async (question?: string) => {
     setMenuOpen(false);
-    // Pro gate. The server enforces this too (functions/index.js's
-    // requirePro) — this check only spares subscribers-to-be a raw
-    // permission error and shows them what they'd be buying.
-    if (!isPro) {
-      setProPromptOpen(true);
-      return;
-    }
     setSummarizing(true);
     setSummary('');
     setSummaryAskedQuestion(question?.trim() || '');
@@ -1781,7 +1770,6 @@ export default function ChatPane({
                     doSummarize();
                   }}>
                   <Icon name="sparkles" size={15} /> {t('chat.summarize')}
-                  {!isPro && <span style={styles.menuProTag}>{t('pro.badge')}</span>}
                 </button>
                 )}
                 <button style={styles.menuItemRow} onClick={() => enterSelect()}>
@@ -2849,7 +2837,6 @@ export default function ChatPane({
           }}
         />
       )}
-      {SHOW_AI_FEATURES && proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
       {shareLocationModalOpen && (
         <ShareLocationModal onClose={() => setShareLocationModalOpen(false)} onChoose={beginSharingLocation} />
       )}
@@ -3095,16 +3082,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'transparent',
     fontSize: 14,
     color: colors.text,
-  },
-  menuProTag: {
-    marginLeft: 'auto',
-    padding: '1px 7px',
-    borderRadius: 999,
-    background: colors.primaryLight,
-    color: colors.primary,
-    fontSize: 10,
-    fontWeight: 700,
-    letterSpacing: '0.3px',
   },
   summaryBar: {
     display: 'flex',

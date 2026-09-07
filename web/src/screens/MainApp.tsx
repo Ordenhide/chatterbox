@@ -6,12 +6,10 @@ import BrandMark from '../components/BrandMark';
 import {heartbeat} from '../services/presence';
 import {useIsMobile} from '../hooks/useIsMobile';
 import {useHashRoute, type Tab} from '../hooks/useHashRoute';
-import {SHOW_AI_FEATURES} from '../config/launch';
 import {useChatNotifications} from '../hooks/useChatNotifications';
 import {useReminders} from '../hooks/useReminders';
 import {useIncomingRequests} from '../hooks/useIncomingRequests';
 import {useToast} from '../context/ToastContext';
-import {EntitlementProvider} from '../context/EntitlementContext';
 import {hasSeenTour, markTourSeen, TOUR_EVENT} from '../services/tour';
 import {useKeyboardShortcuts} from '../hooks/useKeyboardShortcuts';
 import {emitShortcut, type ShortcutId} from '../services/shortcuts';
@@ -24,7 +22,6 @@ import TourOverlay from '../components/TourOverlay';
 
 // Moments and Profile load on demand — they're not the default tab, so their
 // code (and the Moments/Friends Firestore paths) stay out of the initial chunk.
-const StoreScreen = lazy(() => import('./StoreScreen'));
 const ProfileScreen = lazy(() => import('./ProfileScreen'));
 
 const ICONS: Record<Tab, React.ReactNode> = {
@@ -35,12 +32,6 @@ const ICONS: Record<Tab, React.ReactNode> = {
       strokeLinejoin="round"
     />
   ),
-  store: (
-    <>
-      <path d="M3 9h18l-1.5 10.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 9z" strokeLinejoin="round" />
-      <path d="M8 9V6.5a4 4 0 0 1 8 0V9" strokeLinecap="round" />
-    </>
-  ),
   profile: (
     <>
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round" />
@@ -49,9 +40,7 @@ const ICONS: Record<Tab, React.ReactNode> = {
   ),
 };
 
-const TAB_KEYS = (SHOW_AI_FEATURES
-  ? (['chats', 'store', 'profile'] as const)
-  : (['chats', 'profile'] as const)) as readonly Tab[];
+const TAB_KEYS = ['chats', 'profile'] as const satisfies readonly Tab[];
 
 export default function MainApp({user}: {user: User}) {
   const {route, navigate} = useHashRoute();
@@ -121,9 +110,6 @@ export default function MainApp({user}: {user: User}) {
           return;
         case 'tabFriends':
           setFriendsOpen(true);
-          return;
-        case 'tabStore':
-          if (SHOW_AI_FEATURES) navigate({tab: 'store', chatId: undefined});
           return;
         case 'tabProfile':
           navigate({tab: 'profile', chatId: undefined});
@@ -205,13 +191,11 @@ export default function MainApp({user}: {user: User}) {
           onSelect={chatId => navigate({tab: 'chats', chatId})}
         />
       )}
-      {SHOW_AI_FEATURES && tab === 'store' && <StoreScreen />}
       {tab === 'profile' && <ProfileScreen user={user} />}
     </Suspense>
   );
 
   return (
-    <EntitlementProvider uid={user.uid}>
     <CallProvider user={me}>
       {isMobile ? (
         <div style={styles.mobileShell}>
@@ -260,7 +244,6 @@ export default function MainApp({user}: {user: User}) {
 
       {tourOpen && <TourOverlay onClose={closeTour} />}
     </CallProvider>
-    </EntitlementProvider>
   );
 }
 

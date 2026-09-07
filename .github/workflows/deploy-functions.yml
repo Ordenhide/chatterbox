@@ -36,8 +36,8 @@ jobs:
       #
       # functions/.env is gitignored, so the checkout above never contains it
       # and every process.env lookup in index.js would be undefined in
-      # production — Stripe billing would deploy but permanently answer
-      # "Billing is not configured." firebase-tools reads this file at deploy
+      # production — the AI callables would deploy but permanently answer
+      # "not configured". firebase-tools reads this file at deploy
       # time and bakes the values into the deployed function config, so it has
       # to be rebuilt here from repo secrets (Settings → Secrets and variables
       # → Actions). Missing secrets write as empty, which degrades that one
@@ -50,16 +50,11 @@ jobs:
       #
       # The optional secrets below are deliberately *not* fatal: index.js
       # treats each as a feature switch, so a deploy without them ships an app
-      # with billing disabled rather than no app at all. They are reported so
-      # that state is a decision rather than a surprise.
+      # with that one feature disabled rather than no app at all. They are
+      # reported so that state is a decision rather than a surprise.
       - name: Check required secrets
         env:
           SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          STRIPE_PRICE_MONTHLY: ${{ secrets.STRIPE_PRICE_MONTHLY }}
-          STRIPE_PRICE_YEARLY: ${{ secrets.STRIPE_PRICE_YEARLY }}
-          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
@@ -72,8 +67,7 @@ jobs:
           fi
 
           missing=""
-          for name in STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET STRIPE_PRICE_MONTHLY \
-                      STRIPE_PRICE_YEARLY APP_BASE_URL CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN; do
+          for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN; do
             eval "value=\${$name}"
             # An `if` rather than `[ ... ] && ...`: steps run under `bash -e`,
             # where a trailing AND-list that evaluates false is one shell-option
@@ -94,11 +88,6 @@ jobs:
       - name: Write functions/.env from repo secrets
         run: |
           cat > functions/.env <<'EOF'
-          STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          STRIPE_PRICE_MONTHLY=${{ secrets.STRIPE_PRICE_MONTHLY }}
-          STRIPE_PRICE_YEARLY=${{ secrets.STRIPE_PRICE_YEARLY }}
-          APP_BASE_URL=${{ secrets.APP_BASE_URL }}
           CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
           CHATTERBOX_ENABLE_SCHEDULED=true

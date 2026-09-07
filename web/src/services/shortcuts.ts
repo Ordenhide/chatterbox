@@ -25,7 +25,6 @@ export type ShortcutId =
   | 'closeOrClear'
   | 'tabChats'
   | 'tabFriends'
-  | 'tabStore'
   | 'tabProfile';
 
 /** The subset of KeyboardEvent this module needs — so tests can pass plain objects. */
@@ -90,8 +89,7 @@ export function matchShortcut(
     if (!e.shiftKey) {
       if (e.key === '1') return 'tabChats';
       if (e.key === '2') return 'tabFriends';
-      if (e.key === '3') return 'tabStore';
-      if (e.key === '4') return 'tabProfile';
+      if (e.key === '3') return 'tabProfile';
     }
   }
 
@@ -154,8 +152,7 @@ export const SHORTCUT_HELP: Array<{keys: (mod: string) => string[]; i18nKey: str
   {keys: () => ['Alt', '↓'], i18nKey: 'shortcuts.nextChat'},
   {keys: m => [m, '1'], i18nKey: 'shortcuts.tabChats'},
   {keys: m => [m, '2'], i18nKey: 'shortcuts.tabFriends'},
-  {keys: m => [m, '3'], i18nKey: 'shortcuts.tabStore'},
-  {keys: m => [m, '4'], i18nKey: 'shortcuts.tabProfile'},
+  {keys: m => [m, '3'], i18nKey: 'shortcuts.tabProfile'},
   {keys: () => ['Enter'], i18nKey: 'shortcuts.send'},
   {keys: () => ['⇧', 'Enter'], i18nKey: 'shortcuts.newline'},
   {keys: () => ['↑'], i18nKey: 'shortcuts.editLast'},

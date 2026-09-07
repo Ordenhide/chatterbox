@@ -1,18 +1,12 @@
-import {SHOW_AI_FEATURES} from '../config/launch';
 import {useCallback, useEffect, useState} from 'react';
 
-export type Tab = 'chats' | 'store' | 'profile';
+export type Tab = 'chats' | 'profile';
 export interface Route {
   tab: Tab;
   chatId?: string;
 }
 
-// 'store' is only routable while the Pro tier is on sale. Left out of this
-// list, `#/store` falls through to the same branch as any other unknown tab
-// and lands on chats, rather than rendering an empty pane.
-const TABS: Tab[] = SHOW_AI_FEATURES
-  ? ['chats', 'store', 'profile']
-  : ['chats', 'profile'];
+const TABS: Tab[] = ['chats', 'profile'];
 
 function parse(): Route {
   const raw = window.location.hash.replace(/^#\/?/, '');
@@ -29,7 +23,7 @@ function build(r: Route): string {
 /**
  * Hash-based routing so the current tab and open chat survive a refresh and are
  * shareable/bookmarkable, and the browser back button works. Routes look like
- * `#/chats`, `#/chats/<chatId>`, `#/store`, `#/profile`.
+ * `#/chats`, `#/chats/<chatId>`, `#/profile`.
  */
 export function useHashRoute() {
   const [route, setRoute] = useState<Route>(parse);

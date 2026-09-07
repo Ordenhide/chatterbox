@@ -31,8 +31,7 @@
   },
   "tabs": {
     "chats": "Chats",
-    "profile": "Perfil",
-    "store": "Tienda"
+    "profile": "Perfil"
   },
   "headers": {
     "chats": "Chats",
@@ -423,17 +422,6 @@
       "1m": "1m",
       "5m": "5m"
     }
-  },
-  "pro": {
-    "title": "Chatterbox Pro",
-    "badge": "PRO",
-    "active": "Tu suscripción está activa.",
-    "renewsOn": "Se renueva el {{date}}",
-    "endsOn": "Termina el {{date}}",
-    "pastDue": "No pudimos procesar tu último pago: actualiza tu tarjeta en la web para conservar Pro.",
-    "pitch": "Desbloquea resúmenes y búsqueda con IA.",
-    "manageOnWeb": "Suscríbete o gestiona tu suscripción en el sitio web de Chatterbox.",
-    "lockedAiMobile": "Los resúmenes y la búsqueda con IA forman parte de Chatterbox Pro. Suscríbete en el sitio web de Chatterbox para desbloquearlos aquí."
   },
   "errors": {
     "generic": "Algo salió mal. Inténtalo de nuevo.",

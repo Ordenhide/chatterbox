@@ -46,7 +46,6 @@ import {
   type PasswordChangeError,
 } from '../services/account';
 import {exportUserData} from '../services/dataExport';
-import {isProActive, listenEntitlement, type Entitlement} from '../services/entitlement';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
 import {shareTextFile} from '../utils/shareFile';
@@ -78,7 +77,6 @@ export default function ProfileScreen() {
   const [exporting, setExporting] = useState(false);
   const [exportingData, setExportingData] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
-  const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   // Per device, so this reflects the phone in your hand.
   const [aiAllowed, setAiAllowed] = useState(false);
   // MMKV-backed and synchronous, unlike AI consent — no effect needed.
@@ -461,24 +459,6 @@ export default function ProfileScreen() {
   // Firestore data (profile, conversations, moments, social graph), distinct
   // from Export Backup below, which produces an encrypted, still-ciphertext
   // bundle meant only for restoring onto another device.
-  // Chatterbox Pro entitlement — read-only here. Purchase happens on the web
-  // client: Apple and Google require their own in-app purchase for digital
-  // goods sold inside an app, so this screen reports status and points to
-  // the website rather than selling.
-  useEffect(() => {
-    if (!user?.uid) return;
-    return listenEntitlement(user.uid, setEntitlement);
-  }, [user?.uid]);
-  const isPro = isProActive(entitlement);
-
-  const proStatusText = (() => {
-    if (!isPro) return `${t('pro.pitch')} ${t('pro.manageOnWeb')}`;
-    if (entitlement?.status === 'past_due') return t('pro.pastDue');
-    const date = entitlement ? new Date(entitlement.currentPeriodEnd).toLocaleDateString() : '';
-    if (entitlement?.cancelAtPeriodEnd) return t('pro.endsOn', {date});
-    return entitlement ? t('pro.renewsOn', {date}) : t('pro.active');
-  })();
-
   const handleDownloadData = useCallback(async () => {
     if (!user?.uid) return;
     setExportingData(true);
@@ -780,17 +760,6 @@ export default function ProfileScreen() {
             </Text>
           </TouchableOpacity>
         </GlassView>
-        {SHOW_AI_FEATURES && (
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>
-            {t('pro.title')}
-            {isPro ? <Text style={{color: colors.primary}}>{`  ${t('pro.badge')}`}</Text> : null}
-          </Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {proStatusText}
-          </Text>
-        </GlassView>
-        )}
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('profile.account.downloadDataTitle')}

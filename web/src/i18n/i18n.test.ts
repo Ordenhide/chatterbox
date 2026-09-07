@@ -10,7 +10,6 @@ describe('i18n dictionaries', () => {
 
   it('translates common navigation keys to Chinese', () => {
     expect(_dicts.zh['nav.chats']).toBe('聊天');
-    expect(_dicts.zh['nav.store']).toBe('商店');
     expect(_dicts.zh['nav.profile']).toBe('我的');
   });
 

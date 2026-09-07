@@ -66,17 +66,15 @@ export const auth = getAuth(app);
 export const functions = getFunctions(app);
 
 /**
- * Local-only escape hatch for testing Cloud Functions (Stripe billing,
- * summaries, etc.) against `firebase emulators:start` instead of the real
- * deployed backend — see BILLING.md for the full local test setup.
+ * Local-only escape hatch for testing Cloud Functions against
+ * `firebase emulators:start` instead of the real deployed backend.
  *
  * Auth stays real/production even with this on: only Functions and Firestore
  * point locally (the Firestore half is wired below, once `db` exists). That
  * means sign-in works normally with a real account, but that account's
  * chats/profile/moments will look empty here — the local Firestore emulator
- * starts with no data of its own. Fine for exercising a function end to end
- * (e.g. Store → Buy Pro → entitlement written), not for testing against real
- * chat data.
+ * starts with no data of its own. Fine for exercising a function end to end,
+ * not for testing against real chat data.
  *
  * Double-gated on DEV **and** an explicit opt-in, and `import.meta.env.DEV`
  * is statically false in a production build, so this whole block is dropped

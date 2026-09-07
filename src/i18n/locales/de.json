@@ -31,8 +31,7 @@
   },
   "tabs": {
     "chats": "Chats",
-    "profile": "Profil",
-    "store": "Store"
+    "profile": "Profil"
   },
   "headers": {
     "chats": "Chats",
@@ -423,17 +422,6 @@
       "1m": "1m",
       "5m": "5m"
     }
-  },
-  "pro": {
-    "title": "Chatterbox Pro",
-    "badge": "PRO",
-    "active": "Dein Abo ist aktiv.",
-    "renewsOn": "Verlängert sich am {{date}}",
-    "endsOn": "Endet am {{date}}",
-    "pastDue": "Deine letzte Zahlung ist fehlgeschlagen — aktualisiere deine Karte im Web, um Pro zu behalten.",
-    "pitch": "Schalte KI-Zusammenfassungen und -Suche frei.",
-    "manageOnWeb": "Abonniere oder verwalte dein Abo auf der Chatterbox-Website.",
-    "lockedAiMobile": "KI-Zusammenfassungen und -Suche gehören zu Chatterbox Pro. Abonniere auf der Chatterbox-Website, um sie hier freizuschalten."
   },
   "errors": {
     "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",

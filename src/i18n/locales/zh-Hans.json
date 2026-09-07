@@ -31,8 +31,7 @@
   },
   "tabs": {
     "chats": "聊天",
-    "profile": "我的",
-    "store": "商店"
+    "profile": "我的"
   },
   "headers": {
     "chats": "聊天",
@@ -751,17 +750,6 @@
     "settingsTitle": "新手教程",
     "settingsDescription": "第一次使用？来看看 Chatterbox 的引导教程。",
     "replay": "重新播放教程"
-  },
-  "pro": {
-    "title": "Chatterbox Pro",
-    "badge": "PRO",
-    "active": "你的订阅正在生效。",
-    "renewsOn": "{{date}} 续订",
-    "endsOn": "{{date}} 到期",
-    "pastDue": "上一次扣款没有成功——请在网页端更新银行卡以继续使用 Pro。",
-    "pitch": "解锁 AI 聊天摘要与搜索。",
-    "manageOnWeb": "在 Chatterbox 网站订阅或管理你的订阅。",
-    "lockedAiMobile": "AI 聊天摘要与搜索属于 Chatterbox Pro。在 Chatterbox 网站订阅后即可在这里使用。"
   },
   "errors": {
     "generic": "出了点问题，请重试。",
