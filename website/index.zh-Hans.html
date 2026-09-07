@@ -113,8 +113,9 @@
         <li class="reason">
           <div class="reason-num" aria-hidden="true">05</div>
           <div class="reason-body">
-            <h3>AI 默认关闭，且每一个服务商都写明了名字</h3>
-            <p>摘要、翻译和转写会在你的设备上解密内容并把它发出去。隐私政策第 6 节列出了每一个接收方——Google Cloud Speech-to-Text、Google Cloud Translation、Cloudflare Workers AI——并说明了到底有什么发过去。应用在第一次使用前会询问你，开关在你的个人资料里。</p>
+            <h3>没有 AI 读你的对话</h3>
+            <p>没有摘要，没有翻译，没有转写。这个应用里没有任何东西会把一段对话解密后交给第三方去处理，因为根本没有这样的功能。回复建议是在你的设备上根据最近几条消息算出来的，不会发到任何地方。</p>
+            <p class="reason-note">这些功能在代码里，本次发行中是关闭的；将来打算恢复。隐私政策第 6 节仍然列着它们会连到的三个服务，并写明今天没有任何内容会到达那里。它们回来的时候，会连同那段披露和首次使用前的询问一起回来。</p>
           </div>
         </li>
 
@@ -158,8 +159,8 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>可选的 AI</h3>
-          <p>对话摘要、智能回复、语音转写和消息翻译。默认关闭；服务商在隐私政策里都写了名字。</p>
+          <h3>回复建议</h3>
+          <p>根据对话最近几条消息给出的几个候选回复。匹配完全在你的设备上完成，对照的是你所用语言的短语表——为了生成它们，不会有任何东西发出去。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -244,7 +245,7 @@
             <li>每个账号最后一次活跃的时间</li>
             <li>每一次连接的元数据，包括你的 IP 地址</li>
             <li>崩溃与使用报告，其中带有账号标识</li>
-            <li>你主动交给某个 AI 功能的内容，在它运行期间</li>
+            <li>你发送的每个附件的文件名、类型和大小</li>
           </ul>
         </div>
       </div>

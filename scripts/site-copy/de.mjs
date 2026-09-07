@@ -57,10 +57,11 @@ export default {
         note: `Die Beschriftung unter einer Nachricht sagt dir, was sie tatsächlich bekommen hat. Das ist keine Aussage über die App, sondern über diese eine Nachricht.`,
       },
       {
-        title: 'KI ist aus, bis du sie einschaltest, und jeder Anbieter wird benannt',
+        title: `Keine KI liest deine Gespräche`,
         body: [
-          `Zusammenfassungen, Übersetzung und Transkription entschlüsseln Inhalte auf deinem Gerät und schicken sie weiter. Abschnitt 6 der Datenschutzerklärung benennt jeden Dienst, der sie empfängt — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — und sagt genau, was dort ankommt. Die App fragt vor dem ersten Mal, und der Schalter sitzt in deinem Profil.`,
+          `Keine Zusammenfassungen, keine Übersetzung, keine Transkription. Nichts in dieser App entschlüsselt ein Gespräch, um es zur Verarbeitung an Dritte zu schicken, denn es gibt hier keine Funktion, die das tut. Antwortvorschläge werden auf deinem Gerät aus den letzten Nachrichten berechnet und gehen nirgendwohin.`,
         ],
+        note: `Diese Funktionen stehen im Code und sind in dieser Version abgeschaltet; sie sollen zurückkommen. Abschnitt 6 der Datenschutzerklärung nennt weiterhin die drei Dienste, die sie erreichen würden, und sagt, dass sie heute nichts erreichen. Wenn sie zurückkommen, kommen sie mit dieser Offenlegung und einer Nachfrage vor dem ersten Mal.`,
       },
       {
         title: 'Etwas nachzuschlagen passiert nicht hinter deinem Rücken',
@@ -93,8 +94,8 @@ export default {
         body: `Peer-to-Peer-Anrufe über WebRTC, das die Medien zwischen den beiden Geräten standardmäßig verschlüsselt und nicht erst auf Wunsch.`,
       },
       {
-        title: 'Optionale KI',
-        body: `Gesprächszusammenfassungen, Antwortvorschläge, Sprachtranskription und Nachrichtenübersetzung. Standardmäßig aus; die Anbieter stehen namentlich in der Erklärung.`,
+        title: `Antwortvorschläge`,
+        body: `Ein paar Antworten, vorgeschlagen anhand der letzten Nachrichten des Gesprächs. Abgeglichen wird auf deinem Gerät gegen eine Phrasenliste in deiner Sprache — es wird nichts irgendwohin geschickt, um sie zu erzeugen.`,
       },
       {
         title: 'Wikipedia-Nachschlag',
@@ -163,7 +164,7 @@ export default {
         'Wann jedes Konto zuletzt aktiv war',
         'Die Metadaten jeder Verbindung, einschließlich deiner IP-Adresse',
         'Absturz- und Nutzungsberichte, die eine Kontokennung tragen',
-        'Alles, was du an eine KI-Funktion schickst, solange sie läuft',
+        'Name, Typ und Größe jeder Datei, die du anhängst',
       ],
     },
     note: `Die Verschlüsselung wurde nie unabhängig geprüft. Diese Metadaten loszuwerden ist schwerer, als den Inhalt zu verschlüsseln, und diese Arbeit ist nicht fertig.`,

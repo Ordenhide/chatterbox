@@ -56,10 +56,11 @@ export default {
         note: `L'étiquette sous un message vous dit laquelle il a réellement reçue. Ce n'est pas une affirmation sur l'application ; c'est une affirmation sur ce message-là.`,
       },
       {
-        title: `L'IA est désactivée jusqu'à ce que vous l'activiez, et chaque prestataire est nommé`,
+        title: `Aucune IA ne lit vos conversations`,
         body: [
-          `Les résumés, la traduction et la transcription déchiffrent du contenu sur votre appareil et l'envoient ailleurs. La section 6 de la politique de confidentialité nomme chaque service qui le reçoit — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — et dit exactement ce qui lui parvient. L'application demande avant la première fois, et l'interrupteur se trouve dans votre profil.`,
+          `Pas de résumé, pas de traduction, pas de transcription. Rien dans cette application ne déchiffre une conversation pour l’envoyer se faire traiter ailleurs, parce qu’aucune fonction ici ne fait cela. Les réponses suggérées sont calculées sur votre appareil à partir des derniers messages et ne vont nulle part.`,
         ],
+        note: `Ces fonctions sont dans le code et désactivées dans cette version ; elles ont vocation à revenir. La section 6 de la politique de confidentialité nomme toujours les trois services qu’elles atteindraient et précise qu’aujourd’hui rien ne leur parvient. Quand elles reviendront, elles reviendront avec cette déclaration et une demande avant la première utilisation.`,
       },
       {
         title: `Chercher quelque chose ne se fait pas dans votre dos`,
@@ -92,8 +93,8 @@ export default {
         body: `Appels pair-à-pair via WebRTC, qui chiffre le flux entre les deux appareils par défaut et non en option.`,
       },
       {
-        title: `IA facultative`,
-        body: `Résumés de conversation, réponses suggérées, transcription vocale et traduction des messages. Désactivée par défaut ; les prestataires sont nommés dans la politique.`,
+        title: `Réponses suggérées`,
+        body: `Quelques réponses proposées à partir des derniers messages de la conversation. Elles sont mises en correspondance sur votre appareil avec une liste de formules dans votre langue : rien n’est envoyé nulle part pour les produire.`,
       },
       {
         title: `Recherche Wikipédia`,
@@ -162,7 +163,7 @@ export default {
         `La date de dernière activité de chaque compte`,
         `Les métadonnées de chaque connexion, dont votre adresse IP`,
         `Les rapports de plantage et d'usage, qui portent un identifiant de compte`,
-        `Tout ce que vous choisissez d'envoyer à une fonction d'IA, le temps qu'elle s'exécute`,
+        `Le nom, le type et la taille de chaque fichier que vous joignez`,
       ],
     },
     note: `Le chiffrement n'a jamais fait l'objet d'un audit indépendant. Retirer ces métadonnées est plus difficile que chiffrer le contenu, et ce travail n'est pas terminé.`,

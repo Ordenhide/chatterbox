@@ -57,10 +57,11 @@ export default {
         note: `La etiqueta bajo cada mensaje te dice cuál le tocó realmente. No es una afirmación sobre la aplicación; es una afirmación sobre ese mensaje.`,
       },
       {
-        title: 'La IA está apagada hasta que la enciendes, y cada proveedor tiene nombre',
+        title: `Ninguna IA lee tus conversaciones`,
         body: [
-          `Los resúmenes, la traducción y la transcripción descifran contenido en tu dispositivo y lo envían fuera. La sección 6 de la política de privacidad nombra cada servicio que lo recibe —Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI— y dice exactamente qué le llega. La aplicación pregunta antes de la primera vez, y el interruptor está en tu perfil.`,
+          `No hay resúmenes, ni traducción, ni transcripción. Nada en esta aplicación descifra una conversación para mandarla a un tercero a procesar, porque aquí no hay ninguna función que lo haga. Las respuestas sugeridas se calculan en tu dispositivo a partir de los últimos mensajes y no van a ninguna parte.`,
         ],
+        note: `Esas funciones están en el código y apagadas en esta versión; la intención es que vuelvan. La sección 6 de la política de privacidad sigue nombrando los tres servicios a los que llegarían y dice que hoy no les llega nada. Cuando vuelvan, volverán con esa declaración y con una pregunta antes del primer uso.`,
       },
       {
         title: 'Consultar algo no ocurre a tus espaldas',
@@ -93,8 +94,8 @@ export default {
         body: `Llamadas entre pares sobre WebRTC, que cifra el medio entre los dos dispositivos por defecto y no como opción.`,
       },
       {
-        title: 'IA opcional',
-        body: `Resúmenes de conversación, respuestas sugeridas, transcripción de voz y traducción de mensajes. Apagado por defecto; los proveedores están nombrados en la política.`,
+        title: `Respuestas sugeridas`,
+        body: `Unas cuantas respuestas propuestas a partir de los últimos mensajes de la conversación. Se emparejan en tu dispositivo con una lista de frases en tu idioma: no se envía nada a ninguna parte para producirlas.`,
       },
       {
         title: 'Consulta en Wikipedia',
@@ -157,7 +158,7 @@ export default {
         'Cuándo estuvo activa cada cuenta por última vez',
         'Los metadatos de cada conexión, incluida tu dirección IP',
         'Los informes de fallos y de uso, que llevan un identificador de cuenta',
-        'Lo que elijas enviar a una función de IA, mientras se ejecuta',
+        'El nombre, el tipo y el tamaño de cada archivo que adjuntas',
       ],
     },
     note: `El cifrado nunca ha sido auditado de forma independiente. Quitar esos metadatos es más difícil que cifrar el contenido, y ese trabajo no está terminado.`,

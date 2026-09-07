@@ -56,10 +56,11 @@ export default {
         note: `Mesajın altındaki etiket, o mesajın gerçekte hangisini aldığını söyler. Uygulama hakkında bir iddia değil; o mesaj hakkında bir bilgidir.`,
       },
       {
-        title: `Yapay zekâ siz açana kadar kapalı ve her sağlayıcının adı yazılı`,
+        title: `Konuşmalarını hiçbir yapay zekâ okumuyor`,
         body: [
-          `Özetler, çeviri ve döküm, içeriği cihazınızda çözer ve dışarı gönderir. Gizlilik politikasının 6. bölümü içeriği alan her hizmeti adıyla sayar — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — ve oraya tam olarak neyin gittiğini yazar. Uygulama ilk seferden önce sorar, düğme de profilinizdedir.`,
+          `Özet yok, çeviri yok, yazıya dökme yok. Bu uygulamada hiçbir şey bir konuşmayı çözüp işlenmek üzere üçüncü bir tarafa göndermiyor, çünkü bunu yapan bir özellik burada yok. Yanıt önerileri son birkaç mesajdan senin cihazında hesaplanır ve hiçbir yere gitmez.`,
         ],
+        note: `Bu özellikler kodda duruyor ve bu sürümde kapalı; geri gelmeleri planlanıyor. Gizlilik politikasının 6. bölümü ulaşacakları üç hizmeti hâlâ adıyla sayıyor ve bugün onlara hiçbir şeyin ulaşmadığını yazıyor. Geri geldiklerinde, o açıklamayla ve ilk kullanımdan önce sorulan soruyla birlikte gelecekler.`,
       },
       {
         title: `Bir şeye bakmak arkanızdan olmuyor`,
@@ -92,8 +93,8 @@ export default {
         body: `WebRTC üzerinden uçtan uca bağlantıyla arama; iki cihaz arasındaki akışı seçenek olarak değil, varsayılan olarak şifreler.`,
       },
       {
-        title: `İsteğe bağlı yapay zekâ`,
-        body: `Sohbet özetleri, akıllı yanıtlar, ses dökümü ve mesaj çevirisi. Varsayılan olarak kapalı; sağlayıcıların adı politikada yazılı.`,
+        title: `Yanıt önerileri`,
+        body: `Konuşmanın son mesajlarından çıkarılan birkaç yanıt önerisi. Eşleştirme senin cihazında, kendi dilindeki bir kalıp listesine karşı yapılır — bunları üretmek için hiçbir yere bir şey gönderilmez.`,
       },
       {
         title: `Vikipedi'de arama`,
@@ -162,7 +163,7 @@ export default {
         `Her hesabın en son ne zaman etkin olduğu`,
         `Her bağlantının üst verisi, IP adresiniz dahil`,
         `Çökme ve kullanım raporları; bunlar bir hesap kimliği taşır`,
-        `Bir yapay zekâ özelliğine göndermeyi seçtiğiniz her şey, o çalıştığı sürece`,
+        `Gönderdiğin her ekin adı, türü ve boyutu`,
       ],
     },
     note: `Şifreleme hiçbir zaman bağımsız denetimden geçmedi. Bu üst veriyi ortadan kaldırmak, içeriği şifrelemekten daha zor ve o iş bitmiş değil.`,

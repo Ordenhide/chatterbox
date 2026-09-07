@@ -11,6 +11,7 @@ import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
 import {createBillingPortalSession} from '../services/billing';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
+import {SHOW_AI_FEATURES} from '../config/launch';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/linkPreview';
 import {
   isReadReceiptsEnabled,
@@ -299,6 +300,7 @@ export default function ProfileScreen({user}: {user: User}) {
       label: t('profile.sectionPrivacy'),
       node: (
         <>
+          {SHOW_AI_FEATURES && (
           <section style={styles.card}>
             <div style={styles.cardTitle}>{t('aiConsent.settingsTitle')}</div>
             <div style={styles.cardDesc}>
@@ -321,6 +323,7 @@ export default function ProfileScreen({user}: {user: User}) {
               {aiAllowed ? t('aiConsent.turnOff') : t('aiConsent.turnOn')}
             </button>
           </section>
+          )}
 
           <FocusModeCard uid={user.uid} />
 
@@ -490,8 +493,8 @@ export default function ProfileScreen({user}: {user: User}) {
         </>
       ),
     },
-    {
-      id: 'subscription',
+    ...(SHOW_AI_FEATURES ? [{
+      id: 'subscription' as SectionId,
       label: t('profile.sectionSubscription'),
       node: (
         <section style={styles.card}>
@@ -527,7 +530,7 @@ export default function ProfileScreen({user}: {user: User}) {
           )}
         </section>
       ),
-    },
+    }] : []),
     {
       id: 'support',
       label: t('profile.sectionSupport'),

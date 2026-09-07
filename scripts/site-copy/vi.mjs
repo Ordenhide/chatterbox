@@ -56,10 +56,11 @@ export default {
         note: `Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự nhận được loại nào. Đó không phải lời tuyên bố về ứng dụng; đó là lời nói về đúng tin nhắn ấy.`,
       },
       {
-        title: `AI tắt cho đến khi bạn bật, và mỗi nhà cung cấp đều được nêu tên`,
+        title: `Không AI nào đọc cuộc trò chuyện của bạn`,
         body: [
-          `Tóm tắt, dịch và gỡ băng sẽ giải mã nội dung ngay trên máy bạn rồi gửi đi. Mục 6 của chính sách quyền riêng tư nêu tên từng dịch vụ nhận nội dung đó — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — và nói chính xác cái gì được gửi tới. Ứng dụng hỏi trước lần đầu tiên, và công tắc nằm trong hồ sơ của bạn.`,
+          `Không tóm tắt, không dịch, không chép lời. Không có gì trong ứng dụng này giải mã một cuộc trò chuyện rồi gửi cho bên thứ ba xử lý, bởi ở đây không có tính năng nào làm thế. Gợi ý trả lời được tính ngay trên máy bạn từ vài tin nhắn gần nhất, và không đi đâu cả.`,
         ],
+        note: `Những tính năng đó nằm trong mã nguồn và đã tắt ở bản này; dự kiến sẽ quay lại. Mục 6 của chính sách quyền riêng tư vẫn nêu tên ba dịch vụ mà chúng sẽ chạm tới, và nói rằng hôm nay không có gì đến được đó. Khi quay lại, chúng quay lại kèm phần công bố ấy và một lời hỏi trước lần dùng đầu tiên.`,
       },
       {
         title: `Việc tra cứu không diễn ra sau lưng bạn`,
@@ -92,8 +93,8 @@ export default {
         body: `Gọi ngang hàng qua WebRTC, vốn mã hoá luồng giữa hai máy theo mặc định chứ không phải như một tuỳ chọn.`,
       },
       {
-        title: `AI tuỳ chọn`,
-        body: `Tóm tắt cuộc trò chuyện, gợi ý trả lời, gỡ băng giọng nói và dịch tin nhắn. Mặc định tắt; nhà cung cấp được nêu tên trong chính sách.`,
+        title: `Gợi ý trả lời`,
+        body: `Vài câu trả lời được gợi ý từ những tin nhắn gần nhất của cuộc trò chuyện. Việc đối chiếu diễn ra ngay trên máy bạn với một danh sách câu mẫu bằng ngôn ngữ của bạn — không có gì được gửi đi đâu để tạo ra chúng.`,
       },
       {
         title: `Tra Wikipedia`,
@@ -162,7 +163,7 @@ export default {
         `Lần cuối mỗi tài khoản hoạt động`,
         `Siêu dữ liệu của mọi kết nối, kể cả địa chỉ IP của bạn`,
         `Báo cáo sự cố và sử dụng, vốn mang định danh tài khoản`,
-        `Bất cứ thứ gì bạn chọn gửi cho một tính năng AI, trong lúc nó chạy`,
+        `Tên, kiểu và kích thước của mọi tệp bạn đính kèm`,
       ],
     },
     note: `Phần mã hoá chưa bao giờ được kiểm định độc lập. Bỏ đi những siêu dữ liệu đó khó hơn mã hoá nội dung, và việc đó chưa xong.`,

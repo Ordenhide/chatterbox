@@ -65,7 +65,7 @@ What we can see is that a conversation happened: which accounts are in it, and w
 
 Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.
 
-Two things cross this line, and only when you ask them to. Summarising, translating or transcribing a message decrypts it on your device and sends it onward; looking a name up on Wikipedia sends that one name, not the message it came from. Section 6 says who receives each. The AI features ask before the first time and have a switch in Profile; the lookup runs on the tap and not otherwise, so there is nothing standing to turn off.`,
+One thing crosses this line, and only when you ask it to: looking a name up on Wikipedia sends that one name, not the message it came from. Section 6 says who receives it, and the lookup runs on the tap and not otherwise, so there is nothing standing to turn off. Summarising, translating and transcribing would cross it too — they are switched off in this release, with no control anywhere in the app that turns them on.`,
     },
     {
       title: '2. What is not encrypted, and what we can see',
@@ -116,7 +116,7 @@ The private key that decrypts your messages never leaves your device, except as 
 • Google Cloud Translation — the text of one message, when you ask for a translation.
 • Cloudflare Workers AI — up to the last 50 messages of one conversation, when you ask for a summary or ask a question about it.
 
-The last three run only when you have turned AI features on, and only on what you selected at that moment. What is sent is sent to produce your result, not to train anything. Neither the transcript nor the translation is stored on our servers: a transcript comes back to your device and is encrypted there before it is saved, and a translation is not saved at all.
+The last three are switched off in this release. There is no control anywhere in the app that turns transcription, translation or summaries on, so nothing reaches those three services. They are listed rather than deleted because the code is still here and the features are meant to return — and when they do, they return with this disclosure and with a prompt before the first use. What would be sent then is sent to produce your result, not to train anything; neither a transcript nor a translation is stored on our servers.
 
 The Wikipedia lookup has no switch because there is nothing standing to switch off: it runs on the tap and not otherwise. Wikipedia receives that one name and your IP address, the same as if you had typed it into their search box — no account, no message, no conversation. What comes back is shown and not saved, and nothing about it is written to the conversation.
 
@@ -184,7 +184,7 @@ If you would rather we deleted something by hand, write to us.`,
 
 大多数一对一和群聊消息还额外使用了棘轮（ratchet）：每条消息有自己的密钥，所以即使你的设备被攻破，也读不出更早的消息。如果对方的客户端还没有发布较新的密钥材料，这个会话会回落到一把长期密钥，那种情况下没有上面这个性质。消息下方的标记会告诉你这一条实际走的是哪一种。
 
-有两件事会越过这条线，而且都只在你主动要求时。摘要、翻译或转写一条消息，会在你的设备上把它解密后发出去；在维基百科查一个名字，发出去的是那一个名字，而不是它所在的消息。分别发给谁写在第 6 节。AI 功能在第一次之前会先询问你，开关在「我的」里；查询则只在你点的那一下发生，没有什么常驻的东西可关。`,
+只有一件事会越过这条线，而且只在你主动要求时：在维基百科查一个名字，发出去的是那一个名字，而不是它所在的消息。发给谁写在第 6 节；查询只在你点的那一下发生，除此之外不发生，所以没有什么需要关掉。摘要、翻译和转写同样会越过这条线——它们在本次发行中是关闭的，应用里没有任何开关可以打开它们。`,
     },
     {
       title: '2. 哪些没有加密，以及我们能看到什么',
@@ -235,7 +235,7 @@ If you would rather we deleted something by hand, write to us.`,
 • Google Cloud Translation——当你请求翻译时，一条消息的文字。
 • Cloudflare Workers AI——当你请求摘要或就一段对话提问时，该对话最近至多 50 条消息。
 
-后三者只在你开启了 AI 功能之后才运行，而且只处理你当时选中的内容。发出去的东西是为了产出你要的结果，不用于训练任何模型。转写和翻译都不保存在我们的服务器上：转写会回到你的设备，在那里加密后再保存；翻译则根本不保存。
+后三者在本次发行中是关闭的。应用里没有任何开关可以打开转写、翻译或摘要，所以没有任何内容会到达这三个服务。之所以列出而不是删掉，是因为代码还在、这些功能还打算回来——它们回来的时候，会连同这段披露和首次使用前的询问一起回来。到那时发出去的东西，是为了产出你要的结果，不用于训练任何模型；转写和翻译都不会保存在我们的服务器上。
 
 维基百科查询没有开关，因为没有什么常驻的东西可关：它只在你点的那一下运行，此外不运行。维基百科收到的是那一个名字和你的 IP 地址，跟你自己在它的搜索框里输入一样——没有账号，没有消息，没有对话。返回的内容只是显示出来，不保存，也不会写进对话里。
 
@@ -302,7 +302,7 @@ Was wir sehen können, ist, dass ein Gespräch stattgefunden hat: welche Konten 
 
 Die meisten Einzel- und Gruppennachrichten nutzen zusätzlich eine Ratsche: Jede Nachricht hat ihren eigenen Schlüssel, sodass ein kompromittiertes Gerät frühere Nachrichten nicht preisgibt. Gespräche, in denen jemandes Client das neuere Schlüsselmaterial nicht veröffentlicht hat, fallen auf einen einzelnen langlebigen Schlüssel zurück, der diese Eigenschaft nicht hat. Die Kennzeichnung unter einer Nachricht sagt dir, welchen Weg sie tatsächlich genommen hat.
 
-Zwei Dinge überschreiten diese Linie, und nur, wenn du darum bittest. Eine Nachricht zusammenzufassen, zu übersetzen oder zu transkribieren entschlüsselt sie auf deinem Gerät und sendet sie weiter; einen Namen auf Wikipedia nachzuschlagen sendet diesen einen Namen, nicht die Nachricht, aus der er stammt. Abschnitt 6 sagt, wer was bekommt. Die KI-Funktionen fragen vor dem ersten Mal und haben einen Schalter im Profil; das Nachschlagen läuft beim Antippen und sonst nicht, es gibt also nichts Dauerhaftes abzuschalten.`,
+Nur eines überschreitet diese Linie, und nur, wenn du darum bittest: einen Namen auf Wikipedia nachzuschlagen sendet diesen einen Namen, nicht die Nachricht, aus der er stammt. Abschnitt 6 sagt, wer ihn erhält, und die Abfrage geschieht beim Tippen und sonst nicht, es gibt also nichts abzuschalten. Zusammenfassen, Übersetzen und Transkribieren würden sie ebenfalls überschreiten — sie sind in dieser Version abgeschaltet, und es gibt in der App keine Einstellung, die sie einschaltet.`,
     },
     {
       title: '2. Was nicht verschlüsselt ist, und was wir sehen können',
@@ -353,7 +353,7 @@ Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Ger
 • Google Cloud Translation — den Text einer Nachricht, wenn du eine Übersetzung anforderst.
 • Cloudflare Workers AI — bis zu die letzten 50 Nachrichten eines Gesprächs, wenn du eine Zusammenfassung anforderst oder eine Frage dazu stellst.
 
-Die letzten drei laufen nur, wenn du KI-Funktionen eingeschaltet hast, und nur mit dem, was du in dem Moment ausgewählt hast. Was gesendet wird, wird gesendet, um dein Ergebnis zu erzeugen, nicht um irgendetwas zu trainieren. Weder das Transkript noch die Übersetzung liegt auf unseren Servern: ein Transkript kommt auf dein Gerät zurück und wird dort verschlüsselt, bevor es gespeichert wird, und eine Übersetzung wird gar nicht gespeichert.
+Die letzten drei sind in dieser Version abgeschaltet. Es gibt in der App keine Einstellung, die Transkription, Übersetzung oder Zusammenfassungen einschaltet, also erreicht diese drei Dienste nichts. Sie stehen hier, statt gelöscht zu sein, weil der Code noch da ist und die Funktionen zurückkommen sollen — und wenn sie das tun, kommen sie mit dieser Offenlegung und mit einer Nachfrage vor dem ersten Mal zurück. Was dann gesendet würde, wird gesendet, um dein Ergebnis zu erzeugen, nicht um etwas zu trainieren; weder ein Transkript noch eine Übersetzung wird auf unseren Servern gespeichert.
 
 Das Nachschlagen hat keinen Schalter, weil es nichts Dauerhaftes abzuschalten gibt: Es läuft beim Antippen und sonst nicht. Wikipedia erhält diesen Namen und deine IP-Adresse, genau wie wenn du ihn selbst in das Suchfeld getippt hättest — kein Konto, keine Nachricht, kein Gespräch. Was zurückkommt, wird angezeigt und nicht gespeichert, und nichts davon wird in das Gespräch geschrieben.
 
@@ -420,7 +420,7 @@ Lo que sí podemos ver es que hubo una conversación: qué cuentas participan y 
 
 La mayoría de los mensajes individuales y de grupo usan además un trinquete: cada mensaje tiene su propia clave, así que comprometer tu dispositivo no expone los anteriores. Las conversaciones en las que el cliente de alguien no ha publicado el material de clave más reciente recurren a una única clave de larga duración, que no tiene esa propiedad. La etiqueta bajo un mensaje te dice cuál le tocó realmente.
 
-Dos cosas cruzan esta línea, y solo cuando tú lo pides. Resumir, traducir o transcribir un mensaje lo descifra en tu dispositivo y lo envía; buscar un nombre en Wikipedia envía ese nombre, no el mensaje del que salió. La sección 6 dice quién recibe cada cosa. Las funciones de IA preguntan antes de la primera vez y tienen un interruptor en Perfil; la búsqueda ocurre con el toque y no de otro modo, así que no hay nada permanente que apagar.`,
+Una sola cosa cruza esta línea, y solo cuando tú lo pides: buscar un nombre en Wikipedia envía ese nombre, no el mensaje del que salió. La sección 6 dice quién lo recibe, y la consulta ocurre con el toque y no en otro momento, así que no hay nada que apagar. Resumir, traducir y transcribir también la cruzarían: están apagados en esta versión, y no hay ningún control en la aplicación que los encienda.`,
     },
     {
       title: '2. Qué no está cifrado, y qué podemos ver',
@@ -471,7 +471,7 @@ La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo c
 • Google Cloud Translation: el texto de un mensaje, cuando pides una traducción.
 • Cloudflare Workers AI: hasta los últimos 50 mensajes de una conversación, cuando pides un resumen o haces una pregunta sobre ella.
 
-Los tres últimos solo se activan si has encendido las funciones de IA, y solo con lo que hayas seleccionado en ese momento. Lo que se envía se envía para producir tu resultado, no para entrenar nada. Ni la transcripción ni la traducción se guardan en nuestros servidores: la transcripción vuelve a tu dispositivo y se cifra ahí antes de guardarse, y la traducción no se guarda en absoluto.
+Los tres últimos están apagados en esta versión. No hay ningún control en la aplicación que encienda la transcripción, la traducción o los resúmenes, así que nada llega a esos tres servicios. Están en la lista en vez de borrados porque el código sigue aquí y las funciones han de volver: cuando vuelvan, volverán con esta declaración y con una pregunta antes del primer uso. Lo que se enviaría entonces se envía para producir tu resultado, no para entrenar nada; ni una transcripción ni una traducción se guardan en nuestros servidores.
 
 La búsqueda en Wikipedia no tiene interruptor porque no hay nada permanente que apagar: se ejecuta con el toque y no de otro modo. Wikipedia recibe ese nombre y tu dirección IP, igual que si lo hubieras escrito en su buscador; ninguna cuenta, ningún mensaje, ninguna conversación. Lo que vuelve se muestra y no se guarda, y nada de ello se escribe en la conversación.
 
@@ -538,7 +538,7 @@ Ce que nous pouvons voir, c'est qu'une conversation a eu lieu : quels comptes y 
 
 La plupart des messages individuels et de groupe utilisent en plus un cliquet : chaque message a sa propre clé, si bien qu'un appareil compromis n'expose pas les messages précédents. Les conversations où le client de quelqu'un n'a pas publié le matériel de clé plus récent retombent sur une seule clé de longue durée, qui n'a pas cette propriété. La mention sous un message vous dit lequel il a réellement emprunté.
 
-Deux choses franchissent cette ligne, et uniquement lorsque vous le demandez. Résumer, traduire ou transcrire un message le déchiffre sur votre appareil et l’envoie ; chercher un nom sur Wikipédia envoie ce seul nom, pas le message dont il provient. La section 6 indique qui reçoit quoi. Les fonctions d’IA demandent avant la première fois et disposent d’un interrupteur dans Profil ; la recherche se déclenche au geste et pas autrement, il n’y a donc rien de permanent à éteindre.`,
+Une seule chose franchit cette ligne, et uniquement lorsque vous le demandez : chercher un nom sur Wikipédia envoie ce nom, pas le message dont il vient. La section 6 dit qui le reçoit, et la requête a lieu au moment où vous touchez et pas autrement, il n’y a donc rien à désactiver. Résumer, traduire et transcrire la franchiraient aussi : ces fonctions sont désactivées dans cette version, et aucune commande de l’application ne les active.`,
     },
     {
       title: '2. Ce qui n\'est pas chiffré, et ce que nous voyons',
@@ -589,7 +589,7 @@ La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sau
 • Google Cloud Translation — le texte d’un message, lorsque vous demandez une traduction.
 • Cloudflare Workers AI — jusqu’aux 50 derniers messages d’une conversation, lorsque vous demandez un résumé ou posez une question à son sujet.
 
-Les trois derniers ne s’exécutent que si vous avez activé les fonctions d’IA, et uniquement sur ce que vous avez sélectionné à ce moment-là. Ce qui est envoyé l’est pour produire votre résultat, pas pour entraîner quoi que ce soit. Ni la transcription ni la traduction ne sont conservées sur nos serveurs : une transcription revient sur votre appareil et y est chiffrée avant d’être enregistrée, et une traduction n’est pas enregistrée du tout.
+Les trois derniers sont désactivés dans cette version. Aucune commande de l’application n’active la transcription, la traduction ou les résumés, donc rien ne parvient à ces trois services. Ils sont listés plutôt que supprimés parce que le code est toujours là et que ces fonctions sont censées revenir — et quand elles reviendront, elles reviendront avec cette déclaration et avec une demande avant la première utilisation. Ce qui serait alors envoyé l’est pour produire votre résultat, pas pour entraîner quoi que ce soit ; ni une transcription ni une traduction ne sont conservées sur nos serveurs.
 
 Cette recherche n’a pas d’interrupteur, parce qu’il n’y a rien de permanent à éteindre : elle s’exécute au moment du geste et pas autrement. Wikipédia reçoit ce nom et votre adresse IP, exactement comme si vous l’aviez tapé dans sa barre de recherche — aucun compte, aucun message, aucune conversation. Ce qui revient est affiché et non conservé, et rien n’en est écrit dans la conversation.
 
@@ -656,7 +656,7 @@ Quello che possiamo vedere è che una conversazione è avvenuta: quali account n
 
 La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: ogni messaggio ha la propria chiave, quindi compromettere il tuo dispositivo non espone quelli precedenti. Le conversazioni in cui il client di qualcuno non ha pubblicato il materiale di chiave più recente ricadono su un'unica chiave di lunga durata, che non ha questa proprietà. L'etichetta sotto un messaggio ti dice quale percorso ha davvero seguito.
 
-Due cose attraversano questa linea, e solo quando lo chiedi tu. Riassumere, tradurre o trascrivere un messaggio lo decifra sul tuo dispositivo e lo invia; cercare un nome su Wikipedia invia quel solo nome, non il messaggio da cui proviene. La sezione 6 dice chi riceve cosa. Le funzioni di IA chiedono prima della prima volta e hanno un interruttore nel Profilo; la ricerca avviene con il tocco e non altrimenti, quindi non c’è nulla di permanente da spegnere.`,
+Una cosa sola attraversa questa linea, e solo quando lo chiedi tu: cercare un nome su Wikipedia invia quel nome, non il messaggio da cui viene. La sezione 6 dice chi lo riceve, e la richiesta avviene al tocco e non altrimenti, quindi non c'è nulla da spegnere. Anche riassumere, tradurre e trascrivere la attraverserebbero: in questa versione sono spenti, e nell'app non c'è alcun comando che li accenda.`,
     },
     {
       title: '2. Che cosa non è cifrato, e che cosa vediamo',
@@ -707,7 +707,7 @@ La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo,
 • Google Cloud Translation — il testo di un messaggio, quando chiedi una traduzione.
 • Cloudflare Workers AI — fino agli ultimi 50 messaggi di una conversazione, quando chiedi un riassunto o fai una domanda su di essa.
 
-Gli ultimi tre si attivano solo se hai acceso le funzioni di IA, e solo su ciò che hai selezionato in quel momento. Ciò che viene inviato serve a produrre il tuo risultato, non ad addestrare nulla. Né la trascrizione né la traduzione restano sui nostri server: la trascrizione torna sul tuo dispositivo e lì viene cifrata prima di essere salvata, e la traduzione non viene salvata affatto.
+Gli ultimi tre sono spenti in questa versione. Nell'app non c'è alcun comando che accenda trascrizione, traduzione o riassunti, quindi a quei tre servizi non arriva nulla. Sono elencati anziché cancellati perché il codice è ancora qui e le funzioni devono tornare: quando torneranno, torneranno con questa informativa e con una richiesta prima del primo uso. Ciò che verrebbe inviato allora è inviato per produrre il tuo risultato, non per addestrare nulla; né una trascrizione né una traduzione vengono conservate sui nostri server.
 
 Questa ricerca non ha un interruttore perché non c’è nulla di permanente da spegnere: parte con il tocco e non altrimenti. Wikipedia riceve quel nome e il tuo indirizzo IP, esattamente come se lo avessi digitato nella sua casella di ricerca — nessun account, nessun messaggio, nessuna conversazione. Ciò che torna viene mostrato e non salvato, e nulla di tutto questo viene scritto nella conversazione.
 
@@ -774,7 +774,7 @@ O que conseguimos ver é que houve uma conversa: que contas fazem parte dela e q
 
 A maioria das mensagens individuais e de grupo usa ainda um roquete: cada mensagem tem a sua própria chave, por isso comprometer o teu dispositivo não expõe as anteriores. As conversas em que o cliente de alguém não publicou o material de chave mais recente recaem numa única chave de longa duração, que não tem essa propriedade. A etiqueta por baixo de uma mensagem diz-te qual delas ela realmente seguiu.
 
-Duas coisas atravessam esta linha, e apenas quando as pedes. Resumir, traduzir ou transcrever uma mensagem decifra-a no teu dispositivo e envia-a; procurar um nome na Wikipédia envia esse único nome, não a mensagem de onde saiu. A secção 6 diz quem recebe o quê. As funcionalidades de IA perguntam antes da primeira vez e têm um interruptor no Perfil; a procura acontece no toque e não de outra forma, portanto não há nada permanente para desligar.`,
+Só uma coisa atravessa esta linha, e apenas quando a pedes: procurar um nome na Wikipédia envia esse nome, não a mensagem de onde ele veio. A secção 6 diz quem o recebe, e o pedido acontece no toque e não de outra forma, por isso não há nada para desligar. Resumir, traduzir e transcrever também a atravessariam: estão desligados nesta versão, e não há na aplicação qualquer controlo que os ligue.`,
     },
     {
       title: '2. O que não está cifrado, e o que conseguimos ver',
@@ -825,7 +825,7 @@ A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo, exce
 • Google Cloud Translation — o texto de uma mensagem, quando pedes uma tradução.
 • Cloudflare Workers AI — até às últimas 50 mensagens de uma conversa, quando pedes um resumo ou fazes uma pergunta sobre ela.
 
-Os últimos três só correm se tiveres ligado as funcionalidades de IA, e apenas sobre o que selecionaste nesse momento. O que é enviado é enviado para produzir o teu resultado, não para treinar seja o que for. Nem a transcrição nem a tradução ficam nos nossos servidores: a transcrição volta ao teu aparelho e é cifrada aí antes de ser guardada, e a tradução não é guardada de todo.
+Os últimos três estão desligados nesta versão. Não há na aplicação qualquer controlo que ligue a transcrição, a tradução ou os resumos, por isso nada chega a esses três serviços. Estão listados em vez de apagados porque o código continua aqui e as funcionalidades hão de voltar — e quando voltarem, voltam com esta divulgação e com uma pergunta antes da primeira utilização. O que seria enviado então é enviado para produzir o teu resultado, não para treinar nada; nem uma transcrição nem uma tradução ficam guardadas nos nossos servidores.
 
 Esta procura não tem interruptor porque não há nada permanente para desligar: corre no toque e não de outra forma. A Wikipédia recebe esse nome e o teu endereço IP, tal como se o tivesses escrito na caixa de pesquisa dela — nenhuma conta, nenhuma mensagem, nenhuma conversa. O que volta é mostrado e não guardado, e nada disso é escrito na conversa.
 
@@ -892,7 +892,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
 
 Большинство личных и групповых сообщений дополнительно используют храповик: у каждого сообщения свой ключ, поэтому компрометация устройства не раскрывает более ранние. Разговоры, где чей-то клиент не опубликовал более новый ключевой материал, откатываются на один долгоживущий ключ, у которого этого свойства нет. Отметка под сообщением говорит, каким путём оно пошло на самом деле.
 
-Эту линию пересекают две вещи, и только когда вы сами просите. Краткий пересказ, перевод или расшифровка сообщения расшифровывают его на вашем устройстве и отправляют дальше; поиск имени в Википедии отправляет только это имя, а не сообщение, из которого оно взято. Кто что получает, сказано в разделе 6. Функции ИИ спрашивают перед первым разом, и переключатель есть в профиле; поиск срабатывает по нажатию и никак иначе, так что выключать нечего.`,
+Эту линию пересекает одно, и только когда вы сами просите: поиск имени в Википедии отправляет это имя, а не сообщение, из которого оно взято. Кто его получает, сказано в разделе 6; запрос происходит по нажатию и никак иначе, так что выключать нечего. Пересказ, перевод и расшифровка пересекали бы её тоже — в этом выпуске они выключены, и в приложении нет ничего, что их включает.`,
     },
     {
       title: '2. Что не зашифровано и что мы видим',
@@ -943,7 +943,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
 • В Google Cloud Translation — текст одного сообщения, когда вы просите перевод.
 • В Cloudflare Workers AI — до последних 50 сообщений одной переписки, когда вы просите сводку или задаёте вопрос о ней.
 
-Последние три работают, только если вы включили функции ИИ, и только с тем, что вы выбрали в тот момент. Отправленное отправляется, чтобы получить ваш результат, а не чтобы что-то обучать. Ни расшифровка, ни перевод не хранятся на наших серверах: расшифровка возвращается на ваше устройство и шифруется там перед сохранением, а перевод не сохраняется вовсе.
+Последние три в этом выпуске выключены. В приложении нет ничего, что включает расшифровку, перевод или пересказ, поэтому в эти три службы ничего не уходит. Они перечислены, а не удалены, потому что код на месте и эти функции должны вернуться — а когда вернутся, вернутся вместе с этим раскрытием и с вопросом перед первым использованием. То, что тогда будет отправлено, отправляется, чтобы получить ваш результат, а не чтобы что-то обучать; ни расшифровка, ни перевод не хранятся на наших серверах.
 
 У этого поиска нет переключателя, потому что нечего постоянно выключать: он срабатывает по нажатию и никак иначе. Википедия получает это имя и ваш IP-адрес — ровно так же, как если бы вы сами набрали его в её строке поиска: ни аккаунта, ни сообщения, ни переписки. То, что возвращается, показывается и не сохраняется, и ничего из этого не записывается в переписку.
 
@@ -1010,7 +1010,7 @@ Görebildiğimiz şey, bir konuşmanın gerçekleştiği: içinde hangi hesaplar
 
 Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanır: her mesajın kendi anahtarı vardır, bu yüzden cihazının ele geçirilmesi önceki mesajları açığa çıkarmaz. Birinin istemcisinin daha yeni anahtar malzemesini yayımlamadığı konuşmalar, bu özelliği taşımayan tek bir uzun ömürlü anahtara geri düşer. Mesajın altındaki etiket, o mesajın gerçekte hangisini kullandığını söyler.
 
-Bu çizgiyi iki şey aşar ve yalnızca sen istediğinde. Bir mesajı özetlemek, çevirmek ya da yazıya dökmek onu cihazında çözer ve dışarı gönderir; Vikipedi'de bir ad aramak yalnızca o adı gönderir, geldiği mesajı değil. Hangisinin kime gittiği 6. bölümde. Yapay zekâ özellikleri ilk seferden önce sorar ve Profil'de bir anahtarı vardır; arama ise dokunuşla olur, başka türlü olmaz, dolayısıyla kapatılacak kalıcı bir şey yoktur.`,
+Bu çizgiyi tek bir şey aşar, o da yalnızca sen istediğinde: Vikipedi'de bir isim aramak o ismi gönderir, geldiği mesajı değil. Kimin aldığı 6. bölümde yazıyor; sorgu yalnızca dokunduğun anda yapılır, başka zaman değil, dolayısıyla kapatılacak bir şey yok. Özetleme, çeviri ve yazıya dökme de bu çizgiyi aşardı — bu sürümde kapalılar ve uygulamada onları açan hiçbir denetim yok.`,
     },
     {
       title: '2. Şifreli olmayanlar ve bizim görebildiklerimiz',
@@ -1061,7 +1061,7 @@ Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazm
 • Google Cloud Translation — bir çeviri istediğinde, tek bir mesajın metni.
 • Cloudflare Workers AI — bir özet istediğinde ya da bir konuşma hakkında soru sorduğunda, o konuşmanın son 50 mesajına kadarı.
 
-Son üçü yalnızca yapay zekâ özelliklerini açtıysan ve yalnızca o anda seçtiğin şey üzerinde çalışır. Gönderilen şey senin sonucunu üretmek için gönderilir, herhangi bir şeyi eğitmek için değil. Ne yazıya dökülen metin ne de çeviri sunucularımızda durur: yazıya dökülen metin cihazına döner ve kaydedilmeden önce orada şifrelenir, çeviri ise hiç kaydedilmez.
+Son üçü bu sürümde kapalı. Uygulamada yazıya dökmeyi, çeviriyi ya da özetleri açan hiçbir denetim yok, dolayısıyla bu üç hizmete hiçbir şey ulaşmıyor. Silinmek yerine burada duruyorlar çünkü kod hâlâ burada ve bu özelliklerin geri gelmesi planlanıyor — geri geldiklerinde bu açıklamayla ve ilk kullanımdan önce sorulan soruyla birlikte gelecekler. O zaman gönderilecek olan şey senin sonucunu üretmek içindir, bir şeyi eğitmek için değil; ne bir döküm ne de bir çeviri sunucularımızda saklanır.
 
 Bu aramanın anahtarı yok, çünkü kapatılacak kalıcı bir şey yok: dokunduğun anda çalışır, başka zaman çalışmaz. Vikipedi o adı ve IP adresini alır; tıpkı arama kutusuna kendin yazmış olsaydın olacağı gibi — hesap yok, mesaj yok, konuşma yok. Dönen şey gösterilir, saklanmaz ve hiçbiri konuşmaya yazılmaz.
 
@@ -1128,7 +1128,7 @@ Thứ chúng tôi thấy được là đã có một cuộc trò chuyện: nhữ
 
 Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet: mỗi tin nhắn có khoá riêng, nên thiết bị bị xâm nhập cũng không làm lộ những tin nhắn trước đó. Những cuộc trò chuyện mà máy của ai đó chưa công bố vật liệu khoá mới hơn sẽ quay về dùng một khoá dài hạn duy nhất, vốn không có tính chất đó. Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự đi theo đường nào.
 
-Có hai thứ vượt qua ranh giới này, và chỉ khi bạn yêu cầu. Tóm tắt, dịch hoặc chép lại một tin nhắn sẽ giải mã nó trên thiết bị của bạn rồi gửi đi; tra một cái tên trên Wikipedia chỉ gửi đúng cái tên đó, không phải tin nhắn chứa nó. Mục 6 cho biết ai nhận cái gì. Các tính năng AI hỏi trước lần đầu tiên và có công tắc trong Hồ sơ; việc tra cứu diễn ra ngay lúc chạm và không lúc nào khác, nên không có gì thường trực để tắt.`,
+Chỉ một thứ vượt qua ranh giới này, và chỉ khi bạn yêu cầu: tra một cái tên trên Wikipedia sẽ gửi đi cái tên đó, không phải tin nhắn chứa nó. Mục 6 nói ai nhận nó; yêu cầu xảy ra đúng lúc bạn chạm, không lúc nào khác, nên chẳng có gì để tắt. Tóm tắt, dịch và chép lại cũng sẽ vượt qua ranh giới ấy — trong bản này chúng đã tắt, và trong ứng dụng không có nút nào bật chúng lên.`,
     },
     {
       title: '2. Những gì không được mã hoá, và chúng tôi thấy gì',
@@ -1179,7 +1179,7 @@ Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rờ
 • Google Cloud Translation — phần chữ của một tin nhắn, khi bạn yêu cầu dịch.
 • Cloudflare Workers AI — tối đa 50 tin nhắn gần nhất của một cuộc trò chuyện, khi bạn yêu cầu tóm tắt hoặc đặt câu hỏi về nó.
 
-Ba mục cuối chỉ chạy khi bạn đã bật các tính năng AI, và chỉ trên phần bạn chọn ngay lúc đó. Những gì được gửi đi là để tạo ra kết quả cho bạn, không phải để huấn luyện bất cứ thứ gì. Cả bản chuyển văn bản lẫn bản dịch đều không nằm trên máy chủ của chúng tôi: bản chuyển văn bản quay về thiết bị của bạn và được mã hoá ở đó trước khi lưu, còn bản dịch thì không được lưu.
+Ba mục cuối đã tắt trong bản này. Trong ứng dụng không có nút nào bật chép lời, dịch hay tóm tắt lên, nên chẳng có gì đến được ba dịch vụ đó. Chúng được liệt kê thay vì xoá đi vì mã nguồn vẫn còn và các tính năng này dự kiến sẽ quay lại — và khi quay lại, chúng quay lại kèm phần công bố này và một lời hỏi trước lần dùng đầu tiên. Thứ sẽ được gửi khi đó là để tạo ra kết quả cho bạn, không phải để huấn luyện bất cứ thứ gì; cả bản chép lời lẫn bản dịch đều không được lưu trên máy chủ của chúng tôi.
 
 Việc tra cứu này không có công tắc, vì không có gì thường trực để tắt: nó chạy đúng lúc bạn chạm và không lúc nào khác. Wikipedia nhận cái tên đó và địa chỉ IP của bạn, giống hệt như khi bạn tự gõ vào ô tìm kiếm của họ — không tài khoản, không tin nhắn, không cuộc trò chuyện. Thứ trả về được hiển thị chứ không lưu, và không có gì trong đó được ghi vào cuộc trò chuyện.
 
@@ -1246,7 +1246,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 1 対 1 とグループのメッセージの多くは、さらにラチェットを使います。メッセージごとに鍵が違うため、端末が侵害されても過去のメッセージまでは読まれません。相手のクライアントが新しい鍵素材を公開していない会話では、単一の長期鍵に戻り、その性質はありません。メッセージの下の表示が、そのメッセージが実際にどちらを通ったかを教えます。
 
-この線を越えるものはふたつあり、いずれもあなたが求めたときに限ります。メッセージの要約・翻訳・文字起こしは、その端末で復号したうえで外に送ります。Wikipedia で名前を調べるときに送るのはその名前ひとつで、元のメッセージではありません。それぞれの送り先は第 6 節に書いてあります。AI 機能は最初の一回の前に確認し、スイッチはプロフィールにあります。検索はタップしたときだけ動くので、切るべきものはありません。`,
+この線を越えるものはひとつだけで、それもあなたが求めたときに限ります。Wikipedia で名前を調べるときに送るのはその名前ひとつで、元のメッセージではありません。誰が受け取るかは第 6 節に書いてあります。この通信はあなたが押したそのときにだけ起き、それ以外では起きないので、止めるべきものもありません。要約・翻訳・文字起こしも同じくこの線を越えるものですが、本リリースでは無効で、アプリのどこにもそれを有効にする操作はありません。`,
     },
     {
       title: '2. 暗号化されないもの、私たちに見えるもの',
@@ -1297,7 +1297,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • Google Cloud Translation — 翻訳を求めたとき、そのメッセージ 1 件の本文。
 • Cloudflare Workers AI — 要約や会話への質問を求めたとき、その会話の直近 50 件までのメッセージ。
 
-後ろの 3 つは、AI 機能をオンにしている場合にのみ、しかもその時点で選んだものに対してだけ動きます。送られるのはあなたの結果を作るためであって、何かを学習させるためではありません。文字起こしも翻訳も当社のサーバーには残りません。文字起こしはあなたの端末に戻り、そこで暗号化されてから保存されます。翻訳はそもそも保存されません。
+後ろの 3 つは、本リリースでは無効です。文字起こし・翻訳・要約を有効にする操作はアプリのどこにもないので、この 3 つのサービスには何も届きません。削除せずに残してあるのは、コードがまだあり、これらの機能を戻す予定だからです。戻すときは、この開示と初回前の確認をともなって戻します。そのとき送られるものは、あなたの結果を作るためであって、何かを学習させるためではありません。文字起こしも翻訳も当社のサーバーには保存しません。
 
 この検索にスイッチはありません。切るべき常駐のものが何もないからです。タップしたその一回だけ動き、それ以外では動きません。Wikipedia が受け取るのはその名前とあなたの IP アドレスだけで、検索窓に自分で入力した場合と同じです。アカウントもメッセージも会話も送りません。返ってきたものは表示するだけで保存せず、会話にも何も書き込みません。
 
@@ -1364,7 +1364,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 대부분의 1:1 및 그룹 메시지는 여기에 더해 래칫을 씁니다. 메시지마다 키가 달라서, 기기가 뚫려도 이전 메시지까지 드러나지는 않습니다. 상대의 클라이언트가 새 키 자료를 게시하지 않은 대화는 단일 장기 키로 되돌아가며, 그 키에는 이 성질이 없습니다. 메시지 아래 표시가 그 메시지가 실제로 어느 쪽을 거쳤는지 알려 줍니다.
 
-이 선을 넘는 것은 두 가지이며, 둘 다 당신이 요청할 때만 일어납니다. 메시지를 요약·번역·전사하면 기기에서 복호화한 뒤 밖으로 보냅니다. 위키백과에서 이름을 찾아볼 때 보내는 것은 그 이름 하나이고, 그것이 들어 있던 메시지가 아닙니다. 각각 누구에게 가는지는 6절에 있습니다. AI 기능은 처음 한 번 전에 묻고 스위치는 프로필에 있으며, 찾아보기는 누른 그 순간에만 동작하므로 꺼야 할 것이 없습니다.`,
+이 선을 넘는 것은 하나뿐이며, 그것도 당신이 요청할 때만 일어납니다. 위키백과에서 이름을 찾아볼 때 보내는 것은 그 이름 하나이고, 그것이 들어 있던 메시지가 아닙니다. 누가 받는지는 6절에 있습니다. 이 요청은 누른 그 순간에만 일어나고 그 외에는 일어나지 않으므로 끌 것도 없습니다. 요약·번역·전사도 이 선을 넘는 일이지만, 이번 릴리스에서는 꺼져 있고 앱 어디에도 그것을 켜는 설정이 없습니다.`,
     },
     {
       title: '2. 암호화되지 않는 것과 우리가 볼 수 있는 것',
@@ -1415,7 +1415,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • Google Cloud Translation — 번역을 요청할 때, 메시지 하나의 텍스트.
 • Cloudflare Workers AI — 요약을 요청하거나 대화에 대해 질문할 때, 그 대화의 최근 50개까지의 메시지.
 
-뒤의 셋은 AI 기능을 켠 경우에만, 그리고 그 순간 선택한 것에 대해서만 동작합니다. 보내는 것은 당신의 결과를 만들기 위한 것이지 무언가를 학습시키기 위한 것이 아닙니다. 전사도 번역도 저희 서버에 남지 않습니다. 전사는 당신의 기기로 돌아와 거기서 암호화된 뒤 저장되고, 번역은 아예 저장되지 않습니다.
+뒤의 셋은 이번 릴리스에서 꺼져 있습니다. 전사·번역·요약을 켜는 설정이 앱 어디에도 없으므로 그 세 서비스에는 아무것도 도달하지 않습니다. 지우지 않고 남겨 둔 것은 코드가 아직 있고 이 기능들을 되돌릴 계획이기 때문입니다. 되돌릴 때는 이 고지와 첫 사용 전 확인을 함께 되돌립니다. 그때 보내지는 것은 당신의 결과를 만들기 위한 것이지 무언가를 학습시키기 위한 것이 아니며, 전사도 번역도 저희 서버에 저장되지 않습니다.
 
 이 찾아보기에는 스위치가 없습니다. 꺼야 할 상시 동작이 없기 때문입니다. 누른 그 순간에만 실행되고 그 외에는 실행되지 않습니다. 위키백과가 받는 것은 그 이름과 당신의 IP 주소뿐이며, 검색창에 직접 입력한 것과 같습니다. 계정도, 메시지도, 대화도 함께 가지 않습니다. 돌아온 내용은 보여줄 뿐 저장하지 않고, 대화에도 아무것도 기록하지 않습니다.
 
@@ -1482,7 +1482,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 大多數一對一和群組訊息還額外使用了棘輪（ratchet）：每則訊息有自己的金鑰，所以即使你的裝置被攻破，也讀不出更早的訊息。如果對方的用戶端還沒有發布較新的金鑰材料，這個對話會回落到一把長期金鑰，那種情況下沒有上面這個性質。訊息下方的標記會告訴你這一則實際走的是哪一種。
 
-有兩件事會越過這條線，而且都只在你主動要求時。摘要、翻譯或轉寫一則訊息，會在你的裝置上把它解密後送出去；在維基百科查一個名字，送出去的是那一個名字，而不是它所在的訊息。分別送給誰寫在第 6 節。AI 功能在第一次之前會先詢問你，開關在「我的」裡；查詢則只在你點的那一下發生，沒有什麼常駐的東西可關。`,
+只有一件事會越過這條線，而且只在你主動要求時：在維基百科查一個名字，送出去的是那一個名字，而不是它所在的訊息。送給誰寫在第 6 節；查詢只在你點的那一下發生，除此之外不發生，所以沒有什麼需要關掉。摘要、翻譯和轉寫同樣會越過這條線——它們在本次發行中是關閉的，應用程式裡沒有任何開關可以打開它們。`,
     },
     {
       title: '2. 哪些沒有加密，以及我們能看到什麼',
@@ -1533,7 +1533,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • Google Cloud Translation——當你要求翻譯時，一則訊息的文字。
 • Cloudflare Workers AI——當你要求摘要或就一段對話提問時，該對話最近至多 50 則訊息。
 
-後三者只在你開啟了 AI 功能之後才運作，而且只處理你當下選中的內容。送出去的東西是為了產出你要的結果，不用於訓練任何模型。轉寫和翻譯都不留在我們的伺服器上：轉寫會回到你的裝置，在那裡加密後再儲存；翻譯則根本不儲存。
+後三者在本次發行中是關閉的。應用程式裡沒有任何開關可以打開轉寫、翻譯或摘要，所以沒有任何內容會到達這三個服務。之所以列出而不是刪掉，是因為程式碼還在、這些功能還打算回來——它們回來的時候，會連同這段揭露和首次使用前的詢問一起回來。到那時送出去的東西，是為了產出你要的結果，不用於訓練任何模型；轉寫和翻譯都不會留在我們的伺服器上。
 
 維基百科查詢沒有開關，因為沒有什麼常駐的東西可關：它只在你點的那一下運作，此外不運作。維基百科收到的是那一個名字和你的 IP 位址，跟你自己在它的搜尋框裡輸入一樣——沒有帳號，沒有訊息，沒有對話。回傳的內容只是顯示出來，不保存，也不會寫進對話裡。
 
@@ -1600,7 +1600,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 معظم الرسائل الثنائية والجماعية تستخدم إضافةً إلى ذلك آلية سقّاطة: لكل رسالة مفتاحها الخاص، فاختراق جهازك لا يكشف الرسائل الأسبق. أما المحادثات التي لم ينشر فيها تطبيق أحدهم مادة المفاتيح الأحدث فترتدّ إلى مفتاح واحد طويل الأمد لا يتمتع بهذه الخاصية. العلامة أسفل الرسالة تخبرك أيّ المسارين سلكته فعلًا.
 
-شيئان يتجاوزان هذا الخط، ولا يحدث ذلك إلا حين تطلبهما أنت. فتلخيص رسالة أو ترجمتها أو تفريغها نصًّا يفكّ تشفيرها على جهازك ثم يرسلها إلى الخارج؛ والبحث عن اسم في ويكيبيديا يرسل ذلك الاسم وحده، لا الرسالة التي ورد فيها. والقسم 6 يذكر مَن يتلقّى كلًّا منهما. وميزات الذكاء الاصطناعي تسألك قبل المرة الأولى ولها مفتاح في الملف الشخصي؛ أما البحث فيحدث عند الضغط ولا يحدث في غير ذلك، فلا شيء دائم يُطفأ.`,
+شيء واحد يتجاوز هذا الخط، ولا يحدث ذلك إلا حين تطلبه أنت: البحث عن اسم في ويكيبيديا يرسل ذلك الاسم وحده، لا الرسالة التي ورد فيها. والقسم 6 يذكر من يتلقاه، والطلب يقع عند اللمسة ولا يقع في غيرها، فليس هناك ما يُطفأ. أما التلخيص والترجمة والتفريغ فكانت تتجاوزه أيضًا؛ وهي معطَّلة في هذا الإصدار، وليس في التطبيق أي أداة تشغّلها.`,
     },
     {
       title: '2. ما ليس مُعمّى، وما نستطيع رؤيته',
@@ -1651,7 +1651,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • Google Cloud Translation — نص رسالة واحدة، حين تطلب ترجمتها.
 • Cloudflare Workers AI — حتى آخر 50 رسالة من محادثة واحدة، حين تطلب ملخّصًا أو تسأل سؤالًا عنها.
 
-الثلاثة الأخيرة لا تعمل إلا إذا فعّلت ميزات الذكاء الاصطناعي، وعلى ما اخترته في تلك اللحظة فقط. وما يُرسَل يُرسَل لإنتاج نتيجتك، لا لتدريب أي شيء. ولا يبقى التفريغ النصي ولا الترجمة على خوادمنا: يعود التفريغ إلى جهازك ويُشفَّر هناك قبل حفظه، أما الترجمة فلا تُحفظ أصلًا.
+الثلاثة الأخيرة معطَّلة في هذا الإصدار. لا توجد في التطبيق أي أداة تشغّل التفريغ أو الترجمة أو التلخيص، ومن ثمّ لا يصل إلى تلك الخدمات الثلاث شيء. وهي مذكورة بدل أن تُحذف لأن الشيفرة ما زالت هنا ولأن هذه الميزات يُفترض أن تعود — وحين تعود، تعود مع هذا الإفصاح ومع سؤال قبل الاستخدام الأول. وما سيُرسَل حينها يُرسَل لإنتاج نتيجتك، لا لتدريب أي شيء؛ ولا يُحفَظ على خوادمنا نصّ مفرَّغ ولا ترجمة.
 
 لا يوجد مفتاح لهذا البحث لأنه لا يوجد شيء دائم يُطفأ: فهو يعمل عند الضغط ولا يعمل في غير ذلك. تتلقّى ويكيبيديا ذلك الاسم وعنوان IP الخاص بك، تمامًا كما لو كتبته بنفسك في مربّع البحث لديها — بلا حساب ولا رسالة ولا محادثة. وما يعود يُعرض ولا يُحفظ، ولا يُكتب منه شيء في المحادثة.
 
@@ -1718,7 +1718,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 अधिकतर आमने-सामने और समूह संदेश इसके अलावा एक रैचेट भी इस्तेमाल करते हैं: हर संदेश की अपनी कुंजी होती है, इसलिए आपका डिवाइस हाथ लग जाने पर भी पहले के संदेश उजागर नहीं होते। जिन बातचीतों में किसी के क्लाइंट ने नई कुंजी सामग्री प्रकाशित नहीं की, वे एक ही दीर्घकालिक कुंजी पर लौट आती हैं, जिसमें यह गुण नहीं होता। संदेश के नीचे का चिह्न बताता है कि उसे असल में कौन-सा रास्ता मिला।
 
-दो चीज़ें इस रेखा को पार करती हैं, और केवल तब जब आप कहें। किसी संदेश का सारांश, अनुवाद या लिप्यंतरण उसे आपके डिवाइस पर डिक्रिप्ट करके आगे भेजता है; विकिपीडिया पर कोई नाम देखना केवल वही नाम भेजता है, वह संदेश नहीं जिसमें वह था। कौन क्या पाता है, यह खंड 6 में है। AI सुविधाएँ पहली बार से पहले पूछती हैं और उनका स्विच प्रोफ़ाइल में है; खोज दबाने पर ही होती है, इसलिए बंद करने लायक कुछ स्थायी नहीं है।`,
+इस रेखा को एक ही चीज़ पार करती है, और वह भी तभी जब आप कहें: विकिपीडिया पर कोई नाम खोजने से वही एक नाम जाता है, वह संदेश नहीं जिसमें वह था। कौन उसे पाता है, यह खंड 6 में लिखा है; अनुरोध आपके टैप पर होता है और उसके बाहर कभी नहीं, इसलिए बंद करने को कुछ है ही नहीं। सारांश, अनुवाद और लिप्यंतरण भी इसे पार करते — वे इस रिलीज़ में बंद हैं, और ऐप में कहीं भी कोई नियंत्रण नहीं है जो उन्हें चालू करे।`,
     },
     {
       title: '2. क्या एन्क्रिप्टेड नहीं है, और हम क्या देख सकते हैं',
@@ -1769,7 +1769,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 • Google Cloud Translation — जब आप अनुवाद माँगते हैं, तो एक संदेश का पाठ।
 • Cloudflare Workers AI — जब आप सारांश माँगते हैं या किसी बातचीत के बारे में सवाल पूछते हैं, तो उस बातचीत के पिछले 50 तक संदेश।
 
-आख़िरी तीन तभी चलते हैं जब आपने AI सुविधाएँ चालू की हों, और सिर्फ़ उसी पर जो आपने उस समय चुना। जो भेजा जाता है वह आपका नतीजा बनाने के लिए भेजा जाता है, किसी चीज़ को प्रशिक्षित करने के लिए नहीं। न लिप्यंतरण हमारे सर्वर पर रहता है, न अनुवाद: लिप्यंतरण आपके डिवाइस पर लौटता है और वहीं एन्क्रिप्ट होकर सहेजा जाता है, और अनुवाद सहेजा ही नहीं जाता।
+आख़िरी तीन इस रिलीज़ में बंद हैं। ऐप में कहीं भी ऐसा कोई नियंत्रण नहीं है जो लिप्यंतरण, अनुवाद या सारांश चालू करे, इसलिए उन तीन सेवाओं तक कुछ भी नहीं पहुँचता। इन्हें हटाने के बजाय सूचीबद्ध रखा गया है क्योंकि कोड अब भी यहीं है और ये सुविधाएँ लौटनी हैं — और जब लौटेंगी, तो इसी घोषणा और पहली बार से पहले पूछे जाने वाले सवाल के साथ लौटेंगी। तब जो भेजा जाएगा वह आपका नतीजा बनाने के लिए भेजा जाएगा, किसी चीज़ को प्रशिक्षित करने के लिए नहीं; न लिप्यंतरण हमारे सर्वरों पर रखा जाता है और न अनुवाद।
 
 इस खोज के लिए कोई स्विच नहीं है, क्योंकि बंद करने लायक कुछ स्थायी है ही नहीं: यह उसी दबाने पर चलती है, और कभी नहीं। विकिपीडिया को वह नाम और आपका IP पता मिलता है — ठीक वैसे ही जैसे आपने उसके खोज बॉक्स में स्वयं लिखा हो; न कोई खाता, न कोई संदेश, न कोई बातचीत। जो लौटता है वह दिखाया जाता है, सहेजा नहीं जाता, और उसमें से कुछ भी बातचीत में नहीं लिखा जाता।
 

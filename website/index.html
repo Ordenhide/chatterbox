@@ -113,8 +113,9 @@
         <li class="reason">
           <div class="reason-num" aria-hidden="true">05</div>
           <div class="reason-body">
-            <h3>AI is off until you turn it on, and every provider is named</h3>
-            <p>Summaries, translation and transcription decrypt content on your device and send it onward. Section 6 of the privacy policy names each service that receives it — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — and says exactly what reaches it. The app asks before the first time, and the switch lives in your profile.</p>
+            <h3>No AI reads your conversations</h3>
+            <p>There is no summariser, no translation, no transcription. Nothing in this app decrypts a conversation and sends it to a third party to be processed, because no feature here does that. The reply suggestions are computed on your device from the last few messages, and go nowhere.</p>
+            <p class="reason-note">Those features are in the code and switched off for this release; they are meant to come back. Section 6 of the privacy policy still names the three services they would reach and says that nothing reaches them today. When they return, they return with that disclosure and a prompt before the first use.</p>
           </div>
         </li>
 
@@ -158,8 +159,8 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Optional AI</h3>
-          <p>Conversation summaries, smart replies, voice transcription and message translation. Off by default; the providers are named in the policy.</p>
+          <h3>Reply suggestions</h3>
+          <p>A few suggested replies drawn from the last messages in the conversation. They are matched on your device against a phrase list in your language — nothing is sent anywhere to produce them.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -244,7 +245,7 @@
             <li>When each account was last active</li>
             <li>The metadata of every connection, including your IP address</li>
             <li>Crash and usage reports, which carry an account identifier</li>
-            <li>Anything you choose to send to an AI feature, while it runs</li>
+            <li>The file name, type and size of every attachment you send</li>
           </ul>
         </div>
       </div>

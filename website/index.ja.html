@@ -113,8 +113,9 @@
         <li class="reason">
           <div class="reason-num" aria-hidden="true">05</div>
           <div class="reason-body">
-            <h3>AI は自分で入れるまで切ってあり、提供元はすべて名前で書いてある</h3>
-            <p>要約・翻訳・文字起こしは、端末上で内容を復号してから外へ送ります。プライバシーポリシーの第 6 節には受け取る各サービス（Google Cloud Speech-to-Text、Google Cloud Translation、Cloudflare Workers AI）が名前で挙げられ、何が渡るかが正確に書かれています。アプリは初回の前に確認し、スイッチはプロフィールにあります。</p>
+            <h3>会話を読む AI はありません</h3>
+            <p>要約もなく、翻訳もなく、文字起こしもありません。このアプリには、会話を復号して第三者に処理させるものは何もありません。そういう機能がないからです。返信候補は直近の数件からあなたの端末上で計算され、どこにも送られません。</p>
+            <p class="reason-note">これらの機能はコードの中にあり、本リリースでは無効です。将来は戻す予定です。プライバシーポリシーの第 6 節は、それらが接続する 3 つのサービスをいまも名前で挙げたうえで、今日はそこへ何も届いていないと書いています。戻すときは、その開示と初回前の確認をともなって戻します。</p>
           </div>
         </li>
 
@@ -158,8 +159,8 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>任意の AI</h3>
-          <p>会話の要約、返信候補、音声の文字起こし、メッセージ翻訳。既定はオフで、提供元はポリシーに名前で書いてあります。</p>
+          <h3>返信候補</h3>
+          <p>会話の直近のメッセージから提示される、いくつかの返信候補。照合はあなたの端末上で、その言語のフレーズ表に対して行われます。これを作るために外へ送られるものはありません。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -244,7 +245,7 @@
             <li>各アカウントが最後に活動した時刻</li>
             <li>すべての接続のメタデータ（あなたの IP アドレスを含む）</li>
             <li>クラッシュと利用状況のレポート（アカウント識別子を含む）</li>
-            <li>あなたが AI 機能に渡すと決めたもの（実行中のあいだ）</li>
+            <li>添付したファイルの名前・種類・サイズ</li>
           </ul>
         </div>
       </div>

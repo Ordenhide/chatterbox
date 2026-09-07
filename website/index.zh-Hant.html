@@ -113,8 +113,9 @@
         <li class="reason">
           <div class="reason-num" aria-hidden="true">05</div>
           <div class="reason-body">
-            <h3>AI 預設關閉，且每一個服務供應商都寫明了名字</h3>
-            <p>摘要、翻譯和轉寫會在你的裝置上解密內容並把它送出去。隱私政策第 6 節列出了每一個接收方——Google Cloud Speech-to-Text、Google Cloud Translation、Cloudflare Workers AI——並說明了到底有什麼傳過去。應用程式在第一次使用前會詢問你，開關在你的個人資料裡。</p>
+            <h3>沒有 AI 讀你的對話</h3>
+            <p>沒有摘要，沒有翻譯，沒有轉寫。這個應用程式裡沒有任何東西會把一段對話解密後交給第三方去處理，因為根本沒有這樣的功能。回覆建議是在你的裝置上根據最近幾則訊息算出來的，不會送到任何地方。</p>
+            <p class="reason-note">這些功能在程式碼裡，本次發行中是關閉的；將來打算恢復。隱私政策第 6 節仍然列著它們會連到的三個服務，並寫明今天沒有任何內容會到達那裡。它們回來的時候，會連同那段揭露和首次使用前的詢問一起回來。</p>
           </div>
         </li>
 
@@ -158,8 +159,8 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>可選的 AI</h3>
-          <p>對話摘要、智慧回覆、語音轉寫和訊息翻譯。預設關閉；服務供應商在隱私政策裡都寫了名字。</p>
+          <h3>回覆建議</h3>
+          <p>根據對話最近幾則訊息給出的幾個候選回覆。比對完全在你的裝置上完成，對照的是你所用語言的片語表——為了產生它們，不會有任何東西送出去。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -244,7 +245,7 @@
             <li>每個帳號最後一次活躍的時間</li>
             <li>每一次連線的中繼資料，包括你的 IP 位址</li>
             <li>當機與使用報告，其中帶有帳號識別碼</li>
-            <li>你主動交給某個 AI 功能的內容，在它執行期間</li>
+            <li>你傳送的每個附件的檔名、類型和大小</li>
           </ul>
         </div>
       </div>

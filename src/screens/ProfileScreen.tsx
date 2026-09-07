@@ -37,6 +37,7 @@ import {enableFocusMode, disableFocusMode} from '../services/focusMode';
 import {uploadVoiceStatus, removeVoiceStatus} from '../services/voiceStatus';
 import {startTutorial} from '../services/tutorial';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../config/parity';
+import {SHOW_AI_FEATURES} from '../config/launch';
 import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import {
@@ -731,6 +732,7 @@ export default function ProfileScreen() {
           )}
         </GlassView>
         )}
+        {SHOW_AI_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('aiConsent.settingsTitle')}
@@ -756,6 +758,7 @@ export default function ProfileScreen() {
             </Text>
           </TouchableOpacity>
         </GlassView>
+        )}
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('linkPreview.settingsTitle')}
@@ -778,6 +781,7 @@ export default function ProfileScreen() {
             </Text>
           </TouchableOpacity>
         </GlassView>
+        {SHOW_AI_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('pro.title')}
@@ -787,6 +791,7 @@ export default function ProfileScreen() {
             {proStatusText}
           </Text>
         </GlassView>
+        )}
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
             {t('profile.account.downloadDataTitle')}

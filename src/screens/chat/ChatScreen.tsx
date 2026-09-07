@@ -177,6 +177,7 @@ import {
 } from '../../services/privacyGuard';
 import {SharedListItem, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
+import {SHOW_AI_FEATURES} from '../../config/launch';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
 // below) — unlike web's Opus recordings, AAC's sample rate isn't a fixed
@@ -4010,10 +4011,9 @@ export default function ChatScreen() {
           }
         },
       },
-      {
-        label: t('chat.menuTranslate'),
-        onPress: () => handleTranslateMessage(message),
-      },
+      ...(SHOW_AI_FEATURES
+        ? [{label: t('chat.menuTranslate'), onPress: () => handleTranslateMessage(message)}]
+        : []),
       // Only offered when this message actually contains something that looks
       // like a name. A "look up" that searches a whole sentence is a worse
       // search than the user would have typed, and an entry that is usually
@@ -4028,7 +4028,7 @@ export default function ChatScreen() {
       ...(message.text
         ? [{label: t('chat.menuQuoteWall'), onPress: () => handleAddToQuoteWall(message)}]
         : []),
-      ...(hasAudio
+      ...(hasAudio && SHOW_AI_FEATURES
         ? [{label: t('chat.menuTranscribe'), onPress: () => handleTranscribe(message)}]
         : []),
       {
@@ -5289,10 +5289,16 @@ export default function ChatScreen() {
                     <Icon name="camera" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{t('chat.photo')}</Text>
                   </TouchableOpacity>
+                  {/* Dictation is transcription wearing a microphone icon: it
+                      sends the clip to Google Cloud Speech-to-Text, and it
+                      sends that message unencrypted to do it. It goes with the
+                      rest of the AI, not with the attachment types. */}
+                  {SHOW_AI_FEATURES && (
                   <TouchableOpacity style={[styles.attachOption, {backgroundColor: colors.surface}]} onPress={() => closeAttachSheetThen(() => { dictating ? stopDictation() : startDictation(); })}>
                     <Icon name="mic" size={22} color={colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: colors.text}]}>{dictating ? t('chat.stop') : t('chat.sourceVoice')}</Text>
                   </TouchableOpacity>
+                  )}
                   <TouchableOpacity
                     style={[styles.attachOption, sharingLocation && {backgroundColor: colors.primary}]}
                     onPress={() => closeAttachSheetThen(() => { sharingLocation ? handleStopSharingLocation() : handleShareLocation(); })}>
@@ -5410,6 +5416,7 @@ export default function ChatScreen() {
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.createSharedList')}</Text>
             </TouchableOpacity>
+            {SHOW_AI_FEATURES && (
             <TouchableOpacity
               style={styles.actionSheetItem}
               onPress={() => {
@@ -5419,6 +5426,7 @@ export default function ChatScreen() {
               }}>
               <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.catchUp')}</Text>
             </TouchableOpacity>
+            )}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionActivities')}</Text>
             {SHOW_NATIVE_ONLY_FEATURES && (
               <>

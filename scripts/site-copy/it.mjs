@@ -56,10 +56,11 @@ export default {
         note: `L'etichetta sotto un messaggio ti dice quale ha ricevuto davvero. Non è un'affermazione sull'app; è un'affermazione su quel messaggio.`,
       },
       {
-        title: `L'IA è spenta finché non la accendi, e ogni fornitore ha un nome`,
+        title: `Nessuna IA legge le tue conversazioni`,
         body: [
-          `Riassunti, traduzione e trascrizione decifrano contenuti sul tuo dispositivo e li mandano altrove. La sezione 6 dell'informativa sulla privacy nomina ogni servizio che li riceve — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — e dice esattamente cosa gli arriva. L'app chiede prima della prima volta, e l'interruttore sta nel tuo profilo.`,
+          `Niente riassunti, niente traduzione, niente trascrizione. Nulla in quest'app decifra una conversazione per mandarla a elaborare a terzi, perché qui non c'è alcuna funzione che lo faccia. Le risposte suggerite sono calcolate sul tuo dispositivo dagli ultimi messaggi e non vanno da nessuna parte.`,
         ],
+        note: `Quelle funzioni sono nel codice e spente in questa versione; l'intenzione è che tornino. La sezione 6 dell'informativa nomina ancora i tre servizi che raggiungerebbero e dice che oggi non arriva loro nulla. Quando torneranno, torneranno con quell'informativa e con una richiesta prima del primo uso.`,
       },
       {
         title: `Cercare qualcosa non avviene alle tue spalle`,
@@ -92,8 +93,8 @@ export default {
         body: `Chiamate peer-to-peer su WebRTC, che cifra il flusso tra i due dispositivi per impostazione predefinita e non come opzione.`,
       },
       {
-        title: `IA opzionale`,
-        body: `Riassunti della conversazione, risposte suggerite, trascrizione vocale e traduzione dei messaggi. Spenta di default; i fornitori sono nominati nell'informativa.`,
+        title: `Risposte suggerite`,
+        body: `Qualche risposta proposta a partire dagli ultimi messaggi della conversazione. Il confronto avviene sul tuo dispositivo con un elenco di frasi nella tua lingua: per produrle non viene inviato nulla da nessuna parte.`,
       },
       {
         title: `Ricerca su Wikipedia`,
@@ -162,7 +163,7 @@ export default {
         `Quando ogni account è stato attivo l'ultima volta`,
         `I metadati di ogni connessione, incluso il tuo indirizzo IP`,
         `I rapporti di crash e di utilizzo, che portano un identificativo di account`,
-        `Tutto ciò che scegli di mandare a una funzione di IA, mentre è in esecuzione`,
+        `Il nome, il tipo e la dimensione di ogni file che alleghi`,
       ],
     },
     note: `La cifratura non è mai stata verificata da terzi indipendenti. Togliere quei metadati è più difficile che cifrare i contenuti, e quel lavoro non è finito.`,

@@ -6,6 +6,7 @@ import BrandMark from '../components/BrandMark';
 import {heartbeat} from '../services/presence';
 import {useIsMobile} from '../hooks/useIsMobile';
 import {useHashRoute, type Tab} from '../hooks/useHashRoute';
+import {SHOW_AI_FEATURES} from '../config/launch';
 import {useChatNotifications} from '../hooks/useChatNotifications';
 import {useReminders} from '../hooks/useReminders';
 import {useIncomingRequests} from '../hooks/useIncomingRequests';
@@ -48,7 +49,9 @@ const ICONS: Record<Tab, React.ReactNode> = {
   ),
 };
 
-const TAB_KEYS = ['chats', 'store', 'profile'] as const;
+const TAB_KEYS = (SHOW_AI_FEATURES
+  ? (['chats', 'store', 'profile'] as const)
+  : (['chats', 'profile'] as const)) as readonly Tab[];
 
 export default function MainApp({user}: {user: User}) {
   const {route, navigate} = useHashRoute();
@@ -120,7 +123,7 @@ export default function MainApp({user}: {user: User}) {
           setFriendsOpen(true);
           return;
         case 'tabStore':
-          navigate({tab: 'store', chatId: undefined});
+          if (SHOW_AI_FEATURES) navigate({tab: 'store', chatId: undefined});
           return;
         case 'tabProfile':
           navigate({tab: 'profile', chatId: undefined});
@@ -202,7 +205,7 @@ export default function MainApp({user}: {user: User}) {
           onSelect={chatId => navigate({tab: 'chats', chatId})}
         />
       )}
-      {tab === 'store' && <StoreScreen />}
+      {SHOW_AI_FEATURES && tab === 'store' && <StoreScreen />}
       {tab === 'profile' && <ProfileScreen user={user} />}
     </Suspense>
   );

@@ -65,10 +65,11 @@ export default {
         note: `The label under a message tells you which one it actually got. It is not a claim about the app; it is a claim about that message.`,
       },
       {
-        title: 'AI is off until you turn it on, and every provider is named',
+        title: `No AI reads your conversations`,
         body: [
-          `Summaries, translation and transcription decrypt content on your device and send it onward. Section 6 of the privacy policy names each service that receives it — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — and says exactly what reaches it. The app asks before the first time, and the switch lives in your profile.`,
+          `There is no summariser, no translation, no transcription. Nothing in this app decrypts a conversation and sends it to a third party to be processed, because no feature here does that. The reply suggestions are computed on your device from the last few messages, and go nowhere.`,
         ],
+        note: `Those features are in the code and switched off for this release; they are meant to come back. Section 6 of the privacy policy still names the three services they would reach and says that nothing reaches them today. When they return, they return with that disclosure and a prompt before the first use.`,
       },
       {
         title: "Looking something up doesn't happen behind your back",
@@ -101,8 +102,8 @@ export default {
         body: `Peer-to-peer calling over WebRTC, which encrypts the media between the two devices by default rather than as an option.`,
       },
       {
-        title: 'Optional AI',
-        body: `Conversation summaries, smart replies, voice transcription and message translation. Off by default; the providers are named in the policy.`,
+        title: `Reply suggestions`,
+        body: `A few suggested replies drawn from the last messages in the conversation. They are matched on your device against a phrase list in your language — nothing is sent anywhere to produce them.`,
       },
       {
         title: 'Wikipedia lookup',
@@ -165,7 +166,7 @@ export default {
         'When each account was last active',
         'The metadata of every connection, including your IP address',
         'Crash and usage reports, which carry an account identifier',
-        'Anything you choose to send to an AI feature, while it runs',
+        'The file name, type and size of every attachment you send',
       ],
     },
     note: `The encryption has never been independently audited. Removing that metadata is harder than encrypting the contents, and that work is not finished.`,

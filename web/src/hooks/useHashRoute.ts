@@ -1,3 +1,4 @@
+import {SHOW_AI_FEATURES} from '../config/launch';
 import {useCallback, useEffect, useState} from 'react';
 
 export type Tab = 'chats' | 'store' | 'profile';
@@ -6,7 +7,12 @@ export interface Route {
   chatId?: string;
 }
 
-const TABS: Tab[] = ['chats', 'store', 'profile'];
+// 'store' is only routable while the Pro tier is on sale. Left out of this
+// list, `#/store` falls through to the same branch as any other unknown tab
+// and lands on chats, rather than rendering an empty pane.
+const TABS: Tab[] = SHOW_AI_FEATURES
+  ? ['chats', 'store', 'profile']
+  : ['chats', 'profile'];
 
 function parse(): Route {
   const raw = window.location.hash.replace(/^#\/?/, '');

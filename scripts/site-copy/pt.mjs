@@ -56,10 +56,11 @@ export default {
         note: `A etiqueta por baixo de uma mensagem diz-te qual foi a que ela realmente recebeu. Não é uma afirmação sobre a aplicação; é uma afirmação sobre aquela mensagem.`,
       },
       {
-        title: `A IA está desligada até a ligares, e cada fornecedor é nomeado`,
+        title: `Nenhuma IA lê as tuas conversas`,
         body: [
-          `Os resumos, a tradução e a transcrição decifram conteúdo no teu dispositivo e enviam-no para fora. A secção 6 da política de privacidade nomeia cada serviço que o recebe — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — e diz exatamente o que lá chega. A aplicação pergunta antes da primeira vez, e o interruptor está no teu perfil.`,
+          `Não há resumos, nem tradução, nem transcrição. Nada nesta aplicação decifra uma conversa para a mandar processar por terceiros, porque aqui não existe nenhuma funcionalidade que o faça. As respostas sugeridas são calculadas no teu dispositivo a partir das últimas mensagens e não vão a lado nenhum.`,
         ],
+        note: `Essas funcionalidades estão no código e desligadas nesta versão; a intenção é que voltem. A secção 6 da política de privacidade continua a nomear os três serviços que alcançariam e diz que hoje nada lhes chega. Quando voltarem, voltam com essa divulgação e com uma pergunta antes da primeira utilização.`,
       },
       {
         title: `Consultar algo não acontece nas tuas costas`,
@@ -92,8 +93,8 @@ export default {
         body: `Chamadas ponto a ponto por WebRTC, que cifra o fluxo entre os dois dispositivos por omissão e não como opção.`,
       },
       {
-        title: `IA opcional`,
-        body: `Resumos de conversa, respostas sugeridas, transcrição de voz e tradução de mensagens. Desligada por omissão; os fornecedores estão nomeados na política.`,
+        title: `Respostas sugeridas`,
+        body: `Algumas respostas propostas a partir das últimas mensagens da conversa. São comparadas no teu dispositivo com uma lista de frases no teu idioma: não é enviado nada para lado nenhum para as produzir.`,
       },
       {
         title: `Consulta na Wikipédia`,
@@ -162,7 +163,7 @@ export default {
         `Quando cada conta esteve ativa pela última vez`,
         `Os metadados de todas as ligações, incluindo o teu endereço IP`,
         `Os relatórios de falhas e de utilização, que levam um identificador de conta`,
-        `Tudo o que escolheres enviar a uma funcionalidade de IA, enquanto ela corre`,
+        `O nome, o tipo e o tamanho de cada ficheiro que anexas`,
       ],
     },
     note: `A cifra nunca foi auditada de forma independente. Retirar esses metadados é mais difícil do que cifrar o conteúdo, e esse trabalho não está terminado.`,

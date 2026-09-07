@@ -400,13 +400,15 @@ export function validate(copies) {
 
     // Proper nouns that carry the admissions. These do not translate, so their
     // absence means the sentence around them went missing.
+    //
+    // The three AI providers used to be on this list. They came off when the
+    // AI features were held back from the first release: the page no longer
+    // claims to name them, because it no longer sends anything to them. Put
+    // them back the same day the features come back — the reason that
+    // replaced them says the privacy policy still lists them, and that
+    // sentence has to stay true in all fifteen.
     const whole = JSON.stringify(copy);
-    for (const name of [
-      'Google Cloud Speech-to-Text',
-      'Google Cloud Translation',
-      'Cloudflare Workers AI',
-      'WebRTC',
-    ]) {
+    for (const name of ['WebRTC', 'Chatterbox']) {
       check(code, whole.includes(name), `never names ${name}`);
     }
     // Counted, not just present. Google is named eight times in the English

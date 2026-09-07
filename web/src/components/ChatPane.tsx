@@ -71,6 +71,7 @@ import {
   type LiveLocationShare,
 } from '../services/liveLocation';
 import {useEntitlement} from '../context/EntitlementContext';
+import {SHOW_AI_FEATURES} from '../config/launch';
 import {safeExternalUrl} from '../utils/safeUrl';
 import {formatDayLabel, isSameDay} from '../utils/messageDay';
 import ProUpsellModal from './ProUpsellModal';
@@ -1772,6 +1773,7 @@ export default function ChatPane({
             </button>
             {menuOpen && (
               <div style={styles.menu}>
+                {SHOW_AI_FEATURES && (
                 <button
                   style={styles.menuItemRow}
                   onClick={() => {
@@ -1781,6 +1783,7 @@ export default function ChatPane({
                   <Icon name="sparkles" size={15} /> {t('chat.summarize')}
                   {!isPro && <span style={styles.menuProTag}>{t('pro.badge')}</span>}
                 </button>
+                )}
                 <button style={styles.menuItemRow} onClick={() => enterSelect()}>
                   <Icon name="check" size={15} /> {t('chat.selectMessages')}
                 </button>
@@ -2433,7 +2436,7 @@ export default function ChatPane({
                             <Icon name="pin" size={15} style={isMsgPinned ? {color: colors.primary} : undefined} />
                           </button>
                         )}
-                        {!contentHidden && m.audio && !m.transcription && (
+                        {SHOW_AI_FEATURES && !contentHidden && m.audio && !m.transcription && (
                           <button style={styles.smallAction} title={t('chat.transcribe')} onClick={() => onTranscribe(m)}>
                             <Icon name="sparkles" size={15} />
                           </button>
@@ -2457,7 +2460,7 @@ export default function ChatPane({
                             <Icon name="bell" size={15} />
                           </button>
                         )}
-                        {!contentHidden && m.text && (
+                        {SHOW_AI_FEATURES && !contentHidden && m.text && (
                           <button style={styles.smallAction} title={t('chat.translate')} onClick={() => doTranslate(m)}>
                             <Icon name="globe" size={15} />
                           </button>
@@ -2846,7 +2849,7 @@ export default function ChatPane({
           }}
         />
       )}
-      {proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
+      {SHOW_AI_FEATURES && proPromptOpen && <ProUpsellModal onClose={() => setProPromptOpen(false)} />}
       {shareLocationModalOpen && (
         <ShareLocationModal onClose={() => setShareLocationModalOpen(false)} onChoose={beginSharingLocation} />
       )}

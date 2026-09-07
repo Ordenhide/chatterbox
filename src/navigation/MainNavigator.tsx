@@ -21,6 +21,7 @@ import {lazyLoad} from '../utils/lazyLoading';
 // it. The twelve below are ~5,000 lines that a cold start has no reason to
 // evaluate: Profile, Store, Friends, Call, and the chat sub-screens.
 const ProfileScreen = lazyLoad(() => import('../screens/ProfileScreen'));
+import {SHOW_AI_FEATURES} from '../config/launch';
 const StoreScreen = lazyLoad(() => import('../screens/StoreScreen'));
 const FriendsScreen = lazyLoad(() => import('../screens/chat/FriendsScreen'));
 const CallScreen = lazyLoad(() => import('../screens/chat/CallScreen'));
@@ -224,6 +225,9 @@ export default function MainNavigator() {
           tabBarBadgeStyle: styles.tabBadge,
         }}
       />
+      {/* Nothing navigates to 'Store' by name, so hiding the tab hides the
+          route with it. React Navigation accepts a false child here. */}
+      {SHOW_AI_FEATURES && (
       <Tab.Screen
         name="Store"
         component={StoreScreen}
@@ -232,6 +236,7 @@ export default function MainNavigator() {
           tabBarIcon: storeIcon,
         }}
       />
+      )}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
