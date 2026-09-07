@@ -67,7 +67,7 @@ import {
   withReceiverKey,
 } from './ratchetSessionStore';
 import {utf8ToBytes} from './crypto';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const db = getFirestore();
 

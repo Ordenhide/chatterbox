@@ -4,10 +4,10 @@ jest.mock('../firebase/functions', () => ({
   getFunctions: () => ({}),
   httpsCallable: () => (...args: unknown[]) => mockCall(...args),
 }));
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 
 import {markViewOnceViewed} from '../viewOnce';
-import {reportError} from '../telemetry';
+import {reportError} from '../errorLog';
 
 beforeEach(() => {
   mockCall.mockReset();

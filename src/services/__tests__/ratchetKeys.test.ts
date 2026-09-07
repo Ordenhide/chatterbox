@@ -96,7 +96,7 @@ jest.mock('../secureKeyStore', () => ({
   },
 }));
 
-jest.mock('../telemetry', () => ({reportError: () => undefined}));
+jest.mock('../errorLog', () => ({reportError: () => undefined}));
 
 import {
   ONE_TIME_PREKEY_BATCH,

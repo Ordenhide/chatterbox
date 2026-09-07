@@ -58,7 +58,7 @@ jest.mock('../firebase/firestore', () => ({
 jest.mock('../e2eeKeys', () => ({
   getDeviceKeypairIfEnrolled: (...args: unknown[]) => mockGetKeypair(...args),
 }));
-jest.mock('../telemetry', () => ({
+jest.mock('../errorLog', () => ({
   reportError: (...args: unknown[]) => mockReportError(...args),
 }));
 jest.mock('../storageMMKV', () => ({

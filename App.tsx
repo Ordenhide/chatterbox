@@ -12,7 +12,6 @@ import {startTrace} from './src/utils/loadTrace';
 import {initFirebase} from './src/services/firebase/bootstrap';
 import {getMessaging, getToken, onTokenRefresh} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
-import {logBreadcrumb, trackEvent, trackScreen} from './src/services/telemetry';
 import {initFeatureFlags} from './src/services/featureFlags';
 import {warmSecureStorage} from './src/services/storageMMKV';
 import LiquidGlassBackground from './src/components/LiquidGlassBackground';
@@ -24,8 +23,6 @@ import TutorialTour from './src/components/TutorialTour';
 import IncomingCallManager from './src/components/IncomingCallManager';
 import {hasSeenTutorial, markTutorialSeen, TUTORIAL_EVENT} from './src/services/tutorial';
 import {captureInviteUrl, takePendingInvite} from './src/services/inviteDeepLink';
-
-const APP_START_TS = Date.now();
 
 const navigationRef = createNavigationContainerRef();
 
@@ -40,7 +37,6 @@ function AppContent() {
   };
   mark('AppContent first render');
   if (!loading) mark('auth resolved');
-  const routeNameRef = useRef<string | undefined>(undefined);
   const scheme = useColorScheme();
   const [tutorialVisible, setTutorialVisible] = useState(false);
   // Seeded from the module-scope flag in ColdOpen rather than `true`, so only
@@ -166,23 +162,7 @@ function AppContent() {
       <NavigationContainer
         ref={navigationRef}
         onReady={() => {
-          const currentRoute = navigationRef.getCurrentRoute();
-          routeNameRef.current = currentRoute?.name;
           startupTrace.current.mark('navigator ready');
-          const startupMs = Date.now() - APP_START_TS;
-          trackEvent('app_startup_time', {ms: startupMs});
-          logBreadcrumb(`app_startup_time:${startupMs}`);
-          if (currentRoute?.name) {
-            trackScreen(currentRoute.name);
-          }
-        }}
-        onStateChange={() => {
-          const currentRoute = navigationRef.getCurrentRoute();
-          const currentName = currentRoute?.name;
-          if (currentName && routeNameRef.current !== currentName) {
-            routeNameRef.current = currentName;
-            trackScreen(currentName);
-          }
         }}>
         <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} />
         {user ? <MainNavigator /> : <AuthNavigator />}

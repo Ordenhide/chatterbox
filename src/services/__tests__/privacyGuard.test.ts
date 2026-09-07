@@ -23,7 +23,7 @@ jest.mock('../storageMMKV', () => ({
 jest.mock('../firebase/firestore', () => ({
   doc: jest.fn(), getDoc: jest.fn(), getFirestore: jest.fn(), setDoc: jest.fn(),
 }));
-jest.mock('../telemetry', () => ({reportHandled: (...a: unknown[]) => mockReportHandled(...a)}));
+jest.mock('../errorLog', () => ({reportHandled: (...a: unknown[]) => mockReportHandled(...a)}));
 
 import {applyScreenshotProtection} from '../privacyGuard';
 

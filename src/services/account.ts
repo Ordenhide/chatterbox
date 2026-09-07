@@ -21,7 +21,7 @@ import {
 } from './firebase/firestore';
 import {deleteObject, getStorage, listAll, ref} from './firebase/storage';
 import {mmkvStorage} from './storageMMKV';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {clearDeviceKeypair, getDeviceKeypairIfEnrolled} from './e2eeKeys';

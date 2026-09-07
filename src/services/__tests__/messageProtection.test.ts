@@ -10,7 +10,7 @@
  */
 // e2eeMessages imports the send path, which drags in the Firestore SDK. These
 // two functions are pure and touch none of it.
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({sendMessage: jest.fn()}));
 jest.mock('../e2eeKeys', () => ({
   fetchPeerPublicKeyChecked: jest.fn(),

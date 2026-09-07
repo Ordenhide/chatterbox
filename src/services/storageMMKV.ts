@@ -53,7 +53,7 @@ import {createMMKV} from 'react-native-mmkv';
 import {sha256} from '@noble/hashes/sha2.js';
 import {bytesToHex, generateKeyHex, utf8ToBytes} from './crypto';
 import {getSecret, isSecureStoreAvailable, setSecretVerified} from './secureKeyStore';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const logError = (context: string, error: unknown) => {
   if (__DEV__) {

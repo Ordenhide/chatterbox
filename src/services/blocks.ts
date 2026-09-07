@@ -10,7 +10,7 @@ import {
   where,
 } from './firebase/firestore';
 import {BlockRecord} from '../types';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const db = getFirestore();
 const blocksRef = () => collection(db, 'blocks');

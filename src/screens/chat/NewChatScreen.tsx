@@ -37,7 +37,7 @@ import {contactsFromChats, type Contact} from '../../services/contacts';
 import {openIntroductions} from '../../services/introductions';
 import {createChat, getChatsForUser} from '../../services/firebaseChat';
 import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
-import {reportError} from '../../services/telemetry';
+import {reportError} from '../../services/errorLog';
 import {getColors} from '../../theme/colors';
 import type {ChatRoom} from '../../types';
 import {bodyWeight, terminal} from '../../theme/typography';

@@ -45,7 +45,7 @@ jest.mock(
   {virtual: true},
 );
 
-jest.mock('../telemetry', () => ({reportHandled: jest.fn()}));
+jest.mock('../errorLog', () => ({reportHandled: jest.fn()}));
 
 import {
   _resetKeyBackupModules,

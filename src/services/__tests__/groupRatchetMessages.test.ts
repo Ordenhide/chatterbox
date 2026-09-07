@@ -100,7 +100,7 @@ jest.mock('../secureKeyStore', () => ({
   removeSecret: async () => undefined,
 }));
 
-jest.mock('../telemetry', () => ({reportError: () => undefined}));
+jest.mock('../errorLog', () => ({reportError: () => undefined}));
 
 
 import {

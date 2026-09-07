@@ -36,7 +36,7 @@ jest.mock('../firebase/storage', () => ({
   refFromURL: jest.fn(),
   deleteObject: jest.fn(),
 }));
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 jest.mock('../privacyGuard', () => ({isStealthMode: () => false}));
 jest.mock('../recipient', () => ({assertRecipientReachable: jest.fn()}));
 jest.mock('../messageTrash', () => ({purgeExpiredTrash: jest.fn(), trashMessages: jest.fn()}));

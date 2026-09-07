@@ -27,7 +27,7 @@ jest.mock('../secureKeyStore', () => ({
   },
 }));
 
-jest.mock('../telemetry', () => ({reportError: () => undefined}));
+jest.mock('../errorLog', () => ({reportError: () => undefined}));
 
 import {
   _resetSessionKeyCache,

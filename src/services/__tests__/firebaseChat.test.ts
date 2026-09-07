@@ -59,7 +59,7 @@ jest.mock('../firebase/storage', () => ({
   deleteObject: (...args: unknown[]) => mockDeleteObject(...args),
 }));
 
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 // Typing indicators default to *off* in the real module. These tests are about
 // the write path, so the flag is on here and its own gate is tested below.
 jest.mock('../privacyGuard', () => ({

@@ -30,7 +30,7 @@ function mockRejectUndefined(value: unknown, path = ''): void {
   }
 }
 
-jest.mock('../telemetry', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
+jest.mock('../errorLog', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
 
 jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),

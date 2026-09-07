@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
 import {useColorScheme} from 'react-native';
 import {getRecoveryPhrase, markRecoveryPhraseRevealed} from '../services/e2eeKeys';
-import {reportError} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import {bodyWeight} from '../theme/typography';
 
 type Props = {

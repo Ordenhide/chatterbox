@@ -50,7 +50,7 @@ import {
 } from './ratchetKeys';
 import {withSession} from './ratchetSessionStore';
 import {base64ToBytes, bytesToBase64, utf8ToBytes} from './crypto';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 export const RATCHET_ENVELOPE_ALG = 'chatterbox-ratchet-envelope-v1';
 

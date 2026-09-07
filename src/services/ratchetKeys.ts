@@ -47,7 +47,7 @@ import {
 import {base64ToBytes, bytesToBase64} from './crypto';
 import {mmkvStorage} from './storageMMKV';
 import {getSecret, isSecureStoreAvailable, removeSecret, setSecretVerified} from './secureKeyStore';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 import {
   generateIdentityKeypair,
   generatePreKeys,

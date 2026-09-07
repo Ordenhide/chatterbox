@@ -41,7 +41,7 @@
  * the path it is trying to save the user from.
  */
 import {Platform} from 'react-native';
-import {reportHandled} from './telemetry';
+import {reportHandled} from './errorLog';
 
 /** Namespace, kept distinct per account and distinct from the working copy. */
 const SERVICE_PREFIX = 'com.chatterbox.e2ee.recovery';

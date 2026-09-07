@@ -27,7 +27,7 @@
  * a device where the Keychain genuinely misbehaves degrades instead of losing
  * the user's identity.
  */
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 /** Namespace for the one secret this stores, kept distinct per account. */
 const SERVICE_PREFIX = 'com.chatterbox.e2ee.secretKey';

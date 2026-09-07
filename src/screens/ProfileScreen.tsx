@@ -21,7 +21,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import {getBooleanFlag} from '../services/featureFlags';
 import {submitFeedback} from '../services/feedback';
-import {reportError, trackEvent} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import {useFocusEffect} from '@react-navigation/native';
 import {doc, getFirestore, onSnapshot} from '../services/firebase/firestore';
 import GlassView from '../components/GlassView';
@@ -534,7 +534,6 @@ export default function ProfileScreen() {
         email: user.email,
         message: trimmed,
       });
-      await trackEvent('feedback_submitted');
       setFeedbackText('');
       setFeedbackVisible(false);
       Alert.alert(t('profile.alerts.feedbackSuccessTitle'), t('profile.alerts.feedbackSuccessBody'));

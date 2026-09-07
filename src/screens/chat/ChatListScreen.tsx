@@ -33,7 +33,7 @@ import {fonts, terminal} from '../../theme/typography';
 import CornerBrackets from '../../components/CornerBrackets';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
-import {reportError} from '../../services/telemetry';
+import {reportError} from '../../services/errorLog';
 import {avatarNeutral, getInitials} from '../../utils/avatar';
 import {isDecoyMode} from '../../services/appLock';
 import {isTypingIndicatorEnabled} from '../../services/privacyGuard';

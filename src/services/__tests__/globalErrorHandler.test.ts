@@ -1,5 +1,5 @@
 const mockReportError = jest.fn();
-jest.mock('../telemetry', () => ({
+jest.mock('../errorLog', () => ({
   reportError: (...args: unknown[]) => mockReportError(...args),
 }));
 

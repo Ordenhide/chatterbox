@@ -25,7 +25,7 @@ import {
   secretKeyService,
   setSecretVerified,
 } from './secureKeyStore';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 // Scoped per account: this device can see more than one account across a
 // sign-out/sign-in within the same app process, and neither the secret key

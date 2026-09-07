@@ -25,7 +25,7 @@ jest.mock('../ratchetMessages', () => ({
 }));
 const mockReportError = jest.fn();
 const mockReportSealedFailure = jest.fn();
-jest.mock('../telemetry', () => ({
+jest.mock('../errorLog', () => ({
   reportError: (...a: unknown[]) => mockReportError(...a),
   reportSealedFailure: (...a: unknown[]) => mockReportSealedFailure(...a),
 }));

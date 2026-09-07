@@ -16,7 +16,7 @@ import {useAuth} from '../../contexts/AuthContext';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
-import {reportError} from '../../services/telemetry';
+import {reportError} from '../../services/errorLog';
 import {
   acceptFriendRequest,
   declineFriendRequest,

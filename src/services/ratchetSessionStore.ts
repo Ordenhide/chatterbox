@@ -37,7 +37,7 @@
 import {mmkvStorage} from './storageMMKV';
 import {getSecret, isSecureStoreAvailable, removeSecret, setSecretVerified} from './secureKeyStore';
 import {decryptWithKey, encryptWithKey, generateKeyHex, hexToBytes} from './crypto';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 import {
   deserializeSession,
   serializeSession,

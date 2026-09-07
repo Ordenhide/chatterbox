@@ -1,5 +1,5 @@
 import type {DocumentSnapshot, QuerySnapshot} from './firebase/firestore';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 /**
  * Wraps a Firestore snapshot handler so a failing listener can't crash the app.
@@ -31,7 +31,7 @@ import {reportError} from './telemetry';
  *
  * A listener whose document has become unreadable goes quiet rather than
  * reporting to the UI: for a deleted chat that is the correct end state, and
- * the screen is already being torn down. The error is still sent to telemetry
+ * the screen is already being torn down. The error still reaches errorLog
  * so a genuine permissions regression doesn't hide here.
  *
  * Deliberately mobile-only: the web client uses the Firebase JS SDK, whose

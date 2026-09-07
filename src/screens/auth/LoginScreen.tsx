@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   TextInput,
@@ -15,8 +15,6 @@ import {useAuth} from '../../contexts/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../../theme/colors';
-import {getStringFlag} from '../../services/featureFlags';
-import {trackEvent} from '../../services/telemetry';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import PasswordInput from '../../components/PasswordInput';
@@ -28,28 +26,10 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [loginVariant, setLoginVariant] = useState<'control' | 'variant_a'>('control');
   const {signIn, resetPassword} = useAuth();
   const navigation = useNavigation();
   const colors = getColors(useColorScheme());
   const {t} = useTranslation();
-
-  useEffect(() => {
-    let active = true;
-    const loadVariant = async () => {
-      const variant = await getStringFlag('login_experiment_variant', 'control');
-      const normalized = variant === 'variant_a' ? 'variant_a' : 'control';
-      if (!active) return;
-      setLoginVariant(normalized);
-      trackEvent('experiment_exposed', {name: 'login_experiment', variant: normalized}).catch(
-        () => undefined,
-      );
-    };
-    loadVariant();
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const handleLogin = async () => {
     const normalizedEmail = email.trim().toLowerCase();
@@ -98,9 +78,7 @@ export default function LoginScreen() {
             </Text>
             <Text style={[styles.title, {color: colors.text}]}>{t('app.name')}</Text>
             <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
-              {loginVariant === 'variant_a'
-                ? t('auth.login.subtitleVariant')
-                : t('auth.login.subtitleDefault')}
+              {t('auth.login.subtitleDefault')}
             </Text>
           </Cascade>
 
@@ -144,7 +122,7 @@ export default function LoginScreen() {
               <ActivityIndicator color={colors.textOnPrimary} />
             ) : (
               <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                {loginVariant === 'variant_a' ? t('common.continue') : t('common.signIn')}
+                {t('common.signIn')}
               </Text>
             )}
           </TouchableOpacity>

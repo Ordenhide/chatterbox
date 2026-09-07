@@ -1,7 +1,7 @@
 import {Platform} from 'react-native';
 import {mmkvStorage} from './storageMMKV';
 import {doc, getDoc, getFirestore, setDoc} from './firebase/firestore';
-import {reportHandled} from './telemetry';
+import {reportHandled} from './errorLog';
 
 const db = getFirestore();
 

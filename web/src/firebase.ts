@@ -19,8 +19,8 @@ import {connectFunctionsEmulator, getFunctions} from 'firebase/functions';
  * deployment you should register a **Web app** in the Firebase Console
  * (Project settings → Your apps → Add app → Web) and drop its config in via
  * the VITE_FIREBASE_* env vars (see web/.env.example). Auth + Firestore work
- * with the api key + auth domain + project id regardless; the web appId mainly
- * matters for Analytics.
+ * with the api key + auth domain + project id regardless. (This client never
+ * initialises Analytics — nothing here does; see src/services/errorLog.ts.)
  */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? 'AIzaSyAnDnGSww6_zdLEszsVM9tlpxZTDftBxi0',

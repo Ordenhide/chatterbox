@@ -1,28 +1,14 @@
 /**
  * reportError is the only channel the app has for an error it caught and
- * handled, and `telemetryEnabled` is `!__DEV__` — so on a debug build
- * Crashlytics is not merely switched off, it is never constructed. Every
- * reported error therefore used to vanish without a trace on exactly the build
- * someone is using when they want to know why something failed; tracking one
- * down meant adding a temporary console.error and taking it out again.
+ * handled, and since Crashlytics was removed it is the only one there is:
+ * nothing goes anywhere off the device. What it must still do is surface the
+ * error in development, because otherwise a reported error vanishes without a
+ * trace on exactly the build someone is using when they want to know why
+ * something failed.
+ *
+ * No firebase stubs here any more. There is nothing left to stub.
  */
-// Other suites reach for `jest.mock('../telemetry')` to dodge these ESM-only
-// packages. This one is testing telemetry itself, so the firebase wrappers are
-// stubbed instead. Nothing in them is called on this path — telemetryEnabled is
-// `!__DEV__`, false under Jest — which is exactly the case under test.
-jest.mock('../firebase/analytics', () => ({
-  getAnalytics: () => null,
-  logEvent: () => undefined,
-  setUserId: () => undefined,
-}));
-jest.mock('../firebase/crashlytics', () => ({
-  getCrashlytics: () => null,
-  log: () => undefined,
-  recordError: () => undefined,
-  setUserId: () => undefined,
-}));
-
-import {reportError, reportSealedFailure} from '../telemetry';
+import {reportError, reportSealedFailure} from '../errorLog';
 
 describe('reportError', () => {
   let spy: jest.SpyInstance;
@@ -35,7 +21,7 @@ describe('reportError', () => {
     spy.mockRestore();
   });
 
-  it('surfaces the error and its context when telemetry is off', () => {
+  it('surfaces the error and its context', () => {
     const boom = new Error('kaboom');
 
     reportError(boom, 'file_upload_failed');
@@ -64,13 +50,13 @@ describe('reportError', () => {
 });
 
 /**
- * The severity split. A decrypt failure reaches telemetry already diagnosed,
+ * The severity split. A decrypt failure arrives here already diagnosed,
  * and the two diagnoses want opposite handling: 'wrong-key' is the protocol
  * doing its job on a device that does not hold the key — the UI has already
  * said so in words and offered the recovery phrase — while 'corrupt' means
  * the key was right and the ciphertext is damaged. Collapsing them was the
- * bug: the routine one filed a Crashlytics issue per user per second device,
- * and the one worth acting on arrived indistinguishable from the noise.
+ * bug: the routine one drowned out the one worth acting on, which arrived
+ * indistinguishable from the noise.
  */
 describe('reportSealedFailure', () => {
   let errorSpy: jest.SpyInstance;

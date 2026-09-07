@@ -21,7 +21,7 @@ import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '..
 import {User} from '../types';
 import {sameUser} from '../utils/sameUser';
 import {clearUserCache, upsertUserProfile} from '../services/firebaseChat';
-import {reportError, setTelemetryUser, trackEvent} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import {clearSessionId, getSessionId, rotateSessionId} from '../services/session';
 import {getDeviceInfo} from '../services/deviceInfo';
 import {getFunctions, httpsCallable} from '../services/firebase/functions';
@@ -177,7 +177,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         // asking every consumer to depend on `user.uid` and remember why.
         setUser(prev => (sameUser(prev, profile) ? prev : profile));
         setSessionReady(false);
-        setTelemetryUser(firebaseUser.uid);
         (async () => {
           try {
             await upsertUserProfile(profile);
@@ -208,7 +207,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         })();
       } else {
         setUser(null);
-        setTelemetryUser(null);
         clearUserCache();
         claimInProgressRef.current = false;
         setSessionReady(true);
@@ -516,7 +514,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       const credential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
       await claimNewSession(credential.user.uid, nextSessionId);
       await waitForSessionConfirmed(credential.user.uid, nextSessionId);
-      trackEvent('login', {method: 'password'}).catch(() => undefined);
       success = true;
     } catch (error) {
       sessionIdRef.current = null;
@@ -568,7 +565,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           },
           {merge: true},
         );
-        trackEvent('sign_up', {method: 'password'}).catch(() => undefined);
       }
       success = true;
     } catch (error) {
@@ -613,9 +609,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           },
           {merge: true},
         );
-        trackEvent('sign_up', {method}).catch(() => undefined);
-      } else {
-        trackEvent('login', {method}).catch(() => undefined);
       }
     },
     [db],

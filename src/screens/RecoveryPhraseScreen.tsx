@@ -23,7 +23,7 @@ import {
   type EnrollmentReadiness,
 } from '../services/e2eeKeys';
 import {revealOffer} from '../services/recoveryPhraseReveal';
-import {reportError} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import {bodyWeight, terminal} from '../theme/typography';
 
 export default function RecoveryPhraseScreen() {

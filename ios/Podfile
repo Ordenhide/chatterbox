@@ -26,12 +26,6 @@ $RNFirebaseDisableSPM = true
 # 11.x. Pinning 11.15.0 here is what made RNFBFirestorePipelineBridgeFactory.swift
 # fail with "cannot find type 'StageBridge' in scope".
 $FirebaseSDKVersion = '12.17.0'
-# GoogleAdsOnDeviceConversion (pulled in for ad-ID conversion tracking) has no
-# Mac Catalyst build and fails the link step. This app doesn't run ads, so
-# disabling ad-ID support is a fine trade — it's also a reasonable privacy
-# default from a messaging app anyway.
-$RNFirebaseAnalyticsWithoutAdIdSupport = true
-
 # New Architecture (Fabric + TurboModules), matching android/gradle.properties.
 #
 # Set here rather than exported, on purpose: macos/Podfile reads the same

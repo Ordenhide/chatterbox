@@ -24,7 +24,7 @@
  * path honest, and remove the media server-side once its audience has seen it.
  */
 import {getFunctions, httpsCallable} from './firebase/functions';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 export type MarkViewedResult = {ok: boolean; allViewed?: boolean};
 

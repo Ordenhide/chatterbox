@@ -70,10 +70,9 @@ jest.mock('../secureKeyStore', () => ({
   },
 }));
 
-// telemetry.ts pulls in @react-native-firebase/analytics, an ESM-only package
-// outside this project's transformIgnorePatterns; e2eeKeys.ts only needs these
-// two as no-ops here.
-jest.mock('../telemetry', () => ({
+// errorLog.ts is mocked so a deliberately-failing branch does not print
+// through the suite output; e2eeKeys.ts only needs these two as no-ops here.
+jest.mock('../errorLog', () => ({
   reportError: () => undefined,
   reportHandled: () => undefined,
 }));

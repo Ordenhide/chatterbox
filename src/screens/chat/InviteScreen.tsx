@@ -45,7 +45,7 @@ import {
   type Invite,
   type InviteState,
 } from '../../services/invites';
-import {reportError} from '../../services/telemetry';
+import {reportError} from '../../services/errorLog';
 import {getColors} from '../../theme/colors';
 import {bodyWeight, terminal} from '../../theme/typography';
 

@@ -44,7 +44,7 @@ import {
 import {bytesToBase64, bytesToHex, secureRandomBytes} from './crypto';
 import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {mmkvStorage} from './storageMMKV';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const db = getFirestore();
 const invitesRef = () => 'invites';

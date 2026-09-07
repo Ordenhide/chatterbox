@@ -42,7 +42,7 @@ import {
   where,
 } from './firebase/firestore';
 import {Friend, FriendRequest} from '../types';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const db = getFirestore();
 const friendsRef = () => collection(db, 'friends');

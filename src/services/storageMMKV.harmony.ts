@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {decryptWithKey, encryptWithKey, generateKeyHex, hexToBytes} from './crypto';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 /**
  * HarmonyOS implementation of the mmkvStorage interface. See ../../.ts for

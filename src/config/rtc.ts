@@ -68,7 +68,7 @@ export async function getIceServers(): Promise<IceServer[]> {
  *
  * `status` names the state so a caller can say so — see the diagnostics
  * surface in CALLING.md. Reporting it is the caller's job; this stays pure so
- * that starting a call never depends on telemetry succeeding.
+ * that starting a call never depends on error reporting succeeding.
  */
 export type IceStatus =
   /** A TURN server with credentials. The configuration calls work best on. */

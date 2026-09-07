@@ -23,7 +23,7 @@ import {
 } from '../../services/firebaseChat';
 import {CallType} from '../../types';
 import {describeIceServers} from '../../config/rtc';
-import {reportError, trackEvent} from '../../services/telemetry';
+import {reportError} from '../../services/errorLog';
 import GlassScreen from '../../components/GlassScreen';
 import {bodyWeight} from '../../theme/typography';
 
@@ -143,13 +143,6 @@ export default function CallScreen() {
       const ice = await describeIceServers();
       if (!isMounted) return;
       // Recorded per call because a missing TURN relay is otherwise invisible:
-      // it does not fail here, it fails much later as a call that never
-      // connects between two mobile networks, reported by users as "calls
-      // don't work sometimes". With this, the ratio of stun-only calls is a
-      // number someone can look at instead of a theory.
-      trackEvent('call_ice_config', {status: ice.status, call_type: callType}).catch(
-        () => undefined,
-      );
       const pc = new RTCPeerConnection({iceServers: ice.servers});
       pcRef.current = pc;
 

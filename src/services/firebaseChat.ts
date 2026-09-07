@@ -22,7 +22,7 @@ import {
 } from './firebase/firestore';
 import {getStorage, getDownloadURL, ref, deleteObject, uploadFileFromUri} from './firebase/storage';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 import {
   isPermissionDenied,
   isUnsyncedEmpty,

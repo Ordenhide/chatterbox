@@ -3,7 +3,7 @@ import {Text} from 'react-native';
 import ReactTestRenderer, {act} from 'react-test-renderer';
 import ErrorBoundary from '../ErrorBoundary';
 
-jest.mock('../../services/telemetry', () => ({
+jest.mock('../../services/errorLog', () => ({
   reportError: jest.fn(),
 }));
 

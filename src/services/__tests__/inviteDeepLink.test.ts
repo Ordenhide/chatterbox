@@ -11,7 +11,7 @@ jest.mock('../firebase/firestore', () => ({
   serverTimestamp: () => 0,
 }));
 jest.mock('../e2eeKeys', () => ({getDeviceKeypairIfEnrolled: async () => null}));
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 jest.mock('../storageMMKV', () => ({
   mmkvStorage: {
     getItem: async () => null,

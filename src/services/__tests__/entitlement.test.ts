@@ -1,7 +1,7 @@
-// snapshotGuard (pulled in by the module under test) reports to telemetry,
+// snapshotGuard (pulled in by the module under test) reports errors,
 // which loads RNFB's native modules — unavailable under Jest. Mocked here the
 // same way account/e2eeKeys/firebaseChat tests already do.
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 
 jest.mock('../firebase/firestore', () => ({
   getFirestore: () => ({}),

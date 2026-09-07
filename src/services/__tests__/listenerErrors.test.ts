@@ -1,5 +1,5 @@
 const mockReportError = jest.fn();
-jest.mock('../telemetry', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
+jest.mock('../errorLog', () => ({reportError: (...a: unknown[]) => mockReportError(...a)}));
 
 import {isPermissionDenied, isUnsyncedEmpty, onListenerError} from '../listenerErrors';
 

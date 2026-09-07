@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, useColorScheme} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {getColors} from '../theme/colors';
-import {reportError} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import {bodyWeight} from '../theme/typography';
 
 type Props = {

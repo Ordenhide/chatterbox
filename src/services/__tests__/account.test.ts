@@ -94,7 +94,7 @@ const mockClearDeviceKeypair = jest.fn();
 const mockClearRatchetKeys = jest.fn();
 const mockClearRatchetSessions = jest.fn();
 const mockClearMediaCache = jest.fn();
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({
   deleteStorageObjectByUrl: (...args: unknown[]) => mockDeleteStorageObjectByUrl(...args),
 }));

@@ -63,7 +63,7 @@ jest.mock('../secureKeyStore', () => ({
   },
 }));
 
-jest.mock('../telemetry', () => ({reportError: jest.fn()}));
+jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 
 const SECURE = 'chatterbox-storage';
 const PREFS = 'chatterbox-prefs';

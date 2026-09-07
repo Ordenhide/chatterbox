@@ -42,7 +42,7 @@ import {
   type EncryptedPayload,
 } from './e2ee';
 import {fetchPeerPublicKeyChecked, getDeviceKeypairIfEnrolled} from './e2eeKeys';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 import type {ChatRoom} from '../types';
 
 /** The field on the chat document. */

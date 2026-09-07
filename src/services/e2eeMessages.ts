@@ -32,7 +32,7 @@ import {
   openEnvelope as openRatchetEnvelope,
   sealText,
 } from './ratchetMessages';
-import {reportError, reportSealedFailure} from './telemetry';
+import {reportError, reportSealedFailure} from './errorLog';
 
 /**
  * `protection` is reported so a downgrade is never silent.

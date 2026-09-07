@@ -19,7 +19,7 @@ import {
   listenLatestCall,
   updateCall,
 } from '../services/firebaseChat';
-import {reportError} from '../services/telemetry';
+import {reportError} from '../services/errorLog';
 import type {CallSession} from '../types';
 import {bodyWeight} from '../theme/typography';
 

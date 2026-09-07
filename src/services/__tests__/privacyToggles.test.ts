@@ -15,7 +15,7 @@ jest.mock('../storageMMKV', () => ({
 jest.mock('../firebase/firestore', () => ({
   doc: jest.fn(), getDoc: jest.fn(), getFirestore: jest.fn(), setDoc: jest.fn(),
 }));
-jest.mock('../telemetry', () => ({reportHandled: jest.fn()}));
+jest.mock('../errorLog', () => ({reportHandled: jest.fn()}));
 jest.mock('react-native', () => ({Platform: {OS: 'android'}, NativeModules: {}}));
 
 const mockStore = store;

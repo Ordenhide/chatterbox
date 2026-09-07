@@ -28,7 +28,7 @@ jest.mock('../secureKeyStore', () => ({
 }));
 
 const reported: string[] = [];
-jest.mock('../telemetry', () => ({
+jest.mock('../errorLog', () => ({
   reportError: (_error: unknown, context: string) => {
     reported.push(context);
   },

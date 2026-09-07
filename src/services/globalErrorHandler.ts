@@ -1,4 +1,4 @@
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 /**
  * Catches the two classes of failure that otherwise leave no trace.

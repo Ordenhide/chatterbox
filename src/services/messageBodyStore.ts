@@ -47,7 +47,7 @@
 import {mmkvStorage} from './storageMMKV';
 import {getSecret, isSecureStoreAvailable, removeSecret, setSecretVerified} from './secureKeyStore';
 import {decryptWithKey, encryptWithKey, generateKeyHex, hexToBytes} from './crypto';
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 const BODY_PREFIX = 'message_bodies_v1_';
 const BODY_KEY_STORAGE_PREFIX = 'message_bodies_key_v1_';

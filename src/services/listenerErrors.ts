@@ -6,7 +6,7 @@
  * different ways: is this "there is nothing" or "I do not know yet"? Reporting
  * the second as the first is what empties a screen that had content on it.
  */
-import {reportError} from './telemetry';
+import {reportError} from './errorLog';
 
 export const isPermissionDenied = (error: any) =>
   error?.code === 'firestore/permission-denied' || error?.code === 'permission-denied';

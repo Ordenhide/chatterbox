@@ -104,7 +104,7 @@ import {
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
 import {openIntroductions} from '../../services/introductions';
-import {reportError, reportSealedFailure} from '../../services/telemetry';
+import {reportError, reportSealedFailure} from '../../services/errorLog';
 import {REPORT_REASONS, reportMessage} from '../../services/reports';
 import {computeSafetyNumber, diagnoseSealed, isGroupSealed, isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../../services/e2ee';
 import {openEnvelope as openRatchetEnvelope} from '../../services/ratchetMessages';

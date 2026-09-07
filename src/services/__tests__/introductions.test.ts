@@ -12,7 +12,7 @@ jest.mock('../e2eeKeys', () => ({
   fetchPeerPublicKeyChecked: (...args: unknown[]) => mockFetchPeerKey(...args),
   getDeviceKeypairIfEnrolled: (...args: unknown[]) => mockGetKeypair(...args),
 }));
-jest.mock('../telemetry', () => ({
+jest.mock('../errorLog', () => ({
   reportError: (...args: unknown[]) => mockReportError(...args),
 }));
 
