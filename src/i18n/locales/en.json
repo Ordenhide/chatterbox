@@ -475,6 +475,7 @@
     "deleteForEveryone_plural": "Permanently delete {{count}} messages for everyone? This cannot be undone.",
     "replyingTo": "Replying to",
     "incognitoBanner": "Incognito — no previews, no cache, no read receipts",
+    "securityCodeChanged": "{{name}}'s safety number changed. Tap to verify.",
     "sessionChanged": "This contact's encryption session changed — usually a reinstall. Tap to verify their safety number.",
     "tapToJump": "Tap to jump",
     "scheduleTitle": "Schedule Message",

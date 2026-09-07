@@ -548,6 +548,7 @@
     "deleteForEveryone_plural": "{{count}} Nachrichten für alle endgültig löschen? Das lässt sich nicht rückgängig machen.",
     "replyingTo": "Antwort an",
     "incognitoBanner": "Inkognito — keine Vorschauen, kein Cache, keine Lesebestätigungen",
+    "securityCodeChanged": "Die Sicherheitsnummer von {{name}} hat sich geändert. Tippe, um sie zu prüfen.",
     "sessionChanged": "Die Verschlüsselungssitzung dieses Kontakts hat sich geändert — meist eine Neuinstallation. Tippe, um die Sicherheitsnummer zu prüfen.",
     "tapToJump": "Zum Springen tippen",
     "scheduleTitle": "Nachricht planen",

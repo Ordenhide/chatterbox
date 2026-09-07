@@ -403,6 +403,7 @@
     "deleteForEveryone_plural": "要对所有人永久删除 {{count}} 条消息吗？此操作无法撤销。",
     "replyingTo": "正在回复",
     "incognitoBanner": "隐身——不预览、不缓存、不发已读回执",
+    "securityCodeChanged": "{{name}} 的安全码变了。点击核对。",
     "sessionChanged": "这位联系人的加密会话变了——通常是重装了应用。点击核对他们的安全码。",
     "tapToJump": "点击跳转",
     "scheduleTitle": "定时发送",

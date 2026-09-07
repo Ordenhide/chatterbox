@@ -548,6 +548,7 @@
     "deleteForEveryone_plural": "¿Eliminar {{count}} mensajes para todos de forma permanente? No se puede deshacer.",
     "replyingTo": "Respondiendo a",
     "incognitoBanner": "Incógnito: sin vistas previas, sin caché, sin confirmaciones de lectura",
+    "securityCodeChanged": "El número de seguridad de {{name}} ha cambiado. Toca para verificar.",
     "sessionChanged": "La sesión de cifrado de este contacto ha cambiado, normalmente por una reinstalación. Toca para verificar su número de seguridad.",
     "tapToJump": "Toca para ir",
     "scheduleTitle": "Programar mensaje",

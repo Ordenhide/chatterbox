@@ -4785,7 +4785,7 @@ export default function ChatScreen() {
           onPress={verifyContact}>
           <Icon name="alertTriangle" size={13} color={colors.textOnDanger} />
           <Text style={[styles.offlineText, {color: colors.textOnDanger}]}>
-            {otherUserName}'s security code changed. Tap to verify.
+            {t('chat.securityCodeChanged', {name: otherUserName})}
           </Text>
         </TouchableOpacity>
       ) : null}
@@ -5427,10 +5427,28 @@ export default function ChatScreen() {
               <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.catchUp')}</Text>
             </TouchableOpacity>
             )}
-              <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionActivities')}</Text>
+              {/* Verifying a contact is the one security control in this
+                  sheet, and it was inside the block below — the flag that
+                  hides invisible ink, voice filters and soundscapes. Section
+                  10 of the privacy policy names first-contact key
+                  substitution as a known limit and says the app "shows a
+                  safety number you can compare out of band"; in that exact
+                  case no key has changed, so neither warning banner appears
+                  and this was the only way to reach it. The web client never
+                  hid it. */}
+              <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionPrivacy')}</Text>
+            {otherUserId && user ? (
+              <TouchableOpacity
+                style={styles.actionSheetItem}
+                onPress={() => {
+                  setActionsModalVisible(false);
+                  verifyContact();
+                }}>
+                <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.verifyContactTitle')}</Text>
+              </TouchableOpacity>
+            ) : null}
             {SHOW_NATIVE_ONLY_FEATURES && (
               <>
-              <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionPrivacy')}</Text>
             <TouchableOpacity
               style={styles.actionSheetItem}
               onPress={() => {
@@ -5451,16 +5469,6 @@ export default function ChatScreen() {
                 {incognitoMode ? t('chat.incognitoOn') : t('chat.incognito')}
               </Text>
             </TouchableOpacity>
-            {otherUserId && user ? (
-              <TouchableOpacity
-                style={styles.actionSheetItem}
-                onPress={() => {
-                  setActionsModalVisible(false);
-                  verifyContact();
-                }}>
-                <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.verifyContactTitle')}</Text>
-              </TouchableOpacity>
-            ) : null}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionSpecial')}</Text>
             <TouchableOpacity
               style={styles.actionSheetItem}

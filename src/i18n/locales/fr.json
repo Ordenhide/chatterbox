@@ -548,6 +548,7 @@
     "deleteForEveryone_plural": "Supprimer définitivement {{count}} messages pour tout le monde ? C’est irréversible.",
     "replyingTo": "Réponse à",
     "incognitoBanner": "Navigation privée — pas d’aperçus, pas de cache, pas d’accusés de lecture",
+    "securityCodeChanged": "Le numéro de sécurité de {{name}} a changé. Touchez pour vérifier.",
     "sessionChanged": "La session de chiffrement de ce contact a changé — le plus souvent une réinstallation. Touchez pour vérifier son numéro de sécurité.",
     "tapToJump": "Touchez pour y aller",
     "scheduleTitle": "Programmer le message",

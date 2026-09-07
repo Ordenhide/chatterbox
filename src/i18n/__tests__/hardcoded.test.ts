@@ -61,6 +61,25 @@ const TERNARY_LABEL = /\?\s*'([A-Z][^']{1,40})'\s*:\s*'([A-Z][^']{1,40})'/g;
  */
 const LABEL_THEN_EXPRESSION = /^[A-Z][A-Za-z]+(?: [A-Za-z()]+)*\s*\{/;
 
+/**
+ * `{name}'s safety number changed. Tap to verify.` — the mirror image of the
+ * pattern above: the expression first, the sentence after it. All three
+ * patterns miss this shape. PROSE anchors on `^[A-Z]` and the line starts
+ * with a brace; TEXT_NODE needs `>…</` on one line and this text sits on its
+ * own; LABEL_THEN_EXPRESSION wants the words before the brace.
+ *
+ * This is how the security-code-changed banner stayed English-only in a
+ * fifteen-language app — the single warning that a contact's key may have
+ * been substituted, which is the one sentence in the product you least want
+ * a user unable to read.
+ *
+ * Three words and a full stop after the expression, so `{count} unread` and
+ * `{a} · {b}` do not qualify; no braces after the first pair, so nested
+ * expressions like `t('k', {n})` fall out.
+ */
+const EXPRESSION_THEN_LABEL =
+  /^\{[^{}]+\}[^{}]*?\b[A-Za-z]{2,}\b(?:[^{}]*\b[A-Za-z]{2,}\b){2,}[^{}]*[.?!]$/;
+
 /** Strips `{…}` repeatedly, so a nested call like `t('k', {n: x})` clears. */
 function withoutExpressions(text: string): string {
   let out = text;
@@ -95,6 +114,9 @@ function scan(file: string): {prose: string[]; nodes: string[]} {
         nodes.push(`${file}:${i + 1}  ${match[1]} / ${match[2]}`);
       }
       if (LABEL_THEN_EXPRESSION.test(trimmed)) {
+        nodes.push(`${file}:${i + 1}  ${trimmed.slice(0, 40)}`);
+      }
+      if (EXPRESSION_THEN_LABEL.test(trimmed)) {
         nodes.push(`${file}:${i + 1}  ${trimmed.slice(0, 40)}`);
       }
     });
