@@ -24,6 +24,7 @@ import {
   republishKeyIfAccountHasNone,
 } from '../services/e2eeKeys';
 import {credentialsFromSeed, seedFromPhrase} from '../services/anonymousIdentity';
+import {ensureRatchetKeysPublished} from '../services/ratchetKeys';
 import {clearBodies} from '../services/messageBodyStore';
 import {clearMediaCache} from '../services/mediaVault';
 import {guardDocSnapshot} from '../services/snapshotGuard';
@@ -195,6 +196,35 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         // phrase cannot match — permanently, and silently. No ordering fixes
         // that, so the minting is gone rather than sequenced.
         republishKeyIfAccountHasNone(firebaseUser.uid);
+
+        /**
+         * Publishes this device's ratchet bundle, which is what turns forward
+         * secrecy on.
+         *
+         * Everything else about the ratchet has been here for a while — X3DH,
+         * the double ratchet, group sender keys, all of it tested — and none
+         * of it ever ran, because this one call was missing. The publish step
+         * is deliberately separate from generating the identity
+         * (getOrCreateRatchetIdentity says so in its own docstring: generating
+         * is local and cheap, publishing is a claim to peers), and nothing
+         * made the claim. So `users/{uid}/publicKeys/ratchet` never existed,
+         * every peer lookup answered 'unenrolled', and both send paths fell
+         * back to the static long-lived key — for every message, in every
+         * conversation, while the privacy policy said most of them were
+         * forward-secret.
+         *
+         * Fire-and-forget, and it swallows its own failures: a device that
+         * cannot publish simply cannot be reached over the ratchet yet, which
+         * the send path already treats as "no session" and answers with the
+         * static path. It must not block signing in.
+         *
+         * Groups need every member to have published before sealGroupText will
+         * use sender keys — it is all-or-nothing, because a message some
+         * members cannot read is worse than one everybody can. So group
+         * forward secrecy arrives per conversation as members update, rather
+         * than all at once.
+         */
+        ensureRatchetKeysPublished(firebaseUser.uid);
       } else {
         setUser(null);
         clearUserCache();
