@@ -56,7 +56,7 @@
     <section>
       <h2>1. Uçtan uca şifreli olanlar</h2>
       <p>Cihazında şifrelenir; ne biz ne de Google okuyabilir:</p>
-      <ul><li>Mesajlarının metni.</li><li>Eklediğin dosyaların, fotoğrafların, seslerin ve videoların içeriği.</li><li>Paylaşılan listeler, kaydedilen alıntılar ve bağlantı önizlemeleri.</li><li>Sesli ve görüntülü aramalar; iki cihaz arasında WebRTC'nin zorunlu kıldığı DTLS-SRTP kullanılır.</li></ul>
+      <ul><li>Mesajlarının metni.</li><li>Eklediğin dosyaların, fotoğrafların, seslerin ve videoların içeriği.</li><li>Bağlantı önizlemeleri.</li><li>Sesli ve görüntülü aramalar; iki cihaz arasında WebRTC'nin zorunlu kıldığı DTLS-SRTP kullanılır.</li></ul>
       <p>Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanır: her mesajın kendi anahtarı vardır, bu yüzden cihazının ele geçirilmesi önceki mesajları açığa çıkarmaz. Birinin istemcisinin daha yeni anahtar malzemesini yayımlamadığı konuşmalar, bu özelliği taşımayan tek bir uzun ömürlü anahtara geri düşer. Mesajın altındaki etiket, o mesajın gerçekte hangisini kullandığını söyler.</p>
       <p>Bu çizgiyi tek bir şey aşar, o da yalnızca sen istediğinde: Vikipedi'de bir isim aramak o ismi gönderir, geldiği mesajı değil. Kimin aldığı 6. bölümde yazıyor; sorgu yalnızca dokunduğun anda yapılır, başka zaman değil, dolayısıyla kapatılacak bir şey yok. Özetleme, çeviri ve yazıya dökme de bu çizgiyi aşardı — bu sürümde kapalılar ve uygulamada onları açan hiçbir denetim yok.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Neleri topluyoruz</h2>
-      <ul><li>Hesap verisi: kayıt olurken kullandığın e-posta adresi, Firebase Authentication içinde tutulur.</li><li>Mesaj ve eklerin şifreli metni, ayrıca 2. bölümdeki üst veriler.</li><li>Kullanım verisi: Firebase Analytics üzerinden uygulama etkileşim olayları — görüntülenen ekranlar ve kullanılan özellikler; mesaj içeriği asla. Geliştirme sürümlerinde kapalıdır.</li><li>Çökme raporları: Firebase Crashlytics üzerinden çökme ve hata verisi. Hem bunlar hem de yukarıdaki kullanım verisi hesap tanımlayıcını taşır, yani ikisi de anonim değildir: bir olayın ya da çökmenin hangi hesaptan geldiğini görebiliriz. İkisi de mesaj içeriği taşımaz.</li></ul>
-      <p>Analitik ve çökme raporlaması şu an uygulama içinde tek tek kapatılamıyor. Kendi verinin silinmesini istersen bize yaz.</p>
+      <ul><li>Hesap verisi: kaydolurken kullandığın e-posta adresi, Firebase Authentication'da tutulur.</li><li>Mesajların ve eklerin şifreli hâli, ayrıca 2. bölümdeki üst veri.</li></ul>
+      <p>Listenin tamamı bu. Ne kullanım analizi var ne de çökme raporu. Uygulama eskiden ekran görüntülemelerini Firebase Analytics'e, çökmeleri Firebase Crashlytics'e gönderiyordu; ikisi de hesap kimliğini taşıdığı için hiçbiri anonim değildi. İkisi de, onları gönderen kütüphanelerle birlikte kaldırıldı. Hatalar geliştirme sırasında geliştiricinin kendi makinesine yazılır ve başka hiçbir yere gitmez.</p>
     </section>
 
     <section>

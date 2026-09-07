@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>Được niêm phong không chỉ là tin nhắn</h3>
-            <p>Chữ trong tin nhắn là phần dễ. Bản xem trước liên kết, danh sách dùng chung, trích dẫn đã lưu và bản gỡ băng giọng nói đều được mã hoá theo cùng một cách cho cuộc trò chuyện đó. Trước đây, một hàm phía máy chủ ghi bản gỡ băng trở lại tin nhắn dưới dạng văn bản thuần; giờ nó được niêm phong ngay trên máy bạn, còn bản dịch thì không được lưu chút nào.</p>
+            <p>Chữ trong tin nhắn là phần dễ. Bản xem trước liên kết và vị trí trực tiếp được mã hoá cho cuộc trò chuyện theo đúng cách đó: chia sẻ vị trí là một chuỗi toạ độ, và nó được niêm phong bằng khoá của máy bên kia như mọi thứ khác. Tệp đính kèm được mã hoá trước khi tải lên, nên thứ máy chủ giữ là những byte nó không mở được.</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>Chính sách quyền riêng tư nói rõ những gì nó không làm được</h3>
-            <p>Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng báo cáo sự cố có mang định danh tài khoản chứ không ẩn danh. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng mười lăm ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.</p>
+            <p>Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng một khoá bị tráo trước tin nhắn đầu tiên của bạn sẽ trông hoàn toàn bình thường. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng mười lăm ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.</p>
             <p class="reason-note"><a href="privacy.vi.html">Hãy đọc nó</a> trước khi bạn quyết định có tin điều nào ở trên hay không.</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>Nhấn giữ một tin nhắn, chọn một cái tên trong đó, rồi đọc bài viết mà không rời khỏi cuộc trò chuyện. Một yêu cầu, do bạn chạm, bằng ngôn ngữ của bạn.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Danh sách chung và tường trích dẫn</h3>
-          <p>Một danh sách cả hai cùng tích, và một chỗ để giữ những câu đáng giữ. Cả hai đều được niêm phong cho cuộc trò chuyện như tin nhắn.</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>Khoá của bạn, cụm từ khôi phục của bạn</h3>
+          <p>Khoá riêng giải mã tin nhắn của bạn không bao giờ rời khỏi máy bạn. Bạn có thể chép nó ra thành cụm từ khôi phục; chúng tôi không giữ nó và không thể lấy lại giúp bạn.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>Chữ trong tin nhắn của bạn</li>
             <li>Ảnh, video, âm thanh và tệp bạn đính kèm</li>
-            <li>Bản xem trước liên kết, danh sách dùng chung, trích dẫn đã lưu</li>
+            <li>Bản xem trước liên kết và vị trí trực tiếp</li>
             <li>Bản gỡ băng giọng nói, sau khi quay về với bạn</li>
             <li>Âm thanh và hình ảnh cuộc gọi, giữa hai thiết bị</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>Việc một cuộc trò chuyện tồn tại, và những tài khoản nào ở trong đó</li>
             <li>Lần cuối mỗi tài khoản hoạt động</li>
             <li>Siêu dữ liệu của mọi kết nối, kể cả địa chỉ IP của bạn</li>
-            <li>Báo cáo sự cố và sử dụng, vốn mang định danh tài khoản</li>
+            <li>Rằng đã có một cuộc gọi, với ai và khi nào — không phải tiếng hay hình của nó</li>
             <li>Tên, kiểu và kích thước của mọi tệp bạn đính kèm</li>
           </ul>
         </div>

@@ -46,7 +46,7 @@ export default {
       {
         title: 'Versiegelt wird mehr als die Nachricht',
         body: [
-          `Nachrichtentext ist der einfache Teil. Linkvorschauen, geteilte Listen, gespeicherte Zitate und Sprachtranskripte werden genauso für das Gespräch verschlüsselt. Ein Sprachtranskript wurde früher von einer Serverfunktion im Klartext zurück in die Nachricht geschrieben; heute wird es auf deinem Gerät versiegelt, und Übersetzungen werden überhaupt nicht gespeichert.`,
+          `Nachrichtentext ist der einfache Teil. Linkvorschauen und der Live-Standort werden genauso für das Gespräch verschlüsselt — eine Standortfreigabe ist eine Folge von Koordinaten, und sie ist wie alles andere an den Schlüssel des anderen Geräts versiegelt. Anhänge werden vor dem Hochladen verschlüsselt, der Server hält also Bytes, die er nicht öffnen kann.`,
         ],
       },
       {
@@ -73,7 +73,7 @@ export default {
       {
         title: 'Die Datenschutzerklärung sagt, was sie nicht kann',
         body: [
-          `Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass Absturzberichte eine Kontokennung tragen und nicht anonym sind. Es ist derselbe Text in der App und auf dieser Seite, in fünfzehn Sprachen — kein englisches Original mit einer weicheren Übersetzung.`,
+          `Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass ein vor deiner ersten Nachricht ausgetauschter Schlüssel völlig normal aussähe. Es ist derselbe Text in der App und auf dieser Seite, in fünfzehn Sprachen — kein englisches Original mit einer weicheren Übersetzung.`,
         ],
         note: `{policyShort}, bevor du entscheidest, ob du irgendetwas davon glaubst.`,
       },
@@ -102,8 +102,8 @@ export default {
         body: `Nachricht lange drücken, einen Namen darin wählen und den Artikel lesen, ohne den Chat zu verlassen. Eine Anfrage, auf dein Antippen, in deiner Sprache.`,
       },
       {
-        title: 'Geteilte Listen und Zitatwand',
-        body: `Eine Liste, die ihr beide abhaken könnt, und ein Ort für die Sätze, die es wert sind. Beide für das Gespräch versiegelt wie die Nachrichten.`,
+        title: 'Dein Schlüssel, deine Wiederherstellungsphrase',
+        body: `Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie. Du kannst ihn als Wiederherstellungsphrase aufschreiben; wir halten ihn nicht und können ihn dir nicht zurückholen.`,
       },
       {
         title: 'Fünfzehn Sprachen',
@@ -152,7 +152,7 @@ export default {
       items: [
         'Der Text deiner Nachrichten',
         'Fotos, Video, Audio und Dateien, die du anhängst',
-        'Linkvorschauen, geteilte Listen, gespeicherte Zitate',
+        'Linkvorschauen und Live-Standort',
         'Sprachtranskripte, sobald sie zu dir zurückkommen',
         'Ton und Bild von Anrufen, zwischen den beiden Geräten',
       ],
@@ -163,7 +163,7 @@ export default {
         'Dass ein Gespräch existiert und welche Konten darin sind',
         'Wann jedes Konto zuletzt aktiv war',
         'Die Metadaten jeder Verbindung, einschließlich deiner IP-Adresse',
-        'Absturz- und Nutzungsberichte, die eine Kontokennung tragen',
+        'Dass ein Anruf stattfand, mit wem und wann — nicht sein Ton oder Bild',
         'Name, Typ und Größe jeder Datei, die du anhängst',
       ],
     },

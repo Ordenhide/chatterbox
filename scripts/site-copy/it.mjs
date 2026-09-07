@@ -45,7 +45,7 @@ export default {
       {
         title: `A essere sigillati non sono solo i messaggi`,
         body: [
-          `Il testo dei messaggi è la parte facile. Anteprime dei link, liste condivise, citazioni salvate e trascrizioni vocali sono cifrate allo stesso modo, per quella conversazione. Una trascrizione vocale veniva riscritta in chiaro nel messaggio da una funzione lato server; ora viene sigillata sul tuo dispositivo, e le traduzioni non vengono conservate affatto.`,
+          `Il testo dei messaggi è la parte facile. Le anteprime dei link e la posizione in tempo reale sono cifrate allo stesso modo per quella conversazione: condividere la posizione è una sequenza di coordinate, sigillata alla chiave dell'altro dispositivo come tutto il resto. Gli allegati sono cifrati prima di essere caricati, quindi il server conserva byte che non può aprire.`,
         ],
       },
       {
@@ -72,7 +72,7 @@ export default {
       {
         title: `L'informativa dice ciò che non può fare`,
         body: [
-          `Dichiara che la cifratura non è mai stata verificata da terzi indipendenti, che Google vede i metadati di ogni connessione perché ne affittiamo i server, e che i rapporti di crash portano un identificativo di account e non sono anonimi. È lo stesso testo nell'app e su questo sito, in quindici lingue — non un originale inglese con una traduzione più morbida.`,
+          `Dichiara che la cifratura non è mai stata verificata da terzi indipendenti, che Google vede i metadati di ogni connessione perché ne affittiamo i server, e che una chiave sostituita prima del tuo primo messaggio sembrerebbe del tutto normale. È lo stesso testo nell'app e su questo sito, in quindici lingue — non un originale inglese con una traduzione più morbida.`,
         ],
         note: `{policyShort} prima di decidere se fidarti di qualcosa di quanto sopra.`,
       },
@@ -101,8 +101,8 @@ export default {
         body: `Tieni premuto un messaggio, scegli un nome al suo interno e leggi la voce senza uscire dalla chat. Una richiesta, al tuo tocco, nella tua lingua.`,
       },
       {
-        title: `Liste condivise e muro delle citazioni`,
-        body: `Una lista che potete spuntare in due, e un posto dove tenere le frasi che meritano di restare. Entrambe sigillate per la conversazione come i messaggi.`,
+        title: `La tua chiave, la tua frase di recupero`,
+        body: `La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo. Puoi annotarla come frase di recupero; noi non la conserviamo e non possiamo recuperarla per te.`,
       },
       {
         title: `Quindici lingue`,
@@ -151,7 +151,7 @@ export default {
       items: [
         `Il testo dei tuoi messaggi`,
         `Foto, video, audio e file che alleghi`,
-        `Anteprime dei link, liste condivise, citazioni salvate`,
+        `Anteprime dei link e posizione in tempo reale`,
         `Le trascrizioni vocali, una volta tornate a te`,
         `Audio e video delle chiamate, tra i due dispositivi`,
       ],
@@ -162,7 +162,7 @@ export default {
         `Che una conversazione esiste, e quali account ne fanno parte`,
         `Quando ogni account è stato attivo l'ultima volta`,
         `I metadati di ogni connessione, incluso il tuo indirizzo IP`,
-        `I rapporti di crash e di utilizzo, che portano un identificativo di account`,
+        `Che una chiamata c'è stata, con chi e quando — non il suo audio né il video`,
         `Il nome, il tipo e la dimensione di ogni file che alleghi`,
       ],
     },

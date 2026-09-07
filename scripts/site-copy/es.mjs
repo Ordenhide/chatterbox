@@ -46,7 +46,7 @@ export default {
       {
         title: 'Se sella más que los mensajes',
         body: [
-          `El texto de los mensajes es la parte fácil. Las vistas previas de enlaces, las listas compartidas, las citas guardadas y las transcripciones de voz se cifran igual, contra la conversación. Antes, una función del servidor devolvía la transcripción al mensaje en texto claro; ahora se sella en tu dispositivo, y las traducciones no se guardan en absoluto.`,
+          `El texto de los mensajes es la parte fácil. Las vistas previas de enlaces y la ubicación en tiempo real se cifran igual, contra la conversación: compartir la ubicación es una secuencia de coordenadas, y va sellada a la clave del otro dispositivo como todo lo demás. Los adjuntos se cifran antes de subirse, así que lo que el servidor guarda son bytes que no puede abrir.`,
         ],
       },
       {
@@ -73,7 +73,7 @@ export default {
       {
         title: 'La política de privacidad dice lo que no puede hacer',
         body: [
-          `Declara que el cifrado nunca ha sido auditado de forma independiente, que Google puede ver los metadatos de cada conexión porque le alquilamos sus servidores, y que los informes de fallos llevan un identificador de cuenta y no son anónimos. Es el mismo texto en la aplicación y en este sitio, en quince idiomas: no un original en inglés con una traducción más suave.`,
+          `Declara que el cifrado nunca ha sido auditado de forma independiente, que Google puede ver los metadatos de cada conexión porque le alquilamos sus servidores, y que una clave sustituida antes de tu primer mensaje tendría un aspecto completamente normal. Es el mismo texto en la aplicación y en este sitio, en quince idiomas: no un original en inglés con una traducción más suave.`,
         ],
         note: `{policyShort} antes de decidir si te fías de algo de lo anterior.`,
       },
@@ -102,8 +102,8 @@ export default {
         body: `Mantén pulsado un mensaje, elige un nombre y lee el artículo sin salir del chat. Una petición, con tu toque, en tu idioma.`,
       },
       {
-        title: 'Listas compartidas y muro de citas',
-        body: `Una lista que los dos podéis ir marcando, y un sitio donde guardar las frases que merecen quedarse. Ambas selladas contra la conversación, igual que los mensajes.`,
+        title: 'Tu clave, tu frase de recuperación',
+        body: `La clave privada que descifra tus mensajes nunca sale de tu dispositivo. Puedes anotarla como frase de recuperación; nosotros no la tenemos y no podemos recuperarla por ti.`,
       },
       {
         title: 'Quince idiomas',
@@ -146,7 +146,7 @@ export default {
       items: [
         'El texto de tus mensajes',
         'Fotos, vídeo, audio y archivos que adjuntas',
-        'Vistas previas de enlaces, listas compartidas, citas guardadas',
+        'Vistas previas de enlaces y ubicación en tiempo real',
         'Transcripciones de voz, una vez que vuelven a ti',
         'El audio y el vídeo de las llamadas, entre los dos dispositivos',
       ],
@@ -157,7 +157,7 @@ export default {
         'Que existe una conversación, y qué cuentas están en ella',
         'Cuándo estuvo activa cada cuenta por última vez',
         'Los metadatos de cada conexión, incluida tu dirección IP',
-        'Los informes de fallos y de uso, que llevan un identificador de cuenta',
+        'Que hubo una llamada, con quién y cuándo, pero no su audio ni su vídeo',
         'El nombre, el tipo y el tamaño de cada archivo que adjuntas',
       ],
     },

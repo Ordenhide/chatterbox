@@ -56,7 +56,7 @@
     <section>
       <h2>1. Những gì được mã hoá đầu cuối</h2>
       <p>Được mã hoá trên thiết bị của bạn, chúng tôi và Google đều không đọc được:</p>
-      <ul><li>Nội dung tin nhắn của bạn.</li><li>Nội dung các tệp, ảnh, âm thanh và video bạn đính kèm.</li><li>Danh sách chung, trích dẫn đã lưu và bản xem trước liên kết.</li><li>Cuộc gọi thoại và video, dùng DTLS-SRTP bắt buộc của WebRTC giữa hai thiết bị.</li></ul>
+      <ul><li>Nội dung tin nhắn của bạn.</li><li>Nội dung các tệp, ảnh, âm thanh và video bạn đính kèm.</li><li>Bản xem trước liên kết.</li><li>Cuộc gọi thoại và video, dùng DTLS-SRTP bắt buộc của WebRTC giữa hai thiết bị.</li></ul>
       <p>Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet: mỗi tin nhắn có khoá riêng, nên thiết bị bị xâm nhập cũng không làm lộ những tin nhắn trước đó. Những cuộc trò chuyện mà máy của ai đó chưa công bố vật liệu khoá mới hơn sẽ quay về dùng một khoá dài hạn duy nhất, vốn không có tính chất đó. Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự đi theo đường nào.</p>
       <p>Chỉ một thứ vượt qua ranh giới này, và chỉ khi bạn yêu cầu: tra một cái tên trên Wikipedia sẽ gửi đi cái tên đó, không phải tin nhắn chứa nó. Mục 6 nói ai nhận nó; yêu cầu xảy ra đúng lúc bạn chạm, không lúc nào khác, nên chẳng có gì để tắt. Tóm tắt, dịch và chép lại cũng sẽ vượt qua ranh giới ấy — trong bản này chúng đã tắt, và trong ứng dụng không có nút nào bật chúng lên.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Chúng tôi thu thập gì</h2>
-      <ul><li>Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, lưu trong Firebase Authentication.</li><li>Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.</li><li>Dữ liệu sử dụng: các sự kiện tương tác qua Firebase Analytics — màn hình đã xem và tính năng đã dùng, không bao giờ là nội dung tin nhắn. Đã tắt trong bản dựng phát triển.</li><li>Báo cáo sự cố: dữ liệu sự cố và lỗi qua Firebase Crashlytics. Cả mục này lẫn dữ liệu sử dụng ở trên đều mang mã định danh tài khoản của bạn, nên không mục nào là ẩn danh: chúng tôi thấy được một sự kiện hay một sự cố đến từ tài khoản nào. Không mục nào mang nội dung tin nhắn.</li></ul>
-      <p>Hiện tại phân tích và báo cáo sự cố chưa thể tắt riêng lẻ trong ứng dụng. Hãy viết cho chúng tôi nếu bạn muốn xoá phần của mình.</p>
+      <ul><li>Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, giữ trong Firebase Authentication.</li><li>Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.</li></ul>
+      <p>Danh sách chỉ có vậy. Không có phân tích sử dụng và không có báo cáo sự cố. Trước đây ứng dụng gửi lượt xem màn hình tới Firebase Analytics và báo cáo sự cố tới Firebase Crashlytics, cả hai đều mang định danh tài khoản của bạn nên không cái nào ẩn danh; cả hai đã bị gỡ bỏ, cùng với những thư viện gửi chúng. Lỗi chỉ được in ra trên máy của người phát triển trong lúc phát triển, và không đi đâu khác.</p>
     </section>
 
     <section>

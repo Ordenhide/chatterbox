@@ -93,7 +93,7 @@ const ICONS = {
   export: '<path d="M12 3v13M7 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-linecap="round"/>',
 };
 
-const FEATURE_ICONS = ['chat', 'phone', 'star', 'book', 'check', 'globe'];
+const FEATURE_ICONS = ['chat', 'phone', 'star', 'book', 'lock', 'globe'];
 const CONTROL_ICONS = ['lock', 'eye', 'clock', 'burn', 'block', 'export'];
 
 const icon = name => `<svg class="icon" viewBox="0 0 24 24">${ICONS[name]}</svg>`;

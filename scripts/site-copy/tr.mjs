@@ -45,7 +45,7 @@ export default {
       {
         title: `Mühürlenen yalnızca mesajlar değil`,
         body: [
-          `Mesaj metni işin kolay kısmı. Bağlantı önizlemeleri, paylaşılan listeler, kaydedilen alıntılar ve ses dökümleri de aynı şekilde o sohbete şifrelenir. Ses dökümü eskiden bir sunucu işlevi tarafından mesajın içine düz metin olarak geri yazılıyordu; artık sizin cihazınızda mühürleniyor, çeviriler ise hiç saklanmıyor.`,
+          `Mesaj metni işin kolay kısmı. Bağlantı önizlemeleri ve canlı konum da aynı şekilde o konuşmaya şifrelenir: konum paylaşmak bir koordinat akışıdır ve her şey gibi karşı cihazın anahtarına mühürlenir. Ekler yüklenmeden önce şifrelenir, dolayısıyla sunucunun elinde açamadığı baytlar durur.`,
         ],
       },
       {
@@ -72,7 +72,7 @@ export default {
       {
         title: `Gizlilik politikası neyi yapamadığını da yazıyor`,
         body: [
-          `Şifrelemenin hiçbir zaman bağımsız denetimden geçmediğini, sunucularını kiraladığımız için Google'ın her bağlantının üst verisini görebildiğini ve çökme raporlarının bir hesap kimliği taşıdığını, anonim olmadığını yazar. Uygulamadaki ve bu sitedeki metin aynıdır, on beş dilde — İngilizce bir asıl ve daha yumuşak bir çeviri değil.`,
+          `Şifrelemenin hiçbir zaman bağımsız denetimden geçmediğini, sunucularını kiraladığımız için Google'ın her bağlantının üst verisini görebildiğini ve ilk mesajından önce değiştirilmiş bir anahtarın son derece normal görüneceğini yazar. Uygulamadaki ve bu sitedeki metin aynıdır, on beş dilde — İngilizce bir asıl ve daha yumuşak bir çeviri değil.`,
         ],
         note: `Yukarıdakilerin herhangi birine güvenmeye karar vermeden önce: {policyShort}.`,
       },
@@ -101,8 +101,8 @@ export default {
         body: `Bir mesaja uzun basın, içindeki bir ismi seçin ve sohbetten çıkmadan maddeyi okuyun. Tek istek, sizin dokunuşunuzla, kendi dilinizde.`,
       },
       {
-        title: `Paylaşılan listeler ve alıntı duvarı`,
-        body: `İkinizin de işaretleyebileceği bir liste ve saklanmaya değer cümleler için bir yer. İkisi de mesajlar gibi o sohbete mühürlü.`,
+        title: `Anahtarın senin, kurtarma ifaden senin`,
+        body: `Mesajlarını çözen özel anahtar cihazından hiç çıkmaz. Onu bir kurtarma ifadesi olarak yazabilirsin; bizde durmaz ve senin için geri getiremeyiz.`,
       },
       {
         title: `On beş dil`,
@@ -151,7 +151,7 @@ export default {
       items: [
         `Mesajlarınızın metni`,
         `Eklediğiniz fotoğraf, video, ses ve dosyalar`,
-        `Bağlantı önizlemeleri, paylaşılan listeler, kaydedilen alıntılar`,
+        `Bağlantı önizlemeleri ve canlı konum`,
         `Ses dökümleri, size geri döndükten sonra`,
         `Aramaların sesi ve görüntüsü, iki cihaz arasında`,
       ],
@@ -162,7 +162,7 @@ export default {
         `Bir sohbetin var olduğu ve içinde hangi hesapların bulunduğu`,
         `Her hesabın en son ne zaman etkin olduğu`,
         `Her bağlantının üst verisi, IP adresiniz dahil`,
-        `Çökme ve kullanım raporları; bunlar bir hesap kimliği taşır`,
+        `Bir aramanın yapıldığı, kiminle ve ne zaman — sesi ya da görüntüsü değil`,
         `Gönderdiğin her ekin adı, türü ve boyutu`,
       ],
     },

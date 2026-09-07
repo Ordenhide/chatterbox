@@ -180,24 +180,6 @@ describe('the uncomfortable parts survive translation', () => {
       ar: /من في كل محادثة/,
       hi: /हर बातचीत में कौन है/,
     },
-    {
-      what: 'analytics cannot be switched off',
-      en: /cannot currently be switched off individually/,
-      'zh-Hans': /还不能单独关闭分析和崩溃上报/,
-      'zh-Hant': /還不能單獨關閉分析和當機回報/,
-      es: /no se pueden desactivar por separado dentro de la app/,
-      fr: /ne peuvent pas encore être désactivés séparément/,
-      de: /lassen sich derzeit nicht einzeln in der App abschalten/,
-      it: /non si possono disattivare singolarmente dentro l'app/,
-      pt: /não podem ser desligados separadamente dentro da app/,
-      ru: /пока нельзя отключить по отдельности внутри приложения/,
-      tr: /şu an uygulama içinde tek tek kapatılamıyor/,
-      vi: /chưa thể tắt riêng lẻ trong ứng dụng/,
-      ja: /アプリ内で個別にオフにできません/,
-      ko: /앱 안에서 개별적으로 끌 수 없습니다/,
-      ar: /لا يمكن حاليًا إيقاف التحليلات وتقارير الأعطال كلٌّ على حدة داخل التطبيق/,
-      hi: /अलग-अलग बंद नहीं किया जा सकता/,
-    },
   ];
 
   it.each(admissions.map(a => [a.what, a] as const))('%s', (_what, admission) => {
@@ -205,6 +187,27 @@ describe('the uncomfortable parts survive translation', () => {
       const all = PRIVACY_POLICY[code].map(s => s.body).join('\n');
       expect(all).toMatch(admission[code]);
     }
+  });
+});
+
+/**
+ * Section 4 used to end by admitting that analytics and crash reporting could
+ * not be switched off individually. That admission was in this file's list
+ * until Analytics and Crashlytics were removed outright, at which point it
+ * became a confession about something that no longer happens.
+ *
+ * What replaced it is the opposite kind of claim — "there is none" — and the
+ * opposite risk. Nobody softens a favourable sentence, but a translator can
+ * easily generalise it into "we collect very little", which is vaguer and
+ * unfalsifiable. Naming the two products keeps it specific: they do not
+ * translate, so their presence is checkable in a language you cannot read.
+ */
+describe('section 4 names what was removed, in every language', () => {
+  it.each(codes)('%s names both products by name', code => {
+    const four = PRIVACY_POLICY[code].find(s => s.title.startsWith('4.'));
+    expect(four).toBeDefined();
+    expect(four!.body).toContain('Firebase Analytics');
+    expect(four!.body).toContain('Firebase Crashlytics');
   });
 });
 

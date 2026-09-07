@@ -56,7 +56,7 @@
     <section>
       <h2>1. Ce qui est chiffré de bout en bout</h2>
       <p>Chiffré sur votre appareil, illisible pour nous comme pour Google :</p>
-      <ul><li>Le texte de vos messages.</li><li>Le contenu des fichiers, photos, audios et vidéos que vous joignez.</li><li>Les listes partagées, les citations enregistrées et les aperçus de liens.</li><li>Les appels audio et vidéo, qui utilisent le DTLS-SRTP obligatoire de WebRTC entre les deux appareils.</li></ul>
+      <ul><li>Le texte de vos messages.</li><li>Le contenu des fichiers, photos, audios et vidéos que vous joignez.</li><li>Les aperçus de liens.</li><li>Les appels audio et vidéo, qui utilisent le DTLS-SRTP obligatoire de WebRTC entre les deux appareils.</li></ul>
       <p>La plupart des messages individuels et de groupe utilisent en plus un cliquet : chaque message a sa propre clé, si bien qu'un appareil compromis n'expose pas les messages précédents. Les conversations où le client de quelqu'un n'a pas publié le matériel de clé plus récent retombent sur une seule clé de longue durée, qui n'a pas cette propriété. La mention sous un message vous dit lequel il a réellement emprunté.</p>
       <p>Une seule chose franchit cette ligne, et uniquement lorsque vous le demandez : chercher un nom sur Wikipédia envoie ce nom, pas le message dont il vient. La section 6 dit qui le reçoit, et la requête a lieu au moment où vous touchez et pas autrement, il n’y a donc rien à désactiver. Résumer, traduire et transcrire la franchiraient aussi : ces fonctions sont désactivées dans cette version, et aucune commande de l’application ne les active.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Ce que nous collectons</h2>
-      <ul><li>Données de compte : l'adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.</li><li>Le chiffré des messages et des pièces jointes, ainsi que les métadonnées de la section 2.</li><li>Données d'usage : événements d'interaction via Firebase Analytics — écrans consultés et fonctionnalités utilisées, jamais le contenu des messages. Désactivé dans les versions de développement.</li><li>Rapports de plantage : données de plantage et d'erreur via Firebase Crashlytics. Ces données comme celles d'usage ci-dessus portent l'identifiant de votre compte : ni les unes ni les autres ne sont anonymes, nous voyons de quel compte vient un événement ou un plantage. Aucune ne contient le contenu des messages.</li></ul>
-      <p>L'analytique et les rapports de plantage ne peuvent pas encore être désactivés séparément dans l'application. Écrivez-nous si vous souhaitez la suppression des vôtres.</p>
+      <ul><li>Données de compte : l’adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.</li><li>Le chiffré des messages et des pièces jointes, plus les métadonnées de la section 2.</li></ul>
+      <p>C’est toute la liste. Il n’y a ni analytique ni rapports de plantage. L’application envoyait les vues d’écran à Firebase Analytics et les plantages à Firebase Crashlytics, les deux portant votre identifiant de compte, donc aucun n’était anonyme ; les deux ont disparu, avec les bibliothèques qui les envoyaient. Les erreurs s’affichent sur la machine du développeur pendant le développement et ne vont nulle part ailleurs.</p>
     </section>
 
     <section>

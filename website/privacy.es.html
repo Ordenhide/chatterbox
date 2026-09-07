@@ -56,7 +56,7 @@
     <section>
       <h2>1. Qué está cifrado de extremo a extremo</h2>
       <p>Cifrado en tu dispositivo, ilegible para nosotros y para Google:</p>
-      <ul><li>El texto de tus mensajes.</li><li>El contenido de los archivos, fotos, audios y vídeos que adjuntas.</li><li>Las listas compartidas, las citas guardadas y las vistas previas de enlaces.</li><li>Las llamadas de voz y vídeo, que usan el DTLS-SRTP obligatorio de WebRTC entre los dos dispositivos.</li></ul>
+      <ul><li>El texto de tus mensajes.</li><li>El contenido de los archivos, fotos, audios y vídeos que adjuntas.</li><li>Las vistas previas de enlaces.</li><li>Las llamadas de voz y vídeo, que usan el DTLS-SRTP obligatorio de WebRTC entre los dos dispositivos.</li></ul>
       <p>La mayoría de los mensajes individuales y de grupo usan además un trinquete: cada mensaje tiene su propia clave, así que comprometer tu dispositivo no expone los anteriores. Las conversaciones en las que el cliente de alguien no ha publicado el material de clave más reciente recurren a una única clave de larga duración, que no tiene esa propiedad. La etiqueta bajo un mensaje te dice cuál le tocó realmente.</p>
       <p>Una sola cosa cruza esta línea, y solo cuando tú lo pides: buscar un nombre en Wikipedia envía ese nombre, no el mensaje del que salió. La sección 6 dice quién lo recibe, y la consulta ocurre con el toque y no en otro momento, así que no hay nada que apagar. Resumir, traducir y transcribir también la cruzarían: están apagados en esta versión, y no hay ningún control en la aplicación que los encienda.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Qué recopilamos</h2>
-      <ul><li>Datos de la cuenta: la dirección de correo con la que te registras, guardada en Firebase Authentication.</li><li>El texto cifrado de mensajes y adjuntos, más los metadatos de la sección 2.</li><li>Datos de uso: eventos de interacción con la app vía Firebase Analytics —pantallas vistas y uso de funciones, nunca el contenido de los mensajes. Desactivado en compilaciones de desarrollo.</li><li>Informes de fallos: datos de fallos y errores vía Firebase Crashlytics. Tanto estos como los datos de uso de arriba llevan el identificador de tu cuenta, así que ninguno es anónimo: podemos ver de qué cuenta vino un evento o un fallo. Ninguno lleva el contenido de los mensajes.</li></ul>
-      <p>Ahora mismo, la analítica y los informes de fallos no se pueden desactivar por separado dentro de la app. Escríbenos si quieres que borremos los tuyos.</p>
+      <ul><li>Datos de la cuenta: la dirección de correo con la que te registras, guardada en Firebase Authentication.</li><li>El texto cifrado de los mensajes y los adjuntos, más los metadatos de la sección 2.</li></ul>
+      <p>Esa es la lista completa. No hay analítica ni informes de fallos. La aplicación enviaba vistas de pantalla a Firebase Analytics e informes de fallos a Firebase Crashlytics, ambos con tu identificador de cuenta, así que ninguno era anónimo; los dos han desaparecido, junto con las bibliotecas que los enviaban. Los errores se imprimen en la máquina de quien desarrolla, durante el desarrollo, y no van a ninguna otra parte.</p>
     </section>
 
     <section>

@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>Selado é mais do que as mensagens</h3>
-            <p>O texto das mensagens é a parte fácil. As pré-visualizações de links, as listas partilhadas, as citações guardadas e as transcrições de voz são cifradas da mesma forma, para aquela conversa. Uma transcrição de voz era antes reescrita em texto simples na mensagem por uma função do servidor; agora é selada no teu dispositivo, e as traduções não são guardadas de todo.</p>
+            <p>O texto das mensagens é a parte fácil. As pré-visualizações de links e a localização em tempo real são cifradas da mesma forma para aquela conversa: partilhar a localização é uma sequência de coordenadas, selada à chave do outro dispositivo como tudo o resto. Os anexos são cifrados antes de serem enviados, por isso o que o servidor guarda são bytes que não consegue abrir.</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>A política de privacidade diz o que não consegue fazer</h3>
-            <p>Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que os relatórios de falhas levam um identificador de conta e não são anónimos. É o mesmo texto na aplicação e neste site, em quinze idiomas — não um original inglês com uma tradução mais suave.</p>
+            <p>Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que uma chave substituída antes da tua primeira mensagem pareceria perfeitamente normal. É o mesmo texto na aplicação e neste site, em quinze idiomas — não um original inglês com uma tradução mais suave.</p>
             <p class="reason-note"><a href="privacy.pt.html">Lê-a</a> antes de decidires confiar em alguma das afirmações acima.</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>Mantém premida uma mensagem, escolhe um nome nela e lê o artigo sem sair da conversa. Um pedido, com o teu toque, no teu idioma.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Listas partilhadas e mural de citações</h3>
-          <p>Uma lista que os dois podem ir marcando, e um sítio para guardar as frases que valem a pena. Ambas seladas para a conversa, tal como as mensagens.</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>A tua chave, a tua frase de recuperação</h3>
+          <p>A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo. Podes anotá-la como frase de recuperação; nós não a temos e não a conseguimos recuperar por ti.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>O texto das tuas mensagens</li>
             <li>Fotografias, vídeo, áudio e ficheiros que anexas</li>
-            <li>Pré-visualizações de links, listas partilhadas, citações guardadas</li>
+            <li>Pré-visualizações de links e localização em tempo real</li>
             <li>Transcrições de voz, assim que voltam para ti</li>
             <li>O áudio e o vídeo das chamadas, entre os dois dispositivos</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>Que existe uma conversa, e que contas estão nela</li>
             <li>Quando cada conta esteve ativa pela última vez</li>
             <li>Os metadados de todas as ligações, incluindo o teu endereço IP</li>
-            <li>Os relatórios de falhas e de utilização, que levam um identificador de conta</li>
+            <li>Que houve uma chamada, com quem e quando — não o seu áudio nem o vídeo</li>
             <li>O nome, o tipo e o tamanho de cada ficheiro que anexas</li>
           </ul>
         </div>

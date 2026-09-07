@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>More than the messages is sealed</h3>
-            <p>Message text is the easy part. Link previews, shared lists, saved quotes and voice transcripts are each encrypted to the conversation the same way. A voice transcript used to be written back into the message in plain text by a server function; it is sealed on your device now, and translations are not stored at all.</p>
+            <p>Message text is the easy part. Link previews and live location are encrypted to the conversation the same way — a location share is a stream of coordinates, and it is sealed to the other device's key like everything else. Attachments are encrypted before they are uploaded, so what the server holds is bytes it cannot open.</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>The privacy policy says what it cannot do</h3>
-            <p>It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that crash reports carry an account identifier and are not anonymous. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.</p>
+            <p>It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that a key substituted before your first message would look entirely normal. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.</p>
             <p class="reason-note"><a href="privacy.html">Read it</a> before you decide to trust any of the above.</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>Long-press a message, pick a name in it, and read the article without leaving the chat. One request, on your tap, in your own language.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Shared lists &amp; quote wall</h3>
-          <p>A checklist both of you can tick off, and a place to keep the lines worth keeping. Both sealed to the conversation like the messages.</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>Your key, your recovery phrase</h3>
+          <p>The private key that decrypts your messages never leaves your device. You can write it down as a recovery phrase; we do not hold it and cannot recover it for you.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>The text of your messages</li>
             <li>Photos, video, audio and files you attach</li>
-            <li>Link previews, shared lists, saved quotes</li>
+            <li>Link previews and live location</li>
             <li>Voice transcripts, once they come back to you</li>
             <li>Call audio and video, between the two devices</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>That a conversation exists, and which accounts are in it</li>
             <li>When each account was last active</li>
             <li>The metadata of every connection, including your IP address</li>
-            <li>Crash and usage reports, which carry an account identifier</li>
+            <li>That a call was placed, to whom and when — not its audio or video</li>
             <li>The file name, type and size of every attachment you send</li>
           </ul>
         </div>

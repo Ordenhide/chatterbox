@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>Ce n'est pas seulement le message qui est scellé</h3>
-            <p>Le texte des messages est la partie facile. Les aperçus de liens, les listes partagées, les citations enregistrées et les transcriptions vocales sont chiffrés de la même façon, pour la conversation. Une transcription vocale était autrefois réécrite en clair dans le message par une fonction serveur ; elle est désormais scellée sur votre appareil, et les traductions ne sont pas conservées du tout.</p>
+            <p>Le texte des messages est la partie facile. Les aperçus de liens et la position en direct sont chiffrés de la même façon pour la conversation : un partage de position est une suite de coordonnées, scellée à la clé de l’autre appareil comme tout le reste. Les pièces jointes sont chiffrées avant d’être envoyées, si bien que le serveur ne détient que des octets qu’il ne peut pas ouvrir.</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>La politique de confidentialité dit ce qu'elle ne peut pas faire</h3>
-            <p>Elle indique que le chiffrement n'a jamais fait l'objet d'un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et que les rapports de plantage portent un identifiant de compte et ne sont pas anonymes. C'est le même texte dans l'application et sur ce site, en quinze langues — pas un original anglais accompagné d'une traduction plus douce.</p>
+            <p>Elle indique que le chiffrement n’a jamais fait l’objet d’un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et qu’une clé substituée avant votre premier message aurait l’air parfaitement normale. C’est le même texte dans l’application et sur ce site, en quinze langues — pas un original anglais accompagné d’une traduction plus douce.</p>
             <p class="reason-note"><a href="privacy.fr.html">Lisez-la</a> avant de décider de faire confiance à quoi que ce soit de ce qui précède.</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>Appui long sur un message, choisissez un nom, et lisez l'article sans quitter la discussion. Une requête, sur votre geste, dans votre langue.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Listes partagées et mur de citations</h3>
-          <p>Une liste que vous pouvez cocher à deux, et un endroit pour garder les phrases qui méritent de rester. Toutes deux scellées pour la conversation, comme les messages.</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>Votre clé, votre phrase de récupération</h3>
+          <p>La clé privée qui déchiffre vos messages ne quitte jamais votre appareil. Vous pouvez la noter sous forme de phrase de récupération ; nous ne la détenons pas et ne pouvons pas la retrouver pour vous.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>Le texte de vos messages</li>
             <li>Les photos, vidéos, sons et fichiers que vous joignez</li>
-            <li>Les aperçus de liens, les listes partagées, les citations enregistrées</li>
+            <li>Les aperçus de liens et la position en direct</li>
             <li>Les transcriptions vocales, une fois revenues à vous</li>
             <li>L'audio et la vidéo des appels, entre les deux appareils</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>Qu'une conversation existe, et quels comptes en font partie</li>
             <li>La date de dernière activité de chaque compte</li>
             <li>Les métadonnées de chaque connexion, dont votre adresse IP</li>
-            <li>Les rapports de plantage et d'usage, qui portent un identifiant de compte</li>
+            <li>Qu’un appel a eu lieu, avec qui et quand — pas son son ni son image</li>
             <li>Le nom, le type et la taille de chaque fichier que vous joignez</li>
           </ul>
         </div>

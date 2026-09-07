@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>被封存的不只是訊息</h3>
-            <p>訊息本文是最容易的部分。連結預覽、共用清單、收藏的語錄和語音轉寫，都以同樣的方式加密到這段對話裡。語音轉寫過去是由一個伺服器端函式以明文寫回訊息的；現在它在你的裝置上完成封存，翻譯結果則根本不儲存。</p>
+            <p>訊息本文是最容易的部分。連結預覽和即時位置以同樣的方式加密到這段對話裡——一次位置共享就是一串座標，它和其它內容一樣被封存給對方裝置的金鑰。附件在上傳之前就已加密，所以伺服器持有的是它打不開的位元組。</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>隱私政策寫明了它做不到什麼</h3>
-            <p>它寫明：加密從未經過獨立稽核；因為我們租用 Google 的伺服器，Google 能看到每一次連線的中繼資料；當機報告帶有帳號識別碼，並非匿名。應用程式裡和這個網站上是同一份文本，十五種語言——不是一份英文原件配一份說得更軟的譯文。</p>
+            <p>它寫明：加密從未經過獨立稽核；因為我們租用 Google 的伺服器，Google 能看到每一次連線的中繼資料；以及，如果有人在你送出第一則訊息之前替換了金鑰，看起來會完全正常。應用程式裡和這個網站上是同一份文本，十五種語言——不是一份英文原件配一份說得更軟的譯文。</p>
             <p class="reason-note">在你決定相信上面任何一條之前，<a href="privacy.zh-Hant.html">先讀一遍</a>。</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>長按一則訊息，選中裡面的名字，不離開聊天就能讀到條目。一次請求，由你點出來，用你自己的語言。</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>共用清單與語錄牆</h3>
-          <p>一份兩個人都能勾選的清單，和一個存放值得留住的句子的地方。兩者都和訊息一樣封存在這段對話裡。</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>你的金鑰，你的助記詞</h3>
+          <p>解密你訊息的私鑰從不離開你的裝置。你可以把它當作助記詞抄下來；我們不持有它，也無法替你找回。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>你的訊息本文</li>
             <li>你傳送的照片、影片、音訊和檔案</li>
-            <li>連結預覽、共用清單、收藏的語錄</li>
+            <li>連結預覽和即時位置</li>
             <li>語音轉寫，在結果回到你這裡之後</li>
             <li>通話的音訊與視訊，在兩台裝置之間</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>存在這樣一段對話，以及其中有哪些帳號</li>
             <li>每個帳號最後一次活躍的時間</li>
             <li>每一次連線的中繼資料，包括你的 IP 位址</li>
-            <li>當機與使用報告，其中帶有帳號識別碼</li>
+            <li>有過一次通話、對方是誰、什麼時候——但不包括通話的影音</li>
             <li>你傳送的每個附件的檔名、類型和大小</li>
           </ul>
         </div>

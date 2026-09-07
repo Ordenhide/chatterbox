@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>Versiegelt wird mehr als die Nachricht</h3>
-            <p>Nachrichtentext ist der einfache Teil. Linkvorschauen, geteilte Listen, gespeicherte Zitate und Sprachtranskripte werden genauso für das Gespräch verschlüsselt. Ein Sprachtranskript wurde früher von einer Serverfunktion im Klartext zurück in die Nachricht geschrieben; heute wird es auf deinem Gerät versiegelt, und Übersetzungen werden überhaupt nicht gespeichert.</p>
+            <p>Nachrichtentext ist der einfache Teil. Linkvorschauen und der Live-Standort werden genauso für das Gespräch verschlüsselt — eine Standortfreigabe ist eine Folge von Koordinaten, und sie ist wie alles andere an den Schlüssel des anderen Geräts versiegelt. Anhänge werden vor dem Hochladen verschlüsselt, der Server hält also Bytes, die er nicht öffnen kann.</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>Die Datenschutzerklärung sagt, was sie nicht kann</h3>
-            <p>Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass Absturzberichte eine Kontokennung tragen und nicht anonym sind. Es ist derselbe Text in der App und auf dieser Seite, in fünfzehn Sprachen — kein englisches Original mit einer weicheren Übersetzung.</p>
+            <p>Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass ein vor deiner ersten Nachricht ausgetauschter Schlüssel völlig normal aussähe. Es ist derselbe Text in der App und auf dieser Seite, in fünfzehn Sprachen — kein englisches Original mit einer weicheren Übersetzung.</p>
             <p class="reason-note"><a href="privacy.de.html">Lies sie</a>, bevor du entscheidest, ob du irgendetwas davon glaubst.</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>Nachricht lange drücken, einen Namen darin wählen und den Artikel lesen, ohne den Chat zu verlassen. Eine Anfrage, auf dein Antippen, in deiner Sprache.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Geteilte Listen und Zitatwand</h3>
-          <p>Eine Liste, die ihr beide abhaken könnt, und ein Ort für die Sätze, die es wert sind. Beide für das Gespräch versiegelt wie die Nachrichten.</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>Dein Schlüssel, deine Wiederherstellungsphrase</h3>
+          <p>Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie. Du kannst ihn als Wiederherstellungsphrase aufschreiben; wir halten ihn nicht und können ihn dir nicht zurückholen.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>Der Text deiner Nachrichten</li>
             <li>Fotos, Video, Audio und Dateien, die du anhängst</li>
-            <li>Linkvorschauen, geteilte Listen, gespeicherte Zitate</li>
+            <li>Linkvorschauen und Live-Standort</li>
             <li>Sprachtranskripte, sobald sie zu dir zurückkommen</li>
             <li>Ton und Bild von Anrufen, zwischen den beiden Geräten</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>Dass ein Gespräch existiert und welche Konten darin sind</li>
             <li>Wann jedes Konto zuletzt aktiv war</li>
             <li>Die Metadaten jeder Verbindung, einschließlich deiner IP-Adresse</li>
-            <li>Absturz- und Nutzungsberichte, die eine Kontokennung tragen</li>
+            <li>Dass ein Anruf stattfand, mit wem und wann — nicht sein Ton oder Bild</li>
             <li>Name, Typ und Größe jeder Datei, die du anhängst</li>
           </ul>
         </div>

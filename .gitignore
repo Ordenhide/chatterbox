@@ -115,3 +115,7 @@ android/gradle/gradle-daemon-jvm.properties
 # The web client, built into the marketing site for a single-origin deploy.
 # Produced by `npm --prefix web run build:site`; never edited by hand.
 website/app/
+
+# IntelliJ writes inspection reports here on "Analyze → Inspect Code". 198 of
+# them were committed once; they are IDE output, not project files.
+android/xml/

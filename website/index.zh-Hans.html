@@ -97,7 +97,7 @@
           <div class="reason-num" aria-hidden="true">03</div>
           <div class="reason-body">
             <h3>被封存的不只是消息</h3>
-            <p>消息正文是最容易的部分。链接预览、共享清单、收藏的语录和语音转写，都以同样的方式加密到这段对话里。语音转写过去是由一个服务端函数以明文写回消息的；现在它在你的设备上完成封存，翻译结果则根本不存储。</p>
+            <p>消息正文是最容易的部分。链接预览和实时位置以同样的方式加密到这段对话里——一次位置共享就是一串坐标，它和其它内容一样被封存给对方设备的密钥。附件在上传之前就已加密，所以服务器持有的是它打不开的字节。</p>
           </div>
         </li>
 
@@ -132,7 +132,7 @@
           <div class="reason-num" aria-hidden="true">07</div>
           <div class="reason-body">
             <h3>隐私政策写明了它做不到什么</h3>
-            <p>它写明：加密从未经过独立审计；因为我们租用 Google 的服务器，Google 能看到每一次连接的元数据；崩溃报告带有账号标识，并非匿名。应用里和这个网站上是同一份文本，十五种语言——不是一份英文原件配一份说得更软的译文。</p>
+            <p>它写明：加密从未经过独立审计；因为我们租用 Google 的服务器，Google 能看到每一次连接的元数据；以及，如果有人在你发出第一条消息之前替换了密钥，看起来会完全正常。应用里和这个网站上是同一份文本，十五种语言——不是一份英文原件配一份说得更软的译文。</p>
             <p class="reason-note">在你决定相信上面任何一条之前，<a href="privacy.zh-Hans.html">先读一遍</a>。</p>
           </div>
         </li>
@@ -168,9 +168,9 @@
           <p>长按一条消息，选中里面的名字，不离开聊天就能读到条目。一次请求，由你点出来，用你自己的语言。</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>共享清单与语录墙</h3>
-          <p>一份两个人都能勾选的清单，和一个存放值得留住的句子的地方。两者都和消息一样封存在这段对话里。</p>
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>你的密钥，你的助记词</h3>
+          <p>解密你消息的私钥从不离开你的设备。你可以把它作为助记词抄下来；我们不持有它，也无法替你找回。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -233,7 +233,7 @@
           <ul>
             <li>你的消息正文</li>
             <li>你发送的照片、视频、音频和文件</li>
-            <li>链接预览、共享清单、收藏的语录</li>
+            <li>链接预览和实时位置</li>
             <li>语音转写，在结果回到你这里之后</li>
             <li>通话的音频与视频，在两台设备之间</li>
           </ul>
@@ -244,7 +244,7 @@
             <li>存在这样一段对话，以及其中有哪些账号</li>
             <li>每个账号最后一次活跃的时间</li>
             <li>每一次连接的元数据，包括你的 IP 地址</li>
-            <li>崩溃与使用报告，其中带有账号标识</li>
+            <li>有过一次通话、对方是谁、什么时候——但不包括通话的音视频</li>
             <li>你发送的每个附件的文件名、类型和大小</li>
           </ul>
         </div>

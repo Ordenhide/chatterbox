@@ -45,7 +45,7 @@ export default {
       {
         title: `Ce n'est pas seulement le message qui est scellé`,
         body: [
-          `Le texte des messages est la partie facile. Les aperçus de liens, les listes partagées, les citations enregistrées et les transcriptions vocales sont chiffrés de la même façon, pour la conversation. Une transcription vocale était autrefois réécrite en clair dans le message par une fonction serveur ; elle est désormais scellée sur votre appareil, et les traductions ne sont pas conservées du tout.`,
+          `Le texte des messages est la partie facile. Les aperçus de liens et la position en direct sont chiffrés de la même façon pour la conversation : un partage de position est une suite de coordonnées, scellée à la clé de l’autre appareil comme tout le reste. Les pièces jointes sont chiffrées avant d’être envoyées, si bien que le serveur ne détient que des octets qu’il ne peut pas ouvrir.`,
         ],
       },
       {
@@ -72,7 +72,7 @@ export default {
       {
         title: `La politique de confidentialité dit ce qu'elle ne peut pas faire`,
         body: [
-          `Elle indique que le chiffrement n'a jamais fait l'objet d'un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et que les rapports de plantage portent un identifiant de compte et ne sont pas anonymes. C'est le même texte dans l'application et sur ce site, en quinze langues — pas un original anglais accompagné d'une traduction plus douce.`,
+          `Elle indique que le chiffrement n’a jamais fait l’objet d’un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et qu’une clé substituée avant votre premier message aurait l’air parfaitement normale. C’est le même texte dans l’application et sur ce site, en quinze langues — pas un original anglais accompagné d’une traduction plus douce.`,
         ],
         note: `{policyShort} avant de décider de faire confiance à quoi que ce soit de ce qui précède.`,
       },
@@ -101,8 +101,8 @@ export default {
         body: `Appui long sur un message, choisissez un nom, et lisez l'article sans quitter la discussion. Une requête, sur votre geste, dans votre langue.`,
       },
       {
-        title: `Listes partagées et mur de citations`,
-        body: `Une liste que vous pouvez cocher à deux, et un endroit pour garder les phrases qui méritent de rester. Toutes deux scellées pour la conversation, comme les messages.`,
+        title: `Votre clé, votre phrase de récupération`,
+        body: `La clé privée qui déchiffre vos messages ne quitte jamais votre appareil. Vous pouvez la noter sous forme de phrase de récupération ; nous ne la détenons pas et ne pouvons pas la retrouver pour vous.`,
       },
       {
         title: `Quinze langues`,
@@ -151,7 +151,7 @@ export default {
       items: [
         `Le texte de vos messages`,
         `Les photos, vidéos, sons et fichiers que vous joignez`,
-        `Les aperçus de liens, les listes partagées, les citations enregistrées`,
+        `Les aperçus de liens et la position en direct`,
         `Les transcriptions vocales, une fois revenues à vous`,
         `L'audio et la vidéo des appels, entre les deux appareils`,
       ],
@@ -162,7 +162,7 @@ export default {
         `Qu'une conversation existe, et quels comptes en font partie`,
         `La date de dernière activité de chaque compte`,
         `Les métadonnées de chaque connexion, dont votre adresse IP`,
-        `Les rapports de plantage et d'usage, qui portent un identifiant de compte`,
+        `Qu’un appel a eu lieu, avec qui et quand — pas son son ni son image`,
         `Le nom, le type et la taille de chaque fichier que vous joignez`,
       ],
     },

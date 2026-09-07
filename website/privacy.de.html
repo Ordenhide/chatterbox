@@ -56,7 +56,7 @@
     <section>
       <h2>1. Was Ende-zu-Ende-verschlüsselt ist</h2>
       <p>Auf deinem Gerät verschlüsselt, für uns und für Google unlesbar:</p>
-      <ul><li>Der Text deiner Nachrichten.</li><li>Die Inhalte von Dateien, Fotos, Audio und Video, die du anhängst.</li><li>Geteilte Listen, gespeicherte Zitate und Linkvorschauen.</li><li>Sprach- und Videoanrufe, die zwischen den beiden Geräten das verpflichtende DTLS-SRTP von WebRTC nutzen.</li></ul>
+      <ul><li>Der Text deiner Nachrichten.</li><li>Die Inhalte von Dateien, Fotos, Audio und Video, die du anhängst.</li><li>Linkvorschauen.</li><li>Sprach- und Videoanrufe, die zwischen den beiden Geräten das verpflichtende DTLS-SRTP von WebRTC nutzen.</li></ul>
       <p>Die meisten Einzel- und Gruppennachrichten nutzen zusätzlich eine Ratsche: Jede Nachricht hat ihren eigenen Schlüssel, sodass ein kompromittiertes Gerät frühere Nachrichten nicht preisgibt. Gespräche, in denen jemandes Client das neuere Schlüsselmaterial nicht veröffentlicht hat, fallen auf einen einzelnen langlebigen Schlüssel zurück, der diese Eigenschaft nicht hat. Die Kennzeichnung unter einer Nachricht sagt dir, welchen Weg sie tatsächlich genommen hat.</p>
       <p>Nur eines überschreitet diese Linie, und nur, wenn du darum bittest: einen Namen auf Wikipedia nachzuschlagen sendet diesen einen Namen, nicht die Nachricht, aus der er stammt. Abschnitt 6 sagt, wer ihn erhält, und die Abfrage geschieht beim Tippen und sonst nicht, es gibt also nichts abzuschalten. Zusammenfassen, Übersetzen und Transkribieren würden sie ebenfalls überschreiten — sie sind in dieser Version abgeschaltet, und es gibt in der App keine Einstellung, die sie einschaltet.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Was wir erheben</h2>
-      <ul><li>Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gespeichert in Firebase Authentication.</li><li>Chiffrat von Nachrichten und Anhängen sowie die Metadaten aus Abschnitt 2.</li><li>Nutzungsdaten: App-Interaktionsereignisse über Firebase Analytics — Bildschirmaufrufe und Funktionsnutzung, nie Nachrichteninhalte. In Entwicklungs-Builds deaktiviert.</li><li>Absturzberichte: Absturz- und Fehlerdaten über Firebase Crashlytics. Sowohl diese als auch die Nutzungsdaten oben tragen deine Konto-Kennung, keines von beiden ist also anonym: wir sehen, von welchem Konto ein Ereignis oder ein Absturz kam. Nachrichteninhalte enthält keines von beiden.</li></ul>
-      <p>Analytics und Absturzberichte lassen sich derzeit nicht einzeln in der App abschalten. Schreib uns, wenn du deine gelöscht haben möchtest.</p>
+      <ul><li>Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gehalten in Firebase Authentication.</li><li>Der Chiffretext von Nachrichten und Anhängen, dazu die Metadaten aus Abschnitt 2.</li></ul>
+      <p>Das ist die ganze Liste. Es gibt keine Analyse und keine Absturzberichte. Die App schickte früher Bildschirmaufrufe an Firebase Analytics und Abstürze an Firebase Crashlytics, beides mit deiner Kontokennung, also war keines davon anonym; beides ist weg, samt der Bibliotheken, die es gesendet haben. Fehler werden während der Entwicklung auf dem Rechner der entwickelnden Person ausgegeben und gehen nirgendwo sonst hin.</p>
     </section>
 
     <section>

@@ -45,7 +45,7 @@ export default {
       {
         title: `Được niêm phong không chỉ là tin nhắn`,
         body: [
-          `Chữ trong tin nhắn là phần dễ. Bản xem trước liên kết, danh sách dùng chung, trích dẫn đã lưu và bản gỡ băng giọng nói đều được mã hoá theo cùng một cách cho cuộc trò chuyện đó. Trước đây, một hàm phía máy chủ ghi bản gỡ băng trở lại tin nhắn dưới dạng văn bản thuần; giờ nó được niêm phong ngay trên máy bạn, còn bản dịch thì không được lưu chút nào.`,
+          `Chữ trong tin nhắn là phần dễ. Bản xem trước liên kết và vị trí trực tiếp được mã hoá cho cuộc trò chuyện theo đúng cách đó: chia sẻ vị trí là một chuỗi toạ độ, và nó được niêm phong bằng khoá của máy bên kia như mọi thứ khác. Tệp đính kèm được mã hoá trước khi tải lên, nên thứ máy chủ giữ là những byte nó không mở được.`,
         ],
       },
       {
@@ -72,7 +72,7 @@ export default {
       {
         title: `Chính sách quyền riêng tư nói rõ những gì nó không làm được`,
         body: [
-          `Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng báo cáo sự cố có mang định danh tài khoản chứ không ẩn danh. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng mười lăm ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.`,
+          `Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng một khoá bị tráo trước tin nhắn đầu tiên của bạn sẽ trông hoàn toàn bình thường. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng mười lăm ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.`,
         ],
         note: `{policyShort} trước khi bạn quyết định có tin điều nào ở trên hay không.`,
       },
@@ -101,8 +101,8 @@ export default {
         body: `Nhấn giữ một tin nhắn, chọn một cái tên trong đó, rồi đọc bài viết mà không rời khỏi cuộc trò chuyện. Một yêu cầu, do bạn chạm, bằng ngôn ngữ của bạn.`,
       },
       {
-        title: `Danh sách chung và tường trích dẫn`,
-        body: `Một danh sách cả hai cùng tích, và một chỗ để giữ những câu đáng giữ. Cả hai đều được niêm phong cho cuộc trò chuyện như tin nhắn.`,
+        title: `Khoá của bạn, cụm từ khôi phục của bạn`,
+        body: `Khoá riêng giải mã tin nhắn của bạn không bao giờ rời khỏi máy bạn. Bạn có thể chép nó ra thành cụm từ khôi phục; chúng tôi không giữ nó và không thể lấy lại giúp bạn.`,
       },
       {
         title: `Mười lăm ngôn ngữ`,
@@ -151,7 +151,7 @@ export default {
       items: [
         `Chữ trong tin nhắn của bạn`,
         `Ảnh, video, âm thanh và tệp bạn đính kèm`,
-        `Bản xem trước liên kết, danh sách dùng chung, trích dẫn đã lưu`,
+        `Bản xem trước liên kết và vị trí trực tiếp`,
         `Bản gỡ băng giọng nói, sau khi quay về với bạn`,
         `Âm thanh và hình ảnh cuộc gọi, giữa hai thiết bị`,
       ],
@@ -162,7 +162,7 @@ export default {
         `Việc một cuộc trò chuyện tồn tại, và những tài khoản nào ở trong đó`,
         `Lần cuối mỗi tài khoản hoạt động`,
         `Siêu dữ liệu của mọi kết nối, kể cả địa chỉ IP của bạn`,
-        `Báo cáo sự cố và sử dụng, vốn mang định danh tài khoản`,
+        `Rằng đã có một cuộc gọi, với ai và khi nào — không phải tiếng hay hình của nó`,
         `Tên, kiểu và kích thước của mọi tệp bạn đính kèm`,
       ],
     },

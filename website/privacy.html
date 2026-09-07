@@ -56,7 +56,7 @@
     <section>
       <h2>1. What is end-to-end encrypted</h2>
       <p>Encrypted on your device, unreadable to us and to Google:</p>
-      <ul><li>The text of your messages.</li><li>The contents of files, photos, audio and video you attach.</li><li>Shared lists, saved quotes and link previews.</li><li>Voice and video calls, which use WebRTC's mandatory DTLS-SRTP between the two devices.</li></ul>
+      <ul><li>The text of your messages.</li><li>The contents of files, photos, audio and video you attach.</li><li>Link previews.</li><li>Voice and video calls, which use WebRTC's mandatory DTLS-SRTP between the two devices.</li></ul>
       <p>Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.</p>
       <p>One thing crosses this line, and only when you ask it to: looking a name up on Wikipedia sends that one name, not the message it came from. Section 6 says who receives it, and the lookup runs on the tap and not otherwise, so there is nothing standing to turn off. Summarising, translating and transcribing would cross it too — they are switched off in this release, with no control anywhere in the app that turns them on.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. What we collect</h2>
-      <ul><li>Account data: the email address you register with, held in Firebase Authentication.</li><li>Message and attachment ciphertext, plus the metadata in section 2.</li><li>Usage data: app interaction events via Firebase Analytics — screen views and feature usage, never message contents. Disabled in development builds.</li><li>Crash reports: crash and error data via Firebase Crashlytics. Both this and the usage data above carry your account identifier, so neither is anonymous: we can see which account an event or a crash came from. Neither carries message contents.</li></ul>
-      <p>Analytics and crash reporting cannot currently be switched off individually inside the app. Write to us if you want yours deleted.</p>
+      <ul><li>Account data: the email address you register with, held in Firebase Authentication.</li><li>Message and attachment ciphertext, plus the metadata in section 2.</li></ul>
+      <p>That is the whole list. There is no analytics and no crash reporting. The app used to send screen views to Firebase Analytics and crash reports to Firebase Crashlytics, both carrying your account identifier, so neither was anonymous; both are gone, along with the libraries that sent them. Errors are printed on a developer's own machine during development and go nowhere else.</p>
     </section>
 
     <section>

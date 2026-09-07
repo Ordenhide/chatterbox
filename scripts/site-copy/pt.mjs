@@ -45,7 +45,7 @@ export default {
       {
         title: `Selado é mais do que as mensagens`,
         body: [
-          `O texto das mensagens é a parte fácil. As pré-visualizações de links, as listas partilhadas, as citações guardadas e as transcrições de voz são cifradas da mesma forma, para aquela conversa. Uma transcrição de voz era antes reescrita em texto simples na mensagem por uma função do servidor; agora é selada no teu dispositivo, e as traduções não são guardadas de todo.`,
+          `O texto das mensagens é a parte fácil. As pré-visualizações de links e a localização em tempo real são cifradas da mesma forma para aquela conversa: partilhar a localização é uma sequência de coordenadas, selada à chave do outro dispositivo como tudo o resto. Os anexos são cifrados antes de serem enviados, por isso o que o servidor guarda são bytes que não consegue abrir.`,
         ],
       },
       {
@@ -72,7 +72,7 @@ export default {
       {
         title: `A política de privacidade diz o que não consegue fazer`,
         body: [
-          `Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que os relatórios de falhas levam um identificador de conta e não são anónimos. É o mesmo texto na aplicação e neste site, em quinze idiomas — não um original inglês com uma tradução mais suave.`,
+          `Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que uma chave substituída antes da tua primeira mensagem pareceria perfeitamente normal. É o mesmo texto na aplicação e neste site, em quinze idiomas — não um original inglês com uma tradução mais suave.`,
         ],
         note: `{policyShort} antes de decidires confiar em alguma das afirmações acima.`,
       },
@@ -101,8 +101,8 @@ export default {
         body: `Mantém premida uma mensagem, escolhe um nome nela e lê o artigo sem sair da conversa. Um pedido, com o teu toque, no teu idioma.`,
       },
       {
-        title: `Listas partilhadas e mural de citações`,
-        body: `Uma lista que os dois podem ir marcando, e um sítio para guardar as frases que valem a pena. Ambas seladas para a conversa, tal como as mensagens.`,
+        title: `A tua chave, a tua frase de recuperação`,
+        body: `A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo. Podes anotá-la como frase de recuperação; nós não a temos e não a conseguimos recuperar por ti.`,
       },
       {
         title: `Quinze idiomas`,
@@ -151,7 +151,7 @@ export default {
       items: [
         `O texto das tuas mensagens`,
         `Fotografias, vídeo, áudio e ficheiros que anexas`,
-        `Pré-visualizações de links, listas partilhadas, citações guardadas`,
+        `Pré-visualizações de links e localização em tempo real`,
         `Transcrições de voz, assim que voltam para ti`,
         `O áudio e o vídeo das chamadas, entre os dois dispositivos`,
       ],
@@ -162,7 +162,7 @@ export default {
         `Que existe uma conversa, e que contas estão nela`,
         `Quando cada conta esteve ativa pela última vez`,
         `Os metadados de todas as ligações, incluindo o teu endereço IP`,
-        `Os relatórios de falhas e de utilização, que levam um identificador de conta`,
+        `Que houve uma chamada, com quem e quando — não o seu áudio nem o vídeo`,
         `O nome, o tipo e o tamanho de cada ficheiro que anexas`,
       ],
     },

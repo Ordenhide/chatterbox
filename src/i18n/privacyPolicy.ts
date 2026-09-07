@@ -60,7 +60,7 @@ What we can see is that a conversation happened: which accounts are in it, and w
 
 • The text of your messages.
 • The contents of files, photos, audio and video you attach.
-• Shared lists, saved quotes and link previews.
+• Link previews.
 • Voice and video calls, which use WebRTC's mandatory DTLS-SRTP between the two devices.
 
 Most one-to-one and group messages additionally use a ratchet, meaning each message has its own key, so compromising your device does not expose earlier ones. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property. The label under a message tells you which one it actually got.
@@ -93,10 +93,8 @@ You reach someone by sending them an invite link out of band, through whatever y
       title: '4. What we collect',
       body: `• Account data: the email address you register with, held in Firebase Authentication.
 • Message and attachment ciphertext, plus the metadata in section 2.
-• Usage data: app interaction events via Firebase Analytics — screen views and feature usage, never message contents. Disabled in development builds.
-• Crash reports: crash and error data via Firebase Crashlytics. Both this and the usage data above carry your account identifier, so neither is anonymous: we can see which account an event or a crash came from. Neither carries message contents.
 
-Analytics and crash reporting cannot currently be switched off individually inside the app. Write to us if you want yours deleted.`,
+That is the whole list. There is no analytics and no crash reporting. The app used to send screen views to Firebase Analytics and crash reports to Firebase Crashlytics, both carrying your account identifier, so neither was anonymous; both are gone, along with the libraries that sent them. Errors are printed on a developer's own machine during development and go nowhere else.`,
     },
     {
       title: '5. Where it is stored',
@@ -179,7 +177,7 @@ If you would rather we deleted something by hand, write to us.`,
 
 • 你的消息正文。
 • 你发送的文件、照片、音频、视频的内容。
-• 共享清单、收藏的引用、链接预览。
+• 链接预览。
 • 语音和视频通话，两台设备之间使用 WebRTC 强制的 DTLS-SRTP。
 
 大多数一对一和群聊消息还额外使用了棘轮（ratchet）：每条消息有自己的密钥，所以即使你的设备被攻破，也读不出更早的消息。如果对方的客户端还没有发布较新的密钥材料，这个会话会回落到一把长期密钥，那种情况下没有上面这个性质。消息下方的标记会告诉你这一条实际走的是哪一种。
@@ -211,11 +209,9 @@ If you would rather we deleted something by hand, write to us.`,
     {
       title: '4. 我们收集什么',
       body: `• 账号数据：你注册用的邮箱地址，保存在 Firebase Authentication 里。
-• 消息和附件的密文，以及第 2 节列出的元数据。
-• 使用数据：通过 Firebase Analytics 收集的应用交互事件——页面浏览和功能使用，绝不包括消息内容。开发版本中已禁用。
-• 崩溃报告：通过 Firebase Crashlytics 收集的崩溃和错误数据。这一项和上面的使用数据都带着你的账号标识，所以两者都不是匿名的：我们看得出某个事件或某次崩溃来自哪个账号。两者都不包含消息内容。
+• 消息和附件的密文，以及第 2 节里的元数据。
 
-目前应用内还不能单独关闭分析和崩溃上报。如果你想删除自己的这部分数据，写信给我们。`,
+这就是全部。没有分析统计，也没有崩溃上报。这个应用过去会把屏幕浏览发给 Firebase Analytics、把崩溃报告发给 Firebase Crashlytics，两者都带着你的账号标识，所以都不是匿名的；现在它们都被删掉了，连同发送它们的那两个库。错误只在开发阶段打印在开发者自己的机器上，不去任何别的地方。`,
     },
     {
       title: '5. 数据存在哪里',
@@ -297,7 +293,7 @@ Was wir sehen können, ist, dass ein Gespräch stattgefunden hat: welche Konten 
 
 • Der Text deiner Nachrichten.
 • Die Inhalte von Dateien, Fotos, Audio und Video, die du anhängst.
-• Geteilte Listen, gespeicherte Zitate und Linkvorschauen.
+• Linkvorschauen.
 • Sprach- und Videoanrufe, die zwischen den beiden Geräten das verpflichtende DTLS-SRTP von WebRTC nutzen.
 
 Die meisten Einzel- und Gruppennachrichten nutzen zusätzlich eine Ratsche: Jede Nachricht hat ihren eigenen Schlüssel, sodass ein kompromittiertes Gerät frühere Nachrichten nicht preisgibt. Gespräche, in denen jemandes Client das neuere Schlüsselmaterial nicht veröffentlicht hat, fallen auf einen einzelnen langlebigen Schlüssel zurück, der diese Eigenschaft nicht hat. Die Kennzeichnung unter einer Nachricht sagt dir, welchen Weg sie tatsächlich genommen hat.
@@ -328,12 +324,10 @@ Du erreichst jemanden, indem du ihm außerhalb der App einen Einladungslink schi
     },
     {
       title: '4. Was wir erheben',
-      body: `• Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gespeichert in Firebase Authentication.
-• Chiffrat von Nachrichten und Anhängen sowie die Metadaten aus Abschnitt 2.
-• Nutzungsdaten: App-Interaktionsereignisse über Firebase Analytics — Bildschirmaufrufe und Funktionsnutzung, nie Nachrichteninhalte. In Entwicklungs-Builds deaktiviert.
-• Absturzberichte: Absturz- und Fehlerdaten über Firebase Crashlytics. Sowohl diese als auch die Nutzungsdaten oben tragen deine Konto-Kennung, keines von beiden ist also anonym: wir sehen, von welchem Konto ein Ereignis oder ein Absturz kam. Nachrichteninhalte enthält keines von beiden.
+      body: `• Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gehalten in Firebase Authentication.
+• Der Chiffretext von Nachrichten und Anhängen, dazu die Metadaten aus Abschnitt 2.
 
-Analytics und Absturzberichte lassen sich derzeit nicht einzeln in der App abschalten. Schreib uns, wenn du deine gelöscht haben möchtest.`,
+Das ist die ganze Liste. Es gibt keine Analyse und keine Absturzberichte. Die App schickte früher Bildschirmaufrufe an Firebase Analytics und Abstürze an Firebase Crashlytics, beides mit deiner Kontokennung, also war keines davon anonym; beides ist weg, samt der Bibliotheken, die es gesendet haben. Fehler werden während der Entwicklung auf dem Rechner der entwickelnden Person ausgegeben und gehen nirgendwo sonst hin.`,
     },
     {
       title: '5. Wo es gespeichert wird',
@@ -415,7 +409,7 @@ Lo que sí podemos ver es que hubo una conversación: qué cuentas participan y 
 
 • El texto de tus mensajes.
 • El contenido de los archivos, fotos, audios y vídeos que adjuntas.
-• Las listas compartidas, las citas guardadas y las vistas previas de enlaces.
+• Las vistas previas de enlaces.
 • Las llamadas de voz y vídeo, que usan el DTLS-SRTP obligatorio de WebRTC entre los dos dispositivos.
 
 La mayoría de los mensajes individuales y de grupo usan además un trinquete: cada mensaje tiene su propia clave, así que comprometer tu dispositivo no expone los anteriores. Las conversaciones en las que el cliente de alguien no ha publicado el material de clave más reciente recurren a una única clave de larga duración, que no tiene esa propiedad. La etiqueta bajo un mensaje te dice cuál le tocó realmente.
@@ -447,11 +441,9 @@ Llegas a alguien enviándole un enlace de invitación por fuera de la app, a tra
     {
       title: '4. Qué recopilamos',
       body: `• Datos de la cuenta: la dirección de correo con la que te registras, guardada en Firebase Authentication.
-• El texto cifrado de mensajes y adjuntos, más los metadatos de la sección 2.
-• Datos de uso: eventos de interacción con la app vía Firebase Analytics —pantallas vistas y uso de funciones, nunca el contenido de los mensajes. Desactivado en compilaciones de desarrollo.
-• Informes de fallos: datos de fallos y errores vía Firebase Crashlytics. Tanto estos como los datos de uso de arriba llevan el identificador de tu cuenta, así que ninguno es anónimo: podemos ver de qué cuenta vino un evento o un fallo. Ninguno lleva el contenido de los mensajes.
+• El texto cifrado de los mensajes y los adjuntos, más los metadatos de la sección 2.
 
-Ahora mismo, la analítica y los informes de fallos no se pueden desactivar por separado dentro de la app. Escríbenos si quieres que borremos los tuyos.`,
+Esa es la lista completa. No hay analítica ni informes de fallos. La aplicación enviaba vistas de pantalla a Firebase Analytics e informes de fallos a Firebase Crashlytics, ambos con tu identificador de cuenta, así que ninguno era anónimo; los dos han desaparecido, junto con las bibliotecas que los enviaban. Los errores se imprimen en la máquina de quien desarrolla, durante el desarrollo, y no van a ninguna otra parte.`,
     },
     {
       title: '5. Dónde se guarda',
@@ -533,7 +525,7 @@ Ce que nous pouvons voir, c'est qu'une conversation a eu lieu : quels comptes y 
 
 • Le texte de vos messages.
 • Le contenu des fichiers, photos, audios et vidéos que vous joignez.
-• Les listes partagées, les citations enregistrées et les aperçus de liens.
+• Les aperçus de liens.
 • Les appels audio et vidéo, qui utilisent le DTLS-SRTP obligatoire de WebRTC entre les deux appareils.
 
 La plupart des messages individuels et de groupe utilisent en plus un cliquet : chaque message a sa propre clé, si bien qu'un appareil compromis n'expose pas les messages précédents. Les conversations où le client de quelqu'un n'a pas publié le matériel de clé plus récent retombent sur une seule clé de longue durée, qui n'a pas cette propriété. La mention sous un message vous dit lequel il a réellement emprunté.
@@ -564,12 +556,10 @@ Vous joignez quelqu'un en lui envoyant un lien d'invitation en dehors de l'appli
     },
     {
       title: '4. Ce que nous collectons',
-      body: `• Données de compte : l'adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.
-• Le chiffré des messages et des pièces jointes, ainsi que les métadonnées de la section 2.
-• Données d'usage : événements d'interaction via Firebase Analytics — écrans consultés et fonctionnalités utilisées, jamais le contenu des messages. Désactivé dans les versions de développement.
-• Rapports de plantage : données de plantage et d'erreur via Firebase Crashlytics. Ces données comme celles d'usage ci-dessus portent l'identifiant de votre compte : ni les unes ni les autres ne sont anonymes, nous voyons de quel compte vient un événement ou un plantage. Aucune ne contient le contenu des messages.
+      body: `• Données de compte : l’adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.
+• Le chiffré des messages et des pièces jointes, plus les métadonnées de la section 2.
 
-L'analytique et les rapports de plantage ne peuvent pas encore être désactivés séparément dans l'application. Écrivez-nous si vous souhaitez la suppression des vôtres.`,
+C’est toute la liste. Il n’y a ni analytique ni rapports de plantage. L’application envoyait les vues d’écran à Firebase Analytics et les plantages à Firebase Crashlytics, les deux portant votre identifiant de compte, donc aucun n’était anonyme ; les deux ont disparu, avec les bibliothèques qui les envoyaient. Les erreurs s’affichent sur la machine du développeur pendant le développement et ne vont nulle part ailleurs.`,
     },
     {
       title: '5. Où c\'est stocké',
@@ -651,7 +641,7 @@ Quello che possiamo vedere è che una conversazione è avvenuta: quali account n
 
 • Il testo dei tuoi messaggi.
 • Il contenuto di file, foto, audio e video che alleghi.
-• Le liste condivise, le citazioni salvate e le anteprime dei link.
+• Le anteprime dei link.
 • Le chiamate vocali e video, che tra i due dispositivi usano il DTLS-SRTP obbligatorio di WebRTC.
 
 La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: ogni messaggio ha la propria chiave, quindi compromettere il tuo dispositivo non espone quelli precedenti. Le conversazioni in cui il client di qualcuno non ha pubblicato il materiale di chiave più recente ricadono su un'unica chiave di lunga durata, che non ha questa proprietà. L'etichetta sotto un messaggio ti dice quale percorso ha davvero seguito.
@@ -682,12 +672,10 @@ Raggiungi qualcuno inviandogli un link d'invito fuori dall'app, con qualunque me
     },
     {
       title: '4. Che cosa raccogliamo',
-      body: `• Dati dell'account: l'indirizzo email con cui ti registri, conservato in Firebase Authentication.
+      body: `• Dati dell'account: l'indirizzo e-mail con cui ti registri, conservato in Firebase Authentication.
 • Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.
-• Dati d'uso: eventi di interazione con l'app tramite Firebase Analytics — schermate viste e funzioni usate, mai il contenuto dei messaggi. Disattivato nelle build di sviluppo.
-• Segnalazioni di crash: dati di crash ed errori tramite Firebase Crashlytics. Sia questi sia i dati d’uso qui sopra portano l’identificativo del tuo account, quindi nessuno dei due è anonimo: vediamo da quale account arriva un evento o un crash. Nessuno dei due contiene il contenuto dei messaggi.
 
-Al momento analytics e segnalazioni di crash non si possono disattivare singolarmente dentro l'app. Scrivici se vuoi che cancelliamo i tuoi.`,
+Questa è tutta la lista. Non c'è analisi d'uso né segnalazione di crash. L'app mandava le visualizzazioni di schermata a Firebase Analytics e i crash a Firebase Crashlytics, entrambi con il tuo identificativo di account, quindi nessuno dei due era anonimo; sono spariti entrambi, insieme alle librerie che li mandavano. Gli errori vengono stampati sulla macchina di chi sviluppa, durante lo sviluppo, e non vanno da nessun'altra parte.`,
     },
     {
       title: '5. Dove viene conservato',
@@ -769,7 +757,7 @@ O que conseguimos ver é que houve uma conversa: que contas fazem parte dela e q
 
 • O texto das tuas mensagens.
 • O conteúdo de ficheiros, fotos, áudio e vídeo que anexas.
-• As listas partilhadas, as citações guardadas e as pré-visualizações de ligações.
+• As pré-visualizações de ligações.
 • As chamadas de voz e vídeo, que usam o DTLS-SRTP obrigatório do WebRTC entre os dois dispositivos.
 
 A maioria das mensagens individuais e de grupo usa ainda um roquete: cada mensagem tem a sua própria chave, por isso comprometer o teu dispositivo não expõe as anteriores. As conversas em que o cliente de alguém não publicou o material de chave mais recente recaem numa única chave de longa duração, que não tem essa propriedade. A etiqueta por baixo de uma mensagem diz-te qual delas ela realmente seguiu.
@@ -800,12 +788,10 @@ Chegas a alguém enviando-lhe uma ligação de convite fora da app, por aquilo q
     },
     {
       title: '4. O que recolhemos',
-      body: `• Dados da conta: o endereço de email com que te registas, guardado no Firebase Authentication.
-• O texto cifrado de mensagens e anexos, mais os metadados da secção 2.
-• Dados de utilização: eventos de interação com a app via Firebase Analytics — ecrãs vistos e funcionalidades usadas, nunca o conteúdo das mensagens. Desativado nas compilações de desenvolvimento.
-• Relatórios de falhas: dados de falhas e erros via Firebase Crashlytics. Tanto estes como os dados de utilização acima levam o identificador da tua conta, por isso nenhum é anónimo: vemos de que conta veio um evento ou uma falha. Nenhum leva o conteúdo das mensagens.
+      body: `• Dados da conta: o endereço de e-mail com que te registas, guardado no Firebase Authentication.
+• O texto cifrado das mensagens e dos anexos, mais os metadados da secção 2.
 
-De momento, a analítica e os relatórios de falhas não podem ser desligados separadamente dentro da app. Escreve-nos se quiseres que apaguemos os teus.`,
+É esta a lista toda. Não há análise de utilização nem relatórios de falhas. A aplicação enviava visualizações de ecrã para o Firebase Analytics e falhas para o Firebase Crashlytics, ambos com o teu identificador de conta, por isso nenhum era anónimo; os dois desapareceram, juntamente com as bibliotecas que os enviavam. Os erros são impressos na máquina de quem desenvolve, durante o desenvolvimento, e não vão para mais lado nenhum.`,
     },
     {
       title: '5. Onde fica guardado',
@@ -887,7 +873,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
 
 • Текст ваших сообщений.
 • Содержимое файлов, фотографий, аудио и видео, которые вы прикрепляете.
-• Общие списки, сохранённые цитаты и предпросмотры ссылок.
+• Предпросмотры ссылок.
 • Голосовые и видеозвонки — между двумя устройствами используется обязательный в WebRTC протокол DTLS-SRTP.
 
 Большинство личных и групповых сообщений дополнительно используют храповик: у каждого сообщения свой ключ, поэтому компрометация устройства не раскрывает более ранние. Разговоры, где чей-то клиент не опубликовал более новый ключевой материал, откатываются на один долгоживущий ключ, у которого этого свойства нет. Отметка под сообщением говорит, каким путём оно пошло на самом деле.
@@ -918,12 +904,10 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
     },
     {
       title: '4. Что мы собираем',
-      body: `• Данные аккаунта: адрес электронной почты, с которым вы регистрируетесь, хранится в Firebase Authentication.
-• Шифртекст сообщений и вложений, а также метаданные из раздела 2.
-• Данные использования: события взаимодействия с приложением через Firebase Analytics — просмотры экранов и использование функций, но никогда содержимое сообщений. В отладочных сборках отключено.
-• Отчёты о сбоях: данные о сбоях и ошибках через Firebase Crashlytics. И они, и данные об использовании выше несут идентификатор вашей учётной записи, так что ни то ни другое не анонимно: мы видим, из какой учётной записи пришло событие или сбой. Содержимого сообщений не несёт ни то ни другое.
+      body: `• Данные аккаунта: адрес почты, с которым вы регистрируетесь, хранится в Firebase Authentication.
+• Шифротекст сообщений и вложений плюс метаданные из раздела 2.
 
-Аналитику и отчёты о сбоях пока нельзя отключить по отдельности внутри приложения. Напишите нам, если хотите, чтобы ваши данные удалили.`,
+Это весь список. Никакой аналитики и никаких отчётов о сбоях. Раньше приложение отправляло просмотры экранов в Firebase Analytics, а сбои — в Firebase Crashlytics, и то и другое с идентификатором вашего аккаунта, так что анонимными они не были; и то и другое убрано вместе с библиотеками, которые это отправляли. Ошибки печатаются на машине разработчика во время разработки и больше никуда не идут.`,
     },
     {
       title: '5. Где это хранится',
@@ -1005,7 +989,7 @@ Görebildiğimiz şey, bir konuşmanın gerçekleştiği: içinde hangi hesaplar
 
 • Mesajlarının metni.
 • Eklediğin dosyaların, fotoğrafların, seslerin ve videoların içeriği.
-• Paylaşılan listeler, kaydedilen alıntılar ve bağlantı önizlemeleri.
+• Bağlantı önizlemeleri.
 • Sesli ve görüntülü aramalar; iki cihaz arasında WebRTC'nin zorunlu kıldığı DTLS-SRTP kullanılır.
 
 Birebir ve grup mesajlarının çoğu ayrıca bir cırcır mekanizması kullanır: her mesajın kendi anahtarı vardır, bu yüzden cihazının ele geçirilmesi önceki mesajları açığa çıkarmaz. Birinin istemcisinin daha yeni anahtar malzemesini yayımlamadığı konuşmalar, bu özelliği taşımayan tek bir uzun ömürlü anahtara geri düşer. Mesajın altındaki etiket, o mesajın gerçekte hangisini kullandığını söyler.
@@ -1036,12 +1020,10 @@ Birine ulaşmak için ona uygulama dışından, zaten kullandığın herhangi bi
     },
     {
       title: '4. Neleri topluyoruz',
-      body: `• Hesap verisi: kayıt olurken kullandığın e-posta adresi, Firebase Authentication içinde tutulur.
-• Mesaj ve eklerin şifreli metni, ayrıca 2. bölümdeki üst veriler.
-• Kullanım verisi: Firebase Analytics üzerinden uygulama etkileşim olayları — görüntülenen ekranlar ve kullanılan özellikler; mesaj içeriği asla. Geliştirme sürümlerinde kapalıdır.
-• Çökme raporları: Firebase Crashlytics üzerinden çökme ve hata verisi. Hem bunlar hem de yukarıdaki kullanım verisi hesap tanımlayıcını taşır, yani ikisi de anonim değildir: bir olayın ya da çökmenin hangi hesaptan geldiğini görebiliriz. İkisi de mesaj içeriği taşımaz.
+      body: `• Hesap verisi: kaydolurken kullandığın e-posta adresi, Firebase Authentication'da tutulur.
+• Mesajların ve eklerin şifreli hâli, ayrıca 2. bölümdeki üst veri.
 
-Analitik ve çökme raporlaması şu an uygulama içinde tek tek kapatılamıyor. Kendi verinin silinmesini istersen bize yaz.`,
+Listenin tamamı bu. Ne kullanım analizi var ne de çökme raporu. Uygulama eskiden ekran görüntülemelerini Firebase Analytics'e, çökmeleri Firebase Crashlytics'e gönderiyordu; ikisi de hesap kimliğini taşıdığı için hiçbiri anonim değildi. İkisi de, onları gönderen kütüphanelerle birlikte kaldırıldı. Hatalar geliştirme sırasında geliştiricinin kendi makinesine yazılır ve başka hiçbir yere gitmez.`,
     },
     {
       title: '5. Nerede saklanıyor',
@@ -1123,7 +1105,7 @@ Thứ chúng tôi thấy được là đã có một cuộc trò chuyện: nhữ
 
 • Nội dung tin nhắn của bạn.
 • Nội dung các tệp, ảnh, âm thanh và video bạn đính kèm.
-• Danh sách chung, trích dẫn đã lưu và bản xem trước liên kết.
+• Bản xem trước liên kết.
 • Cuộc gọi thoại và video, dùng DTLS-SRTP bắt buộc của WebRTC giữa hai thiết bị.
 
 Phần lớn tin nhắn một-một và nhóm còn dùng thêm cơ chế ratchet: mỗi tin nhắn có khoá riêng, nên thiết bị bị xâm nhập cũng không làm lộ những tin nhắn trước đó. Những cuộc trò chuyện mà máy của ai đó chưa công bố vật liệu khoá mới hơn sẽ quay về dùng một khoá dài hạn duy nhất, vốn không có tính chất đó. Nhãn dưới mỗi tin nhắn cho bạn biết nó thực sự đi theo đường nào.
@@ -1154,12 +1136,10 @@ Bạn liên hệ với ai đó bằng cách gửi cho họ một liên kết m�
     },
     {
       title: '4. Chúng tôi thu thập gì',
-      body: `• Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, lưu trong Firebase Authentication.
+      body: `• Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, giữ trong Firebase Authentication.
 • Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.
-• Dữ liệu sử dụng: các sự kiện tương tác qua Firebase Analytics — màn hình đã xem và tính năng đã dùng, không bao giờ là nội dung tin nhắn. Đã tắt trong bản dựng phát triển.
-• Báo cáo sự cố: dữ liệu sự cố và lỗi qua Firebase Crashlytics. Cả mục này lẫn dữ liệu sử dụng ở trên đều mang mã định danh tài khoản của bạn, nên không mục nào là ẩn danh: chúng tôi thấy được một sự kiện hay một sự cố đến từ tài khoản nào. Không mục nào mang nội dung tin nhắn.
 
-Hiện tại phân tích và báo cáo sự cố chưa thể tắt riêng lẻ trong ứng dụng. Hãy viết cho chúng tôi nếu bạn muốn xoá phần của mình.`,
+Danh sách chỉ có vậy. Không có phân tích sử dụng và không có báo cáo sự cố. Trước đây ứng dụng gửi lượt xem màn hình tới Firebase Analytics và báo cáo sự cố tới Firebase Crashlytics, cả hai đều mang định danh tài khoản của bạn nên không cái nào ẩn danh; cả hai đã bị gỡ bỏ, cùng với những thư viện gửi chúng. Lỗi chỉ được in ra trên máy của người phát triển trong lúc phát triển, và không đi đâu khác.`,
     },
     {
       title: '5. Dữ liệu được lưu ở đâu',
@@ -1241,7 +1221,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 • メッセージの本文。
 • 添付したファイル・写真・音声・動画の中身。
-• 共有リスト、保存した引用、リンクプレビュー。
+• リンクプレビュー。
 • 音声通話とビデオ通話。2 台の端末間で WebRTC が必須とする DTLS-SRTP を使います。
 
 1 対 1 とグループのメッセージの多くは、さらにラチェットを使います。メッセージごとに鍵が違うため、端末が侵害されても過去のメッセージまでは読まれません。相手のクライアントが新しい鍵素材を公開していない会話では、単一の長期鍵に戻り、その性質はありません。メッセージの下の表示が、そのメッセージが実際にどちらを通ったかを教えます。
@@ -1272,12 +1252,10 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. 収集するもの',
-      body: `• アカウント情報: 登録に使うメールアドレス。Firebase Authentication に保管されます。
-• メッセージと添付の暗号文、および第 2 節の関連情報。
-• 利用データ: Firebase Analytics によるアプリ操作イベント。画面の表示と機能の利用であり、メッセージの中身は決して含みません。開発ビルドでは無効です。
-• クラッシュレポート: Firebase Crashlytics によるクラッシュ・エラー情報。これも上の利用データも、あなたのアカウント識別子を伴います。どちらも匿名ではなく、ある操作やクラッシュがどのアカウントのものかは分かります。どちらもメッセージの内容は含みません。
+      body: `• アカウント情報：登録に使うメールアドレス。Firebase Authentication に保管されます。
+• メッセージと添付ファイルの暗号文、および第 2 節のメタデータ。
 
-分析とクラッシュレポートは、今のところアプリ内で個別にオフにできません。ご自身の分を削除したい場合はご連絡ください。`,
+以上がすべてです。利用状況の分析もクラッシュレポートもありません。以前は画面表示を Firebase Analytics に、クラッシュを Firebase Crashlytics に送っており、いずれもアカウント識別子を伴っていたため匿名ではありませんでした。どちらも、送信していたライブラリごと削除しました。エラーは開発中に開発者自身のマシンに出力されるだけで、ほかのどこにも行きません。`,
     },
     {
       title: '5. 保管場所',
@@ -1359,7 +1337,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 • 메시지 본문.
 • 첨부한 파일, 사진, 오디오, 동영상의 내용.
-• 공유 목록, 저장한 인용, 링크 미리보기.
+• 링크 미리보기.
 • 음성·영상 통화. 두 기기 사이에서 WebRTC가 의무화한 DTLS-SRTP를 사용합니다.
 
 대부분의 1:1 및 그룹 메시지는 여기에 더해 래칫을 씁니다. 메시지마다 키가 달라서, 기기가 뚫려도 이전 메시지까지 드러나지는 않습니다. 상대의 클라이언트가 새 키 자료를 게시하지 않은 대화는 단일 장기 키로 되돌아가며, 그 키에는 이 성질이 없습니다. 메시지 아래 표시가 그 메시지가 실제로 어느 쪽을 거쳤는지 알려 줍니다.
@@ -1390,12 +1368,10 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. 우리가 수집하는 것',
-      body: `• 계정 정보: 가입에 쓰는 이메일 주소. Firebase Authentication에 보관됩니다.
-• 메시지와 첨부의 암호문, 그리고 2절의 메타데이터.
-• 사용 데이터: Firebase Analytics를 통한 앱 상호작용 이벤트 — 화면 조회와 기능 사용이며, 메시지 내용은 절대 아닙니다. 개발 빌드에서는 꺼져 있습니다.
-• 오류 보고: Firebase Crashlytics를 통한 충돌 및 오류 데이터. 이것도 위의 사용 데이터도 당신의 계정 식별자를 함께 담고 있어서 둘 다 익명이 아닙니다. 어떤 계정에서 나온 이벤트인지, 어떤 계정이 충돌했는지 우리는 알 수 있습니다. 둘 다 메시지 내용은 담지 않습니다.
+      body: `• 계정 데이터: 가입에 사용하는 이메일 주소. Firebase Authentication에 보관됩니다.
+• 메시지와 첨부 파일의 암호문, 그리고 2절의 메타데이터.
 
-분석과 오류 보고는 현재 앱 안에서 개별적으로 끌 수 없습니다. 본인 것을 삭제하고 싶으면 연락해 주세요.`,
+목록은 이것이 전부입니다. 사용 분석도 없고 오류 보고도 없습니다. 예전에는 화면 조회를 Firebase Analytics로, 오류를 Firebase Crashlytics로 보냈고 둘 다 계정 식별자를 달고 있어 익명이 아니었습니다. 둘 다, 그것을 보내던 라이브러리와 함께 제거했습니다. 오류는 개발 중에 개발자 자신의 기기에 출력될 뿐 다른 어디로도 가지 않습니다.`,
     },
     {
       title: '5. 어디에 저장되는가',
@@ -1477,7 +1453,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 • 你的訊息正文。
 • 你傳送的檔案、照片、音訊、影片的內容。
-• 共享清單、收藏的引用、連結預覽。
+• 連結預覽。
 • 語音和視訊通話，兩台裝置之間使用 WebRTC 強制的 DTLS-SRTP。
 
 大多數一對一和群組訊息還額外使用了棘輪（ratchet）：每則訊息有自己的金鑰，所以即使你的裝置被攻破，也讀不出更早的訊息。如果對方的用戶端還沒有發布較新的金鑰材料，這個對話會回落到一把長期金鑰，那種情況下沒有上面這個性質。訊息下方的標記會告訴你這一則實際走的是哪一種。
@@ -1509,11 +1485,9 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     {
       title: '4. 我們收集什麼',
       body: `• 帳號資料：你註冊用的電子郵件地址，保存在 Firebase Authentication 裡。
-• 訊息和附件的密文，以及第 2 節列出的相關資料。
-• 使用資料：透過 Firebase Analytics 收集的應用程式互動事件——頁面瀏覽和功能使用，絕不包括訊息內容。開發版本中已停用。
-• 當機報告：透過 Firebase Crashlytics 收集的當機和錯誤資料。這一項和上面的使用資料都帶著你的帳號識別碼，所以兩者都不是匿名的：我們看得出某個事件或某次當機來自哪個帳號。兩者都不包含訊息內容。
+• 訊息和附件的密文，以及第 2 節裡的中繼資料。
 
-目前應用程式內還不能單獨關閉分析和當機回報。如果你想刪除自己的這部分資料，寫信給我們。`,
+這就是全部。沒有分析統計，也沒有當機回報。這個應用程式過去會把畫面瀏覽送給 Firebase Analytics、把當機報告送給 Firebase Crashlytics，兩者都帶著你的帳號識別碼，所以都不是匿名的；現在它們都被刪掉了，連同送出它們的那兩個函式庫。錯誤只在開發階段印在開發者自己的機器上，不去任何別的地方。`,
     },
     {
       title: '5. 資料存在哪裡',
@@ -1595,7 +1569,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 • نص رسائلك.
 • محتوى الملفات والصور والمقاطع الصوتية والمرئية التي ترفقها.
-• القوائم المشتركة والاقتباسات المحفوظة ومعاينات الروابط.
+• معاينات الروابط.
 • المكالمات الصوتية والمرئية، وهي تستخدم بين الجهازين بروتوكول DTLS-SRTP الإلزامي في WebRTC.
 
 معظم الرسائل الثنائية والجماعية تستخدم إضافةً إلى ذلك آلية سقّاطة: لكل رسالة مفتاحها الخاص، فاختراق جهازك لا يكشف الرسائل الأسبق. أما المحادثات التي لم ينشر فيها تطبيق أحدهم مادة المفاتيح الأحدث فترتدّ إلى مفتاح واحد طويل الأمد لا يتمتع بهذه الخاصية. العلامة أسفل الرسالة تخبرك أيّ المسارين سلكته فعلًا.
@@ -1626,12 +1600,10 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. ما نجمعه',
-      body: `• بيانات الحساب: البريد الإلكتروني الذي تسجّل به، محفوظ في Firebase Authentication.
-• النص المُعمّى للرسائل والمرفقات، إضافة إلى البيانات الوصفية في القسم 2.
-• بيانات الاستخدام: أحداث التفاعل مع التطبيق عبر Firebase Analytics — الشاشات المعروضة والميزات المستخدمة، ولا محتوى الرسائل أبدًا. مُعطّل في نسخ التطوير.
-• تقارير الأعطال: بيانات عن الأعطال والأخطاء عبر Firebase Crashlytics. وهذه وبيانات الاستخدام أعلاه تحمل مُعرّف حسابك، فليست أيٌّ منهما مجهولة: نستطيع أن نرى من أي حساب جاء الحدث أو العطل. ولا تحمل أيٌّ منهما محتوى الرسائل.
+      body: `• بيانات الحساب: عنوان البريد الذي تسجّل به، محفوظًا في Firebase Authentication.
+• النص المشفَّر للرسائل والمرفقات، إضافة إلى البيانات الوصفية في القسم 2.
 
-لا يمكن حاليًا إيقاف التحليلات وتقارير الأعطال كلٌّ على حدة داخل التطبيق. راسلنا إن أردت حذف ما يخصّك.`,
+هذه هي القائمة كاملة. لا تحليلات ولا تقارير أعطال. كان التطبيق يرسل مشاهدات الشاشات إلى Firebase Analytics والأعطال إلى Firebase Crashlytics، وكلاهما يحمل معرّف حسابك فلم يكن أيٌّ منهما مجهولًا؛ وقد أُزيلا معًا، ومعهما المكتبتان اللتان كانتا ترسلانهما. أما الأخطاء فتُطبَع على جهاز المطوّر أثناء التطوير ولا تذهب إلى أي مكان آخر.`,
     },
     {
       title: '5. أين تُخزَّن',
@@ -1713,7 +1685,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 • आपके संदेशों का पाठ।
 • आपके संलग्न किए फ़ाइलों, तस्वीरों, ऑडियो और वीडियो की सामग्री।
-• साझा सूचियाँ, सहेजे गए उद्धरण और लिंक प्रीव्यू।
+• लिंक प्रीव्यू।
 • वॉइस और वीडियो कॉल, जो दोनों डिवाइसों के बीच WebRTC के अनिवार्य DTLS-SRTP का उपयोग करती हैं।
 
 अधिकतर आमने-सामने और समूह संदेश इसके अलावा एक रैचेट भी इस्तेमाल करते हैं: हर संदेश की अपनी कुंजी होती है, इसलिए आपका डिवाइस हाथ लग जाने पर भी पहले के संदेश उजागर नहीं होते। जिन बातचीतों में किसी के क्लाइंट ने नई कुंजी सामग्री प्रकाशित नहीं की, वे एक ही दीर्घकालिक कुंजी पर लौट आती हैं, जिसमें यह गुण नहीं होता। संदेश के नीचे का चिह्न बताता है कि उसे असल में कौन-सा रास्ता मिला।
@@ -1746,10 +1718,8 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '4. हम क्या इकट्ठा करते हैं',
       body: `• खाता डेटा: जिस ईमेल पते से आप पंजीकरण करते हैं, वह Firebase Authentication में रखा जाता है।
 • संदेशों और अनुलग्नकों का सिफरटेक्स्ट, साथ ही खंड 2 का मेटाडेटा।
-• उपयोग डेटा: Firebase Analytics के ज़रिए ऐप इंटरैक्शन की घटनाएँ — कौन-सी स्क्रीन देखी और कौन-सी सुविधा इस्तेमाल की; संदेशों की सामग्री कभी नहीं। डेवलपमेंट बिल्ड में बंद।
-• क्रैश रिपोर्ट: Firebase Crashlytics के ज़रिए क्रैश और त्रुटि डेटा। यह भी और ऊपर का उपयोग डेटा भी आपके खाते का पहचानकर्ता साथ लेकर जाता है, इसलिए दोनों में से कोई गुमनाम नहीं है: हमें दिखता है कि कोई घटना या कोई क्रैश किस खाते से आया। दोनों में से कोई संदेश की सामग्री नहीं ले जाता।
 
-फ़िलहाल एनालिटिक्स और क्रैश रिपोर्टिंग को ऐप के भीतर अलग-अलग बंद नहीं किया जा सकता। अपना डेटा हटवाना चाहें तो हमें लिखें।`,
+पूरी सूची इतनी ही है। न कोई उपयोग-विश्लेषण है, न क्रैश रिपोर्टिंग। पहले यह ऐप स्क्रीन-व्यू Firebase Analytics को और क्रैश Firebase Crashlytics को भेजता था, और दोनों में आपका खाता पहचानकर्ता होता था, इसलिए दोनों में से कोई अनाम नहीं था; अब दोनों हटा दिए गए हैं, उन्हें भेजने वाली लाइब्रेरियों समेत। त्रुटियाँ विकास के दौरान डेवलपर की अपनी मशीन पर छपती हैं और कहीं और नहीं जातीं।`,
     },
     {
       title: '5. यह कहाँ रखा जाता है',

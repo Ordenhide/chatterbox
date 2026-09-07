@@ -54,7 +54,7 @@ export default {
       {
         title: 'More than the messages is sealed',
         body: [
-          `Message text is the easy part. Link previews, shared lists, saved quotes and voice transcripts are each encrypted to the conversation the same way. A voice transcript used to be written back into the message in plain text by a server function; it is sealed on your device now, and translations are not stored at all.`,
+          `Message text is the easy part. Link previews and live location are encrypted to the conversation the same way — a location share is a stream of coordinates, and it is sealed to the other device's key like everything else. Attachments are encrypted before they are uploaded, so what the server holds is bytes it cannot open.`,
         ],
       },
       {
@@ -81,7 +81,7 @@ export default {
       {
         title: 'The privacy policy says what it cannot do',
         body: [
-          `It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that crash reports carry an account identifier and are not anonymous. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.`,
+          `It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that a key substituted before your first message would look entirely normal. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.`,
         ],
         note: `{policyShort} before you decide to trust any of the above.`,
       },
@@ -110,8 +110,8 @@ export default {
         body: `Long-press a message, pick a name in it, and read the article without leaving the chat. One request, on your tap, in your own language.`,
       },
       {
-        title: 'Shared lists & quote wall',
-        body: `A checklist both of you can tick off, and a place to keep the lines worth keeping. Both sealed to the conversation like the messages.`,
+        title: 'Your key, your recovery phrase',
+        body: `The private key that decrypts your messages never leaves your device. You can write it down as a recovery phrase; we do not hold it and cannot recover it for you.`,
       },
       {
         title: 'Fifteen languages',
@@ -154,7 +154,7 @@ export default {
       items: [
         'The text of your messages',
         'Photos, video, audio and files you attach',
-        'Link previews, shared lists, saved quotes',
+        'Link previews and live location',
         'Voice transcripts, once they come back to you',
         'Call audio and video, between the two devices',
       ],
@@ -165,7 +165,7 @@ export default {
         'That a conversation exists, and which accounts are in it',
         'When each account was last active',
         'The metadata of every connection, including your IP address',
-        'Crash and usage reports, which carry an account identifier',
+        'That a call was placed, to whom and when — not its audio or video',
         'The file name, type and size of every attachment you send',
       ],
     },

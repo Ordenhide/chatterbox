@@ -56,7 +56,7 @@
     <section>
       <h2>1. Che cosa è cifrato end-to-end</h2>
       <p>Cifrato sul tuo dispositivo, illeggibile per noi e per Google:</p>
-      <ul><li>Il testo dei tuoi messaggi.</li><li>Il contenuto di file, foto, audio e video che alleghi.</li><li>Le liste condivise, le citazioni salvate e le anteprime dei link.</li><li>Le chiamate vocali e video, che tra i due dispositivi usano il DTLS-SRTP obbligatorio di WebRTC.</li></ul>
+      <ul><li>Il testo dei tuoi messaggi.</li><li>Il contenuto di file, foto, audio e video che alleghi.</li><li>Le anteprime dei link.</li><li>Le chiamate vocali e video, che tra i due dispositivi usano il DTLS-SRTP obbligatorio di WebRTC.</li></ul>
       <p>La maggior parte dei messaggi individuali e di gruppo usa inoltre un ratchet: ogni messaggio ha la propria chiave, quindi compromettere il tuo dispositivo non espone quelli precedenti. Le conversazioni in cui il client di qualcuno non ha pubblicato il materiale di chiave più recente ricadono su un'unica chiave di lunga durata, che non ha questa proprietà. L'etichetta sotto un messaggio ti dice quale percorso ha davvero seguito.</p>
       <p>Una cosa sola attraversa questa linea, e solo quando lo chiedi tu: cercare un nome su Wikipedia invia quel nome, non il messaggio da cui viene. La sezione 6 dice chi lo riceve, e la richiesta avviene al tocco e non altrimenti, quindi non c'è nulla da spegnere. Anche riassumere, tradurre e trascrivere la attraverserebbero: in questa versione sono spenti, e nell'app non c'è alcun comando che li accenda.</p>
     </section>
@@ -78,8 +78,8 @@
 
     <section>
       <h2>4. Che cosa raccogliamo</h2>
-      <ul><li>Dati dell'account: l'indirizzo email con cui ti registri, conservato in Firebase Authentication.</li><li>Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.</li><li>Dati d'uso: eventi di interazione con l'app tramite Firebase Analytics — schermate viste e funzioni usate, mai il contenuto dei messaggi. Disattivato nelle build di sviluppo.</li><li>Segnalazioni di crash: dati di crash ed errori tramite Firebase Crashlytics. Sia questi sia i dati d’uso qui sopra portano l’identificativo del tuo account, quindi nessuno dei due è anonimo: vediamo da quale account arriva un evento o un crash. Nessuno dei due contiene il contenuto dei messaggi.</li></ul>
-      <p>Al momento analytics e segnalazioni di crash non si possono disattivare singolarmente dentro l'app. Scrivici se vuoi che cancelliamo i tuoi.</p>
+      <ul><li>Dati dell'account: l'indirizzo e-mail con cui ti registri, conservato in Firebase Authentication.</li><li>Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.</li></ul>
+      <p>Questa è tutta la lista. Non c'è analisi d'uso né segnalazione di crash. L'app mandava le visualizzazioni di schermata a Firebase Analytics e i crash a Firebase Crashlytics, entrambi con il tuo identificativo di account, quindi nessuno dei due era anonimo; sono spariti entrambi, insieme alle librerie che li mandavano. Gli errori vengono stampati sulla macchina di chi sviluppa, durante lo sviluppo, e non vanno da nessun'altra parte.</p>
     </section>
 
     <section>
