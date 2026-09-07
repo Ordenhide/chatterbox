@@ -38,22 +38,6 @@ const CLOUDFLARE_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 const GCP_PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 
 
-/**
- * Checkout/portal redirect targets are attacker-influenceable (they arrive in
- * the callable payload), so they're restricted to this app's own origins —
- * otherwise the URL could be pointed at a lookalike site and the post-payment
- * redirect turned into a phishing hop.
- */
-function isAllowedReturnUrl(url) {
-  try {
-    const parsed = new URL(url);
-    const allowed = new URL(APP_BASE_URL);
-    return parsed.origin === allowed.origin;
-  } catch {
-    return false;
-  }
-}
-
 // Scheduled (Cloud Scheduler / pubsub) functions require the Blaze plan. When
 // billing is closed they block *every* deploy (the CLI enables required APIs
 // codebase-wide). We define them normally but strip them from `exports` at the
