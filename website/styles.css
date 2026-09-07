@@ -212,10 +212,15 @@ img {
 }
 
 /* Hero */
+/* One column while there is no product shot to sit beside the text. The old
+   two-column rule stretched the lead line to the full page width the moment
+   the image came out; the measure is what keeps it readable, not the grid.
+   Put `grid-template-columns: 1.1fr 0.9fr` back when a real screenshot from a
+   release build replaces the development one that used to live here. */
 .hero {
-  padding: 88px 0 64px;
+  padding: 104px 0 76px;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: minmax(0, 62ch);
   gap: 48px;
   align-items: center;
 }
@@ -265,10 +270,13 @@ h1 {
 }
 
 .hero p.lead {
-  font-size: 18px;
+  font-size: 19px;
+  line-height: 1.6;
   color: var(--text-secondary);
-  max-width: 480px;
-  margin: 0 0 32px;
+  /* 480px was the width left over beside the screenshot. With the screenshot
+     gone the measure should be chosen for reading, not for what fitted. */
+  max-width: 58ch;
+  margin: 0 0 34px;
 }
 
 @media (max-width: 860px) {
