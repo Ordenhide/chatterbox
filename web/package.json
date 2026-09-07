@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Chatterbox web client — a companion web app for the React Native mobile app, sharing the same Firebase backend.",
+  "description": "Chatterbox web client \u2014 a companion web app for the React Native mobile app, sharing the same Firebase backend.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:site": "tsc -b && vite build --base=/app/ --outDir=../website/app --emptyOutDir"
   },
   "dependencies": {
     "@noble/ciphers": "^2.2.0",

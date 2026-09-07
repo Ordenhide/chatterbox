@@ -111,3 +111,7 @@ ios/buildsettings-cli.txt
 # used as a visual reference; gradle-daemon-jvm.properties is per-machine.
 Security Mobile App UI/
 android/gradle/gradle-daemon-jvm.properties
+
+# The web client, built into the marketing site for a single-origin deploy.
+# Produced by `npm --prefix web run build:site`; never edited by hand.
+website/app/

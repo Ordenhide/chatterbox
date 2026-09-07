@@ -452,7 +452,9 @@ h1 {
 /* Privacy strip */
 .privacy-strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* Three, not four: there are six of these, and four columns leaves the second
+     row two-thirds empty. */
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
@@ -602,4 +604,138 @@ footer {
   text-decoration: none;
   color: var(--primary);
   margin-bottom: 24px;
+}
+
+/* ── What's different: a numbered list where the number carries meaning ────── */
+
+.reasons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.reason {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 28px;
+  padding: 30px 32px;
+  background: var(--bg-elevated);
+}
+
+.reason-num {
+  font-variant-numeric: tabular-nums;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+  opacity: 0.45;
+}
+
+.reason-body h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+.reason-body p {
+  margin: 0 0 12px;
+  max-width: 64ch;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.reason-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* The caveat under a claim. Set apart because a qualification that reads like
+   the claim is a qualification nobody registers. */
+.reason-note {
+  border-left: 2px solid var(--primary);
+  padding-left: 14px;
+  font-size: 14.5px;
+}
+
+@media (max-width: 760px) {
+  .reason {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 24px 22px;
+  }
+  .reason-num {
+    font-size: 24px;
+  }
+}
+
+/* ── Limits: two columns that have to be read against each other ──────────── */
+
+.ledger {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.ledger-col {
+  padding: 28px 30px;
+  background: var(--bg-elevated);
+}
+
+.ledger-col h3 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ledger-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.ledger-col li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.ledger-col li::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+}
+
+.ledger-yes h3 { color: var(--primary); }
+.ledger-yes li::before { content: "✓"; color: var(--primary); }
+
+/* Not red: this column is the honest half of the page, not a warning about a
+   defect. It is set apart by weight, not by alarm. */
+.ledger-no h3 { color: var(--text); }
+.ledger-no li::before { content: "○"; color: var(--text-secondary); }
+
+.ledger-note {
+  margin: 20px 0 0;
+  max-width: 72ch;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+@media (max-width: 760px) {
+  .ledger {
+    grid-template-columns: 1fr;
+  }
+  .ledger-col {
+    padding: 24px 22px;
+  }
 }
