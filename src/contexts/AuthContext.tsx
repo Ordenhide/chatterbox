@@ -596,32 +596,25 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }
   }, [auth, db]);
 
-  /**
-   * Everything a phrase sign-in and a phrase sign-up do identically.
+  /*
+   * The two phrase flows below both adopt the key the phrase encodes before
+   * claiming the session, because for these accounts those are not two facts:
+   * the seed *is* the account (services/anonymousIdentity.ts), so opening one
+   * and being able to read it are the same act. There is no separate "restore
+   * your keys" step to forget, and no window in which someone is signed in and
+   * silently unable to decrypt.
    *
-   * Both end with this device holding the key the phrase encodes and the
-   * account advertising its public half, because for these accounts those are
-   * not two facts — the seed *is* the account (services/anonymousIdentity.ts),
-   * so opening one and being able to read it are the same act. There is no
-   * separate "restore your keys" step to forget, and no window in which a user
-   * is signed in and silently unable to decrypt.
+   * Adoption is awaited and its failure fails the sign-in, because the
+   * alternative is an account nobody can encrypt to that nothing would ever
+   * retry. That is only tolerable because the account is deterministic: the
+   * same phrase reaches the same account, so "try again" re-runs the lot.
    *
-   * Adoption is awaited, and its failure fails the sign-in, because the
-   * alternative is an account nobody can encrypt to and nothing would retry.
-   * That is only tolerable because the account is deterministic: the same
-   * phrase reaches the same account, so "try again" re-runs the whole thing.
+   * The three calls are repeated in each flow rather than factored into a
+   * shared helper, matching signIn/signUp above — claimNewSession and
+   * waitForSessionConfirmed are plain closures, so a helper holding them would
+   * be a new dependency of both useCallbacks and would defeat the memoization
+   * it sits inside.
    */
-  const completePhraseSignIn = useCallback(
-    async (firebaseUser: FirebaseUser, seed: Uint8Array, nextSessionId: string) => {
-      await adoptSeedAsDeviceKey(firebaseUser.uid, seed);
-      await claimNewSession(firebaseUser.uid, nextSessionId);
-      await waitForSessionConfirmed(firebaseUser.uid, nextSessionId);
-    },
-    // claimNewSession / waitForSessionConfirmed are plain closures over auth,
-    // db and functions rather than callbacks, so those are the dependencies.
-    [auth, db, functions],
-  );
-
   /**
    * Creates the account that a freshly generated phrase names.
    *
@@ -665,7 +658,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           await updateProfile(firebaseUser, {displayName: normalizedDisplayName});
         }
 
-        await completePhraseSignIn(firebaseUser, seed, nextSessionId);
+        await adoptSeedAsDeviceKey(firebaseUser.uid, seed);
+        await claimNewSession(firebaseUser.uid, nextSessionId);
+        await waitForSessionConfirmed(firebaseUser.uid, nextSessionId);
         // Sign-up is the one moment the phrase is shown, and it has just been
         // shown. Without this the app would open on a prompt to go and reveal
         // the phrase the user is still holding.
@@ -703,7 +698,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
       }
     },
-    [auth, db, completePhraseSignIn],
+    [auth, db],
   );
 
   /** Opens the account a phrase names, restoring its keys in the same step. */
@@ -724,7 +719,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         const nextSessionId = await rotateSessionId();
         sessionIdRef.current = nextSessionId;
         const credential = await signInWithEmailAndPassword(auth, address, secret);
-        await completePhraseSignIn(credential.user, seed, nextSessionId);
+        await adoptSeedAsDeviceKey(credential.user.uid, seed);
+        await claimNewSession(credential.user.uid, nextSessionId);
+        await waitForSessionConfirmed(credential.user.uid, nextSessionId);
         success = true;
       } catch (error) {
         sessionIdRef.current = null;
@@ -744,7 +741,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
       }
     },
-    [auth, completePhraseSignIn],
+    [auth],
   );
 
   // Shared by signInWithGoogle and confirmPhoneCode: both are single-step

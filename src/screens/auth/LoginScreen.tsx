@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Text,
   TextInput,
@@ -17,48 +17,38 @@ import {useTranslation} from 'react-i18next';
 import {getColors} from '../../theme/colors';
 import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
-import PasswordInput from '../../components/PasswordInput';
-import SocialSignInButtons from '../../components/SocialSignInButtons';
 import Cascade from '../../components/Cascade';
 import {bodyWeight, fonts, terminal} from '../../theme/typography';
 
+/**
+ * Signing in is typing the recovery phrase, and nothing else.
+ *
+ * There is no email field and no password field because the account has
+ * neither: the 24 words are the whole credential, and the key they encode is
+ * adopted in the same step (see AuthContext's signInWithPhrase). That is why
+ * this screen has no "restore your messages" follow-up and no way to end up
+ * signed in but unable to decrypt.
+ */
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [phrase, setPhrase] = useState('');
   const [loading, setLoading] = useState(false);
-  const {signIn, resetPassword} = useAuth();
+  const {signInWithPhrase} = useAuth();
   const navigation = useNavigation();
   const colors = getColors(useColorScheme());
   const {t} = useTranslation();
+  const inputRef = useRef<TextInput>(null);
 
-  const handleLogin = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail || !password) {
-      Alert.alert(t('common.error'), t('auth.errors.missingFields'));
-      return;
-    }
+  const canSubmit = phrase.trim().length > 0 && !loading;
 
+  const handleSignIn = async () => {
+    if (!canSubmit) return;
     setLoading(true);
     try {
-      await signIn(normalizedEmail, password);
+      await signInWithPhrase(phrase);
     } catch (error: any) {
       Alert.alert(t('auth.errors.loginFailed'), error.message || t('auth.errors.generic'));
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleResetPassword = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail) {
-      Alert.alert(t('auth.reset.title'), t('auth.reset.enterEmail'));
-      return;
-    }
-    try {
-      await resetPassword(normalizedEmail);
-      Alert.alert(t('auth.reset.emailSentTitle'), t('auth.reset.emailSentBody'));
-    } catch (error: any) {
-      Alert.alert(t('auth.reset.failedTitle'), error.message || t('auth.reset.failedBody'));
     }
   };
 
@@ -78,78 +68,70 @@ export default function LoginScreen() {
             </Text>
             <Text style={[styles.title, {color: colors.text}]}>{t('app.name')}</Text>
             <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
-              {t('auth.login.subtitleDefault')}
+              {t('auth.phrase.signInBody')}
             </Text>
           </Cascade>
 
           <Cascade index={1}>
-          <GlassView style={[styles.panel, {borderColor: colors.glassBorder}]}>
-          <TextInput
-            style={[
-              styles.input,
-              {color: colors.text, borderColor: colors.border},
-            ]}
-            placeholder={t('auth.login.emailPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-          />
+            <GlassView style={[styles.panel, {borderColor: colors.glassBorder}]}>
+              {/* Uncontrolled: defaultValue, never value. A controlled
+                  multiline TextInput round-trips each keystroke out to state
+                  and back, and on Fabric iOS the native field is re-committed
+                  with the previous value before the update lands — characters
+                  revert as fast as they are typed. Same failure as the chat
+                  composer and the restore field in RecoveryPhraseScreen.
+                  onChangeText still fires, but only to mirror the value out
+                  for the button's enabled state. */}
+              <TextInput
+                ref={inputRef}
+                style={[styles.input, {color: colors.text, borderColor: colors.border}]}
+                defaultValue=""
+                onChangeText={setPhrase}
+                placeholder={t('auth.phrase.placeholder')}
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                autoCapitalize="none"
+                autoCorrect={false}
+                // The phrase is the entire account. Keep it out of the
+                // keyboard's learned-word store and out of autofill.
+                autoComplete="off"
+                spellCheck={false}
+                textContentType="none"
+              />
 
-          <PasswordInput
-            style={[
-              styles.input,
-              {color: colors.text, borderColor: colors.border},
-            ]}
-            placeholder={t('auth.login.passwordPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-          />
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {backgroundColor: colors.primary},
+                  canSubmit ? null : styles.buttonDisabled,
+                ]}
+                accessibilityRole="button"
+                accessibilityState={{disabled: !canSubmit}}
+                onPress={handleSignIn}
+                disabled={!canSubmit}>
+                {loading ? (
+                  <ActivityIndicator color={colors.textOnPrimary} />
+                ) : (
+                  <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
+                    {t('common.signIn')}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </GlassView>
+          </Cascade>
 
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {backgroundColor: colors.primary},
-              loading && styles.buttonDisabled,
-            ]}
-            onPress={handleLogin}
-            disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color={colors.textOnPrimary} />
-            ) : (
-              <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                {t('common.signIn')}
+          <Cascade index={2}>
+            <TouchableOpacity
+              style={styles.linkButton}
+              onPress={() => navigation.navigate('SignUp' as never)}>
+              <Text style={[styles.linkText, {color: colors.textSecondary}]}>
+                {t('auth.login.noAccount')}{' '}
+                <Text style={[styles.linkTextBold, {color: colors.primary}]}>
+                  {t('common.signUp')}
+                </Text>
               </Text>
-            )}
-          </TouchableOpacity>
-        </GlassView>
-        </Cascade>
-
-        <Cascade index={2}>
-          <SocialSignInButtons />
-        </Cascade>
-
-        <Cascade index={3}>
-          <TouchableOpacity style={styles.linkButton} onPress={handleResetPassword}>
-            <Text style={[styles.linkText, {color: colors.textSecondary}]}>
-              {t('auth.login.forgotPassword')}{' '}
-              <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('auth.login.reset')}</Text>
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => navigation.navigate('SignUp' as never)}>
-            <Text style={[styles.linkText, {color: colors.textSecondary}]}>
-              {t('auth.login.noAccount')}{' '}
-              <Text style={[styles.linkTextBold, {color: colors.primary}]}>{t('common.signUp')}</Text>
-            </Text>
-          </TouchableOpacity>
-        </Cascade>
+            </TouchableOpacity>
+          </Cascade>
         </ScrollView>
       </KeyboardAvoidingView>
     </GlassScreen>
@@ -199,6 +181,9 @@ const styles = StyleSheet.create({
     // or heavy enough to compete with what is typed into it; an edge states
     // the field without spending contrast.
     borderWidth: 1,
+    // Two dozen words need room; one line would hide most of what was pasted.
+    minHeight: 120,
+    textAlignVertical: 'top',
   },
   eyebrow: {...terminal.micro, textAlign: 'center', marginBottom: 6},
   button: {
@@ -228,4 +213,3 @@ const styles = StyleSheet.create({
     fontFamily: bodyWeight('700'),
   },
 });
-

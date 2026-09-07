@@ -54,7 +54,7 @@
     "invite": "Invite"
   },
   "auth": {
-    "login": {
+    "phrase": {"signInBody": "Your 24 words are your account. There is no email address and no password to remember.", "placeholder": "Your 24-word recovery phrase", "newTitle": "Write these down", "newBody": "These 24 words are your account and the key to your messages. Anyone who has them can sign in as you and read everything. Lose them and nothing brings the account back — there is no reset, and no one to ask.", "copy": "Copy", "copied": "Recovery phrase copied to clipboard.", "written": "I've written it down", "confirmTitle": "Check you kept them", "confirmBody": "Type these three words back, so we know the phrase left this screen with you.", "wordN": "Word {{n}}", "confirmWrong": "Those don't match. Check what you wrote down.", "create": "Create account", "back": "Show the phrase again", "generating": "Generating your phrase…"}, "login": {
       "subtitleVariant": "Welcome back — let’s get chatting",
       "subtitleDefault": "Sign in to continue",
       "emailPlaceholder": "Email",
@@ -867,17 +867,17 @@
   "recovery": {
     "yoursTitle": "Your recovery phrase",
     "superseded": "This device's encryption key was replaced from another device, so messages sent to you since then can't be opened here. Sending still works. Enter the recovery phrase from that other device below to read the rest.",
-    "alreadyRevealed": "You've already saved your recovery phrase on this device. For your security it won't be shown again — if you still have it, keep it somewhere safe. If you lost it, this device keeps working normally; you'll only need it to restore old messages on a different device.",
+    "alreadyRevealed": "You've already saved this account's phrase on this device. For your security it won't be shown again. If you still have it, keep it somewhere safe — it is the only way to sign in anywhere else. If you lost it, this device keeps working, but nothing can get the account back once you sign out.",
     "restoreFirst": "This device doesn't have your account's encryption key yet, so there's no phrase to show — the one you want was saved on your other device. Enter it below to restore your message history. Once that's done, this phrase becomes available here too.",
     "unavailable": "We couldn't check this device's encryption status, so the phrase isn't being shown yet — revealing it now could overwrite a key you may still need. Check your connection and come back.",
-    "backUp": "Back up the key that protects your messages. Anyone who sees this phrase can read your message history, so only reveal it somewhere private.",
+    "backUp": "This phrase is your account and the key to your messages. Anyone who sees it can sign in as you and read everything, so only reveal it somewhere private.",
     "view": "View recovery phrase",
     "restoreTitle": "Restore from a phrase",
     "restoreBody": "Entering a previously saved recovery phrase replaces this device's key, so it can decrypt messages sealed to that phrase.",
     "phrasePlaceholder": "Enter your 24-word recovery phrase",
     "restore": "Restore",
     "prepareFailed": "We couldn't prepare your recovery phrase just now. Your messages are unaffected — you can try again any time from Settings.",
-    "whatItDoes": "This phrase can restore your encrypted message history if you ever reinstall the app or switch devices. Anyone who has it can read your messages, so write it down and keep it somewhere private — it will not be shown again.",
+    "whatItDoes": "This phrase is the only way back into your account — on a new device, or after reinstalling. Anyone who has it can sign in as you and read your messages, so write it down and keep it somewhere private. It will not be shown again, and no one can reissue it.",
     "restoredTitle": "Recovery phrase restored",
     "restoredBody": "Reopen your chats to see any messages that couldn't be decrypted before.",
     "invalidTitle": "That doesn't look right",

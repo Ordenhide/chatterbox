@@ -44,7 +44,7 @@
     "invite": "Invitación"
   },
   "auth": {
-    "login": {
+    "phrase": {"signInBody": "Tus 24 palabras son tu cuenta. No hay correo electrónico ni contraseña que recordar.", "placeholder": "Tu frase de recuperación de 24 palabras", "newTitle": "Anótalas", "newBody": "Estas 24 palabras son tu cuenta y la clave de tus mensajes. Cualquiera que las tenga puede entrar como tú y leerlo todo. Si las pierdes, nada devuelve la cuenta: no hay restablecimiento ni a quién pedirlo.", "copy": "Copiar", "copied": "Frase de recuperación copiada al portapapeles.", "written": "Ya las anoté", "confirmTitle": "Comprueba que las tienes", "confirmBody": "Escribe estas tres palabras para confirmar que la frase salió de esta pantalla contigo.", "wordN": "Palabra {{n}}", "confirmWrong": "No coinciden. Revisa lo que anotaste.", "create": "Crear cuenta", "back": "Ver la frase otra vez", "generating": "Generando tu frase…"}, "login": {
       "subtitleVariant": "Bienvenido de nuevo — vamos a chatear",
       "subtitleDefault": "Inicia sesión para continuar",
       "emailPlaceholder": "Correo electrónico",
@@ -867,17 +867,17 @@
   "recovery": {
     "yoursTitle": "Tu frase de recuperación",
     "superseded": "La clave de este dispositivo fue sustituida desde otro, así que los mensajes que te han llegado desde entonces no se pueden abrir aquí. Enviar sigue funcionando. Introduce abajo la frase de recuperación de ese otro dispositivo para leer el resto.",
-    "alreadyRevealed": "Ya guardaste tu frase de recuperación en este dispositivo. Por seguridad no volverá a mostrarse: si aún la tienes, guárdala en un lugar seguro. Si la perdiste, este dispositivo sigue funcionando con normalidad; solo la necesitarás para recuperar mensajes antiguos en otro dispositivo.",
+    "alreadyRevealed": "Ya guardaste la frase de esta cuenta en este dispositivo. Por seguridad no se mostrará otra vez. Si todavía la tienes, consérvala a buen recaudo: es la única manera de entrar en cualquier otro sitio. Si la perdiste, este dispositivo seguirá funcionando, pero nada recuperará la cuenta una vez que cierres sesión.",
     "restoreFirst": "Este dispositivo todavía no tiene la clave de tu cuenta, así que no hay ninguna frase que mostrar: la que buscas se guardó en tu otro dispositivo. Introdúcela abajo para recuperar tu historial. Una vez hecho, esta frase también estará disponible aquí.",
     "unavailable": "No pudimos comprobar el estado de cifrado de este dispositivo, así que aún no mostramos la frase: revelarla ahora podría sobrescribir una clave que quizá todavía necesites. Revisa tu conexión y vuelve.",
-    "backUp": "Haz una copia de la clave que protege tus mensajes. Cualquiera que vea esta frase puede leer tu historial, así que muéstrala solo en un lugar privado.",
+    "backUp": "Esta frase es tu cuenta y la clave de tus mensajes. Cualquiera que la vea puede entrar como tú y leerlo todo, así que muéstrala solo en privado.",
     "view": "Ver la frase de recuperación",
     "restoreTitle": "Restaurar con una frase",
     "restoreBody": "Introducir una frase de recuperación guardada antes sustituye la clave de este dispositivo, de modo que pueda descifrar los mensajes sellados con esa frase.",
     "phrasePlaceholder": "Introduce tus 24 palabras de recuperación",
     "restore": "Restaurar",
     "prepareFailed": "Ahora mismo no pudimos preparar tu frase de recuperación. Tus mensajes no se ven afectados: puedes volver a intentarlo cuando quieras desde Ajustes.",
-    "whatItDoes": "Esta frase puede restaurar tu historial de mensajes cifrados si reinstalas la app o cambias de dispositivo. Cualquiera que la tenga puede leer tus mensajes, así que anótala y guárdala en un lugar privado: no volverá a mostrarse.",
+    "whatItDoes": "Esta frase es la única forma de volver a tu cuenta: en un dispositivo nuevo o después de reinstalar. Quien la tenga puede entrar como tú y leer tus mensajes, así que anótala y guárdala en un lugar privado. No se volverá a mostrar y nadie puede emitirla de nuevo.",
     "restoredTitle": "Frase de recuperación restaurada",
     "restoredBody": "Vuelve a abrir tus chats para ver los mensajes que antes no se podían descifrar.",
     "invalidTitle": "Esto no cuadra",

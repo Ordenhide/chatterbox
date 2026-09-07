@@ -44,7 +44,7 @@
     "invite": "Invitation"
   },
   "auth": {
-    "login": {
+    "phrase": {"signInBody": "Vos 24 mots sont votre compte. Ni adresse e-mail, ni mot de passe à retenir.", "placeholder": "Votre phrase de récupération de 24 mots", "newTitle": "Notez-les", "newBody": "Ces 24 mots sont votre compte et la clé de vos messages. Quiconque les possède peut se connecter à votre place et tout lire. Si vous les perdez, rien ne ramène le compte : aucune réinitialisation, personne à qui demander.", "copy": "Copier", "copied": "Phrase de récupération copiée dans le presse-papiers.", "written": "Je les ai notés", "confirmTitle": "Vérifions que vous les avez", "confirmBody": "Retapez ces trois mots, pour confirmer que la phrase a bien quitté cet écran avec vous.", "wordN": "Mot {{n}}", "confirmWrong": "Cela ne correspond pas. Vérifiez ce que vous avez noté.", "create": "Créer le compte", "back": "Revoir la phrase", "generating": "Génération de votre phrase…"}, "login": {
       "subtitleVariant": "Bon retour — discutons",
       "subtitleDefault": "Connectez-vous pour continuer",
       "emailPlaceholder": "E-mail",
@@ -867,17 +867,17 @@
   "recovery": {
     "yoursTitle": "Votre phrase de récupération",
     "superseded": "La clé de cet appareil a été remplacée depuis un autre appareil : les messages reçus depuis ne peuvent pas être ouverts ici. L’envoi fonctionne toujours. Saisissez ci-dessous la phrase de récupération de cet autre appareil pour lire le reste.",
-    "alreadyRevealed": "Vous avez déjà enregistré votre phrase de récupération sur cet appareil. Par sécurité, elle ne sera plus affichée — si vous l’avez encore, gardez-la en lieu sûr. Si vous l’avez perdue, cet appareil continue de fonctionner normalement ; elle ne sert qu’à restaurer d’anciens messages sur un autre appareil.",
+    "alreadyRevealed": "Vous avez déjà enregistré la phrase de ce compte sur cet appareil. Par sécurité, elle ne sera pas réaffichée. Si vous l'avez encore, conservez-la précieusement : c'est le seul moyen de vous connecter ailleurs. Si vous l'avez perdue, cet appareil continue de fonctionner, mais rien ne récupérera le compte une fois déconnecté.",
     "restoreFirst": "Cet appareil n’a pas encore la clé de votre compte : il n’y a donc aucune phrase à afficher — celle qu’il vous faut a été enregistrée sur votre autre appareil. Saisissez-la ci-dessous pour restaurer votre historique. Une fois fait, cette phrase sera aussi disponible ici.",
     "unavailable": "Nous n’avons pas pu vérifier l’état de chiffrement de cet appareil, la phrase n’est donc pas encore affichée — la révéler maintenant pourrait écraser une clé dont vous avez peut-être encore besoin. Vérifiez votre connexion et revenez.",
-    "backUp": "Sauvegardez la clé qui protège vos messages. Quiconque voit cette phrase peut lire votre historique : ne l’affichez que dans un endroit privé.",
+    "backUp": "Cette phrase est votre compte et la clé de vos messages. Quiconque la voit peut se connecter à votre place et tout lire : ne l'affichez qu'à l'abri des regards.",
     "view": "Voir la phrase de récupération",
     "restoreTitle": "Restaurer à partir d’une phrase",
     "restoreBody": "Saisir une phrase de récupération enregistrée auparavant remplace la clé de cet appareil, afin qu’il puisse déchiffrer les messages scellés pour cette phrase.",
     "phrasePlaceholder": "Saisissez vos 24 mots de récupération",
     "restore": "Restaurer",
     "prepareFailed": "Nous n’avons pas pu préparer votre phrase de récupération pour le moment. Vos messages ne sont pas affectés — vous pouvez réessayer à tout moment depuis les Réglages.",
-    "whatItDoes": "Cette phrase permet de restaurer votre historique de messages chiffrés si vous réinstallez l’application ou changez d’appareil. Quiconque la détient peut lire vos messages : notez-la et gardez-la dans un endroit privé — elle ne sera plus affichée.",
+    "whatItDoes": "Cette phrase est le seul moyen de revenir dans votre compte — sur un nouvel appareil ou après une réinstallation. Quiconque la possède peut se connecter à votre place et lire vos messages : notez-la et gardez-la dans un endroit privé. Elle ne sera plus affichée et personne ne peut la rééditer.",
     "restoredTitle": "Phrase de récupération restaurée",
     "restoredBody": "Rouvrez vos conversations pour voir les messages qui ne pouvaient pas être déchiffrés jusqu’ici.",
     "invalidTitle": "Cela ne semble pas correct",

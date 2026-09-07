@@ -44,7 +44,7 @@
     "invite": "Einladung"
   },
   "auth": {
-    "login": {
+    "phrase": {"signInBody": "Ihre 24 Wörter sind Ihr Konto. Es gibt keine E-Mail-Adresse und kein Passwort zu merken.", "placeholder": "Ihre 24-Wort-Wiederherstellungsphrase", "newTitle": "Schreiben Sie sie auf", "newBody": "Diese 24 Wörter sind Ihr Konto und der Schlüssel zu Ihren Nachrichten. Wer sie hat, meldet sich als Sie an und liest alles. Gehen sie verloren, bringt nichts das Konto zurück — es gibt kein Zurücksetzen und niemanden, den man fragen könnte.", "copy": "Kopieren", "copied": "Wiederherstellungsphrase in die Zwischenablage kopiert.", "written": "Ich habe sie aufgeschrieben", "confirmTitle": "Prüfen, ob Sie sie haben", "confirmBody": "Tippen Sie diese drei Wörter noch einmal ein — damit sicher ist, dass die Phrase diesen Bildschirm mit Ihnen verlassen hat.", "wordN": "Wort {{n}}", "confirmWrong": "Das passt nicht. Prüfen Sie, was Sie notiert haben.", "create": "Konto erstellen", "back": "Phrase noch einmal anzeigen", "generating": "Phrase wird erzeugt…"}, "login": {
       "subtitleVariant": "Willkommen zurück — lass uns chatten",
       "subtitleDefault": "Anmelden, um fortzufahren",
       "emailPlaceholder": "E-Mail",
@@ -867,17 +867,17 @@
   "recovery": {
     "yoursTitle": "Deine Wiederherstellungsphrase",
     "superseded": "Der Schlüssel dieses Geräts wurde von einem anderen Gerät ersetzt, deshalb lassen sich seither empfangene Nachrichten hier nicht öffnen. Senden funktioniert weiterhin. Gib unten die Wiederherstellungsphrase jenes Geräts ein, um den Rest zu lesen.",
-    "alreadyRevealed": "Du hast deine Wiederherstellungsphrase auf diesem Gerät bereits gesichert. Aus Sicherheitsgründen wird sie nicht erneut angezeigt — falls du sie noch hast, bewahre sie sicher auf. Ist sie weg, funktioniert dieses Gerät normal weiter; du brauchst sie nur, um alte Nachrichten auf einem anderen Gerät wiederherzustellen.",
+    "alreadyRevealed": "Die Phrase dieses Kontos wurde auf diesem Gerät bereits gespeichert. Aus Sicherheitsgründen wird sie nicht erneut angezeigt. Falls Sie sie noch haben, bewahren Sie sie sicher auf — sie ist der einzige Weg, sich anderswo anzumelden. Ist sie verloren, funktioniert dieses Gerät weiter, aber nach dem Abmelden bringt nichts das Konto zurück.",
     "restoreFirst": "Dieses Gerät hat den Schlüssel deines Kontos noch nicht, es gibt also keine Phrase zu zeigen — die gesuchte wurde auf deinem anderen Gerät gesichert. Gib sie unten ein, um deinen Nachrichtenverlauf wiederherzustellen. Danach ist diese Phrase auch hier verfügbar.",
     "unavailable": "Wir konnten den Verschlüsselungsstatus dieses Geräts nicht prüfen, deshalb wird die Phrase noch nicht gezeigt — sie jetzt anzuzeigen könnte einen Schlüssel überschreiben, den du noch brauchst. Prüfe deine Verbindung und komm zurück.",
-    "backUp": "Sichere den Schlüssel, der deine Nachrichten schützt. Wer diese Phrase sieht, kann deinen Nachrichtenverlauf lesen — zeige sie also nur an einem privaten Ort.",
+    "backUp": "Diese Phrase ist Ihr Konto und der Schlüssel zu Ihren Nachrichten. Wer sie sieht, meldet sich als Sie an und liest alles — zeigen Sie sie nur ungestört an.",
     "view": "Wiederherstellungsphrase ansehen",
     "restoreTitle": "Aus einer Phrase wiederherstellen",
     "restoreBody": "Eine zuvor gesicherte Wiederherstellungsphrase einzugeben ersetzt den Schlüssel dieses Geräts, sodass es für jene Phrase versiegelte Nachrichten entschlüsseln kann.",
     "phrasePlaceholder": "Gib deine 24-Wort-Wiederherstellungsphrase ein",
     "restore": "Wiederherstellen",
     "prepareFailed": "Wir konnten deine Wiederherstellungsphrase gerade nicht vorbereiten. Deine Nachrichten sind davon unberührt — du kannst es jederzeit in den Einstellungen erneut versuchen.",
-    "whatItDoes": "Mit dieser Phrase lässt sich dein verschlüsselter Nachrichtenverlauf wiederherstellen, falls du die App neu installierst oder das Gerät wechselst. Wer sie hat, kann deine Nachrichten lesen — schreib sie also auf und bewahre sie an einem privaten Ort auf; sie wird nicht noch einmal angezeigt.",
+    "whatItDoes": "Diese Phrase ist der einzige Weg zurück in Ihr Konto — auf einem neuen Gerät oder nach einer Neuinstallation. Wer sie hat, meldet sich als Sie an und liest Ihre Nachrichten. Schreiben Sie sie auf und bewahren Sie sie an einem privaten Ort. Sie wird nicht erneut angezeigt, und niemand kann sie neu ausstellen.",
     "restoredTitle": "Wiederherstellungsphrase übernommen",
     "restoredBody": "Öffne deine Chats neu, um Nachrichten zu sehen, die sich vorher nicht entschlüsseln ließen.",
     "invalidTitle": "Das sieht nicht richtig aus",
