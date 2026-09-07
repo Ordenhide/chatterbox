@@ -187,6 +187,114 @@ def write(path, img):
     print(f"  {img.size[0]:>4}px  {os.path.relpath(path, ROOT)}")
 
 
+
+# ── The same mark, as SVG ────────────────────────────────────────────────
+#
+# The web client and the marketing site want one scalable file rather than a
+# ladder of PNGs, and they were drifting: web/public/icon.svg was an indigo
+# gradient left over from an older identity, and the site's favicon was a third
+# thing again — a green rounded square with three lines. Three icons for one
+# product is what happens when the generator only knows about two platforms.
+#
+# The geometry below is the same unit-square design as draw_mark_layers, read
+# off the same constants, so the four surfaces cannot disagree again.
+def svg_mark(size=320, ground="square", inset=0.155):
+    # `inset` is draw_mark's, and it has to be: a mark that fills more of the
+    # tile than the launcher icon does reads as a different logo, however
+    # identical the geometry inside it.
+    o, e = size * inset, size * (1 - 2 * inset)
+
+    def u(v):
+        return round(o + e * v, 2)
+
+    def d(v):
+        """A length rather than a position: the inset must not apply twice."""
+        return round(e * v, 2)
+
+    def hexof(rgba):
+        return "#%02X%02X%02X" % rgba[:3]
+
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
+        f'width="{size}" height="{size}">'
+    ]
+    if ground == "square":
+        parts.append(
+            f'<rect width="{size}" height="{size}" rx="{round(size * 0.17, 2)}" fill="{hexof(GROUND)}"/>'
+        )
+
+    paper, ink, signal = hexof(PAPER), hexof(INK), hexof(SIGNAL)
+
+    # Bubble and tail as one outline. PIL draws them as two abutting shapes,
+    # which is fine for a rasteriser writing whole pixels; in SVG two shapes
+    # sharing an edge leave a hairline of background showing through where the
+    # antialiasing of each side fails to add up to one.
+    parts.append(
+        f'<polygon points="{u(0.152)},{u(0.125)} {u(0.850)},{u(0.125)} '
+        f'{u(0.850)},{u(0.642)} {u(0.360)},{u(0.642)} {u(0.152)},{u(0.858)}" '
+        f'fill="{paper}"/>'
+    )
+
+    # Lock body.
+    body_top, body_bot = 0.372, 0.566
+    parts.append(
+        f'<rect x="{u(0.381)}" y="{u(body_top)}" width="{d(0.624 - 0.381)}" '
+        f'height="{d(body_bot - body_top)}" fill="{ink}"/>'
+    )
+
+    # Shackle. PIL grows `width` inward from the arc's bounding box, so the
+    # stroke's centreline sits half a stroke inside the outer radius; SVG
+    # strokes straddle the path, and this is what keeps the two identical.
+    sl, sr, arc_top, sw = 0.421, 0.579, 0.178, 0.042
+    arc_h = (sr - sl) / 2
+    cy = arc_top + arc_h
+    r = arc_h - sw / 2
+    parts.append(
+        f'<path d="M {u(0.5 - r)},{u(cy)} A {d(r)},{d(r)} 0 0 1 {u(0.5 + r)},{u(cy)}" '
+        f'fill="none" stroke="{ink}" stroke-width="{d(sw)}"/>'
+    )
+    for lx in (sl, sr - sw):
+        parts.append(
+            f'<rect x="{u(lx)}" y="{u(cy)}" width="{d(sw)}" '
+            f'height="{d(body_top + 0.01 - cy)}" fill="{ink}"/>'
+        )
+
+    # Keyhole: circle over a tapering stem, cut out of the body.
+    kr, kcx, kcy = 0.032, 0.5025, 0.437
+    parts.append(f'<circle cx="{u(kcx)}" cy="{u(kcy)}" r="{d(kr)}" fill="{paper}"/>')
+    parts.append(
+        f'<polygon points="{u(kcx - kr * 0.62)},{u(kcy)} {u(kcx + kr * 0.62)},{u(kcy)} '
+        f'{u(kcx + kr * 0.42)},{u(0.522)} {u(kcx - kr * 0.42)},{u(0.522)}" fill="{paper}"/>'
+    )
+
+    # The one green thing inside.
+    parts.append(
+        f'<rect x="{u(0.381)}" y="{u(0.566)}" width="{d(0.624 - 0.381)}" '
+        f'height="{d(0.012)}" fill="{signal}"/>'
+    )
+
+    # Corner brackets, at the same inset and for the same reason.
+    bw, bl, bi = 0.038, 0.175, 0.092
+    for cx, cy2, sx, sy in (
+        (bi, bi, 1, 1), (1 - bi, bi, -1, 1), (bi, 1 - bi, 1, -1), (1 - bi, 1 - bi, -1, -1),
+    ):
+        for w, h in ((bl, bw), (bw, bl)):
+            x0, y0 = min(cx, cx + sx * w), min(cy2, cy2 + sy * h)
+            parts.append(
+                f'<rect x="{u(x0)}" y="{u(y0)}" width="{d(w)}" height="{d(h)}" fill="{signal}"/>'
+            )
+
+    parts.append("</svg>")
+    return "\n".join(parts) + "\n"
+
+
+def write_svg(path, **kw):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write(svg_mark(**kw))
+    print(f"        {os.path.relpath(path, ROOT)}")
+
+
 def main():
     print("Android:")
     for density, px in ANDROID.items():
@@ -242,6 +350,10 @@ def main():
                 px = existing.size[0]
             # iOS applies its own mask and rejects alpha, so: square, opaque.
             write(path, draw_mark(px, False).convert("RGB"))
+
+    print("SVG:")
+    write_svg(os.path.join(ROOT, "web/public/icon.svg"))
+    write_svg(os.path.join(ROOT, "website/assets/icon.svg"))
 
 
 if __name__ == "__main__":
