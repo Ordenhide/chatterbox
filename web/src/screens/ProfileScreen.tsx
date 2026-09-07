@@ -25,7 +25,6 @@ import {startTour} from '../services/tour';
 import SavedModal from '../components/SavedModal';
 import DeleteAccountModal from '../components/DeleteAccountModal';
 import RecoveryPhraseModal from '../components/RecoveryPhraseModal';
-import FocusModeCard from '../components/FocusModeCard';
 import DownloadAppCard from '../components/DownloadAppCard';
 import Icon from '../components/Icon';
 import PasswordInput from '../components/PasswordInput';
@@ -295,8 +294,6 @@ export default function ProfileScreen({user}: {user: User}) {
             </button>
           </section>
           )}
-
-          <FocusModeCard uid={user.uid} />
 
           {/* Both off by default and both reciprocal — the switch governs
               sending yours and seeing theirs. Mirrors the mobile privacy card;

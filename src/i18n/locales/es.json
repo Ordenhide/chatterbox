@@ -859,23 +859,6 @@
     "message": "[Mensaje]",
     "emptyHint": "Mantén pulsado un mensaje en cualquier chat y toca «Guardar» para tenerlo aquí."
   },
-  "focus": {
-    "title": "Modo concentración",
-    "enabledFor": "Activado durante {{minutes}} minutos. Los mensajes que lleguen recibirán una respuesta automática.",
-    "subtitle": "Responde automáticamente mientras estás ocupado",
-    "activeUntil": "Activo hasta las {{time}}",
-    "autoReplyPreview": "Respuesta automática: «{{message}}»",
-    "enable": "Activar modo concentración",
-    "disable": "Desactivar modo concentración",
-    "duration": "Duración (minutos)",
-    "autoReplyLabel": "Mensaje de respuesta automática",
-    "autoReplyPlaceholder": "Ahora mismo estoy ocupado…",
-    "enableButton": "Activar",
-    "invalidTitle": "No válido",
-    "invalidBody": "Introduce una duración válida en minutos.",
-    "enableFailed": "No se pudo activar el modo concentración.",
-    "disableFailed": "No se pudo desactivar el modo concentración."
-  },
   "errorBoundary": {
     "body": "La app se topó con un error inesperado. Tus datos están a salvo: inténtalo de nuevo.",
     "title": "Algo salió mal",

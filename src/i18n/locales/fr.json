@@ -859,23 +859,6 @@
     "message": "[Message]",
     "emptyHint": "Appuyez longuement sur un message dans une conversation puis touchez « Enregistrer » pour le retrouver ici."
   },
-  "focus": {
-    "title": "Mode concentration",
-    "enabledFor": "Activé pour {{minutes}} minutes. Les messages entrants recevront une réponse automatique.",
-    "subtitle": "Répondre automatiquement quand vous êtes occupé",
-    "activeUntil": "Actif jusqu’à {{time}}",
-    "autoReplyPreview": "Réponse automatique : « {{message}} »",
-    "enable": "Activer le mode concentration",
-    "disable": "Désactiver le mode concentration",
-    "duration": "Durée (minutes)",
-    "autoReplyLabel": "Message de réponse automatique",
-    "autoReplyPlaceholder": "Je suis occupé pour le moment…",
-    "enableButton": "Activer",
-    "invalidTitle": "Non valide",
-    "invalidBody": "Saisissez une durée valide en minutes.",
-    "enableFailed": "Impossible d’activer le mode concentration.",
-    "disableFailed": "Impossible de désactiver le mode concentration."
-  },
   "errorBoundary": {
     "body": "L’application a rencontré une erreur inattendue. Vos données sont intactes — réessayez.",
     "title": "Une erreur est survenue",

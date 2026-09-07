@@ -859,23 +859,6 @@
     "message": "[Nachricht]",
     "emptyHint": "Halte in einem Chat eine Nachricht gedrückt und tippe auf „Lesezeichen“, um sie hier zu sichern."
   },
-  "focus": {
-    "title": "Fokusmodus",
-    "enabledFor": "Für {{minutes}} Minuten aktiviert. Eingehende Nachrichten erhalten eine automatische Antwort.",
-    "subtitle": "Automatisch antworten, solange du beschäftigt bist",
-    "activeUntil": "Aktiv bis {{time}}",
-    "autoReplyPreview": "Automatische Antwort: „{{message}}“",
-    "enable": "Fokusmodus einschalten",
-    "disable": "Fokusmodus ausschalten",
-    "duration": "Dauer (Minuten)",
-    "autoReplyLabel": "Automatische Antwort",
-    "autoReplyPlaceholder": "Ich bin gerade beschäftigt …",
-    "enableButton": "Einschalten",
-    "invalidTitle": "Ungültig",
-    "invalidBody": "Gib eine gültige Dauer in Minuten ein.",
-    "enableFailed": "Fokusmodus konnte nicht eingeschaltet werden.",
-    "disableFailed": "Fokusmodus konnte nicht ausgeschaltet werden."
-  },
   "errorBoundary": {
     "body": "Die App ist auf einen unerwarteten Fehler gestoßen. Deine Daten sind sicher — versuch es noch einmal.",
     "title": "Etwas ist schiefgelaufen",

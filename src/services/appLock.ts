@@ -30,11 +30,13 @@ import * as biometrics from './biometrics';
  * ## Why this matters beyond the lock screen
  *
  * The threat model is the one the Keychain migration addresses: someone with
- * the device's files. Two of the things gated here are worth more than a UI
- * lock — the per-chat PIN, and the *decoy* PIN, which exists so a user under
- * duress can hand over a PIN that opens a benign view. A duress feature whose
- * two PINs can both be recovered offline in under a second is not a duress
- * feature at all.
+ * the device's files. A PIN that can be recovered offline in under a second
+ * is a UI lock and nothing more, so the cost of a guess is the whole point.
+ *
+ * A per-chat PIN and a decoy PIN used to live here too. Both were unreachable
+ * behind the parity flag and were removed with it — the decoy in particular
+ * only emptied the chat list while leaving the data in place, which is not a
+ * duress mode, it is the appearance of one.
  */
 
 // Stored format: "v3:<salt-hex>:<scrypt-hex>". Verification still accepts the
@@ -85,9 +87,10 @@ function legacyStretchHash(salt: string, pin: string, rounds = 10_000): string {
  * Length-independent, content-constant-time string compare.
  *
  * `===` on hashes leaks how many leading characters matched through timing.
- * That is a weak channel locally, but the decoy PIN makes it worth closing:
- * distinguishing "wrong PIN" from "decoy PIN" by timing would tell an attacker
- * a decoy exists, which is the one fact the feature depends on hiding.
+ * A weak channel locally, and cheap to close. It mattered more when a decoy
+ * PIN lived here — timing that distinguished "wrong" from "decoy" would have
+ * given away that a decoy existed — and it stays because the property is
+ * worth keeping if that feature is ever built properly.
  */
 function constantTimeEquals(a: string, b: string): boolean {
   let diff = a.length ^ b.length;
@@ -172,42 +175,4 @@ export function setBiometricsEnabled(enabled: boolean): void {
 
 export function isBiometricsEnabled(): boolean {
   return mmkvStorage.getBoolean('biometrics_enabled') ?? false;
-}
-
-export async function setChatLockPIN(chatId: string, pin: string): Promise<void> {
-  await mmkvStorage.setItem(`chat_lock_${chatId}`, await encodePin(pin));
-  mmkvStorage.setBoolean(`chat_locked_${chatId}`, true);
-}
-
-export async function removeChatLock(chatId: string): Promise<void> {
-  await mmkvStorage.removeItem(`chat_lock_${chatId}`);
-  mmkvStorage.setBoolean(`chat_locked_${chatId}`, false);
-}
-
-export function isChatLocked(chatId: string): boolean {
-  return mmkvStorage.getBoolean(`chat_locked_${chatId}`) ?? false;
-}
-
-export async function verifyChatPIN(chatId: string, input: string): Promise<boolean> {
-  return verifyAndUpgrade(`chat_lock_${chatId}`, input);
-}
-
-export function isDecoyMode(): boolean {
-  return mmkvStorage.getBoolean('decoy_active') ?? false;
-}
-
-export function setDecoyMode(active: boolean): void {
-  mmkvStorage.setBoolean('decoy_active', active);
-}
-
-export async function setDecoyPIN(pin: string): Promise<void> {
-  await mmkvStorage.setItem('decoy_pin', await encodePin(pin));
-}
-
-export async function isDecoyPIN(input: string): Promise<boolean> {
-  // Upgrades like the others: leaving the decoy at v2 while the real PIN moved
-  // to v3 would make the decoy the cheaper of the two to crack, inverting the
-  // protection — and the timing difference between the two KDFs would itself
-  // signal which record was which.
-  return verifyAndUpgrade('decoy_pin', input);
 }

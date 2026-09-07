@@ -161,19 +161,14 @@ import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
 import {getSmartReplies} from '../../services/smartReply';
 import {extractEntities} from '../../services/wikipediaLookup';
-import {isChatLocked, verifyChatPIN} from '../../services/appLock';
 import {
   applyScreenshotProtection,
-  generateWatermark,
   isExifStrippingEnabled,
   isLinkPreviewEnabled,
   isReadReceiptsEnabled,
   isScreenshotProtectionEnabled,
-  isStealthMode,
   isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
-import {VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {SHOW_AI_FEATURES} from '../../config/launch';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
@@ -374,9 +369,6 @@ export default function ChatScreen() {
   const [summaryQuestion, setSummaryQuestion] = useState('');
   const [summaryAskedQuestion, setSummaryAskedQuestion] = useState('');
   const [translatedTexts, setTranslatedTexts] = useState<Record<string, string>>({});
-  const [timeCapsuleMode, setTimeCapsuleMode] = useState(false);
-  const [capsuleHours, setCapsuleHours] = useState(24);
-  const [capsulePickerVisible, setCapsulePickerVisible] = useState(false);
   // The chat's own stored accent, kept raw (undefined = never set) so the
   // account-wide Store theme can fill in for chats created after it was
   // applied.
@@ -389,23 +381,8 @@ export default function ChatScreen() {
   const [forwardTarget, setForwardTarget] = useState<IMessage | null>(null);
   // The name whose Wikipedia card is open, null otherwise.
   const [lookUpCard, setLookUpCard] = useState<string | null>(null);
-  const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('none');
-  const [invisibleInkMode, setInvisibleInkMode] = useState(false);
-  const [revealedMessages, setRevealedMessages] = useState<Set<string>>(new Set());
-  const [messageStyle, setMessageStyle] = useState<MessageStyle>('none');
-  const [stylePickerVisible, setStylePickerVisible] = useState(false);
-  const [anonymousMode, setAnonymousMode] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
-  const [gestureMode, setGestureMode] = useState(false);
-  const [gestureStrokes, setGestureStrokes] = useState<GestureStroke[]>([]);
-  const [currentStroke, setCurrentStroke] = useState<GestureStroke | null>(null);
-  const [lotteryMode, setLotteryMode] = useState(false);
-  const [lotteryOptions, setLotteryOptions] = useState<string[]>(['', '']);
-  const [lotteryModalVisible, setLotteryModalVisible] = useState(false);
   const [viewOnceMode, setViewOnceMode] = useState(false);
-  const [chatUnlocked, setChatUnlocked] = useState(true);
-  const [chatPinInput, setChatPinInput] = useState('');
-  const [incognitoMode, setIncognitoMode] = useState(false);
   const [attachSheetVisible, setAttachSheetVisible] = useState(false);
   // Anything the attach sheet launches that presents its own native UI —
   // the photo library, the camera, the document picker — has to wait until
@@ -862,13 +839,6 @@ export default function ChatScreen() {
     },
     [chatId, user],
   );
-
-  useEffect(() => {
-    if (!chatId) return;
-    if (SHOW_NATIVE_ONLY_FEATURES && isChatLocked(chatId)) {
-      setChatUnlocked(false);
-    }
-  }, [chatId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -1705,9 +1675,9 @@ export default function ChatScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      if (!chatId || !user || incognitoMode) return;
+      if (!chatId || !user) return;
       setLastRead(chatId, user.uid);
-    }, [chatId, user, incognitoMode]),
+    }, [chatId, user]),
   );
 
   useEffect(() => {
@@ -2691,24 +2661,12 @@ export default function ChatScreen() {
             }
           : undefined,
         burnAfterReading: burnMode ? {duration: burnDuration} : undefined,
-        timeCapsule: timeCapsuleMode ? {unlocksAt: Date.now() + capsuleHours * 60 * 60 * 1000} : undefined,
-        invisibleInk: invisibleInkMode || undefined,
-        messageStyle: messageStyle !== 'none' ? messageStyle : undefined,
-        anonymous: anonymousMode || undefined,
-        user: anonymousMode ? {
-          _id: 'anonymous',
-          name: 'Someone',
-          avatar: undefined,
-        } : {
+        user: {
           _id: user.uid,
           name: user.displayName || user.email || 'User',
           avatar: user.photoURL,
         },
       };
-
-      if (timeCapsuleMode) setTimeCapsuleMode(false);
-      if (invisibleInkMode) setInvisibleInkMode(false);
-      if (messageStyle !== 'none') setMessageStyle('none');
 
       const pendingMessage: IMessage & {burnAfterReading?: ChatMessage['burnAfterReading']} = {
         _id: String(messageData._id),
@@ -2768,7 +2726,7 @@ export default function ChatScreen() {
       const url = extractFirstUrl(message.text);
       // Not for burn-after-reading: the whole point of that mode is leaving no
       // trace, and a preview card would outlive the text it came from.
-      if (url && isLinkPreviewEnabled() && !incognitoMode && !burnMode) {
+      if (url && isLinkPreviewEnabled() && !burnMode) {
         void addLinkPreview(chatId, messageData._id, url);
       }
     },
@@ -2780,12 +2738,8 @@ export default function ChatScreen() {
       otherUserId,
       removePendingMessage,
       addLinkPreview,
-      incognitoMode,
       burnMode,
       burnDuration,
-      invisibleInkMode,
-      messageStyle,
-      anonymousMode,
       encryptOutgoingMessage,
       t,
       // Both feed the fan-out bloom. otherUserIds.length in particular has to
@@ -2797,51 +2751,6 @@ export default function ChatScreen() {
     ],
   );
 
-  const sendGestureMessage = useCallback(async () => {
-    if (!chatId || !user || !gestureStrokes.length) return;
-    const messageData: ChatMessage = {
-      _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      text: '',
-      createdAt: new Date(),
-      gesture: gestureStrokes,
-      user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
-    };
-    try {
-      await sendMessage(chatId, messageData);
-    } catch { /* ignore */ }
-    setGestureStrokes([]);
-    setGestureMode(false);
-  }, [chatId, user, gestureStrokes]);
-
-  const sendLotteryMessage = useCallback(async () => {
-    const validOptions = lotteryOptions.filter(o => o.trim());
-    if (!chatId || !user || validOptions.length < 2) return;
-    const messageData: ChatMessage = {
-      _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      text: 'Mystery Box',
-      createdAt: new Date(),
-      lottery: {options: validOptions},
-      user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
-    };
-    try {
-      await sendMessage(chatId, messageData);
-    } catch { /* ignore */ }
-    setLotteryOptions(['', '']);
-    setLotteryMode(false);
-    setLotteryModalVisible(false);
-  }, [chatId, user, lotteryOptions]);
-
-  const revealLottery = useCallback(async (msgId: string | number) => {
-    if (!chatId || !user) return;
-    const msg = messages.find(m => String(m._id) === String(msgId));
-    if (!msg || !(msg as any).lottery || (msg as any).lottery.revealedIndex != null) return;
-    const lottery = (msg as any).lottery;
-    const idx = Math.floor(Math.random() * lottery.options.length);
-    try {
-      const {updateMessage: updateMsg} = require('../../services/firebaseChat');
-      await updateMsg(chatId, msgId, {lottery: {...lottery, revealedIndex: idx, revealedBy: user.displayName || 'User'}});
-    } catch { /* ignore */ }
-  }, [chatId, user, messages]);
 
   const openMediaPicker = useCallback(async (source: 'camera' | 'library') => {
     if (!chatId || !user) return;
@@ -3128,7 +3037,6 @@ export default function ChatScreen() {
       audioDuration: recordedDuration || undefined,
       audioSampleRateHertz: VOICE_SAMPLE_RATE_HERTZ,
       audioChannelCount: VOICE_CHANNEL_COUNT,
-      voiceFilter: voiceFilter !== 'none' ? voiceFilter : undefined,
       replyTo: replyTo
         ? {
             _id: replyTo._id,
@@ -3155,8 +3063,7 @@ export default function ChatScreen() {
     setRecordModalVisible(false);
     setRecordedUri(null);
     setRecordedDuration(null);
-    setVoiceFilter('none');
-    haptic('commit');
+
   }, [
     recordedUri,
     recordedDuration,
@@ -3164,7 +3071,6 @@ export default function ChatScreen() {
     user,
     replyTo,
     isOnline,
-    voiceFilter,
     prepareAudioForSend,
     t,
     sendEncrypted,
@@ -3524,9 +3430,6 @@ export default function ChatScreen() {
     if (!message.audio) return null;
     const mine = message.user?._id === user?.uid;
     const ink = mine ? colors.textOnPrimary : colors.text;
-    const filterLabel = message.voiceFilter && message.voiceFilter !== 'none'
-      ? ` (${message.voiceFilter})`
-      : '';
     return (
       <Pressable
         style={styles.audioBubble}
@@ -3538,7 +3441,7 @@ export default function ChatScreen() {
           style={styles.audioIcon}
         />
         <Text style={[styles.audioText, {color: ink}]}>
-          {message.audioDuration ? `${message.audioDuration}s` : 'Voice message'}{filterLabel}
+          {message.audioDuration ? `${message.audioDuration}s` : 'Voice message'}
         </Text>
       </Pressable>
     );
@@ -3592,34 +3495,9 @@ export default function ChatScreen() {
       const baseColor = isOutgoing ? colors.textOnPrimary : colors.text;
       const mentionColor = isOutgoing ? colors.warning : colors.primary;
 
-      if (current.invisibleInk && !revealedMessages.has(msgId)) {
-        return (
-          <Pressable
-            onLongPress={() => setRevealedMessages(prev => new Set(prev).add(msgId))}
-            style={styles.invisibleInkWrap}>
-            <Text style={[styles.messageText, {color: 'transparent'}]}>{text}</Text>
-            <View style={styles.invisibleInkOverlay}>
-              <View style={styles.invisibleInkHintRow}>
-                <Icon name="droplet" size={14} color="#fff" />
-                <Text style={styles.invisibleInkHint}>{t('chat.holdToReveal')}</Text>
-              </View>
-            </View>
-          </Pressable>
-        );
-      }
-
-      const styleMap: Record<string, any> = {
-        neon: {color: '#0FF', textShadowColor: '#0FF', textShadowRadius: 10, fontFamily: bodyWeight('700')},
-        handwriting: {fontStyle: 'italic', fontSize: 18, letterSpacing: 0.5},
-        gradient: {color: '#EC4899', fontFamily: bodyWeight('800')},
-        typewriter: {fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', letterSpacing: 1},
-        bounce: {fontSize: 18, fontFamily: bodyWeight('800')},
-      };
-      const extraStyle = current.messageStyle ? styleMap[current.messageStyle] || {} : {};
-
       const parts = text.split(/(@[a-zA-Z0-9_]+)/g);
       const body = (
-        <Text style={[styles.messageText, {color: baseColor}, extraStyle]}>
+        <Text style={[styles.messageText, {color: baseColor}]}>
           {parts.map((part: string, index: number) =>
             part.startsWith('@') ? (
               <Text key={`${part}-${index}`} style={{color: mentionColor, fontFamily: bodyWeight('700')}}>
@@ -3643,7 +3521,7 @@ export default function ChatScreen() {
           <Disintegrate
             text={text}
             active
-            style={[styles.messageText, {color: baseColor}, extraStyle]}
+            style={[styles.messageText, {color: baseColor}]}
             tint={colors.warning}>
             {body}
           </Disintegrate>
@@ -3656,7 +3534,7 @@ export default function ChatScreen() {
           text={text}
           messageId={msgId}
           createdAt={current.createdAt}
-          style={[styles.messageText, {color: baseColor}, extraStyle]}
+          style={[styles.messageText, {color: baseColor}]}
           sealedColor={colors.primary}>
           {body}
         </CipherText>
@@ -3669,7 +3547,6 @@ export default function ChatScreen() {
       colors.warning,
       msgSelectMode,
       msgSelected,
-      revealedMessages,
       burnCountdowns,
       t,
     ],
@@ -4218,27 +4095,6 @@ export default function ChatScreen() {
               }}
             />
           )}
-          {current.timeCapsule && Date.now() < current.timeCapsule.unlocksAt ? (
-            <View style={[styles.capsuleOverlay, {backgroundColor: colors.surface, borderColor: colors.secondary}]}>
-              <Icon name="timer" size={36} color={colors.secondary} style={styles.capsuleIcon} />
-              <Text style={[styles.capsuleTitle, {color: colors.secondary}]}>{t('chat.timeCapsule')}</Text>
-              <Text style={[styles.capsuleSub, {color: colors.textSecondary}]}>
-                {t('chat.capsuleOpens', {
-                  when: new Date(current.timeCapsule.unlocksAt).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }),
-                })}
-              </Text>
-            </View>
-          ) : null}
-          {/* No audio here: it is already drawn inside the Bubble above by
-              GiftedChat's renderMessageAudio slot, the same way image and video
-              are. Rendering it here as well put a second, detached copy under
-              every voice message. The cards that do belong here — moment, file,
-              link, list — have no GiftedChat slot of their own. */}
           {renderFileCard(current.file)}
           {renderLinkPreview(current.linkPreview)}
           {current.expense ? (
@@ -4284,64 +4140,6 @@ export default function ChatScreen() {
               <Text style={[styles.translationText, {color: colors.text}]}>
                 {(current as any).transcription}
               </Text>
-            </View>
-          ) : null}
-          {current.gesture?.length ? (
-            <View style={[styles.gestureCard, {borderColor: colors.border}]}>
-              {current.gesture.map((stroke: GestureStroke, si: number) => (
-                <View key={si}>
-                  {stroke.points.map((pt, pi) => pi > 0 ? (
-                    <View key={pi} style={{
-                      position: 'absolute',
-                      left: pt.x - 1,
-                      top: pt.y - 1,
-                      width: stroke.width,
-                      height: stroke.width,
-                      borderRadius: stroke.width / 2,
-                      backgroundColor: stroke.color,
-                    }} />
-                  ) : null)}
-                </View>
-              ))}
-            </View>
-          ) : null}
-          {current.lottery ? (
-            <Pressable
-              onPress={() => current.lottery.revealedIndex == null && revealLottery(current._id)}
-              style={[styles.lotteryCard, {backgroundColor: colors.surface, borderColor: current.lottery.revealedIndex != null ? colors.success : '#F59E0B'}]}>
-              <Icon
-                name={current.lottery.revealedIndex != null ? 'sparkles' : 'gift'}
-                size={28}
-                color={current.lottery.revealedIndex != null ? colors.success : '#F59E0B'}
-                style={styles.lotteryIcon}
-              />
-              {current.lottery.revealedIndex != null ? (
-                <>
-                  <Text style={[styles.lotteryRevealed, {color: colors.success}]}>
-                    {current.lottery.options[current.lottery.revealedIndex]}
-                  </Text>
-                  <Text style={[styles.lotteryRevealedBy, {color: colors.textSecondary}]}>
-                    {t('chat.revealedBy', {
-                      name: current.lottery.revealedBy || t('chat.someone'),
-                    })}
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text style={[styles.lotteryTitle, {color: colors.text}]}>
-                    {t('chat.mysteryBox')}
-                  </Text>
-                  <Text style={[styles.lotteryHint, {color: colors.textSecondary}]}>
-                    {t('chat.optionsInside', {count: current.lottery.options.length})}
-                  </Text>
-                </>
-              )}
-            </Pressable>
-          ) : null}
-          {current.anonymous ? (
-            <View style={styles.anonymousBadge}>
-              <Icon name="ghost" size={12} color={colors.secondary} />
-              <Text style={[styles.anonymousText, {color: colors.secondary}]}>{t('chat.anonymous')}</Text>
             </View>
           ) : null}
           {current.reactionChain?.length ? (
@@ -4531,40 +4329,6 @@ export default function ChatScreen() {
     );
   };
 
-  if (!chatUnlocked) {
-    return (
-      <GlassScreen style={styles.container} edges={NO_SAFE_AREA_EDGES} textureSeed={chatId}>
-        <View style={styles.chatLockContainer}>
-          <Icon name="lock" size={48} color={colors.text} style={styles.chatLockIcon} />
-          <Text style={[styles.chatLockTitle, {color: colors.text}]}>{t('chat.chatLocked')}</Text>
-          <Text style={[styles.chatLockSubtitle, {color: colors.textSecondary}]}>{t('chat.enterPinSubtitle')}</Text>
-          <TextInput
-            style={[styles.chatLockInput, {color: colors.text, borderColor: colors.border}]}
-            placeholder={t('chat.enterPinPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            secureTextEntry
-            keyboardType="number-pad"
-            value={chatPinInput}
-            onChangeText={setChatPinInput}
-          />
-          <TouchableOpacity
-            style={[styles.chatLockBtn, {backgroundColor: colors.primary}]}
-            onPress={async () => {
-              if (chatId && await verifyChatPIN(chatId, chatPinInput)) {
-                setChatUnlocked(true);
-                setChatPinInput('');
-              } else {
-                Alert.alert(t('chat.wrongPinTitle'), t('chat.wrongPinBody'));
-                setChatPinInput('');
-              }
-            }}>
-            <Text style={styles.chatLockBtnText}>{t('chat.unlock')}</Text>
-          </TouchableOpacity>
-        </View>
-      </GlassScreen>
-    );
-  }
-
   /** Closes the attach sheet, then runs `action` once it is safely gone. */
   const closeAttachSheetThen = (action: () => void) => {
     if (Platform.OS === 'ios') {
@@ -4600,20 +4364,6 @@ export default function ChatScreen() {
           <Icon name="lock" size={9} color={colors.primary} />
           <Text style={[styles.sealPillText, {color: colors.primary}]}>
             {t('chat.sealedToKeys', {count: sealedKeys})}
-          </Text>
-        </View>
-      ) : null}
-      {incognitoMode ? (
-        // Every other banner here is amber with dark ink. This one overrode
-        // the background to a near-black navy and kept styles.offlineText's
-        // hardcoded #111, which is 1.11:1 — the text was, in practice, not
-        // rendered at all. Incognito is a mode rather than a warning, so it
-        // keeps a dark ground and gets ink that can be seen on it instead of
-        // being recoloured amber like the warnings.
-        <View style={[styles.offlineBanner, {backgroundColor: colors.surfaceStrong}]}>
-          <Icon name="blocked" size={13} color={colors.textSecondary} />
-          <Text style={[styles.offlineText, {color: colors.text}]}>
-            {t('chat.incognitoBanner')}
           </Text>
         </View>
       ) : null}
@@ -4903,11 +4653,6 @@ export default function ChatScreen() {
         // client already omits it for the same reason.
         renderAvatar={renderAvatar}
         alwaysShowSend
-        textInputProps={{
-          autoCorrect: !incognitoMode,
-          autoComplete: incognitoMode ? 'off' : undefined,
-          spellCheck: !incognitoMode,
-        }}
       />
         {peerDeleted ? (
           <View
@@ -5064,23 +4809,6 @@ export default function ChatScreen() {
                 <Text style={[styles.recordButtonText, {color: colors.textOnPrimary}]}>{t('common.send')}</Text>
               </TouchableOpacity>
             </View>
-            {SHOW_NATIVE_ONLY_FEATURES && (
-            <View style={styles.smartReplyRow}>
-              {(['none', 'chipmunk', 'deep', 'echo', 'robot', 'whisper'] as VoiceFilter[]).map(f => (
-                <TouchableOpacity
-                  key={f}
-                  style={[styles.smartReplyChip, {
-                    backgroundColor: voiceFilter === f ? colors.primary : colors.surface,
-                    borderColor: voiceFilter === f ? colors.primary : colors.border,
-                  }]}
-                  onPress={() => setVoiceFilter(f)}>
-                  <Text style={[styles.smartReplyText, {color: voiceFilter === f ? '#fff' : colors.text}]}>
-                    {f === 'none' ? 'Normal' : f.charAt(0).toUpperCase() + f.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            )}
             <TouchableOpacity
               style={styles.recordCancel}
               onPress={() => {
@@ -5091,7 +4819,6 @@ export default function ChatScreen() {
                 setRecording(false);
                 setRecordedUri(null);
                 setRecordedDuration(null);
-                setVoiceFilter('none');
               }}>
               <Text style={[styles.recordCancelText, {color: colors.primary}]}>{t('common.cancel')}</Text>
             </TouchableOpacity>
@@ -5171,22 +4898,6 @@ export default function ChatScreen() {
                 </View>
                 <Text style={[styles.attachSectionLabel, {color: colors.textSecondary}]}>{t('chat.sectionMessageStyle')}</Text>
                 <View style={styles.attachSectionRow}>
-                  {SHOW_NATIVE_ONLY_FEATURES && (
-                    <>
-                  <TouchableOpacity style={[styles.attachOption, timeCapsuleMode && {backgroundColor: colors.secondary}]} onPress={() => { setTimeCapsuleMode(prev => !prev); }} onLongPress={() => setCapsulePickerVisible(true)}>
-                    <Icon name="timer" size={22} color={timeCapsuleMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
-                    <Text style={[styles.attachOptionText, {color: timeCapsuleMode ? '#fff' : colors.text}]}>{t('chat.timer')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, invisibleInkMode && {backgroundColor: colors.primary}]} onPress={() => setInvisibleInkMode(prev => !prev)}>
-                    <Icon name="droplet" size={22} color={invisibleInkMode ? '#fff' : colors.text} style={styles.attachOptionIcon} />
-                    <Text style={[styles.attachOptionText, {color: invisibleInkMode ? '#fff' : colors.text}]}>{t('chat.invisible')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.attachOption, messageStyle !== 'none' && {backgroundColor: colors.primary}]} onPress={() => closeAttachSheetThen(() => setStylePickerVisible(true))}>
-                    <Text style={[styles.attachOptionIcon, messageStyle !== 'none' && {color: '#fff'}]}>{t('chat.styleGlyph')}</Text>
-                    <Text style={[styles.attachOptionText, {color: messageStyle !== 'none' ? '#fff' : colors.text}]}>{t('chat.style')}</Text>
-                  </TouchableOpacity>
-                    </>
-                  )}
                   <TouchableOpacity style={[styles.attachOption, burnMode && {backgroundColor: colors.warning}]} onPress={() => setBurnMode(prev => !prev)} onLongPress={() => setBurnDurationPickerVisible(true)}>
                     <Icon name="flame" size={22} color={burnMode ? colors.textOnPrimary : colors.text} style={styles.attachOptionIcon} />
                     <Text style={[styles.attachOptionText, {color: burnMode ? colors.textOnPrimary : colors.text}]}>{t('chat.burn')}</Text>
@@ -5282,49 +4993,6 @@ export default function ChatScreen() {
                 <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.verifyContactTitle')}</Text>
               </TouchableOpacity>
             ) : null}
-            {SHOW_NATIVE_ONLY_FEATURES && (
-              <>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setAnonymousMode(prev => !prev);
-              }}>
-              <Text style={[styles.actionSheetText, {color: anonymousMode ? colors.secondary : colors.text}]}>
-                {anonymousMode ? t('chat.anonymousOn') : t('chat.anonymous')}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setIncognitoMode(prev => !prev);
-              }}>
-              <Text style={[styles.actionSheetText, {color: incognitoMode ? colors.success : colors.text}]}>
-                {incognitoMode ? t('chat.incognitoOn') : t('chat.incognito')}
-              </Text>
-            </TouchableOpacity>
-              <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionSpecial')}</Text>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setGestureMode(true);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.gestureMessage')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setLotteryModalVisible(true);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>
-                {t('chat.mysteryBox')}
-              </Text>
-            </TouchableOpacity>
-              </>
-            )}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionSettings')}</Text>
             <TouchableOpacity
               style={styles.actionSheetItem}
@@ -5351,46 +5019,6 @@ export default function ChatScreen() {
           </View>
         </Pressable>
       </Modal>
-      )}
-      {capsulePickerVisible && (
-        <Modal visible transparent animationType="fade" onRequestClose={() => setCapsulePickerVisible(false)}>
-          <Pressable style={styles.actionSheetBackdrop} onPress={() => setCapsulePickerVisible(false)}>
-            <View style={[styles.actionSheet, {backgroundColor: colors.background}]}>
-              <Text style={[styles.actionSheetTitle, {color: colors.text}]}>{t('chat.timeCapsuleDuration')}</Text>
-              {[
-                {label: '1 hour', hours: 1},
-                {label: '6 hours', hours: 6},
-                {label: '12 hours', hours: 12},
-                {label: '1 day', hours: 24},
-                {label: '3 days', hours: 72},
-                {label: '1 week', hours: 168},
-                {label: '1 month', hours: 720},
-              ].map(opt => (
-                <TouchableOpacity
-                  key={opt.hours}
-                  style={styles.actionSheetItem}
-                  onPress={() => {
-                    setCapsuleHours(opt.hours);
-                    setTimeCapsuleMode(true);
-                    setCapsulePickerVisible(false);
-                  }}>
-                  <Text style={[
-                    styles.actionSheetText,
-                    {color: capsuleHours === opt.hours ? colors.secondary : colors.text},
-                    capsuleHours === opt.hours && {fontFamily: bodyWeight('700')},
-                  ]}>
-                    {opt.label} {capsuleHours === opt.hours ? '  \u2713' : ''}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-              <TouchableOpacity
-                style={[styles.actionSheetItem, styles.actionSheetCancel]}
-                onPress={() => setCapsulePickerVisible(false)}>
-                <Text style={[styles.actionSheetText, {color: colors.textSecondary}]}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modal>
       )}
       {imageViewerVisible && (
         <ImageViewing
@@ -5564,116 +5192,6 @@ export default function ChatScreen() {
                 style={styles.burnPickerCancel}
                 onPress={() => setSummaryModalVisible(false)}>
                 <Text style={[styles.burnPickerCancelText, {color: colors.primary}]}>{t('common.close')}</Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modal>
-      )}
-      {stylePickerVisible && (
-        <Modal visible transparent animationType="fade" onRequestClose={() => setStylePickerVisible(false)}>
-          <Pressable style={styles.burnPickerBackdrop} onPress={() => setStylePickerVisible(false)}>
-            <View style={[styles.summarySheet, {backgroundColor: colors.background}]}>
-              <Text style={[styles.summarySheetTitle, {color: colors.text}]}>{t('chat.messageStyleTitle')}</Text>
-              {(['none', 'neon', 'handwriting', 'gradient', 'typewriter', 'bounce'] as MessageStyle[]).map(s => (
-                <TouchableOpacity
-                  key={s}
-                  style={[styles.actionSheetItem, messageStyle === s && {backgroundColor: colors.primary + '20'}]}
-                  onPress={() => { setMessageStyle(s); setStylePickerVisible(false); }}>
-                  <Text style={[
-                    styles.actionSheetText,
-                    {color: messageStyle === s ? colors.primary : colors.text},
-                    s === 'neon' && {color: '#0FF', fontFamily: bodyWeight('700')},
-                    s === 'handwriting' && {fontStyle: 'italic'},
-                    s === 'gradient' && {color: '#EC4899', fontFamily: bodyWeight('800')},
-                    s === 'typewriter' && {fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace'},
-                    s === 'bounce' && {fontFamily: bodyWeight('800')},
-                  ]}>
-                    {s === 'none' ? 'Normal' : s.charAt(0).toUpperCase() + s.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </Pressable>
-        </Modal>
-      )}
-      {gestureMode && (
-        <Modal visible transparent animationType="slide" onRequestClose={() => setGestureMode(false)}>
-          <View style={[styles.gestureModal, {backgroundColor: colors.background}]}>
-            <View style={styles.gestureHeader}>
-              <TouchableOpacity onPress={() => setGestureMode(false)}>
-                <Text style={[styles.gestureHeaderBtn, {color: colors.danger}]}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-              <Text style={[styles.gestureHeaderTitle, {color: colors.text}]}>{t('chat.drawGesture')}</Text>
-              <TouchableOpacity onPress={sendGestureMessage}>
-                <Text style={[styles.gestureHeaderBtn, {color: colors.primary}]}>{t('common.send')}</Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={[styles.gestureCanvas, {borderColor: colors.border}]}
-              onStartShouldSetResponder={() => true}
-              onMoveShouldSetResponder={() => true}
-              onResponderGrant={(e) => {
-                const {locationX, locationY} = e.nativeEvent;
-                setCurrentStroke({color: colors.primary, width: 3, points: [{x: locationX, y: locationY}]});
-              }}
-              onResponderMove={(e) => {
-                const {locationX, locationY} = e.nativeEvent;
-                setCurrentStroke(prev => prev ? {...prev, points: [...prev.points, {x: locationX, y: locationY}]} : prev);
-              }}
-              onResponderRelease={() => {
-                if (currentStroke && currentStroke.points.length > 1) {
-                  setGestureStrokes(prev => [...prev, currentStroke]);
-                }
-                setCurrentStroke(null);
-              }}>
-              {[...gestureStrokes, ...(currentStroke ? [currentStroke] : [])].map((stroke, si) =>
-                stroke.points.map((pt, pi) => pi > 0 ? (
-                  <View key={`${si}-${pi}`} style={{
-                    position: 'absolute', left: pt.x - 1.5, top: pt.y - 1.5,
-                    width: stroke.width, height: stroke.width,
-                    borderRadius: stroke.width / 2, backgroundColor: stroke.color,
-                  }} />
-                ) : null)
-              )}
-            </View>
-            <TouchableOpacity style={styles.gestureClearBtn} onPress={() => setGestureStrokes([])}>
-              <Text style={[styles.gestureClearText, {color: colors.textSecondary}]}>{t('chat.clear')}</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      )}
-      {lotteryModalVisible && (
-        <Modal visible transparent animationType="fade" onRequestClose={() => setLotteryModalVisible(false)}>
-          <Pressable style={styles.burnPickerBackdrop} onPress={() => setLotteryModalVisible(false)}>
-            <View style={[styles.summarySheet, {backgroundColor: colors.background}]}>
-              <View style={styles.summarySheetTitleRow}>
-                <Icon name="gift" size={18} color={colors.text} />
-                <Text style={[styles.summarySheetTitle, {color: colors.text, marginBottom: 0}]}>
-                  {t('chat.mysteryBox')}
-                </Text>
-              </View>
-              <Text style={[{color: colors.textSecondary, fontSize: 13, marginBottom: 12}]}>
-                {t('chat.mysteryBoxHint')}
-              </Text>
-              {lotteryOptions.map((opt, i) => (
-                <TextInput
-                  key={i}
-                  style={[styles.scheduleInput, {color: colors.text, borderColor: colors.border, marginBottom: 8}]}
-                  placeholder={t('chat.pollOption', {n: i + 1})}
-                  placeholderTextColor={colors.textSecondary}
-                  value={opt}
-                  onChangeText={(val) => setLotteryOptions(prev => { const n = [...prev]; n[i] = val; return n; })}
-                />
-              ))}
-              <TouchableOpacity
-                onPress={() => setLotteryOptions(prev => [...prev, ''])}
-                style={{marginBottom: 12}}>
-                <Text style={{color: colors.primary, fontFamily: bodyWeight('600')}}>{t('chat.addOption')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.burnPickerOption, {backgroundColor: colors.primary}]}
-                onPress={sendLotteryMessage}>
-                <Text style={{color: '#fff', fontFamily: bodyWeight('700'), textAlign: 'center'}}>{t('chat.sendMysteryBox')}</Text>
               </TouchableOpacity>
             </View>
           </Pressable>

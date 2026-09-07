@@ -33,10 +33,7 @@ import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
 import {applyLayoutDirection} from '../i18n/rtl';
 import {PRIVACY_TOGGLES, type PrivacyKey} from '../services/privacyToggles';
-import {enableFocusMode, disableFocusMode} from '../services/focusMode';
-import {uploadVoiceStatus, removeVoiceStatus} from '../services/voiceStatus';
 import {startTutorial} from '../services/tutorial';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../config/parity';
 import {SHOW_AI_FEATURES} from '../config/launch';
 import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
@@ -88,21 +85,8 @@ export default function ProfileScreen() {
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackEnabled, setFeedbackEnabled] = useState(true);
-  const [focusEnabled, setFocusEnabled] = useState(false);
-  const [focusUntil, setFocusUntil] = useState<number | null>(null);
-  const [focusAutoReply, setFocusAutoReply] = useState('');
-  const [focusModalVisible, setFocusModalVisible] = useState(false);
-  const [focusDuration, setFocusDuration] = useState('60');
-  const [focusMessage, setFocusMessage] = useState('I\'m currently in focus mode. I\'ll get back to you later.');
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [languageSearch, setLanguageSearch] = useState('');
-  const [voiceStatusUrl, setVoiceStatusUrl] = useState<string | null>(null);
-  const [voiceStatusDuration, setVoiceStatusDuration] = useState(0);
-  const [vsRecording, setVsRecording] = useState(false);
-  const [vsPlaying, setVsPlaying] = useState(false);
-  const [vsRecordedUri, setVsRecordedUri] = useState<string | null>(null);
-  const [vsRecordedDuration, setVsRecordedDuration] = useState(0);
-  const [vsModalVisible, setVsModalVisible] = useState(false);
   const vsRecorderRef = useRef(new AudioRecorderPlayer());
   const db = useMemo(() => getFirestore(), []);
   const navigation = useNavigation<any>();
@@ -190,26 +174,12 @@ export default function ProfileScreen() {
       if (!user?.uid) return;
       const unsub = onSnapshot(
         doc(db, 'users', user.uid),
-        guardDocSnapshot('listen_profile', snapshot => {
-          const data = snapshot.data() as any;
-          const vs = data?.voiceStatus;
-          if (vs?.url && vs?.createdAt && Date.now() - vs.createdAt < 24 * 60 * 60 * 1000) {
-            setVoiceStatusUrl(vs.url);
-            setVoiceStatusDuration(vs.duration || 0);
-          } else {
-            setVoiceStatusUrl(null);
-            setVoiceStatusDuration(0);
-          }
-          const focus = data?.focusMode;
-          if (focus?.enabled && focus?.until && focus.until > Date.now()) {
-            setFocusEnabled(true);
-            setFocusUntil(focus.until);
-            setFocusAutoReply(focus.autoReply || '');
-          } else {
-            setFocusEnabled(false);
-            setFocusUntil(null);
-          }
-        }),
+        // The profile document is still listened to, but nothing on this
+        // screen reads a field from it any more — focus mode and the voice
+        // diary were the two that did. Kept as a live subscription so the
+        // screen still reacts to the document disappearing (account deleted
+        // on another device), which the error handler below covers.
+        guardDocSnapshot('listen_profile', () => {}),
         error => {
           reportError(error, 'profile_listener');
           if (__DEV__) {
@@ -220,103 +190,6 @@ export default function ProfileScreen() {
       return () => unsub();
     }, [user?.uid, db]),
   );
-
-  const handleEnableFocus = useCallback(async () => {
-    if (!user?.uid) return;
-    const mins = parseInt(focusDuration, 10);
-    if (isNaN(mins) || mins <= 0) {
-      Alert.alert(t('focus.invalidTitle'), t('focus.invalidBody'));
-      return;
-    }
-    try {
-      await enableFocusMode(user.uid, mins * 60 * 1000, focusMessage);
-      // State will be updated by the Firestore snapshot listener
-      setFocusModalVisible(false);
-      Alert.alert(t('focus.title'), t('focus.enabledFor', {minutes: mins}));
-    } catch {
-      Alert.alert(t('common.error'), t('focus.enableFailed'));
-    }
-  }, [t, user?.uid, focusDuration, focusMessage]);
-
-  const handleDisableFocus = useCallback(async () => {
-    if (!user?.uid) return;
-    try {
-      await disableFocusMode(user.uid);
-      // State will be updated by the Firestore snapshot listener
-    } catch {
-      Alert.alert(t('common.error'), t('focus.disableFailed'));
-    }
-  }, [t, user?.uid]);
-
-  const handleVsStartRecording = useCallback(async () => {
-    try {
-      await vsRecorderRef.current.startRecorder();
-      setVsRecording(true);
-      setVsRecordedUri(null);
-      vsRecorderRef.current.addRecordBackListener((e: any) => {
-        setVsRecordedDuration(Math.floor((e.currentPosition || 0) / 1000));
-      });
-    } catch {
-      Alert.alert(t('common.error'), t('profile.alerts.voiceRecordFailed'));
-    }
-  }, [t]);
-
-  const handleVsStopRecording = useCallback(async () => {
-    try {
-      const uri = await vsRecorderRef.current.stopRecorder();
-      vsRecorderRef.current.removeRecordBackListener();
-      setVsRecording(false);
-      setVsRecordedUri(uri);
-    } catch {
-      setVsRecording(false);
-    }
-  }, []);
-
-  const handleVsSave = useCallback(async () => {
-    if (!user?.uid || !vsRecordedUri) return;
-    try {
-      await uploadVoiceStatus(user.uid, vsRecordedUri, vsRecordedDuration);
-      setVsModalVisible(false);
-      setVsRecordedUri(null);
-      Alert.alert(t('profile.alerts.voiceStatusTitle'), t('profile.alerts.voiceStatusBody'));
-    } catch {
-      Alert.alert(t('common.error'), t('profile.alerts.voiceUploadFailed'));
-    }
-  }, [t, user?.uid, vsRecordedUri, vsRecordedDuration]);
-
-  const handleVsRemove = useCallback(async () => {
-    if (!user?.uid) return;
-    try {
-      await removeVoiceStatus(user.uid);
-    } catch {
-      Alert.alert(t('common.error'), t('profile.alerts.voiceRemoveFailed'));
-    }
-  }, [t, user?.uid]);
-
-  const handleVsPlay = useCallback(async () => {
-    if (!voiceStatusUrl) return;
-    try {
-      setVsPlaying(true);
-      await vsRecorderRef.current.startPlayer(voiceStatusUrl);
-      vsRecorderRef.current.addPlayBackListener((e: any) => {
-        if (e.currentPosition >= e.duration) {
-          vsRecorderRef.current.stopPlayer();
-          vsRecorderRef.current.removePlayBackListener();
-          setVsPlaying(false);
-        }
-      });
-    } catch {
-      setVsPlaying(false);
-    }
-  }, [voiceStatusUrl]);
-
-  const handleVsStop = useCallback(async () => {
-    try {
-      await vsRecorderRef.current.stopPlayer();
-      vsRecorderRef.current.removePlayBackListener();
-    } catch {}
-    setVsPlaying(false);
-  }, []);
 
   const handleSignOut = useCallback(() => {
     Alert.alert(t('profile.alerts.signOutTitle'), t('profile.alerts.signOutBody'), [
@@ -540,38 +413,6 @@ export default function ProfileScreen() {
       </GlassView>
 
       <View style={styles.section}>
-        {SHOW_NATIVE_ONLY_FEATURES && (
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('profile.voiceDiaryTitle')}</Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {t('profile.voiceDiaryDescription')}
-          </Text>
-          {voiceStatusUrl ? (
-            <View style={styles.vsActiveRow}>
-              <TouchableOpacity
-                style={[styles.vsPlayBtn, {backgroundColor: colors.primary}]}
-                onPress={vsPlaying ? handleVsStop : handleVsPlay}>
-                <Text style={[styles.vsPlayBtnText, {color: colors.textOnPrimary}]}>
-                  {vsPlaying ? t('profile.voiceDiaryStop') : t('profile.voiceDiaryPlay', {seconds: voiceStatusDuration})}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.vsPlayBtn, {backgroundColor: colors.danger}]}
-                onPress={handleVsRemove}>
-                <Text style={[styles.vsPlayBtnText, {color: colors.textOnDanger}]}>
-                  {t('profile.voiceDiaryRemove')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[styles.focusBtn, {backgroundColor: colors.primary}]}
-              onPress={() => setVsModalVisible(true)}>
-              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>{t('profile.recordVoiceDiary')}</Text>
-            </TouchableOpacity>
-          )}
-        </GlassView>
-        )}
 
         <GlassView style={[styles.shortcutsCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.shortcutsTitle, {color: colors.textSecondary}]}>{t('profile.shortcutsTitle')}</Text>
@@ -670,47 +511,6 @@ export default function ProfileScreen() {
             <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>{t('tutorial.replay')}</Text>
           </TouchableOpacity>
         </GlassView>
-        {SHOW_NATIVE_ONLY_FEATURES && (
-        <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
-          <Text style={[styles.visibilityTitle, {color: colors.text}]}>{t('focus.title')}</Text>
-          <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
-            {t('focus.subtitle')}
-          </Text>
-          {focusEnabled ? (
-            <View>
-              <View style={[styles.focusActiveBar, {backgroundColor: `${colors.success}20`}]}>
-                <Text style={[styles.focusActiveText, {color: colors.success}]}>
-                  {t('focus.activeUntil', {
-                    time: focusUntil
-                      ? new Date(focusUntil).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
-                      : '—',
-                  })}
-                </Text>
-              </View>
-              {focusAutoReply ? (
-                <Text style={[styles.focusReplyPreview, {color: colors.textSecondary}]}>
-                  {t('focus.autoReplyPreview', {message: focusAutoReply})}
-                </Text>
-              ) : null}
-              <TouchableOpacity
-                style={[styles.focusBtn, {backgroundColor: colors.danger}]}
-                onPress={handleDisableFocus}>
-                <Text style={[styles.focusBtnText, {color: colors.textOnDanger}]}>
-                  {t('focus.disable')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[styles.focusBtn, {backgroundColor: colors.primary}]}
-              onPress={() => setFocusModalVisible(true)}>
-              <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>
-                {t('focus.enable')}
-              </Text>
-            </TouchableOpacity>
-          )}
-        </GlassView>
-        )}
         {SHOW_AI_FEATURES && (
         <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
           <Text style={[styles.visibilityTitle, {color: colors.text}]}>
@@ -1031,116 +831,7 @@ export default function ProfileScreen() {
         </Modal>
       )}
 
-      {focusModalVisible && (
-        <Modal visible animationType="slide" onRequestClose={() => setFocusModalVisible(false)}>
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('focus.enable')}</Text>
-            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
-              {t('focus.duration')}
-            </Text>
-            <View style={styles.focusDurationRow}>
-              {[15, 30, 60, 120].map(m => (
-                <TouchableOpacity
-                  key={m}
-                  style={[
-                    styles.focusDurationChip,
-                    {
-                      backgroundColor: focusDuration === String(m) ? colors.primary : colors.surface,
-                      borderColor: focusDuration === String(m) ? colors.primary : colors.border,
-                    },
-                  ]}
-                  onPress={() => setFocusDuration(String(m))}>
-                  <Text
-                    style={[
-                      styles.focusDurationText,
-                      {color: focusDuration === String(m) ? '#fff' : colors.text},
-                    ]}>
-                    {m < 60 ? `${m}m` : `${m / 60}h`}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
-              {t('focus.autoReplyLabel')}
-            </Text>
-            <TextInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, maxHeight: 120}]}
-              value={focusMessage}
-              onChangeText={setFocusMessage}
-              placeholder={t('focus.autoReplyPlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              multiline
-            />
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                onPress={handleEnableFocus}>
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                  {t('focus.enableButton')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => setFocusModalVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>
-                  {t('common.cancel')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      )}
 
-      {vsModalVisible && (
-        <Modal visible animationType="slide" onRequestClose={() => setVsModalVisible(false)}>
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.recordVoiceDiary')}</Text>
-            <Text style={[styles.focusLabel, {color: colors.textSecondary}]}>
-              {t('profile.voiceDiaryModalDescription')}
-            </Text>
-            <View style={styles.vsRecordArea}>
-              <Text style={[styles.vsTimer, {color: colors.text}]}>{vsRecordedDuration}s</Text>
-              {!vsRecording ? (
-                <TouchableOpacity
-                  style={[styles.vsRecordBtn, {backgroundColor: colors.danger}]}
-                  onPress={handleVsStartRecording}>
-                  <Text style={[styles.vsRecordBtnText, {color: colors.textOnDanger}]}>
-                    {t('profile.voiceDiaryRecordButton')}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.vsRecordBtn, {backgroundColor: colors.primary}]}
-                  onPress={handleVsStopRecording}>
-                  <Text style={[styles.vsRecordBtnText, {color: colors.textOnPrimary}]}>{t('profile.voiceDiaryStop')}</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  {backgroundColor: colors.primary},
-                  !vsRecordedUri && {opacity: 0.5},
-                ]}
-                onPress={handleVsSave}
-                disabled={!vsRecordedUri}>
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.voiceDiarySave')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => {
-                  if (vsRecording) handleVsStopRecording();
-                  setVsModalVisible(false);
-                  setVsRecordedUri(null);
-                  setVsRecordedDuration(0);
-                }}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      )}
 
       {languageModalVisible && (
         <Modal visible animationType="slide" onRequestClose={() => setLanguageModalVisible(false)}>

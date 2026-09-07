@@ -209,22 +209,13 @@ export interface Message {
     isLive?: boolean;
     expiresAt?: number;
   };
-  timeCapsule?: {
-    unlocksAt: number;
-  };
-  invisibleInk?: boolean;
   revealed?: boolean;
-  voiceFilter?: VoiceFilter;
-  messageStyle?: MessageStyle;
-  anonymous?: boolean;
   viewOnce?: boolean;
   viewOnceViewedBy?: string[];
   viewOnceExpired?: boolean;
   viewOnceOpenedAt?: any;
   forwarded?: boolean;
-  gesture?: GestureStroke[];
   reactionChain?: string[];
-  lottery?: LotteryMessage;
   /**
    * E2EE envelope. When present, `text` is empty on the wire and the real body
    * lives here, decryptable only by the chat members' devices.
@@ -311,7 +302,6 @@ export interface ChatRoom {
    */
   introBy?: Record<string, unknown>;
   unreadCountBy?: Record<string, number>;
-  soundscape?: SoundscapeId;
   incognito?: boolean;
   messageExpiry?: number;
   lockedBy?: Record<string, boolean>;
@@ -401,8 +391,6 @@ export interface ChatWrappedStats {
   topWords: string[];
 }
 
-export type VoiceFilter = 'none' | 'chipmunk' | 'deep' | 'echo' | 'robot' | 'whisper';
-
 export interface ChatRitual {
   id: string;
   chatId: string;
@@ -418,19 +406,9 @@ export interface ChatRitual {
   lastCompleted?: number;
 }
 
-export type SoundscapeId = 'none' | 'rain' | 'ocean' | 'forest' | 'cafe' | 'campfire' | 'lofi' | 'thunder' | 'wind';
-
-export type MessageStyle = 'none' | 'neon' | 'handwriting' | 'gradient' | 'typewriter' | 'bounce';
-
 export interface GestureStroke {
   color: string;
   width: number;
   points: Array<{x: number; y: number}>;
-}
-
-export interface LotteryMessage {
-  options: string[];
-  revealedIndex?: number;
-  revealedBy?: string;
 }
 

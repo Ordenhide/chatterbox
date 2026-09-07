@@ -36,24 +36,9 @@ import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
 import Icon, {type IconName} from '../../components/Icon';
-import {setChatLockPIN, removeChatLock, isChatLocked} from '../../services/appLock';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
-import {SoundscapeId} from '../../types';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
-import {doc, getFirestore, setDoc} from '../../services/firebase/firestore';
 import {bodyWeight, terminal} from '../../theme/typography';
 
-const SOUNDSCAPES: {id: SoundscapeId; label: string; icon: IconName}[] = [
-  {id: 'none', label: 'Off', icon: 'muteSpeaker'},
-  {id: 'rain', label: 'Rain', icon: 'rain'},
-  {id: 'ocean', label: 'Ocean', icon: 'oceanWave'},
-  {id: 'forest', label: 'Forest', icon: 'forest'},
-  {id: 'cafe', label: 'Caf\u00E9', icon: 'coffee'},
-  {id: 'campfire', label: 'Fire', icon: 'flame'},
-  {id: 'lofi', label: 'Lo-fi', icon: 'music'},
-  {id: 'thunder', label: 'Thunder', icon: 'lightning'},
-  {id: 'wind', label: 'Wind', icon: 'wind'},
-];
 
 export default function ChatSettingsScreen() {
   const route = useRoute();
@@ -69,7 +54,6 @@ export default function ChatSettingsScreen() {
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportText, setExportText] = useState('');
   const [importText, setImportText] = useState('');
-  const [soundscape, setSoundscape] = useState<SoundscapeId>('none');
   const [members, setMembers] = useState<string[]>([]);
   const [memberNames, setMemberNames] = useState<Record<string, string>>({});
   // Who this chat can be grown with. Not a search: the people you already have
@@ -77,7 +61,6 @@ export default function ChatSettingsScreen() {
   // see services/contacts.ts for why there is nothing to type here any more.
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [addingMember, setAddingMember] = useState(false);
-  const [chatLocked, setChatLocked] = useState(false);
   const [expiryHours, setExpiryHours] = useState(0);
 
   useEffect(() => {
@@ -87,9 +70,7 @@ export default function ChatSettingsScreen() {
         const chat = await getChat(chatId);
         setMuted(!!chat?.mutedBy?.includes(user.uid));
         setCustomName(chat?.nameBy?.[user.uid] || '');
-        setSoundscape((chat as any)?.soundscape || 'none');
         setExpiryHours((chat as any)?.messageExpiry || 0);
-        setChatLocked(isChatLocked(chatId));
 
         const participants = chat?.participants || [];
         setMembers(participants);
@@ -291,34 +272,6 @@ export default function ChatSettingsScreen() {
       </GlassView>
 
 
-      {SHOW_NATIVE_ONLY_FEATURES && (
-      <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
-        <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.soundscape')}</Text>
-        <View style={styles.optionRow}>
-          {SOUNDSCAPES.map(s => (
-            <TouchableOpacity
-              key={s.id}
-              accessibilityRole="button"
-              accessibilityLabel={s.label}
-              accessibilityState={{selected: soundscape === s.id}}
-              style={[
-                styles.themeDot,
-                {backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border},
-                soundscape === s.id && [styles.themeDotSelected, {borderColor: colors.primary}],
-              ]}
-              onPress={async () => {
-                setSoundscape(s.id);
-                try {
-                  const db = getFirestore();
-                  await setDoc(doc(db, 'chats', chatId), {soundscape: s.id}, {merge: true});
-                } catch { /* ignore */ }
-              }}>
-              <Icon name={s.icon} size={14} color={colors.text} />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </GlassView>
-      )}
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>
@@ -378,32 +331,6 @@ export default function ChatSettingsScreen() {
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.security')}</Text>
-        {SHOW_NATIVE_ONLY_FEATURES && (
-        <TouchableOpacity
-          style={styles.row}
-          onPress={() => {
-            if (chatLocked) {
-              Alert.alert(t('chatSettings.alerts.removeLockTitle'), t('chatSettings.alerts.removeLockBody'), [
-                {text: t('common.cancel'), style: 'cancel'},
-                {text: t('common.remove'), style: 'destructive', onPress: async () => {
-                  await removeChatLock(chatId);
-                  setChatLocked(false);
-                }},
-              ]);
-            } else {
-              Alert.prompt('Set Chat PIN', 'Enter a 4-digit PIN to lock this chat', async (pin) => {
-                if (pin && pin.length >= 4) {
-                  await setChatLockPIN(chatId, pin);
-                  setChatLocked(true);
-                }
-              }, 'secure-text');
-            }
-          }}>
-          <Text style={[styles.rowLabel, {color: colors.text}]}>
-            Chat Lock: {chatLocked ? t('chatSettings.on') : t('chatSettings.off')}
-          </Text>
-        </TouchableOpacity>
-        )}
         <Text style={[styles.sectionTitle, {color: colors.text, marginTop: 12}]}>
           {t('chatSettings.messageExpiry')}
         </Text>

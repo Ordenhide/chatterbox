@@ -35,9 +35,7 @@ import GlassView from '../../components/GlassView';
 import GlassScreen from '../../components/GlassScreen';
 import {reportError} from '../../services/errorLog';
 import {avatarNeutral, getInitials} from '../../utils/avatar';
-import {isDecoyMode} from '../../services/appLock';
 import {isTypingIndicatorEnabled} from '../../services/privacyGuard';
-import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
 import {enrollmentReadiness, hasRevealedRecoveryPhrase, restoreDeviceKeypairFromBackup, type EnrollmentReadiness} from '../../services/e2eeKeys';
 import RecoveryPhraseRevealModal from '../../components/RecoveryPhraseRevealModal';
@@ -489,7 +487,6 @@ export default function ChatListScreen() {
   );
 
   const filteredChats = useMemo(() => {
-    if (SHOW_NATIVE_ONLY_FEATURES && isDecoyMode()) return [];
     const source = viewingHidden ? hiddenChats : visibleChats;
     if (!searchQuery.trim()) return source;
     const query = searchQuery.toLowerCase();

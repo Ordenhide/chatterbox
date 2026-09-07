@@ -9,7 +9,6 @@ const {buildRecognizeRequest, extractTranscript} = require('./speechToText');
 const {Translate} = require('@google-cloud/translate').v2;
 const {validateTranslateInput, extractTranslation} = require('./translate');
 const {buildPrompt, extractAnswer} = require('./aiChat');
-const {isAutoReplyTrigger, autoReplyDecision} = require('./focusAutoReply');
 
 admin.initializeApp();
 
@@ -693,100 +692,7 @@ exports.translateMessage = callable().onCall(async (data, context) => {
   return {translation};
 });
 
-// ─── Feature 9: Focus Mode Auto-Reply ────────────────────────────────────────
-exports.autoReplyFocusMode = functions.firestore
-  .document('chats/{chatId}/messages/{messageId}')
-  .onCreate(async (snap, context) => {
-    try {
-      const message = snap.data();
-      const {chatId} = context.params;
-      // Whether this message should be answered at all — including the
-      // encrypted case, which the old `!message.text` test silently dropped.
-      // See focusAutoReply.js.
-      if (!isAutoReplyTrigger(message)) return null;
-      const senderId = message.user._id;
-
-      const chatSnap = await db.doc(`chats/${chatId}`).get();
-      if (!chatSnap.exists) return null;
-      const chat = chatSnap.data();
-      const recipients = (chat.participants || []).filter(uid => uid !== senderId);
-
-      for (const recipientId of recipients) {
-        try {
-          // Blocking means silence, in both directions. An auto-reply is a
-          // message *from* the person with focus mode on, so a block either way
-          // has to suppress it: without this, blocking someone still sent them
-          // an automated note confirming you were around and had focus mode on.
-          // notifyNewMessage already refuses the same pair; this was the other
-          // way a blocked user could still hear from you.
-          const [theyBlocked, iBlocked, userSnap] = await Promise.all([
-            db.doc(`blocks/${recipientId}_${senderId}`).get(),
-            db.doc(`blocks/${senderId}_${recipientId}`).get(),
-            db.doc(`users/${recipientId}`).get(),
-          ]);
-          if (!userSnap.exists) continue;
-          const userData = userSnap.data();
-
-          const decision = autoReplyDecision({
-            blockedEitherWay: theyBlocked.exists || iBlocked.exists,
-            focus: userData?.focusMode,
-            now: Date.now(),
-          });
-          if (decision.action === 'skip') continue;
-          if (decision.action === 'expire') {
-            await db.doc(`users/${recipientId}`).update({'focusMode.enabled': false});
-            continue;
-          }
-          const replyText = decision.text;
-          const replyId = `auto_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-          /**
-           * Flagged `system` and `autoReply`, like the missed-call notice
-           * postMissedCallNotice writes. The body is composed on the server
-           * and is therefore **not** end-to-end encrypted — it cannot be, the
-           * server holds no keys — so it should not present as words the user
-           * typed in a thread where everything else is sealed.
-           *
-           * That is a real cost, and the honest framing is: the away message
-           * is a line the user wrote specifically to be shown to whoever
-           * messages them, not conversation content. Marking it makes the
-           * difference visible instead of hiding it behind an identical
-           * message bubble. (Web renders `system` distinctly; mobile has no
-           * such concept yet and shows it as an ordinary message, which is
-           * already true of missed-call notices.)
-           */
-          await db.doc(`chats/${chatId}/messages/${replyId}`).set({
-            _id: replyId,
-            text: replyText,
-            createdAt: FieldValue.serverTimestamp(),
-            user: {
-              _id: recipientId,
-              name: userData.displayName || userData.email || 'User',
-            },
-            system: true,
-            autoReply: true,
-          });
-          await db.doc(`chats/${chatId}`).set({
-            lastMessage: {
-              text: replyText,
-              createdAt: FieldValue.serverTimestamp(),
-            },
-            updatedAt: FieldValue.serverTimestamp(),
-          }, {merge: true});
-        } catch (e) {
-          functions.logger.error(`Auto-reply failed for recipient ${recipientId}`, e);
-        }
-      }
-    } catch (error) {
-      functions.logger.error('autoReplyFocusMode failed', error);
-    }
-    return null;
-  });
-
 // ─── New Message Push Notification ──────────────────────────────────────────
-// A separate function on the same trigger as autoReplyFocusMode above rather
-// than folded into it -- unrelated concerns (auto-reply vs. delivery
-// notification), and neither should be able to fail because the other did.
-//
 // Messages are end-to-end encrypted, so the server has no readable content to
 // put in the notification even if it wanted to -- title is just the sender's
 // name, body is a fixed generic string, matching the privacy boundary

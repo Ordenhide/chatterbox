@@ -25,11 +25,7 @@ jest.mock('../biometrics', () => ({
 }));
 
 import {
-  isDecoyPIN,
   setAppLockPIN,
-  setChatLockPIN,
-  setDecoyPIN,
-  verifyChatPIN,
   verifyPIN,
 } from '../appLock';
 
@@ -136,42 +132,5 @@ describe('migration from the v2 (FNV-1a) records already on devices', () => {
     mockMmkvStore.set('app_lock_pin', '5f4dcc3b5aa765d61d8327deb882cf99');
     expect(await verifyPIN(PIN)).toBe(false);
     expect(await verifyPIN('password')).toBe(false);
-  });
-});
-
-describe('per-chat lock', () => {
-  it('scopes a PIN to its own chat', async () => {
-    await setChatLockPIN('chat-a', PIN);
-    expect(await verifyChatPIN('chat-a', PIN)).toBe(true);
-    expect(await verifyChatPIN('chat-a', WRONG)).toBe(false);
-    // A different chat has no record, so nothing unlocks it.
-    expect(await verifyChatPIN('chat-b', PIN)).toBe(false);
-  });
-
-  it('migrates a legacy chat record the same way', async () => {
-    mockMmkvStore.set('chat_lock_chat-a', legacyV2Record('d'.repeat(32), PIN));
-    expect(await verifyChatPIN('chat-a', PIN)).toBe(true);
-    expect(mockMmkvStore.get('chat_lock_chat-a')!.startsWith('v3:')).toBe(true);
-  });
-});
-
-describe('decoy PIN', () => {
-  it('recognises the decoy without the real PIN matching it', async () => {
-    await setAppLockPIN(PIN);
-    await setDecoyPIN('9999');
-
-    expect(await isDecoyPIN('9999')).toBe(true);
-    expect(await isDecoyPIN(PIN)).toBe(false);
-    expect(await verifyPIN('9999')).toBe(false);
-    expect(await verifyPIN(PIN)).toBe(true);
-  });
-
-  it('upgrades the decoy record too', async () => {
-    // A decoy left at v2 while the real PIN moved to v3 would be the cheaper
-    // of the two to crack — and the KDF cost difference would reveal which
-    // record was the decoy, which is the one thing it must not disclose.
-    mockMmkvStore.set('decoy_pin', legacyV2Record('e'.repeat(32), '9999'));
-    expect(await isDecoyPIN('9999')).toBe(true);
-    expect(mockMmkvStore.get('decoy_pin')!.startsWith('v3:')).toBe(true);
   });
 });

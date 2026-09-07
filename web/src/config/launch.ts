@@ -1,8 +1,7 @@
 /**
  * Features held back from the first release.
  *
- * Separate from src/config/parity.ts, which is about native/web feature parity and asks
- * a different question. This one asks: is this ready to ship on day one?
+ * Asks one question: is this ready to ship on day one?
  *
  * Hidden: summaries, message translation, voice transcription, the AI consent
  * row in Profile, and the disclosure prompt in front of the first use.

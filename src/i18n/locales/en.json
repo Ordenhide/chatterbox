@@ -859,23 +859,6 @@
     "message": "[Message]",
     "emptyHint": "Long-press a message in any chat and tap \"Bookmark\" to save it here."
   },
-  "focus": {
-    "title": "Focus Mode",
-    "enabledFor": "Enabled for {{minutes}} minutes. Auto-reply will be sent to incoming messages.",
-    "subtitle": "Auto-reply to messages while you're busy",
-    "activeUntil": "Active until {{time}}",
-    "autoReplyPreview": "Auto-reply: \"{{message}}\"",
-    "enable": "Enable Focus Mode",
-    "disable": "Disable Focus Mode",
-    "duration": "Duration (minutes)",
-    "autoReplyLabel": "Auto-Reply Message",
-    "autoReplyPlaceholder": "I'm busy right now...",
-    "enableButton": "Enable",
-    "invalidTitle": "Invalid",
-    "invalidBody": "Enter a valid duration in minutes.",
-    "enableFailed": "Failed to enable focus mode.",
-    "disableFailed": "Failed to disable focus mode."
-  },
   "errorBoundary": {
     "body": "The app hit an unexpected error. Your data is safe — try again.",
     "title": "Something went wrong",
