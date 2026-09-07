@@ -108,7 +108,7 @@ export default function HomeScreen({
   };
 
   const selectedChat = chats.find(c => c.id === selectedId) || null;
-  const myName = user.displayName || user.email || 'Me';
+  const myName = user.displayName || 'Me';
 
   // On mobile, show the list OR the open chat — never both side by side.
   const showSidebar = !isMobile || !selectedChat;

@@ -170,6 +170,7 @@ import {
   isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
 import {SHOW_AI_FEATURES} from '../../config/launch';
+import {senderName} from '../../utils/senderName';
 
 // Fixed AAC capture settings used by both Android and iOS (see audioSet
 // below) — unlike web's Opus recordings, AAC's sample rate isn't a fixed
@@ -2104,7 +2105,7 @@ export default function ChatScreen() {
   const giftedUser = useMemo(
     () => ({
       _id: user?.uid || '',
-      name: user?.displayName || user?.email || 'User',
+      name: senderName(user),
       avatar: user?.photoURL,
     }),
     [user],
@@ -2243,7 +2244,7 @@ export default function ChatScreen() {
       _id: `sched_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       text: inputTextRef.current.trim(),
       createdAt: new Date(),
-      user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
+      user: {_id: user.uid, name: senderName(user), avatar: user.photoURL},
     };
     /**
      * Sealed here, not at delivery. A scheduled message used to be written to
@@ -2487,7 +2488,7 @@ export default function ChatScreen() {
         audioDuration: dictationSeconds,
         audioSampleRateHertz: VOICE_SAMPLE_RATE_HERTZ,
         audioChannelCount: VOICE_CHANNEL_COUNT,
-        user: {_id: user.uid, name: user.displayName || user.email || 'User'},
+        user: {_id: user.uid, name: senderName(user)},
       } as ChatMessage);
 
       const runTranscription = async () => {
@@ -2663,7 +2664,7 @@ export default function ChatScreen() {
         burnAfterReading: burnMode ? {duration: burnDuration} : undefined,
         user: {
           _id: user.uid,
-          name: user.displayName || user.email || 'User',
+          name: senderName(user),
           avatar: user.photoURL,
         },
       };
@@ -2675,7 +2676,7 @@ export default function ChatScreen() {
         burnAfterReading: messageData.burnAfterReading,
         user: {
           _id: user.uid,
-          name: user.displayName || user.email || 'User',
+          name: senderName(user),
           avatar: user.photoURL,
         },
         pending: true,
@@ -2880,7 +2881,7 @@ export default function ChatScreen() {
         : undefined,
       user: {
         _id: user.uid,
-        name: user.displayName || user.email || 'User',
+        name: senderName(user),
         avatar: user.photoURL,
       },
     };
@@ -2958,7 +2959,7 @@ export default function ChatScreen() {
           : undefined,
         user: {
           _id: user.uid,
-          name: user.displayName || user.email || 'User',
+          name: senderName(user),
           avatar: user.photoURL,
         },
       };
@@ -3051,7 +3052,7 @@ export default function ChatScreen() {
         : undefined,
       user: {
         _id: user.uid,
-        name: user.displayName || user.email || 'User',
+        name: senderName(user),
         avatar: user.photoURL,
       },
     };
@@ -3641,7 +3642,7 @@ export default function ChatScreen() {
           _id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           text,
           createdAt: new Date(),
-          user: {_id: user.uid, name: user.displayName || user.email || 'Me', avatar: user.photoURL || undefined},
+          user: {_id: user.uid, name: senderName(user), avatar: user.photoURL || undefined},
         },
         user.uid,
         recipientUids,

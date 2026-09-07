@@ -50,7 +50,7 @@ export default function MainApp({user}: {user: User}) {
   const {t} = useT();
   const unread = useChatNotifications(user.uid, route.chatId ?? null);
   useReminders(user.uid);
-  const me = {uid: user.uid, name: user.displayName || user.email || 'Me'};
+  const me = {uid: user.uid, name: user.displayName || 'Me'};
 
   // Live incoming friend-request count → badge on the Moments tab (where the
   // Friends screen lives) + a toast when a new one arrives.
