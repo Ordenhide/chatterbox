@@ -3,11 +3,13 @@
  *
  * Design (deliberately the simplest thing that is actually end-to-end):
  *
- *   - Each device generates an X25519 keypair on first use. The secret key is
- *     written to the MMKV store (itself encrypted at rest with a CSPRNG key,
- *     which is held in an *unencrypted* bootstrap store — see storageMMKV.ts;
- *     moving it into the Keychain/Keystore is tracked separately);
- *     the public key is published on the user's profile doc.
+ *   - Each device generates an X25519 keypair on first use. The secret key
+ *     goes in `secureStore` (storageMMKV.ts) — encrypted at rest with a key
+ *     held in the iOS Keychain / Android Keystore, THIS_DEVICE_ONLY. On a
+ *     build predating the native module it degrades to the old bootstrap key,
+ *     which is unencrypted; that fallback is the weaker case and it is why
+ *     the native rebuild matters. The public key is published on the user's
+ *     profile doc.
  *   - To send, the sender does X25519(theirSecret, recipientPublic) to get a
  *     shared secret, runs it through HKDF-SHA256 with a per-conversation salt,
  *     and seals the body with XChaCha20-Poly1305.
@@ -19,8 +21,8 @@
  *     services/ratchetMessages.ts and services/groupRatchetMessages.ts.
  *   - The server stores only {alg, nonce, ciphertext}. Firestore never sees the
  *     plaintext, so "the operator can read your messages" stops being true.
- *   - The same primitives cover chat artifacts — playlists, shared lists,
- *     countdowns — via e2eeArtifacts.ts, rather than a second crypto path,
+ *   - The same primitives cover chat artifacts via e2eeArtifacts.ts, rather
+ *     than a second crypto path,
  *     and still cover media access pointers (encryptedImage and friends) for
  *     recipients too old to decrypt attachment bytes. Where all recipients
  *     can, the object itself is encrypted instead and its key travels inside
@@ -78,15 +80,17 @@
  *      message has one at all; the ciphertext's length also bounds the
  *      original's. Only the upload's object name is randomised, so the
  *      filename does not additionally leak to anyone listing the bucket.
- *      Gestures and lottery content are not sealed: neither carries text of
- *      its own. A transcript *is* text and is sealed like any artifact — the
+ *      A transcript *is* text and is sealed like any artifact — the
  *      Cloud Function returns it and stores nothing, because a function
  *      running with the Admin SDK has no key to seal one with.
  *
  * Keep this list honest. Everything above is checked against the code as of
  * the last edit, because a caveat that has quietly become false is worse than
- * no caveat — it is read as a live warning and reasoned from. Two entries here
- * had gone stale exactly that way and were removed: `lastMessage` previews
+ * no caveat — it is read as a live warning and reasoned from. Three more went
+ * stale and were fixed in the same pass that removed the features they named:
+ * the key-storage paragraph still described the pre-Keychain bootstrap store,
+ * the artifact examples listed shared lists, and entry 5 still exempted
+ * gestures and lottery content from sealing. Earlier, two entries `lastMessage` previews
  * (firebaseChat.ts stores "🔒 Encrypted message" for a sealed message, not the
  * body) and push notification bodies (functions/index.js notifyNewMessage
  * sends data-only with a generic APNs line, precisely so there is no plaintext
