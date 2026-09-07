@@ -12,6 +12,12 @@ npm install
 
 1. Create a Firebase project at https://console.firebase.google.com
 2. Enable **Authentication → Email/Password**
+   - This is the transport, not the product. Accounts have no email address:
+     sign-up generates a 24-word recovery phrase, and both halves of the
+     credential are derived from it (`src/services/anonymousIdentity.ts`). The
+     handle Firebase stores is random hex under a `.invalid` domain that
+     cannot receive mail. The provider still has to be switched on for that
+     derived credential to be accepted.
 3. Create a **Cloud Firestore** database (start in test mode for local use)
 4. Enable **Firebase Storage**
 5. Add iOS and Android apps:
@@ -45,10 +51,14 @@ npm run android
 
 1. Launch the app
 2. Tap "Sign Up" to create an account
-   - Enter an email (can be anything, e.g., `test@example.com`)
-   - Enter a password (minimum 6 characters)
+   - You are shown 24 words. **Copy them somewhere** — they are the account,
+     and there is no reset: a lost phrase is a lost account, including in
+     development.
+   - Type back the three words it asks for
    - Optionally add a display name
-3. You'll be automatically signed in
+3. The account is created and you're signed in
+   - To sign in again later, or on another device, paste the same 24 words.
+     That restores the encryption key in the same step.
 4. Tap the "+" button to create a new chat
 5. Start messaging!
 

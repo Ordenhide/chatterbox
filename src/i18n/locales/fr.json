@@ -44,80 +44,52 @@
     "invite": "Invitation"
   },
   "auth": {
-    "phrase": {"signInBody": "Vos 24 mots sont votre compte. Ni adresse e-mail, ni mot de passe à retenir.", "placeholder": "Votre phrase de récupération de 24 mots", "newTitle": "Notez-les", "newBody": "Ces 24 mots sont votre compte et la clé de vos messages. Quiconque les possède peut se connecter à votre place et tout lire. Si vous les perdez, rien ne ramène le compte : aucune réinitialisation, personne à qui demander.", "copy": "Copier", "copied": "Phrase de récupération copiée dans le presse-papiers.", "written": "Je les ai notés", "confirmTitle": "Vérifions que vous les avez", "confirmBody": "Retapez ces trois mots, pour confirmer que la phrase a bien quitté cet écran avec vous.", "wordN": "Mot {{n}}", "confirmWrong": "Cela ne correspond pas. Vérifiez ce que vous avez noté.", "create": "Créer le compte", "back": "Revoir la phrase", "generating": "Génération de votre phrase…"}, "login": {
-      "subtitleVariant": "Bon retour — discutons",
-      "subtitleDefault": "Connectez-vous pour continuer",
-      "emailPlaceholder": "E-mail",
-      "passwordPlaceholder": "Mot de passe",
-      "forgotPassword": "Mot de passe oublié ?",
-      "reset": "Réinitialiser",
+    "phrase": {"signInBody": "Vos 24 mots sont votre compte. Ni adresse e-mail, ni mot de passe à retenir.", "placeholder": "Votre phrase de récupération de 24 mots", "newTitle": "Notez-les", "newBody": "Ces 24 mots sont votre compte et la clé de vos messages. Quiconque les possède peut se connecter à votre place et tout lire. Si vous les perdez, rien ne ramène le compte : aucune réinitialisation, personne à qui demander.", "copy": "Copier", "copied": "Phrase de récupération copiée dans le presse-papiers.", "written": "Je les ai notés", "confirmTitle": "Vérifions que vous les avez", "confirmBody": "Retapez ces trois mots, pour confirmer que la phrase a bien quitté cet écran avec vous.", "wordN": "Mot {{n}}", "confirmWrong": "Cela ne correspond pas. Vérifiez ce que vous avez noté.", "create": "Créer le compte", "back": "Revoir la phrase" }, "login": {
+      
+      
+      
+      
+      
+      
       "noAccount": "Vous n'avez pas de compte ?"
     },
     "signup": {
-      "title": "Créer un compte",
-      "subtitle": "Inscrivez-vous pour commencer",
+      
+      
       "displayNamePlaceholder": "Nom d'affichage (optionnel)",
-      "passwordPlaceholder": "Mot de passe (min 6 caractères)",
+      
       "hasAccount": "Vous avez déjà un compte ?",
       "privacyPolicy": "Politique de confidentialité",
       "terms": "En créant un compte, vous acceptez notre {{policy}}"
     },
     "errors": {
-      "missingFields": "Veuillez remplir tous les champs",
-      "missingEmailPassword": "Veuillez remplir l'e-mail et le mot de passe",
+      
+      
       "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
       "loginFailed": "Connexion échouée",
       "signUpFailed": "Inscription échouée",
       "generic": "Une erreur s'est produite",
-      "userNotFound": "Aucun compte trouvé avec cet e-mail",
-      "wrongPassword": "Mot de passe incorrect",
-      "invalidEmail": "Adresse e-mail invalide",
+      
+      
+      
       "userDisabled": "Ce compte a été désactivé",
-      "emailInUse": "Un compte avec cet e-mail existe déjà",
-      "weakPassword": "Le mot de passe est trop faible",
+      
+      
       "networkError": "Erreur réseau. Veuillez vérifier votre connexion",
       "tooManyRequests": "Trop de tentatives. Veuillez réessayer plus tard",
       "passwordTooCommon": "Ce mot de passe est trop courant — choisissez-en un moins prévisible",
       "passwordTooSimple": "Ce mot de passe est trop prévisible (caractères répétés ou consécutifs) — choisissez-en un autre",
-      "invalidVerificationCode": "Ce code n'est pas correct. Vérifiez-le et réessayez",
-      "invalidPhoneNumber": "Cela ne ressemble pas à un numéro de téléphone valide",
-      "phraseNotRecognized": "Ce ne sont pas les 24 mots d'une phrase de récupération Chatterbox. Vérifiez l'orthographe et l'ordre.", "noAccountForPhrase": "Aucun compte ne s'ouvre avec ces mots. Vérifiez-les ou créez un nouveau compte.", "accountExistsDifferentCredential": "Un compte existe déjà avec cette adresse e-mail, créé avec une autre méthode de connexion. Connectez-vous plutôt de cette façon."
-    },
-    "reset": {
-      "title": "Réinitialiser le mot de passe",
-      "enterEmail": "Veuillez d'abord entrer votre e-mail ci-dessus.",
-      "emailSentTitle": "E-mail envoyé",
-      "emailSentBody": "Vérifiez votre boîte de réception pour les instructions de réinitialisation du mot de passe.",
-      "failedTitle": "Réinitialisation échouée",
-      "failedBody": "Impossible d'envoyer l'e-mail de réinitialisation."
-    },
+      
+      
+      "phraseNotRecognized": "Ce ne sont pas les 24 mots d'une phrase de récupération Chatterbox. Vérifiez l'orthographe et l'ordre.", "noAccountForPhrase": "Aucun compte ne s'ouvre avec ces mots. Vérifiez-les ou créez un nouveau compte." },
+    
     "session": {
       "title": "Déconnecté",
       "message": "Ce compte a été connecté sur un autre appareil.",
       "unavailable": "Impossible d’établir la session. Déconnectez-vous et réessayez."
     },
-    "social": {
-      "divider": "ou continuer avec",
-      "apple": "Se connecter avec Apple",
-      "google": "Continuer avec Google",
-      "phone": "Continuer avec le téléphone"
-    },
-    "phone": {
-      "title": "Se connecter par téléphone",
-      "subtitle": "Nous vous enverrons un code par SMS pour vérifier que c'est bien vous.",
-      "phonePlaceholder": "+33 6 12 34 56 78",
-      "sendCode": "Envoyer le code",
-      "codeTitle": "Saisir le code",
-      "codeSubtitle": "Saisissez le code à 6 chiffres envoyé au {{phoneNumber}}",
-      "codePlaceholder": "123456",
-      "verify": "Vérifier",
-      "resendCode": "Renvoyer le code",
-      "changeNumber": "Changer de numéro",
-      "errors": {
-        "invalidPhone": "Saisissez un numéro valide, indicatif pays compris (par ex. +33 6 12 34 56 78)",
-        "invalidCode": "Saisissez le code à 6 chiffres"
-      }
-    },
+    
+    
     "eyebrow": "Messagerie chiffrée"
   },
   "chatList": {

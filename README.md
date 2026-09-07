@@ -4,7 +4,7 @@ A modern instant messaging application built with React Native for iOS and Andro
 
 ## Features
 
-- 🔐 Firebase Email/Password Authentication
+- 🔐 Accounts with no email address: a 24-word recovery phrase is the whole credential
 - 💬 Real-time messaging with Cloud Firestore
 - 📱 Cross-platform (iOS & Android)
 - 🎨 Modern, clean UI

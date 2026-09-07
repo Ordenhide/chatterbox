@@ -54,75 +54,47 @@
     "invite": "Invite"
   },
   "auth": {
-    "phrase": {"signInBody": "Your 24 words are your account. There is no email address and no password to remember.", "placeholder": "Your 24-word recovery phrase", "newTitle": "Write these down", "newBody": "These 24 words are your account and the key to your messages. Anyone who has them can sign in as you and read everything. Lose them and nothing brings the account back — there is no reset, and no one to ask.", "copy": "Copy", "copied": "Recovery phrase copied to clipboard.", "written": "I've written it down", "confirmTitle": "Check you kept them", "confirmBody": "Type these three words back, so we know the phrase left this screen with you.", "wordN": "Word {{n}}", "confirmWrong": "Those don't match. Check what you wrote down.", "create": "Create account", "back": "Show the phrase again", "generating": "Generating your phrase…"}, "login": {
-      "subtitleVariant": "Welcome back — let’s get chatting",
-      "subtitleDefault": "Sign in to continue",
-      "emailPlaceholder": "Email",
-      "passwordPlaceholder": "Password",
-      "forgotPassword": "Forgot your password?",
-      "reset": "Reset",
+    "phrase": {"signInBody": "Your 24 words are your account. There is no email address and no password to remember.", "placeholder": "Your 24-word recovery phrase", "newTitle": "Write these down", "newBody": "These 24 words are your account and the key to your messages. Anyone who has them can sign in as you and read everything. Lose them and nothing brings the account back — there is no reset, and no one to ask.", "copy": "Copy", "copied": "Recovery phrase copied to clipboard.", "written": "I've written it down", "confirmTitle": "Check you kept them", "confirmBody": "Type these three words back, so we know the phrase left this screen with you.", "wordN": "Word {{n}}", "confirmWrong": "Those don't match. Check what you wrote down.", "create": "Create account", "back": "Show the phrase again" }, "login": {
+      
+      
+      
+      
+      
+      
       "noAccount": "Don't have an account?"
     },
-    "social": {
-      "divider": "or continue with",
-      "apple": "Sign in with Apple",
-      "google": "Continue with Google",
-      "phone": "Continue with Phone"
-    },
-    "phone": {
-      "title": "Sign in with Phone",
-      "subtitle": "We'll text you a code to verify it's you.",
-      "phonePlaceholder": "+1 555 123 4567",
-      "sendCode": "Send Code",
-      "codeTitle": "Enter Code",
-      "codeSubtitle": "Enter the 6-digit code we sent to {{phoneNumber}}",
-      "codePlaceholder": "123456",
-      "verify": "Verify",
-      "resendCode": "Resend code",
-      "changeNumber": "Change phone number",
-      "errors": {
-        "invalidPhone": "Enter a valid phone number, including country code (e.g. +1 555 123 4567)",
-        "invalidCode": "Enter the 6-digit code"
-      }
-    },
+    
+    
     "signup": {
-      "title": "Create Account",
-      "subtitle": "Sign up to get started",
+      
+      
       "displayNamePlaceholder": "Display Name (optional)",
-      "passwordPlaceholder": "Password (min 8 characters)",
+      
       "hasAccount": "Already have an account?",
       "privacyPolicy": "Privacy Policy",
       "terms": "By creating an account you agree to our {{policy}}"
     },
     "errors": {
-      "missingFields": "Please fill in all fields",
-      "missingEmailPassword": "Please fill in email and password",
+      
+      
       "passwordMin": "Password must be at least 8 characters",
       "passwordTooCommon": "That password is too common — please choose a less predictable one",
       "passwordTooSimple": "That password is too predictable (repeated or sequential characters) — please choose another",
       "loginFailed": "Login Failed",
       "signUpFailed": "Sign Up Failed",
       "generic": "An error occurred",
-      "userNotFound": "No account found with this email",
-      "wrongPassword": "Incorrect password",
-      "invalidEmail": "Invalid email address",
+      
+      
+      
       "userDisabled": "This account has been disabled",
-      "emailInUse": "An account with this email already exists",
-      "weakPassword": "Password is too weak",
+      
+      
       "networkError": "Network error. Please check your connection",
       "tooManyRequests": "Too many attempts. Please try again later",
-      "invalidVerificationCode": "That code isn't right. Please check and try again",
-      "invalidPhoneNumber": "That doesn't look like a valid phone number",
-      "phraseNotRecognized": "Those aren't 24 words from a Chatterbox recovery phrase. Check the spelling and the order.", "noAccountForPhrase": "No account opens with those words. Check them again, or create a new account.", "accountExistsDifferentCredential": "An account already exists with this email, signed in a different way. Try signing in with that method instead."
-    },
-    "reset": {
-      "title": "Reset Password",
-      "enterEmail": "Please enter your email above first.",
-      "emailSentTitle": "Email Sent",
-      "emailSentBody": "Check your inbox for password reset instructions.",
-      "failedTitle": "Reset Failed",
-      "failedBody": "Unable to send reset email."
-    },
+      
+      
+      "phraseNotRecognized": "Those aren't 24 words from a Chatterbox recovery phrase. Check the spelling and the order.", "noAccountForPhrase": "No account opens with those words. Check them again, or create a new account." },
+    
     "session": {
       "title": "Signed out",
       "message": "This account was signed in on another device.",

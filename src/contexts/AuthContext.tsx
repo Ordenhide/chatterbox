@@ -3,20 +3,12 @@ import {Alert, AppState} from 'react-native';
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  GoogleAuthProvider,
-  OAuthProvider,
   onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithCredential,
   signInWithEmailAndPassword,
-  signInWithPhoneNumber,
   signOut as firebaseSignOut,
   updateProfile,
-  type ConfirmationResult,
   type User as FirebaseUser,
 } from '../services/firebase/auth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {requestAppleCredential} from '../services/appleAuth';
 import {doc, getDoc, getFirestore, onSnapshot, serverTimestamp, setDoc} from '../services/firebase/firestore';
 import {User} from '../types';
 import {sameUser} from '../utils/sameUser';
@@ -53,26 +45,22 @@ const CLAIM_FUNCTION_TIMEOUT_MS = 8_000;
 
 function getAuthErrorMessage(error: any): string {
   const code = error?.code || '';
+  // Only the codes a phrase sign-in can actually produce. The address and the
+  // secret are both derived from the same 24 words, so Firebase's whole family
+  // of email-shaped complaints — invalid address, weak password, address
+  // already in use, wrong code, wrong number — describes inputs no user can
+  // supply any more. Every credential rejection means one thing here: those
+  // words do not open an account on this server. (Firebase returns
+  // `invalid-credential` for that when email-enumeration protection is on, and
+  // the older pair when it is not; all three are mapped to the same sentence.)
   const map: Record<string, string> = {
-    'auth/user-not-found': i18n.t('auth.errors.userNotFound'),
-    'auth/wrong-password': i18n.t('auth.errors.wrongPassword'),
-    'auth/invalid-email': i18n.t('auth.errors.invalidEmail'),
     'auth/user-disabled': i18n.t('auth.errors.userDisabled'),
-    'auth/email-already-in-use': i18n.t('auth.errors.emailInUse'),
-    'auth/weak-password': i18n.t('auth.errors.weakPassword'),
     'auth/network-request-failed': i18n.t('auth.errors.networkError'),
     'auth/too-many-requests': i18n.t('auth.errors.tooManyRequests'),
-    'auth/invalid-verification-code': i18n.t('auth.errors.invalidVerificationCode'),
-    'auth/invalid-phone-number': i18n.t('auth.errors.invalidPhoneNumber'),
-    'auth/account-exists-with-different-credential': i18n.t(
-      'auth.errors.accountExistsDifferentCredential',
-    ),
-    // Firebase collapses "no such account" and "wrong password" into this one
-    // code when email-enumeration protection is on. For a phrase sign-in both
-    // halves of that come from the same 24 words, so there is only one thing
-    // it can mean: those words do not open an account here.
     'auth/invalid-credential': i18n.t('auth.errors.noAccountForPhrase'),
     'auth/invalid-login-credentials': i18n.t('auth.errors.noAccountForPhrase'),
+    'auth/user-not-found': i18n.t('auth.errors.noAccountForPhrase'),
+    'auth/wrong-password': i18n.t('auth.errors.noAccountForPhrase'),
   };
   return map[code] || error?.message || i18n.t('auth.errors.generic');
 }
@@ -80,17 +68,10 @@ function getAuthErrorMessage(error: any): string {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   /** Creates the account a freshly generated phrase names. See createAccount. */
   createAccount: (phrase: string, displayName?: string) => Promise<void>;
   /** Opens the account a phrase names, and restores its keys in the same step. */
   signInWithPhrase: (phrase: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
-  sendPhoneCode: (phoneNumber: string) => Promise<ConfirmationResult>;
-  confirmPhoneCode: (confirmation: ConfirmationResult, code: string) => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -513,89 +494,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     );
   };
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    setSessionReady(false);
-    claimInProgressRef.current = true;
-    let success = false;
-    try {
-      const normalizedEmail = email.trim().toLowerCase();
-      const nextSessionId = await rotateSessionId();
-      sessionIdRef.current = nextSessionId;
-      const credential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
-      await claimNewSession(credential.user.uid, nextSessionId);
-      await waitForSessionConfirmed(credential.user.uid, nextSessionId);
-      success = true;
-    } catch (error) {
-      sessionIdRef.current = null;
-      try {
-        await clearSessionId();
-        await firebaseSignOut(auth);
-      } catch {
-        // ignore cleanup failures
-      }
-      const friendlyError = new Error(getAuthErrorMessage(error));
-      (friendlyError as any).code = (error as any)?.code;
-      throw friendlyError;
-    } finally {
-      claimInProgressRef.current = false;
-      if (!success) {
-        setSessionReady(true);
-      }
-    }
-  }, [auth]);
-
-  const signUp = useCallback(async (email: string, password: string, displayName?: string) => {
-    setSessionReady(false);
-    claimInProgressRef.current = true;
-    let success = false;
-    try {
-      const normalizedEmail = email.trim().toLowerCase();
-      const normalizedDisplayName = displayName?.trim();
-      const nextSessionId = await rotateSessionId();
-      sessionIdRef.current = nextSessionId;
-      const userCredential = await createUserWithEmailAndPassword(auth, normalizedEmail, password);
-      if (normalizedDisplayName && userCredential.user) {
-        await updateProfile(userCredential.user, {displayName: normalizedDisplayName});
-      }
-      if (userCredential.user) {
-        await claimNewSession(userCredential.user.uid, nextSessionId);
-        await waitForSessionConfirmed(userCredential.user.uid, nextSessionId);
-
-        await setDoc(
-          doc(db, 'users', userCredential.user.uid),
-          {
-            uid: userCredential.user.uid,
-            // No email, no photo, no name: see upsertUserProfile in
-            // services/firebaseChat.ts. Firebase Auth holds the address and
-            // the name, which is where a credential belongs; this document is
-            // readable by anyone who knows the uid. The name reaches the other
-            // side of a conversation sealed (services/introductions.ts).
-            defaultMomentVisibility: 'friends',
-            updatedAt: serverTimestamp(),
-          },
-          {merge: true},
-        );
-      }
-      success = true;
-    } catch (error) {
-      sessionIdRef.current = null;
-      try {
-        await clearSessionId();
-        await firebaseSignOut(auth);
-      } catch {
-        // ignore cleanup failures
-      }
-      const friendlyError = new Error(getAuthErrorMessage(error));
-      (friendlyError as any).code = (error as any)?.code;
-      throw friendlyError;
-    } finally {
-      claimInProgressRef.current = false;
-      if (!success) {
-        setSessionReady(true);
-      }
-    }
-  }, [auth, db]);
-
   /*
    * The two phrase flows below both adopt the key the phrase encodes before
    * claiming the session, because for these accounts those are not two facts:
@@ -744,198 +642,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     [auth],
   );
 
-  // Shared by signInWithGoogle and confirmPhoneCode: both are single-step
-  // credential exchanges that can either sign in an existing account or
-  // silently create a new one, unlike email/password where sign-in and
-  // sign-up are separate user-driven actions. Claims the session the same
-  // way signIn/signUp do, and — only for brand-new accounts — bootstraps the
-  // Firestore profile doc the same way signUp does.
-  const completeCredentialSignIn = useCallback(
-    async (firebaseUser: FirebaseUser, nextSessionId: string, isNewUser: boolean, method: string) => {
-      await claimNewSession(firebaseUser.uid, nextSessionId);
-      await waitForSessionConfirmed(firebaseUser.uid, nextSessionId);
-      if (isNewUser) {
-        await setDoc(
-          doc(db, 'users', firebaseUser.uid),
-          {
-            uid: firebaseUser.uid,
-            // No email, no photo, no name — same reason as signUp above. A
-            // Google or Apple sign-in hands all three over, and none is
-            // written down.
-            defaultMomentVisibility: 'friends',
-            updatedAt: serverTimestamp(),
-          },
-          {merge: true},
-        );
-      }
-    },
-    [db],
-  );
-
-  const signInWithGoogle = useCallback(async () => {
-    setSessionReady(false);
-    claimInProgressRef.current = true;
-    let success = false;
-    try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      const response = await GoogleSignin.signIn();
-      if (response.type !== 'success') {
-        // User backed out of the picker — not an error, nothing was claimed yet.
-        return;
-      }
-      const {idToken} = response.data;
-      if (!idToken) {
-        throw new Error(i18n.t('auth.errors.generic'));
-      }
-      const nextSessionId = await rotateSessionId();
-      sessionIdRef.current = nextSessionId;
-      const credential = GoogleAuthProvider.credential(idToken);
-      const userCredential = await signInWithCredential(auth, credential);
-      await completeCredentialSignIn(
-        userCredential.user,
-        nextSessionId,
-        !!userCredential.additionalUserInfo?.isNewUser,
-        'google',
-      );
-      success = true;
-    } catch (error) {
-      sessionIdRef.current = null;
-      try {
-        await clearSessionId();
-        await firebaseSignOut(auth);
-      } catch {
-        // ignore cleanup failures
-      }
-      const friendlyError = new Error(getAuthErrorMessage(error));
-      (friendlyError as any).code = (error as any)?.code;
-      throw friendlyError;
-    } finally {
-      claimInProgressRef.current = false;
-      if (!success) {
-        setSessionReady(true);
-      }
-    }
-  }, [auth, completeCredentialSignIn]);
-
-  /**
-   * Sign in with Apple.
-   *
-   * Structurally the same as Google above — a single credential exchange that
-   * signs in or silently creates — with two differences that are easy to get
-   * wrong and impossible to notice later.
-   *
-   * The raw nonce goes to Firebase while only its hash went to Apple; see
-   * services/appleAuth.ts for why that ordering is the whole replay defence.
-   *
-   * And the display name is written **only on the first sign-in**. Apple sends
-   * a name once per app/account pair and null forever after, so a later
-   * sign-in that wrote what Apple sent would overwrite a real name with
-   * nothing. `isNewUser` is exactly the "first time" signal, so the write is
-   * gated on it and on Apple actually having sent something.
-   */
-  const signInWithApple = useCallback(async () => {
-    setSessionReady(false);
-    claimInProgressRef.current = true;
-    let success = false;
-    try {
-      const apple = await requestAppleCredential();
-      if (!apple) {
-        // Sheet dismissed. Nothing was claimed, so there is nothing to undo.
-        return;
-      }
-      const nextSessionId = await rotateSessionId();
-      sessionIdRef.current = nextSessionId;
-      const credential = new OAuthProvider('apple.com').credential({
-        idToken: apple.identityToken,
-        rawNonce: apple.rawNonce,
-      });
-      const userCredential = await signInWithCredential(auth, credential);
-      const isNewUser = !!userCredential.additionalUserInfo?.isNewUser;
-
-      // Before completeCredentialSignIn, which copies displayName into the
-      // Firestore profile — doing it after would store null and need a second
-      // write to correct.
-      if (isNewUser && apple.fullName && !userCredential.user.displayName) {
-        await updateProfile(userCredential.user, {displayName: apple.fullName});
-      }
-
-      await completeCredentialSignIn(userCredential.user, nextSessionId, isNewUser, 'apple');
-      success = true;
-    } catch (error) {
-      sessionIdRef.current = null;
-      try {
-        await clearSessionId();
-        await firebaseSignOut(auth);
-      } catch {
-        // ignore cleanup failures
-      }
-      const friendlyError = new Error(getAuthErrorMessage(error));
-      (friendlyError as any).code = (error as any)?.code;
-      throw friendlyError;
-    } finally {
-      claimInProgressRef.current = false;
-      if (!success) {
-        setSessionReady(true);
-      }
-    }
-  }, [auth, completeCredentialSignIn]);
-
-  // Step 1 of phone sign-in: sends the SMS code and hands back RNFB's
-  // confirmation object. The calling screen holds onto it across the
-  // user-driven pause until they type the code in, then passes it to
-  // confirmPhoneCode below — this can't be a single call the way Google
-  // sign-in is, since there's no way to synchronously wait for an SMS.
-  const sendPhoneCode = useCallback(async (phoneNumber: string): Promise<ConfirmationResult> => {
-    try {
-      return await signInWithPhoneNumber(auth, phoneNumber);
-    } catch (error) {
-      const friendlyError = new Error(getAuthErrorMessage(error));
-      (friendlyError as any).code = (error as any)?.code;
-      throw friendlyError;
-    }
-  }, [auth]);
-
-  const confirmPhoneCode = useCallback(
-    async (confirmation: ConfirmationResult, code: string) => {
-      setSessionReady(false);
-      claimInProgressRef.current = true;
-      let success = false;
-      try {
-        const nextSessionId = await rotateSessionId();
-        sessionIdRef.current = nextSessionId;
-        const userCredential = await confirmation.confirm(code);
-        await completeCredentialSignIn(
-          userCredential.user,
-          nextSessionId,
-          !!userCredential.additionalUserInfo?.isNewUser,
-          'phone',
-        );
-        success = true;
-      } catch (error) {
-        sessionIdRef.current = null;
-        try {
-          await clearSessionId();
-          await firebaseSignOut(auth);
-        } catch {
-          // ignore cleanup failures
-        }
-        const friendlyError = new Error(getAuthErrorMessage(error));
-        (friendlyError as any).code = (error as any)?.code;
-        throw friendlyError;
-      } finally {
-        claimInProgressRef.current = false;
-        if (!success) {
-          setSessionReady(true);
-        }
-      }
-    },
-    [auth, completeCredentialSignIn],
-  );
-
-  const resetPassword = useCallback(async (email: string) => {
-    await sendPasswordResetEmail(auth, email.trim().toLowerCase());
-  }, [auth]);
-
   const signOut = useCallback(async () => {
     if (signingOutRef.current) return;
     signingOutRef.current = true;
@@ -971,30 +677,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     () => ({
       user,
       loading: loading || !sessionReady,
-      signIn,
-      signUp,
       createAccount,
       signInWithPhrase,
-      signInWithGoogle,
-      signInWithApple,
-      sendPhoneCode,
-      confirmPhoneCode,
-      resetPassword,
       signOut,
     }),
     [
       user,
       loading,
       sessionReady,
-      signIn,
-      signUp,
       createAccount,
       signInWithPhrase,
-      signInWithGoogle,
-      signInWithApple,
-      sendPhoneCode,
-      confirmPhoneCode,
-      resetPassword,
       signOut,
     ],
   );

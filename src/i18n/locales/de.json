@@ -44,80 +44,52 @@
     "invite": "Einladung"
   },
   "auth": {
-    "phrase": {"signInBody": "Ihre 24 Wörter sind Ihr Konto. Es gibt keine E-Mail-Adresse und kein Passwort zu merken.", "placeholder": "Ihre 24-Wort-Wiederherstellungsphrase", "newTitle": "Schreiben Sie sie auf", "newBody": "Diese 24 Wörter sind Ihr Konto und der Schlüssel zu Ihren Nachrichten. Wer sie hat, meldet sich als Sie an und liest alles. Gehen sie verloren, bringt nichts das Konto zurück — es gibt kein Zurücksetzen und niemanden, den man fragen könnte.", "copy": "Kopieren", "copied": "Wiederherstellungsphrase in die Zwischenablage kopiert.", "written": "Ich habe sie aufgeschrieben", "confirmTitle": "Prüfen, ob Sie sie haben", "confirmBody": "Tippen Sie diese drei Wörter noch einmal ein — damit sicher ist, dass die Phrase diesen Bildschirm mit Ihnen verlassen hat.", "wordN": "Wort {{n}}", "confirmWrong": "Das passt nicht. Prüfen Sie, was Sie notiert haben.", "create": "Konto erstellen", "back": "Phrase noch einmal anzeigen", "generating": "Phrase wird erzeugt…"}, "login": {
-      "subtitleVariant": "Willkommen zurück — lass uns chatten",
-      "subtitleDefault": "Anmelden, um fortzufahren",
-      "emailPlaceholder": "E-Mail",
-      "passwordPlaceholder": "Passwort",
-      "forgotPassword": "Passwort vergessen?",
-      "reset": "Zurücksetzen",
+    "phrase": {"signInBody": "Ihre 24 Wörter sind Ihr Konto. Es gibt keine E-Mail-Adresse und kein Passwort zu merken.", "placeholder": "Ihre 24-Wort-Wiederherstellungsphrase", "newTitle": "Schreiben Sie sie auf", "newBody": "Diese 24 Wörter sind Ihr Konto und der Schlüssel zu Ihren Nachrichten. Wer sie hat, meldet sich als Sie an und liest alles. Gehen sie verloren, bringt nichts das Konto zurück — es gibt kein Zurücksetzen und niemanden, den man fragen könnte.", "copy": "Kopieren", "copied": "Wiederherstellungsphrase in die Zwischenablage kopiert.", "written": "Ich habe sie aufgeschrieben", "confirmTitle": "Prüfen, ob Sie sie haben", "confirmBody": "Tippen Sie diese drei Wörter noch einmal ein — damit sicher ist, dass die Phrase diesen Bildschirm mit Ihnen verlassen hat.", "wordN": "Wort {{n}}", "confirmWrong": "Das passt nicht. Prüfen Sie, was Sie notiert haben.", "create": "Konto erstellen", "back": "Phrase noch einmal anzeigen" }, "login": {
+      
+      
+      
+      
+      
+      
       "noAccount": "Noch kein Konto?"
     },
     "signup": {
-      "title": "Konto erstellen",
-      "subtitle": "Registrieren Sie sich, um zu beginnen",
+      
+      
       "displayNamePlaceholder": "Anzeigename (optional)",
-      "passwordPlaceholder": "Passwort (min. 6 Zeichen)",
+      
       "hasAccount": "Bereits ein Konto?",
       "privacyPolicy": "Datenschutzerklärung",
       "terms": "Mit dem Erstellen eines Kontos stimmst du unserer {{policy}} zu"
     },
     "errors": {
-      "missingFields": "Bitte füllen Sie alle Felder aus",
-      "missingEmailPassword": "Bitte geben Sie E-Mail und Passwort ein",
+      
+      
       "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein",
       "loginFailed": "Anmeldung fehlgeschlagen",
       "signUpFailed": "Registrierung fehlgeschlagen",
       "generic": "Ein Fehler ist aufgetreten",
-      "userNotFound": "Kein Konto mit dieser E-Mail gefunden",
-      "wrongPassword": "Falsches Passwort",
-      "invalidEmail": "Ungültige E-Mail-Adresse",
+      
+      
+      
       "userDisabled": "Dieses Konto wurde deaktiviert",
-      "emailInUse": "Ein Konto mit dieser E-Mail existiert bereits",
-      "weakPassword": "Das Passwort ist zu schwach",
+      
+      
       "networkError": "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung",
       "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
       "passwordTooCommon": "Dieses Passwort ist zu verbreitet — wähle ein weniger vorhersehbares",
       "passwordTooSimple": "Dieses Passwort ist zu vorhersehbar (wiederholte oder aufeinanderfolgende Zeichen) — wähle ein anderes",
-      "invalidVerificationCode": "Dieser Code stimmt nicht. Bitte prüfe ihn und versuche es erneut",
-      "invalidPhoneNumber": "Das sieht nicht nach einer gültigen Telefonnummer aus",
-      "phraseNotRecognized": "Das sind keine 24 Wörter einer Chatterbox-Wiederherstellungsphrase. Prüfen Sie Schreibweise und Reihenfolge.", "noAccountForPhrase": "Mit diesen Wörtern lässt sich kein Konto öffnen. Prüfen Sie sie erneut oder erstellen Sie ein neues Konto.", "accountExistsDifferentCredential": "Mit dieser E-Mail-Adresse besteht bereits ein Konto, das anders angemeldet wurde. Melde dich stattdessen auf diesem Weg an."
-    },
-    "reset": {
-      "title": "Passwort zurücksetzen",
-      "enterEmail": "Bitte geben Sie zuerst Ihre E-Mail oben ein.",
-      "emailSentTitle": "E-Mail gesendet",
-      "emailSentBody": "Prüfen Sie Ihr Postfach auf Anweisungen zum Zurücksetzen des Passworts.",
-      "failedTitle": "Zurücksetzen fehlgeschlagen",
-      "failedBody": "E-Mail zum Zurücksetzen konnte nicht gesendet werden."
-    },
+      
+      
+      "phraseNotRecognized": "Das sind keine 24 Wörter einer Chatterbox-Wiederherstellungsphrase. Prüfen Sie Schreibweise und Reihenfolge.", "noAccountForPhrase": "Mit diesen Wörtern lässt sich kein Konto öffnen. Prüfen Sie sie erneut oder erstellen Sie ein neues Konto." },
+    
     "session": {
       "title": "Abgemeldet",
       "message": "Dieses Konto wurde auf einem anderen Gerät angemeldet.",
       "unavailable": "Sitzung konnte nicht hergestellt werden. Melde dich ab und versuch es erneut."
     },
-    "social": {
-      "divider": "oder weiter mit",
-      "apple": "Mit Apple anmelden",
-      "google": "Weiter mit Google",
-      "phone": "Weiter mit Telefonnummer"
-    },
-    "phone": {
-      "title": "Mit Telefonnummer anmelden",
-      "subtitle": "Wir schicken dir per SMS einen Code, um dich zu bestätigen.",
-      "phonePlaceholder": "+49 151 12345678",
-      "sendCode": "Code senden",
-      "codeTitle": "Code eingeben",
-      "codeSubtitle": "Gib den 6-stelligen Code ein, den wir an {{phoneNumber}} geschickt haben",
-      "codePlaceholder": "123456",
-      "verify": "Bestätigen",
-      "resendCode": "Code erneut senden",
-      "changeNumber": "Telefonnummer ändern",
-      "errors": {
-        "invalidPhone": "Gib eine gültige Telefonnummer mit Ländervorwahl ein (z. B. +49 151 12345678)",
-        "invalidCode": "Gib den 6-stelligen Code ein"
-      }
-    },
+    
+    
     "eyebrow": "Verschlüsselter Messenger"
   },
   "chatList": {

@@ -44,80 +44,52 @@
     "invite": "Invitación"
   },
   "auth": {
-    "phrase": {"signInBody": "Tus 24 palabras son tu cuenta. No hay correo electrónico ni contraseña que recordar.", "placeholder": "Tu frase de recuperación de 24 palabras", "newTitle": "Anótalas", "newBody": "Estas 24 palabras son tu cuenta y la clave de tus mensajes. Cualquiera que las tenga puede entrar como tú y leerlo todo. Si las pierdes, nada devuelve la cuenta: no hay restablecimiento ni a quién pedirlo.", "copy": "Copiar", "copied": "Frase de recuperación copiada al portapapeles.", "written": "Ya las anoté", "confirmTitle": "Comprueba que las tienes", "confirmBody": "Escribe estas tres palabras para confirmar que la frase salió de esta pantalla contigo.", "wordN": "Palabra {{n}}", "confirmWrong": "No coinciden. Revisa lo que anotaste.", "create": "Crear cuenta", "back": "Ver la frase otra vez", "generating": "Generando tu frase…"}, "login": {
-      "subtitleVariant": "Bienvenido de nuevo — vamos a chatear",
-      "subtitleDefault": "Inicia sesión para continuar",
-      "emailPlaceholder": "Correo electrónico",
-      "passwordPlaceholder": "Contraseña",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
-      "reset": "Restablecer",
+    "phrase": {"signInBody": "Tus 24 palabras son tu cuenta. No hay correo electrónico ni contraseña que recordar.", "placeholder": "Tu frase de recuperación de 24 palabras", "newTitle": "Anótalas", "newBody": "Estas 24 palabras son tu cuenta y la clave de tus mensajes. Cualquiera que las tenga puede entrar como tú y leerlo todo. Si las pierdes, nada devuelve la cuenta: no hay restablecimiento ni a quién pedirlo.", "copy": "Copiar", "copied": "Frase de recuperación copiada al portapapeles.", "written": "Ya las anoté", "confirmTitle": "Comprueba que las tienes", "confirmBody": "Escribe estas tres palabras para confirmar que la frase salió de esta pantalla contigo.", "wordN": "Palabra {{n}}", "confirmWrong": "No coinciden. Revisa lo que anotaste.", "create": "Crear cuenta", "back": "Ver la frase otra vez" }, "login": {
+      
+      
+      
+      
+      
+      
       "noAccount": "¿No tienes una cuenta?"
     },
     "signup": {
-      "title": "Crear cuenta",
-      "subtitle": "Regístrate para comenzar",
+      
+      
       "displayNamePlaceholder": "Nombre de visualización (opcional)",
-      "passwordPlaceholder": "Contraseña (mín. 6 caracteres)",
+      
       "hasAccount": "¿Ya tienes una cuenta?",
       "privacyPolicy": "Política de privacidad",
       "terms": "Al crear una cuenta aceptas nuestra {{policy}}"
     },
     "errors": {
-      "missingFields": "Por favor completa todos los campos",
-      "missingEmailPassword": "Por favor completa el correo electrónico y la contraseña",
+      
+      
       "passwordMin": "La contraseña debe tener al menos 6 caracteres",
       "loginFailed": "Error al iniciar sesión",
       "signUpFailed": "Error al registrarse",
       "generic": "Ocurrió un error",
-      "userNotFound": "No se encontró una cuenta con este correo electrónico",
-      "wrongPassword": "Contraseña incorrecta",
-      "invalidEmail": "Dirección de correo electrónico inválida",
+      
+      
+      
       "userDisabled": "Esta cuenta ha sido deshabilitada",
-      "emailInUse": "Ya existe una cuenta con este correo electrónico",
-      "weakPassword": "La contraseña es demasiado débil",
+      
+      
       "networkError": "Error de red. Por favor verifica tu conexión",
       "tooManyRequests": "Demasiados intentos. Por favor intenta de nuevo más tarde",
       "passwordTooCommon": "Esa contraseña es demasiado común: elige una menos previsible",
       "passwordTooSimple": "Esa contraseña es demasiado previsible (caracteres repetidos o consecutivos): elige otra",
-      "invalidVerificationCode": "Ese código no es correcto. Compruébalo e inténtalo de nuevo",
-      "invalidPhoneNumber": "Eso no parece un número de teléfono válido",
-      "phraseNotRecognized": "Esas no son 24 palabras de una frase de recuperación de Chatterbox. Revisa la ortografía y el orden.", "noAccountForPhrase": "Ninguna cuenta se abre con esas palabras. Vuelve a comprobarlas o crea una cuenta nueva.", "accountExistsDifferentCredential": "Ya existe una cuenta con este correo, creada con otro método de acceso. Inicia sesión con ese método."
-    },
-    "reset": {
-      "title": "Restablecer contraseña",
-      "enterEmail": "Por favor ingresa tu correo electrónico arriba primero.",
-      "emailSentTitle": "Correo enviado",
-      "emailSentBody": "Revisa tu bandeja de entrada para las instrucciones de restablecimiento de contraseña.",
-      "failedTitle": "Restablecimiento fallido",
-      "failedBody": "No se pudo enviar el correo de restablecimiento."
-    },
+      
+      
+      "phraseNotRecognized": "Esas no son 24 palabras de una frase de recuperación de Chatterbox. Revisa la ortografía y el orden.", "noAccountForPhrase": "Ninguna cuenta se abre con esas palabras. Vuelve a comprobarlas o crea una cuenta nueva." },
+    
     "session": {
       "title": "Sesión cerrada",
       "message": "Esta cuenta fue iniciada en otro dispositivo.",
       "unavailable": "No se pudo establecer la sesión. Cierra sesión y vuelve a intentarlo."
     },
-    "social": {
-      "divider": "o continúa con",
-      "apple": "Iniciar sesión con Apple",
-      "google": "Continuar con Google",
-      "phone": "Continuar con teléfono"
-    },
-    "phone": {
-      "title": "Iniciar sesión con teléfono",
-      "subtitle": "Te enviaremos un código por SMS para comprobar que eres tú.",
-      "phonePlaceholder": "+34 600 123 456",
-      "sendCode": "Enviar código",
-      "codeTitle": "Introduce el código",
-      "codeSubtitle": "Introduce el código de 6 dígitos que enviamos a {{phoneNumber}}",
-      "codePlaceholder": "123456",
-      "verify": "Verificar",
-      "resendCode": "Reenviar código",
-      "changeNumber": "Cambiar número",
-      "errors": {
-        "invalidPhone": "Introduce un número válido, incluido el prefijo del país (p. ej. +34 600 123 456)",
-        "invalidCode": "Introduce el código de 6 dígitos"
-      }
-    },
+    
+    
     "eyebrow": "Mensajería cifrada"
   },
   "chatList": {

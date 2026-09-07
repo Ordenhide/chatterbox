@@ -208,10 +208,3 @@ from every client** — a total outage. The order matters:
    those are independent of this flag.
 
 Rolling back is the same switch in reverse, and takes a redeploy.
-
----
-
-## 6. Sign in with Apple
-
-See `SIGN_IN_WITH_APPLE.md`. Code is in place; the dependency has never been
-installed, and the Apple Developer and Firebase Console steps remain.
