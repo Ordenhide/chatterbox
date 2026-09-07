@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatterbox — Uma aplicação de mensagens sem nada onde te procurar</title>
+  <meta name="description" content="Mensagens cifradas ponta a ponta, sem diretório de utilizadores, sem endereço de e-mail guardado e com uma política de privacidade que diz o que não consegue fazer. Web e Android." />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="index.html" />
+  <link rel="alternate" hreflang="zh-Hans" href="index.zh-Hans.html" />
+  <link rel="alternate" hreflang="zh-Hant" href="index.zh-Hant.html" />
+  <link rel="alternate" hreflang="es" href="index.es.html" />
+  <link rel="alternate" hreflang="fr" href="index.fr.html" />
+  <link rel="alternate" hreflang="de" href="index.de.html" />
+  <link rel="alternate" hreflang="it" href="index.it.html" />
+  <link rel="alternate" hreflang="pt" href="index.pt.html" />
+  <link rel="alternate" hreflang="ru" href="index.ru.html" />
+  <link rel="alternate" hreflang="tr" href="index.tr.html" />
+  <link rel="alternate" hreflang="vi" href="index.vi.html" />
+  <link rel="alternate" hreflang="ja" href="index.ja.html" />
+  <link rel="alternate" hreflang="ko" href="index.ko.html" />
+  <link rel="alternate" hreflang="ar" href="index.ar.html" />
+  <link rel="alternate" hreflang="hi" href="index.hi.html" />
+  <link rel="alternate" hreflang="x-default" href="index.html" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.pt.html" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="#different">O que muda</a>
+        <a href="#features">Funcionalidades</a>
+        <a href="#limits">Limites</a>
+        <a href="#download" class="nav-cta">Obter</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Web e Android · iOS em curso</span>
+        <h1>Nada onde te procurar.</h1>
+        <p class="lead">O Chatterbox é uma aplicação de mensagens cifrada ponta a ponta, sem diretório de utilizadores. Ninguém te consegue pesquisar, porque não existe índice nenhum para pesquisar — a única entrada numa conversa é um link que entregas tu próprio a alguém.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#download">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Obter o Chatterbox
+          </a>
+          <a class="btn btn-secondary" href="privacy.pt.html">Ler a política de privacidade</a>
+        </div>
+        <div class="hero-badges">
+          <span class="badge">Sem diretório</span>
+          <span class="badge">Só por convite</span>
+          <span class="badge">15 idiomas</span>
+          <span class="badge">Grátis</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="different">
+      <div class="section-head">
+        <span class="eyebrow">O que muda</span>
+        <h2>Sete coisas que a maioria das aplicações de mensagens não faz</h2>
+        <p>Cada uma é uma decisão com um mecanismo por trás, não uma definição que tens de ir descobrir. Onde há um custo, está dito.</p>
+      </div>
+
+      <ol class="reasons">
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">01</div>
+          <div class="reason-body">
+            <h3>Não existe diretório de utilizadores</h3>
+            <p>Sem pesquisa por nome de utilizador, sem cruzamento de números de telefone, sem «pessoas que talvez conheças». O único caminho para uma conversa é um link de convite que envias por outro meio. Cada link serve uma vez e expira ao fim de 24 horas, e uma tarefa agendada apaga os expirados em vez de deixar um registo permanente de quem convidou quem.</p>
+            <p class="reason-note">Isto não é uma definição de privacidade. Não há diretório nenhum de onde sair.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">02</div>
+          <div class="reason-body">
+            <h3>O servidor não guarda o teu endereço de e-mail</h3>
+            <p>Inicias sessão com um, e fica por aí. O documento do teu perfil não tem endereço de e-mail, nem nome visível, nem URL de fotografia. Não há perfil que outra pessoa possa ler, porque as únicas pessoas que te conseguem alcançar são as que convidaste.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">03</div>
+          <div class="reason-body">
+            <h3>Selado é mais do que as mensagens</h3>
+            <p>O texto das mensagens é a parte fácil. As pré-visualizações de links, as listas partilhadas, as citações guardadas e as transcrições de voz são cifradas da mesma forma, para aquela conversa. Uma transcrição de voz era antes reescrita em texto simples na mensagem por uma função do servidor; agora é selada no teu dispositivo, e as traduções não são guardadas de todo.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">04</div>
+          <div class="reason-body">
+            <h3>Cada mensagem tem a sua própria chave</h3>
+            <p>A maioria das conversas individuais e de grupo usa um roquete, por isso comprometer um dispositivo não expõe as mensagens anteriores. As conversas em que o cliente de alguém não publicou o material de chave mais recente recaem numa única chave de longa duração, que não tem essa propriedade.</p>
+            <p class="reason-note">A etiqueta por baixo de uma mensagem diz-te qual foi a que ela realmente recebeu. Não é uma afirmação sobre a aplicação; é uma afirmação sobre aquela mensagem.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">05</div>
+          <div class="reason-body">
+            <h3>A IA está desligada até a ligares, e cada fornecedor é nomeado</h3>
+            <p>Os resumos, a tradução e a transcrição decifram conteúdo no teu dispositivo e enviam-no para fora. A secção 6 da política de privacidade nomeia cada serviço que o recebe — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — e diz exatamente o que lá chega. A aplicação pergunta antes da primeira vez, e o interruptor está no teu perfil.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">06</div>
+          <div class="reason-body">
+            <h3>Consultar algo não acontece nas tuas costas</h3>
+            <p>Toca num nome dentro de uma mensagem e o Chatterbox mostra-te o artigo da Wikipédia. Esse pedido acontece no toque e não de outra forma, e nada dele é escrito na conversa.</p>
+            <p class="reason-note">Uma versão anterior analisava as últimas quinze mensagens de cada conversa que abrias e consultava a Wikipédia até trinta vezes por abertura — sem mostrar nada, porque os cartões estavam atrás de um interruptor que nunca esteve ligado. Foi removida em vez de corrigida.</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">07</div>
+          <div class="reason-body">
+            <h3>A política de privacidade diz o que não consegue fazer</h3>
+            <p>Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que os relatórios de falhas levam um identificador de conta e não são anónimos. É o mesmo texto na aplicação e neste site, em quinze idiomas — não um original inglês com uma tradução mais suave.</p>
+            <p class="reason-note"><a href="privacy.pt.html">Lê-a</a> antes de decidires confiar em alguma das afirmações acima.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-head">
+        <span class="eyebrow">Funcionalidades</span>
+        <h2>O que faz de facto</h2>
+        <p>Tudo o que está aqui listado tem uma interface a que consegues chegar. Nada nesta página descreve uma capacidade que só exista no código.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Mensagens</h3>
+          <p>Texto, fotografias, vídeo, ficheiros e notas de voz. Respostas, reencaminhamento, reações, confirmações de leitura, mensagens afixadas, marcadores e mensagens agendadas.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Chamadas de voz e vídeo</h3>
+          <p>Chamadas ponto a ponto por WebRTC, que cifra o fluxo entre os dois dispositivos por omissão e não como opção.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>IA opcional</h3>
+          <p>Resumos de conversa, respostas sugeridas, transcrição de voz e tradução de mensagens. Desligada por omissão; os fornecedores estão nomeados na política.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Consulta na Wikipédia</h3>
+          <p>Mantém premida uma mensagem, escolhe um nome nela e lê o artigo sem sair da conversa. Um pedido, com o teu toque, no teu idioma.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Listas partilhadas e mural de citações</h3>
+          <p>Uma lista que os dois podem ir marcando, e um sítio para guardar as frases que valem a pena. Ambas seladas para a conversa, tal como as mensagens.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Quinze idiomas</h3>
+          <p>Inglês, chinês nas duas escritas, japonês, coreano, espanhol, francês, alemão, italiano, português, russo, turco, vietnamita, árabe e hindi — incluindo escrita da direita para a esquerda.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="section-head">
+        <span class="eyebrow">Controlos de privacidade</span>
+        <h2>O que podes trancar</h2>
+      </div>
+
+      <div class="privacy-strip">
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h4>Bloqueio da aplicação</h4>
+          <p>Biometria ou PIN, com o atraso de bloqueio automático que escolheres.</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h4>Ver uma vez</h4>
+          <p>Fotografias e vídeos que se fecham de vez depois de abertos.</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4>Mensagens temporárias</h4>
+          <p>Define uma conversa para se limpar sozinha, de uma hora até trinta dias.</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64" stroke-linecap="round"/><path d="M12 2v10" stroke-linecap="round"/></svg></div>
+          <h4>Destruir após leitura</h4>
+          <p>Uma mensagem que se destrói assim que a outra pessoa a lê.</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14" stroke-linecap="round"/></svg></div>
+          <h4>Bloquear</h4>
+          <p>Bloqueia quem quiseres. Sem diretório, não encontram o caminho de volta.</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-linecap="round"/></svg></div>
+          <h4>Exportar e apagar</h4>
+          <p>Leva os teus dados, ou apaga a conta e tudo o que está por baixo dela.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="section-head">
+        <span class="eyebrow">Limites</span>
+        <h2>O que não está protegido</h2>
+        <p>Uma página que só lista virtudes é uma página com que não consegues decidir nada. Esta é a versão curta; a <a href="privacy.pt.html">política de privacidade</a> é a longa.</p>
+      </div>
+
+      <div class="ledger">
+        <div class="ledger-col ledger-yes">
+          <h3>Selado no teu dispositivo</h3>
+          <ul>
+            <li>O texto das tuas mensagens</li>
+            <li>Fotografias, vídeo, áudio e ficheiros que anexas</li>
+            <li>Pré-visualizações de links, listas partilhadas, citações guardadas</li>
+            <li>Transcrições de voz, assim que voltam para ti</li>
+            <li>O áudio e o vídeo das chamadas, entre os dois dispositivos</li>
+          </ul>
+        </div>
+        <div class="ledger-col ledger-no">
+          <h3>Visível para nós e para a Google</h3>
+          <ul>
+            <li>Que existe uma conversa, e que contas estão nela</li>
+            <li>Quando cada conta esteve ativa pela última vez</li>
+            <li>Os metadados de todas as ligações, incluindo o teu endereço IP</li>
+            <li>Os relatórios de falhas e de utilização, que levam um identificador de conta</li>
+            <li>Tudo o que escolheres enviar a uma funcionalidade de IA, enquanto ela corre</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="ledger-note">A cifra nunca foi auditada de forma independente. Retirar esses metadados é mais difícil do que cifrar o conteúdo, e esse trabalho não está terminado.</p>
+    </section>
+
+    <section class="section" id="download">
+      <div class="download-card">
+        <h2>Obter o Chatterbox</h2>
+        <p>A aplicação web corre no navegador sem instalar nada, tanto no telemóvel como no computador. A versão Android está a caminho da Google Play.</p>
+        <div class="download-actions">
+          <span class="btn btn-pending" aria-disabled="true">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 3.5v17a1 1 0 0 0 1.5.87l14-8.5a1 1 0 0 0 0-1.74l-14-8.5A1 1 0 0 0 4 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Brevemente na Google Play
+          </span>
+          <a class="btn btn-secondary" href="/app/">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Abrir a aplicação web
+          </a>
+        </div>
+        <p class="download-note">
+          Ainda não há nenhum caminho no Android: a página na Play não está publicada e neste site não há transferência. Até haver, entra-se pela aplicação web.
+          <br /><br />
+          O iOS ainda não foi publicado.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>© 2026 Chatterbox. Um projeto pessoal, descrito com honestidade.</span>
+      <div class="footer-links">
+        <a href="privacy.pt.html">Política de Privacidade</a>
+      </div>
+    </div>
+    <nav class="wrap site-langs" aria-label="Idioma">
+        <a href="index.html" lang="en" hreflang="en">English</a>
+        <a href="index.zh-Hans.html" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="index.zh-Hant.html" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="index.es.html" lang="es" hreflang="es">Español</a>
+        <a href="index.fr.html" lang="fr" hreflang="fr">Français</a>
+        <a href="index.de.html" lang="de" hreflang="de">Deutsch</a>
+        <a href="index.it.html" lang="it" hreflang="it">Italiano</a>
+        <span aria-current="true" lang="pt">Português</span>
+        <a href="index.ru.html" lang="ru" hreflang="ru">Русский</a>
+        <a href="index.tr.html" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="index.vi.html" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="index.ja.html" lang="ja" hreflang="ja">日本語</a>
+        <a href="index.ko.html" lang="ko" hreflang="ko">한국어</a>
+        <a href="index.ar.html" lang="ar" hreflang="ar">العربية</a>
+        <a href="index.hi.html" lang="hi" hreflang="hi">हिन्दी</a>
+    </nav>
+  </footer>
+</body>
+</html>

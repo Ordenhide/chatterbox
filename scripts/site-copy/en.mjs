@@ -1,0 +1,193 @@
+/**
+ * The landing page, in English. Every other file in this directory is the same
+ * shape in another language, and build-site-html.mjs turns each into a page.
+ *
+ * `{policy}` in any string becomes a link to that language's privacy policy,
+ * with `links.policy` as its text. It is the only markup allowed here —
+ * everything else is escaped, so a stray `<` in a translation cannot break a
+ * page.
+ */
+export default {
+  meta: {
+    title: 'Chatterbox — A messenger with nothing to look you up in',
+    description:
+      'End-to-end encrypted messaging with no user directory, no stored email address, and a privacy policy that says what it cannot do. Web and Android.',
+  },
+
+  links: {policy: 'privacy policy', policyShort: 'Read it'},
+
+  nav: {
+    different: "What's different",
+    features: 'Features',
+    limits: 'Limits',
+    get: 'Get it',
+    language: 'Language',
+  },
+
+  hero: {
+    eyebrow: 'Web & Android · iOS in progress',
+    title: 'Nothing to look you up in.',
+    lead: `Chatterbox is an end-to-end encrypted messenger with no user directory. Nobody can search for you, because there is no index to search — the only way into a conversation is a link you hand someone yourself.`,
+    primary: 'Get Chatterbox',
+    secondary: 'Read the privacy policy',
+    badges: ['No user directory', 'Invite-only', '15 languages', 'Free'],
+  },
+
+  different: {
+    eyebrow: "What's different",
+    title: "Seven things most messengers don't do",
+    intro: `Each of these is a decision with a mechanism behind it, not a setting you have to find. Where something is a trade-off, it says so.`,
+    reasons: [
+      {
+        title: 'There is no user directory',
+        body: [
+          `No username search, no phone-number matching, no “people you may know”. The only route into a conversation is an invite link you send someone out of band. Each link works once and expires after 24 hours, and a scheduled job deletes the expired ones rather than leaving a permanent record of who invited whom.`,
+        ],
+        note: `This is not a privacy setting. There is no directory to opt out of.`,
+      },
+      {
+        title: 'The server does not keep your email address',
+        body: [
+          `You sign in with one, and that is where it stops. Your profile document holds no email address, no display name and no photo URL. There is no profile for anyone else to read, because the only people who can reach you are the ones you invited.`,
+        ],
+      },
+      {
+        title: 'More than the messages is sealed',
+        body: [
+          `Message text is the easy part. Link previews, shared lists, saved quotes and voice transcripts are each encrypted to the conversation the same way. A voice transcript used to be written back into the message in plain text by a server function; it is sealed on your device now, and translations are not stored at all.`,
+        ],
+      },
+      {
+        title: 'Each message has its own key',
+        body: [
+          `Most one-to-one and group conversations use a ratchet, so compromising a device does not expose the messages that came before. Conversations where someone's client has not published the newer key material fall back to a single long-lived key, which does not have that property.`,
+        ],
+        note: `The label under a message tells you which one it actually got. It is not a claim about the app; it is a claim about that message.`,
+      },
+      {
+        title: 'AI is off until you turn it on, and every provider is named',
+        body: [
+          `Summaries, translation and transcription decrypt content on your device and send it onward. Section 6 of the privacy policy names each service that receives it — Google Cloud Speech-to-Text, Google Cloud Translation, Cloudflare Workers AI — and says exactly what reaches it. The app asks before the first time, and the switch lives in your profile.`,
+        ],
+      },
+      {
+        title: "Looking something up doesn't happen behind your back",
+        body: [
+          `Tap a name in a message and Chatterbox shows you its Wikipedia article. That request happens on the tap and not otherwise, and nothing about it is written into the conversation.`,
+        ],
+        note: `An earlier version scanned the last fifteen messages of every thread you opened and queried Wikipedia up to thirty times per open — while displaying nothing, because the cards were behind a flag that was never on. It was removed rather than fixed.`,
+      },
+      {
+        title: 'The privacy policy says what it cannot do',
+        body: [
+          `It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that crash reports carry an account identifier and are not anonymous. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.`,
+        ],
+        note: `{policyShort} before you decide to trust any of the above.`,
+      },
+    ],
+  },
+
+  features: {
+    eyebrow: 'Features',
+    title: 'What it actually does',
+    intro: `Everything listed here has an interface you can reach. Nothing on this page describes a capability that exists only in the code.`,
+    cards: [
+      {
+        title: 'Messaging',
+        body: `Text, photos, video, files and voice notes. Replies, forwarding, reactions, read receipts, pinned messages, bookmarks and scheduled messages.`,
+      },
+      {
+        title: 'Voice & video calls',
+        body: `Peer-to-peer calling over WebRTC, which encrypts the media between the two devices by default rather than as an option.`,
+      },
+      {
+        title: 'Optional AI',
+        body: `Conversation summaries, smart replies, voice transcription and message translation. Off by default; the providers are named in the policy.`,
+      },
+      {
+        title: 'Wikipedia lookup',
+        body: `Long-press a message, pick a name in it, and read the article without leaving the chat. One request, on your tap, in your own language.`,
+      },
+      {
+        title: 'Shared lists & quote wall',
+        body: `A checklist both of you can tick off, and a place to keep the lines worth keeping. Both sealed to the conversation like the messages.`,
+      },
+      {
+        title: 'Fifteen languages',
+        body: `English, both Chinese scripts, Japanese, Korean, Spanish, French, German, Italian, Portuguese, Russian, Turkish, Vietnamese, Arabic and Hindi — right-to-left included.`,
+      },
+    ],
+  },
+
+  controls: {
+    eyebrow: 'Privacy controls',
+    title: 'What you can lock down',
+    items: [
+      {title: 'App lock', body: `Biometric or PIN, with an auto-lock delay you choose.`},
+      {title: 'View once', body: `Photos and videos that close for good after they are opened.`},
+      {
+        title: 'Disappearing messages',
+        body: `Set a conversation to clear itself, from an hour up to thirty days.`,
+      },
+      {
+        title: 'Burn after reading',
+        body: `A message that destroys itself once the other person has read it.`,
+      },
+      {
+        title: 'Blocking',
+        body: `Block anyone. With no directory, they cannot find their way back.`,
+      },
+      {
+        title: 'Export & delete',
+        body: `Take your data out, or delete the account and everything under it.`,
+      },
+    ],
+  },
+
+  limits: {
+    eyebrow: 'Limits',
+    title: 'What is not protected',
+    intro: `A page that only lists strengths is a page you cannot use to make a decision. This is the short version; the {policy} is the long one.`,
+    sealed: {
+      title: 'Sealed on your device',
+      items: [
+        'The text of your messages',
+        'Photos, video, audio and files you attach',
+        'Link previews, shared lists, saved quotes',
+        'Voice transcripts, once they come back to you',
+        'Call audio and video, between the two devices',
+      ],
+    },
+    visible: {
+      title: 'Visible to us and to Google',
+      items: [
+        'That a conversation exists, and which accounts are in it',
+        'When each account was last active',
+        'The metadata of every connection, including your IP address',
+        'Crash and usage reports, which carry an account identifier',
+        'Anything you choose to send to an AI feature, while it runs',
+      ],
+    },
+    note: `The encryption has never been independently audited. Removing that metadata is harder than encrypting the contents, and that work is not finished.`,
+  },
+
+  download: {
+    title: 'Get Chatterbox',
+    intro: `The web app runs in a browser with nothing to install. On Android, Google Play keeps it updated; the APK on this site is the same build for anyone who would rather not use the store.`,
+    introWebOnly: `The web app runs in a browser with nothing to install, on a phone as well as a desktop. The Android build is on its way to Google Play.`,
+    web: 'Open the web app',
+    play: 'Get it on Google Play',
+    playPending: 'Coming to Google Play',
+    apk: 'Download the APK',
+    playNote: `Google Play is the recommended route on Android: it updates the app in the background and verifies the signature on every install.`,
+    androidPendingNote: `Neither Android route is live yet: the Play listing is not published, and there is no download on this site. The web app is the way in until one of them is.`,
+    playPendingNote: `The Play listing is not live yet. Until it is, the APK is the Android route — Android will ask you to allow installs from this source the first time, and it does not update itself.`,
+    apkNote: `The APK is signed with the same key as the Play build, so it installs over it and keeps your data. It does not update itself.`,
+    iosNote: `iOS is not released yet.`,
+  },
+
+  footer: {
+    rights: '© 2026 Chatterbox. A personal project, honestly described.',
+    privacy: 'Privacy Policy',
+  },
+};

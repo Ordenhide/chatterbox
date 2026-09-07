@@ -18,6 +18,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
+import {SITE_LANGUAGE_CODES, languageMeta} from './site-copy/languages.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, 'src/i18n/privacyPolicy.ts');
@@ -71,47 +72,69 @@ function bodyToHtml(body) {
  * policy itself, so this is the whole of what has to be written by hand when a
  * language is added — and the generator throws if a language has a policy but
  * no entry here, rather than emitting an English page under a Spanish name.
+ *
+ * Writing direction and each language's own name are not here: they are facts
+ * about the language rather than about this page, and the landing-page
+ * generator needs them too, so they live in site-copy/languages.mjs.
  */
 const CHROME = {
-  en:        {lang: 'en',      dir: 'ltr', title: 'Privacy Policy — Chatterbox',        heading: 'Privacy Policy',        updated: 'Last updated',       back: 'Back to Chatterbox',      features: 'Features',    download: 'Download',     native: 'English'},
-  'zh-Hans': {lang: 'zh-Hans', dir: 'ltr', title: '隐私政策 — Chatterbox',              heading: '隐私政策',              updated: '最后更新',           back: '返回 Chatterbox',         features: '功能',        download: '下载',         native: '简体中文'},
-  'zh-Hant': {lang: 'zh-Hant', dir: 'ltr', title: '隱私政策 — Chatterbox',              heading: '隱私政策',              updated: '最後更新',           back: '返回 Chatterbox',         features: '功能',        download: '下載',         native: '繁體中文'},
-  es:        {lang: 'es',      dir: 'ltr', title: 'Política de privacidad — Chatterbox', heading: 'Política de privacidad', updated: 'Última actualización', back: 'Volver a Chatterbox',  features: 'Funciones',   download: 'Descargar',    native: 'Español'},
-  fr:        {lang: 'fr',      dir: 'ltr', title: 'Politique de confidentialité — Chatterbox', heading: 'Politique de confidentialité', updated: 'Dernière mise à jour', back: 'Retour à Chatterbox', features: 'Fonctionnalités', download: 'Télécharger', native: 'Français'},
-  de:        {lang: 'de',      dir: 'ltr', title: 'Datenschutzerklärung — Chatterbox',  heading: 'Datenschutzerklärung',  updated: 'Zuletzt aktualisiert', back: 'Zurück zu Chatterbox',  features: 'Funktionen',  download: 'Herunterladen', native: 'Deutsch'},
-  it:        {lang: 'it',      dir: 'ltr', title: 'Informativa sulla privacy — Chatterbox', heading: 'Informativa sulla privacy', updated: 'Ultimo aggiornamento', back: 'Torna a Chatterbox', features: 'Funzioni',  download: 'Scarica',      native: 'Italiano'},
-  pt:        {lang: 'pt',      dir: 'ltr', title: 'Política de Privacidade — Chatterbox', heading: 'Política de Privacidade', updated: 'Última atualização', back: 'Voltar ao Chatterbox', features: 'Funcionalidades', download: 'Transferir', native: 'Português'},
-  ru:        {lang: 'ru',      dir: 'ltr', title: 'Политика конфиденциальности — Chatterbox', heading: 'Политика конфиденциальности', updated: 'Последнее обновление', back: 'Назад в Chatterbox', features: 'Возможности', download: 'Скачать',   native: 'Русский'},
-  tr:        {lang: 'tr',      dir: 'ltr', title: 'Gizlilik Politikası — Chatterbox',   heading: 'Gizlilik Politikası',   updated: 'Son güncelleme',     back: "Chatterbox'a dön",        features: 'Özellikler',  download: 'İndir',        native: 'Türkçe'},
-  vi:        {lang: 'vi',      dir: 'ltr', title: 'Chính sách quyền riêng tư — Chatterbox', heading: 'Chính sách quyền riêng tư', updated: 'Cập nhật lần cuối', back: 'Quay lại Chatterbox', features: 'Tính năng', download: 'Tải xuống',  native: 'Tiếng Việt'},
-  ja:        {lang: 'ja',      dir: 'ltr', title: 'プライバシーポリシー — Chatterbox',   heading: 'プライバシーポリシー',   updated: '最終更新',           back: 'Chatterbox に戻る',       features: '機能',        download: 'ダウンロード', native: '日本語'},
-  ko:        {lang: 'ko',      dir: 'ltr', title: '개인정보처리방침 — Chatterbox',        heading: '개인정보처리방침',       updated: '최종 업데이트',      back: 'Chatterbox로 돌아가기',   features: '기능',        download: '다운로드',     native: '한국어'},
-  ar:        {lang: 'ar',      dir: 'rtl', title: 'سياسة الخصوصية — Chatterbox',        heading: 'سياسة الخصوصية',        updated: 'آخر تحديث',          back: 'العودة إلى Chatterbox',   features: 'المزايا',     download: 'تنزيل',        native: 'العربية'},
-  hi:        {lang: 'hi',      dir: 'ltr', title: 'गोपनीयता नीति — Chatterbox',          heading: 'गोपनीयता नीति',          updated: 'आख़िरी अपडेट',        back: 'Chatterbox पर वापस',      features: 'सुविधाएँ',     download: 'डाउनलोड',      native: 'हिन्दी'},
+  en:        {title: 'Privacy Policy — Chatterbox',        heading: 'Privacy Policy',        updated: 'Last updated',       back: 'Back to Chatterbox',      features: 'Features',    download: 'Download'},
+  'zh-Hans': {title: '隐私政策 — Chatterbox',              heading: '隐私政策',              updated: '最后更新',           back: '返回 Chatterbox',         features: '功能',        download: '下载'},
+  'zh-Hant': {title: '隱私政策 — Chatterbox',              heading: '隱私政策',              updated: '最後更新',           back: '返回 Chatterbox',         features: '功能',        download: '下載'},
+  es:        {title: 'Política de privacidad — Chatterbox', heading: 'Política de privacidad', updated: 'Última actualización', back: 'Volver a Chatterbox',  features: 'Funciones',   download: 'Descargar'},
+  fr:        {title: 'Politique de confidentialité — Chatterbox', heading: 'Politique de confidentialité', updated: 'Dernière mise à jour', back: 'Retour à Chatterbox', features: 'Fonctionnalités', download: 'Télécharger'},
+  de:        {title: 'Datenschutzerklärung — Chatterbox',  heading: 'Datenschutzerklärung',  updated: 'Zuletzt aktualisiert', back: 'Zurück zu Chatterbox',  features: 'Funktionen',  download: 'Herunterladen'},
+  it:        {title: 'Informativa sulla privacy — Chatterbox', heading: 'Informativa sulla privacy', updated: 'Ultimo aggiornamento', back: 'Torna a Chatterbox', features: 'Funzioni',  download: 'Scarica'},
+  pt:        {title: 'Política de Privacidade — Chatterbox', heading: 'Política de Privacidade', updated: 'Última atualização', back: 'Voltar ao Chatterbox', features: 'Funcionalidades', download: 'Transferir'},
+  ru:        {title: 'Политика конфиденциальности — Chatterbox', heading: 'Политика конфиденциальности', updated: 'Последнее обновление', back: 'Назад в Chatterbox', features: 'Возможности', download: 'Скачать'},
+  tr:        {title: 'Gizlilik Politikası — Chatterbox',   heading: 'Gizlilik Politikası',   updated: 'Son güncelleme',     back: "Chatterbox'a dön",        features: 'Özellikler',  download: 'İndir'},
+  vi:        {title: 'Chính sách quyền riêng tư — Chatterbox', heading: 'Chính sách quyền riêng tư', updated: 'Cập nhật lần cuối', back: 'Quay lại Chatterbox', features: 'Tính năng', download: 'Tải xuống'},
+  ja:        {title: 'プライバシーポリシー — Chatterbox',   heading: 'プライバシーポリシー',   updated: '最終更新',           back: 'Chatterbox に戻る',       features: '機能',        download: 'ダウンロード'},
+  ko:        {title: '개인정보처리방침 — Chatterbox',        heading: '개인정보처리방침',       updated: '최종 업데이트',      back: 'Chatterbox로 돌아가기',   features: '기능',        download: '다운로드'},
+  ar:        {title: 'سياسة الخصوصية — Chatterbox',        heading: 'سياسة الخصوصية',        updated: 'آخر تحديث',          back: 'العودة إلى Chatterbox',   features: 'المزايا',     download: 'تنزيل'},
+  hi:        {title: 'गोपनीयता नीति — Chatterbox',          heading: 'गोपनीयता नीति',          updated: 'आख़िरी अपडेट',        back: 'Chatterbox पर वापस',      features: 'सुविधाएँ',     download: 'डाउनलोड'},
 };
 
 /** `privacy.html` for English, `privacy.<code>.html` for the rest. */
 const pageName = code => (code === 'en' ? 'privacy.html' : `privacy.${code}.html`);
 
+/** `index.html` for English, `index.<code>.html` for the rest. */
+const homeName = code => (code === 'en' ? 'index.html' : `index.${code}.html`);
+
 export function renderPage(code, sections, updated, allCodes) {
   const c = CHROME[code];
   if (!c) throw new Error(`no page furniture for ${code} — add it to CHROME`);
+  const meta = languageMeta(code);
   const body = sections
     .map(s => `    <section>\n      <h2>${escape(s.title)}</h2>\n      ${bodyToHtml(s.body)}\n    </section>`)
     .join('\n\n');
-  // Every language links to every other, so a reader who landed on the wrong
-  // one is one click away rather than having to guess a filename.
+  // Every language is listed and the current one is marked rather than
+  // missing, so the row does not reflow as you move between languages.
   const switcher = allCodes
-    .filter(other => other !== code)
-    .map(other => `<a href="${pageName(other)}" lang="${CHROME[other].lang}">${CHROME[other].native}</a>`)
+    .map(other =>
+      other === code
+        ? `<span aria-current="true" lang="${languageMeta(other).lang}">${languageMeta(other).native}</span>`
+        : `<a href="${pageName(other)}" lang="${languageMeta(other).lang}" hreflang="${languageMeta(other).lang}">${languageMeta(other).native}</a>`,
+    )
     .join('\n        ');
+  // Search engines need to be told these are the same document; readers need
+  // the nav to keep them in the language they arrived in.
+  const alternates = allCodes
+    .map(
+      other =>
+        `  <link rel="alternate" hreflang="${languageMeta(other).lang}" href="${pageName(other)}" />`,
+    )
+    .concat('  <link rel="alternate" hreflang="x-default" href="privacy.html" />')
+    .join('\n');
+
   return `<!doctype html>
-<html lang="${c.lang}" dir="${c.dir}">
+<html lang="${meta.lang}" dir="${meta.dir}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${c.title}</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233478F6'/%3E%3Cpath d='M9 12h14M9 16h10M9 20h7' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+${alternates}
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -122,27 +145,25 @@ export function renderPage(code, sections, updated, allCodes) {
 
   <nav class="nav">
     <div class="nav-inner">
-      <a href="index.html" class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 8h6M9 12h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-        </span>
+      <a href="${homeName(code)}" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
         Chatterbox
       </a>
       <div class="nav-links">
-        <a href="index.html#features">${c.features}</a>
-        <a href="index.html#download" class="nav-cta">${c.download}</a>
+        <a href="${homeName(code)}#features">${c.features}</a>
+        <a href="${homeName(code)}#download" class="nav-cta">${c.download}</a>
       </div>
     </div>
   </nav>
 
   <main class="doc">
-    <a class="back-link" href="index.html">← ${c.back}</a>
+    <a class="back-link" href="${homeName(code)}">← ${c.back}</a>
     <h1>${c.heading}</h1>
     <p class="meta">${c.updated}: ${updated}</p>
 
 ${body}
 
-    <nav class="doc-langs" aria-label="${c.heading}">
+    <nav class="site-langs" aria-label="${c.heading}">
         ${switcher}
     </nav>
   </main>
@@ -153,7 +174,15 @@ ${body}
 
 export function generate() {
   const {languages, updated} = parsePolicy(readFileSync(SOURCE, 'utf8'));
-  const codes = Object.keys(languages);
+  // Ordered by the shared list rather than by where they sit in the TS file,
+  // so the switcher reads the same here as on the landing pages.
+  const codes = SITE_LANGUAGE_CODES.filter(code => languages[code]);
+  const missing = Object.keys(languages).filter(code => !codes.includes(code));
+  if (missing.length) {
+    throw new Error(
+      `policy languages missing from site-copy/languages.mjs: ${missing.join(', ')}`,
+    );
+  }
   const pages = {};
   for (const code of codes) {
     pages[`website/${pageName(code)}`] = renderPage(code, languages[code], updated, codes);

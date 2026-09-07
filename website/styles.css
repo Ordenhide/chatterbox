@@ -170,15 +170,16 @@ img {
   letter-spacing: 0.3px;
 }
 
+/* The app's own icon, the same file the favicon and the PWA use, so the mark
+   in the nav cannot drift from the one on the home screen. */
 .brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 2px;
-  background: var(--primary);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
+  /* The icon's own ground is black, which disappears into the dark theme;
+     the hairline keeps its edge visible on either background. */
+  border: 1px solid var(--border);
 }
 
 .nav-links {
@@ -267,6 +268,7 @@ h1 {
   letter-spacing: 2px;
   margin: 0 0 20px;
   font-weight: 700;
+  text-wrap: balance;
 }
 
 .hero p.lead {
@@ -282,8 +284,6 @@ h1 {
 @media (max-width: 860px) {
   .hero p.lead {
     max-width: none;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 
@@ -311,13 +311,27 @@ h1 {
   transform: translateY(-1px);
 }
 
-/* Flat fill, and theme-dependent ink: white on the light-mode deep cyan
-   (4.62:1), dark on the dark-mode bright cyan (8.10:1). White-on-bright-cyan
-   would be 2.43:1 — a WCAG failure. */
+/* Flat fill, and theme-dependent ink: white on the light-mode deep green
+   (5.29:1), black on the dark-mode signal green (15.38:1). White on the bright
+   green would be 1.37:1 — a WCAG failure. */
 .btn-primary {
   background: var(--primary);
   color: var(--text-on-primary);
-  box-shadow: 0 10px 30px -12px rgba(22, 181, 216, 0.45);
+  box-shadow: 0 10px 30px -12px var(--primary-light);
+}
+
+/* The store button before the listing exists. It reads as a button so the row
+   keeps its shape, but it is not a link and does not lift on hover, because
+   there is nowhere for it to go. */
+.btn-pending {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border);
+  cursor: default;
+}
+
+.btn-pending:hover {
+  transform: none;
 }
 
 .btn-secondary {
@@ -497,7 +511,7 @@ h1 {
 
 /* Download */
 .download-card {
-  background: linear-gradient(135deg, rgba(22, 181, 216, 0.12), rgba(76, 130, 216, 0.12));
+  background: linear-gradient(135deg, var(--tint-1), var(--tint-2));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 56px;
@@ -663,8 +677,8 @@ footer {
 /* The caveat under a claim. Set apart because a qualification that reads like
    the claim is a qualification nobody registers. */
 .reason-note {
-  border-left: 2px solid var(--primary);
-  padding-left: 14px;
+  border-inline-start: 2px solid var(--primary);
+  padding-inline-start: 14px;
   font-size: 14.5px;
 }
 
@@ -711,14 +725,14 @@ footer {
 
 .ledger-col li {
   position: relative;
-  padding-left: 26px;
+  padding-inline-start: 26px;
   color: var(--text-secondary);
   line-height: 1.55;
 }
 
 .ledger-col li::before {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   font-weight: 700;
 }
@@ -746,4 +760,59 @@ footer {
   .ledger-col {
     padding: 24px 22px;
   }
+}
+
+/* The language row, shared by the landing pages and the policy pages. The
+   current language is a span rather than a link, so it stays in place instead
+   of the row reflowing every time you switch. */
+.site-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.site-langs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.site-langs a:hover {
+  color: var(--text);
+}
+
+.site-langs [aria-current] {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* The display face covers Latin and Cyrillic only. Left alone, a Japanese
+   heading renders its kana in a system fallback at a different weight beside
+   any Latin word in the same line, which reads as a mistake. These stacks put
+   the whole line in one face. */
+:root:lang(ja),
+:root:lang(ko),
+:root:lang(zh-Hans),
+:root:lang(zh-Hant) {
+  --display: 'Chakra Petch', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans CJK SC',
+    'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', -apple-system, 'Hiragino Sans', 'Yu Gothic',
+    'Noto Sans CJK SC', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+
+:root:lang(ar) {
+  --display: 'Chakra Petch', 'SF Arabic', 'Geeza Pro', 'Noto Sans Arabic',
+    system-ui, sans-serif;
+  --body: 'IBM Plex Sans', 'SF Arabic', 'Geeza Pro', 'Noto Sans Arabic',
+    sans-serif;
+}
+
+:root:lang(hi) {
+  --display: 'Chakra Petch', 'Noto Sans Devanagari', 'Kohinoor Devanagari',
+    system-ui, sans-serif;
+  --body: 'IBM Plex Sans', 'Noto Sans Devanagari', 'Kohinoor Devanagari',
+    sans-serif;
 }
