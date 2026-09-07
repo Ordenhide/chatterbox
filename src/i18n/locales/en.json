@@ -25,8 +25,8 @@
     "decline": "Decline",
     "justNow": "Just now",
     "tapToRetry": "Tap to retry.",
-    "showPassword": "Show password",
-    "hidePassword": "Hide password",
+    
+    
     "save": "Save"
   },
   "errors": {
@@ -77,9 +77,9 @@
     "errors": {
       
       
-      "passwordMin": "Password must be at least 8 characters",
-      "passwordTooCommon": "That password is too common — please choose a less predictable one",
-      "passwordTooSimple": "That password is too predictable (repeated or sequential characters) — please choose another",
+      
+      
+      
       "loginFailed": "Login Failed",
       "signUpFailed": "Sign Up Failed",
       "generic": "An error occurred",
@@ -269,25 +269,25 @@
       "export": "Export Backup",
       "import": "Import Backup",
       "signOut": "Sign Out",
-      "changePassword": "Change Password",
+      
       "deleteAccount": "Delete Account"
     },
-    "account": {
-      "changePasswordTitle": "Change password",
-      "changePasswordDescription": "You will stay signed in on this device.",
-      "currentPassword": "Current password",
-      "newPassword": "New password",
-      "confirmPassword": "Confirm new password",
-      "passwordChanged": "Your password has been changed.",
-      "passwordMismatch": "The new passwords do not match.",
-      "wrongPassword": "That current password is not correct.",
+    "account": {"deleteConfirmWord": "DELETE", "deleteTypeWord": "Type {{word}} to permanently delete your account.", "deleteNoKey": "This device doesn't hold this account's key, so it can't confirm the deletion. Sign in with your recovery phrase first.", 
+      
+      
+      
+      
+      
+      
+      
+      
       "tooManyRequests": "Too many attempts. Please try again later.",
       "genericError": "Something went wrong. Please try again.",
       "deleteTitle": "Delete account",
       "deleteDescription": "Permanently deletes your account, profile, saved items and the messages you sent. This cannot be undone.",
       "deleteWhatHappens": "This permanently deletes:\n\n• Your profile, saved items and friend connections\n• Messages and media you sent, in every conversation\n• Your encryption keys stored on this device\n\nMessages other people sent you stay in their own copy of the conversation.\n\nThis cannot be undone.",
       "deleteConfirm": "Delete Everything",
-      "deleteEnterPassword": "Enter your password to permanently delete your account.",
+      
       "deleting": "Deleting your data…",
       "deleteFailed": "Could not delete the account. Please try again.",
       "deletePartial": "Your account was deleted, but some data could not be removed. Please contact support.",

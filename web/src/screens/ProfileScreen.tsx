@@ -6,7 +6,6 @@ import {useTheme} from '../context/ThemeContext';
 import {useToast} from '../context/ToastContext';
 import {useT, type Lang} from '../i18n';
 import {signOut, updateDisplayName} from '../services/auth';
-import {changePassword, type PasswordChangeError} from '../services/account';
 import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
@@ -18,7 +17,6 @@ import {
   setReadReceiptsEnabled,
   setTypingIndicatorEnabled,
 } from '../services/privacyPrefs';
-import {checkPasswordStrength} from '../services/passwordPolicy';
 import {getUserById} from '../services/chat';
 import {currentPermission, enablePush, notificationsSupported} from '../services/push';
 import {startTour} from '../services/tour';
@@ -27,7 +25,6 @@ import DeleteAccountModal from '../components/DeleteAccountModal';
 import RecoveryPhraseModal from '../components/RecoveryPhraseModal';
 import DownloadAppCard from '../components/DownloadAppCard';
 import Icon from '../components/Icon';
-import PasswordInput from '../components/PasswordInput';
 
 type SectionId = 'profile' | 'preferences' | 'privacy' | 'account' | 'support';
 
@@ -44,11 +41,6 @@ export default function ProfileScreen({user}: {user: User}) {
   const [pushSupported, setPushSupported] = useState(false);
   const [pushPerm, setPushPerm] = useState(currentPermission());
   const [enablingPush, setEnablingPush] = useState(false);
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [pwError, setPwError] = useState<string | null>(null);
-  const [changingPw, setChangingPw] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
   const [exportingData, setExportingData] = useState(false);
@@ -98,52 +90,10 @@ export default function ProfileScreen({user}: {user: User}) {
     }
   };
 
-  const submitPasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwError(null);
-    if (newPw !== confirmPw) {
-      setPwError(t('account.passwordMismatch'));
-      return;
-    }
-    // Same policy the sign-up form enforces, so a password change cannot be
-    // used to sidestep it and land on something weaker.
-    const strength = checkPasswordStrength(newPw);
-    if (strength !== 'ok') {
-      setPwError(
-        {
-          'too-short': 'Password must be at least 8 characters.',
-          'too-common': 'That password is too common — please choose a less predictable one.',
-          'too-simple':
-            'That password is too predictable (repeated or sequential characters) — please choose another.',
-        }[strength],
-      );
-      return;
-    }
-    setChangingPw(true);
-    try {
-      await changePassword(currentPw, newPw);
-      setCurrentPw('');
-      setNewPw('');
-      setConfirmPw('');
-      toast.success(t('account.passwordChanged'));
-    } catch (err) {
-      const reason = (err as {reason?: PasswordChangeError}).reason;
-      setPwError(
-        reason === 'wrong-password'
-          ? t('account.wrongPassword')
-          : reason === 'too-many-requests'
-          ? t('account.tooManyRequests')
-          : t('account.genericError'),
-      );
-    } finally {
-      setChangingPw(false);
-    }
-  };
-
   // "Download my data": a human-readable, decrypted copy of the account's
   // Firestore data (profile, conversations, moments, social graph). Reading
   // the account's own data doesn't count as a Firebase Auth "sensitive
-  // operation", so unlike password change/delete this needs no reauthentication.
+  // operation", so unlike deletion this needs no reauthentication.
   const handleDownloadData = async () => {
     setExportingData(true);
     setExportDataError(null);
@@ -375,43 +325,6 @@ export default function ProfileScreen({user}: {user: User}) {
       label: t('profile.sectionAccount'),
       node: (
         <>
-          <form style={styles.card} onSubmit={submitPasswordChange}>
-            <div style={styles.cardTitle}>{t('account.changePassword')}</div>
-            <div style={styles.cardDesc}>{t('account.changePasswordDesc')}</div>
-            <PasswordInput
-              style={{...styles.input, marginBottom: 8}}
-              placeholder={t('account.currentPassword')}
-              aria-label={t('account.currentPassword')}
-              value={currentPw}
-              onChange={e => setCurrentPw(e.target.value)}
-              autoComplete="current-password"
-            />
-            <PasswordInput
-              style={{...styles.input, marginBottom: 8}}
-              placeholder={t('account.newPassword')}
-              aria-label={t('account.newPassword')}
-              value={newPw}
-              onChange={e => setNewPw(e.target.value)}
-              autoComplete="new-password"
-            />
-            <PasswordInput
-              style={{...styles.input, marginBottom: 8}}
-              placeholder={t('account.confirmPassword')}
-              aria-label={t('account.confirmPassword')}
-              value={confirmPw}
-              onChange={e => setConfirmPw(e.target.value)}
-              autoComplete="new-password"
-            />
-            {pwError && <div style={styles.pwError}>{pwError}</div>}
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={styles.pwSubmit}
-              disabled={changingPw || !currentPw || !newPw || !confirmPw}>
-              {changingPw ? <span className="spinner" /> : t('account.changePassword')}
-            </button>
-          </form>
-
           <section style={styles.card}>
             <div style={styles.cardTitle}>{t('recovery.title')}</div>
             <div style={styles.cardDesc}>{t('recovery.cardDesc')}</div>

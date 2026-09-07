@@ -3,7 +3,6 @@ import {
   deleteUser,
   getAuth,
   reauthenticateWithCredential,
-  updatePassword,
 } from './firebase/auth';
 import {
   arrayRemove,
@@ -25,6 +24,7 @@ import {reportError} from './errorLog';
 import {deleteStorageObjectByUrl} from './firebaseChat';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {clearDeviceKeypair, getDeviceKeypairIfEnrolled} from './e2eeKeys';
+import {credentialsFromSeed} from './anonymousIdentity';
 import {clearRatchetKeys} from './ratchetKeys';
 import {clearRatchetSessions} from './ratchetSessionStore';
 import {clearBodies} from './messageBodyStore';
@@ -32,14 +32,19 @@ import {clearMediaCache} from './mediaVault';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
 
 /**
- * Account-level operations: changing a password, and permanently deleting an
- * account together with its data. Mirrors web/src/services/account.ts — same
- * ordering, same limitations — using the React Native Firebase SDK.
+ * Permanently deleting an account together with its data. Mirrors
+ * web/src/services/account.ts — same ordering, same limitations — using the
+ * React Native Firebase SDK.
  *
- * Both are "sensitive operations" to Firebase Auth, which refuses them on a
- * token older than a few minutes (auth/requires-recent-login), so both take
- * the current password and reauthenticate first. That doubles as proof that
- * the person holding the unlocked phone is the account owner.
+ * Deletion is a "sensitive operation" to Firebase Auth, which refuses it on a
+ * token older than a few minutes (auth/requires-recent-login), so it
+ * reauthenticates first. There is no password to ask for: the credential is
+ * derived from the recovery phrase, and this device already holds that phrase
+ * as its E2EE key, so reauthentication is silent (see reauthenticate below).
+ *
+ * Changing a password used to live here too. It has no meaning now — the
+ * credential is a function of the account's 24 words, so the only way to
+ * change it is to have a different account.
  */
 
 const db = getFirestore();
@@ -55,52 +60,59 @@ export interface PurgeReport {
   errors: string[];
 }
 
-export type PasswordChangeError =
-  | 'wrong-password'
-  | 'weak-password'
+export type AccountActionError =
+  /** This device does not hold the account's key, so it cannot prove itself. */
+  | 'no-device-key'
+  /** Firebase refused the derived credential. */
+  | 'rejected'
   | 'too-many-requests'
   | 'unknown';
 
-export function describeAuthError(error: unknown): PasswordChangeError {
+export function describeAuthError(error: unknown): AccountActionError {
   const code = (error as {code?: string})?.code || '';
   if (
     code === 'auth/wrong-password' ||
     code === 'auth/invalid-credential' ||
     code === 'auth/invalid-login-credentials'
   ) {
-    return 'wrong-password';
+    return 'rejected';
   }
-  if (code === 'auth/weak-password') return 'weak-password';
   if (code === 'auth/too-many-requests') return 'too-many-requests';
-  return 'unknown';
+  return (error as {reason?: AccountActionError})?.reason === 'no-device-key'
+    ? 'no-device-key'
+    : 'unknown';
 }
 
-async function reauthenticate(currentPassword: string): Promise<void> {
+/**
+ * Proves account ownership without asking for anything.
+ *
+ * The credential is derived from the account's recovery phrase, and this
+ * device is holding that phrase already — it is the E2EE secret key
+ * (services/anonymousIdentity.ts). So the password prompt this used to show
+ * would have been asking the user to retype a secret the app is sitting on,
+ * which is theatre rather than a check.
+ *
+ * What actually guards deletion is the confirmation the caller collects, and
+ * the app lock in front of the whole app. Someone holding an unlocked phone
+ * could already read every message on it and reveal the phrase; deleting the
+ * account takes data away from them rather than giving them any.
+ *
+ * A device with no key cannot do this, and says so rather than failing as a
+ * wrong password. That state means the account was never enrolled here.
+ */
+async function reauthenticate(): Promise<void> {
   const user = getAuth().currentUser;
   if (!user?.email) throw new Error('not signed in');
-  await reauthenticateWithCredential(
-    user,
-    EmailAuthProvider.credential(user.email, currentPassword),
-  );
-}
-
-/** Changes the signed-in user's password. Throws with `.reason` set. */
-export async function changePassword(
-  currentPassword: string,
-  newPassword: string,
-): Promise<void> {
-  const user = getAuth().currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await reauthenticate(currentPassword);
-    await updatePassword(user, newPassword);
-  } catch (error) {
-    const wrapped = new Error('password change failed') as Error & {
-      reason: PasswordChangeError;
+  const keypair = await getDeviceKeypairIfEnrolled(user.uid);
+  if (!keypair) {
+    const error = new Error('device holds no key for this account') as Error & {
+      reason: AccountActionError;
     };
-    wrapped.reason = describeAuthError(error);
-    throw wrapped;
+    error.reason = 'no-device-key';
+    throw error;
   }
+  const {secret} = credentialsFromSeed(keypair.secretKey);
+  await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, secret));
 }
 
 const PAGE = 400;
@@ -423,16 +435,16 @@ export async function clearLocalData(userId: string): Promise<void> {
  * deleting the auth user first would make every remaining Firestore and
  * Storage request unauthenticated, stranding the data it was meant to erase.
  */
-export async function deleteAccount(currentPassword: string): Promise<PurgeReport> {
+export async function deleteAccount(): Promise<PurgeReport> {
   const user = getAuth().currentUser;
   if (!user) throw new Error('not signed in');
   const uid = user.uid;
 
   try {
-    await reauthenticate(currentPassword);
+    await reauthenticate();
   } catch (error) {
     const wrapped = new Error('reauthentication failed') as Error & {
-      reason: PasswordChangeError;
+      reason: AccountActionError;
     };
     wrapped.reason = describeAuthError(error);
     throw wrapped;

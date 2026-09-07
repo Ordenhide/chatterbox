@@ -27,7 +27,6 @@ import {doc, getFirestore, onSnapshot} from '../services/firebase/firestore';
 import GlassView from '../components/GlassView';
 import GlassScreen from '../components/GlassScreen';
 import Icon from '../components/Icon';
-import PasswordInput from '../components/PasswordInput';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import i18n, {LANGUAGES} from '../i18n';
@@ -38,15 +37,13 @@ import {SHOW_AI_FEATURES} from '../config/launch';
 import {useNavigation} from '@react-navigation/native';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import {
-  changePassword,
   deleteAccount,
-  type PasswordChangeError,
+  type AccountActionError,
 } from '../services/account';
 import {exportUserData} from '../services/dataExport';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
 import {shareTextFile} from '../utils/shareFile';
-import {checkPasswordStrength} from '../services/passwordPolicy';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 import {bodyWeight, fonts} from '../theme/typography';
 
@@ -59,13 +56,8 @@ export default function ProfileScreen() {
   const [exportVisible, setExportVisible] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
   // Change-password / delete-account flows.
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [changingPassword, setChangingPassword] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteWord, setDeleteWord] = useState('');
   const [deleting, setDeleting] = useState(false);
   // Backups are encrypted under a passphrase the user chooses; it is never
   // persisted, so losing it means losing the backup.
@@ -208,53 +200,27 @@ export default function ProfileScreen() {
     ]);
   }, [signOut]);
 
-  const passwordErrorMessage = useCallback(
-    (reason: PasswordChangeError | undefined) =>
-      reason === 'wrong-password'
-        ? t('profile.account.wrongPassword')
+  // Matched case-insensitively after trimming: the word is a deliberate
+  // speed bump, not a password, and failing someone for a stray space or an
+  // autocapitalised keyboard would only teach them to paste it.
+  const deleteConfirmed =
+    deleteWord.trim().toUpperCase() === t('profile.account.deleteConfirmWord').toUpperCase();
+
+  const accountErrorMessage = useCallback(
+    (reason: AccountActionError | undefined) =>
+      reason === 'no-device-key'
+        ? t('profile.account.deleteNoKey')
         : reason === 'too-many-requests'
         ? t('profile.account.tooManyRequests')
         : t('profile.account.genericError'),
     [t],
   );
 
-  const submitPasswordChange = useCallback(async () => {
-    if (newPassword !== confirmPassword) {
-      Alert.alert(t('common.error'), t('profile.account.passwordMismatch'));
-      return;
-    }
-    // Same policy the sign-up screen enforces, so changing a password cannot
-    // be used to sidestep it and land on something weaker.
-    const strength = checkPasswordStrength(newPassword);
-    if (strength !== 'ok') {
-      const key = {
-        'too-short': 'auth.errors.passwordMin',
-        'too-common': 'auth.errors.passwordTooCommon',
-        'too-simple': 'auth.errors.passwordTooSimple',
-      }[strength];
-      Alert.alert(t('common.error'), t(key));
-      return;
-    }
-    setChangingPassword(true);
-    try {
-      await changePassword(currentPassword, newPassword);
-      setPasswordVisible(false);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      Alert.alert(t('profile.account.changePasswordTitle'), t('profile.account.passwordChanged'));
-    } catch (error) {
-      Alert.alert(t('common.error'), passwordErrorMessage((error as any)?.reason));
-    } finally {
-      setChangingPassword(false);
-    }
-  }, [confirmPassword, currentPassword, newPassword, passwordErrorMessage, t]);
-
   const runDeletion = useCallback(
-    async (password: string) => {
+    async () => {
       setDeleting(true);
       try {
-        const report = await deleteAccount(password);
+        const report = await deleteAccount();
         // The account is gone regardless at this point; AuthContext's
         // onAuthStateChanged returns the app to the login screen on its own.
         // Surfacing a partial failure matters because the user can no longer
@@ -269,19 +235,24 @@ export default function ProfileScreen() {
         Alert.alert(
           t('common.error'),
           (error as any)?.reason
-            ? passwordErrorMessage((error as any).reason)
+            ? accountErrorMessage((error as any).reason)
             : t('profile.account.deleteFailed'),
         );
       }
     },
-    [passwordErrorMessage, t],
+    [accountErrorMessage, t],
   );
 
   /**
-   * Two-step confirmation: an explicit summary of what is destroyed, then the
-   * account password. The action is irreversible and cannot be undone by
+   * Two-step confirmation: an explicit summary of what is destroyed, then a
+   * word typed by hand. The action is irreversible and cannot be undone by
    * support — the data is genuinely gone, not flagged — so a single tap must
    * never be enough to trigger it.
+   *
+   * It used to ask for the account password at the second step. There is no
+   * password any more, and asking the user to retype the recovery phrase
+   * would be asking for a secret this device is already holding — see
+   * reauthenticate in services/account.ts.
    */
   const handleDeleteAccount = useCallback(() => {
     Alert.alert(t('profile.account.deleteTitle'), t('profile.account.deleteWhatHappens'), [
@@ -290,7 +261,7 @@ export default function ProfileScreen() {
         text: t('profile.account.deleteConfirm'),
         style: 'destructive',
         onPress: () => {
-          setDeletePassword('');
+          setDeleteWord('');
           setDeleteVisible(true);
         },
       },
@@ -605,18 +576,6 @@ export default function ProfileScreen() {
             {t('privacy.title')}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
-          onPress={() => {
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-            setPasswordVisible(true);
-          }}>
-          <Text style={[styles.buttonText, {color: colors.text}]}>
-            {t('profile.buttons.changePassword')}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={[styles.button, {backgroundColor: colors.danger}]} onPress={handleSignOut}>
           <Text style={[styles.buttonText, {color: colors.textOnDanger}]}>
             {t('profile.buttons.signOut')}
@@ -634,63 +593,6 @@ export default function ProfileScreen() {
       </View>
       </ScrollView>
 
-      {passwordVisible && (
-        <Modal visible animationType="slide" transparent onRequestClose={() => setPasswordVisible(false)}>
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>
-              {t('profile.account.changePasswordTitle')}
-            </Text>
-            <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
-              {t('profile.account.changePasswordDescription')}
-            </Text>
-            <PasswordInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-              placeholder={t('profile.account.currentPassword')}
-              placeholderTextColor={colors.textSecondary}
-              value={currentPassword}
-              onChangeText={setCurrentPassword}
-              autoCapitalize="none"
-            />
-            <PasswordInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-              placeholder={t('profile.account.newPassword')}
-              placeholderTextColor={colors.textSecondary}
-              value={newPassword}
-              onChangeText={setNewPassword}
-              autoCapitalize="none"
-            />
-            <PasswordInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-              placeholder={t('profile.account.confirmPassword')}
-              placeholderTextColor={colors.textSecondary}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {backgroundColor: colors.primary},
-                (changingPassword || !currentPassword || !newPassword || !confirmPassword) && {opacity: 0.5},
-              ]}
-              disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
-              onPress={submitPasswordChange}>
-              {changingPassword ? (
-                <ActivityIndicator color={colors.textOnPrimary} />
-              ) : (
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.account.changePasswordTitle')}</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
-              onPress={() => setPasswordVisible(false)}
-              disabled={changingPassword}>
-              <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </Modal>
-      )}
-
       {deleteVisible && (
         <Modal visible animationType="slide" transparent onRequestClose={() => !deleting && setDeleteVisible(false)}>
           <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
@@ -698,25 +600,26 @@ export default function ProfileScreen() {
               {t('profile.account.deleteTitle')}
             </Text>
             <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
-              {t('profile.account.deleteEnterPassword')}
+              {t('profile.account.deleteTypeWord', {word: t('profile.account.deleteConfirmWord')})}
             </Text>
-            <PasswordInput
+            <TextInput
               style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder, minHeight: 48}]}
-              placeholder={t('profile.account.currentPassword')}
+              placeholder={t('profile.account.deleteConfirmWord')}
               placeholderTextColor={colors.textSecondary}
-              value={deletePassword}
-              onChangeText={setDeletePassword}
-              autoCapitalize="none"
+              value={deleteWord}
+              onChangeText={setDeleteWord}
+              autoCapitalize="characters"
+              autoCorrect={false}
               editable={!deleting}
             />
             <TouchableOpacity
               style={[
                 styles.button,
                 {backgroundColor: colors.danger},
-                (deleting || !deletePassword) && {opacity: 0.5},
+                (deleting || !deleteConfirmed) && {opacity: 0.5},
               ]}
-              disabled={deleting || !deletePassword}
-              onPress={() => runDeletion(deletePassword)}>
+              disabled={deleting || !deleteConfirmed}
+              onPress={runDeletion}>
               {deleting ? (
                 <ActivityIndicator color="#fff" />
               ) : (

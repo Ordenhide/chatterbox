@@ -25,8 +25,8 @@
     "decline": "Rechazar",
     "justNow": "Justo ahora",
     "tapToRetry": "Toca para reintentar.",
-    "showPassword": "Mostrar contraseña",
-    "hidePassword": "Ocultar contraseña",
+    
+    
     "save": "Guardar"
   },
   "tabs": {
@@ -65,7 +65,7 @@
     "errors": {
       
       
-      "passwordMin": "La contraseña debe tener al menos 6 caracteres",
+      
       "loginFailed": "Error al iniciar sesión",
       "signUpFailed": "Error al registrarse",
       "generic": "Ocurrió un error",
@@ -77,8 +77,8 @@
       
       "networkError": "Error de red. Por favor verifica tu conexión",
       "tooManyRequests": "Demasiados intentos. Por favor intenta de nuevo más tarde",
-      "passwordTooCommon": "Esa contraseña es demasiado común: elige una menos previsible",
-      "passwordTooSimple": "Esa contraseña es demasiado previsible (caracteres repetidos o consecutivos): elige otra",
+      
+      
       
       
       "phraseNotRecognized": "Esas no son 24 palabras de una frase de recuperación de Chatterbox. Revisa la ortografía y el orden.", "noAccountForPhrase": "Ninguna cuenta se abre con esas palabras. Vuelve a comprobarlas o crea una cuenta nueva." },
@@ -195,7 +195,7 @@
       "export": "Exportar respaldo",
       "import": "Importar respaldo",
       "signOut": "Cerrar sesión",
-      "changePassword": "Cambiar contraseña",
+      
       "deleteAccount": "Eliminar cuenta"
     },
     "modals": {
@@ -247,22 +247,22 @@
     "shortcutSaved": "Guardados",
     "shortcutPrivacy": "Privacidad",
     "shortcutRecovery": "Frase de recuperación",
-    "account": {
-      "changePasswordTitle": "Cambiar contraseña",
-      "changePasswordDescription": "Seguirás con la sesión iniciada en este dispositivo.",
-      "currentPassword": "Contraseña actual",
-      "newPassword": "Contraseña nueva",
-      "confirmPassword": "Confirmar contraseña nueva",
-      "passwordChanged": "Tu contraseña se ha cambiado.",
-      "passwordMismatch": "Las contraseñas nuevas no coinciden.",
-      "wrongPassword": "La contraseña actual no es correcta.",
+    "account": {"deleteConfirmWord": "DELETE", "deleteTypeWord": "Escribe {{word}} para eliminar tu cuenta de forma permanente.", "deleteNoKey": "Este dispositivo no tiene la clave de esta cuenta, así que no puede confirmar el borrado. Inicia sesión con tu frase de recuperación primero.", 
+      
+      
+      
+      
+      
+      
+      
+      
       "tooManyRequests": "Demasiados intentos. Inténtalo más tarde.",
       "genericError": "Algo salió mal. Inténtalo de nuevo.",
       "deleteTitle": "Eliminar cuenta",
       "deleteDescription": "Elimina de forma permanente tu cuenta, tu perfil, los elementos guardados y los mensajes que enviaste. Esto no se puede deshacer.",
       "deleteWhatHappens": "Esto elimina de forma permanente:\n\n• Tu perfil, los elementos guardados y tus amistades\n• Los mensajes y archivos que enviaste, en todas las conversaciones\n• Las claves de cifrado guardadas en este dispositivo\n\nLos mensajes que otras personas te enviaron seguirán en su propia copia de la conversación.\n\nEsto no se puede deshacer.",
       "deleteConfirm": "Eliminar todo",
-      "deleteEnterPassword": "Introduce tu contraseña para eliminar tu cuenta de forma permanente.",
+      
       "deleting": "Eliminando tus datos…",
       "deleteFailed": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
       "deletePartial": "Tu cuenta se eliminó, pero no se pudieron borrar algunos datos. Ponte en contacto con soporte.",

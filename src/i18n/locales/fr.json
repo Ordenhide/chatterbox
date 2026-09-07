@@ -25,8 +25,8 @@
     "decline": "Refuser",
     "justNow": "À l'instant",
     "tapToRetry": "Tapez pour réessayer.",
-    "showPassword": "Afficher le mot de passe",
-    "hidePassword": "Masquer le mot de passe",
+    
+    
     "save": "Enregistrer"
   },
   "tabs": {
@@ -65,7 +65,7 @@
     "errors": {
       
       
-      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
+      
       "loginFailed": "Connexion échouée",
       "signUpFailed": "Inscription échouée",
       "generic": "Une erreur s'est produite",
@@ -77,8 +77,8 @@
       
       "networkError": "Erreur réseau. Veuillez vérifier votre connexion",
       "tooManyRequests": "Trop de tentatives. Veuillez réessayer plus tard",
-      "passwordTooCommon": "Ce mot de passe est trop courant — choisissez-en un moins prévisible",
-      "passwordTooSimple": "Ce mot de passe est trop prévisible (caractères répétés ou consécutifs) — choisissez-en un autre",
+      
+      
       
       
       "phraseNotRecognized": "Ce ne sont pas les 24 mots d'une phrase de récupération Chatterbox. Vérifiez l'orthographe et l'ordre.", "noAccountForPhrase": "Aucun compte ne s'ouvre avec ces mots. Vérifiez-les ou créez un nouveau compte." },
@@ -195,7 +195,7 @@
       "export": "Exporter la sauvegarde",
       "import": "Importer la sauvegarde",
       "signOut": "Se déconnecter",
-      "changePassword": "Changer le mot de passe",
+      
       "deleteAccount": "Supprimer le compte"
     },
     "modals": {
@@ -247,22 +247,22 @@
     "shortcutSaved": "Enregistrés",
     "shortcutPrivacy": "Confidentialité",
     "shortcutRecovery": "Phrase de récupération",
-    "account": {
-      "changePasswordTitle": "Changer le mot de passe",
-      "changePasswordDescription": "Vous resterez connecté sur cet appareil.",
-      "currentPassword": "Mot de passe actuel",
-      "newPassword": "Nouveau mot de passe",
-      "confirmPassword": "Confirmer le nouveau mot de passe",
-      "passwordChanged": "Votre mot de passe a été changé.",
-      "passwordMismatch": "Les nouveaux mots de passe ne correspondent pas.",
-      "wrongPassword": "Le mot de passe actuel n'est pas correct.",
+    "account": {"deleteConfirmWord": "DELETE", "deleteTypeWord": "Tapez {{word}} pour supprimer définitivement votre compte.", "deleteNoKey": "Cet appareil ne détient pas la clé de ce compte et ne peut donc pas confirmer la suppression. Connectez-vous d'abord avec votre phrase de récupération.", 
+      
+      
+      
+      
+      
+      
+      
+      
       "tooManyRequests": "Trop de tentatives. Réessayez plus tard.",
       "genericError": "Une erreur est survenue. Veuillez réessayer.",
       "deleteTitle": "Supprimer le compte",
       "deleteDescription": "Supprime définitivement votre compte, votre profil, vos éléments enregistrés et les messages que vous avez envoyés. C'est irréversible.",
       "deleteWhatHappens": "Sont définitivement supprimés :\n\n• Votre profil, vos éléments enregistrés et vos relations d'amitié\n• Les messages et fichiers que vous avez envoyés, dans toutes les conversations\n• Vos clés de chiffrement stockées sur cet appareil\n\nLes messages que d'autres vous ont envoyés restent dans leur propre copie de la conversation.\n\nC'est irréversible.",
       "deleteConfirm": "Tout supprimer",
-      "deleteEnterPassword": "Saisissez votre mot de passe pour supprimer définitivement votre compte.",
+      
       "deleting": "Suppression de vos données…",
       "deleteFailed": "Impossible de supprimer le compte. Veuillez réessayer.",
       "deletePartial": "Votre compte a été supprimé, mais certaines données n'ont pas pu être effacées. Contactez l'assistance.",

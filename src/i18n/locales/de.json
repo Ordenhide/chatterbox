@@ -25,8 +25,8 @@
     "decline": "Ablehnen",
     "justNow": "Gerade eben",
     "tapToRetry": "Tippen zum erneuten Versuch.",
-    "showPassword": "Passwort anzeigen",
-    "hidePassword": "Passwort ausblenden",
+    
+    
     "save": "Speichern"
   },
   "tabs": {
@@ -65,7 +65,7 @@
     "errors": {
       
       
-      "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      
       "loginFailed": "Anmeldung fehlgeschlagen",
       "signUpFailed": "Registrierung fehlgeschlagen",
       "generic": "Ein Fehler ist aufgetreten",
@@ -77,8 +77,8 @@
       
       "networkError": "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung",
       "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
-      "passwordTooCommon": "Dieses Passwort ist zu verbreitet — wähle ein weniger vorhersehbares",
-      "passwordTooSimple": "Dieses Passwort ist zu vorhersehbar (wiederholte oder aufeinanderfolgende Zeichen) — wähle ein anderes",
+      
+      
       
       
       "phraseNotRecognized": "Das sind keine 24 Wörter einer Chatterbox-Wiederherstellungsphrase. Prüfen Sie Schreibweise und Reihenfolge.", "noAccountForPhrase": "Mit diesen Wörtern lässt sich kein Konto öffnen. Prüfen Sie sie erneut oder erstellen Sie ein neues Konto." },
@@ -195,7 +195,7 @@
       "export": "Backup exportieren",
       "import": "Backup importieren",
       "signOut": "Abmelden",
-      "changePassword": "Passwort ändern",
+      
       "deleteAccount": "Konto löschen"
     },
     "modals": {
@@ -247,22 +247,22 @@
     "shortcutSaved": "Gespeichert",
     "shortcutPrivacy": "Datenschutz",
     "shortcutRecovery": "Wiederherstellungsphrase",
-    "account": {
-      "changePasswordTitle": "Passwort ändern",
-      "changePasswordDescription": "Auf diesem Gerät bleibst du angemeldet.",
-      "currentPassword": "Aktuelles Passwort",
-      "newPassword": "Neues Passwort",
-      "confirmPassword": "Neues Passwort bestätigen",
-      "passwordChanged": "Dein Passwort wurde geändert.",
-      "passwordMismatch": "Die neuen Passwörter stimmen nicht überein.",
-      "wrongPassword": "Das aktuelle Passwort ist nicht richtig.",
+    "account": {"deleteConfirmWord": "DELETE", "deleteTypeWord": "Geben Sie {{word}} ein, um Ihr Konto endgültig zu löschen.", "deleteNoKey": "Dieses Gerät hat den Schlüssel dieses Kontos nicht und kann die Löschung daher nicht bestätigen. Melden Sie sich zuerst mit Ihrer Wiederherstellungsphrase an.", 
+      
+      
+      
+      
+      
+      
+      
+      
       "tooManyRequests": "Zu viele Versuche. Bitte versuche es später erneut.",
       "genericError": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
       "deleteTitle": "Konto löschen",
       "deleteDescription": "Löscht dein Konto, dein Profil, gespeicherte Elemente und die von dir gesendeten Nachrichten dauerhaft. Das lässt sich nicht rückgängig machen.",
       "deleteWhatHappens": "Dauerhaft gelöscht werden:\n\n• Dein Profil, gespeicherte Elemente und Freundschaften\n• Nachrichten und Medien, die du gesendet hast, in allen Unterhaltungen\n• Deine auf diesem Gerät gespeicherten Schlüssel\n\nNachrichten, die andere dir geschickt haben, bleiben in deren eigener Kopie der Unterhaltung.\n\nDas lässt sich nicht rückgängig machen.",
       "deleteConfirm": "Alles löschen",
-      "deleteEnterPassword": "Gib dein Passwort ein, um dein Konto dauerhaft zu löschen.",
+      
       "deleting": "Deine Daten werden gelöscht …",
       "deleteFailed": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "deletePartial": "Dein Konto wurde gelöscht, aber einige Daten ließen sich nicht entfernen. Bitte wende dich an den Support.",

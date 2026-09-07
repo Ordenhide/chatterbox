@@ -25,8 +25,8 @@
     "decline": "拒绝",
     "justNow": "刚刚",
     "tapToRetry": "点击重试。",
-    "showPassword": "显示密码",
-    "hidePassword": "隐藏密码",
+    
+    
     "save": "保存"
   },
   "tabs": {
@@ -65,9 +65,9 @@
     "errors": {
       
       
-      "passwordMin": "密码至少 8 位",
-      "passwordTooCommon": "该密码过于常见，请选择一个不易被猜到的密码",
-      "passwordTooSimple": "该密码过于简单（重复或连续字符），请更换一个",
+      
+      
+      
       "loginFailed": "登录失败",
       "signUpFailed": "注册失败",
       "generic": "发生错误",
@@ -207,25 +207,25 @@
       "export": "导出备份",
       "import": "导入备份",
       "signOut": "退出登录",
-      "changePassword": "修改密码",
+      
       "deleteAccount": "删除账号"
     },
-    "account": {
-      "changePasswordTitle": "修改密码",
-      "changePasswordDescription": "修改后本设备仍保持登录状态。",
-      "currentPassword": "当前密码",
-      "newPassword": "新密码",
-      "confirmPassword": "确认新密码",
-      "passwordChanged": "密码已修改。",
-      "passwordMismatch": "两次输入的新密码不一致。",
-      "wrongPassword": "当前密码不正确。",
+    "account": {"deleteConfirmWord": "DELETE", "deleteTypeWord": "输入 {{word}} 以永久删除你的账号。", "deleteNoKey": "这台设备没有这个账号的密钥，无法确认删除。请先用助记词登录。", 
+      
+      
+      
+      
+      
+      
+      
+      
       "tooManyRequests": "尝试次数过多，请稍后再试。",
       "genericError": "出错了，请重试。",
       "deleteTitle": "删除账号",
       "deleteDescription": "将永久删除你的账号、资料、收藏以及你发送的消息。此操作无法撤销。",
       "deleteWhatHappens": "此操作将永久删除：\n\n• 你的个人资料、收藏和好友关系\n• 你在所有会话中发送的消息与媒体文件\n• 存储在此设备上的加密密钥\n\n对方发给你的消息仍会保留在他们自己的会话中。\n\n此操作无法撤销。",
       "deleteConfirm": "全部删除",
-      "deleteEnterPassword": "请输入密码以永久删除你的账号。",
+      
       "deleting": "正在删除你的数据…",
       "deleteFailed": "无法删除账号，请重试。",
       "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。",

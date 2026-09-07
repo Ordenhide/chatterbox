@@ -2,9 +2,8 @@ import {useState} from 'react';
 import {colors} from '../theme';
 import {useModal} from '../hooks/useModal';
 import {useT} from '../i18n';
-import {deleteAccount, type PasswordChangeError} from '../services/account';
+import {deleteAccount, type AccountActionError} from '../services/account';
 import Icon from './Icon';
-import PasswordInput from './PasswordInput';
 
 /**
  * Confirmation flow for permanent account deletion.
@@ -12,19 +11,23 @@ import PasswordInput from './PasswordInput';
  * Deliberately harder to complete than a normal dialog: the action is
  * irreversible, cannot be undone by support (the data is genuinely gone, not
  * flagged), and a mis-click costs the user everything. So it requires typing
- * DELETE *and* the account password, and spells out exactly what goes and
- * what stays before either field is reachable.
+ * DELETE by hand, and spells out exactly what goes and what stays before that
+ * field is reachable.
+ *
+ * It used to ask for the account password as well. There is no password now,
+ * and the alternative — asking for the recovery phrase — would be asking for
+ * a secret this browser is already holding; see reauthenticate in
+ * services/account.ts.
  */
 export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
   const {t} = useT();
   const dialogRef = useModal<HTMLFormElement>(onClose);
   const [confirmWord, setConfirmWord] = useState('');
-  const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const wordMatches = confirmWord.trim().toUpperCase() === t('account.deleteConfirmWord');
-  const canSubmit = wordMatches && password.length > 0 && !busy;
+  const canSubmit = wordMatches && !busy;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
     setBusy(true);
     setError(null);
     try {
-      const report = await deleteAccount(password);
+      const report = await deleteAccount();
       // The account is gone at this point regardless. onAuthStateChanged will
       // drop the app back to the login screen on its own; surfacing a partial
       // failure matters because the user can no longer sign in to retry.
@@ -41,10 +44,10 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
         window.alert(t('account.deletePartial'));
       }
     } catch (err) {
-      const reason = (err as {reason?: PasswordChangeError}).reason;
+      const reason = (err as {reason?: AccountActionError}).reason;
       setError(
-        reason === 'wrong-password'
-          ? t('account.wrongPassword')
+        reason === 'no-device-key'
+          ? t('account.deleteNoKey')
           : reason === 'too-many-requests'
           ? t('account.tooManyRequests')
           : t('account.deleteFailed'),
@@ -97,18 +100,6 @@ export default function DeleteAccountModal({onClose}: {onClose: () => void}) {
           onChange={e => setConfirmWord(e.target.value)}
           placeholder={t('account.deleteConfirmWord')}
           autoComplete="off"
-          disabled={busy}
-        />
-
-        <label style={styles.label} htmlFor="delete-account-password">
-          {t('account.deleteEnterPassword')}
-        </label>
-        <PasswordInput
-          id="delete-account-password"
-          style={styles.input}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
           disabled={busy}
         />
 

@@ -2,7 +2,6 @@ import {
   EmailAuthProvider,
   deleteUser,
   reauthenticateWithCredential,
-  updatePassword,
 } from 'firebase/auth';
 import {
   arrayRemove,
@@ -23,19 +22,23 @@ import {deleteQueryInChunks} from './firestoreBatch';
 import {storage, deleteStorageObjectByUrl} from './storage';
 import {resolveMessageMediaUrls} from './messageMedia';
 import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
+import {credentialsFromSeed} from './anonymousIdentity';
 import {USER_SUBCOLLECTIONS} from './userSubcollections';
 import type {ChatMessage} from '../types';
 
 /**
- * Account-level operations: changing a password, and permanently deleting an
- * account together with its data.
+ * Permanently deleting an account together with its data.
  *
- * Both are "sensitive operations" to Firebase Auth, which refuses them on a
- * token older than a few minutes (auth/requires-recent-login). Rather than
- * letting the user discover that after filling in a form, both entry points
- * here take the current password and reauthenticate first — which doubles as
- * the confirmation step that the person at the keyboard is the account owner,
- * not someone who walked up to an unlocked browser.
+ * Deletion is a "sensitive operation" to Firebase Auth, which refuses it on a
+ * token older than a few minutes (auth/requires-recent-login), so it
+ * reauthenticates first. There is no password to ask for any more: the
+ * credential is derived from the account's recovery phrase, and this browser
+ * is holding that phrase already as its E2EE key. What guards the action is
+ * the typed confirmation the modal collects.
+ *
+ * Changing a password used to live here too. It has no meaning now — the
+ * credential is a function of the account's 24 words, so the only way to
+ * change it is to have a different account.
  *
  * Deletion runs entirely client-side. The obvious home for it is a Cloud
  * Function with the Admin SDK (no security-rule limits, atomic, survives the
@@ -57,53 +60,55 @@ export interface PurgeReport {
   errors: string[];
 }
 
-export type PasswordChangeError =
-  | 'wrong-password'
-  | 'weak-password'
+export type AccountActionError =
+  /** This browser does not hold the account's key, so it cannot prove itself. */
+  | 'no-device-key'
+  /** Firebase refused the derived credential. */
+  | 'rejected'
   | 'too-many-requests'
   | 'unknown';
 
 /** Maps a Firebase auth error to a stable, translatable reason code. */
-export function describeAuthError(err: unknown): PasswordChangeError {
+export function describeAuthError(err: unknown): AccountActionError {
   const code = (err as {code?: string})?.code || '';
   if (
     code === 'auth/wrong-password' ||
     code === 'auth/invalid-credential' ||
     code === 'auth/invalid-login-credentials'
   ) {
-    return 'wrong-password';
+    return 'rejected';
   }
-  if (code === 'auth/weak-password') return 'weak-password';
   if (code === 'auth/too-many-requests') return 'too-many-requests';
-  return 'unknown';
-}
-
-async function reauthenticate(currentPassword: string): Promise<void> {
-  const user = auth.currentUser;
-  if (!user?.email) throw new Error('not signed in');
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  await reauthenticateWithCredential(user, credential);
+  return (err as {reason?: AccountActionError})?.reason === 'no-device-key'
+    ? 'no-device-key'
+    : 'unknown';
 }
 
 /**
- * Changes the signed-in user's password. Throws with a `.reason` of
- * PasswordChangeError so the caller can show a specific message.
+ * Proves account ownership without asking for anything.
  *
- * Strength is validated by the caller (services/passwordPolicy) before this
- * runs; Firebase's own auth/weak-password is still mapped, since its rules
- * and ours are independent.
+ * The credential is derived from the recovery phrase, and this browser holds
+ * that phrase already — it is the E2EE secret key
+ * (services/anonymousIdentity.ts). Prompting for it would be asking the user
+ * to retype a secret the page is sitting on, which is theatre rather than a
+ * check; the typed confirmation in DeleteAccountModal is the real one.
+ *
+ * A browser with no key says so rather than failing as a wrong password. That
+ * state means this account was never opened here.
  */
-export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+async function reauthenticate(): Promise<void> {
   const user = auth.currentUser;
-  if (!user) throw new Error('not signed in');
-  try {
-    await reauthenticate(currentPassword);
-    await updatePassword(user, newPassword);
-  } catch (err) {
-    const wrapped = new Error('password change failed') as Error & {reason: PasswordChangeError};
-    wrapped.reason = describeAuthError(err);
-    throw wrapped;
+  if (!user?.email) throw new Error('not signed in');
+  const keypair = await getDeviceKeypairIfEnrolled(user.uid);
+  if (!keypair) {
+    const error = new Error('browser holds no key for this account') as Error & {
+      reason: AccountActionError;
+    };
+    error.reason = 'no-device-key';
+    throw error;
   }
+  const {secret} = credentialsFromSeed(keypair.secretKey);
+  await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, secret));
 }
 
 /**
@@ -411,15 +416,15 @@ export function clearLocalData(uid: string): void {
  * Returns the purge report so the caller can tell the user if anything was
  * left behind.
  */
-export async function deleteAccount(currentPassword: string): Promise<PurgeReport> {
+export async function deleteAccount(): Promise<PurgeReport> {
   const user = auth.currentUser;
   if (!user) throw new Error('not signed in');
   const uid = user.uid;
 
   try {
-    await reauthenticate(currentPassword);
+    await reauthenticate();
   } catch (err) {
-    const wrapped = new Error('reauthentication failed') as Error & {reason: PasswordChangeError};
+    const wrapped = new Error('reauthentication failed') as Error & {reason: AccountActionError};
     wrapped.reason = describeAuthError(err);
     throw wrapped;
   }

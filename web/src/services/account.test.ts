@@ -108,21 +108,29 @@ beforeEach(() => {
 
 describe('describeAuthError', () => {
   it('maps every credential-rejection spelling Firebase uses to one reason', () => {
-    // Firebase has changed which of these it returns for a bad password over
-    // time (invalid-login-credentials / invalid-credential appeared when email
-    // enumeration protection shipped). Collapsing them means the UI shows
-    // "wrong password" rather than a generic error, whichever one comes back.
+    // Firebase has changed which of these it returns over time
+    // (invalid-login-credentials / invalid-credential appeared when email
+    // enumeration protection shipped). Collapsing them matters more now than
+    // it did: the credential is derived, so a rejection is never something the
+    // user typed wrong, and three different messages for it would be three
+    // different wrong explanations.
     for (const code of [
       'auth/wrong-password',
       'auth/invalid-credential',
       'auth/invalid-login-credentials',
     ]) {
-      expect(describeAuthError({code})).toBe('wrong-password');
+      expect(describeAuthError({code})).toBe('rejected');
     }
   });
 
-  it('distinguishes weak passwords and rate limiting from a wrong password', () => {
-    expect(describeAuthError({code: 'auth/weak-password'})).toBe('weak-password');
+  it('reports a browser with no key separately from a rejected credential', () => {
+    // The two need different messages: one is "sign in with your phrase
+    // first", the other is a real failure. Conflating them would tell a user
+    // whose browser simply never opened this account that their account is
+    // broken.
+    expect(describeAuthError(Object.assign(new Error('x'), {reason: 'no-device-key'}))).toBe(
+      'no-device-key',
+    );
     expect(describeAuthError({code: 'auth/too-many-requests'})).toBe('too-many-requests');
   });
 
