@@ -133,6 +133,27 @@ target 'Chatterbox' do
       end
     end
 
+    # Xcode's module verifier compiles each pod's headers on their own to check
+    # the generated modulemap. CocoaPods 1.17 turns it on for every pod that
+    # sets DEFINES_MODULE, and its default language is Objective-C — so a C++
+    # library gets compiled as ObjC and stops at the first C++ include. glog is
+    # the one that trips: logging.h line 42 includes <iosfwd>, which does not
+    # exist in that language, and the build fails with 'iosfwd' file not found.
+    # Nothing is wrong with glog; the verifier is being asked in the wrong
+    # language.
+    #
+    # This only appears on the Mac's own architecture. Verification is skipped
+    # for a non-native slice, so an x86_64 simulator build on an Apple Silicon
+    # machine goes green while Xcode's arm64 build of the same commit goes red.
+    # If you are ever tempted to trust a CLI build here, that is why not.
+    CXX_ONLY_PODS = ['glog'].freeze
+    installer.pods_project.targets.each do |target|
+      next unless CXX_ONLY_PODS.include?(target.name)
+      target.build_configurations.each do |build_config|
+        build_config.build_settings['MODULE_VERIFIER_SUPPORTED_LANGUAGES'] = 'objective-c++ c++'
+      end
+    end
+
     # Align pods to a supported iOS deployment target to silence warnings
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |build_config|
