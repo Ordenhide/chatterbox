@@ -65,13 +65,6 @@ export interface User {
   safetyNumber?: string;
 }
 
-export interface SharedListItem {
-  id: string;
-  text: string;
-  checked: boolean;
-  checkedBy?: string;
-}
-
 export interface Expense {
   id: string;
   chatId: string;
@@ -201,11 +194,6 @@ export interface Message {
     burned?: boolean;
   };
   scheduledFor?: number;
-  sharedList?: {
-    id: string;
-    title: string;
-    items: SharedListItem[];
-  };
   transcription?: string;
   expense?: {
     id: string;
@@ -382,18 +370,6 @@ export interface BookmarkedMessage {
   audio?: string;
   createdAt: number;
   bookmarkedAt: number;
-}
-
-export interface QuoteWallEntry {
-  id: string;
-  messageId: string | number;
-  text: string;
-  senderName?: string;
-  senderId: string;
-  pinnedBy: string;
-  pinnedByName?: string;
-  createdAt: number;
-  pinnedAt: number;
 }
 
 export interface MemoryCard {

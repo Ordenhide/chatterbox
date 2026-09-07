@@ -181,8 +181,6 @@ async function fetchChatExport(
   for (const sub of [
     'calls',
     'scheduledMessages',
-    'sharedLists',
-    'quoteWall',
   ]) {
     try {
       chat[sub] = await dumpDocs(collection(db, 'chats', chatId, sub));

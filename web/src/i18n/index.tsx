@@ -335,11 +335,6 @@ const en = {
   'media.title': 'Media gallery',
   'media.empty': 'No photos or videos shared yet.',
 
-  'lists.title': 'Shared lists',
-  'lists.newList': 'New list name',
-  'lists.empty': 'No lists yet — create one to plan together.',
-  'lists.addItem': 'Add an item…',
-
   'reminder.remindMe': 'Remind me',
   'reminder.set': 'Set reminder',
   'reminder.future': 'Pick a time in the future.',
@@ -889,11 +884,6 @@ const zh: Partial<Record<Key, string>> = {
 
   'media.title': '媒体库',
   'media.empty': '还没有分享照片或视频。',
-
-  'lists.title': '共享清单',
-  'lists.newList': '新清单名称',
-  'lists.empty': '还没有清单——创建一个一起规划。',
-  'lists.addItem': '添加事项…',
 
   'reminder.remindMe': '提醒我',
   'reminder.set': '设置提醒',

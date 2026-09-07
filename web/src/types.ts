@@ -173,28 +173,3 @@ export interface Reminder {
   sent?: boolean;
 }
 
-export interface SharedListItem {
-  id: string;
-  text: string;
-  checked: boolean;
-  checkedBy?: string;
-}
-
-export interface SharedList {
-  id: string;
-  title: string;
-  items: SharedListItem[];
-}
-
-export interface QuoteWallEntry {
-  id: string;
-  messageId: string | number;
-  text: string;
-  senderName?: string;
-  senderId: string;
-  pinnedBy: string;
-  pinnedByName?: string;
-  createdAt: number;
-  pinnedAt: number;
-}
-

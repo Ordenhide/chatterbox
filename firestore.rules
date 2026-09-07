@@ -690,19 +690,13 @@ service cloud.firestore {
           resource.data.get('user', {}).get('_id', '') == request.auth.uid;
       }
 
-      match /sharedLists/{listId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
-
-      // countdowns, expenses, playlist and whiteboards used to sit here with
-      // the same participant gate. The features that wrote them were removed;
-      // the rules outlived them, leaving four subcollections any participant
-      // could write anything into that nothing would ever read back. A rule
-      // for a collection no client touches is not inert — it is writable
-      // server storage the app does not know about.
-      match /quoteWall/{quoteId} {
-        allow read, write: if isChatParticipant(chatId);
-      }
+      // countdowns, expenses, playlist, whiteboards, sharedLists and quoteWall
+      // used to sit here with the same participant gate. The features that
+      // wrote them were removed; the rules outlived them, leaving
+      // subcollections any participant could write anything into that nothing
+      // would ever read back. A rule for a collection no client touches is not
+      // inert — it is writable server storage the app does not know about.
+      // Delete the rule in the same commit as the feature.
 
       match /liveLocations/{userId} {
         allow read: if isChatParticipant(chatId);

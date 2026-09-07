@@ -187,9 +187,9 @@ async function purgeChat(
   }
 
   /**
-   * Deliberately left: sharedLists, quoteWall and calls. Those are joint
-   * artifacts of the chat, not this user's own documents — a shared list does
-   * not stop being the other person's record because one of them left, and
+   * Deliberately left: calls. Those are joint artifacts of the chat, not
+   * this user's own documents — a call record does not stop being the other
+   * person's because one of them left, and
    * deleting it out from under the remaining participant would be destroying
    * their data to satisfy someone else's erasure request. They carry a uid in
    * an attribution field, which is the same residue a departed participant

@@ -116,7 +116,6 @@ import {isChatLocked} from '../services/appLock';
 import {useDismissOnOutside} from '../hooks/useDismissOnOutside';
 import ChatSettingsModal from './ChatSettingsModal';
 import ChatMediaModal from './ChatMediaModal';
-import SharedListsModal from './SharedListsModal';
 import VerifyContactModal from './VerifyContactModal';
 import type {ChatMessage, ChatRoom, Reminder} from '../types';
 
@@ -224,7 +223,6 @@ export default function ChatPane({
   // whatever they were doing.
   const [aiConsentRetry, setAiConsentRetry] = useState<(() => void) | null>(null);
   const [mediaOpen, setMediaOpen] = useState(false);
-  const [listsOpen, setListsOpen] = useState(false);
   const [reminderFor, setReminderFor] = useState<ChatMessage | null>(null);
   const [reminderAt, setReminderAt] = useState('');
   const [peerKeyChanged, setPeerKeyChanged] = useState(false);
@@ -1851,14 +1849,6 @@ export default function ChatPane({
                   }}>
                   <Icon name="image" size={15} /> {t('media.title')}
                 </button>
-                <button
-                  style={styles.menuItemRow}
-                  onClick={() => {
-                    setListsOpen(true);
-                    setMenuOpen(false);
-                  }}>
-                  <Icon name="list" size={15} /> {t('lists.title')}
-                </button>
                 <div style={styles.menuDivider} />
                 <button
                   style={styles.menuItemRow}
@@ -2876,9 +2866,6 @@ export default function ChatPane({
         />
       )}
       {mediaOpen && <ChatMediaModal messages={messages} onClose={() => setMediaOpen(false)} />}
-      {listsOpen && (
-        <SharedListsModal chatId={chatId} me={me} peerUid={otherUid} onClose={() => setListsOpen(false)} />
-      )}
       {verifyOpen && otherUid && (
         <VerifyContactModal
           myUid={me.uid}

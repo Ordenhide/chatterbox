@@ -149,7 +149,6 @@ import {
   isRecipientUnreachable,
 } from '../../services/recipient';
 import {scheduleMessage, listenScheduledMessages} from '../../services/scheduledMessages';
-import {createSharedList, updateSharedListItem} from '../../services/sharedLists';
 import {createReminder} from '../../services/reminders';
 import {buildTranscriptionPatch, transcribeVoiceMessage} from '../../services/transcription';
 import {
@@ -160,7 +159,6 @@ import {
 import {getChatSummary} from '../../services/aiSummary';
 import {translateMessage} from '../../services/translation';
 import {addBookmark} from '../../services/bookmarks';
-import {addToQuoteWall} from '../../services/quoteWall';
 import {getSmartReplies} from '../../services/smartReply';
 import {extractEntities} from '../../services/wikipediaLookup';
 import {isChatLocked, verifyChatPIN} from '../../services/appLock';
@@ -174,7 +172,7 @@ import {
   isStealthMode,
   isTypingIndicatorEnabled,
 } from '../../services/privacyGuard';
-import {SharedListItem, VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
+import {VoiceFilter, MessageStyle, SoundscapeId, GestureStroke} from '../../types';
 import {SHOW_NATIVE_ONLY_FEATURES} from '../../config/parity';
 import {SHOW_AI_FEATURES} from '../../config/launch';
 
@@ -370,9 +368,6 @@ export default function ChatScreen() {
   const [schedulePickerVisible, setSchedulePickerVisible] = useState(false);
   const [scheduleMinutes, setScheduleMinutes] = useState('5');
   const [scheduledCount, setScheduledCount] = useState(0);
-  const [listModalVisible, setListModalVisible] = useState(false);
-  const [listTitle, setListTitle] = useState('');
-  const [listItems, setListItems] = useState<string[]>(['']);
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
   const [summaryText, setSummaryText] = useState('');
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -968,7 +963,6 @@ export default function ChatScreen() {
             reactions: msg.reactions,
             mentions: msg.mentions,
               burnAfterReading: msg.burnAfterReading,
-            sharedList: (msg as any).sharedList,
             transcription: (msg as any).transcription,
             expense: (msg as any).expense,
             location: (msg as any).location,
@@ -1667,7 +1661,6 @@ export default function ChatScreen() {
           reactions: msg.reactions,
           mentions: msg.mentions,
           burnAfterReading: msg.burnAfterReading,
-          sharedList: (msg as any).sharedList,
           transcription: (msg as any).transcription,
           expense: (msg as any).expense,
           location: (msg as any).location,
@@ -2318,50 +2311,6 @@ export default function ChatScreen() {
     Alert.alert(t('chat.scheduledTitle'), t('chat.scheduledBody', {count: mins}));
   }, [chatId, t, user, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
 
-  const handleCreateList = useCallback(async () => {
-    if (!chatId || !user) return;
-    const title = listTitle.trim() || 'Shared List';
-    const items: SharedListItem[] = listItems
-      .filter(t => t.trim())
-      .map((t, i) => ({id: `item_${i}`, text: t.trim(), checked: false}));
-    if (!items.length) {
-      Alert.alert(t('chat.emptyListTitle'), t('chat.emptyListBody'));
-      return;
-    }
-    const listId = `list_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    await createSharedList(chatId, listId, title, items, artifactCrypto);
-    const msg: ChatMessage = {
-      _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      text: `[Shared List] ${title}`,
-      createdAt: new Date(),
-      sharedList: {id: listId, title, items},
-      user: {_id: user.uid, name: user.displayName || user.email || 'User', avatar: user.photoURL},
-    };
-    await sendMessage(chatId, msg);
-    setListTitle('');
-    setListItems(['']);
-    setListModalVisible(false);
-    // artifactCrypto belongs here. It starts inert and is replaced a round
-    // trip later, so a callback that omits it keeps sealing with the inert
-    // one — and the inert sealer returns null, which sealedField writes as
-    // plaintext. Omitting it does not fail; it silently stops encrypting.
-  }, [chatId, t, user, listTitle, listItems, artifactCrypto]);
-
-  const handleToggleListItem = useCallback(
-    async (listId: string, items: SharedListItem[], itemId: string) => {
-      if (!chatId) return;
-      const updated = items.map(it =>
-        it.id === itemId ? {...it, checked: !it.checked, checkedBy: user?.uid} : it,
-      );
-      await updateSharedListItem(chatId, listId, updated, artifactCrypto);
-    },
-    // Neither chatId nor user changes while the screen is open, so without
-    // artifactCrypto this callback was built once with the inert sealer and
-    // never rebuilt — every checkbox toggle rewrote the whole list as
-    // plaintext, over the encrypted copy that was already there.
-    [chatId, user, artifactCrypto],
-  );
-
   const handleSetReminder = useCallback(
     (message: IMessage, minutes: number) => {
       if (!user) return;
@@ -2503,32 +2452,6 @@ export default function ChatScreen() {
         Alert.alert(t('chat.bookmarkedTitle'), t('chat.bookmarkedBody'));
       } catch {
         Alert.alert(t('common.error'), t('chat.bookmarkFailed'));
-      }
-    },
-    [user, chatId, t],
-  );
-
-  const handleAddToQuoteWall = useCallback(
-    async (message: IMessage) => {
-      if (!user || !chatId) return;
-      try {
-        await addToQuoteWall(chatId, {
-          messageId: message._id,
-          text: message.text || '',
-          senderName: message.user?.name || 'Unknown',
-          senderId: String(message.user?._id || ''),
-          pinnedBy: user.uid,
-          pinnedByName: user.displayName || user.email || 'User',
-          createdAt: message.createdAt instanceof Date
-            ? message.createdAt.getTime()
-            : typeof message.createdAt === 'number'
-              ? message.createdAt
-              : Date.now(),
-        });
-        haptic('confirm');
-        Alert.alert(t('chat.quoteWallSavedTitle'), t('chat.quoteWallSavedBody'));
-      } catch {
-        Alert.alert(t('common.error'), t('chat.quoteWallFailed'));
       }
     },
     [user, chatId, t],
@@ -4000,9 +3923,6 @@ export default function ChatScreen() {
         label: t('chat.menuBookmark'),
         onPress: () => handleBookmarkMessage(message),
       },
-      ...(message.text
-        ? [{label: t('chat.menuQuoteWall'), onPress: () => handleAddToQuoteWall(message)}]
-        : []),
       ...(hasAudio && SHOW_AI_FEATURES
         ? [{label: t('chat.menuTranscribe'), onPress: () => handleTranscribe(message)}]
         : []),
@@ -4321,38 +4241,6 @@ export default function ChatScreen() {
               link, list — have no GiftedChat slot of their own. */}
           {renderFileCard(current.file)}
           {renderLinkPreview(current.linkPreview)}
-          {current.sharedList ? (
-            <View style={[styles.sharedListCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <View style={styles.sharedListTitleRow}>
-                <Icon name="list" size={14} color={colors.primary} />
-                <Text style={[styles.sharedListTitle, {color: colors.primary}]}>
-                  {current.sharedList.title}
-                </Text>
-              </View>
-              {(current.sharedList.items || []).map((item: SharedListItem) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={styles.sharedListItem}
-                  onPress={() =>
-                    handleToggleListItem(
-                      current.sharedList.id,
-                      current.sharedList.items,
-                      item.id,
-                    )
-                  }>
-                  <Icon name={item.checked ? 'checkSquare' : 'square'} size={16} color={colors.text} />
-                  <Text
-                    style={[
-                      styles.sharedListItemText,
-                      {color: colors.text},
-                      item.checked && styles.sharedListItemChecked,
-                    ]}>
-                    {item.text}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : null}
           {current.expense ? (
             <View style={[styles.expenseCard, {backgroundColor: colors.surface, borderColor: colors.primary}]}>
               <Icon name="wallet" size={20} color={colors.primary} style={styles.expenseCardIcon} />
@@ -4514,7 +4402,7 @@ export default function ChatScreen() {
         </View>
       </SwipeToReply>
     );
-  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, handleToggleListItem, msgSelectMode, msgSelected, t]);
+  }, [colors, playingAudioId, lastOutgoingMessageId, otherLastReadAt, pinnedMessageIds, imageMessages, scrollToMessageId, user, burnCountdowns, handleRevealBurnMessage, formatBurnDuration, translatedTexts, msgSelectMode, msgSelected, t]);
 
   // GiftedChat keys the accessory bar off whether this *prop is passed*, not off
   // what it returns: InputToolbar renders a fixed 44dp <View> around it, and
@@ -5383,34 +5271,6 @@ export default function ChatScreen() {
                 })}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setListModalVisible(true);
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.createSharedList')}</Text>
-            </TouchableOpacity>
-            {SHOW_AI_FEATURES && (
-            <TouchableOpacity
-              style={styles.actionSheetItem}
-              onPress={() => {
-                setActionsModalVisible(false);
-                setSummaryQuestion('');
-                handleSummarize();
-              }}>
-              <Text style={[styles.actionSheetText, {color: colors.text}]}>{t('chat.catchUp')}</Text>
-            </TouchableOpacity>
-            )}
-              {/* Verifying a contact is the one security control in this
-                  sheet, and it was inside the block below — the flag that
-                  hides invisible ink, voice filters and soundscapes. Section
-                  10 of the privacy policy names first-contact key
-                  substitution as a known limit and says the app "shows a
-                  safety number you can compare out of band"; in that exact
-                  case no key has changed, so neither warning banner appears
-                  and this was the only way to reach it. The web client never
-                  hid it. */}
               <Text style={[styles.actionSectionHeader, {color: colors.textSecondary}]}>{t('chat.sectionPrivacy')}</Text>
             {otherUserId && user ? (
               <TouchableOpacity
@@ -5659,61 +5519,6 @@ export default function ChatScreen() {
               </TouchableOpacity>
             </View>
           </Pressable>
-        </Modal>
-      )}
-
-      {listModalVisible && (
-        <Modal
-          visible
-          animationType="slide"
-          onRequestClose={() => setListModalVisible(false)}>
-          <View style={[styles.modalContainer, {backgroundColor: colors.background}]}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('chat.createSharedList')}</Text>
-            <TextInput
-              style={[styles.listTitleInput, {color: colors.text, borderColor: colors.glassBorder}]}
-              value={listTitle}
-              onChangeText={setListTitle}
-              placeholder={t('chat.listTitlePlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-            />
-            {listItems.map((item, idx) => (
-              <View key={idx} style={styles.listItemInputRow}>
-                <TextInput
-                  style={[styles.listItemInput, {color: colors.text, borderColor: colors.glassBorder}]}
-                  value={item}
-                  onChangeText={text => {
-                    const updated = [...listItems];
-                    updated[idx] = text;
-                    setListItems(updated);
-                  }}
-                  placeholder={`Item ${idx + 1}`}
-                  placeholderTextColor={colors.textSecondary}
-                />
-                {listItems.length > 1 && (
-                  <TouchableOpacity onPress={() => setListItems(prev => prev.filter((_, i) => i !== idx))}>
-                    <Text style={[styles.listItemRemove, {color: colors.danger}]}>x</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
-            <TouchableOpacity
-              style={[styles.listAddBtn, {borderColor: colors.border}]}
-              onPress={() => setListItems(prev => [...prev, ''])}>
-              <Text style={[styles.listAddText, {color: colors.primary}]}>{t('chat.addItem')}</Text>
-            </TouchableOpacity>
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                onPress={handleCreateList}>
-                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{t('chat.createList')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => setListModalVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}, {color: colors.text}]}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
         </Modal>
       )}
 
@@ -6574,39 +6379,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: bodyWeight('600'),
   },
-  sharedListCard: {
-    marginTop: 6,
-    padding: 10,
-    borderRadius: 2,
-    borderWidth: 1,
-  },
-  sharedListTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 6,
-  },
-  sharedListTitle: {
-    fontSize: 14,
-    fontFamily: bodyWeight('700'),
-  },
-  sharedListItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4,
-    gap: 6,
-  },
-  sharedListCheck: {
-    fontSize: 16,
-  },
-  sharedListItemText: {
-    fontSize: 14,
-    flex: 1,
-  },
-  sharedListItemChecked: {
-    textDecorationLine: 'line-through',
-    opacity: 0.6,
-  },
   expenseCard: {
     marginTop: 6,
     padding: 10,
@@ -6699,42 +6471,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontFamily: bodyWeight('700'),
-  },
-  listTitleInput: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 2,
-    padding: 14,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  listItemInputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  listItemInput: {
-    flex: 1,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 2,
-    padding: 12,
-    fontSize: 15,
-  },
-  listItemRemove: {
-    fontSize: 18,
-    fontFamily: bodyWeight('700'),
-    paddingHorizontal: 8,
-  },
-  listAddBtn: {
-    paddingVertical: 10,
-    borderRadius: 2,
-    borderWidth: 1,
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  listAddText: {
-    fontSize: 15,
-    fontFamily: bodyWeight('600'),
   },
   summarySheet: {
     width: '90%',
