@@ -9,6 +9,7 @@ const {buildRecognizeRequest, extractTranscript} = require('./speechToText');
 const {Translate} = require('@google-cloud/translate').v2;
 const {validateTranslateInput, extractTranslation} = require('./translate');
 const {buildPrompt, extractAnswer} = require('./aiChat');
+const {profileName} = require('./profileName');
 
 admin.initializeApp();
 
@@ -717,7 +718,7 @@ exports.notifyNewMessage = functions.firestore
 
       const senderSnap = await db.doc(`users/${senderId}`).get();
       const senderData = senderSnap.data();
-      const senderName = senderData?.displayName || senderData?.email || 'Someone';
+      const senderName = profileName(senderData, 'Someone');
 
       for (const recipientId of recipients) {
         try {
@@ -1003,7 +1004,7 @@ async function postMissedCallNotice(chatId, callId, call) {
     createdAt: FieldValue.serverTimestamp(),
     user: {
       _id: callerId,
-      name: caller?.displayName || caller?.email || 'User',
+      name: profileName(caller, 'User'),
     },
     system: true,
     call: {type, outcome: 'missed'},

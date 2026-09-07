@@ -66,7 +66,7 @@
       <p>A cifra protege conteúdos, não o facto de existir uma conversa. Isto fica em claro nos nossos servidores:</p>
       <ul><li>Quem está em cada conversa, e quando foi criada e usada pela última vez.</li><li>A data e hora de cada mensagem e quantas não leste.</li><li>O nome, o tipo e o tamanho de um anexo. Os bytes estão cifrados; a descrição deles não, e o comprimento do cifrado limita o do original.</li><li>Os teus amigos e pedidos de amizade.</li><li>A sinalização de chamadas — que houve uma chamada, com quem e quando. Não o áudio nem o vídeo.</li></ul>
       <p>Os indicadores de escrita e as confirmações de leitura estão desligados a não ser que os ligues, e enquanto estão desligados nada é escrito.</p>
-      <p>O que já não está aqui: o teu endereço de email e o teu nome. Desde setembro de 2026, o registo da conta contém apenas um identificador de conta. O teu endereço fica no Firebase Authentication, onde o usamos para iniciares sessão e onde nenhum outro utilizador o consegue ler.</p>
+      <p>O que já não está aqui: o teu endereço de email e o teu nome. Desde setembro de 2026, o registo da conta contém apenas um identificador de conta — e desde então não há endereço nenhum em lado nenhum. Criar conta não pergunta nada sobre ti: a tua conta é uma frase de recuperação de 24 palavras, e a credencial que o Firebase Authentication verifica é derivada dela. O que fica lá guardado é uma etiqueta aleatória num domínio que não consegue receber correio.</p>
       <p>À parte disso: como a app corre sobre a Google Firebase, a Google consegue ver o endereço IP e a hora de cada ligação que o teu dispositivo lhe faz. Isso é uma característica do alojamento, não da app, e não podemos fazê-lo desaparecer com cifra.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. O que recolhemos</h2>
-      <ul><li>Dados da conta: o endereço de e-mail com que te registas, guardado no Firebase Authentication.</li><li>O texto cifrado das mensagens e dos anexos, mais os metadados da secção 2.</li></ul>
+      <ul><li>Dados da conta: um identificador de conta e uma credencial derivada da tua frase de recuperação, guardada no Firebase Authentication. Sem endereço de email, sem número de telefone e sem nome — a criação de conta não pede nenhum deles.</li><li>O texto cifrado das mensagens e dos anexos, mais os metadados da secção 2.</li></ul>
       <p>É esta a lista toda. Não há análise de utilização nem relatórios de falhas. A aplicação enviava visualizações de ecrã para o Firebase Analytics e falhas para o Firebase Crashlytics, ambos com o teu identificador de conta, por isso nenhum era anónimo; os dois desapareceram, juntamente com as bibliotecas que os enviavam. Os erros são impressos na máquina de quem desenvolve, durante o desenvolvimento, e não vão para mais lado nenhum.</p>
     </section>
 

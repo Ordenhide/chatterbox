@@ -2,7 +2,7 @@
 export default {
   meta: {
     title: `Chatterbox — Ứng dụng nhắn tin không có danh bạ nào để tra ra bạn`,
-    description: `Nhắn tin mã hoá đầu cuối, không có danh bạ người dùng, không lưu địa chỉ email, và chính sách quyền riêng tư nói rõ những gì nó không làm được. Web và Android.`,
+    description: `Nhắn tin mã hoá đầu cuối, không có danh bạ người dùng, không hề có địa chỉ email, và chính sách quyền riêng tư nói rõ những gì nó không làm được. Web và Android.`,
   },
 
   links: {policy: `chính sách quyền riêng tư`, policyShort: `Hãy đọc nó`},
@@ -37,9 +37,9 @@ export default {
         note: `Đây không phải một thiết lập quyền riêng tư. Không có danh bạ nào để bạn rút tên ra cả.`,
       },
       {
-        title: `Máy chủ không giữ địa chỉ email của bạn`,
+        title: `Không có địa chỉ email nào để giữ`,
         body: [
-          `Bạn đăng nhập bằng một địa chỉ, và mọi thứ dừng ở đó. Hồ sơ của bạn không chứa địa chỉ email, không tên hiển thị, không đường dẫn ảnh. Cũng không có hồ sơ nào để người khác đọc, vì những người duy nhất liên lạc được với bạn là những người bạn đã mời.`,
+          `Việc đăng ký không hỏi gì về bạn. Tài khoản của bạn là một cụm từ khôi phục gồm 24 từ được tạo ngay trên máy bạn, và thông tin đăng nhập mà máy chủ kiểm tra được suy ra từ những từ đó — thứ được lưu chỉ là một nhãn ngẫu nhiên dưới một tên miền không thể nhận thư. Hồ sơ của bạn cũng không chứa địa chỉ email, tên hiển thị hay đường dẫn ảnh, nên chẳng có hồ sơ nào để người khác đọc.`,
         ],
       },
       {

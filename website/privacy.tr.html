@@ -66,7 +66,7 @@
       <p>Şifreleme içeriği korur, bir konuşmanın var olduğu gerçeğini değil. Şunlar sunucularımızda açık hâlde durur:</p>
       <ul><li>Her konuşmada kimlerin bulunduğu, ne zaman oluşturulduğu ve en son ne zaman etkin olduğu.</li><li>Her mesajın zaman damgası ve kaç tanesini okumadığın.</li><li>Bir ekin dosya adı, türü ve boyutu. Baytlar şifrelidir; onların tarifi değildir ve şifreli metnin uzunluğu aslının uzunluğunu sınırlar.</li><li>Arkadaşların ve arkadaşlık istekleri.</li><li>Arama sinyalleşmesi — bir aramanın yapıldığı, kiminle ve ne zaman. Sesi ya da görüntüsü değil.</li></ul>
       <p>Yazıyor göstergesi ve okundu bilgisi sen açmadıkça kapalıdır ve kapalıyken hiçbir şey yazılmaz.</p>
-      <p>Artık burada olmayanlar: e-posta adresin ve adın. Eylül 2026'dan beri hesap kaydında yalnızca bir hesap tanımlayıcısı bulunur. Adresin, seni oturum açtırmak için kullandığımız ve başka hiçbir kullanıcının okuyamadığı Firebase Authentication içinde kalır.</p>
+      <p>Artık burada olmayanlar: e-posta adresin ve adın. Eylül 2026'dan beri hesap kaydında yalnızca bir hesap tanımlayıcısı bulunur — ve o tarihten beri hiçbir yerde tutulacak bir adres yok. Kayıt sırasında sana dair hiçbir şey sorulmaz: hesabın 24 kelimelik bir kurtarma ifadesidir ve Firebase Authentication'ın doğruladığı kimlik bilgisi ondan türetilir. Orada tutulan şey, posta alamayan bir alan adı altındaki rastgele bir etikettir.</p>
       <p>Ayrıca: uygulama Google Firebase üzerinde çalıştığı için Google, cihazının kurduğu her bağlantının IP adresini ve zamanını görebilir. Bu, uygulamanın değil barındırmanın bir özelliğidir ve şifreleyerek yok edemeyiz.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. Neleri topluyoruz</h2>
-      <ul><li>Hesap verisi: kaydolurken kullandığın e-posta adresi, Firebase Authentication'da tutulur.</li><li>Mesajların ve eklerin şifreli hâli, ayrıca 2. bölümdeki üst veri.</li></ul>
+      <ul><li>Hesap verisi: bir hesap tanımlayıcısı ve kurtarma ifadenden türetilen bir kimlik bilgisi, Firebase Authentication'da tutulur. E-posta adresi yok, telefon numarası yok, ad yok — kayıt bunların hiçbirini istemez.</li><li>Mesajların ve eklerin şifreli hâli, ayrıca 2. bölümdeki üst veri.</li></ul>
       <p>Listenin tamamı bu. Ne kullanım analizi var ne de çökme raporu. Uygulama eskiden ekran görüntülemelerini Firebase Analytics'e, çökmeleri Firebase Crashlytics'e gönderiyordu; ikisi de hesap kimliğini taşıdığı için hiçbiri anonim değildi. İkisi de, onları gönderen kütüphanelerle birlikte kaldırıldı. Hatalar geliştirme sırasında geliştiricinin kendi makinesine yazılır ve başka hiçbir yere gitmez.</p>
     </section>
 

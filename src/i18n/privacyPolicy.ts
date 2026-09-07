@@ -79,7 +79,7 @@ One thing crosses this line, and only when you ask it to: looking a name up on W
 
 Typing indicators and read receipts are off unless you turn them on, and while off nothing is written.
 
-What is no longer here: your email address and your name. Since September 2026 the account record holds only an account identifier. Your address stays in Firebase Authentication, where we use it to sign you in and where no other user can read it.
+What is no longer here: your email address and your name. Since September 2026 the account record holds only an account identifier — and since then there has been no address to hold anywhere. Signing up asks nothing about you: your account is a 24-word recovery phrase, and the credential Firebase Authentication checks is derived from it. What it stores is a random label under a domain that cannot receive mail.
 
 Separately: because the app runs on Google Firebase, Google can see the IP address and timing of every connection your device makes to it. That is a property of the hosting, not of the app, and we cannot encrypt it away.`,
     },
@@ -91,7 +91,7 @@ You reach someone by sending them an invite link out of band, through whatever y
     },
     {
       title: '4. What we collect',
-      body: `• Account data: the email address you register with, held in Firebase Authentication.
+      body: `• Account data: an account identifier, and a credential derived from your recovery phrase, held in Firebase Authentication. No email address, no phone number, no name — sign-up asks for none of them.
 • Message and attachment ciphertext, plus the metadata in section 2.
 
 That is the whole list. There is no analytics and no crash reporting. The app used to send screen views to Firebase Analytics and crash reports to Firebase Crashlytics, both carrying your account identifier, so neither was anonymous; both are gone, along with the libraries that sent them. Errors are printed on a developer's own machine during development and go nowhere else.`,
@@ -196,7 +196,7 @@ If you would rather we deleted something by hand, write to us.`,
 
 「正在输入」和已读回执默认关闭，除非你自己打开；关闭期间不会写入任何东西。
 
-已经不在这里的：你的邮箱地址和你的名字。自 2026 年 9 月起，账号记录里只剩一个账号标识符。你的邮箱留在 Firebase Authentication 里，我们用它给你登录，其他用户读不到。
+已经不在这里的：你的邮箱地址和你的名字。自 2026 年 9 月起，账号记录里只剩一个账号标识符——而且从那时起，任何地方都不再有邮箱可留。注册不会问你任何关于你的事：你的账号就是 24 个助记词，Firebase Authentication 校验的凭证由它推导而来；它保存的只是一个随机标签，域名根本收不到邮件。
 
 另外要单独说一句：因为这个应用跑在 Google Firebase 上，Google 能看到你的设备每一次连接的 IP 地址和时间。这是托管方式带来的，不是应用本身的问题，我们没法用加密把它消掉。`,
     },
@@ -208,7 +208,7 @@ If you would rather we deleted something by hand, write to us.`,
     },
     {
       title: '4. 我们收集什么',
-      body: `• 账号数据：你注册用的邮箱地址，保存在 Firebase Authentication 里。
+      body: `• 账号数据：一个账号标识符，以及从你的助记词推导出的凭证，保存在 Firebase Authentication 里。没有邮箱地址，没有电话号码，没有名字——注册时一样都不问。
 • 消息和附件的密文，以及第 2 节里的元数据。
 
 这就是全部。没有分析统计，也没有崩溃上报。这个应用过去会把屏幕浏览发给 Firebase Analytics、把崩溃报告发给 Firebase Crashlytics，两者都带着你的账号标识，所以都不是匿名的；现在它们都被删掉了，连同发送它们的那两个库。错误只在开发阶段打印在开发者自己的机器上，不去任何别的地方。`,
@@ -312,7 +312,7 @@ Nur eines überschreitet diese Linie, und nur, wenn du darum bittest: einen Name
 
 Schreibanzeige und Lesebestätigungen sind aus, solange du sie nicht einschaltest, und während sie aus sind, wird nichts geschrieben.
 
-Was hier nicht mehr steht: deine E-Mail-Adresse und dein Name. Seit September 2026 enthält der Kontodatensatz nur noch eine Kontokennung. Deine Adresse bleibt in Firebase Authentication, wo wir dich damit anmelden und wo kein anderer sie lesen kann.
+Was hier nicht mehr steht: deine E-Mail-Adresse und dein Name. Seit September 2026 enthält der Kontodatensatz nur noch eine Kontokennung — und seitdem gibt es nirgends mehr eine Adresse, die dort stehen könnte. Die Registrierung fragt nichts über dich: dein Konto ist eine 24-Wort-Wiederherstellungsphrase, und die Anmeldedaten, die Firebase Authentication prüft, werden daraus abgeleitet. Gespeichert wird dort eine zufällige Kennung unter einer Domain, die keine Post empfangen kann.
 
 Und getrennt davon: Weil die App auf Google Firebase läuft, kann Google die IP-Adresse und den Zeitpunkt jeder Verbindung sehen, die dein Gerät dorthin aufbaut. Das ist eine Eigenschaft des Hostings, nicht der App, und wir können es nicht wegverschlüsseln.`,
     },
@@ -324,7 +324,7 @@ Du erreichst jemanden, indem du ihm außerhalb der App einen Einladungslink schi
     },
     {
       title: '4. Was wir erheben',
-      body: `• Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gehalten in Firebase Authentication.
+      body: `• Kontodaten: eine Kontokennung und ein aus deiner Wiederherstellungsphrase abgeleitetes Anmeldegeheimnis, gehalten in Firebase Authentication. Keine E-Mail-Adresse, keine Telefonnummer, kein Name — die Registrierung fragt nach keinem davon.
 • Der Chiffretext von Nachrichten und Anhängen, dazu die Metadaten aus Abschnitt 2.
 
 Das ist die ganze Liste. Es gibt keine Analyse und keine Absturzberichte. Die App schickte früher Bildschirmaufrufe an Firebase Analytics und Abstürze an Firebase Crashlytics, beides mit deiner Kontokennung, also war keines davon anonym; beides ist weg, samt der Bibliotheken, die es gesendet haben. Fehler werden während der Entwicklung auf dem Rechner der entwickelnden Person ausgegeben und gehen nirgendwo sonst hin.`,
@@ -428,7 +428,7 @@ Una sola cosa cruza esta línea, y solo cuando tú lo pides: buscar un nombre en
 
 El indicador de escritura y las confirmaciones de lectura están desactivados salvo que los actives, y mientras están desactivados no se escribe nada.
 
-Lo que ya no está aquí: tu dirección de correo y tu nombre. Desde septiembre de 2026, el registro de la cuenta solo contiene un identificador de cuenta. Tu dirección permanece en Firebase Authentication, donde la usamos para iniciar tu sesión y donde ningún otro usuario puede leerla.
+Lo que ya no está aquí: tu dirección de correo y tu nombre. Desde septiembre de 2026, el registro de la cuenta solo contiene un identificador de cuenta, y desde entonces no hay dirección alguna en ninguna parte. Registrarse no pregunta nada sobre ti: tu cuenta es una frase de recuperación de 24 palabras, y la credencial que comprueba Firebase Authentication se deriva de ella. Lo que allí se guarda es una etiqueta aleatoria bajo un dominio que no puede recibir correo.
 
 Aparte: como la app funciona sobre Google Firebase, Google puede ver la dirección IP y el momento de cada conexión que tu dispositivo hace hacia allí. Eso es una propiedad del alojamiento, no de la app, y no podemos cifrarlo para que desaparezca.`,
     },
@@ -440,7 +440,7 @@ Llegas a alguien enviándole un enlace de invitación por fuera de la app, a tra
     },
     {
       title: '4. Qué recopilamos',
-      body: `• Datos de la cuenta: la dirección de correo con la que te registras, guardada en Firebase Authentication.
+      body: `• Datos de la cuenta: un identificador de cuenta y una credencial derivada de tu frase de recuperación, guardada en Firebase Authentication. Sin dirección de correo, sin número de teléfono y sin nombre: el registro no pide ninguno.
 • El texto cifrado de los mensajes y los adjuntos, más los metadatos de la sección 2.
 
 Esa es la lista completa. No hay analítica ni informes de fallos. La aplicación enviaba vistas de pantalla a Firebase Analytics e informes de fallos a Firebase Crashlytics, ambos con tu identificador de cuenta, así que ninguno era anónimo; los dos han desaparecido, junto con las bibliotecas que los enviaban. Los errores se imprimen en la máquina de quien desarrolla, durante el desarrollo, y no van a ninguna otra parte.`,
@@ -544,7 +544,7 @@ Une seule chose franchit cette ligne, et uniquement lorsque vous le demandez : c
 
 Les indicateurs de saisie et les accusés de lecture sont désactivés tant que vous ne les activez pas, et tant qu'ils le sont, rien n'est écrit.
 
-Ce qui n'y est plus : votre adresse e-mail et votre nom. Depuis septembre 2026, la fiche de compte ne contient qu'un identifiant de compte. Votre adresse reste dans Firebase Authentication, où elle sert à vous connecter et où aucun autre utilisateur ne peut la lire.
+Ce qui n’y est plus : votre adresse e-mail et votre nom. Depuis septembre 2026, la fiche de compte ne contient qu’un identifiant de compte — et depuis, il n’y a plus d’adresse nulle part. L’inscription ne demande rien sur vous : votre compte est une phrase de récupération de 24 mots, et l’identifiant que vérifie Firebase Authentication en est dérivé. Ce qui y est conservé est une étiquette aléatoire sous un domaine incapable de recevoir du courrier.
 
 Par ailleurs : comme l'application tourne sur Google Firebase, Google peut voir l'adresse IP et l'heure de chaque connexion que votre appareil y établit. C'est une propriété de l'hébergement, pas de l'application, et nous ne pouvons pas la faire disparaître par du chiffrement.`,
     },
@@ -556,7 +556,7 @@ Vous joignez quelqu'un en lui envoyant un lien d'invitation en dehors de l'appli
     },
     {
       title: '4. Ce que nous collectons',
-      body: `• Données de compte : l’adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.
+      body: `• Données de compte : un identifiant de compte et un secret dérivé de votre phrase de récupération, conservés dans Firebase Authentication. Pas d’adresse e-mail, pas de numéro de téléphone, pas de nom — l’inscription n’en demande aucun.
 • Le chiffré des messages et des pièces jointes, plus les métadonnées de la section 2.
 
 C’est toute la liste. Il n’y a ni analytique ni rapports de plantage. L’application envoyait les vues d’écran à Firebase Analytics et les plantages à Firebase Crashlytics, les deux portant votre identifiant de compte, donc aucun n’était anonyme ; les deux ont disparu, avec les bibliothèques qui les envoyaient. Les erreurs s’affichent sur la machine du développeur pendant le développement et ne vont nulle part ailleurs.`,
@@ -660,7 +660,7 @@ Una cosa sola attraversa questa linea, e solo quando lo chiedi tu: cercare un no
 
 Gli indicatori di scrittura e le conferme di lettura sono disattivati finché non li accendi, e mentre sono spenti non viene scritto nulla.
 
-Che cosa non c'è più: il tuo indirizzo email e il tuo nome. Da settembre 2026 il record dell'account contiene solo un identificatore. Il tuo indirizzo resta in Firebase Authentication, dove lo usiamo per farti accedere e dove nessun altro utente può leggerlo.
+Che cosa non c'è più: il tuo indirizzo email e il tuo nome. Da settembre 2026 il record dell'account contiene solo un identificatore — e da allora non c'è più alcun indirizzo, da nessuna parte. La registrazione non chiede nulla su di te: il tuo account è una frase di recupero di 24 parole, e la credenziale che Firebase Authentication verifica ne deriva. Lì viene conservata un'etichetta casuale sotto un dominio che non può ricevere posta.
 
 A parte questo: poiché l'app gira su Google Firebase, Google può vedere l'indirizzo IP e l'orario di ogni connessione che il tuo dispositivo apre verso di essa. È una caratteristica dell'hosting, non dell'app, e non possiamo eliminarla con la cifratura.`,
     },
@@ -672,7 +672,7 @@ Raggiungi qualcuno inviandogli un link d'invito fuori dall'app, con qualunque me
     },
     {
       title: '4. Che cosa raccogliamo',
-      body: `• Dati dell'account: l'indirizzo e-mail con cui ti registri, conservato in Firebase Authentication.
+      body: `• Dati dell'account: un identificatore dell'account e una credenziale derivata dalla tua frase di recupero, conservata in Firebase Authentication. Nessun indirizzo email, nessun numero di telefono, nessun nome: la registrazione non ne chiede alcuno.
 • Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.
 
 Questa è tutta la lista. Non c'è analisi d'uso né segnalazione di crash. L'app mandava le visualizzazioni di schermata a Firebase Analytics e i crash a Firebase Crashlytics, entrambi con il tuo identificativo di account, quindi nessuno dei due era anonimo; sono spariti entrambi, insieme alle librerie che li mandavano. Gli errori vengono stampati sulla macchina di chi sviluppa, durante lo sviluppo, e non vanno da nessun'altra parte.`,
@@ -776,7 +776,7 @@ Só uma coisa atravessa esta linha, e apenas quando a pedes: procurar um nome na
 
 Os indicadores de escrita e as confirmações de leitura estão desligados a não ser que os ligues, e enquanto estão desligados nada é escrito.
 
-O que já não está aqui: o teu endereço de email e o teu nome. Desde setembro de 2026, o registo da conta contém apenas um identificador de conta. O teu endereço fica no Firebase Authentication, onde o usamos para iniciares sessão e onde nenhum outro utilizador o consegue ler.
+O que já não está aqui: o teu endereço de email e o teu nome. Desde setembro de 2026, o registo da conta contém apenas um identificador de conta — e desde então não há endereço nenhum em lado nenhum. Criar conta não pergunta nada sobre ti: a tua conta é uma frase de recuperação de 24 palavras, e a credencial que o Firebase Authentication verifica é derivada dela. O que fica lá guardado é uma etiqueta aleatória num domínio que não consegue receber correio.
 
 À parte disso: como a app corre sobre a Google Firebase, a Google consegue ver o endereço IP e a hora de cada ligação que o teu dispositivo lhe faz. Isso é uma característica do alojamento, não da app, e não podemos fazê-lo desaparecer com cifra.`,
     },
@@ -788,7 +788,7 @@ Chegas a alguém enviando-lhe uma ligação de convite fora da app, por aquilo q
     },
     {
       title: '4. O que recolhemos',
-      body: `• Dados da conta: o endereço de e-mail com que te registas, guardado no Firebase Authentication.
+      body: `• Dados da conta: um identificador de conta e uma credencial derivada da tua frase de recuperação, guardada no Firebase Authentication. Sem endereço de email, sem número de telefone e sem nome — a criação de conta não pede nenhum deles.
 • O texto cifrado das mensagens e dos anexos, mais os metadados da secção 2.
 
 É esta a lista toda. Não há análise de utilização nem relatórios de falhas. A aplicação enviava visualizações de ecrã para o Firebase Analytics e falhas para o Firebase Crashlytics, ambos com o teu identificador de conta, por isso nenhum era anónimo; os dois desapareceram, juntamente com as bibliotecas que os enviavam. Os erros são impressos na máquina de quem desenvolve, durante o desenvolvimento, e não vão para mais lado nenhum.`,
@@ -892,7 +892,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
 
 Индикатор набора и отчёты о прочтении выключены, пока вы их не включите, и пока они выключены, ничего не записывается.
 
-Чего здесь больше нет: вашего адреса электронной почты и вашего имени. С сентября 2026 года запись аккаунта содержит только его идентификатор. Ваш адрес остаётся в Firebase Authentication, где мы используем его для входа и где ни один другой пользователь его не прочитает.
+Чего здесь больше нет: вашего адреса электронной почты и вашего имени. С сентября 2026 года запись аккаунта содержит только его идентификатор — и с тех пор адреса нет вообще нигде. Регистрация не спрашивает о вас ничего: ваш аккаунт — это фраза восстановления из 24 слов, и учётные данные, которые проверяет Firebase Authentication, выведены из неё. Там хранится случайная метка в домене, который не способен принимать почту.
 
 Отдельно: поскольку приложение работает на Google Firebase, Google видит IP-адрес и время каждого соединения, которое ваше устройство к нему открывает. Это свойство хостинга, а не приложения, и зашифровать его мы не можем.`,
     },
@@ -904,7 +904,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
     },
     {
       title: '4. Что мы собираем',
-      body: `• Данные аккаунта: адрес почты, с которым вы регистрируетесь, хранится в Firebase Authentication.
+      body: `• Данные аккаунта: идентификатор аккаунта и выведенные из вашей фразы восстановления учётные данные, хранящиеся в Firebase Authentication. Ни адреса почты, ни номера телефона, ни имени — при регистрации ничего из этого не спрашивают.
 • Шифротекст сообщений и вложений плюс метаданные из раздела 2.
 
 Это весь список. Никакой аналитики и никаких отчётов о сбоях. Раньше приложение отправляло просмотры экранов в Firebase Analytics, а сбои — в Firebase Crashlytics, и то и другое с идентификатором вашего аккаунта, так что анонимными они не были; и то и другое убрано вместе с библиотеками, которые это отправляли. Ошибки печатаются на машине разработчика во время разработки и больше никуда не идут.`,
@@ -1008,7 +1008,7 @@ Bu çizgiyi tek bir şey aşar, o da yalnızca sen istediğinde: Vikipedi'de bir
 
 Yazıyor göstergesi ve okundu bilgisi sen açmadıkça kapalıdır ve kapalıyken hiçbir şey yazılmaz.
 
-Artık burada olmayanlar: e-posta adresin ve adın. Eylül 2026'dan beri hesap kaydında yalnızca bir hesap tanımlayıcısı bulunur. Adresin, seni oturum açtırmak için kullandığımız ve başka hiçbir kullanıcının okuyamadığı Firebase Authentication içinde kalır.
+Artık burada olmayanlar: e-posta adresin ve adın. Eylül 2026'dan beri hesap kaydında yalnızca bir hesap tanımlayıcısı bulunur — ve o tarihten beri hiçbir yerde tutulacak bir adres yok. Kayıt sırasında sana dair hiçbir şey sorulmaz: hesabın 24 kelimelik bir kurtarma ifadesidir ve Firebase Authentication'ın doğruladığı kimlik bilgisi ondan türetilir. Orada tutulan şey, posta alamayan bir alan adı altındaki rastgele bir etikettir.
 
 Ayrıca: uygulama Google Firebase üzerinde çalıştığı için Google, cihazının kurduğu her bağlantının IP adresini ve zamanını görebilir. Bu, uygulamanın değil barındırmanın bir özelliğidir ve şifreleyerek yok edemeyiz.`,
     },
@@ -1020,7 +1020,7 @@ Birine ulaşmak için ona uygulama dışından, zaten kullandığın herhangi bi
     },
     {
       title: '4. Neleri topluyoruz',
-      body: `• Hesap verisi: kaydolurken kullandığın e-posta adresi, Firebase Authentication'da tutulur.
+      body: `• Hesap verisi: bir hesap tanımlayıcısı ve kurtarma ifadenden türetilen bir kimlik bilgisi, Firebase Authentication'da tutulur. E-posta adresi yok, telefon numarası yok, ad yok — kayıt bunların hiçbirini istemez.
 • Mesajların ve eklerin şifreli hâli, ayrıca 2. bölümdeki üst veri.
 
 Listenin tamamı bu. Ne kullanım analizi var ne de çökme raporu. Uygulama eskiden ekran görüntülemelerini Firebase Analytics'e, çökmeleri Firebase Crashlytics'e gönderiyordu; ikisi de hesap kimliğini taşıdığı için hiçbiri anonim değildi. İkisi de, onları gönderen kütüphanelerle birlikte kaldırıldı. Hatalar geliştirme sırasında geliştiricinin kendi makinesine yazılır ve başka hiçbir yere gitmez.`,
@@ -1124,7 +1124,7 @@ Chỉ một thứ vượt qua ranh giới này, và chỉ khi bạn yêu cầu: 
 
 Báo đang nhập và báo đã đọc đều tắt trừ khi bạn bật, và khi tắt thì không có gì được ghi lại.
 
-Những gì không còn ở đây nữa: địa chỉ email và tên của bạn. Từ tháng 9 năm 2026, bản ghi tài khoản chỉ còn một mã định danh tài khoản. Địa chỉ của bạn nằm lại trong Firebase Authentication, nơi chúng tôi dùng nó để đăng nhập cho bạn và không người dùng nào khác đọc được.
+Những gì không còn ở đây nữa: địa chỉ email và tên của bạn. Từ tháng 9 năm 2026, bản ghi tài khoản chỉ còn một mã định danh tài khoản — và từ đó tới nay không còn địa chỉ nào ở bất cứ đâu. Việc đăng ký không hỏi gì về bạn: tài khoản của bạn là một cụm từ khôi phục gồm 24 từ, và thông tin đăng nhập mà Firebase Authentication kiểm tra được suy ra từ nó. Thứ được lưu ở đó là một nhãn ngẫu nhiên dưới một tên miền không thể nhận thư.
 
 Một điều riêng: vì ứng dụng chạy trên Google Firebase, Google thấy được địa chỉ IP và thời điểm của mọi kết nối mà thiết bị của bạn mở tới đó. Đó là đặc tính của hạ tầng lưu trữ, không phải của ứng dụng, và chúng tôi không thể mã hoá để nó biến mất.`,
     },
@@ -1136,7 +1136,7 @@ Bạn liên hệ với ai đó bằng cách gửi cho họ một liên kết m�
     },
     {
       title: '4. Chúng tôi thu thập gì',
-      body: `• Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, giữ trong Firebase Authentication.
+      body: `• Dữ liệu tài khoản: một mã định danh tài khoản và một thông tin đăng nhập suy ra từ cụm từ khôi phục của bạn, giữ trong Firebase Authentication. Không địa chỉ email, không số điện thoại, không tên — khi đăng ký không hỏi bất kỳ thứ nào.
 • Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.
 
 Danh sách chỉ có vậy. Không có phân tích sử dụng và không có báo cáo sự cố. Trước đây ứng dụng gửi lượt xem màn hình tới Firebase Analytics và báo cáo sự cố tới Firebase Crashlytics, cả hai đều mang định danh tài khoản của bạn nên không cái nào ẩn danh; cả hai đã bị gỡ bỏ, cùng với những thư viện gửi chúng. Lỗi chỉ được in ra trên máy của người phát triển trong lúc phát triển, và không đi đâu khác.`,
@@ -1240,7 +1240,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 入力中の表示と既読は、あなたがオンにしない限りオフで、オフの間は何も記録されません。
 
-もうここにないもの: あなたのメールアドレスと名前です。2026 年 9 月以降、アカウントの記録にはアカウント識別子しかありません。アドレスは Firebase Authentication に残り、サインインに使われるだけで、ほかの利用者には読めません。
+もうここにないもの: あなたのメールアドレスと名前です。2026 年 9 月以降、アカウントの記録にはアカウント識別子しかなく、それ以降はどこにも保管すべきアドレスがありません。登録時にあなたについて尋ねることは何もありません。アカウントとは 24 語の復元フレーズであり、Firebase Authentication が確認する資格情報はそこから導出されます。そこに保管されるのは、メールを受け取れないドメインの下のランダムなラベルだけです。
 
 別の話として: このアプリは Google Firebase 上で動くため、あなたの端末がそこへ行う接続の IP アドレスと時刻を Google は見られます。これはホスティングの性質であってアプリの性質ではなく、暗号化で消すことはできません。`,
     },
@@ -1252,7 +1252,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. 収集するもの',
-      body: `• アカウント情報：登録に使うメールアドレス。Firebase Authentication に保管されます。
+      body: `• アカウント情報：アカウント識別子と、あなたの復元フレーズから導出された資格情報。Firebase Authentication に保管されます。メールアドレスも電話番号も名前もありません——登録時にどれも尋ねません。
 • メッセージと添付ファイルの暗号文、および第 2 節のメタデータ。
 
 以上がすべてです。利用状況の分析もクラッシュレポートもありません。以前は画面表示を Firebase Analytics に、クラッシュを Firebase Crashlytics に送っており、いずれもアカウント識別子を伴っていたため匿名ではありませんでした。どちらも、送信していたライブラリごと削除しました。エラーは開発中に開発者自身のマシンに出力されるだけで、ほかのどこにも行きません。`,
@@ -1356,7 +1356,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 입력 중 표시와 읽음 표시는 켜기 전까지 꺼져 있고, 꺼져 있는 동안에는 아무것도 기록되지 않습니다.
 
-더 이상 여기에 없는 것: 당신의 이메일 주소와 이름입니다. 2026년 9월부터 계정 기록에는 계정 식별자만 남습니다. 주소는 Firebase Authentication에 남아 로그인에 쓰이며, 다른 사용자는 읽을 수 없습니다.
+더 이상 여기에 없는 것: 당신의 이메일 주소와 이름입니다. 2026년 9월부터 계정 기록에는 계정 식별자만 남으며, 그때부터는 어디에도 보관할 주소 자체가 없습니다. 가입할 때 당신에 관해 묻는 것은 없습니다. 계정은 24단어 복구 문구이고, Firebase Authentication이 확인하는 자격 증명은 거기서 파생됩니다. 그곳에 저장되는 것은 메일을 받을 수 없는 도메인 아래의 무작위 라벨뿐입니다.
 
 별개로: 이 앱은 Google Firebase 위에서 돌아가므로, 당신의 기기가 그쪽으로 여는 모든 연결의 IP 주소와 시각을 Google이 볼 수 있습니다. 이는 호스팅의 성질이지 앱의 성질이 아니며, 암호화로 없앨 수 없습니다.`,
     },
@@ -1368,7 +1368,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. 우리가 수집하는 것',
-      body: `• 계정 데이터: 가입에 사용하는 이메일 주소. Firebase Authentication에 보관됩니다.
+      body: `• 계정 데이터: 계정 식별자와 복구 문구에서 파생된 자격 증명. Firebase Authentication에 보관됩니다. 이메일 주소도, 전화번호도, 이름도 없습니다 — 가입 때 어느 것도 묻지 않습니다.
 • 메시지와 첨부 파일의 암호문, 그리고 2절의 메타데이터.
 
 목록은 이것이 전부입니다. 사용 분석도 없고 오류 보고도 없습니다. 예전에는 화면 조회를 Firebase Analytics로, 오류를 Firebase Crashlytics로 보냈고 둘 다 계정 식별자를 달고 있어 익명이 아니었습니다. 둘 다, 그것을 보내던 라이브러리와 함께 제거했습니다. 오류는 개발 중에 개발자 자신의 기기에 출력될 뿐 다른 어디로도 가지 않습니다.`,
@@ -1472,7 +1472,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 「輸入中」和已讀回條預設關閉，除非你自己開啟；關閉期間不會寫入任何東西。
 
-已經不在這裡的：你的電子郵件地址和你的名字。自 2026 年 9 月起，帳號記錄裡只剩一個帳號識別碼。你的電子郵件留在 Firebase Authentication 裡，我們用它讓你登入，其他使用者讀不到。
+已經不在這裡的：你的電子郵件地址和你的名字。自 2026 年 9 月起，帳號記錄裡只剩一個帳號識別碼——而且從那時起，任何地方都不再有電子郵件可留。註冊不會問你任何關於你的事：你的帳號就是 24 個助記詞，Firebase Authentication 驗證的憑證由它推導而來；它保存的只是一個隨機標籤，網域根本收不到郵件。
 
 另外要單獨說一句：因為這個應用程式跑在 Google Firebase 上，Google 能看到你的裝置每一次連線的 IP 位址和時間。這是託管方式帶來的，不是應用程式本身的問題，我們沒法用加密把它消掉。`,
     },
@@ -1484,7 +1484,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. 我們收集什麼',
-      body: `• 帳號資料：你註冊用的電子郵件地址，保存在 Firebase Authentication 裡。
+      body: `• 帳號資料：一個帳號識別碼，以及從你的助記詞推導出的憑證，保存在 Firebase Authentication 裡。沒有電子郵件地址，沒有電話號碼，沒有名字——註冊時一樣都不問。
 • 訊息和附件的密文，以及第 2 節裡的中繼資料。
 
 這就是全部。沒有分析統計，也沒有當機回報。這個應用程式過去會把畫面瀏覽送給 Firebase Analytics、把當機報告送給 Firebase Crashlytics，兩者都帶著你的帳號識別碼，所以都不是匿名的；現在它們都被刪掉了，連同送出它們的那兩個函式庫。錯誤只在開發階段印在開發者自己的機器上，不去任何別的地方。`,
@@ -1588,7 +1588,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 مؤشّر الكتابة وإشعارات القراءة مُوقفان ما لم تفعّلهما، وما داما مُوقفين فلا يُكتب شيء.
 
-ما لم يعد موجودًا هنا: بريدك الإلكتروني واسمك. منذ سبتمبر 2026 لا يحمل سجل الحساب سوى مُعرّف الحساب. يبقى بريدك في Firebase Authentication، حيث نستخدمه لتسجيل دخولك ولا يستطيع أي مستخدم آخر قراءته.
+ما لم يعد موجودًا هنا: بريدك الإلكتروني واسمك. منذ سبتمبر 2026 لا يحمل سجل الحساب سوى مُعرّف الحساب — ومنذ ذلك الحين لم يعد هناك بريد يُحفَظ في أي مكان. لا يسألك التسجيل عن أي شيء يخصك: حسابك هو عبارة استرداد من 24 كلمة، وبيانات الاعتماد التي يتحقق منها Firebase Authentication مشتقّة منها. وما يُحفَظ هناك هو مُعرّف عشوائي تحت نطاق لا يمكنه استقبال البريد.
 
 وبشكل منفصل: لأن التطبيق يعمل على Google Firebase، تستطيع Google رؤية عنوان IP وتوقيت كل اتصال يجريه جهازك بها. هذه خاصية الاستضافة لا التطبيق، ولا يمكننا إزالتها بالتعمية.`,
     },
@@ -1600,7 +1600,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. ما نجمعه',
-      body: `• بيانات الحساب: عنوان البريد الذي تسجّل به، محفوظًا في Firebase Authentication.
+      body: `• بيانات الحساب: مُعرّف حساب، وبيانات اعتماد مشتقّة من عبارة الاسترداد الخاصة بك، محفوظة في Firebase Authentication. لا بريد إلكتروني ولا رقم هاتف ولا اسم — لا يطلب التسجيل أيًا منها.
 • النص المشفَّر للرسائل والمرفقات، إضافة إلى البيانات الوصفية في القسم 2.
 
 هذه هي القائمة كاملة. لا تحليلات ولا تقارير أعطال. كان التطبيق يرسل مشاهدات الشاشات إلى Firebase Analytics والأعطال إلى Firebase Crashlytics، وكلاهما يحمل معرّف حسابك فلم يكن أيٌّ منهما مجهولًا؛ وقد أُزيلا معًا، ومعهما المكتبتان اللتان كانتا ترسلانهما. أما الأخطاء فتُطبَع على جهاز المطوّر أثناء التطوير ولا تذهب إلى أي مكان آخر.`,
@@ -1704,7 +1704,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
 
 टाइपिंग संकेत और पढ़े जाने की रसीदें तब तक बंद रहती हैं जब तक आप उन्हें चालू न करें, और बंद रहने के दौरान कुछ भी दर्ज नहीं होता।
 
-अब यहाँ क्या नहीं है: आपका ईमेल पता और आपका नाम। सितंबर 2026 से खाते के रिकॉर्ड में सिर्फ़ एक खाता पहचानकर्ता रहता है। आपका पता Firebase Authentication में रहता है, जहाँ हम उससे आपको साइन इन कराते हैं और कोई दूसरा उपयोगकर्ता उसे नहीं पढ़ सकता।
+अब यहाँ क्या नहीं है: आपका ईमेल पता और आपका नाम। सितंबर 2026 से खाते के रिकॉर्ड में सिर्फ़ एक खाता पहचानकर्ता रहता है — और तब से कहीं भी रखने के लिए कोई पता बचा ही नहीं है। पंजीकरण आपके बारे में कुछ नहीं पूछता: आपका खाता 24 शब्दों का रिकवरी वाक्यांश है, और Firebase Authentication जिस क्रेडेंशियल की जाँच करता है वह उसी से निकाला जाता है। वहाँ जो रखा जाता है वह एक ऐसे डोमेन के नीचे का यादृच्छिक लेबल है जो मेल ले ही नहीं सकता।
 
 अलग से: चूँकि ऐप Google Firebase पर चलता है, आपका डिवाइस वहाँ जो भी कनेक्शन बनाता है उसका IP पता और समय Google देख सकता है। यह होस्टिंग का गुण है, ऐप का नहीं, और हम इसे एन्क्रिप्ट करके मिटा नहीं सकते।`,
     },
@@ -1716,7 +1716,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '4. हम क्या इकट्ठा करते हैं',
-      body: `• खाता डेटा: जिस ईमेल पते से आप पंजीकरण करते हैं, वह Firebase Authentication में रखा जाता है।
+      body: `• खाता डेटा: एक खाता पहचानकर्ता, और आपके रिकवरी वाक्यांश से निकाला गया क्रेडेंशियल, जो Firebase Authentication में रखा जाता है। न ईमेल पता, न फ़ोन नंबर, न नाम — पंजीकरण इनमें से कुछ भी नहीं माँगता।
 • संदेशों और अनुलग्नकों का सिफरटेक्स्ट, साथ ही खंड 2 का मेटाडेटा।
 
 पूरी सूची इतनी ही है। न कोई उपयोग-विश्लेषण है, न क्रैश रिपोर्टिंग। पहले यह ऐप स्क्रीन-व्यू Firebase Analytics को और क्रैश Firebase Crashlytics को भेजता था, और दोनों में आपका खाता पहचानकर्ता होता था, इसलिए दोनों में से कोई अनाम नहीं था; अब दोनों हटा दिए गए हैं, उन्हें भेजने वाली लाइब्रेरियों समेत। त्रुटियाँ विकास के दौरान डेवलपर की अपनी मशीन पर छपती हैं और कहीं और नहीं जातीं।`,

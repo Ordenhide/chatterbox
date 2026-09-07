@@ -66,7 +66,7 @@
       <p>Le chiffrement protège les contenus, pas le fait qu'une conversation existe. Ceci figure en clair sur nos serveurs :</p>
       <ul><li>Qui participe à chaque conversation, quand elle a été créée et quand elle a été active pour la dernière fois.</li><li>L'horodatage de chaque message et le nombre de messages non lus.</li><li>Le nom, le type et la taille d'une pièce jointe. Les octets sont chiffrés ; leur description ne l'est pas, et la longueur du chiffré borne celle de l'original.</li><li>Vos amis et vos demandes d'ami.</li><li>La signalisation des appels — qu'un appel a eu lieu, avec qui et quand. Ni son audio ni sa vidéo.</li></ul>
       <p>Les indicateurs de saisie et les accusés de lecture sont désactivés tant que vous ne les activez pas, et tant qu'ils le sont, rien n'est écrit.</p>
-      <p>Ce qui n'y est plus : votre adresse e-mail et votre nom. Depuis septembre 2026, la fiche de compte ne contient qu'un identifiant de compte. Votre adresse reste dans Firebase Authentication, où elle sert à vous connecter et où aucun autre utilisateur ne peut la lire.</p>
+      <p>Ce qui n’y est plus : votre adresse e-mail et votre nom. Depuis septembre 2026, la fiche de compte ne contient qu’un identifiant de compte — et depuis, il n’y a plus d’adresse nulle part. L’inscription ne demande rien sur vous : votre compte est une phrase de récupération de 24 mots, et l’identifiant que vérifie Firebase Authentication en est dérivé. Ce qui y est conservé est une étiquette aléatoire sous un domaine incapable de recevoir du courrier.</p>
       <p>Par ailleurs : comme l'application tourne sur Google Firebase, Google peut voir l'adresse IP et l'heure de chaque connexion que votre appareil y établit. C'est une propriété de l'hébergement, pas de l'application, et nous ne pouvons pas la faire disparaître par du chiffrement.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. Ce que nous collectons</h2>
-      <ul><li>Données de compte : l’adresse e-mail avec laquelle vous vous inscrivez, conservée dans Firebase Authentication.</li><li>Le chiffré des messages et des pièces jointes, plus les métadonnées de la section 2.</li></ul>
+      <ul><li>Données de compte : un identifiant de compte et un secret dérivé de votre phrase de récupération, conservés dans Firebase Authentication. Pas d’adresse e-mail, pas de numéro de téléphone, pas de nom — l’inscription n’en demande aucun.</li><li>Le chiffré des messages et des pièces jointes, plus les métadonnées de la section 2.</li></ul>
       <p>C’est toute la liste. Il n’y a ni analytique ni rapports de plantage. L’application envoyait les vues d’écran à Firebase Analytics et les plantages à Firebase Crashlytics, les deux portant votre identifiant de compte, donc aucun n’était anonyme ; les deux ont disparu, avec les bibliothèques qui les envoyaient. Les erreurs s’affichent sur la machine du développeur pendant le développement et ne vont nulle part ailleurs.</p>
     </section>
 

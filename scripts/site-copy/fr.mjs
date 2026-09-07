@@ -2,7 +2,7 @@
 export default {
   meta: {
     title: `Chatterbox — Une messagerie où rien ne permet de vous retrouver`,
-    description: `Messagerie chiffrée de bout en bout, sans annuaire d'utilisateurs, sans adresse e-mail conservée, et avec une politique de confidentialité qui dit ce qu'elle ne peut pas faire. Web et Android.`,
+    description: `Messagerie chiffrée de bout en bout, sans annuaire d'utilisateurs, sans aucune adresse e-mail, et avec une politique de confidentialité qui dit ce qu'elle ne peut pas faire. Web et Android.`,
   },
 
   links: {policy: `politique de confidentialité`, policyShort: `Lisez-la`},
@@ -37,9 +37,9 @@ export default {
         note: `Ce n'est pas un réglage de confidentialité. Il n'y a aucun annuaire dont se retirer.`,
       },
       {
-        title: `Le serveur ne conserve pas votre adresse e-mail`,
+        title: `Il n’y a pas d’adresse e-mail à conserver`,
         body: [
-          `Vous vous connectez avec une adresse, et cela s'arrête là. Votre fiche de profil ne contient ni adresse e-mail, ni nom affiché, ni URL de photo. Il n'y a pas de profil que quelqu'un d'autre puisse lire, puisque les seules personnes qui peuvent vous joindre sont celles que vous avez invitées.`,
+          `L’inscription ne demande rien sur vous. Votre compte est une phrase de récupération de 24 mots générée sur votre appareil, et l’identifiant que vérifie le serveur en est dérivé : ce qui y est conservé est une étiquette aléatoire sous un domaine incapable de recevoir du courrier. Votre fiche de profil ne contient pas davantage d’adresse e-mail, de nom affiché ou d’URL de photo, donc personne n’a de profil à lire.`,
         ],
       },
       {

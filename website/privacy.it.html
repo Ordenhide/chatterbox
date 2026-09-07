@@ -66,7 +66,7 @@
       <p>La cifratura protegge i contenuti, non il fatto che ci sia una conversazione. Questi dati stanno in chiaro sui nostri server:</p>
       <ul><li>Chi partecipa a ogni conversazione, e quando è stata creata e usata l'ultima volta.</li><li>L'orario di ogni messaggio e quanti non ne hai letti.</li><li>Nome, tipo e dimensione di un allegato. I byte sono cifrati, la loro descrizione no, e la lunghezza del cifrato delimita quella dell'originale.</li><li>I tuoi amici e le richieste di amicizia.</li><li>La segnalazione delle chiamate: che una chiamata c'è stata, con chi e quando. Non il suo audio né il video.</li></ul>
       <p>Gli indicatori di scrittura e le conferme di lettura sono disattivati finché non li accendi, e mentre sono spenti non viene scritto nulla.</p>
-      <p>Che cosa non c'è più: il tuo indirizzo email e il tuo nome. Da settembre 2026 il record dell'account contiene solo un identificatore. Il tuo indirizzo resta in Firebase Authentication, dove lo usiamo per farti accedere e dove nessun altro utente può leggerlo.</p>
+      <p>Che cosa non c'è più: il tuo indirizzo email e il tuo nome. Da settembre 2026 il record dell'account contiene solo un identificatore — e da allora non c'è più alcun indirizzo, da nessuna parte. La registrazione non chiede nulla su di te: il tuo account è una frase di recupero di 24 parole, e la credenziale che Firebase Authentication verifica ne deriva. Lì viene conservata un'etichetta casuale sotto un dominio che non può ricevere posta.</p>
       <p>A parte questo: poiché l'app gira su Google Firebase, Google può vedere l'indirizzo IP e l'orario di ogni connessione che il tuo dispositivo apre verso di essa. È una caratteristica dell'hosting, non dell'app, e non possiamo eliminarla con la cifratura.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. Che cosa raccogliamo</h2>
-      <ul><li>Dati dell'account: l'indirizzo e-mail con cui ti registri, conservato in Firebase Authentication.</li><li>Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.</li></ul>
+      <ul><li>Dati dell'account: un identificatore dell'account e una credenziale derivata dalla tua frase di recupero, conservata in Firebase Authentication. Nessun indirizzo email, nessun numero di telefono, nessun nome: la registrazione non ne chiede alcuno.</li><li>Il testo cifrato di messaggi e allegati, più i metadati della sezione 2.</li></ul>
       <p>Questa è tutta la lista. Non c'è analisi d'uso né segnalazione di crash. L'app mandava le visualizzazioni di schermata a Firebase Analytics e i crash a Firebase Crashlytics, entrambi con il tuo identificativo di account, quindi nessuno dei due era anonimo; sono spariti entrambi, insieme alle librerie che li mandavano. Gli errori vengono stampati sulla macchina di chi sviluppa, durante lo sviluppo, e non vanno da nessun'altra parte.</p>
     </section>
 

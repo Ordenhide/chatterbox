@@ -2,7 +2,7 @@
 export default {
   meta: {
     title: `Chatterbox — Una messaggistica senza un elenco in cui cercarti`,
-    description: `Messaggi cifrati end-to-end, senza elenco utenti, senza indirizzo e-mail conservato e con un'informativa sulla privacy che dice ciò che non può fare. Web e Android.`,
+    description: `Messaggi cifrati end-to-end, senza elenco utenti, senza alcun indirizzo e-mail e con un'informativa sulla privacy che dice ciò che non può fare. Web e Android.`,
   },
 
   links: {policy: `informativa sulla privacy`, policyShort: `Leggila`},
@@ -37,9 +37,9 @@ export default {
         note: `Non è un'impostazione sulla privacy. Non c'è alcun elenco da cui uscire.`,
       },
       {
-        title: `Il server non conserva il tuo indirizzo e-mail`,
+        title: `Non c'è alcun indirizzo e-mail da conservare`,
         body: [
-          `Accedi con un indirizzo, e lì finisce. Il documento del tuo profilo non contiene indirizzo e-mail, né nome visualizzato, né URL della foto. Non c'è un profilo che altri possano leggere, perché le uniche persone che possono raggiungerti sono quelle che hai invitato.`,
+          `La registrazione non chiede nulla su di te. Il tuo account è una frase di recupero di 24 parole generata sul tuo dispositivo, e la credenziale che il server verifica ne deriva: quello che conserva è un'etichetta casuale sotto un dominio che non può ricevere posta. Nemmeno il documento del tuo profilo contiene indirizzo e-mail, nome visualizzato o URL della foto, quindi non c'è un profilo che altri possano leggere.`,
         ],
       },
       {

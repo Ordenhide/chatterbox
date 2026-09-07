@@ -2,7 +2,7 @@
 export default {
   meta: {
     title: `Chatterbox — Uma aplicação de mensagens sem nada onde te procurar`,
-    description: `Mensagens cifradas ponta a ponta, sem diretório de utilizadores, sem endereço de e-mail guardado e com uma política de privacidade que diz o que não consegue fazer. Web e Android.`,
+    description: `Mensagens cifradas ponta a ponta, sem diretório de utilizadores, sem qualquer endereço de e-mail e com uma política de privacidade que diz o que não consegue fazer. Web e Android.`,
   },
 
   links: {policy: `política de privacidade`, policyShort: `Lê-a`},
@@ -37,9 +37,9 @@ export default {
         note: `Isto não é uma definição de privacidade. Não há diretório nenhum de onde sair.`,
       },
       {
-        title: `O servidor não guarda o teu endereço de e-mail`,
+        title: `Não há endereço de e-mail para guardar`,
         body: [
-          `Inicias sessão com um, e fica por aí. O documento do teu perfil não tem endereço de e-mail, nem nome visível, nem URL de fotografia. Não há perfil que outra pessoa possa ler, porque as únicas pessoas que te conseguem alcançar são as que convidaste.`,
+          `Criar conta não pergunta nada sobre ti. A tua conta é uma frase de recuperação de 24 palavras gerada no teu dispositivo, e a credencial que o servidor verifica é derivada dessas palavras — o que fica guardado é uma etiqueta aleatória num domínio que não consegue receber correio. O documento do teu perfil também não tem endereço de e-mail, nem nome visível, nem URL de fotografia, por isso não há perfil que alguém possa ler.`,
         ],
       },
       {

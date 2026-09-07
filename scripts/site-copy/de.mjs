@@ -3,7 +3,7 @@ export default {
   meta: {
     title: 'Chatterbox — Ein Messenger ohne Verzeichnis, in dem man dich findet',
     description:
-      'Ende-zu-Ende-verschlüsselte Nachrichten, ohne Nutzerverzeichnis, ohne gespeicherte E-Mail-Adresse und mit einer Datenschutzerklärung, die sagt, was sie nicht kann. Web und Android.',
+      'Ende-zu-Ende-verschlüsselte Nachrichten, ohne Nutzerverzeichnis, ganz ohne E-Mail-Adresse und mit einer Datenschutzerklärung, die sagt, was sie nicht kann. Web und Android.',
   },
 
   links: {policy: 'Datenschutzerklärung', policyShort: 'Lies sie'},
@@ -38,9 +38,9 @@ export default {
         note: `Das ist keine Datenschutzeinstellung. Es gibt kein Verzeichnis, aus dem man sich abmelden könnte.`,
       },
       {
-        title: 'Der Server speichert deine E-Mail-Adresse nicht',
+        title: 'Es gibt keine E-Mail-Adresse zu speichern',
         body: [
-          `Du meldest dich mit einer an, und damit hat es sich. Dein Profildokument enthält keine E-Mail-Adresse, keinen Anzeigenamen und keine Foto-URL. Es gibt kein Profil, das jemand anderes lesen könnte, denn die Einzigen, die dich erreichen, sind die, die du eingeladen hast.`,
+          `Die Registrierung fragt nichts über dich. Dein Konto ist eine 24-Wort-Wiederherstellungsphrase, die auf deinem Gerät entsteht, und die Anmeldedaten, die der Server prüft, werden daraus abgeleitet — gespeichert wird eine zufällige Kennung unter einer Domain, die keine Post empfangen kann. Dein Profildokument enthält ebenso wenig eine E-Mail-Adresse, einen Anzeigenamen oder eine Foto-URL, es gibt also auch kein Profil zum Lesen.`,
         ],
       },
       {

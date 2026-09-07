@@ -66,7 +66,7 @@
       <p>Mã hoá bảo vệ nội dung, không bảo vệ việc một cuộc trò chuyện có tồn tại. Những thứ sau nằm ở dạng rõ trên máy chủ của chúng tôi:</p>
       <ul><li>Ai ở trong mỗi cuộc trò chuyện, nó được tạo khi nào và hoạt động lần cuối khi nào.</li><li>Dấu thời gian của từng tin nhắn và số tin bạn chưa đọc.</li><li>Tên tệp, loại và kích thước của tệp đính kèm. Các byte thì được mã hoá; phần mô tả về chúng thì không, và độ dài bản mã cũng giới hạn độ dài bản gốc.</li><li>Bạn bè và lời mời kết bạn của bạn.</li><li>Tín hiệu cuộc gọi — rằng đã có một cuộc gọi, với ai và khi nào. Không phải âm thanh hay hình ảnh của nó.</li></ul>
       <p>Báo đang nhập và báo đã đọc đều tắt trừ khi bạn bật, và khi tắt thì không có gì được ghi lại.</p>
-      <p>Những gì không còn ở đây nữa: địa chỉ email và tên của bạn. Từ tháng 9 năm 2026, bản ghi tài khoản chỉ còn một mã định danh tài khoản. Địa chỉ của bạn nằm lại trong Firebase Authentication, nơi chúng tôi dùng nó để đăng nhập cho bạn và không người dùng nào khác đọc được.</p>
+      <p>Những gì không còn ở đây nữa: địa chỉ email và tên của bạn. Từ tháng 9 năm 2026, bản ghi tài khoản chỉ còn một mã định danh tài khoản — và từ đó tới nay không còn địa chỉ nào ở bất cứ đâu. Việc đăng ký không hỏi gì về bạn: tài khoản của bạn là một cụm từ khôi phục gồm 24 từ, và thông tin đăng nhập mà Firebase Authentication kiểm tra được suy ra từ nó. Thứ được lưu ở đó là một nhãn ngẫu nhiên dưới một tên miền không thể nhận thư.</p>
       <p>Một điều riêng: vì ứng dụng chạy trên Google Firebase, Google thấy được địa chỉ IP và thời điểm của mọi kết nối mà thiết bị của bạn mở tới đó. Đó là đặc tính của hạ tầng lưu trữ, không phải của ứng dụng, và chúng tôi không thể mã hoá để nó biến mất.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. Chúng tôi thu thập gì</h2>
-      <ul><li>Dữ liệu tài khoản: địa chỉ email bạn dùng để đăng ký, giữ trong Firebase Authentication.</li><li>Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.</li></ul>
+      <ul><li>Dữ liệu tài khoản: một mã định danh tài khoản và một thông tin đăng nhập suy ra từ cụm từ khôi phục của bạn, giữ trong Firebase Authentication. Không địa chỉ email, không số điện thoại, không tên — khi đăng ký không hỏi bất kỳ thứ nào.</li><li>Bản mã của tin nhắn và tệp đính kèm, cộng với siêu dữ liệu ở mục 2.</li></ul>
       <p>Danh sách chỉ có vậy. Không có phân tích sử dụng và không có báo cáo sự cố. Trước đây ứng dụng gửi lượt xem màn hình tới Firebase Analytics và báo cáo sự cố tới Firebase Crashlytics, cả hai đều mang định danh tài khoản của bạn nên không cái nào ẩn danh; cả hai đã bị gỡ bỏ, cùng với những thư viện gửi chúng. Lỗi chỉ được in ra trên máy của người phát triển trong lúc phát triển, và không đi đâu khác.</p>
     </section>
 

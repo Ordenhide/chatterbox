@@ -11,7 +11,7 @@ export default {
   meta: {
     title: 'Chatterbox — A messenger with nothing to look you up in',
     description:
-      'End-to-end encrypted messaging with no user directory, no stored email address, and a privacy policy that says what it cannot do. Web and Android.',
+      'End-to-end encrypted messaging with no user directory, no email address at all, and a privacy policy that says what it cannot do. Web and Android.',
   },
 
   links: {policy: 'privacy policy', policyShort: 'Read it'},
@@ -46,9 +46,9 @@ export default {
         note: `This is not a privacy setting. There is no directory to opt out of.`,
       },
       {
-        title: 'The server does not keep your email address',
+        title: 'There is no email address to keep',
         body: [
-          `You sign in with one, and that is where it stops. Your profile document holds no email address, no display name and no photo URL. There is no profile for anyone else to read, because the only people who can reach you are the ones you invited.`,
+          `Signing up asks for nothing about you. Your account is a 24-word recovery phrase generated on your device, and the credential the server checks is derived from those words — what it stores is a random label under a domain that cannot receive mail. Your profile document holds no email address, no display name and no photo URL, so there is no profile for anyone else to read either.`,
         ],
       },
       {

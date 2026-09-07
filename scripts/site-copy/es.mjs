@@ -3,7 +3,7 @@ export default {
   meta: {
     title: 'Chatterbox — Un mensajero sin ningún sitio donde buscarte',
     description:
-      'Mensajería cifrada de extremo a extremo, sin directorio de usuarios, sin guardar tu dirección de correo y con una política de privacidad que dice lo que no puede hacer. Web y Android.',
+      'Mensajería cifrada de extremo a extremo, sin directorio de usuarios, sin ninguna dirección de correo y con una política de privacidad que dice lo que no puede hacer. Web y Android.',
   },
 
   links: {policy: 'política de privacidad', policyShort: 'Léela'},
@@ -38,9 +38,9 @@ export default {
         note: `Esto no es un ajuste de privacidad. No hay ningún directorio del que salirse.`,
       },
       {
-        title: 'El servidor no guarda tu dirección de correo',
+        title: 'No hay dirección de correo que guardar',
         body: [
-          `Inicias sesión con una, y ahí se acaba. Tu documento de perfil no contiene dirección de correo, ni nombre visible, ni URL de foto. No hay perfil que nadie pueda leer, porque las únicas personas que pueden llegar a ti son las que invitaste.`,
+          `Registrarse no pregunta nada sobre ti. Tu cuenta es una frase de recuperación de 24 palabras generada en tu dispositivo, y la credencial que comprueba el servidor se deriva de esas palabras: lo que guarda es una etiqueta aleatoria bajo un dominio que no puede recibir correo. Tu documento de perfil tampoco contiene dirección de correo, ni nombre visible, ni URL de foto, así que no hay perfil que nadie pueda leer.`,
         ],
       },
       {

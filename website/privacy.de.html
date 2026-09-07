@@ -66,7 +66,7 @@
       <p>Verschlüsselung schützt Inhalte, nicht die Tatsache eines Gesprächs. Folgendes liegt im Klartext auf unseren Servern:</p>
       <ul><li>Wer an welchem Gespräch beteiligt ist und wann es erstellt wurde und zuletzt aktiv war.</li><li>Der Zeitstempel jeder Nachricht und wie viele du nicht gelesen hast.</li><li>Dateiname, Typ und Größe eines Anhangs. Die Bytes sind verschlüsselt, ihre Beschreibung nicht, und die Länge des Chiffrats begrenzt die Länge des Originals.</li><li>Deine Freunde und Freundschaftsanfragen.</li><li>Anrufsignalisierung — dass ein Anruf geführt wurde, mit wem und wann. Nicht dessen Ton oder Bild.</li></ul>
       <p>Schreibanzeige und Lesebestätigungen sind aus, solange du sie nicht einschaltest, und während sie aus sind, wird nichts geschrieben.</p>
-      <p>Was hier nicht mehr steht: deine E-Mail-Adresse und dein Name. Seit September 2026 enthält der Kontodatensatz nur noch eine Kontokennung. Deine Adresse bleibt in Firebase Authentication, wo wir dich damit anmelden und wo kein anderer sie lesen kann.</p>
+      <p>Was hier nicht mehr steht: deine E-Mail-Adresse und dein Name. Seit September 2026 enthält der Kontodatensatz nur noch eine Kontokennung — und seitdem gibt es nirgends mehr eine Adresse, die dort stehen könnte. Die Registrierung fragt nichts über dich: dein Konto ist eine 24-Wort-Wiederherstellungsphrase, und die Anmeldedaten, die Firebase Authentication prüft, werden daraus abgeleitet. Gespeichert wird dort eine zufällige Kennung unter einer Domain, die keine Post empfangen kann.</p>
       <p>Und getrennt davon: Weil die App auf Google Firebase läuft, kann Google die IP-Adresse und den Zeitpunkt jeder Verbindung sehen, die dein Gerät dorthin aufbaut. Das ist eine Eigenschaft des Hostings, nicht der App, und wir können es nicht wegverschlüsseln.</p>
     </section>
 
@@ -78,7 +78,7 @@
 
     <section>
       <h2>4. Was wir erheben</h2>
-      <ul><li>Kontodaten: die E-Mail-Adresse, mit der du dich registrierst, gehalten in Firebase Authentication.</li><li>Der Chiffretext von Nachrichten und Anhängen, dazu die Metadaten aus Abschnitt 2.</li></ul>
+      <ul><li>Kontodaten: eine Kontokennung und ein aus deiner Wiederherstellungsphrase abgeleitetes Anmeldegeheimnis, gehalten in Firebase Authentication. Keine E-Mail-Adresse, keine Telefonnummer, kein Name — die Registrierung fragt nach keinem davon.</li><li>Der Chiffretext von Nachrichten und Anhängen, dazu die Metadaten aus Abschnitt 2.</li></ul>
       <p>Das ist die ganze Liste. Es gibt keine Analyse und keine Absturzberichte. Die App schickte früher Bildschirmaufrufe an Firebase Analytics und Abstürze an Firebase Crashlytics, beides mit deiner Kontokennung, also war keines davon anonym; beides ist weg, samt der Bibliotheken, die es gesendet haben. Fehler werden während der Entwicklung auf dem Rechner der entwickelnden Person ausgegeben und gehen nirgendwo sonst hin.</p>
     </section>
 

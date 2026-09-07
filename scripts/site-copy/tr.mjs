@@ -2,7 +2,7 @@
 export default {
   meta: {
     title: `Chatterbox — Sizi arayabilecekleri bir dizini olmayan mesajlaşma`,
-    description: `Uçtan uca şifreli mesajlaşma: kullanıcı dizini yok, e-posta adresiniz saklanmıyor ve gizlilik politikası neyi yapamadığını da yazıyor. Web ve Android.`,
+    description: `Uçtan uca şifreli mesajlaşma: kullanıcı dizini yok, hiç e-posta adresi yok ve gizlilik politikası neyi yapamadığını da yazıyor. Web ve Android.`,
   },
 
   links: {policy: `gizlilik politikası`, policyShort: `Önce onu okuyun`},
@@ -37,9 +37,9 @@ export default {
         note: `Bu bir gizlilik ayarı değil. Çıkabileceğiniz bir dizin yok.`,
       },
       {
-        title: `Sunucu e-posta adresinizi saklamıyor`,
+        title: `Saklanacak bir e-posta adresi yok`,
         body: [
-          `Bir adresle giriş yaparsınız, iş orada biter. Profil belgenizde e-posta adresi, görünen ad ve fotoğraf bağlantısı bulunmaz. Başkasının okuyabileceği bir profil de yoktur; çünkü size ulaşabilecek tek kişiler, davet ettiğiniz kişilerdir.`,
+          `Kayıt sırasında size dair hiçbir şey sorulmaz. Hesabınız, cihazınızda üretilen 24 kelimelik bir kurtarma ifadesidir ve sunucunun doğruladığı kimlik bilgisi bu kelimelerden türetilir: saklanan şey, posta alamayan bir alan adı altındaki rastgele bir etikettir. Profil belgenizde de e-posta adresi, görünen ad ya da fotoğraf bağlantısı bulunmaz; yani başkasının okuyabileceği bir profil de yoktur.`,
         ],
       },
       {
