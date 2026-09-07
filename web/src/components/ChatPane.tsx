@@ -2467,11 +2467,19 @@ export default function ChatPane({
                             the browser, so Wikipedia sees a visit the reader
                             made and this app sends nothing. */}
                         {!contentHidden && extractEntities(m.text || '').length > 0 && (
+                          // Labelled, alone among fourteen icon-only buttons.
+                          // The others are actions every messenger has, so their
+                          // icons are already learned; "look up on Wikipedia" has
+                          // no conventional icon, and a book glyph in a row of
+                          // identical circles is a guess nobody makes. The label
+                          // is the proper noun rather than a translated phrase —
+                          // Wikipedia is called Wikipedia in all fifteen.
                           <button
-                            style={styles.smallAction}
+                            style={styles.smallActionLabelled}
                             title={t('chat.lookUp')}
                             onClick={() => doLookUp(m)}>
                             <Icon name="book" size={15} />
+                            Wikipedia
                           </button>
                         )}
                         {!contentHidden && mine && m.text && !m.burnAfterReading && (
@@ -3602,6 +3610,21 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  smallActionLabelled: {
+    height: 32,
+    borderRadius: 999,
+    border: `1px solid ${colors.border}`,
+    background: colors.surfaceStrong,
+    color: colors.text,
+    padding: '0 12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    fontSize: 13,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
   },
   seen: {textAlign: 'right', fontSize: 11.5, color: colors.textSecondary, margin: '4px 16px 8px 0'},
   typing: {fontSize: 13, color: colors.textSecondary, fontStyle: 'italic', padding: '2px 4px'},
