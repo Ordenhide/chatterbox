@@ -1,14 +1,21 @@
-import {
-  doc,
-  collection,
-  getDocs,
-  getDoc,
-  getFirestore,
-  setDoc,
-  deleteDoc,
-  writeBatch,
-} from './firebase/firestore';
-import {mmkvStorage} from './storageMMKV';
+/**
+ * Per-chat message expiry, and nothing else any more.
+ *
+ * A dead man's switch, a remote wipe and a trusted-contact list lived here
+ * too — eleven exported functions, none of which anything imported. There was
+ * no screen to arm the switch, nothing to trigger the wipe, and no way to name
+ * a trusted contact, so `deadManSwitch.enabled` was a field no client could
+ * ever set. A scheduled Cloud Function queried for it every twenty-four hours
+ * and was therefore guaranteed to find nothing, on a paid invocation, forever.
+ *
+ * requestRemoteWipe would also have written `remoteWipe` onto the public
+ * profile document, which every contact can read — a flag announcing that you
+ * had triggered one, to the people it would most matter to.
+ *
+ * Half-shipped is the one state that costs money and protects nobody. If the
+ * feature comes back it comes back with a screen; the code is in the history.
+ */
+import {doc, getFirestore, setDoc} from './firebase/firestore';
 
 const db = getFirestore();
 
@@ -19,12 +26,6 @@ export async function setChatExpiryPolicy(
   await setDoc(doc(db, 'chats', chatId), {messageExpiry: hours}, {merge: true});
 }
 
-export async function removeChatExpiryPolicy(
-  chatId: string,
-): Promise<void> {
-  await setDoc(doc(db, 'chats', chatId), {messageExpiry: 0}, {merge: true});
-}
-
 export function getExpiryOptions(): Array<{label: string; hours: number}> {
   return [
     {label: 'Off', hours: 0},
@@ -33,81 +34,4 @@ export function getExpiryOptions(): Array<{label: string; hours: number}> {
     {label: '7 Days', hours: 168},
     {label: '30 Days', hours: 720},
   ];
-}
-
-const DMS_KEY = 'dead_man_switch';
-
-export async function getDeadManSwitch(): Promise<{
-  enabled: boolean;
-  days: number;
-  lastCheckIn: number;
-}> {
-  const raw = await mmkvStorage.getItem(DMS_KEY);
-  return raw
-    ? JSON.parse(raw)
-    : {enabled: false, days: 90, lastCheckIn: Date.now()};
-}
-
-export async function setDeadManSwitch(
-  enabled: boolean,
-  days: number,
-): Promise<void> {
-  await mmkvStorage.setItem(
-    DMS_KEY,
-    JSON.stringify({enabled, days, lastCheckIn: Date.now()}),
-  );
-}
-
-export async function checkInDeadMan(): Promise<void> {
-  const current = await getDeadManSwitch();
-  current.lastCheckIn = Date.now();
-  await mmkvStorage.setItem(DMS_KEY, JSON.stringify(current));
-}
-
-export async function isDeadManTriggered(): Promise<boolean> {
-  const {enabled, days, lastCheckIn} = await getDeadManSwitch();
-  return enabled && Date.now() - lastCheckIn > days * 86400000;
-}
-
-export async function requestRemoteWipe(userId: string): Promise<void> {
-  await setDoc(doc(db, 'users', userId), {remoteWipe: true}, {merge: true});
-}
-
-export async function checkRemoteWipe(userId: string): Promise<boolean> {
-  const snap = await getDoc(doc(db, 'users', userId));
-  return snap.data()?.remoteWipe ?? false;
-}
-
-export async function clearRemoteWipeFlag(userId: string): Promise<void> {
-  await setDoc(doc(db, 'users', userId), {remoteWipe: false}, {merge: true});
-}
-
-export async function setTrustedContacts(
-  userId: string,
-  contacts: Array<{uid: string; displayName?: string}>,
-): Promise<void> {
-  const withTimestamps = contacts.map(c => ({...c, addedAt: Date.now()}));
-  await setDoc(
-    doc(db, 'users', userId),
-    {trustedContacts: withTimestamps},
-    {merge: true},
-  );
-}
-
-export async function getTrustedContacts(
-  userId: string,
-): Promise<Array<{uid: string; displayName?: string; addedAt: number}>> {
-  const snap = await getDoc(doc(db, 'users', userId));
-  return snap.data()?.trustedContacts ?? [];
-}
-
-export async function performLocalWipe(): Promise<void> {
-  const {mmkvStorage} = require('./storageMMKV');
-  const {clearUserCache} = require('./firebaseChat');
-  try {
-    await mmkvStorage.clear();
-  } catch {}
-  try {
-    clearUserCache();
-  } catch {}
 }

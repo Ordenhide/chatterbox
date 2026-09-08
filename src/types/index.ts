@@ -8,19 +8,6 @@ export interface StealthSettings {
   hideLastSeen: boolean;
 }
 
-export interface DeadManSwitch {
-  enabled: boolean;
-  days: number;
-  lastCheckIn: number;
-}
-
-export interface TrustedContact {
-  uid: string;
-  displayName?: string;
-  addedAt: number;
-  confirmed?: boolean;
-}
-
 export interface VaultItem {
   id: string;
   type: 'photo' | 'file' | 'note';
@@ -60,8 +47,6 @@ export interface User {
     createdAt: number;
   };
   stealth?: StealthSettings;
-  deadManSwitch?: DeadManSwitch;
-  trustedContacts?: TrustedContact[];
   safetyNumber?: string;
 }
 
