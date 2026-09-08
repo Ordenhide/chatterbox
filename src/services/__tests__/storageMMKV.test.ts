@@ -180,12 +180,12 @@ describe('upgrading an install that has data under the bootstrap key', () => {
   });
 
   it('does not copy secrets into the unencrypted preferences store', async () => {
-    seedLegacyInstall({cached_messages: 'secret', app_lock_pin: 'hash', stealth_mode: true});
+    seedLegacyInstall({cached_messages: 'secret', app_lock_pin: 'hash', typing_indicator: true});
     loadModule();
 
     expect(storeData(PREFS)?.has('cached_messages')).toBe(false);
     expect(storeData(PREFS)?.has('app_lock_pin')).toBe(false);
-    expect(storeData(PREFS)?.get('stealth_mode')).toBe(true);
+    expect(storeData(PREFS)?.get('typing_indicator')).toBe(true);
   });
 });
 
@@ -269,10 +269,10 @@ describe('when the key store cannot be used', () => {
 describe('the synchronous API', () => {
   it('reads and writes preferences', () => {
     const {mmkvStorage} = loadModule();
-    mmkvStorage.setBoolean('stealth_mode', true);
+    mmkvStorage.setBoolean('typing_indicator', true);
     mmkvStorage.setNumber('auto_lock_delay', 60);
 
-    expect(mmkvStorage.getBoolean('stealth_mode')).toBe(true);
+    expect(mmkvStorage.getBoolean('typing_indicator')).toBe(true);
     expect(mmkvStorage.getNumber('auto_lock_delay')).toBe(60);
   });
 
@@ -297,10 +297,10 @@ describe('the synchronous API', () => {
 
   it('never touches the encrypted store', () => {
     const {mmkvStorage} = loadModule();
-    mmkvStorage.setBoolean('stealth_mode', true);
+    mmkvStorage.setBoolean('typing_indicator', true);
     // Not merely absent from the secure store — the secure store has not even
     // been opened, since a synchronous path cannot wait for the key.
-    expect(storeData(SECURE)?.has('stealth_mode')).toBeFalsy();
+    expect(storeData(SECURE)?.has('typing_indicator')).toBeFalsy();
   });
 });
 
@@ -308,7 +308,7 @@ describe('clear', () => {
   it('wipes both stores', async () => {
     const {mmkvStorage} = loadModule();
     await mmkvStorage.setItem('cached', 'data');
-    mmkvStorage.setBoolean('stealth_mode', true);
+    mmkvStorage.setBoolean('typing_indicator', true);
 
     await mmkvStorage.clear();
 

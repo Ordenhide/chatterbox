@@ -21,45 +21,22 @@ export function setScreenshotAlert(enabled: boolean): void {
   mmkvStorage.setBoolean('screenshot_alert', enabled);
 }
 
-export function isStealthMode(): boolean {
-  return mmkvStorage.getBoolean('stealth_mode') ?? false;
-}
-
-export async function setStealthMode(
-  enabled: boolean,
-  userId: string,
-): Promise<void> {
-  mmkvStorage.setBoolean('stealth_mode', enabled);
-  const stealth = {
-    hideOnline: enabled,
-    hideTyping: enabled,
-    hideReadReceipts: enabled,
-    hideLastSeen: enabled,
-  };
-  await setDoc(doc(db, 'users', userId), {stealth}, {merge: true});
-}
-
-export async function getStealthSettings(
-  userId: string,
-): Promise<{
-  hideOnline: boolean;
-  hideTyping: boolean;
-  hideReadReceipts: boolean;
-  hideLastSeen: boolean;
-}> {
-  const fallback = {
-    hideOnline: false,
-    hideTyping: false,
-    hideReadReceipts: false,
-    hideLastSeen: false,
-  };
-  try {
-    const snap = await getDoc(doc(db, 'users', userId));
-    return snap.data()?.stealth ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
+/*
+ * Stealth mode used to live here: one switch that set hideOnline, hideTyping,
+ * hideReadReceipts and hideLastSeen together, written to the public profile
+ * document as a `stealth` object.
+ *
+ * Nothing ever called the setter. No screen offered the switch, so
+ * isStealthMode() returned the storage default — false — for every user, on
+ * every launch, and the two gates that consulted it in firebaseChat.ts could
+ * not fire. getStealthSettings had no readers at all.
+ *
+ * The two signals that actually matter are governed by their own flags a few
+ * lines below (isTypingIndicatorEnabled, isReadReceiptsEnabled), which the
+ * write paths do check and which default to off. That is the real mechanism;
+ * this was a second, inert one sitting beside it and reading as though it
+ * were doing the work.
+ */
 
 export function isExifStrippingEnabled(): boolean {
   return mmkvStorage.getBoolean('strip_exif') ?? true;

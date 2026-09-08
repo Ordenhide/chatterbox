@@ -1,13 +1,6 @@
 import type {MediaKeyInfo} from '../services/mediaCrypto';
 import type {MediaSlot} from '../services/messageBody';
 
-export interface StealthSettings {
-  hideOnline: boolean;
-  hideTyping: boolean;
-  hideReadReceipts: boolean;
-  hideLastSeen: boolean;
-}
-
 export interface VaultItem {
   id: string;
   type: 'photo' | 'file' | 'note';
@@ -35,7 +28,6 @@ export interface User {
   /** From Firebase Auth, for your own account only. Never a peer's. */
   photoURL?: string;
   fcmToken?: string | null;
-  defaultMomentVisibility?: 'public' | 'friends' | 'private';
   focusMode?: {
     enabled: boolean;
     until?: number;
@@ -46,7 +38,6 @@ export interface User {
     duration: number;
     createdAt: number;
   };
-  stealth?: StealthSettings;
   safetyNumber?: string;
 }
 

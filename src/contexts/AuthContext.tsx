@@ -594,7 +594,10 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             // services/firebaseChat.ts. There is now no email to leave out:
             // Firebase Auth holds a random handle under a domain that cannot
             // receive mail, and nothing else.
-            defaultMomentVisibility: 'friends',
+            //
+            // `defaultMomentVisibility: 'friends'` was written here too, for a
+            // feature with no screen on either client. A default nothing reads
+            // is not a default.
             updatedAt: serverTimestamp(),
           },
           {merge: true},

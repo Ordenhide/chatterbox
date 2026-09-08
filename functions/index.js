@@ -801,6 +801,12 @@ exports.markViewOnceViewed = callable().onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
   }
+  // The only authenticated callable that carried no limit. Each call is bounded
+  // by chat participation and refuses a second view outright, so this is about
+  // the reads a caller can spend rather than a way in — but "bounded by
+  // something else" is how every unlimited endpoint starts. Generous enough
+  // that opening a burst of view-once messages never hits it.
+  await checkRateLimit(context.auth.uid, 'markViewOnceViewed', {maxCalls: 30, windowMs: 60000});
   const {chatId, messageId} = data || {};
   if (!chatId || !messageId) {
     throw new functions.https.HttpsError('invalid-argument', 'chatId and messageId required.');

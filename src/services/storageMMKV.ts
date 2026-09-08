@@ -94,7 +94,6 @@ const PREF_KEYS: ReadonlySet<string> = new Set([
   'read_receipts',
   'screenshot_alert',
   'screenshot_protection',
-  'stealth_mode',
   'strip_exif',
   'tutorial_seen_v1',
   'typing_indicator',
