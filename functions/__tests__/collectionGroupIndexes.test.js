@@ -110,14 +110,43 @@ describe('collectionGroup queries are backed by collection-group indexes', () =>
 });
 
 describe('the index file itself', () => {
-  it('declares no collection-scoped index for a collection only queried as a group', () => {
+  it('never leaves a group-queried collection with only a collection-scoped index', () => {
     // The specific mistake that caused the outage: the index exists, names the
     // right fields, and is simply scoped wrong. Deploy accepts it, so the only
     // signal is a query failing at runtime.
-    const groupOnly = new Set(queries.map(q => q.name));
-    const misscoped = (config.indexes || [])
-      .filter(i => groupOnly.has(i.collectionGroup) && i.queryScope !== 'COLLECTION_GROUP')
-      .map(i => `${i.collectionGroup} [${(i.fields || []).map(f => f.fieldPath).join(', ')}]`);
+    //
+    // This used to assert something stricter and, it turned out, false — that
+    // a collection queried as a group must have *no* COLLECTION-scoped index,
+    // on the assumption that group-queried meant group-queried only. It is not:
+    // the Cloud Functions sweep every chat's scheduledMessages and every user's
+    // reminders as groups, while the clients query one chat's and one user's
+    // collection-scoped. Both scopes are needed, and Firestore will not serve
+    // one query with the other's index. The stricter version failed the moment
+    // the client's missing indexes were added — see
+    // src/services/__tests__/collectionIndexes.test.ts, which covers that
+    // direction.
+    //
+    // What is actually wrong is a COLLECTION index standing in for a group one,
+    // so that is what this looks for: same collection, same fields, no
+    // COLLECTION_GROUP index beside it.
+    const grouped = new Set(queries.map(q => q.name));
+    const sameFields = (a, b) =>
+      a.length === b.length && a.every((f, i) => f === b[i]);
+    const indexes = config.indexes || [];
+    const fieldsOf = i => (i.fields || []).map(f => f.fieldPath);
+
+    const misscoped = indexes
+      .filter(i => grouped.has(i.collectionGroup) && (i.queryScope ?? 'COLLECTION') !== 'COLLECTION_GROUP')
+      .filter(
+        i =>
+          !indexes.some(
+            other =>
+              other.collectionGroup === i.collectionGroup &&
+              other.queryScope === 'COLLECTION_GROUP' &&
+              sameFields(fieldsOf(other), fieldsOf(i)),
+          ),
+      )
+      .map(i => `${i.collectionGroup} [${fieldsOf(i).join(', ')}]`);
     expect(misscoped).toEqual([]);
   });
 });
