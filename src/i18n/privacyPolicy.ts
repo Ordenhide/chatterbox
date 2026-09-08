@@ -128,7 +128,7 @@ Notifications carry no message text. Your device decrypts the message locally an
     },
     {
       title: '8. What you can do',
-      body: `• Delete your account from the Profile screen. Content that is jointly part of a conversation — a shared list, a call record — stays with the other participant, because it is their record too.
+      body: `• Delete your account from the Profile screen. Content that is jointly part of a conversation — a call record, for instance — stays with the other participant, because it is their record too.
 • Export your data from the Profile screen.
 • Set messages to expire per chat: 1 hour, 24 hours, 7 days or 30 days.
 • Turn typing indicators and read receipts on or off. Both are off by default.
@@ -146,7 +146,7 @@ If you would rather we deleted something by hand, write to us.`,
       body: `We would rather tell you these than have you find them.
 
 • Keys are trusted the first time they are seen. If someone substituted a key before you ever exchanged a message, the conversation would be encrypted to the wrong person and would look entirely normal. The app warns you when a key changes afterwards, and shows a safety number you can compare out of band — but nothing forces you to compare it.
-• One device per account. Signing in on a new device replaces the key, and the previous device stops being able to read new messages.
+• One device at a time. Your recovery phrase restores the key that opens your history, so signing in on a new device does not lose what you already received. Forward-secret conversations use a second key that never leaves the device that created it: whichever device signed in last is the one they reach, and anything sealed to the other one in the meantime cannot be moved across.
 • Messages sent before encryption existed stay as they were. Nothing was converted retroactively.
 • This app has not been independently security-audited.`,
     },
@@ -245,7 +245,7 @@ If you would rather we deleted something by hand, write to us.`,
     },
     {
       title: '8. 你可以做什么',
-      body: `• 在「我的」页面删除账号。属于一场对话共同部分的内容——一份共享清单、一条通话记录——会留给另一位参与者，因为那也是他的记录。
+      body: `• 在「我的」页面删除账号。属于一场对话共同部分的内容——比如一条通话记录——会留给另一位参与者，因为那也是他的记录。
 • 在「我的」页面导出你的数据。
 • 按会话设置消息过期：1 小时、24 小时、7 天或 30 天。
 • 打开或关闭「正在输入」和已读回执。两者默认都是关闭的。
@@ -263,7 +263,7 @@ If you would rather we deleted something by hand, write to us.`,
       body: `这些我们宁可主动告诉你，也不愿你自己发现。
 
 • 公钥在第一次见到时就被信任。如果有人在你们交换第一条消息之前就替换了公钥，这场对话会被加密给错误的人，而且看起来完全正常。之后公钥再变化时应用会警告你，也会显示一个可以线下核对的安全码——但没有任何机制强制你去核对。
-• 一个账号只能用一台设备。在新设备上登录会替换掉密钥，原来那台设备就读不到新消息了。
+• 同一时间只能用一台设备。你的助记词能恢复打开历史消息的密钥，所以在新设备上登录不会丢掉你已经收到的内容。但前向保密的会话用的是第二把密钥，它从不离开生成它的那台设备：最后登录的那台才是这类消息送达的地方，期间封给另一台的内容无法搬过来。
 • 加密功能出现之前发的消息保持原样，没有做过追溯转换。
 • 这个应用没有经过独立的第三方安全审计。`,
     },
@@ -361,7 +361,7 @@ Benachrichtigungen enthalten keinen Nachrichtentext. Dein Gerät entschlüsselt 
     },
     {
       title: '8. Was du tun kannst',
-      body: `• Lösche dein Konto im Profil. Inhalte, die gemeinsamer Teil eines Gesprächs sind — eine geteilte Liste, ein Anrufeintrag — bleiben bei der anderen Person, denn es ist auch ihre Aufzeichnung.
+      body: `• Lösche dein Konto im Profil. Inhalte, die gemeinsamer Teil eines Gesprächs sind — ein Anrufeintrag etwa — bleiben beim anderen Teilnehmer, denn es ist auch dessen Aufzeichnung.
 • Exportiere deine Daten im Profil.
 • Lass Nachrichten pro Chat ablaufen: 1 Stunde, 24 Stunden, 7 Tage oder 30 Tage.
 • Schalte Schreibanzeige und Lesebestätigungen ein oder aus. Beide sind standardmäßig aus.
@@ -379,7 +379,7 @@ Wenn dir lieber ist, dass wir etwas von Hand löschen, schreib uns.`,
       body: `Wir sagen dir das lieber, als dass du es selbst herausfindest.
 
 • Schlüsseln wird beim ersten Sehen vertraut. Hätte jemand einen Schlüssel ausgetauscht, bevor ihr je eine Nachricht gewechselt habt, wäre das Gespräch an die falsche Person verschlüsselt und sähe völlig normal aus. Die App warnt dich, wenn sich ein Schlüssel danach ändert, und zeigt eine Sicherheitsnummer, die ihr außerhalb der App vergleichen könnt — nichts zwingt dich jedoch dazu.
-• Ein Gerät pro Konto. Eine Anmeldung auf einem neuen Gerät ersetzt den Schlüssel, und das vorherige Gerät kann neue Nachrichten nicht mehr lesen.
+• Ein Gerät zur Zeit. Deine Wiederherstellungsphrase stellt den Schlüssel wieder her, der deinen Verlauf öffnet, also geht beim Anmelden auf einem neuen Gerät nichts von dem verloren, was du bereits empfangen hast. Vorwärtsgeheime Gespräche nutzen einen zweiten Schlüssel, der das Gerät, das ihn erzeugt hat, nie verlässt: erreicht wird immer das zuletzt angemeldete Gerät, und was in der Zwischenzeit an das andere versiegelt wurde, lässt sich nicht hinübertragen.
 • Nachrichten, die vor Einführung der Verschlüsselung gesendet wurden, bleiben, wie sie waren. Nichts wurde nachträglich umgewandelt.
 • Diese App wurde nie unabhängig sicherheitsgeprüft.`,
     },
@@ -477,7 +477,7 @@ Las notificaciones no llevan el texto del mensaje. Tu dispositivo lo descifra lo
     },
     {
       title: '8. Qué puedes hacer',
-      body: `• Eliminar tu cuenta desde la pantalla de Perfil. El contenido que forma parte conjunta de una conversación —una lista compartida, un registro de llamada— se queda con la otra persona, porque también es su registro.
+      body: `• Eliminar tu cuenta desde la pantalla de Perfil. El contenido que forma parte conjunta de una conversación —un registro de llamada, por ejemplo— permanece con la otra persona, porque también es su registro.
 • Exportar tus datos desde la pantalla de Perfil.
 • Hacer que los mensajes caduquen por chat: 1 hora, 24 horas, 7 días o 30 días.
 • Activar o desactivar el indicador de escritura y las confirmaciones de lectura. Ambos vienen desactivados.
@@ -495,7 +495,7 @@ Si prefieres que borremos algo a mano, escríbenos.`,
       body: `Preferimos contártelos a que los descubras tú.
 
 • Las claves se confían la primera vez que se ven. Si alguien sustituyó una clave antes de que llegarais a intercambiar un mensaje, la conversación estaría cifrada hacia la persona equivocada y parecería totalmente normal. La app te avisa cuando una clave cambia después, y muestra un número de seguridad que podéis comparar por otro canal, pero nada te obliga a compararlo.
-• Un dispositivo por cuenta. Iniciar sesión en uno nuevo sustituye la clave, y el anterior deja de poder leer los mensajes nuevos.
+• Un dispositivo a la vez. Tu frase de recuperación restaura la clave que abre tu historial, así que iniciar sesión en un dispositivo nuevo no pierde lo que ya recibiste. Las conversaciones con secreto hacia adelante usan una segunda clave que nunca sale del dispositivo que la creó: llegan al que inició sesión más recientemente, y lo que se selló para el otro mientras tanto no se puede trasladar.
 • Los mensajes enviados antes de que existiera el cifrado siguen tal cual. No se convirtió nada de forma retroactiva.
 • Esta app nunca ha pasado una auditoría de seguridad independiente.`,
     },
@@ -593,7 +593,7 @@ Les notifications ne contiennent aucun texte de message. Votre appareil déchiff
     },
     {
       title: '8. Ce que vous pouvez faire',
-      body: `• Supprimer votre compte depuis l'écran Profil. Le contenu qui appartient conjointement à une conversation — une liste partagée, un enregistrement d'appel — reste chez l'autre personne, car c'est aussi sa trace.
+      body: `• Supprimer votre compte depuis l'écran Profil. Le contenu qui appartient conjointement à une conversation — un enregistrement d'appel, par exemple — reste chez l'autre participant, car c'est aussi son historique.
 • Exporter vos données depuis l'écran Profil.
 • Faire expirer les messages par conversation : 1 heure, 24 heures, 7 jours ou 30 jours.
 • Activer ou désactiver les indicateurs de saisie et les accusés de lecture. Les deux sont désactivés par défaut.
@@ -611,7 +611,7 @@ Si vous préférez que nous supprimions quelque chose à la main, écrivez-nous.
       body: `Nous préférons vous les dire plutôt que vous les laisser découvrir.
 
 • Les clés sont approuvées à la première rencontre. Si quelqu'un avait substitué une clé avant que vous n'échangiez le moindre message, la conversation serait chiffrée vers la mauvaise personne et paraîtrait tout à fait normale. L'application vous prévient lorsqu'une clé change ensuite, et affiche un numéro de sécurité que vous pouvez comparer hors ligne — mais rien ne vous oblige à le comparer.
-• Un appareil par compte. Se connecter sur un nouvel appareil remplace la clé, et le précédent ne peut plus lire les nouveaux messages.
+• Un appareil à la fois. Votre phrase de récupération restaure la clé qui ouvre votre historique : se connecter sur un nouvel appareil ne perd donc rien de ce que vous avez déjà reçu. Les conversations à confidentialité persistante utilisent une seconde clé qui ne quitte jamais l'appareil qui l'a créée : c'est le dernier appareil connecté qu'elles atteignent, et ce qui a été scellé pour l'autre entre-temps ne peut pas être transféré.
 • Les messages envoyés avant l'existence du chiffrement restent tels quels. Rien n'a été converti rétroactivement.
 • Cette application n'a jamais fait l'objet d'un audit de sécurité indépendant.`,
     },
@@ -709,7 +709,7 @@ Le notifiche non contengono il testo del messaggio. È il tuo dispositivo a deci
     },
     {
       title: '8. Che cosa puoi fare',
-      body: `• Eliminare il tuo account dalla schermata Profilo. I contenuti che appartengono in comune a una conversazione — una lista condivisa, un registro di chiamata — restano all'altra persona, perché sono anche il suo archivio.
+      body: `• Eliminare il tuo account dalla schermata Profilo. I contenuti che appartengono in comune a una conversazione — un registro di chiamata, per esempio — restano all'altro partecipante, perché sono anche il suo archivio.
 • Esportare i tuoi dati dalla schermata Profilo.
 • Far scadere i messaggi per singola chat: 1 ora, 24 ore, 7 giorni o 30 giorni.
 • Attivare o disattivare indicatori di scrittura e conferme di lettura. Entrambi sono disattivati di default.
@@ -727,7 +727,7 @@ Se preferisci che cancelliamo qualcosa a mano, scrivici.`,
       body: `Preferiamo dirteli noi piuttosto che fartene accorgere.
 
 • Le chiavi vengono considerate attendibili la prima volta che si vedono. Se qualcuno avesse sostituito una chiave prima che vi scambiaste anche un solo messaggio, la conversazione sarebbe cifrata verso la persona sbagliata e sembrerebbe del tutto normale. L'app ti avvisa quando una chiave cambia in seguito e mostra un numero di sicurezza che potete confrontare per altre vie — ma nulla ti obbliga a confrontarlo.
-• Un dispositivo per account. Accedere da un dispositivo nuovo sostituisce la chiave, e quello precedente smette di poter leggere i messaggi nuovi.
+• Un dispositivo alla volta. La tua frase di recupero ripristina la chiave che apre la cronologia, quindi accedere da un nuovo dispositivo non perde ciò che hai già ricevuto. Le conversazioni con segretezza in avanti usano una seconda chiave che non lascia mai il dispositivo che l'ha creata: arrivano all'ultimo dispositivo che ha effettuato l'accesso, e ciò che nel frattempo è stato sigillato per l'altro non può essere spostato.
 • I messaggi inviati prima che esistesse la cifratura restano com'erano. Nulla è stato convertito retroattivamente.
 • Questa app non è mai stata sottoposta a un audit di sicurezza indipendente.`,
     },
@@ -825,7 +825,7 @@ As notificações não levam o texto da mensagem. É o teu dispositivo que a dec
     },
     {
       title: '8. O que podes fazer',
-      body: `• Apagar a tua conta no ecrã Perfil. O conteúdo que pertence em conjunto a uma conversa — uma lista partilhada, um registo de chamada — fica com a outra pessoa, porque também é o registo dela.
+      body: `• Apagar a tua conta no ecrã Perfil. O conteúdo que pertence em conjunto a uma conversa — um registo de chamada, por exemplo — fica com o outro participante, porque também é o registo dele.
 • Exportar os teus dados no ecrã Perfil.
 • Fazer as mensagens expirar por conversa: 1 hora, 24 horas, 7 dias ou 30 dias.
 • Ligar ou desligar os indicadores de escrita e as confirmações de leitura. Ambos vêm desligados.
@@ -843,7 +843,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
       body: `Preferimos dizer-tos a que os descubras sozinho.
 
 • As chaves são confiadas na primeira vez que são vistas. Se alguém tivesse substituído uma chave antes de vocês trocarem sequer uma mensagem, a conversa ficaria cifrada para a pessoa errada e pareceria perfeitamente normal. A app avisa-te quando uma chave muda depois disso e mostra um número de segurança que podem comparar por outro meio — mas nada te obriga a compará-lo.
-• Um dispositivo por conta. Iniciar sessão num novo substitui a chave, e o anterior deixa de conseguir ler as mensagens novas.
+• Um dispositivo de cada vez. A tua frase de recuperação restaura a chave que abre o teu histórico, por isso iniciar sessão num dispositivo novo não perde o que já recebeste. As conversas com sigilo persistente usam uma segunda chave que nunca sai do dispositivo que a criou: chegam ao último dispositivo onde iniciaste sessão, e o que entretanto foi selado para o outro não pode ser transferido.
 • As mensagens enviadas antes de existir cifra ficam como estavam. Nada foi convertido retroativamente.
 • Esta app nunca passou por uma auditoria de segurança independente.`,
     },
@@ -941,7 +941,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
     },
     {
       title: '8. Что вы можете сделать',
-      body: `• Удалить аккаунт на экране профиля. Содержимое, которое совместно принадлежит разговору — общий список, запись о звонке, — остаётся у другого участника, потому что это и его запись тоже.
+      body: `• Удалить аккаунт на экране профиля. Содержимое, которое совместно принадлежит разговору — например, запись о звонке — остаётся у собеседника, потому что это и его запись тоже.
 • Экспортировать свои данные на экране профиля.
 • Задать срок жизни сообщений для каждого чата: 1 час, 24 часа, 7 дней или 30 дней.
 • Включить или выключить индикатор набора и отчёты о прочтении. Оба по умолчанию выключены.
@@ -959,7 +959,7 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
       body: `Мы предпочитаем рассказать о них сами, чем чтобы вы наткнулись на них.
 
 • Ключам доверяют при первой встрече. Если бы кто-то подменил ключ до того, как вы обменялись хотя бы одним сообщением, разговор оказался бы зашифрован не тому человеку и выглядел бы совершенно обычно. Приложение предупреждает, когда ключ меняется после этого, и показывает код безопасности, который можно сверить по другому каналу, — но ничто не заставляет вас его сверять.
-• Одно устройство на аккаунт. Вход на новом устройстве заменяет ключ, и прежнее перестаёт читать новые сообщения.
+• По одному устройству за раз. Фраза восстановления возвращает ключ, открывающий вашу историю, так что вход на новом устройстве не теряет то, что вы уже получили. Переписки с прямой секретностью используют второй ключ, который никогда не покидает создавшее его устройство: они приходят на устройство, вошедшее последним, а то, что тем временем было запечатано для другого, перенести нельзя.
 • Сообщения, отправленные до появления шифрования, остаются как были. Ничего не переводилось задним числом.
 • Это приложение никогда не проходило независимый аудит безопасности.`,
     },
@@ -1057,7 +1057,7 @@ Bildirimler mesaj metni taşımaz. Mesajı yerel olarak cihazın çözer ve gör
     },
     {
       title: '8. Neler yapabilirsin',
-      body: `• Profil ekranından hesabını sil. Bir konuşmanın ortak parçası olan içerik — paylaşılan bir liste, bir arama kaydı — karşı tarafta kalır, çünkü o kayıt onun da kaydıdır.
+      body: `• Profil ekranından hesabını sil. Bir konuşmanın ortak parçası olan içerik — örneğin bir arama kaydı — karşı tarafta kalır, çünkü o kayıt onun da kaydıdır.
 • Profil ekranından verilerini dışa aktar.
 • Mesajların sohbet başına süresini ayarla: 1 saat, 24 saat, 7 gün veya 30 gün.
 • Yazıyor göstergesini ve okundu bilgisini aç ya da kapat. İkisi de varsayılan olarak kapalıdır.
@@ -1075,7 +1075,7 @@ Bir şeyi elle silmemizi tercih edersen bize yaz.`,
       body: `Bunları kendin keşfetmen yerine sana söylemeyi tercih ederiz.
 
 • Anahtarlara ilk görüldüklerinde güvenilir. Biri, siz daha tek bir mesaj alışverişi yapmadan önce bir anahtarı değiştirmiş olsaydı, konuşma yanlış kişiye şifrelenir ve tamamen normal görünürdü. Uygulama, sonrasında bir anahtar değiştiğinde seni uyarır ve başka bir kanaldan karşılaştırabileceğin bir güvenlik numarası gösterir — ama karşılaştırman için seni zorlayan bir şey yoktur.
-• Hesap başına bir cihaz. Yeni bir cihazda oturum açmak anahtarı değiştirir ve önceki cihaz yeni mesajları okuyamaz hâle gelir.
+• Aynı anda tek cihaz. Kurtarma ifaden geçmişini açan anahtarı geri getirir, dolayısıyla yeni bir cihazda giriş yapmak zaten aldıklarını kaybettirmez. İleri gizlilikli konuşmalar, kendisini üreten cihazdan hiç ayrılmayan ikinci bir anahtar kullanır: bunlar en son giriş yapılan cihaza ulaşır ve bu arada diğerine mühürlenmiş olanlar taşınamaz.
 • Şifreleme var olmadan önce gönderilen mesajlar olduğu gibi kalır. Geriye dönük hiçbir dönüştürme yapılmadı.
 • Bu uygulama hiçbir zaman bağımsız bir güvenlik denetiminden geçmedi.`,
     },
@@ -1173,7 +1173,7 @@ Thông báo không mang theo nội dung tin nhắn. Chính thiết bị của b�
     },
     {
       title: '8. Bạn có thể làm gì',
-      body: `• Xoá tài khoản ở màn hình Hồ sơ. Nội dung thuộc về cuộc trò chuyện của cả hai — một danh sách chung, một bản ghi cuộc gọi — vẫn ở lại với người kia, vì đó cũng là bản ghi của họ.
+      body: `• Xoá tài khoản ở màn hình Hồ sơ. Nội dung thuộc về cuộc trò chuyện của cả hai — chẳng hạn một bản ghi cuộc gọi — vẫn ở lại với người kia, vì đó cũng là bản ghi của họ.
 • Xuất dữ liệu của bạn ở màn hình Hồ sơ.
 • Đặt thời hạn tin nhắn theo từng cuộc trò chuyện: 1 giờ, 24 giờ, 7 ngày hoặc 30 ngày.
 • Bật hoặc tắt báo đang nhập và báo đã đọc. Cả hai đều mặc định tắt.
@@ -1191,7 +1191,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `Chúng tôi thà nói ra còn hơn để bạn tự phát hiện.
 
 • Khoá được tin cậy ngay lần đầu nhìn thấy. Nếu ai đó tráo khoá trước khi hai bên kịp trao đổi một tin nhắn nào, cuộc trò chuyện sẽ được mã hoá cho nhầm người mà trông vẫn hoàn toàn bình thường. Ứng dụng có cảnh báo khi khoá thay đổi sau đó, và hiện một mã an toàn để hai bên đối chiếu qua kênh khác — nhưng không có gì bắt buộc bạn phải đối chiếu.
-• Mỗi tài khoản một thiết bị. Đăng nhập trên thiết bị mới sẽ thay khoá, và thiết bị cũ hết đọc được tin nhắn mới.
+• Mỗi lần một máy. Cụm từ khôi phục của bạn khôi phục chiếc khoá mở lịch sử, nên đăng nhập trên máy mới không làm mất những gì bạn đã nhận. Các cuộc trò chuyện có bí mật chuyển tiếp dùng chiếc khoá thứ hai không bao giờ rời khỏi máy đã tạo ra nó: chúng đến máy đăng nhập gần nhất, còn những gì đã niêm phong cho máy kia trong lúc đó thì không chuyển sang được.
 • Những tin nhắn gửi trước khi có mã hoá vẫn giữ nguyên như cũ. Không có gì được chuyển đổi hồi tố.
 • Ứng dụng này chưa từng được kiểm định an ninh độc lập.`,
     },
@@ -1289,7 +1289,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '8. あなたにできること',
-      body: `• プロフィール画面からアカウントを削除する。共有リストや通話記録など、会話の共同の一部である内容は相手側に残ります。それは相手の記録でもあるからです。
+      body: `• プロフィール画面からアカウントを削除する。通話記録など、会話の共同の一部である内容は相手側に残ります。それは相手の記録でもあるからです。
 • プロフィール画面からデータを書き出す。
 • チャットごとにメッセージの有効期限を設定する: 1 時間、24 時間、7 日、30 日。
 • 入力中の表示と既読をオンまたはオフにする。どちらも初期状態はオフです。
@@ -1307,7 +1307,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `ご自身で気づくより、こちらからお伝えしたいことです。
 
 • 鍵は最初に見たときに信頼されます。もし誰かが、あなたたちが一度もメッセージを交わす前に鍵をすり替えていたら、その会話は別人宛てに暗号化され、しかも見た目はまったく普通です。その後に鍵が変わった場合はアプリが警告し、別経路で照合できる安全番号も表示しますが、照合を強制する仕組みはありません。
-• 1 アカウントにつき 1 台。新しい端末でサインインすると鍵が置き換わり、前の端末は新しいメッセージを読めなくなります。
+• 同時に使えるのは 1 台だけです。復元フレーズは履歴を開く鍵を復元するので、新しい端末でサインインしても受け取り済みの内容は失われません。前方秘匿性のある会話は、それを作った端末から決して出ない 2 つ目の鍵を使います。届くのは最後にサインインした端末で、その間にもう一方へ封じられたものは移せません。
 • 暗号化が存在する前に送られたメッセージはそのままです。遡って変換したものはありません。
 • このアプリは第三者による独立したセキュリティ監査を受けたことがありません。`,
     },
@@ -1405,7 +1405,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '8. 당신이 할 수 있는 것',
-      body: `• 프로필 화면에서 계정을 삭제합니다. 공유 목록이나 통화 기록처럼 대화에 공동으로 속한 내용은 상대에게 남습니다. 그것은 그 사람의 기록이기도 하기 때문입니다.
+      body: `• 프로필 화면에서 계정을 삭제합니다. 통화 기록처럼 대화에 공동으로 속한 내용은 상대에게 남습니다. 그것은 그 사람의 기록이기도 하기 때문입니다.
 • 프로필 화면에서 데이터를 내보냅니다.
 • 대화별로 메시지 만료를 설정합니다: 1시간, 24시간, 7일, 30일.
 • 입력 중 표시와 읽음 표시를 켜거나 끕니다. 둘 다 기본값은 꺼짐입니다.
@@ -1423,7 +1423,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `직접 알아차리게 두기보다 먼저 말씀드립니다.
 
 • 키는 처음 볼 때 신뢰됩니다. 누군가 두 사람이 메시지를 한 번도 주고받기 전에 키를 바꿔치기했다면, 그 대화는 엉뚱한 사람에게 암호화되면서도 완전히 정상으로 보입니다. 그 뒤에 키가 바뀌면 앱이 경고하고, 다른 경로로 대조할 수 있는 안전 번호를 보여 줍니다 — 그러나 대조를 강제하는 장치는 없습니다.
-• 계정당 기기 하나. 새 기기에서 로그인하면 키가 교체되고, 이전 기기는 새 메시지를 읽지 못하게 됩니다.
+• 한 번에 한 기기만. 복구 문구는 기록을 여는 열쇠를 되살리므로, 새 기기에서 로그인해도 이미 받은 내용은 잃지 않습니다. 순방향 비밀성이 적용된 대화는 그것을 만든 기기를 결코 벗어나지 않는 두 번째 열쇠를 씁니다. 이런 메시지는 마지막으로 로그인한 기기에 도착하며, 그 사이 다른 기기로 봉인된 것은 옮길 수 없습니다.
 • 암호화가 생기기 전에 보낸 메시지는 그대로입니다. 소급해서 변환한 것은 없습니다.
 • 이 앱은 독립적인 보안 감사를 받은 적이 없습니다.`,
     },
@@ -1521,7 +1521,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '8. 你可以做什麼',
-      body: `• 在「我的」頁面刪除帳號。屬於一場對話共同部分的內容——一份共享清單、一筆通話記錄——會留給另一位參與者，因為那也是他的記錄。
+      body: `• 在「我的」頁面刪除帳號。屬於一場對話共同部分的內容——例如一筆通話記錄——會留給另一位參與者，因為那也是他的記錄。
 • 在「我的」頁面匯出你的資料。
 • 按對話設定訊息過期：1 小時、24 小時、7 天或 30 天。
 • 開啟或關閉「輸入中」和已讀回條。兩者預設都是關閉的。
@@ -1539,7 +1539,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `這些我們寧可主動告訴你，也不願你自己發現。
 
 • 公鑰在第一次見到時就被信任。如果有人在你們交換第一則訊息之前就替換了公鑰，這場對話會被加密給錯誤的人，而且看起來完全正常。之後公鑰再變化時應用程式會警告你，也會顯示一個可以線下核對的安全碼——但沒有任何機制強制你去核對。
-• 一個帳號只能用一台裝置。在新裝置上登入會替換掉金鑰，原來那台裝置就讀不到新訊息了。
+• 同一時間只能用一台裝置。你的助記詞能還原開啟歷史訊息的金鑰，所以在新裝置上登入不會失去你已經收到的內容。但前向保密的對話用的是第二把金鑰，它從不離開產生它的那台裝置：最後登入的那台才是這類訊息送達的地方，期間封給另一台的內容無法搬過去。
 • 加密功能出現之前傳的訊息保持原樣，沒有做過追溯轉換。
 • 這個應用程式沒有經過獨立的第三方安全稽核。`,
     },
@@ -1637,7 +1637,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '8. ما يمكنك فعله',
-      body: `• احذف حسابك من شاشة الملف الشخصي. المحتوى الذي يخصّ المحادثة معًا — قائمة مشتركة، سجل مكالمة — يبقى مع الطرف الآخر، لأنه سجلّه هو أيضًا.
+      body: `• احذف حسابك من شاشة الملف الشخصي. المحتوى الذي يخصّ المحادثة معًا — سجل مكالمة مثلًا — يبقى مع الطرف الآخر، لأنه سجلّه هو أيضًا.
 • صدّر بياناتك من شاشة الملف الشخصي.
 • اجعل الرسائل تنتهي لكل محادثة: ساعة، أو 24 ساعة، أو 7 أيام، أو 30 يومًا.
 • فعّل أو أوقف مؤشّر الكتابة وإشعارات القراءة. كلاهما مُوقف افتراضيًا.
@@ -1655,7 +1655,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `نفضّل أن نخبرك بها على أن تكتشفها بنفسك.
 
 • يُوثَق بالمفاتيح أول مرة تُرى فيها. لو أن أحدًا استبدل مفتاحًا قبل أن تتبادلا أي رسالة، لكانت المحادثة مُعمّاة إلى الشخص الخطأ ولبدت طبيعية تمامًا. ينبّهك التطبيق حين يتغيّر المفتاح بعد ذلك، ويعرض رقم أمان يمكنكما مقارنته عبر قناة أخرى — لكن لا شيء يُجبرك على المقارنة.
-• جهاز واحد لكل حساب. تسجيل الدخول على جهاز جديد يستبدل المفتاح، فيعجز الجهاز السابق عن قراءة الرسائل الجديدة.
+• جهاز واحد في كل مرة. تستعيد عبارة الاسترداد المفتاح الذي يفتح سجلّك، فتسجيل الدخول على جهاز جديد لا يفقدك ما استلمته من قبل. أما المحادثات ذات السرية الأمامية فتستخدم مفتاحًا ثانيًا لا يغادر الجهاز الذي أنشأه: تصل إلى آخر جهاز سجّلت الدخول منه، وما خُتم للجهاز الآخر في تلك الأثناء لا يمكن نقله.
 • الرسائل المُرسلة قبل وجود التعمية تبقى كما كانت. لم يُحوَّل شيء بأثر رجعي.
 • لم يخضع هذا التطبيق قط لتدقيق أمني مستقل.`,
     },
@@ -1753,7 +1753,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     },
     {
       title: '8. आप क्या कर सकते हैं',
-      body: `• प्रोफ़ाइल स्क्रीन से अपना खाता मिटाएँ। जो सामग्री बातचीत का साझा हिस्सा है — कोई साझा सूची, कोई कॉल रिकॉर्ड — वह दूसरे व्यक्ति के पास रहती है, क्योंकि वह उनका भी रिकॉर्ड है।
+      body: `• प्रोफ़ाइल स्क्रीन से अपना खाता मिटाएँ। जो सामग्री बातचीत का साझा हिस्सा है — जैसे कोई कॉल रिकॉर्ड — वह दूसरे प्रतिभागी के पास रहती है, क्योंकि वह उनका रिकॉर्ड भी है।
 • प्रोफ़ाइल स्क्रीन से अपना डेटा निर्यात करें।
 • हर चैट के लिए संदेशों की अवधि तय करें: 1 घंटा, 24 घंटे, 7 दिन या 30 दिन।
 • टाइपिंग संकेत और पढ़े जाने की रसीदें चालू या बंद करें। दोनों डिफ़ॉल्ट रूप से बंद हैं।
@@ -1771,7 +1771,7 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       body: `हम चाहेंगे कि ये आपसे हम कहें, बजाय इसके कि आप ख़ुद इन तक पहुँचें।
 
 • कुंजियों पर पहली बार देखने पर ही भरोसा कर लिया जाता है। अगर किसी ने आपके पहले संदेश के आदान-प्रदान से भी पहले कोई कुंजी बदल दी होती, तो बातचीत ग़लत व्यक्ति के लिए एन्क्रिप्ट होती और पूरी तरह सामान्य दिखती। उसके बाद कुंजी बदलने पर ऐप आपको चेतावनी देता है और एक सुरक्षा संख्या दिखाता है जिसे आप किसी दूसरे रास्ते से मिला सकते हैं — पर मिलाने के लिए कोई बाध्यता नहीं है।
-• हर खाते पर एक डिवाइस। नए डिवाइस पर साइन इन करने से कुंजी बदल जाती है, और पुराना डिवाइस नए संदेश पढ़ नहीं पाता।
+• एक समय में एक ही डिवाइस। आपका रिकवरी वाक्यांश वह कुंजी लौटा देता है जो आपका इतिहास खोलती है, इसलिए नए डिवाइस पर साइन इन करने से जो आपको पहले मिल चुका है वह नहीं खोता। फ़ॉरवर्ड-सीक्रेसी वाली बातचीत दूसरी कुंजी इस्तेमाल करती है जो उसे बनाने वाले डिवाइस से कभी बाहर नहीं जाती: ये संदेश उसी डिवाइस पर पहुँचते हैं जिस पर सबसे बाद में साइन इन हुआ, और इस बीच दूसरे के लिए सील किया गया कुछ भी वहाँ नहीं ले जाया जा सकता।
 • एन्क्रिप्शन आने से पहले भेजे गए संदेश जैसे थे वैसे ही रहते हैं। पिछली तारीख़ से कुछ भी बदला नहीं गया।
 • इस ऐप का कभी कोई स्वतंत्र सुरक्षा ऑडिट नहीं हुआ है।`,
     },
