@@ -365,8 +365,33 @@ service cloud.firestore {
       allow delete: if isSignedIn() && request.auth.uid == resource.data.blockerId;
     }
 
+    /**
+     * Free-text feedback. Write-only from the client, like /messageReports
+     * below — nobody may read, update or delete what has been filed.
+     *
+     * The shape is pinned rather than trusted, which it was not: `allow
+     * create: if isSignedIn()` accepted any document, of any size, with any
+     * fields, from any account, without limit. That is an unbounded write
+     * channel into a collection nobody can clean up — the client cannot
+     * delete, and account deletion does not sweep it, both on purpose, since
+     * feedback that vanishes when its author leaves is not much use.
+     *
+     * hasOnly() is the part that matters most. The client used to send the
+     * account's derived login handle alongside the uid, which is an auth
+     * identity written in plaintext into a permanent collection for no
+     * benefit; refusing unknown keys means the rule now stops that class of
+     * mistake rather than relying on the client to keep not making it.
+     */
     match /feedback/{feedbackId} {
-      allow create: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.keys().hasOnly(['userId', 'message', 'platform', 'createdAt']) &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() > 0 &&
+        request.resource.data.message.size() <= 4000 &&
+        request.resource.data.platform is string &&
+        request.resource.data.platform.size() <= 20;
+      allow read, update, delete: if false;
     }
 
     /**

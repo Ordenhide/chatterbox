@@ -353,11 +353,7 @@ export default function ProfileScreen() {
     const trimmed = feedbackText.trim();
     if (!trimmed) return;
     try {
-      await submitFeedback({
-        userId: user.uid,
-        email: user.email,
-        message: trimmed,
-      });
+      await submitFeedback({userId: user.uid, message: trimmed});
       setFeedbackText('');
       setFeedbackVisible(false);
       Alert.alert(t('profile.alerts.feedbackSuccessTitle'), t('profile.alerts.feedbackSuccessBody'));
@@ -365,7 +361,7 @@ export default function ProfileScreen() {
       reportError(error, 'feedback_submit_failed');
       Alert.alert(t('profile.alerts.feedbackFailedTitle'), t('profile.alerts.feedbackFailedBody'));
     }
-  }, [feedbackText, user?.email, user?.uid, t]);
+  }, [feedbackText, user?.uid, t]);
 
   return (
     <GlassScreen style={styles.container} textureSeed="profile">

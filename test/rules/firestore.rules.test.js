@@ -1208,12 +1208,48 @@ describe('chat subcollections gated only by isChatParticipant', () => {
 });
 
 describe('feedback/{feedbackId}', () => {
-  it('any signed-in user can create feedback', async () => {
-    await assertSucceeds(addDoc(collection(asUser('alice'), 'feedback'), {text: 'nice app'}));
+  const VALID = {userId: 'alice', message: 'nice app', platform: 'ios', createdAt: 1};
+
+  it('accepts a well-formed submission from its own author', async () => {
+    await assertSucceeds(addDoc(collection(asUser('alice'), 'feedback'), VALID));
+  });
+
+  it('refuses a document with any field it does not expect', async () => {
+    // The rule this replaces was `allow create: if isSignedIn()`, which took
+    // any document of any size with any fields. The client was sending the
+    // account's derived login handle alongside the uid — an auth identity
+    // written in plaintext into a collection nobody can delete from. hasOnly()
+    // is what stops that from being a client-side promise.
+    await assertFails(
+      addDoc(collection(asUser('alice'), 'feedback'), {...VALID, email: 'a@b.invalid'}),
+    );
+    await assertFails(addDoc(collection(asUser('alice'), 'feedback'), {...VALID, extra: 1}));
+  });
+
+  it('refuses feedback attributed to someone else', async () => {
+    await assertFails(addDoc(collection(asUser('alice'), 'feedback'), {...VALID, userId: 'bob'}));
+  });
+
+  it('caps the message, so this is not unbounded storage', async () => {
+    await assertFails(
+      addDoc(collection(asUser('alice'), 'feedback'), {...VALID, message: 'x'.repeat(4001)}),
+    );
+    await assertSucceeds(
+      addDoc(collection(asUser('alice'), 'feedback'), {...VALID, message: 'x'.repeat(4000)}),
+    );
+  });
+
+  it('refuses an empty message and a non-string one', async () => {
+    await assertFails(addDoc(collection(asUser('alice'), 'feedback'), {...VALID, message: ''}));
+    await assertFails(addDoc(collection(asUser('alice'), 'feedback'), {...VALID, message: 42}));
+  });
+
+  it('refuses an unauthenticated write', async () => {
+    await assertFails(addDoc(collection(anon(), 'feedback'), VALID));
   });
 
   it('nobody can read feedback back — write-only, by omission of any read rule', async () => {
-    await seed(db => setDoc(doc(db, 'feedback/f1'), {text: 'nice app', authorId: 'alice'}));
+    await seed(db => setDoc(doc(db, 'feedback/f1'), {userId: 'alice', message: 'nice app'}));
     // Even the author who wrote it cannot read it back: there is no `allow
     // read` at all for this collection, so default-deny applies uniformly.
     await assertFails(getDoc(doc(asUser('alice'), 'feedback/f1')));
