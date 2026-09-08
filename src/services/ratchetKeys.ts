@@ -413,7 +413,22 @@ async function purgeClaimedPreKeys(userId: string): Promise<void> {
 }
 
 export type RatchetKeyStatus = {
+  /** A bundle exists for this account — published by some device. */
   published: boolean;
+  /**
+   * ...and its identity key is the one *this* device holds.
+   *
+   * Asking only whether a bundle exists is not enough, and the difference is
+   * a silent failure. An account is reachable over the ratchet at exactly one
+   * identity, so a second device publishing replaces the first's. The first
+   * then holds valid local secrets, sees a bundle on the server, concludes
+   * there is nothing to do — and cannot open a single new ratchet message,
+   * because peers are now sealing to an identity it does not have. Nothing
+   * reports it: sending still works, and every incoming message just fails to
+   * open. It is the same shape as the 'superseded' state enrollmentReadiness
+   * exists to catch for the static key.
+   */
+  publishedByThisDevice: boolean;
   unclaimedPreKeys: number;
   signedPreKeyAgeMs: number | null;
 };
@@ -425,8 +440,15 @@ export async function ratchetKeyStatus(userId: string): Promise<RatchetKeyStatus
   const secrets = await loadPreKeySecrets(userId);
   const unclaimed = await getDocs(query(preKeysCollection(userId), where('claimed', '==', false)));
   const current = secrets?.signedPreKeys.get(secrets.currentSignedPreKeyId);
+
+  const publishedIdentity = bundleSnap.exists()
+    ? (bundleSnap.data() as {identityKey?: string} | undefined)?.identityKey
+    : undefined;
+  const mine = await getOrCreateRatchetIdentity(userId);
+
   return {
     published: bundleSnap.exists(),
+    publishedByThisDevice: !!publishedIdentity && publishedIdentity === bytesToBase64(mine.publicKey),
     unclaimedPreKeys: unclaimed.size,
     signedPreKeyAgeMs: current ? Date.now() - current.createdAt : null,
   };
@@ -445,7 +467,11 @@ export async function ensureRatchetKeysPublished(userId: string): Promise<void> 
     const status = await ratchetKeyStatus(userId);
     const secrets = await loadPreKeySecrets(userId);
 
-    if (!status.published || !secrets) {
+    // Republishing when the bundle is someone else's is not the destructive
+    // case the comment above warns about. Those published prekeys belong to
+    // the other device and this one could never have answered them; taking
+    // the identity back is the only way it becomes reachable again.
+    if (!status.published || !status.publishedByThisDevice || !secrets) {
       await publishRatchetKeys(userId);
       return;
     }

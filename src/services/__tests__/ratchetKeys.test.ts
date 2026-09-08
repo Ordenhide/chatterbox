@@ -263,6 +263,42 @@ describe('ensureRatchetKeysPublished', () => {
     mockOutage.read = true;
     await expect(ensureRatchetKeysPublished(ME)).resolves.toBeUndefined();
   });
+
+  it('takes the identity back when another device has replaced it', async () => {
+    // The silent failure this guards. An account is reachable at exactly one
+    // ratchet identity, so a second device publishing supersedes the first.
+    // The first still holds valid local secrets and still sees *a* bundle on
+    // the server — so a check that only asks "is something published" concludes
+    // there is nothing to do, and the device then cannot open a single new
+    // ratchet message, because peers are sealing to an identity it does not
+    // have. Sending keeps working. Nothing is reported.
+    await publishRatchetKeys(ME);
+    const mine = mockDocs.get(`users/${ME}/publicKeys/ratchet`)?.identityKey;
+
+    // Another device of the same account publishes over it.
+    mockDocs.set(`users/${ME}/publicKeys/ratchet`, {
+      ...mockDocs.get(`users/${ME}/publicKeys/ratchet`),
+      identityKey: 'c29tZS1vdGhlci1kZXZpY2U=',
+    });
+    expect((await ratchetKeyStatus(ME)).published).toBe(true);
+    expect((await ratchetKeyStatus(ME)).publishedByThisDevice).toBe(false);
+
+    await ensureRatchetKeysPublished(ME);
+
+    expect(mockDocs.get(`users/${ME}/publicKeys/ratchet`)?.identityKey).toBe(mine);
+    expect((await ratchetKeyStatus(ME)).publishedByThisDevice).toBe(true);
+  });
+
+  it('leaves its own bundle alone, so a healthy device does not churn', async () => {
+    // The other half: republishing invalidates one-time prekeys a peer may
+    // already have claimed, which produces a permanently undecryptable first
+    // message. That cost is only acceptable when the bundle is not ours.
+    await publishRatchetKeys(ME);
+    const before = mockDocs.get(`users/${ME}/publicKeys/ratchet`);
+    await ensureRatchetKeysPublished(ME);
+    await ensureRatchetKeysPublished(ME);
+    expect(mockDocs.get(`users/${ME}/publicKeys/ratchet`)).toEqual(before);
+  });
 });
 
 describe('fetching a peer bundle', () => {
