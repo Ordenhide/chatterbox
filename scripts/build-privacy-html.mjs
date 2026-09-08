@@ -101,6 +101,14 @@ const pageName = code => (code === 'en' ? 'privacy.html' : `privacy.${code}.html
 /** `index.html` for English, `index.<code>.html` for the rest. */
 const homeName = code => (code === 'en' ? 'index.html' : `index.${code}.html`);
 
+/**
+ * What a link points at, as opposed to what the file is called — Firebase
+ * Hosting runs with `cleanUrls: true`, so the `.html` form 301s to this one.
+ * See the same pair in build-site-html.mjs.
+ */
+const pageHref = code => (code === 'en' ? 'privacy' : `privacy.${code}`);
+const homeHref = code => (code === 'en' ? './' : `index.${code}`);
+
 export function renderPage(code, sections, updated, allCodes) {
   const c = CHROME[code];
   if (!c) throw new Error(`no page furniture for ${code} — add it to CHROME`);
@@ -114,7 +122,7 @@ export function renderPage(code, sections, updated, allCodes) {
     .map(other =>
       other === code
         ? `<span aria-current="true" lang="${languageMeta(other).lang}">${languageMeta(other).native}</span>`
-        : `<a href="${pageName(other)}" lang="${languageMeta(other).lang}" hreflang="${languageMeta(other).lang}">${languageMeta(other).native}</a>`,
+        : `<a href="${pageHref(other)}" lang="${languageMeta(other).lang}" hreflang="${languageMeta(other).lang}">${languageMeta(other).native}</a>`,
     )
     .join('\n        ');
   // Search engines need to be told these are the same document; readers need
@@ -122,9 +130,9 @@ export function renderPage(code, sections, updated, allCodes) {
   const alternates = allCodes
     .map(
       other =>
-        `  <link rel="alternate" hreflang="${languageMeta(other).lang}" href="${pageName(other)}" />`,
+        `  <link rel="alternate" hreflang="${languageMeta(other).lang}" href="${pageHref(other)}" />`,
     )
-    .concat('  <link rel="alternate" hreflang="x-default" href="privacy.html" />')
+    .concat('  <link rel="alternate" hreflang="x-default" href="privacy" />')
     .join('\n');
 
   return `<!doctype html>
@@ -145,19 +153,19 @@ ${alternates}
 
   <nav class="nav">
     <div class="nav-inner">
-      <a href="${homeName(code)}" class="brand">
+      <a href="${homeHref(code)}" class="brand">
         <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
         Chatterbox
       </a>
       <div class="nav-links">
-        <a href="${homeName(code)}#features">${c.features}</a>
-        <a href="${homeName(code)}#download" class="nav-cta">${c.download}</a>
+        <a href="${homeHref(code)}#features">${c.features}</a>
+        <a href="${homeHref(code)}#download" class="nav-cta">${c.download}</a>
       </div>
     </div>
   </nav>
 
   <main class="doc">
-    <a class="back-link" href="${homeName(code)}">← ${c.back}</a>
+    <a class="back-link" href="${homeHref(code)}">← ${c.back}</a>
     <h1>${c.heading}</h1>
     <p class="meta">${c.updated}: ${updated}</p>
 

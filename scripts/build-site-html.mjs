@@ -57,6 +57,19 @@ const pageName = code => (code === 'en' ? 'index.html' : `index.${code}.html`);
 const policyName = code => (code === 'en' ? 'privacy.html' : `privacy.${code}.html`);
 
 /**
+ * What a *link* points at, as opposed to what the file is called.
+ *
+ * Firebase Hosting runs with `cleanUrls: true`, which serves `index.ja.html`
+ * at `/index.ja` and permanently redirects the `.html` form to it. Every
+ * hreflang here pointed at the `.html` form, so all sixteen alternates on
+ * every page were 301s to the URL that actually serves — which works, and is
+ * not what you want a search engine to index or a canonical set to be built
+ * from. The English page is the site root rather than `/index`.
+ */
+const pageHref = code => (code === 'en' ? './' : `index.${code}`);
+const policyHref = code => (code === 'en' ? 'privacy' : `privacy.${code}`);
+
+/**
  * Escapes a copy string, then substitutes the two link placeholders.
  *
  * Copy files are data, not templates: they are escaped first and the anchors
@@ -65,10 +78,10 @@ const policyName = code => (code === 'en' ? 'privacy.html' : `privacy.${code}.ht
  */
 const text = (raw, copy, code) =>
   escape(raw)
-    .replace(/\{policy\}/g, `<a href="${policyName(code)}">${escape(copy.links.policy)}</a>`)
+    .replace(/\{policy\}/g, `<a href="${policyHref(code)}">${escape(copy.links.policy)}</a>`)
     .replace(
       /\{policyShort\}/g,
-      `<a href="${policyName(code)}">${escape(copy.links.policyShort)}</a>`,
+      `<a href="${policyHref(code)}">${escape(copy.links.policyShort)}</a>`,
     );
 
 /* Icons are structure, not copy, so they live here and are the same on every
@@ -103,15 +116,15 @@ export function renderPage(code, copy, allCodes) {
   const t = raw => text(raw, copy, code);
 
   const alternates = allCodes
-    .map(c => `  <link rel="alternate" hreflang="${languageMeta(c).lang}" href="${pageName(c)}" />`)
-    .concat('  <link rel="alternate" hreflang="x-default" href="index.html" />')
+    .map(c => `  <link rel="alternate" hreflang="${languageMeta(c).lang}" href="${pageHref(c)}" />`)
+    .concat('  <link rel="alternate" hreflang="x-default" href="./" />')
     .join('\n');
 
   const langMenu = allCodes
     .map(c =>
       c === code
         ? `        <span aria-current="true" lang="${languageMeta(c).lang}">${escape(languageMeta(c).native)}</span>`
-        : `        <a href="${pageName(c)}" lang="${languageMeta(c).lang}" hreflang="${languageMeta(c).lang}">${escape(languageMeta(c).native)}</a>`,
+        : `        <a href="${pageHref(c)}" lang="${languageMeta(c).lang}" hreflang="${languageMeta(c).lang}">${escape(languageMeta(c).native)}</a>`,
     )
     .join('\n');
 
@@ -202,7 +215,7 @@ ${alternates}
 
   <nav class="nav">
     <div class="nav-inner">
-      <a href="${pageName(code)}" class="brand">
+      <a href="${pageHref(code)}" class="brand">
         <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
         Chatterbox
       </a>
@@ -226,7 +239,7 @@ ${alternates}
             ${icon('download')}
             ${t(copy.hero.primary)}
           </a>
-          <a class="btn btn-secondary" href="${policyName(code)}">${t(copy.hero.secondary)}</a>
+          <a class="btn btn-secondary" href="${policyHref(code)}">${t(copy.hero.secondary)}</a>
         </div>
         <div class="hero-badges">
 ${copy.hero.badges.map(b => `          <span class="badge">${t(b)}</span>`).join('\n')}
@@ -308,7 +321,7 @@ ${playButton}
     <div class="wrap footer-inner">
       <span>${t(copy.footer.rights)}</span>
       <div class="footer-links">
-        <a href="${policyName(code)}">${t(copy.footer.privacy)}</a>
+        <a href="${policyHref(code)}">${t(copy.footer.privacy)}</a>
       </div>
     </div>
     <nav class="wrap site-langs" aria-label="${escape(copy.nav.language)}">
