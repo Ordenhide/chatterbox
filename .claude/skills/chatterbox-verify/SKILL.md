@@ -83,9 +83,26 @@ one; `enrollmentReadiness` is how a screen decides whether enrolling is safe.
 The same applies to anything that reveals the recovery phrase:
 `getRecoveryPhrase` enrols a device that has no key yet.
 
+**Sign-in no longer enrols.** Since the account became a recovery phrase,
+`adoptSeedAsDeviceKey` installs the key the phrase encodes, and the launch path
+only calls `republishKeyIfAccountHasNone`, which cannot mint. That was not a
+tidy-up: sign-in and Firebase's auth-state callback start at the same moment,
+and a minted key whose publish landed second left the account advertising a
+public key its own phrase could not match. `keyEnrollmentBoundary.test.ts`
+holds the line, and there is no automatic enroller left to add one back to.
+
 **Recovery phrases are typed by the user, into the emulator, by hand.** Never
 into a conversation, never through `adb shell input text` — both put the key
-somewhere it can be read later.
+somewhere it can be read later. This matters more than it used to: the phrase
+is now the whole credential, so anything that captures one captures the
+account, not just its history.
+
+**The auth emulator will answer credential questions the app cannot.**
+`firebase emulators:start --only auth` plus the identitytoolkit REST endpoint
+verified that the derived `.invalid` handle is accepted, that the same phrase
+re-signs-in to the same uid, and that a repeat sign-up returns `EMAIL_EXISTS`
+— which is the code `createAccount` deliberately catches. It is not production,
+and the first real sign-up is still the test that matters.
 
 ## What a passing test does not prove
 
@@ -93,20 +110,23 @@ somewhere it can be read later.
 npx jest                 # mobile
 npx tsc --noEmit         # mobile types
 npm run test:rules       # Firestore/Storage rules, against a real emulator
-cd web && npm test       # web
+cd web && npx vitest run # web
 cd web && npx tsc --noEmit
 ```
 
 `BUILD SUCCESSFUL` says nothing about what is on the device. Verify the
 *installed* app.
 
-**`npm run lint` currently crashes** — not on this app's code, but on a
-vendored esprima test fixture under `harmony/oh_modules/`, which makes
-`react-native/no-inline-styles` throw. It exits 0, so the crash is easy to read
-as a pass. Lint the files you touched by path instead
-(`npx eslint src/services/foo.ts`), and compare against the same file at HEAD
-before treating an error as yours: several files carry long-standing shadowing
-and exhaustive-deps errors.
+**Do not use `npm run lint`.** It is `eslint .`, which walks the vendored
+`harmony/oh_modules/` tree — thousands of files, including an esprima fixture
+that makes `react-native/no-inline-styles` throw. It has been observed both
+exiting 0 on that crash and simply not finishing inside five minutes. Either
+way it tells you nothing.
+
+`npx eslint src` completes in seconds and is the one to use. Compare the total
+against the same command at HEAD before treating an error as yours: `src`
+carries a long-standing baseline of shadowing and exhaustive-deps errors, and
+what matters is whether your change moved the number.
 
 **There is no release build to install right now.** `assembleRelease` refuses
 without `CHATTERBOX_STORE_FILE` and friends, which is correct and must stay —
@@ -130,6 +150,47 @@ The security rules tests run against a real Firestore emulator loading the
 actual `firestore.rules`, not a JS re-implementation — the difference is the
 whole point, since a re-implementation only proves the test author read the
 rules the same way they wrote them.
+
+## The failure this repo keeps having: a green test that tests nothing
+
+Mutation testing exists for the case where a test is too weak. This is the
+worse case, where a test asserts something that has become **vacuously true**,
+stays green, and reads as coverage. It happened five times in one audit.
+
+- The `entitlements` suite had six tests. When the collection was deleted,
+  exactly one went red — the one asserting a permitted read. The other five
+  asserted denials, and a collection with no rules denies everything.
+- Six tests asserting Moments' visibility model gated *writes* would have
+  stayed green once every write was refused.
+- The storage session-currency tests used the moment-media path as "somewhere
+  writable". Refusing writes there would have made three of their `assertFails`
+  prove nothing about sessions.
+- A parser written to find every `query(ref, where(…), orderBy(…))` in the
+  client used a regex that stopped at the closing paren of `scheduledRef(chatId)`
+  and matched **nothing**. Every assertion under it passed.
+
+**The tell is an assertion that a thing is refused, in a test whose subject
+might stop existing.** When deleting a feature, deleting its rules, or
+tightening a rule to deny, go and read the tests that touch it and ask which
+of them would still fail for the right reason.
+
+**A test that scans source must assert it found something.** Any parsing guard
+gets a first case pinning the specific things it was written to catch, so a
+refactor that breaks the parsing fails loudly instead of going quietly green.
+
+## A red suite reports nothing
+
+`npm run test:rules` is the only thing in this project that tests the rules,
+CI runs it on every push to `main`, and it had been **failing for two feature
+deletions** — stale `sharedLists`/`quoteWall` and `entitlements` tests left
+behind when their collections went.
+
+Nobody was reading it. That is how Moments kept open `create` rules and a
+25 MB Storage write path through an entire security-minded refactor. The guard
+was working; the alarm was not being heard.
+
+**Run the full rules suite before claiming a rules change is safe**, and treat
+a pre-existing failure as a finding rather than as background noise.
 
 ## Screenshots are evidence, prose is not
 

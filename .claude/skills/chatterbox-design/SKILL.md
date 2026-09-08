@@ -143,16 +143,47 @@ all. Whether the user asked for protection and whether the window has it are
 different questions, and the UI answers the second.
 
 **Do not add a control for a setting nothing reads.** `privacyGuard` still
-holds watermark, auto-lock and screenshot-alert flags with no readers; a
-switch for one of those would move, persist, and change nothing. A test
-enforces this for the privacy toggles — every switch must have its reader
-*called* somewhere (an import alone does not count).
+holds watermark, auto-lock and screenshot-alert flags whose accessors have
+zero consumers; a switch for one of those would move, persist, and change
+nothing. A test enforces this for the privacy toggles — every switch must have
+its reader *called* somewhere (an import alone does not count).
+
+The inverse is just as bad and is easier to miss: **a gate whose condition can
+never be true reads like a control and is not one.** Stealth mode had a setter
+nobody called, so its two gates in `firebaseChat.ts` were permanently false
+while looking, in review, exactly like privacy enforcement. It was removed
+rather than wired up. If you find a flag with no writer, that is the same
+finding as a flag with no reader.
 
 **The exception gets words; the normal state stays quiet.** A padlock for
 "encrypted" is a convention people already read. "Not encrypted" gets a full
 bar above the composer, because an 11px triangle was legible only to someone
 who already knew the convention — the author of this app looked at it and
 asked what it was.
+
+The per-message badge follows the same rule and is worth understanding before
+touching it. `messageProtection` reads the **envelope's shape**, not a flag the
+sender wrote, so the claim cannot be overstated. A forward-secret message gets
+no badge at all — that is the good case and it stays silent; `static` gets a
+lock; `none` gets a warning triangle in the warning colour. Since forward
+secrecy was switched on, most messages show nothing, which is the intended
+end state rather than a bug.
+
+## The recovery phrase screens
+
+Sign-up and sign-in are the phrase, and their presentation is load-bearing
+rather than decorative. The words go in a numbered two-column grid in
+`fonts.mono.regular`, with the index in a fixed-width column so they line up
+once the numbering reaches double digits. Phrase fields are **uncontrolled**
+(`defaultValue`, never `value`) — a controlled multiline `TextInput` reverts
+characters as fast as they are typed on Fabric iOS, the same failure that hit
+the chat composer — and opt out of autofill, autocorrect and spellcheck. On
+the web that last one is not cosmetic: browser spellcheck services upload the
+text they check.
+
+Nothing shows the account's login handle. It is derived from the phrase and
+is half the credential; it was on the profile screen for a while, rendering as
+a fake email address under a policy that says there is none.
 
 ## Two clients, one system
 
