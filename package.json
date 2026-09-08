@@ -13,7 +13,8 @@
     "firebase": "firebase",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:rules": "firebase deploy --only firestore:rules,storage",
-    "test:rules": "firebase emulators:exec --only firestore,storage --project demo-chatterbox-rules-test \"jest --config test/rules/jest.config.js\""
+    "test:rules": "firebase emulators:exec --only firestore,storage --project demo-chatterbox-rules-test \"jest --config test/rules/jest.config.js\"",
+    "test:auth": "firebase emulators:exec --only auth,firestore --project demo-chatterbox-auth-test \"cd web && npx vitest run --config vitest.integration.config.ts\""
   },
   "dependencies": {
     "@noble/ciphers": "^2.2.0",

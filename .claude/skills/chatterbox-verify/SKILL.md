@@ -97,6 +97,18 @@ somewhere it can be read later. This matters more than it used to: the phrase
 is now the whole credential, so anything that captures one captures the
 account, not just its history.
 
+**The whole sign-up and sign-in path has an integration test.** `npm run
+test:auth` starts the Auth and Firestore emulators, loads the real
+`firestore.rules`, and runs the shipping `createAccount` / `signInWithPhrase`
+against them — only the module that hands out the SDK instances is replaced.
+It answers the questions no mock can: that Firebase accepts a credential at a
+`.invalid` domain, that the rules permit the writes sign-in makes, that the
+same twenty-four words come back to the same uid with the same key, and that
+running sign-up twice on one phrase recovers instead of failing.
+
+It is excluded from `vitest run` on purpose — a suite that only passes when a
+background service happens to be up is one people learn to skip.
+
 **The auth emulator will answer credential questions the app cannot.**
 `firebase emulators:start --only auth` plus the identitytoolkit REST endpoint
 verified that the derived `.invalid` handle is accepted, that the same phrase
@@ -110,6 +122,7 @@ and the first real sign-up is still the test that matters.
 npx jest                 # mobile
 npx tsc --noEmit         # mobile types
 npm run test:rules       # Firestore/Storage rules, against a real emulator
+npm run test:auth        # sign-up/sign-in end to end, against Auth + Firestore
 cd web && npx vitest run # web
 cd web && npx tsc --noEmit
 ```
