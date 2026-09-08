@@ -24,6 +24,20 @@ def enableProguardInReleaseBuilds = true
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+// Release signing credentials come from the environment or gradle.properties —
+// never from this file. Set these in ~/.gradle/gradle.properties or in CI:
+//   CHATTERBOX_STORE_FILE=/path/to/release.keystore
+//   CHATTERBOX_STORE_PASSWORD=...
+//   CHATTERBOX_KEY_ALIAS=...
+//   CHATTERBOX_KEY_PASSWORD=...
+// Declared at script scope so the task-graph guard at the bottom can read them.
+def releaseStoreFile = System.getenv("CHATTERBOX_STORE_FILE") ?: project.findProperty("CHATTERBOX_STORE_FILE")
+def releaseStorePassword = System.getenv("CHATTERBOX_STORE_PASSWORD") ?: project.findProperty("CHATTERBOX_STORE_PASSWORD")
+def releaseKeyAlias = System.getenv("CHATTERBOX_KEY_ALIAS") ?: project.findProperty("CHATTERBOX_KEY_ALIAS")
+def releaseKeyPassword = System.getenv("CHATTERBOX_KEY_PASSWORD") ?: project.findProperty("CHATTERBOX_KEY_PASSWORD")
+
+def hasReleaseSigning = releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -37,30 +51,10 @@ android {
         versionCode 2
         versionName "1.1"
     }
-    // Read release signing credentials from environment variables or gradle.properties —
-    // never hardcode secrets. Set these in ~/.gradle/gradle.properties or your CI environment:
-    //   CHATTERBOX_STORE_FILE=/path/to/release.keystore
-    //   CHATTERBOX_STORE_PASSWORD=...
-    //   CHATTERBOX_KEY_ALIAS=...
-    //   CHATTERBOX_KEY_PASSWORD=...
-    def releaseStoreFile = System.getenv("CHATTERBOX_STORE_FILE") ?: project.findProperty("CHATTERBOX_STORE_FILE")
-    def releaseStorePassword = System.getenv("CHATTERBOX_STORE_PASSWORD") ?: project.findProperty("CHATTERBOX_STORE_PASSWORD")
-    def releaseKeyAlias = System.getenv("CHATTERBOX_KEY_ALIAS") ?: project.findProperty("CHATTERBOX_KEY_ALIAS")
-    def releaseKeyPassword = System.getenv("CHATTERBOX_KEY_PASSWORD") ?: project.findProperty("CHATTERBOX_KEY_PASSWORD")
-
-    // Fail loudly rather than silently signing a release build with the debug key.
-    // Only enforced when a release task is actually requested, so `assembleDebug`/local
-    // dev builds work without these credentials set.
-    def isReleaseBuildRequested = gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
-    if (isReleaseBuildRequested && (!releaseStoreFile || !releaseStorePassword || !releaseKeyAlias || !releaseKeyPassword)) {
-        throw new GradleException(
-            "Release build requested but release signing credentials are missing.\n" +
-            "Set CHATTERBOX_STORE_FILE, CHATTERBOX_STORE_PASSWORD, CHATTERBOX_KEY_ALIAS, and CHATTERBOX_KEY_PASSWORD\n" +
-            "as environment variables (or in ~/.gradle/gradle.properties) before building a release.\n" +
-            "Refusing to fall back to the debug keystore for a release build."
-        )
-    }
-
+    // There is deliberately no debug-keystore fallback here any more. The
+    // release variant gets a signing config only when real credentials exist;
+    // otherwise it gets none, and the task-graph check below refuses to build
+    // it at all.
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -68,11 +62,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            storeFile file(releaseStoreFile ?: "debug.keystore")
-            storePassword releaseStorePassword ?: "android"
-            keyAlias releaseKeyAlias ?: "androiddebugkey"
-            keyPassword releaseKeyPassword ?: "android"
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
         }
     }
     buildTypes {
@@ -80,7 +76,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.release
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -123,5 +121,42 @@ dependencies {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+}
+
+// Refuse to produce a release artifact without real signing credentials.
+//
+// The previous version of this guard tested `gradle.startParameter.taskNames`
+// for the substring "release". `./gradlew build` contains no such substring,
+// so it walked straight past and signed the release variant with the public
+// Android debug key by way of a `?: "debug.keystore"` fallback — leaving a
+// 130MB app-release.apk in build/outputs that was, by filename, identical to a
+// shippable one. Both the fallback and the string test are gone.
+//
+// This reads the *resolved task graph* instead, so every route in — assemble,
+// bundle, install, or a bare `build` that happens to pull the release variant
+// along — is caught, and caught before forty minutes of compilation rather
+// than after.
+if (!hasReleaseSigning) {
+    gradle.taskGraph.whenReady { graph ->
+        // Named explicitly rather than pattern-matched: `^packageRelease.*`
+        // also catches packageReleaseResources and packageReleaseAssets, which
+        // sign nothing and would make the error name the wrong task.
+        def releaseArtifactTasks = [
+            'assembleRelease', 'bundleRelease', 'installRelease',
+            'packageRelease', 'packageReleaseBundle', 'packageReleaseUniversalApk',
+            'signReleaseBundle',
+        ]
+        def offender = graph.allTasks.find { t ->
+            t.project.path == project.path && t.name in releaseArtifactTasks
+        }
+        if (offender != null) {
+            throw new GradleException(
+                "Refusing to build ${offender.path}: release signing credentials are missing.\n" +
+                "Set CHATTERBOX_STORE_FILE, CHATTERBOX_STORE_PASSWORD, CHATTERBOX_KEY_ALIAS and\n" +
+                "CHATTERBOX_KEY_PASSWORD as environment variables, or in ~/.gradle/gradle.properties.\n" +
+                "A release must never be signed with the debug key, so there is no fallback."
+            )
+        }
     }
 }

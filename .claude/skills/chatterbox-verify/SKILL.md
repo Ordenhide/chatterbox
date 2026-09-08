@@ -54,6 +54,26 @@ The release build refuses to run without `CHATTERBOX_STORE_FILE`,
 guard.** A local release build pointed at `debug.keystore` is signed with the
 public Android debug key: fine for the emulator, never distributable.
 
+**The guard reads the resolved task graph, not the command line, and that is
+the whole point.** Its first version tested `gradle.startParameter.taskNames`
+for the substring `"release"` — so `./gradlew build`, which contains no such
+substring but does pull `assembleRelease` along behind it, walked straight
+past and took the `?: "debug.keystore"` fallback. It left a 130MB
+`app-release.apk` in `build/outputs` signed with the public debug key and
+named exactly like a shippable one. The fallback is gone and the release
+variant now has no signing config at all without credentials, so the failure
+mode is an unsigned artifact rather than a plausible-looking poisoned one.
+Verify a change to it by dry-running every route: `assembleRelease`,
+`bundleRelease` and a bare `build` must all fail, `assembleDebug` must not.
+
+**Which key is the live one is a question with a wrong obvious answer.** Three
+keystores sit in `android/app/`, and the one whose credentials are written
+down locally is *not* the one that signed the published v1.0.0 and v1.1.0
+APKs. `RELEASE_KEYSTORE_SECRETS.txt` (gitignored) now says which is which,
+with fingerprints. Settle it by reading the certificate out of a published
+artifact — `apksigner verify --print-certs` on the APK from the GitHub
+release — rather than by trusting a filename.
+
 ## Do not lose the emulator
 
 **`adb emu kill`, then wait for qemu to exit on its own.** Do not `pkill -f
@@ -145,9 +165,12 @@ what matters is whether your change moved the number.
 without `CHATTERBOX_STORE_FILE` and friends, which is correct and must stay —
 the guard exists so a release is never signed with the public debug key. The
 consequence is that a UI change cannot be checked on the emulator until the
-user generates a real keystore: the installed app is the last AOT-compiled
-release build, and putting a debug build over it would leave no way back to
-one. Say so plainly instead of claiming a change was verified on device. What
+user generates a real keystore. Check what is actually installed before
+reasoning about it: as of 2026-09-08 the emulator carries a **debug** build
+(`DEBUGGABLE`, debug-signed, installed 2026-09-06 — Android Studio's Run
+button, as warned above), not the AOT-compiled release build this used to
+claim. Installing a release over it needs an uninstall, since the
+certificates differ. Say so plainly instead of claiming a change was verified on device. What
 *can* be checked without a device: `npx react-native bundle --platform android
 --dev false` proves every import resolves and both locales ship.
 
