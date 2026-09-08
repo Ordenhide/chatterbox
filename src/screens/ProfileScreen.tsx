@@ -144,8 +144,8 @@ export default function ProfileScreen() {
     [t],
   );
   const profileInitial = useMemo(() => {
-    return user?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
-  }, [user?.displayName, user?.email]);
+    return user?.displayName?.[0]?.toUpperCase() || 'U';
+  }, [user?.displayName]);
 
   useEffect(() => {
     let active = true;
@@ -372,7 +372,12 @@ export default function ProfileScreen() {
             <Text style={[styles.avatarText, {color: colors.textOnPrimary}]}>{profileInitial}</Text>
           </View>
           <Text style={[styles.name, {color: colors.text}]}>{user?.displayName || t('profile.defaultName')}</Text>
-          <Text style={[styles.email, {color: colors.textSecondary}]}>{user?.email}</Text>
+          {/* The account's address used to be shown here. It is now the derived
+              login handle — thirty-two hex characters at a .invalid domain —
+              so this line rendered a fake email address on the one screen a
+              user checks to find out what their account is, directly under a
+              privacy policy that says there is no email address. Nothing
+              replaces it: the name and the badge already say who this is. */}
           <View style={[styles.memberBadge, {backgroundColor: colors.primaryLight}]}>
             <Text style={[styles.memberBadgeText, {color: colors.primary}]}>{t('profile.memberBadge')}</Text>
           </View>
@@ -888,10 +893,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display.bold,
     marginBottom: 4,
     letterSpacing: 0.3,
-  },
-  email: {
-    fontSize: 15,
-    lineHeight: 20,
   },
   memberBadge: {
     marginTop: 12,

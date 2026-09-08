@@ -86,7 +86,11 @@ export default function ChatPickerModal({
         }
         const otherId = chat.participants?.find(id => id !== myUid);
         const otherUser = otherId ? usersById[otherId] : null;
-        updates[chat.id] = otherUser?.displayName || otherUser?.email || chat.name || t('headers.chat');
+        // Neither field can be on a peer profile — the rules refuse both — so
+        // this was a fallback that could only ever fire on a document written
+        // before that rule. It is also the shape that put an email on every
+        // message (2aa7233); it does not get to survive here.
+        updates[chat.id] = otherUser?.displayName || chat.name || t('headers.chat');
       });
       if (Object.keys(updates).length) setNames(prev => ({...prev, ...updates}));
     };

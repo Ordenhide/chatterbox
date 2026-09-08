@@ -108,7 +108,9 @@ export default function ProfileScreen({user}: {user: User}) {
     }
   };
 
-  const initial = (savedName || user.email || '?').charAt(0).toUpperCase();
+  // Not user.email: that is the derived login handle now, so the initial
+  // would be a hex digit and the line under the name was a fake address.
+  const initial = (savedName || '?').charAt(0).toUpperCase();
 
   const sections: {id: SectionId; label: string; node: React.ReactNode}[] = [
     {
@@ -403,7 +405,6 @@ export default function ProfileScreen({user}: {user: User}) {
           <div style={styles.header}>
             <div style={{...styles.avatar, background: avatarColor(user.uid)}}>{initial}</div>
             <h1 style={styles.name}>{savedName || 'User'}</h1>
-            <div style={styles.email}>{user.email}</div>
             <span style={styles.badge}>{t('profile.member')}</span>
           </div>
           {sections.map((s, i) => (
@@ -421,7 +422,6 @@ export default function ProfileScreen({user}: {user: User}) {
                 {initial}
               </div>
               <div style={styles.railName}>{savedName || 'User'}</div>
-              <div style={styles.railEmail}>{user.email}</div>
               <span style={styles.badge}>{t('profile.member')}</span>
             </div>
             <nav style={styles.navList}>
@@ -475,7 +475,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   avatarSmall: {width: 72, height: 72, fontSize: 28, marginBottom: 10},
   railName: {fontSize: 16.5, fontWeight: 800, color: colors.text, margin: '0 0 2px'},
-  railEmail: {fontSize: 12.5, color: colors.textSecondary, marginBottom: 10, wordBreak: 'break-all'},
   navList: {display: 'flex', flexDirection: 'column', gap: 2},
   navItem: {
     display: 'block',
@@ -508,7 +507,6 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 14,
   },
   name: {fontSize: 26, fontWeight: 800, margin: '0 0 4px', color: colors.text},
-  email: {color: colors.textSecondary, marginBottom: 12},
   badge: {
     background: colors.primaryLight,
     color: colors.primary,
