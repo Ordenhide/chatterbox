@@ -1,59 +1,129 @@
 {
   "indexes": [
     {
+      "collectionGroup": "calls",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "chats",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "participants", "arrayConfig": "CONTAINS"},
-        {"fieldPath": "updatedAt", "order": "DESCENDING"}
+        {
+          "fieldPath": "participants",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "friendRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "toId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "friendRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "fromId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "moments",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "authorId", "order": "ASCENDING"},
-        {"fieldPath": "visibility", "order": "ASCENDING"}
+        {
+          "fieldPath": "authorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "visibility",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
-      "collectionGroup": "friendRequests",
+      "collectionGroup": "reminders",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "toId", "order": "ASCENDING"},
-        {"fieldPath": "status", "order": "ASCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "friendRequests",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {"fieldPath": "fromId", "order": "ASCENDING"},
-        {"fieldPath": "status", "order": "ASCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "calls",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {"fieldPath": "status", "order": "ASCENDING"},
-        {"fieldPath": "createdAt", "order": "ASCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "scheduledMessages",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {"fieldPath": "sent", "order": "ASCENDING"},
-        {"fieldPath": "scheduledFor", "order": "ASCENDING"}
+        {
+          "fieldPath": "sent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "remindAt",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "reminders",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
-        {"fieldPath": "sent", "order": "ASCENDING"},
-        {"fieldPath": "remindAt", "order": "ASCENDING"}
+        {
+          "fieldPath": "sent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "remindAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "scheduledMessages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "sent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "scheduledFor",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "scheduledMessages",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "sent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "scheduledFor",
+          "order": "ASCENDING"
+        }
       ]
     }
   ],
@@ -62,9 +132,18 @@
       "collectionGroup": "liveLocations",
       "fieldPath": "expiresAt",
       "indexes": [
-        {"order": "ASCENDING", "queryScope": "COLLECTION"},
-        {"order": "DESCENDING", "queryScope": "COLLECTION"},
-        {"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
       ]
     }
   ]
