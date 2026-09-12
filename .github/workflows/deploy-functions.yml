@@ -111,12 +111,34 @@ jobs:
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
 
-      # Scheduled (pubsub) functions are intentionally excluded from
-      # `exports` unless CHATTERBOX_ENABLE_SCHEDULED=true (see the comment at
-      # the top of functions/index.js) because they require the Blaze plan
-      # and would otherwise fail this deploy entirely if billing isn't
-      # enabled. Left unset here so the default deploy stays safe; flip it on
-      # once billing is confirmed enabled, either here or via a manual
-      # `workflow_dispatch` run with the env var set.
+      # `--force` on the deploy below is what lets it delete functions that
+      # no longer exist in source. Without it the CLI aborts the *entire*
+      # deploy in non-interactive mode rather than just skipping the
+      # deletions — which is how production sat six days behind the
+      # repository: Stripe and the dead man's switch had been deleted from
+      # source, every push after that failed on "deletion cannot proceed in
+      # non-interactive mode", and nobody read the red.
+      #
+      # There is exactly one way --force turns dangerous. The step above pins
+      # CHATTERBOX_ENABLE_SCHEDULED=true in functions/.env; if that ever
+      # stopped reaching the file, index.js would strip the five pubsub
+      # functions from `exports` during discovery and --force would delete
+      # them from production — including processExpiredMessages, which is what
+      # actually expires disappearing messages — instead of aborting. So check
+      # the precondition rather than trust it. A text check, not a `require`:
+      # loading index.js to inspect its exports can fail for reasons that have
+      # nothing to do with the flag, and a guard that fails for unrelated
+      # reasons gets disabled.
+      - name: Refuse to force-deploy without the scheduled flag
+        run: |
+          if ! grep -qx 'CHATTERBOX_ENABLE_SCHEDULED=true' functions/.env; then
+            echo "::error::functions/.env does not set CHATTERBOX_ENABLE_SCHEDULED=true."
+            echo "::error::Deploying with --force in that state would DELETE the scheduled"
+            echo "::error::functions from production. Fix the .env step above; do not"
+            echo "::error::remove this check."
+            exit 1
+          fi
+          echo "scheduled flag present — safe to deploy with --force"
+
       - name: Deploy functions
-        run: npx firebase-tools@^15 deploy --only functions --project chatterbox-e5d10 --non-interactive
+        run: npx firebase-tools@^15 deploy --only functions --project chatterbox-e5d10 --non-interactive --force
