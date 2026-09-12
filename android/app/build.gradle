@@ -7,6 +7,25 @@ react {
     nodeExecutableAndArgs.set([rootProject.ext.NODE_BINARY])
     // Required so the app gets implementation project() for each native module (fixes "package does not exist").
     autolinkLibrariesWithApp()
+
+    // `./gradlew assembleDebug -PbundleJsInDebug` builds a debug APK that
+    // carries its own JS bundle, so it runs on a phone with no Metro server
+    // in front of it. An ordinary debug APK for this app ships eight font
+    // files and no bundle at all, which makes it useless anywhere the dev
+    // server is not reachable.
+    //
+    // The plugin bundles every variant *except* the ones named here, so
+    // emptying the list is what turns bundling on for debug. Without the
+    // flag the list keeps its default of ["debug"] and the normal
+    // Metro-backed dev build is unchanged.
+    //
+    // The result is still `android:debuggable`, so ART will not AOT-compile
+    // it and its data is readable over adb: it is for checking that things
+    // work, never for measuring how fast they are, and never for an account
+    // whose recovery phrase matters.
+    if (project.hasProperty('bundleJsInDebug')) {
+        debuggableVariants.set([])
+    }
 }
 
 def enableProguardInReleaseBuilds = true
