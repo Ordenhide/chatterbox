@@ -4632,7 +4632,13 @@ export default function ChatScreen() {
                   />
                 );
               }
-            : undefined
+            : // Not `undefined`. GiftedChat's Bubble reads this as "no custom
+              // renderer" and falls back to its own <Time /> (Bubble.js:
+              // `if (this.props.renderTime) return ...; return <Time .../>`),
+              // so hiding timestamps by passing undefined left the default
+              // clock on screen and the toggle looked broken. A function that
+              // returns null is the only way to render nothing.
+              () => null
         }
         // GiftedChat's own keyboard handling is a legacy-era hand-roll: it
         // listens for keyboardWillShow and drives the message container's
