@@ -725,6 +725,11 @@ export default function ChatPane({
             const keys = pendingMediaRef.current.get(id);
             for (const [slot, url, cache] of [
               ['image', m.image, decryptedImageRef],
+              // Listed even though nothing in this client renders a <video>
+              // yet: the mobile client seals video bytes, and a slot missing
+              // here would be the same silent hole as the others — resolved
+              // on the day a <video> appears, not discovered then.
+              ['video', m.video, decryptedVideoRef],
               ['audio', m.audio, decryptedAudioRef],
               ['file', m.file?.uri, decryptedFileUriRef],
             ] as const) {
