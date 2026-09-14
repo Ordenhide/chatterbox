@@ -25,20 +25,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
       # GoogleService-Info.plist is gitignored — it never reaches a fresh
       # checkout — and the Firebase pods fail at configure time without it,
       # exactly as google-services.json does on Android (see release-apk.yml).
-      # Checked first so the failure names the secret rather than surfacing as
-      # a Firebase initialisation error three minutes into a build.
+      # Checked before anything installs, for two reasons: the failure names
+      # the secret instead of surfacing as a missing build input eleven
+      # minutes in, and while the secret is absent this job costs ten
+      # seconds of macOS time per push rather than a checkout and an npm ci.
+      #
+      # It fails rather than skipping. A skipped job would be quiet, and
+      # quiet is exactly how this platform went a week without compiling.
       - name: Check required secrets
         env:
           PLIST: ${{ secrets.CHATTERBOX_GOOGLE_SERVICE_INFO_BASE64 }}
@@ -49,6 +45,15 @@ jobs:
                  "and store it as that repo secret (Settings -> Secrets and variables -> Actions)."
             exit 1
           fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Decode GoogleService-Info.plist
         run: |
