@@ -194,3 +194,27 @@ out of scope here.
 
 `webrtc` is out of scope for v1 per the original port plan (calling was
 always going to be the largest single item).
+
+**But "out of scope" is not what the code currently does.** `IncomingCallManager`
+is mounted in `App.tsx` for every signed-in user with no platform guard, and it
+imports `RTCView` and `mediaDevices` from `react-native-webrtc` at module
+scope. There is no `@react-native-oh-tpl` twin for that package and no
+`.harmony.ts` seam covering it, so on HarmonyOS those resolve against a native
+module that was never registered. The failure is therefore a crash — at import
+or at the first render of an incoming call — rather than the absence of a
+feature, which is what "out of scope" should look like.
+
+Two ways to make the gap behave like a gap, neither verified here because this
+machine has no DevEco Studio or `ohpm` and cannot build a HAP:
+
+- a `webrtc.harmony.ts` seam beside the others, exporting an `RTCView` that
+  renders nothing and a `mediaDevices` that rejects. Consistent with how push
+  and biometrics are handled, and the call sites need no changes.
+- mounting `IncomingCallManager` behind a capability check rather than a
+  platform name. Prefer this over `Platform.OS !== 'harmony'`: the seam pattern
+  here deliberately keeps call sites ignorant of the platform, and a denylist
+  of platform strings is the thing that stops being correct when a fourth one
+  appears.
+
+Until then, treat a HarmonyOS build as unable to start rather than unable to
+call — the distinction matters when judging how far the port actually is.
