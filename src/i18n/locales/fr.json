@@ -377,7 +377,7 @@
   },
   "aiConsent": {
     "title": "Les fonctions d'IA envoient des messages hors de votre appareil",
-    "body": "Chatterbox chiffre vos messages pour que vous seul et votre correspondant puissiez les lire. L'IA est la seule exception.\n\nPour résumer, traduire ou transcrire, les messages sélectionnés sont déchiffrés sur cet appareil puis envoyés à notre serveur et à son fournisseur d'IA. Ils sont envoyés pour produire votre résultat, pas pour entraîner quoi que ce soit — mais pendant le transfert et le traitement, ils ne sont pas chiffrés de bout en bout.\n\nTout le reste demeure chiffré : les messages sur lesquels vous n'utilisez pas l'IA, et vos listes partagées.\n\nVous pouvez désactiver cela à tout moment dans Profil.",
+    "body": "Chatterbox chiffre vos messages pour que vous seul et votre correspondant puissiez les lire. L'IA est la seule exception.\n\nPour résumer, traduire ou transcrire, les messages sélectionnés sont déchiffrés sur cet appareil puis envoyés à notre serveur et à son fournisseur d'IA. Ils sont envoyés pour produire votre résultat, pas pour entraîner quoi que ce soit — mais pendant le transfert et le traitement, ils ne sont pas chiffrés de bout en bout.\n\nTout le reste demeure chiffré : les messages sur lesquels vous n'utilisez pas l'IA.\n\nVous pouvez désactiver cela à tout moment dans Profil.",
     "accept": "Autoriser les fonctions d'IA",
     "decline": "Pas maintenant",
     "settingsTitle": "Fonctions d'IA",
@@ -730,7 +730,7 @@
     "composerTitle": "Dire plus que des mots",
     "composerBody": "Dans une conversation, vous pouvez envoyer photos, fichiers, notes vocales et GIF, répondre ou @mentionner, et même programmer un message.",
     "spacesTitle": "Espaces partagés",
-    "spacesBody": "Ouvrez le menu d'une conversation pour la galerie et les listes partagées — toutes deux chiffrées de bout en bout, comme les messages.",
+    "spacesBody": "Ouvrez le menu d'une conversation pour la galerie — chiffrée de bout en bout, comme les messages.",
     "callsTitle": "Appels audio et vidéo",
     "callsBody": "Appelez directement depuis la conversation — une touche pour l'audio, une pour la vidéo.",
     "profileTitle": "Vous et les réglages",

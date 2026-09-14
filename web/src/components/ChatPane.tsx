@@ -39,7 +39,7 @@ import {
 } from '../services/storage';
 import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
-import {isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
+import {isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
 import {
   EncryptionUnavailableError,
   fetchPeerPublicKeyChecked,
@@ -618,7 +618,14 @@ export default function ChatPane({
           }
           const {secretKey} = keypair;
 
-          if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
+          // Forward-secret bodies sit in a ratchet envelope this client has no
+          // implementation for, so say so. openSealed would throw and land on
+          // "Unable to decrypt", which is true but unhelpful, and before
+          // isSealed knew this shape the message rendered as an empty bubble
+          // with no sign that anything was missing at all.
+          if (isRatchetSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
+            decryptedTextRef.current.set(id, t('chat.forwardSecretElsewhere'));
+          } else if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
             try {
               decryptedTextRef.current.set(id, openSealed(m.encrypted, secretKey, me.uid, chatId));
             } catch (err) {

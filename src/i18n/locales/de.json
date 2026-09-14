@@ -377,7 +377,7 @@
   },
   "aiConsent": {
     "title": "KI-Funktionen senden Nachrichten von deinem Gerät weg",
-    "body": "Chatterbox verschlüsselt deine Nachrichten, sodass nur du und die andere Person sie lesen können. KI ist die einzige Ausnahme.\n\nZum Zusammenfassen, Übersetzen oder Transkribieren werden die ausgewählten Nachrichten auf diesem Gerät entschlüsselt und an unseren Server und dessen KI-Anbieter gesendet. Sie werden gesendet, um dein Ergebnis zu erzeugen, nicht um etwas zu trainieren — aber während der Übertragung und Verarbeitung sind sie nicht Ende-zu-Ende-verschlüsselt.\n\nAlles andere bleibt verschlüsselt: Nachrichten, auf die du keine KI anwendest, und deine geteilten Listen.\n\nDu kannst das jederzeit im Profil abschalten.",
+    "body": "Chatterbox verschlüsselt deine Nachrichten, sodass nur du und die andere Person sie lesen können. KI ist die einzige Ausnahme.\n\nZum Zusammenfassen, Übersetzen oder Transkribieren werden die ausgewählten Nachrichten auf diesem Gerät entschlüsselt und an unseren Server und dessen KI-Anbieter gesendet. Sie werden gesendet, um dein Ergebnis zu erzeugen, nicht um etwas zu trainieren — aber während der Übertragung und Verarbeitung sind sie nicht Ende-zu-Ende-verschlüsselt.\n\nAlles andere bleibt verschlüsselt: Nachrichten, auf die du keine KI anwendest.\n\nDu kannst das jederzeit im Profil abschalten.",
     "accept": "KI-Funktionen erlauben",
     "decline": "Jetzt nicht",
     "settingsTitle": "KI-Funktionen",
@@ -730,7 +730,7 @@
     "composerTitle": "Mehr als nur Worte",
     "composerBody": "In einem Chat kannst du Fotos, Dateien, Sprachnachrichten und GIFs senden, antworten oder @erwähnen — und eine Nachricht sogar für später planen.",
     "spacesTitle": "Gemeinsame Bereiche",
-    "spacesBody": "Im Chat-Menü findest du die Mediengalerie und gemeinsame Listen — beide Ende-zu-Ende-verschlüsselt, wie die Nachrichten.",
+    "spacesBody": "Im Chat-Menü findest du die Mediengalerie — Ende-zu-Ende-verschlüsselt, wie die Nachrichten.",
     "callsTitle": "Sprach- & Videoanrufe",
     "callsBody": "Ruf direkt aus dem Chat an — ein Tipp für Sprache, einer für Video.",
     "profileTitle": "Du & Einstellungen",

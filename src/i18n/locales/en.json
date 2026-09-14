@@ -103,7 +103,7 @@
   },
   "aiConsent": {
     "title": "AI features send messages off your device",
-    "body": "Chatterbox encrypts your messages so only you and the other person can read them. AI is the one exception.\n\nTo summarise, translate or transcribe, the selected messages are decrypted on this device and sent to our server and its AI provider. They are sent to produce your result, not to train anything — but in transit and in processing they are not end-to-end encrypted.\n\nEverything else stays encrypted: messages you don't run AI on, your shared lists.\n\nYou can turn this off at any time in Profile.",
+    "body": "Chatterbox encrypts your messages so only you and the other person can read them. AI is the one exception.\n\nTo summarise, translate or transcribe, the selected messages are decrypted on this device and sent to our server and its AI provider. They are sent to produce your result, not to train anything — but in transit and in processing they are not end-to-end encrypted.\n\nEverything else stays encrypted: messages you don't run AI on.\n\nYou can turn this off at any time in Profile.",
     "accept": "Allow AI features",
     "decline": "Not now",
     "settingsTitle": "AI features",
@@ -730,7 +730,7 @@
     "composerTitle": "Say more than words",
     "composerBody": "In a chat you can send photos, files, voice notes and GIFs, reply or @mention, and even schedule a message for later.",
     "spacesTitle": "Shared spaces",
-    "spacesBody": "Open a chat's menu for the media gallery and collaborative lists — both end-to-end encrypted, like the messages.",
+    "spacesBody": "Open a chat's menu for its media gallery — end-to-end encrypted, like the messages.",
     "callsTitle": "Voice & video calls",
     "callsBody": "Call anyone right from the chat — one tap for voice, one for video.",
     "profileTitle": "You & settings",

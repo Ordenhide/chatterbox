@@ -8,6 +8,8 @@ import {
   isEncryptedPayload,
   isSealed,
   isSealedEnvelope,
+  isRatchetSealed,
+  RATCHET_ENVELOPE_ALG,
   MAX_GROUP_MEMBERS,
   openSealed,
   openEnvelope,
@@ -346,5 +348,54 @@ describe('cross-client safety number compatibility', () => {
 
   it('is order-independent, as the mobile side also asserts', () => {
     expect(computeSafetyNumber(KEY_B, KEY_A)).toBe(SHARED_VECTOR);
+  });
+});
+
+
+/**
+ * A forward-secret message has to be *recognised* here even though it can
+ * never be opened here.
+ *
+ * isSealed answers one question for every caller: is `text` empty because the
+ * body lives elsewhere? For a ratchet envelope the answer is yes, and while
+ * this returned false ChatPane took its early return and rendered an empty
+ * bubble — no padlock, no placeholder, no sign a message was missing. Since
+ * forward secrecy was turned on for the mobile client that is what an ordinary
+ * incoming message looks like in this browser.
+ */
+describe('forward-secret envelopes', () => {
+  const envelope = {
+    alg: RATCHET_ENVELOPE_ALG,
+    from: 'bob',
+    message: {header: {dh: 'x', pn: 0, n: 0}, ciphertext: 'y', nonce: 'z'},
+  };
+
+  it('counts as sealed, so no caller mistakes it for an empty message', () => {
+    expect(isSealed(envelope)).toBe(true);
+    expect(isRatchetSealed(envelope)).toBe(true);
+  });
+
+  it('is still refused by openSealed rather than half-opened', () => {
+    const {secretKey} = generateKeypair();
+    expect(() => openSealed(envelope, secretKey, 'alice', 'chat1')).toThrow();
+  });
+
+  it('does not claim the static shapes, or anything shaped roughly like it', () => {
+    const sender = generateKeypair();
+    const reader = generateKeypair();
+    const fanOut = sealForRecipients('hi', sender.secretKey, [{uid: 'r', publicKey: reader.publicKey}], 'chat1');
+    expect(isRatchetSealed(fanOut)).toBe(false);
+    expect(isRatchetSealed(encryptMessage('hi', sender.secretKey, reader.publicKey, 'chat1'))).toBe(false);
+
+    for (const notAnEnvelope of [
+      null,
+      'a string',
+      {alg: RATCHET_ENVELOPE_ALG},                          // no from, no message
+      {alg: RATCHET_ENVELOPE_ALG, from: 'bob'},             // no message
+      {alg: RATCHET_ENVELOPE_ALG, from: 'bob', message: 'not an object'},
+      {alg: 'something-else', from: 'bob', message: {}},
+    ]) {
+      expect(isRatchetSealed(notAnEnvelope)).toBe(false);
+    }
   });
 });

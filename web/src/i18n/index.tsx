@@ -125,6 +125,8 @@ const en = {
   'chat.empty': 'No messages yet — say hello.',
   'chat.searchPlaceholder': 'Search in this conversation',
   'chat.noMatch': 'No matching messages.',
+  'chat.forwardSecretElsewhere':
+    "\u{1F512} Forward-secret message. This browser cannot read it \u2014 open the chat on your phone.",
   'chat.seen': 'Seen',
   'chat.typing': 'typing…',
   'chat.online': 'Online',
@@ -651,6 +653,8 @@ const zh: Partial<Record<Key, string>> = {
   'chat.empty': '还没有消息 — 打个招呼吧。',
   'chat.searchPlaceholder': '在此对话中搜索',
   'chat.noMatch': '没有匹配的消息。',
+  'chat.forwardSecretElsewhere':
+    '\u{1F512} 前向保密消息。浏览器读不了，请在手机上打开这个会话。',
   'chat.seen': '已读',
   'chat.typing': '正在输入…',
   'chat.online': '在线',

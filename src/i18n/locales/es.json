@@ -377,7 +377,7 @@
   },
   "aiConsent": {
     "title": "Las funciones de IA envían mensajes fuera de tu dispositivo",
-    "body": "Chatterbox cifra tus mensajes para que solo tú y la otra persona podáis leerlos. La IA es la única excepción.\n\nPara resumir, traducir o transcribir, los mensajes seleccionados se descifran en este dispositivo y se envían a nuestro servidor y a su proveedor de IA. Se envían para generar tu resultado, no para entrenar nada, pero durante el envío y el procesamiento no están cifrados de extremo a extremo.\n\nTodo lo demás sigue cifrado: los mensajes en los que no uses IA y tus listas compartidas.\n\nPuedes desactivarlo cuando quieras en Perfil.",
+    "body": "Chatterbox cifra tus mensajes para que solo tú y la otra persona podáis leerlos. La IA es la única excepción.\n\nPara resumir, traducir o transcribir, los mensajes seleccionados se descifran en este dispositivo y se envían a nuestro servidor y a su proveedor de IA. Se envían para generar tu resultado, no para entrenar nada, pero durante el envío y el procesamiento no están cifrados de extremo a extremo.\n\nTodo lo demás sigue cifrado: los mensajes en los que no uses IA.\n\nPuedes desactivarlo cuando quieras en Perfil.",
     "accept": "Permitir funciones de IA",
     "decline": "Ahora no",
     "settingsTitle": "Funciones de IA",
@@ -730,7 +730,7 @@
     "composerTitle": "Di más que palabras",
     "composerBody": "En un chat puedes enviar fotos, archivos, notas de voz y GIF, responder o @mencionar, e incluso programar un mensaje para más tarde.",
     "spacesTitle": "Espacios compartidos",
-    "spacesBody": "Abre el menú de un chat para ver la galería y las listas compartidas: ambas cifradas de extremo a extremo, igual que los mensajes.",
+    "spacesBody": "Abre el menú de un chat para ver la galería: cifrada de extremo a extremo, igual que los mensajes.",
     "callsTitle": "Llamadas de voz y vídeo",
     "callsBody": "Llama desde el propio chat: un toque para voz, otro para vídeo.",
     "profileTitle": "Tú y los ajustes",

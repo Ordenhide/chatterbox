@@ -273,8 +273,43 @@ export function openEnvelope(
  * other as an empty message. That failure is cross-platform — a mobile client
  * sealing envelopes would go blank in a browser still checking only the old shape.
  */
+/**
+ * Envelope algorithm of the forward-secret path, kept in step with the mobile
+ * client's services/ratchetMessages.ts.
+ *
+ * This client cannot open one — it has no ratchet — and recognising the shape
+ * is the whole point. Before this existed `isSealed` returned false for a
+ * forward-secret message, ChatPane took its early return, and the message
+ * rendered as an empty bubble, because the sender blanks `text` when the body
+ * lives in the envelope. Since forward secrecy was switched on that is the
+ * common case, not an edge one, and silence is the single thing this app is
+ * not allowed to answer with when it cannot read something.
+ */
+export const RATCHET_ENVELOPE_ALG = 'chatterbox-ratchet-envelope-v1';
+
+/**
+ * True for a forward-secret envelope. Deliberately a shape check rather than a
+ * full validation: nothing here will open it, and a stricter test would only
+ * create new ways to fall back into rendering nothing.
+ */
+export function isRatchetSealed(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false;
+  const e = value as {alg?: unknown; from?: unknown; message?: unknown};
+  return (
+    e.alg === RATCHET_ENVELOPE_ALG &&
+    typeof e.from === 'string' &&
+    !!e.message &&
+    typeof e.message === 'object'
+  );
+}
+
 export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
-  return isSealedEnvelope(value) || isEncryptedPayload(value);
+  // Includes the forward-secret shape, which openSealed cannot open. Callers
+  // use isSealed to answer "is `text` empty because the body lives elsewhere?"
+  // and for a ratchet message the answer is yes — excluding it is exactly what
+  // made those messages render blank. Anything that goes on to *open* a body
+  // must check isRatchetSealed first.
+  return isSealedEnvelope(value) || isEncryptedPayload(value) || isRatchetSealed(value);
 }
 
 /**
