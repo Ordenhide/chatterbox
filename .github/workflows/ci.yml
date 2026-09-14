@@ -22,17 +22,39 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Lint and typecheck currently fail on pre-existing issues (~70 lint errors,
-      # ~58 type errors) unrelated to any single change. Left non-blocking so they're
-      # visible in CI output without blocking every PR; flip to blocking once the
-      # backlog is cleared (see PR description / project notes).
-      - name: Lint
-        run: npm run lint
-        continue-on-error: true
+      # `npx eslint src App.tsx`, never `npm run lint`.
+      #
+      # `npm run lint` is `eslint .`, which walks the vendored harmony/oh_modules
+      # tree — thousands of files, one of them an esprima fixture that makes
+      # react-native/no-inline-styles throw. It has been seen both exiting 0 on
+      # that crash and simply not finishing in five minutes, so it reports
+      # nothing either way. CI ran it anyway, under continue-on-error, which is
+      # a step that cannot fail running a command that cannot succeed.
+      #
+      # A ratchet instead of a gate, because `src` carries a real backlog of
+      # shadowing and exhaustive-deps errors that predates any single change.
+      # The count may go down freely; it may not go up. That is the property
+      # that was actually wanted, and it is checkable.
+      - name: Lint (no regression against the recorded baseline)
+        run: |
+          BASELINE=62
+          COUNT=$(npx eslint src App.tsx -f json 2>/dev/null             | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).reduce((n,f)=>n+f.errorCount,0)))')
+          echo "eslint errors: $COUNT (baseline $BASELINE)"
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::eslint errors rose from $BASELINE to $COUNT. Fix the new ones,"                  "or lower the baseline in this workflow if you cleared some."
+            exit 1
+          fi
+          if [ "$COUNT" -lt "$BASELINE" ]; then
+            echo "::notice::eslint errors fell to $COUNT — lower BASELINE in ci.yml to lock it in."
+          fi
 
+      # Blocking now. The comment this replaces said there were ~58 pre-existing
+      # type errors and left the step non-blocking until the backlog cleared.
+      # The backlog is cleared — `npx tsc --noEmit` reports nothing — so the
+      # justification had outlived the condition, and an ungated typecheck is
+      # how a type error reaches main.
       - name: Type check
         run: npx tsc --noEmit
-        continue-on-error: true
 
       - name: Test
         run: npm test -- --ci

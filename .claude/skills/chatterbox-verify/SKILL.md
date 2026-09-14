@@ -161,6 +161,19 @@ against the same command at HEAD before treating an error as yours: `src`
 carries a long-standing baseline of shadowing and exhaustive-deps errors, and
 what matters is whether your change moved the number.
 
+**CI enforces that comparison now.** `ci.yml` counts the errors from
+`npx eslint src App.tsx` and fails if the total exceeds a baseline recorded in
+the workflow — a ratchet, not a gate: the number may fall freely and prints a
+notice telling you to lower the baseline, and it may not rise. It ran
+`npm run lint` under `continue-on-error` until 2026-09-14, which is a step
+that cannot fail running a command that cannot succeed.
+
+**The mobile typecheck is blocking now too.** It sat behind
+`continue-on-error` with a comment citing ~58 pre-existing type errors. There
+are none, and there had been none for some time — the justification outlived
+the condition, which is the same shape as an allowlist entry outliving its
+subject.
+
 **There is no release build to install right now.** `assembleRelease` refuses
 without `CHATTERBOX_STORE_FILE` and friends, which is correct and must stay —
 the guard exists so a release is never signed with the public debug key. The
