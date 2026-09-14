@@ -1,5 +1,6 @@
 import {getApp} from 'firebase/app';
 import {getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject} from 'firebase/storage';
+import {encryptMedia, type ByteSink, type ByteSource, type MediaKeyInfo} from './mediaCrypto';
 
 // Exported so account.ts can delete objects through the same instance rather
 // than standing up a second one.
@@ -155,6 +156,68 @@ function uploadWithProgress(
       async () => resolve(await getDownloadURL(task.snapshot.ref)),
     );
   });
+}
+
+/**
+ * A {@link ByteSource} over a Blob, read a chunk at a time.
+ *
+ * Sliced rather than read whole: a video picked in a browser can be hundreds
+ * of megabytes, and `arrayBuffer()` on the whole thing would hold all of it
+ * plus its ciphertext at once. `Blob.slice` is a view, so only the chunk being
+ * encrypted is ever resident.
+ */
+function blobSource(blob: Blob): ByteSource {
+  return {
+    size: blob.size,
+    async read(offset, length) {
+      return new Uint8Array(await blob.slice(offset, offset + length).arrayBuffer());
+    },
+  };
+}
+
+/** A {@link ByteSink} that accumulates into a Blob for upload. */
+function blobSink(): ByteSink & {blob(): Blob} {
+  const parts: BlobPart[] = [];
+  return {
+    async write(bytes) {
+      // Copied: the encryptor may hand back a view over a buffer it reuses for
+      // the next chunk, and a Blob built from views records the bytes lazily.
+      parts.push(new Uint8Array(bytes));
+    },
+    blob() {
+      return new Blob(parts, {type: 'application/octet-stream'});
+    },
+  };
+}
+
+/**
+ * Uploads an attachment whose *bytes* are encrypted, the way the mobile client
+ * has always done it and the privacy policy has always claimed.
+ *
+ * The returned URL stays in the clear on purpose. It reveals that an
+ * attachment exists, which the message already reveals, and sealing it would
+ * cost a field without protecting anything — what protects the object is that
+ * what sits at that URL is ciphertext. The key travels inside the sealed
+ * message body (see messageBody.ts), so it reaches exactly the people who can
+ * read the message, with exactly the message's own protection.
+ *
+ * The caller must put `key` in the body and set `mediaSealed` on the message.
+ * A URL stored without them is an object nobody can ever open.
+ */
+export async function uploadSealedChatBlob(
+  chatId: string,
+  blob: Blob,
+  filename: string,
+  onProgress?: (pct: number) => void,
+): Promise<{url: string; key: MediaKeyInfo}> {
+  const sink = blobSink();
+  const key = await encryptMedia(blobSource(blob), sink, {mime: blob.type || undefined});
+  const url = await uploadWithProgress(
+    `chats/${chatId}/${Date.now()}-${sanitize(filename)}`,
+    sink.blob(),
+    onProgress,
+  );
+  return {url, key};
 }
 
 export function uploadChatFile(

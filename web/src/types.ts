@@ -101,6 +101,13 @@ export interface ChatMessage {
   encryptedVideo?: EncryptedField | SealedEnvelopeField | null;
   encryptedAudio?: EncryptedField | SealedEnvelopeField | null;
   encryptedFileUri?: EncryptedField | SealedEnvelopeField | null;
+  /**
+   * True when the object at `image` / `audio` / `file.uri` is ciphertext.
+   * The content key travels inside the sealed body (messageBody.ts), so a
+   * reader without it must not render the URL — what sits there will not
+   * decode, and the broken image reads as a network fault.
+   */
+  mediaSealed?: boolean;
   // Link preview, resolved once by the sender and sealed the same way (see
   // services/linkPreview.ts). `linkPreview` is the legacy plaintext field the
   // mobile client wrote before this, and the fallback when there's no peer key

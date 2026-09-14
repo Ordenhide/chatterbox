@@ -33,13 +33,15 @@ import {
   encodeInlineMedia,
   extensionForMime,
   logUploadError,
-  uploadChatBlob,
-  uploadChatFile,
-  uploadChatImage,
+  downscaleImage,
+  uploadSealedChatBlob,
 } from '../services/storage';
 import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
 import {isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
+import {decodeBody, encodeBody, type MediaSlot} from '../services/messageBody';
+import type {MediaKeyInfo} from '../services/mediaCrypto';
+import {resolveSealedMedia} from '../services/mediaVault';
 import {
   EncryptionUnavailableError,
   fetchPeerPublicKeyChecked,
@@ -271,6 +273,15 @@ export default function ChatPane({
   const [launching, setLaunching] = useState(false);
   // Link previews decrypt to a JSON blob rather than a URL, so this cache
   // holds the parsed card (or null when the payload is unreadable/invalid).
+  /**
+   * Attachment content keys, by message id, from the bodies opened above.
+   *
+   * Held rather than consumed immediately because the resolve pass is async
+   * and the body pass is not — and because the keys cannot be fetched again:
+   * they exist only inside the envelope, which for a forward-secret message
+   * opens exactly once.
+   */
+  const pendingMediaRef = useRef<Map<string, Partial<Record<MediaSlot, MediaKeyInfo>>>>(new Map());
   const decryptedPreviewRef = useRef<Map<string, LinkPreviewData | null>>(new Map());
   const decryptedTranscriptRef = useRef<Map<string, string | null>>(new Map());
   // The caches above are keyed by message id, not by the key that decrypted
@@ -433,7 +444,7 @@ export default function ChatPane({
       const shown = msgs.map(m => {
         if (!m.encrypted || !secretKey) return m;
         try {
-          return {...m, text: openSealed(m.encrypted, secretKey, me.uid, chatId)};
+          return {...m, text: decodeBody(openSealed(m.encrypted, secretKey, me.uid, chatId)).text};
         } catch {
           return {...m, text: ''};
         }
@@ -591,6 +602,15 @@ export default function ChatPane({
         const keypair = await getDeviceKeypairIfEnrolled(me.uid);
         if (!active) return;
 
+        /** Sealed-*bytes* attachments to fetch and decrypt after this pass. */
+        const sealedJobs: {
+          id: string;
+          slot: MediaSlot;
+          url: string;
+          info: MediaKeyInfo;
+          cache: React.MutableRefObject<Map<string, string>>;
+        }[] = [];
+
         toDecrypt.forEach(m => {
           const id = m._id;
           let mediaFailed = false;
@@ -627,7 +647,16 @@ export default function ChatPane({
             decryptedTextRef.current.set(id, t('chat.forwardSecretElsewhere'));
           } else if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
             try {
-              decryptedTextRef.current.set(id, openSealed(m.encrypted, secretKey, me.uid, chatId));
+              // Decoded, not used raw. What openSealed hands back is the
+              // *encoded* body, and for a message carrying an attachment that
+              // is a NUL marker, JSON, and the attachment's content key in
+              // base64 — which would be rendered to the reader as their
+              // message. decodeBody also yields the keys the resolve pass
+              // below needs; nothing else can supply them, because they only
+              // ever exist inside this envelope.
+              const body = decodeBody(openSealed(m.encrypted, secretKey, me.uid, chatId));
+              decryptedTextRef.current.set(id, body.text);
+              if (body.media) pendingMediaRef.current.set(id, body.media);
             } catch (err) {
               // Wrong/rotated key, or a payload from before this device
               // enrolled — distinct from "still loading" so it doesn't spin
@@ -681,6 +710,35 @@ export default function ChatPane({
             }
           }
 
+          /**
+           * An attachment whose *bytes* are encrypted. The URL is in the clear
+           * and must never be rendered — what sits at it is ciphertext, and an
+           * <img> pointed there shows a broken-image icon that reads as a
+           * network problem. Queued for the async pass below instead.
+           *
+           * The key comes from the body opened above and nowhere else. A
+           * message with no entry in pendingMediaRef is one this device cannot
+           * open: recorded as failed rather than retried, because the envelope
+           * that held the key does not open twice.
+           */
+          if (m.mediaSealed) {
+            const keys = pendingMediaRef.current.get(id);
+            for (const [slot, url, cache] of [
+              ['image', m.image, decryptedImageRef],
+              ['audio', m.audio, decryptedAudioRef],
+              ['file', m.file?.uri, decryptedFileUriRef],
+            ] as const) {
+              if (!url || cache.current.has(id)) continue;
+              const info = keys?.[slot];
+              if (!info) {
+                cache.current.set(id, '');
+                mediaFailed = true;
+                continue;
+              }
+              sealedJobs.push({id, slot, url, info, cache});
+            }
+          }
+
           // A media-only message has no `encrypted` text of its own to carry
           // a failure message, so surface it the same way a text decrypt
           // failure does.
@@ -689,7 +747,14 @@ export default function ChatPane({
           }
         });
 
-        if (active) {
+        /**
+         * Patches whatever has resolved so far into the list. Called twice:
+         * once for everything the synchronous pass produced, and again after
+         * the sealed attachments land, so a photo appears when it is ready
+         * rather than holding the text beside it.
+         */
+        const flush = () => {
+          if (!active) return;
           setMessages(prev =>
             prev.map(item => {
               const id = item._id;
@@ -710,7 +775,29 @@ export default function ChatPane({
               return Object.keys(patch).length ? {...item, ...patch} : item;
             }),
           );
+        };
+        flush();
+
+        if (sealedJobs.length) {
+          await Promise.all(
+            sealedJobs.map(async job => {
+              try {
+                job.cache.current.set(
+                  job.id,
+                  await resolveSealedMedia(job.id, job.slot, job.url, job.info),
+                );
+              } catch (mediaError) {
+                // Never falls back to job.url: it is ciphertext, and rendering
+                // it would show a broken image where an integrity failure may
+                // be the real cause.
+                console.warn('sealed attachment failed:', mediaError);
+                job.cache.current.set(job.id, '');
+              }
+            }),
+          );
+          flush();
         }
+
       } catch (err) {
         console.warn('e2ee decrypt key unavailable:', err);
       }
@@ -1014,21 +1101,48 @@ export default function ChatPane({
       const seal = (plaintext: string) => sealForRecipients(plaintext, secretKey, recipients, chatId);
       const next: OutgoingMedia = {...data};
 
-      if (next.text) {
-        next.encrypted = seal(next.text);
+      /**
+       * Text and the attachment's content keys are sealed *together*, as one
+       * body.
+       *
+       * Putting the key inside the body is what makes media inherit whatever
+       * protection the body gets, instead of needing a second envelope and a
+       * second fallback decision (see messageBody.ts). encodeBody returns the
+       * bare text when there is no media, so an ordinary message is sealed
+       * byte-identically to before and nothing already deployed reads it
+       * differently. An empty result means there is nothing to seal — no text,
+       * no keys — and writing an envelope over it would only cost a field.
+       */
+      const body = encodeBody({text: next.text ?? '', media: next.mediaKeys});
+      if (body) {
+        next.encrypted = seal(body);
         next.text = '';
       }
-      if (next.image) {
-        next.encryptedImage = seal(next.image);
-        next.image = undefined;
-      }
-      if (next.audio) {
-        next.encryptedAudio = seal(next.audio);
-        next.audio = undefined;
-      }
-      if (next.file?.uri) {
-        next.encryptedFileUri = seal(next.file.uri);
-        next.file = {...next.file, uri: ''};
+      // Never persisted in the clear: the keys live in the sealed body above,
+      // and leaving this on the document would hand the object to anyone who
+      // can read the message's metadata.
+      delete next.mediaKeys;
+
+      /**
+       * Only pointers to *unencrypted* objects need sealing. When the bytes
+       * are encrypted the URL stays in the clear on purpose: it reveals that
+       * an attachment exists, which the message already reveals, and sealing
+       * it would cost a field without protecting anything. Same reasoning, and
+       * the same shape, as the mobile client.
+       */
+      if (!next.mediaSealed) {
+        if (next.image) {
+          next.encryptedImage = seal(next.image);
+          next.image = undefined;
+        }
+        if (next.audio) {
+          next.encryptedAudio = seal(next.audio);
+          next.audio = undefined;
+        }
+        if (next.file?.uri) {
+          next.encryptedFileUri = seal(next.file.uri);
+          next.file = {...next.file, uri: ''};
+        }
       }
       return next;
     } catch (err) {
@@ -1528,18 +1642,36 @@ export default function ChatPane({
     setUploadPct(0);
     try {
       if (asImage) {
-        const url = await uploadChatImage(chatId, file, setUploadPct);
+        // Downscaled first, then encrypted: the canvas pass has to see the
+        // pixels, and there is no reason to ship the full-size bytes.
+        const {url, key} = await uploadSealedChatBlob(
+          chatId,
+          await downscaleImage(file),
+          file.name,
+          setUploadPct,
+        );
         await sendMessage(
           chatId,
-          await encryptOutgoingMessage({image: url, ...(viewOnceMode ? {viewOnce: true} : {}), ...burn}),
+          await encryptOutgoingMessage({
+            image: url,
+            mediaSealed: true,
+            mediaKeys: {image: key},
+            ...(viewOnceMode ? {viewOnce: true} : {}),
+            ...burn,
+          }),
           me,
         );
         if (viewOnceMode) setViewOnceMode(false); // one-shot, like mobile
       } else {
-        const url = await uploadChatFile(chatId, file, setUploadPct);
+        const {url, key} = await uploadSealedChatBlob(chatId, file, file.name, setUploadPct);
         await sendMessage(
           chatId,
-          await encryptOutgoingMessage({file: {uri: url, name: file.name, size: file.size}, ...burn}),
+          await encryptOutgoingMessage({
+            file: {uri: url, name: file.name, size: file.size},
+            mediaSealed: true,
+            mediaKeys: {file: key},
+            ...burn,
+          }),
           me,
         );
       }
@@ -1611,8 +1743,23 @@ export default function ChatPane({
 
     if (!inline) {
       try {
-        const url = await uploadChatBlob(chatId, blob, extensionForMime(blob.type), setUploadPct);
-        await sendMessage(chatId, await encryptOutgoingMessage({audio: url, ...audioMeta, ...burn}), me);
+        const {url, key} = await uploadSealedChatBlob(
+          chatId,
+          blob,
+          `voice.${extensionForMime(blob.type)}`,
+          setUploadPct,
+        );
+        await sendMessage(
+          chatId,
+          await encryptOutgoingMessage({
+            audio: url,
+            mediaSealed: true,
+            mediaKeys: {audio: key},
+            ...audioMeta,
+            ...burn,
+          }),
+          me,
+        );
       } catch (err) {
         // Storage is the only route for a clip this long, so surface the
         // length as the actionable problem rather than the Storage error —

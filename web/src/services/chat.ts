@@ -29,6 +29,8 @@ import {resolveMessageMediaUrls} from './messageMedia';
 import {getDeviceKeypairIfEnrolled} from './e2eeKeys';
 import {deleteStorageObjectByUrl} from './storage';
 import type {ChatMessage, ChatRoom, EncryptedField, SealedEnvelopeField, UserProfile} from '../types';
+import type {MediaSlot} from './messageBody';
+import type {MediaKeyInfo} from './mediaCrypto';
 
 export const MESSAGE_PAGE_SIZE = 30;
 
@@ -228,6 +230,7 @@ export async function sendTextMessage(
   return sendMessage(chatId, {text}, me);
 }
 
+
 export interface OutgoingMedia {
   text?: string;
   image?: string;
@@ -247,6 +250,16 @@ export interface OutgoingMedia {
   encryptedImage?: EncryptedField | SealedEnvelopeField;
   encryptedAudio?: EncryptedField | SealedEnvelopeField;
   encryptedFileUri?: EncryptedField | SealedEnvelopeField;
+  /**
+   * Set together, always. `mediaSealed` tells every reader the URL in `image`
+   * / `audio` / `file.uri` points at ciphertext, and `mediaKeys` is what
+   * ChatPane folds into the sealed body so the content keys reach exactly the
+   * people who can read the message. A message with one and not the other is
+   * either unreadable or leaks the object, so they are never assigned apart —
+   * the same contract as the mobile client's.
+   */
+  mediaSealed?: true;
+  mediaKeys?: Partial<Record<MediaSlot, MediaKeyInfo>>;
 }
 
 /**
