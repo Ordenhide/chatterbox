@@ -8,7 +8,7 @@ import {
   RTCView,
   MediaStream,
   mediaDevices,
-} from 'react-native-webrtc';
+} from '../../services/webrtc';
 import InCallManager from 'react-native-incall-manager';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {useAuth} from '../../contexts/AuthContext';

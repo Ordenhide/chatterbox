@@ -195,26 +195,29 @@ out of scope here.
 `webrtc` is out of scope for v1 per the original port plan (calling was
 always going to be the largest single item).
 
-**But "out of scope" is not what the code currently does.** `IncomingCallManager`
-is mounted in `App.tsx` for every signed-in user with no platform guard, and it
-imports `RTCView` and `mediaDevices` from `react-native-webrtc` at module
-scope. There is no `@react-native-oh-tpl` twin for that package and no
-`.harmony.ts` seam covering it, so on HarmonyOS those resolve against a native
-module that was never registered. The failure is therefore a crash — at import
-or at the first render of an incoming call — rather than the absence of a
-feature, which is what "out of scope" should look like.
+It used not to behave that way. `IncomingCallManager` is mounted in `App.tsx`
+for every signed-in user, and it imported `RTCView` and `mediaDevices` straight
+from `react-native-webrtc` — a package with no `@react-native-oh-tpl` twin.
+That package throws from module scope:
 
-Two ways to make the gap behave like a gap, neither verified here because this
-machine has no DevEco Studio or `ohpm` and cannot build a HAP:
+```js
+const {WebRTCModule} = NativeModules;
+if (WebRTCModule === null) { throw new Error('WebRTC native module not found.') }
+setupNativeEvents();
+```
 
-- a `webrtc.harmony.ts` seam beside the others, exporting an `RTCView` that
-  renders nothing and a `mediaDevices` that rejects. Consistent with how push
-  and biometrics are handled, and the call sites need no changes.
-- mounting `IncomingCallManager` behind a capability check rather than a
-  platform name. Prefer this over `Platform.OS !== 'harmony'`: the seam pattern
-  here deliberately keeps call sites ignorant of the platform, and a denylist
-  of platform strings is the thing that stops being correct when a fourth one
-  appears.
+and the check is `=== null` while an unregistered native module is `undefined`,
+so it misses and `setupNativeEvents()` builds a NativeEventEmitter over
+nothing. Either way the failure lands at import, on the startup path. "Calling
+is out of scope" was implemented as "the app does not start".
 
-Until then, treat a HarmonyOS build as unable to start rather than unable to
-call — the distinction matters when judging how far the port actually is.
+There is a `services/webrtc.ts` / `webrtc.harmony.ts` pair now, like the
+Firebase ones, and the two call sites import from it. The HarmonyOS half
+renders nothing for `RTCView`, rejects `getUserMedia`, and throws from every
+constructor with a message naming the file — a peer connection that silently
+never connects is the quiet-failure shape this codebase keeps finding.
+
+Verified as far as it can be without a device: bundling for `harmony` drops
+`WebRTCModule` from 14 references to none, while the Android bundle keeps all
+14. The gap is now a gap rather than a crash; calling itself is still out of
+scope.

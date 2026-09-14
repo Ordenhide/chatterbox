@@ -10,7 +10,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import Svg, {Line, Path, Rect} from 'react-native-svg';
 import InCallManager from 'react-native-incall-manager';
-import {RTCView, mediaDevices} from 'react-native-webrtc';
+import {RTCView, mediaDevices} from '../services/webrtc';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors} from '../theme/colors';
 import {
