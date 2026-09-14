@@ -14,6 +14,10 @@
 import {describe, expect, it} from 'vitest';
 import * as mobile from '../../../src/services/e2ee';
 import * as web from './e2ee';
+import * as mobileMedia from '../../../src/services/mediaCrypto';
+import * as webMedia from './mediaCrypto';
+import * as mobileBody from '../../../src/services/messageBody';
+import * as webBody from './messageBody';
 
 const CHAT = 'chat-cross-client';
 
@@ -68,5 +72,93 @@ describe('a message sealed on one client opens on the other', () => {
     const r2 = web.generateKeypair();
     const e2 = web.sealForRecipients('你好', s2.secretKey, [{uid: 'r', publicKey: r2.publicKey}], CHAT);
     expect(web.openSealed(e2, r2.secretKey, 'r', CHAT)).toBe('你好');
+  });
+});
+
+
+/**
+ * An attachment encrypted by one client has to open on the other.
+ *
+ * This is the wire format of a file — chunk size, nonce derivation, tag
+ * placement — and a divergence here does not fail loudly. It fails as a photo
+ * the other side can never open, which is indistinguishable from a network
+ * problem. Both files are byte-identical below their headers on purpose; this
+ * is what makes that claim checkable rather than a comment.
+ */
+describe('an attachment sealed on one client opens on the other', () => {
+  // Two chunks plus a partial, so chunk boundaries and the short final chunk
+  // are both exercised rather than just a single-chunk happy path.
+  const payload = new Uint8Array(mobileMedia.CHUNK_BYTES * 2 + 1234);
+  for (let i = 0; i < payload.length; i++) payload[i] = (i * 31 + 7) % 256;
+
+  it('mobile -> web', async () => {
+    const sink = mobileMedia.collectingSink();
+    const info = await mobileMedia.encryptMedia(mobileMedia.bytesSource(payload), sink, {
+      mime: 'image/jpeg',
+    });
+    const out = webMedia.collectingSink();
+    await webMedia.decryptMedia(webMedia.bytesSource(sink.result()), out, info);
+    expect(out.result()).toEqual(payload);
+  });
+
+  it('web -> mobile', async () => {
+    const sink = webMedia.collectingSink();
+    const info = await webMedia.encryptMedia(webMedia.bytesSource(payload), sink, {
+      mime: 'image/jpeg',
+    });
+    const out = mobileMedia.collectingSink();
+    await mobileMedia.decryptMedia(mobileMedia.bytesSource(sink.result()), out, info);
+    expect(out.result()).toEqual(payload);
+  });
+
+  it('refuses a ciphertext whose bytes were altered', async () => {
+    // The property the previous scheme lacked: a wrong key or a tampered
+    // object raises rather than returning garbage.
+    const sink = webMedia.collectingSink();
+    const info = await webMedia.encryptMedia(webMedia.bytesSource(payload), sink, {});
+    const tampered = sink.result();
+    tampered[100] ^= 0xff;
+    await expect(
+      mobileMedia.decryptMedia(mobileMedia.bytesSource(tampered), mobileMedia.collectingSink(), info),
+    ).rejects.toThrow();
+  });
+});
+
+/**
+ * And the body that carries the attachment's key has to round-trip too.
+ *
+ * The key travels inside the sealed body, so if one client encodes a body the
+ * other decodes as plain text, the reader sees a NUL marker and a JSON header
+ * where their message should be — and the key inside it is lost, which loses
+ * the attachment.
+ */
+describe('a message body encoded on one client decodes on the other', () => {
+  const KEY = {
+    alg: mobileMedia.MEDIA_CRYPTO_ALG,
+    key: 'a'.repeat(43) + '=',
+    nonceBase: 'b'.repeat(22) + '==',
+    chunkBytes: 1024,
+    chunkCount: 2,
+    plaintextBytes: 2048,
+    mime: 'image/jpeg',
+  } as const;
+
+  it('text-only stays byte-identical, so an older reader is unaffected', () => {
+    expect(webBody.encodeBody({text: '你好'})).toBe('你好');
+    expect(mobileBody.encodeBody({text: '你好'})).toBe('你好');
+  });
+
+  it('web -> mobile, with a media key', () => {
+    const encoded = webBody.encodeBody({text: 'look', media: {image: KEY}});
+    const back = mobileBody.decodeBody(encoded);
+    expect(back.text).toBe('look');
+    expect(back.media?.image).toEqual(KEY);
+  });
+
+  it('mobile -> web, with a media key', () => {
+    const encoded = mobileBody.encodeBody({text: 'look', media: {image: KEY}});
+    const back = webBody.decodeBody(encoded);
+    expect(back.text).toBe('look');
+    expect(back.media?.image).toEqual(KEY);
   });
 });
