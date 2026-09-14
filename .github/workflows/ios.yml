@@ -1,0 +1,89 @@
+name: Build iOS
+
+# No path filter, on purpose.
+#
+# The iOS build broke on 2026-09-07 and stayed broken for a week, through a
+# full pre-release audit, because nothing built it. The cause was a change to
+# the *root* firebase.json — the Hosting headers — which no plausible
+# `paths:` list for an iOS workflow would have included. A filter that misses
+# the file that breaks you is the blind spot, not a saving.
+#
+# This runs on a macOS runner, which bills at ten times the Linux rate. That
+# is the trade: roughly fifteen minutes of macOS time per push to main against
+# a week of a platform silently not compiling.
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # GoogleService-Info.plist is gitignored — it never reaches a fresh
+      # checkout — and the Firebase pods fail at configure time without it,
+      # exactly as google-services.json does on Android (see release-apk.yml).
+      # Checked first so the failure names the secret rather than surfacing as
+      # a Firebase initialisation error three minutes into a build.
+      - name: Check required secrets
+        env:
+          PLIST: ${{ secrets.CHATTERBOX_GOOGLE_SERVICE_INFO_BASE64 }}
+        run: |
+          if [ -z "$PLIST" ]; then
+            echo "::error::CHATTERBOX_GOOGLE_SERVICE_INFO_BASE64 is not set." \
+                 "Run: base64 -i ios/Chatterbox/GoogleService-Info.plist | pbcopy" \
+                 "and store it as that repo secret (Settings -> Secrets and variables -> Actions)."
+            exit 1
+          fi
+
+      - name: Decode GoogleService-Info.plist
+        run: |
+          echo "${{ secrets.CHATTERBOX_GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode \
+            > ios/Chatterbox/GoogleService-Info.plist
+          plutil -lint ios/Chatterbox/GoogleService-Info.plist
+
+      # `pod install` rather than `--deployment`: the lockfile is committed, and
+      # a mismatch between it and package.json is itself worth failing on — but
+      # as a build error here, not as a silent stale dependency on a developer's
+      # machine.
+      - name: CocoaPods
+        working-directory: ios
+        run: pod install
+
+      # Unsigned. A build check needs no credentials, and requiring them would
+      # mean this job could only run for someone holding the signing identity —
+      # which is how you end up with no iOS CI at all.
+      #
+      # The consequence, recorded so nobody chases it: an unsigned build has no
+      # entitlements, so the keychain returns errSecMissingEntitlement (-34018)
+      # at runtime. That does not affect compilation, and this job only builds.
+      - name: Build for the simulator
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -workspace Chatterbox.xcworkspace \
+            -scheme Chatterbox \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tail -40
+
+      - name: Remove the decoded plist
+        if: always()
+        run: rm -f ios/Chatterbox/GoogleService-Info.plist

@@ -242,6 +242,55 @@ is this element" and "did the label land" without guessing from pixels.
 settled by changing `fontSize` and watching it take effect while `fontFamily`
 did not — measurement, not eyesight.
 
+## iOS builds, and had not for a week
+
+```bash
+cd ios && pod install
+xcodebuild -workspace Chatterbox.xcworkspace -scheme Chatterbox \
+  -configuration Debug -sdk iphonesimulator \
+  -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+```
+
+**Read xcodebuild's own exit code.** Piping it into `tail` makes the exit code
+`tail`'s, which is 0 whatever the build did — a run that ends in
+`** BUILD FAILED **` reports success. Redirect to a file and grep it, or check
+`${PIPESTATUS[0]}`.
+
+**`@react-native-firebase/app` cannot read the root `firebase.json`, and
+`ios/firebase.json` exists to stop it trying.** Its `ios_config.sh` build phase
+interpolates the whole file into a single-quoted Ruby string, so one apostrophe
+ends the literal. The root file holds the Hosting headers, whose CSP values are
+full of them. The iOS build broke the day those landed and stayed broken
+through an entire pre-release audit, because nothing built iOS.
+`iosFirebaseJson.test.ts` now fails in milliseconds on the apostrophe rule;
+`.github/workflows/ios.yml` builds for real on a macOS runner.
+
+**An unsigned simulator build has no entitlements, so the keychain returns
+-34018.** That produces a FirebaseAuth "error loading saved user" and looks
+like a real defect. Ad-hoc signing (`CODE_SIGN_IDENTITY="-"
+CODE_SIGNING_REQUIRED=NO`) makes it go away. Before reporting any keychain
+problem on iOS, rebuild signed — otherwise the build configuration is the bug.
+
+**What remains unexplained**: `mmkv_key_store_unverified` survives ad-hoc
+signing. The keychain write resolves, the read-back does not match, and
+neither `secure_store_write_failed` nor `secure_store_read_failed` is reported,
+so it is the comparison that fails rather than either call. Consequence if it
+also happens on hardware: MMKV falls back to the unencrypted bootstrap store,
+so local at-rest encryption is weaker than designed. Distinguishing a simulator
+limitation from a real defect needs a profile-signed build on a device.
+
+**Running it**: `xcrun simctl boot <udid>`, `install <udid> <path>/Chatterbox.app`,
+`launch <udid> com.chatterbox`, `io <udid> screenshot out.png`. The debug build
+carries no JS bundle, so Metro must be up first — same as Android. Note the
+bundle id is `com.chatterbox`, not Android's `com.chatterbox.app`;
+`GoogleService-Info.plist` matches the former and is gitignored, so CI decodes
+it from a secret.
+
+**iOS push is wired but not enabled.** The client registers now; the Push
+Notifications capability on the App ID is not committed, because entitlements
+claiming `aps-environment` without a profile granting it fail to sign. See
+ios/README-push.md.
+
 ## Two clients
 
 `web/` is a separate reimplementation of the same services, not shared code.
