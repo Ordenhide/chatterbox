@@ -171,26 +171,10 @@ export interface Message {
   };
   scheduledFor?: number;
   transcription?: string;
-  expense?: {
-    id: string;
-    amount: number;
-    currency: string;
-    description: string;
-    paidBy: string;
-  };
-  location?: {
-    latitude: number;
-    longitude: number;
-    address?: string;
-    isLive?: boolean;
-    expiresAt?: number;
-  };
-  revealed?: boolean;
   viewOnce?: boolean;
   viewOnceViewedBy?: string[];
   viewOnceExpired?: boolean;
   viewOnceOpenedAt?: any;
-  forwarded?: boolean;
   reactionChain?: string[];
   /**
    * E2EE envelope. When present, `text` is empty on the wire and the real body

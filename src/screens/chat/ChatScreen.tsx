@@ -942,8 +942,6 @@ export default function ChatScreen() {
             mentions: msg.mentions,
               burnAfterReading: msg.burnAfterReading,
             transcription: (msg as any).transcription,
-            expense: (msg as any).expense,
-            location: (msg as any).location,
             scheduledFor: (msg as any).scheduledFor,
             timeCapsule: (msg as any).timeCapsule,
             // E2EE: substitute cached plaintext once decrypted (below); until
@@ -1654,8 +1652,6 @@ export default function ChatScreen() {
           mentions: msg.mentions,
           burnAfterReading: msg.burnAfterReading,
           transcription: (msg as any).transcription,
-          expense: (msg as any).expense,
-          location: (msg as any).location,
           scheduledFor: (msg as any).scheduledFor,
           user: {
             _id: msg.user._id,
@@ -4110,12 +4106,6 @@ export default function ChatScreen() {
               </Text>
             </Pressable>
           ) : null}
-          {current.forwarded ? (
-            <View style={styles.forwardedLabel}>
-              <Icon name="forward" size={11} color={colors.textSecondary} />
-              <Text style={{color: colors.textSecondary, fontSize: 11, fontFamily: bodyWeight('600')}}>{t('chat.forwardedTitle')}</Text>
-            </View>
-          ) : null}
           {burn ? (
             <View style={styles.burnBubbleWrap}>
               <Bubble
@@ -4169,29 +4159,6 @@ export default function ChatScreen() {
           )}
           {renderFileCard(current.file)}
           {renderLinkPreview(current.linkPreview)}
-          {current.expense ? (
-            <View style={[styles.expenseCard, {backgroundColor: colors.surface, borderColor: colors.primary}]}>
-              <Icon name="wallet" size={20} color={colors.primary} style={styles.expenseCardIcon} />
-              <Text style={[styles.expenseCardDesc, {color: colors.text}]}>
-                {current.expense.description || 'Expense'}
-              </Text>
-              <Text style={[styles.expenseCardAmount, {color: colors.primary}]}>
-                {current.expense.currency || ''} {(current.expense.amount ?? 0).toFixed(2)}
-              </Text>
-            </View>
-          ) : null}
-          {current.location ? (
-            <View style={[styles.locationCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
-              <Icon name="pin" size={18} color={colors.text} />
-              <Text style={[styles.locationText, {color: colors.text}]}>
-                {current.location.address ||
-                  `${current.location.latitude.toFixed(4)}, ${current.location.longitude.toFixed(4)}`}
-              </Text>
-              {current.location.isLive ? (
-                <Text style={[styles.locationLive, {color: colors.success}]}>{t('chat.liveBadge')}</Text>
-              ) : null}
-            </View>
-          ) : null}
           {translatedTexts[String(current._id)] ? (
             <View style={[styles.translationCard, {backgroundColor: colors.surface, borderColor: colors.border}]}>
               <View style={styles.translationLabelRow}>
@@ -5463,13 +5430,6 @@ const styles = StyleSheet.create({
   bubbleWrapper: {
     flex: 1,
   },
-  forwardedLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: 4,
-    alignSelf: 'flex-start',
-  },
   replyPreview: {
     alignSelf: 'flex-start',
     borderLeftWidth: 3,
@@ -5972,45 +5932,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: bodyWeight('600'),
   },
-  expenseCard: {
-    marginTop: 6,
-    padding: 10,
-    borderRadius: 2,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  expenseCardIcon: {
-    fontSize: 22,
-    marginBottom: 4,
-  },
-  expenseCardDesc: {
-    fontSize: 14,
-    fontFamily: bodyWeight('600'),
-  },
-  expenseCardAmount: {
-    fontSize: 18,
-    fontFamily: bodyWeight('800'),
-    marginTop: 2,
-  },
-  locationCard: {
-    marginTop: 6,
-    padding: 10,
-    borderRadius: 2,
-    borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
   locationIcon: {
     fontSize: 18,
-  },
-  locationText: {
-    fontSize: 13,
-    flex: 1,
-  },
-  locationLive: {
-    fontSize: 11,
-    fontFamily: bodyWeight('800'),
   },
   translationCard: {
     marginTop: 6,
