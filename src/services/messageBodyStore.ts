@@ -40,9 +40,24 @@
  *
  * ## What is deliberately *not* here
  *
- * Bodies only: no attachments. Decrypted media are large, already have a home
- * in mediaVault.ts, and re-fetch from the network on demand — putting them here
+ * No decrypted attachment *bytes*. Those are large, already have a home in
+ * mediaVault.ts, and re-fetch from the network on demand — putting them here
  * would trade a bounded text cache for an unbounded binary one.
+ *
+ * Attachment content *keys* are a different matter, and they are here: a
+ * stored value is the encoded body (services/messageBody.ts), keys included.
+ * They have to be. The keys travel inside the body precisely so media inherits
+ * the body's protection, which means they are inside the same ratchet envelope
+ * and share its one-shot nature. Keeping only the text dropped them beyond
+ * recovery — a chat reopened showed its text from here and rendered every
+ * photo, video, voice note and file in it blank, permanently and silently.
+ *
+ * It costs almost nothing. encodeBody returns the bare text when a message has
+ * no media, so ordinary bodies are byte-identical to what this stored before,
+ * and only a message that actually carries an attachment pays the few hundred
+ * bytes of the structured form. Nothing had to be migrated either: decodeBody
+ * reads any string without the marker as plain text, so bodies written by the
+ * older code still open.
  */
 import {mmkvStorage} from './storageMMKV';
 import {getSecret, isSecureStoreAvailable, removeSecret, setSecretVerified} from './secureKeyStore';

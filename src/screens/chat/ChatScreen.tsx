@@ -886,8 +886,15 @@ export default function ChatScreen() {
         ]);
         if (!active) return;
 
-        bodies.forEach((text, id) => {
-          if (!decryptedTextRef.current.has(id)) decryptedTextRef.current.set(id, text);
+        bodies.forEach((stored, id) => {
+          // Stored bodies are encoded bodies, so this recovers the attachment
+          // keys as well as the text. Without the keys the ratchet cannot
+          // supply them a second time and the attachment is gone for good.
+          const body = decodeBody(stored);
+          if (!decryptedTextRef.current.has(id)) decryptedTextRef.current.set(id, body.text);
+          if (body.media && !pendingMediaRef.current.has(id)) {
+            pendingMediaRef.current.set(id, body.media);
+          }
         });
 
         trace.mark('local cache read', `${cached.length} msgs, ${bodies.size} bodies`);
@@ -1337,7 +1344,21 @@ export default function ChatScreen() {
             const acceptBody = (id: string, raw: string) => {
               const body = decodeBody(raw);
               decryptedTextRef.current.set(id, body.text);
-              resolvedBodies.set(id, body.text);
+              // `raw`, not `body.text`. The raw string *is* the encoded body,
+              // so storing it keeps the attachment content keys that travel
+              // inside it (services/messageBody.ts). Storing only the text
+              // dropped them, and they were unrecoverable: they live inside a
+              // ratchet envelope that opens exactly once, so on the next visit
+              // to this chat the text came back from the store while every
+              // photo, video, voice note and file in it rendered blank —
+              // permanently, with no error anywhere.
+              //
+              // Costs nothing for ordinary messages: encodeBody returns the
+              // bare text when there is no media, so a text-only body stores
+              // byte-identically to before, and decodeBody treats any string
+              // without the marker as plain text — which is what makes every
+              // body already on disk still read correctly.
+              resolvedBodies.set(id, raw);
               if (body.media) pendingMediaRef.current.set(id, body.media);
             };
 

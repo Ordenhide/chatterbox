@@ -42,6 +42,8 @@ import {
   MAX_BODIES_PER_CHAT,
   saveBodies,
 } from '../messageBodyStore';
+import {decodeBody, encodeBody, isStructuredBody} from '../messageBody';
+import {MEDIA_CRYPTO_ALG} from '../mediaCrypto';
 
 const ALICE = 'uid-alice';
 const BOB = 'uid-bob';
@@ -201,5 +203,76 @@ describe('without a native key store', () => {
     expect((await loadBodies(ALICE, CHAT)).get('m1')).toBe('degraded but working');
     // And the body itself is still not sitting in the clear.
     expect(mockMmkvStore.get(_bodyStorageKey(ALICE, CHAT))).not.toContain('degraded');
+  });
+});
+
+/**
+ * What the store holds is the *encoded* body, not the message text.
+ *
+ * Attachment content keys travel inside the body (services/messageBody.ts),
+ * and the store used to keep only `body.text` — so they were dropped. They
+ * could not be recovered either: they live inside a ratchet envelope that
+ * opens exactly once, so on the next visit to a chat the text came back from
+ * here while every photo, video, voice note and file rendered blank, for good
+ * and with no error anywhere.
+ *
+ * These pin the three properties that fix relies on.
+ */
+describe('bodies carry their attachment keys', () => {
+  // A complete MediaKeyInfo, because decodeBody validates rather than casts:
+  // a key missing a field is dropped on the way out, which is the behaviour
+  // that caught the first draft of this test.
+  const KEY = {
+    alg: MEDIA_CRYPTO_ALG,
+    key: 'a'.repeat(43) + '=',
+    nonceBase: 'b'.repeat(22) + '==',
+    chunkBytes: 1024,
+    chunkCount: 4,
+    plaintextBytes: 4096,
+    mime: 'image/jpeg',
+  } as const;
+
+  beforeEach(() => {
+    mockMmkvStore.clear();
+    mockKeychain.available = true;
+    mockKeychain.store.clear();
+    _resetBodyKeyCache();
+  });
+
+  it('a body with media keys survives the round trip intact', async () => {
+    const encoded = encodeBody({text: 'look at this', media: {image: KEY}});
+    await saveBodies(ALICE, CHAT, new Map([['m1', encoded]]));
+    _resetBodyKeyCache();
+
+    const back = decodeBody((await loadBodies(ALICE, CHAT)).get('m1')!);
+    expect(back.text).toBe('look at this');
+    expect(back.media?.image).toEqual(KEY);
+  });
+
+  it('carries the NUL marker through JSON, encryption and storage', async () => {
+    // The structured form starts with a literal NUL, exactly the kind of byte
+    // a JSON round trip, a cipher, or a native storage bridge quietly eats. If
+    // it were lost the body would decode as plain text whose content is the
+    // raw JSON header — readable garbage instead of an attachment.
+    const encoded = encodeBody({text: '', media: {video: KEY}});
+    expect(encoded.startsWith('\u0000')).toBe(true);
+
+    await saveBodies(ALICE, CHAT, new Map([['m1', encoded]]));
+    _resetBodyKeyCache();
+    const stored = (await loadBodies(ALICE, CHAT)).get('m1')!;
+    expect(stored).toBe(encoded);
+    expect(isStructuredBody(stored)).toBe(true);
+  });
+
+  it('still reads a plain-text body written before this change', async () => {
+    // No migration exists and none is needed: decodeBody treats any string
+    // without the marker as text. A store written by the old code has to keep
+    // working, or this change would blank the history it exists to protect.
+    await saveBodies(ALICE, CHAT, new Map([['m1', 'written by the old code']]));
+    _resetBodyKeyCache();
+
+    const back = decodeBody((await loadBodies(ALICE, CHAT)).get('m1')!);
+    expect(back.text).toBe('written by the old code');
+    expect(back.media).toBeUndefined();
   });
 });
