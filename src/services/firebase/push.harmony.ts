@@ -32,3 +32,18 @@ export function onMessage(_messaging: unknown, _handler: unknown): () => void {
 export function onTokenRefresh(_messaging: unknown, _handler: unknown): () => void {
   return () => {};
 }
+
+/**
+ * Permission, for the same reason the rest of these exist: the import has to
+ * resolve. NOT_DETERMINED is the honest answer — there is no notification
+ * permission to ask for, because there is no notification transport.
+ */
+export const AuthorizationStatus = {
+  NOT_DETERMINED: -1,
+  DENIED: 0,
+  AUTHORIZED: 1,
+  PROVISIONAL: 2,
+} as const;
+export async function requestPermission(_messaging: unknown): Promise<number> {
+  return AuthorizationStatus.NOT_DETERMINED;
+}

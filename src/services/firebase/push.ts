@@ -88,4 +88,11 @@ export function registerBackgroundMessageHandler(): void {
  * Firebase into a bundle for a platform that has no such module, which is what
  * the guard is there to prevent.
  */
-export {getMessaging, getToken, onMessage, onTokenRefresh} from '@react-native-firebase/messaging';
+export {
+  AuthorizationStatus,
+  getMessaging,
+  getToken,
+  onMessage,
+  onTokenRefresh,
+  requestPermission,
+} from '@react-native-firebase/messaging';

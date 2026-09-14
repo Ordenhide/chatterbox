@@ -12,7 +12,13 @@ import MainNavigator from './src/navigation/MainNavigator';
 import {useAuth} from './src/contexts/AuthContext';
 import {startTrace} from './src/utils/loadTrace';
 import {initFirebase} from './src/services/firebase/bootstrap';
-import {getMessaging, getToken, onTokenRefresh} from './src/services/firebase/push';
+import {
+  AuthorizationStatus,
+  getMessaging,
+  getToken,
+  onTokenRefresh,
+  requestPermission,
+} from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
 import {initFeatureFlags} from './src/services/featureFlags';
 import {warmSecureStorage} from './src/services/storageMMKV';
@@ -38,6 +44,14 @@ function AppContent() {
    * anything short of a real backgrounding would re-lock the app the instant
    * a fingerprint unlocked it — the failure that makes biometric locks feel
    * broken.
+   *
+   * The initial read is synchronous, which is what makes "locked before the
+   * first frame" true on iOS and Android. It is not true on HarmonyOS: that
+   * platform's MMKV shim bootstraps from AsyncStorage, so a cold start reads
+   * the default (false) for a moment and the lock would not engage — the
+   * window storageMMKV.harmony.ts names isAppLockEnabled as the call site
+   * where it actually matters. That port has no push and no release either;
+   * this is recorded so it stays a known limit rather than a surprise.
    */
   const [locked, setLocked] = useState(() => isAppLockEnabled());
   const appStateRef = useRef(AppState.currentState);
@@ -139,17 +153,54 @@ function AppContent() {
 
 
   useEffect(() => {
-    if (!user || loading || Platform.OS !== 'android') return;
+    if (!user || loading) return;
+    /**
+     * Allowlisted rather than "anything but HarmonyOS". FCM needs Play
+     * Services on Android and APNs on iOS, and HarmonyOS has neither — see
+     * services/firebase/push.harmony.ts, whose stubs exist only so this import
+     * resolves. An allowlist stays correct when a fourth platform appears; a
+     * denylist quietly includes it.
+     *
+     * iOS was excluded from this whole effect until now, which meant no
+     * permission request, no token, and nothing ever written to
+     * users/{uid}/private/push. notifyNewMessage looks the token up there and
+     * `continue`s when it is missing, so an iOS user received no push
+     * notifications at all — while the same function has been building an
+     * `apns` alert payload for them the entire time.
+     */
+    if (Platform.OS !== 'android' && Platform.OS !== 'ios') return;
     let active = true;
     let unsubscribeToken: (() => void) | null = null;
 
     const setupMessaging = async () => {
       const messaging = getMessaging();
-      // Platform.Version is number | string in RN's types (string on iOS),
-      // but the enclosing effect already returned early unless Platform.OS
-      // === 'android', where it's always the numeric API level.
-      if ((Platform.Version as number) >= 33) {
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      if (Platform.OS === 'android') {
+        // Platform.Version is number | string in RN's types (string on iOS),
+        // and this branch is Android, where it is always the numeric API level.
+        if ((Platform.Version as number) >= 33) {
+          await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        }
+      } else {
+        /**
+         * APNs authorisation. Returned early on refusal rather than falling
+         * through: getToken rejects without it, and a user who declined
+         * notifications is not an error to report — it is an answer.
+         *
+         * PROVISIONAL counts as granted. It is iOS's quiet delivery tier, and
+         * a notification that arrives silently is still a notification the
+         * server needs a token to send.
+         *
+         * This still needs the Push Notifications capability on the App ID and
+         * in the provisioning profile — `aps-environment` in
+         * ios/Chatterbox/Chatterbox.entitlements, which Xcode writes when the
+         * capability is added. Without it APNs registration fails and this
+         * lands in the catch below. See ios/README-push.md.
+         */
+        const status = await requestPermission(messaging);
+        const granted =
+          status === AuthorizationStatus.AUTHORIZED ||
+          status === AuthorizationStatus.PROVISIONAL;
+        if (!granted) return;
       }
       const token = await getToken(messaging);
       if (active) {
