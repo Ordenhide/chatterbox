@@ -363,7 +363,9 @@
   "chatMedia": {
     "seconds": "{{count}}s",
     "openPhoto": "Open photo full size",
-    "playVideo": "Play video"
+    "playVideo": "Play video",
+    "empty": "No photos or videos in this chat yet.",
+    "unavailable": "Unavailable"
   },
   "chat": {
     "reportReason": {

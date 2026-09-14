@@ -302,7 +302,9 @@
   "chatMedia": {
     "seconds": "{{count}}s",
     "openPhoto": "Ouvrir la photo en plein écran",
-    "playVideo": "Lire la vidéo"
+    "playVideo": "Lire la vidéo",
+    "empty": "Aucune photo ni vidéo dans cette conversation pour le moment.",
+    "unavailable": "Indisponible"
   },
   "chatSettings": {
     "notifications": "Notifications",

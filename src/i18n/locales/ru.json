@@ -302,7 +302,9 @@
   "chatMedia": {
     "seconds": "{{count}}с",
     "openPhoto": "Открыть фото во весь экран",
-    "playVideo": "Воспроизвести видео"
+    "playVideo": "Воспроизвести видео",
+    "empty": "В этом чате пока нет фотографий и видео.",
+    "unavailable": "Недоступно"
   },
   "chatSettings": {
     "notifications": "Уведомления",

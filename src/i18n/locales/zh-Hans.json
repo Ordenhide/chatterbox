@@ -302,7 +302,9 @@
   "chatMedia": {
     "seconds": "{{count}}秒",
     "openPhoto": "全屏查看照片",
-    "playVideo": "播放视频"
+    "playVideo": "播放视频",
+    "empty": "这个会话里还没有照片或视频。",
+    "unavailable": "无法显示"
   },
   "chat": {
     "isTyping": "{{name}} 正在输入…",
