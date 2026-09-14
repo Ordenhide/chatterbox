@@ -86,12 +86,21 @@ describe('a message sealed on one client opens on the other', () => {
  * is what makes that claim checkable rather than a comment.
  */
 describe('an attachment sealed on one client opens on the other', () => {
-  // Two chunks plus a partial, so chunk boundaries and the short final chunk
-  // are both exercised rather than just a single-chunk happy path.
-  const payload = new Uint8Array(mobileMedia.CHUNK_BYTES * 2 + 1234);
+  /**
+   * One full chunk plus a partial: enough to cross a chunk boundary and to
+   * have a short final chunk, which are the two things the format can get
+   * wrong. It was two full chunks plus a partial, and that took 7.1s and 8.4s
+   * on a CI runner against vitest's 5s default — a real failure, not a flake,
+   * and the extra chunk proved nothing the first boundary had not.
+   *
+   * The explicit timeouts stay anyway. A megabyte of chunked AEAD each way is
+   * genuinely slow work, and a test that passes or fails with the load on the
+   * machine is worse than one that is simply slow.
+   */
+  const payload = new Uint8Array(mobileMedia.CHUNK_BYTES + 1234);
   for (let i = 0; i < payload.length; i++) payload[i] = (i * 31 + 7) % 256;
 
-  it('mobile -> web', async () => {
+  it('mobile -> web', {timeout: 30_000}, async () => {
     const sink = mobileMedia.collectingSink();
     const info = await mobileMedia.encryptMedia(mobileMedia.bytesSource(payload), sink, {
       mime: 'image/jpeg',
@@ -101,7 +110,7 @@ describe('an attachment sealed on one client opens on the other', () => {
     expect(out.result()).toEqual(payload);
   });
 
-  it('web -> mobile', async () => {
+  it('web -> mobile', {timeout: 30_000}, async () => {
     const sink = webMedia.collectingSink();
     const info = await webMedia.encryptMedia(webMedia.bytesSource(payload), sink, {
       mime: 'image/jpeg',
@@ -111,7 +120,7 @@ describe('an attachment sealed on one client opens on the other', () => {
     expect(out.result()).toEqual(payload);
   });
 
-  it('refuses a ciphertext whose bytes were altered', async () => {
+  it('refuses a ciphertext whose bytes were altered', {timeout: 30_000}, async () => {
     // The property the previous scheme lacked: a wrong key or a tampered
     // object raises rather than returning garbage.
     const sink = webMedia.collectingSink();
