@@ -981,13 +981,3 @@ export async function leaveAndClearOwnContent(chatId: string, myUserId: string) 
   }
 }
 
-export async function exportChat(chatId: string) {
-  const chatDoc = await getDoc(doc(chatsRef(), chatId));
-  const messagesSnap = await getDocs(collection(doc(chatsRef(), chatId), 'messages'));
-  return {
-    chat: chatDoc.data(),
-    messages: messagesSnap.docs.map(doc => ({_id: doc.id, ...doc.data()})),
-  };
-}
-
-

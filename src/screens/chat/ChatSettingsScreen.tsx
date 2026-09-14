@@ -15,7 +15,6 @@ import {useTranslation} from 'react-i18next';
 import {useAuth} from '../../contexts/AuthContext';
 import {
   leaveAndClearOwnContent,
-  exportChat,
   toggleMuteChat,
   setChatName,
   getChat,
@@ -29,7 +28,6 @@ import {MAX_GROUP_MEMBERS} from '../../services/e2ee';
 import {contactsFromChats, uidLabel, type Contact} from '../../services/contacts';
 import {openIntroductions} from '../../services/introductions';
 import {getColors} from '../../theme/colors';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache';
 import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
@@ -48,8 +46,6 @@ export default function ChatSettingsScreen() {
   const [muted, setMuted] = useState(false);
   const [nameModalVisible, setNameModalVisible] = useState(false);
   const [customName, setCustomName] = useState('');
-  const [exportModalVisible, setExportModalVisible] = useState(false);
-  const [exportText, setExportText] = useState('');
   const [members, setMembers] = useState<string[]>([]);
   const [memberNames, setMemberNames] = useState<Record<string, string>>({});
   // Who this chat can be grown with. Not a search: the people you already have
@@ -117,20 +113,6 @@ export default function ChatSettingsScreen() {
     } catch (err) {
       if (__DEV__) {
         console.warn('ChatSettingsScreen: failed to save name', err);
-      }
-      Alert.alert(t('common.error'), t('errors.generic'));
-    }
-  };
-
-  const handleExport = async () => {
-    if (!chatId) return;
-    try {
-      const payload = await exportChat(chatId);
-      setExportText(JSON.stringify(payload, null, 2));
-      setExportModalVisible(true);
-    } catch (err) {
-      if (__DEV__) {
-        console.warn('ChatSettingsScreen: failed to export chat', err);
       }
       Alert.alert(t('common.error'), t('errors.generic'));
     }
@@ -334,9 +316,6 @@ export default function ChatSettingsScreen() {
 
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.data')}</Text>
-        <TouchableOpacity style={styles.row} onPress={handleExport}>
-          <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.exportChat')}</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={handlePruneMedia}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.cleanupMedia')}</Text>
         </TouchableOpacity>
@@ -344,35 +323,6 @@ export default function ChatSettingsScreen() {
           <Text style={[styles.rowLabel, {color: colors.danger}]}>{t('chatSettings.leaveAndClear')}</Text>
         </TouchableOpacity>
       </GlassView>
-
-      {exportModalVisible && (
-        <Modal visible animationType="slide">
-          <View style={[styles.modalContainer, {backgroundColor: colors.background}]}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('chatSettings.exportModalTitle')}</Text>
-            <TextInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
-              value={exportText}
-              multiline
-              editable={false}
-            />
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                onPress={() => {
-                  Clipboard.setString(exportText);
-                  Alert.alert(t('chatSettings.alerts.copiedTitle'), t('chatSettings.alerts.copiedBody'));
-                }}>
-                <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{t('chatSettings.copy')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => setExportModalVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('chatSettings.close')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
 
       {nameModalVisible && (
         <Modal visible animationType="slide" onRequestClose={() => setNameModalVisible(false)}>
