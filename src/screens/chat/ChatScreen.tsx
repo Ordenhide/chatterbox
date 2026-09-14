@@ -2063,11 +2063,44 @@ export default function ChatScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  /**
+   * The window GiftedChat renders — and, when a row's *appearance* has
+   * changed, fresh object identities for it.
+   *
+   * The copy is not decorative. GiftedChat's MessageContainer binds its
+   * `renderRow` once in its constructor and hands FlatList that one reference
+   * forever, and a list cell is a React.PureComponent whose props are
+   * `item`, `index`, `renderItem`, `cellKey` and a few callbacks — `extraData`
+   * is not among them (see VirtualizedList's CellRenderer instantiation). So a
+   * new `renderTime` or `renderBubble` prop cannot repaint a row that is
+   * already on screen: nothing a cell can see has changed, and
+   * shouldComponentUpdate says no. Giving it a new `item` is the only lever
+   * there is, and `extraData` would not have worked either.
+   *
+   * That is why "hide timestamps" appeared to do nothing even after
+   * renderTime started returning null for it: the prop was right and the rows
+   * were stale. Keying the copy on `showTimestamps` is what makes the toggle
+   * visible.
+   *
+   * Cheap: this is the 50-message window, a shallow copy each time the toggle
+   * flips, and `keyExtractor` still keys on `_id` so scroll position holds.
+   *
+   * The same staleness applies in principle to everything else renderBubble
+   * reads off screen state rather than off the message — selection, read
+   * receipts, burn countdowns, translations, a theme change. Those are not
+   * keyed here on purpose: `burnCountdowns` alone ticks every second, and
+   * rebuilding every item on every tick would re-render the whole window at
+   * 1Hz. Fixing them properly means carrying the per-row flags on the message
+   * so only the affected rows get a new identity.
+   */
   const filteredMessages = useMemo(() => {
-    if (!searchQuery.trim()) return messages;
-    const query = searchQuery.toLowerCase();
-    return messages.filter(message => (message.text || '').toLowerCase().includes(query));
-  }, [messages, searchQuery]);
+    const base = searchQuery.trim()
+      ? messages.filter(message =>
+          (message.text || '').toLowerCase().includes(searchQuery.toLowerCase()),
+        )
+      : messages;
+    return base.map(message => ({...message, showTime: showTimestamps}));
+  }, [messages, searchQuery, showTimestamps]);
 
   /**
    * The fan-out width of the most recent sealed message, or null when nothing
@@ -4651,8 +4684,12 @@ export default function ChatScreen() {
           if (msgSelectMode) toggleMsgSelect(String(message._id));
         }}
         renderTime={
-          showTimestamps
-            ? (props: any) => {
+          (props: any) => {
+                // Read off the message, not off `showTimestamps` in scope. The
+                // flag is copied onto each item in `filteredMessages`, and that
+                // copy is the only thing a list cell can notice — deciding here
+                // from the closure is what left the toggle inert.
+                if (!props?.currentMessage?.showTime) return null;
                 const {key: _key, ...timeProps} = props || {};
                 // Match the text's horizontal inset (styles.messageText), so
                 // the timestamp lines up with the message above it instead of
@@ -4670,13 +4707,6 @@ export default function ChatScreen() {
                   />
                 );
               }
-            : // Not `undefined`. GiftedChat's Bubble reads this as "no custom
-              // renderer" and falls back to its own <Time /> (Bubble.js:
-              // `if (this.props.renderTime) return ...; return <Time .../>`),
-              // so hiding timestamps by passing undefined left the default
-              // clock on screen and the toggle looked broken. A function that
-              // returns null is the only way to render nothing.
-              () => null
         }
         // GiftedChat's own keyboard handling is a legacy-era hand-roll: it
         // listens for keyboardWillShow and drives the message container's
