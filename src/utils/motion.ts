@@ -281,26 +281,6 @@ export interface Size {
 
 
 
-/**
- * The largest box with `natural`'s aspect ratio that fits inside `bounds` —
- * what `resizeMode="contain"` computes internally, but as a value rather than
- * a rendering behaviour.
- *
- * ExpandingImage needs the number, not the behaviour: it animates a thumbnail
- * to its full-screen size using transforms, so it has to know the destination
- * rect before anything renders there.
- *
- * Degenerate input (an image whose size failed to load) falls back to the full
- * bounds, which is the same box "contain" would settle on for a square-ish
- * image — a slightly wrong aspect for one frame beats no transition.
- */
-export function fitContain(natural: Size, bounds: Size): Size {
-  const {width: nw, height: nh} = natural;
-  const {width: bw, height: bh} = bounds;
-  if (!(nw > 0) || !(nh > 0) || !(bw > 0) || !(bh > 0)) return {width: bw, height: bh};
-  const scale = Math.min(bw / nw, bh / nh);
-  return {width: nw * scale, height: nh * scale};
-}
 
 /**
  * Parallax rates, as a fraction of scroll distance. The backdrop grid tracks

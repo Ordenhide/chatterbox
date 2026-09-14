@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "Заблокировано",
+      "subtitle": "Введите PIN-код, чтобы разблокировать.",
+      "pinPlaceholder": "PIN-код",
+      "unlock": "Разблокировать",
+      "wrong": "Этот PIN-код неверен.",
+      "useBiometrics": "Использовать биометрию",
+      "prompt": "Разблокировать Chatterbox"
+  },
   "common": {
     "continue": "Продолжить",
     "signIn": "Войти",
@@ -191,6 +200,8 @@
     "languageDescription": "Выберите предпочитаемый язык.",
     "buttons": {
       "feedback": "Отправить отзыв",
+      "appLock": "Блокировка приложения",
+      "appLockOff": "Отключить блокировку",
       "signOut": "Выйти",
       
       "deleteAccount": "Удалить аккаунт"
@@ -198,6 +209,17 @@
     "modals": {
       "feedbackTitle": "Отзыв",
       "feedbackPlaceholder": "Расскажите нам, что работает, а что нет..."
+    },
+    "appLock": {
+          "setTitle": "Задать PIN-код",
+          "hint": "Не менее четырёх цифр. Восстановить его нельзя — если забудете, войдите снова по своей фразе восстановления.",
+          "pin": "PIN-код",
+          "confirm": "Повторите PIN-код",
+          "tooShort": "Используйте не менее четырёх цифр.",
+          "mismatch": "Не совпадают.",
+          "biometrics": "Разблокировать биометрией",
+          "removeTitle": "Отключить блокировку?",
+          "removeBody": "Chatterbox будет открываться без PIN-кода."
     },
     "alerts": {
       "copiedTitle": "Скопировано",

@@ -153,9 +153,14 @@ export async function verifyPIN(input: string): Promise<boolean> {
   return verifyAndUpgrade('app_lock_pin', input);
 }
 
-export async function authenticateWithBiometrics(): Promise<boolean> {
+/**
+ * `promptMessage` comes from the caller because the OS renders it verbatim in
+ * a system dialog — it is user-facing copy, and it was hardcoded English here
+ * while every other string in the app is translated into fifteen languages.
+ */
+export async function authenticateWithBiometrics(promptMessage: string): Promise<boolean> {
   try {
-    return await biometrics.simplePrompt('Unlock Chatterbox');
+    return await biometrics.simplePrompt(promptMessage);
   } catch {
     return false;
   }

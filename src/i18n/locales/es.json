@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "Bloqueado",
+      "subtitle": "Introduce tu PIN para desbloquear.",
+      "pinPlaceholder": "PIN",
+      "unlock": "Desbloquear",
+      "wrong": "Ese PIN no es correcto.",
+      "useBiometrics": "Usar biometría",
+      "prompt": "Desbloquear Chatterbox"
+  },
   "common": {
     "continue": "Continuar",
     "signIn": "Iniciar sesión",
@@ -191,6 +200,8 @@
     "languageDescription": "Elige tu idioma preferido.",
     "buttons": {
       "feedback": "Enviar comentarios",
+      "appLock": "Bloqueo de la app",
+      "appLockOff": "Desactivar el bloqueo",
       "signOut": "Cerrar sesión",
       
       "deleteAccount": "Eliminar cuenta"
@@ -198,6 +209,17 @@
     "modals": {
       "feedbackTitle": "Comentarios",
       "feedbackPlaceholder": "Cuéntanos qué funciona y qué no..."
+    },
+    "appLock": {
+          "setTitle": "Establecer un PIN",
+          "hint": "Cuatro dígitos o más. No se puede recuperar: si lo olvidas, vuelve a iniciar sesión con tu frase de recuperación.",
+          "pin": "PIN",
+          "confirm": "Repite el PIN",
+          "tooShort": "Usa al menos cuatro dígitos.",
+          "mismatch": "No coinciden.",
+          "biometrics": "Desbloquear con biometría",
+          "removeTitle": "¿Desactivar el bloqueo?",
+          "removeBody": "Chatterbox se abrirá sin pedir el PIN."
     },
     "alerts": {
       "copiedTitle": "Copiado",

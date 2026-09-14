@@ -27,9 +27,3 @@ function DefaultFallback() {
   );
 }
 
-// Preload function for critical screens
-export function preloadScreen<T extends React.ComponentType<any>>(
-  factory: () => Promise<{ default: T }>
-) {
-  return factory();
-}

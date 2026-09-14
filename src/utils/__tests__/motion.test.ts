@@ -25,7 +25,6 @@ import {
   ENTRANCE_SCALE,
   FANOUT_MAX_GHOSTS,
   fanOutGhosts,
-  fitContain,
   SCRAMBLE_MAX_MS,
   SCRAMBLE_MIN_MS,
   SCRAMBLE_WINDOW,
@@ -46,35 +45,6 @@ import {
   TIMING,
 } from '../motion';
 
-describe('fitContain', () => {
-  const BOUNDS = {width: 400, height: 800};
-
-  it('fits a wide image to the available width, letterboxed vertically', () => {
-    // 2:1 into a 1:2 box — width is the binding constraint.
-    expect(fitContain({width: 1000, height: 500}, BOUNDS)).toEqual({width: 400, height: 200});
-  });
-
-  it('fits a tall image to the available height', () => {
-    // 1:4 into a 1:2 box — height binds this time.
-    expect(fitContain({width: 500, height: 2000}, BOUNDS)).toEqual({width: 200, height: 800});
-  });
-
-  it('preserves aspect ratio in both directions', () => {
-    const {width, height} = fitContain({width: 1600, height: 900}, BOUNDS);
-    expect(width / height).toBeCloseTo(16 / 9);
-  });
-
-  it('scales a small image up rather than leaving it tiny in the middle', () => {
-    expect(fitContain({width: 40, height: 20}, BOUNDS)).toEqual({width: 400, height: 200});
-  });
-
-  // Image.getSize can fail (offline, dead URL); the viewer still has to open.
-  it('falls back to the full bounds when the natural size is unknown', () => {
-    expect(fitContain({width: 0, height: 0}, BOUNDS)).toEqual(BOUNDS);
-    expect(fitContain({width: Number.NaN, height: 100}, BOUNDS)).toEqual(BOUNDS);
-    expect(fitContain({width: -10, height: 100}, BOUNDS)).toEqual(BOUNDS);
-  });
-});
 
 describe('revealWindow', () => {
   const VIEWPORT = 800;

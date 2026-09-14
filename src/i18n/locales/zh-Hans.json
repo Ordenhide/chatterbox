@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "已锁定",
+      "subtitle": "输入 PIN 解锁。",
+      "pinPlaceholder": "PIN",
+      "unlock": "解锁",
+      "wrong": "PIN 不正确。",
+      "useBiometrics": "使用生物识别",
+      "prompt": "解锁 Chatterbox"
+  },
   "common": {
     "continue": "继续",
     "signIn": "登录",
@@ -203,6 +212,8 @@
     "shortcutPrivacy": "隐私政策",
     "buttons": {
       "feedback": "发送反馈",
+      "appLock": "应用锁",
+      "appLockOff": "关闭应用锁",
       "signOut": "退出登录",
       
       "deleteAccount": "删除账号"
@@ -233,6 +244,17 @@
     "modals": {
       "feedbackTitle": "反馈",
       "feedbackPlaceholder": "告诉我们哪些地方好用，哪些需要改进..."
+    },
+    "appLock": {
+          "setTitle": "设置 PIN",
+          "hint": "四位以上。它无法找回——忘记了就用助记词重新登录。",
+          "pin": "PIN",
+          "confirm": "再输一次 PIN",
+          "tooShort": "至少四位。",
+          "mismatch": "两次输入不一致。",
+          "biometrics": "用生物识别解锁",
+          "removeTitle": "关闭应用锁？",
+          "removeBody": "Chatterbox 将不再询问 PIN。"
     },
     "alerts": {
       "copiedTitle": "已复制",

@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppState, DeviceEventEmitter, Linking, PermissionsAndroid, Platform, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import {isAppLockEnabled} from './src/services/appLock';
+import AppLockScreen from './src/screens/AppLockScreen';
 import {NavigationContainer, createNavigationContainerRef} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -27,6 +29,27 @@ import {captureInviteUrl, takePendingInvite} from './src/services/inviteDeepLink
 const navigationRef = createNavigationContainerRef();
 
 function AppContent() {
+  /**
+   * The app lock, which until now the app claimed and did not have.
+   *
+   * Locked on a cold start whenever a PIN is set, and again whenever the app
+   * comes back from the background. Not on `inactive`: the OS biometric dialog
+   * takes the app out of the foreground to draw itself, so relocking on
+   * anything short of a real backgrounding would re-lock the app the instant
+   * a fingerprint unlocked it — the failure that makes biometric locks feel
+   * broken.
+   */
+  const [locked, setLocked] = useState(() => isAppLockEnabled());
+  const appStateRef = useRef(AppState.currentState);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', next => {
+      const cameBackFromBackground = appStateRef.current === 'background' && next === 'active';
+      appStateRef.current = next;
+      if (cameBackFromBackground && isAppLockEnabled()) setLocked(true);
+    });
+    return () => sub.remove();
+  }, []);
+
   const {user, loading} = useAuth();
   const startupTrace = useRef(startTrace('startup'));
   const marked = useRef<Record<string, boolean>>({});
@@ -205,6 +228,11 @@ function AppContent() {
     <View style={styles.appRoot}>
       <LiquidGlassBackground />
       {appTree}
+      {/* Over the tree rather than instead of it: replacing the navigator would
+          unmount every open chat on each lock, and re-entering one means
+          re-decrypting it — which a ratchet envelope does not allow twice.
+          Only when signed in; a lock over the sign-in screen guards nothing. */}
+      {user && locked ? <AppLockScreen onUnlocked={() => setLocked(false)} /> : null}
       {!coldOpenDone && <ColdOpen ready={!loading} onDone={() => setColdOpenDone(true)} />}
     </View>
   );

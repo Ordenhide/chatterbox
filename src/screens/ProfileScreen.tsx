@@ -1,15 +1,16 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  useColorScheme,
-  Modal,
-  TextInput,
   ActivityIndicator,
+  Alert,
+  Modal,
   ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  useColorScheme,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors, monoFont, radius} from '../theme/colors';
@@ -37,6 +38,14 @@ import {
 import {exportUserData} from '../services/dataExport';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
+import {
+  disableAppLock,
+  isAppLockEnabled,
+  isBiometricsAvailable,
+  isBiometricsEnabled,
+  setAppLockPIN,
+  setBiometricsEnabled,
+} from '../services/appLock';
 import {shareTextFile} from '../utils/shareFile';
 import {guardDocSnapshot} from '../services/snapshotGuard';
 import {bodyWeight, fonts} from '../theme/typography';
@@ -52,6 +61,16 @@ export default function ProfileScreen() {
   // Backups are encrypted under a passphrase the user chooses; it is never
   // persisted, so losing it means losing the backup.
   const [exportingData, setExportingData] = useState(false);
+  // The app lock. Four digits minimum is the service's floor, not a UI
+  // preference: scrypt makes each guess cost ~100ms, and below four digits
+  // the keyspace is small enough that the cost stops mattering.
+  const [lockEnabled, setLockEnabled] = useState(() => isAppLockEnabled());
+  const [lockModalVisible, setLockModalVisible] = useState(false);
+  const [lockPin, setLockPin] = useState('');
+  const [lockConfirm, setLockConfirm] = useState('');
+  const [lockError, setLockError] = useState('');
+  const [biometricsOn, setBiometricsOn] = useState(() => isBiometricsEnabled());
+  const [biometricsUsable, setBiometricsUsable] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
   // Per device, so this reflects the phone in your hand.
   const [aiAllowed, setAiAllowed] = useState(false);
@@ -99,6 +118,58 @@ export default function ProfileScreen() {
   const [privacy, setPrivacy] = useState<Record<PrivacyKey, boolean>>(() =>
     Object.fromEntries(PRIVACY_TOGGLES.map(x => [x.key, x.read()])) as Record<PrivacyKey, boolean>,
   );
+
+  useEffect(() => {
+    let active = true;
+    isBiometricsAvailable()
+      .then(available => {
+        if (active) setBiometricsUsable(available);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const saveLockPin = useCallback(async () => {
+    if (lockPin.length < 4) {
+      setLockError(t('profile.appLock.tooShort'));
+      return;
+    }
+    if (lockPin !== lockConfirm) {
+      setLockError(t('profile.appLock.mismatch'));
+      return;
+    }
+    try {
+      await setAppLockPIN(lockPin);
+      setLockEnabled(true);
+      setLockModalVisible(false);
+      setLockPin('');
+      setLockConfirm('');
+      setLockError('');
+    } catch (error) {
+      reportError(error, 'app_lock_set_failed');
+      setLockError(t('errors.generic'));
+    }
+  }, [lockPin, lockConfirm, t]);
+
+  const removeLock = useCallback(() => {
+    Alert.alert(t('profile.appLock.removeTitle'), t('profile.appLock.removeBody'), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('common.delete'),
+        style: 'destructive',
+        onPress: async () => {
+          await disableAppLock();
+          setLockEnabled(false);
+          // Pointless on its own, and misleading left on: the switch would
+          // read "unlock with biometrics" with nothing to unlock.
+          setBiometricsEnabled(false);
+          setBiometricsOn(false);
+        },
+      },
+    ]);
+  }, [t]);
 
   const handlePrivacyToggle = useCallback((key: PrivacyKey) => {
     const toggle = PRIVACY_TOGGLES.find(x => x.key === key);
@@ -485,6 +556,33 @@ export default function ProfileScreen() {
             <Text style={{color: colors.danger, fontSize: 12.5, marginTop: 8}}>{exportDataError}</Text>
           ) : null}
         </GlassView>
+        <TouchableOpacity
+          style={[styles.buttonSecondary, {backgroundColor: lockEnabled ? colors.surface : colors.primary}]}
+          onPress={() => (lockEnabled ? removeLock() : setLockModalVisible(true))}>
+          <Text
+            style={[
+              styles.buttonText,
+              {color: lockEnabled ? colors.text : colors.textOnPrimary},
+            ]}>
+            {lockEnabled ? t('profile.buttons.appLockOff') : t('profile.buttons.appLock')}
+          </Text>
+        </TouchableOpacity>
+        {lockEnabled && biometricsUsable ? (
+          <View style={[styles.privacyRow, {borderTopColor: colors.glassBorder}]}>
+            <View style={styles.privacyRowText}>
+              <Text style={[styles.privacyRowTitle, {color: colors.text}]}>
+                {t('profile.appLock.biometrics')}
+              </Text>
+            </View>
+            <Switch
+              value={biometricsOn}
+              onValueChange={(next: boolean) => {
+                setBiometricsEnabled(next);
+                setBiometricsOn(next);
+              }}
+            />
+          </View>
+        ) : null}
         {feedbackEnabled ? (
           <TouchableOpacity
             style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
@@ -560,6 +658,69 @@ export default function ProfileScreen() {
                 <Text style={[styles.buttonText, {color: colors.text}]}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             )}
+          </SafeAreaView>
+        </Modal>
+      )}
+
+      {lockModalVisible && (
+        <Modal visible animationType="slide" onRequestClose={() => setLockModalVisible(false)}>
+          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
+            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.appLock.setTitle')}</Text>
+            <Text style={{color: colors.textSecondary, fontSize: 13, marginBottom: 16}}>
+              {t('profile.appLock.hint')}
+            </Text>
+            <TextInput
+              style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
+              value={lockPin}
+              onChangeText={text => {
+                setLockError('');
+                setLockPin(text.replace(/\D/g, ''));
+              }}
+              placeholder={t('profile.appLock.pin')}
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="number-pad"
+              secureTextEntry
+              maxLength={12}
+              autoComplete="off"
+              autoCorrect={false}
+              importantForAutofill="no"
+            />
+            <TextInput
+              style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
+              value={lockConfirm}
+              onChangeText={text => {
+                setLockError('');
+                setLockConfirm(text.replace(/\D/g, ''));
+              }}
+              placeholder={t('profile.appLock.confirm')}
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="number-pad"
+              secureTextEntry
+              maxLength={12}
+              autoComplete="off"
+              autoCorrect={false}
+              importantForAutofill="no"
+            />
+            {lockError ? (
+              <Text style={{color: colors.danger, fontSize: 13, marginTop: 4}}>{lockError}</Text>
+            ) : null}
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[styles.modalButton, {backgroundColor: colors.primary}]}
+                onPress={saveLockPin}>
+                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.save')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, {backgroundColor: colors.surface}]}
+                onPress={() => {
+                  setLockModalVisible(false);
+                  setLockPin('');
+                  setLockConfirm('');
+                  setLockError('');
+                }}>
+                <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+            </View>
           </SafeAreaView>
         </Modal>
       )}

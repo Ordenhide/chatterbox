@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "Locked",
+      "subtitle": "Enter your PIN to unlock.",
+      "pinPlaceholder": "PIN",
+      "unlock": "Unlock",
+      "wrong": "That PIN is not right.",
+      "useBiometrics": "Use biometrics",
+      "prompt": "Unlock Chatterbox"
+  },
   "common": {
     "continue": "Continue",
     "signIn": "Sign In",
@@ -265,6 +274,8 @@
     "shortcutRecovery": "Recovery Phrase",
     "buttons": {
       "feedback": "Send Feedback",
+      "appLock": "App lock",
+      "appLockOff": "Turn off app lock",
       "signOut": "Sign Out",
       
       "deleteAccount": "Delete Account"
@@ -295,6 +306,17 @@
     "modals": {
       "feedbackTitle": "Feedback",
       "feedbackPlaceholder": "Tell us what's working and what isn't..."
+    },
+    "appLock": {
+          "setTitle": "Set a PIN",
+          "hint": "Four digits or more. There is no way to recover it — if you forget it, sign in again with your recovery phrase.",
+          "pin": "PIN",
+          "confirm": "Repeat the PIN",
+          "tooShort": "Use at least four digits.",
+          "mismatch": "Those do not match.",
+          "biometrics": "Unlock with biometrics",
+          "removeTitle": "Turn off the app lock?",
+          "removeBody": "Chatterbox will open without asking for a PIN."
     },
     "alerts": {
       "copiedTitle": "Copied",

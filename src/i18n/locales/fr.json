@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "Verrouillé",
+      "subtitle": "Saisissez votre code pour déverrouiller.",
+      "pinPlaceholder": "Code",
+      "unlock": "Déverrouiller",
+      "wrong": "Ce code n'est pas correct.",
+      "useBiometrics": "Utiliser la biométrie",
+      "prompt": "Déverrouiller Chatterbox"
+  },
   "common": {
     "continue": "Continuer",
     "signIn": "Se connecter",
@@ -191,6 +200,8 @@
     "languageDescription": "Choisissez votre langue préférée.",
     "buttons": {
       "feedback": "Envoyer des commentaires",
+      "appLock": "Verrouillage",
+      "appLockOff": "Désactiver le verrouillage",
       "signOut": "Se déconnecter",
       
       "deleteAccount": "Supprimer le compte"
@@ -198,6 +209,17 @@
     "modals": {
       "feedbackTitle": "Commentaires",
       "feedbackPlaceholder": "Dites-nous ce qui fonctionne et ce qui ne fonctionne pas..."
+    },
+    "appLock": {
+          "setTitle": "Définir un code",
+          "hint": "Au moins quatre chiffres. Il est irrécupérable : si vous l’oubliez, reconnectez-vous avec votre phrase de récupération.",
+          "pin": "Code",
+          "confirm": "Répétez le code",
+          "tooShort": "Utilisez au moins quatre chiffres.",
+          "mismatch": "Les deux ne correspondent pas.",
+          "biometrics": "Déverrouiller par biométrie",
+          "removeTitle": "Désactiver le verrouillage ?",
+          "removeBody": "Chatterbox s’ouvrira sans demander de code."
     },
     "alerts": {
       "copiedTitle": "Copié",

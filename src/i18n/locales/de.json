@@ -2,6 +2,15 @@
   "app": {
     "name": "Chatterbox"
   },
+  "appLock": {
+      "title": "Gesperrt",
+      "subtitle": "Gib deine PIN ein, um zu entsperren.",
+      "pinPlaceholder": "PIN",
+      "unlock": "Entsperren",
+      "wrong": "Diese PIN ist nicht richtig.",
+      "useBiometrics": "Biometrie verwenden",
+      "prompt": "Chatterbox entsperren"
+  },
   "common": {
     "continue": "Weiter",
     "signIn": "Anmelden",
@@ -191,6 +200,8 @@
     "languageDescription": "Wählen Sie Ihre bevorzugte Sprache.",
     "buttons": {
       "feedback": "Feedback senden",
+      "appLock": "App-Sperre",
+      "appLockOff": "App-Sperre ausschalten",
       "signOut": "Abmelden",
       
       "deleteAccount": "Konto löschen"
@@ -198,6 +209,17 @@
     "modals": {
       "feedbackTitle": "Feedback",
       "feedbackPlaceholder": "Teilen Sie uns mit, was funktioniert und was nicht..."
+    },
+    "appLock": {
+          "setTitle": "PIN festlegen",
+          "hint": "Mindestens vier Ziffern. Sie kann nicht wiederhergestellt werden — wenn du sie vergisst, melde dich mit deiner Wiederherstellungsphrase neu an.",
+          "pin": "PIN",
+          "confirm": "PIN wiederholen",
+          "tooShort": "Verwende mindestens vier Ziffern.",
+          "mismatch": "Die beiden stimmen nicht überein.",
+          "biometrics": "Mit Biometrie entsperren",
+          "removeTitle": "App-Sperre ausschalten?",
+          "removeBody": "Chatterbox öffnet sich dann ohne PIN."
     },
     "alerts": {
       "copiedTitle": "Kopiert",
