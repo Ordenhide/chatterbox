@@ -8,6 +8,7 @@
  * that this file is identical on both clients — one uses jest and the other
  * vitest, and their mocking APIs are not.
  */
+import {afterEach, beforeEach, describe, expect, it} from 'vitest';
 import {fetchWikipediaSummary} from './wikipediaSummary';
 
 type Reply = {status: number; body?: unknown} | 'network-error';

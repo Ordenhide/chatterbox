@@ -61,6 +61,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The root install too, and not for convenience.
+      #
+      # crossClient.test.ts imports the mobile client's e2ee, mediaCrypto and
+      # messageBody to prove the two implementations still agree — that is the
+      # whole point of it. Those files live outside web/, so TypeScript
+      # resolves *their* imports from their own directory upward, reaching the
+      # repository root's node_modules and not web's. Without this the type
+      # check fails on @noble/*, which is how this job sat red: it passes on a
+      # developer's machine, where the root install happens to be there.
+      - name: Install root dependencies (the mobile sources this type-checks)
+        working-directory: .
+        run: npm ci
+
       # Blocking, unlike the mobile typecheck above: the web client is at zero
       # type errors today, so there is no backlog to grandfather in and no
       # reason to let it regress.

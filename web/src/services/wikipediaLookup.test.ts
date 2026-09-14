@@ -10,6 +10,7 @@
  * for `Le Caf`. Nothing failed; the menu row simply never appeared, which is
  * the kind of bug a test suite has to be asked to look for.
  */
+import {describe, expect, it} from 'vitest';
 import {extractEntities, wikipediaSearchUrl} from './wikipediaLookup';
 
 describe('scripts without ASCII capitals', () => {
