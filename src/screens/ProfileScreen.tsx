@@ -13,12 +13,6 @@ import {
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
 import {getColors, monoFont, radius} from '../theme/colors';
-import {
-  decryptedImportAll,
-  encryptedExportAll,
-  MIN_BACKUP_PASSPHRASE_LENGTH,
-} from '../services/firebaseChat';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {getBooleanFlag} from '../services/featureFlags';
 import {submitFeedback} from '../services/feedback';
 import {reportError} from '../services/errorLog';
@@ -51,19 +45,12 @@ export default function ProfileScreen() {
   const {user, signOut} = useAuth();
   const colors = getColors(useColorScheme());
   const {t} = useTranslation();
-  const [exportText, setExportText] = useState('');
-  const [importText, setImportText] = useState('');
-  const [exportVisible, setExportVisible] = useState(false);
-  const [importVisible, setImportVisible] = useState(false);
   // Change-password / delete-account flows.
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [deleteWord, setDeleteWord] = useState('');
   const [deleting, setDeleting] = useState(false);
   // Backups are encrypted under a passphrase the user chooses; it is never
   // persisted, so losing it means losing the backup.
-  const [exportPassphrase, setExportPassphrase] = useState('');
-  const [importPassphrase, setImportPassphrase] = useState('');
-  const [exporting, setExporting] = useState(false);
   const [exportingData, setExportingData] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
   // Per device, so this reflects the phone in your hand.
@@ -268,37 +255,6 @@ export default function ProfileScreen() {
     ]);
   }, [t]);
 
-  // Opens the modal in "choose a passphrase" state; the backup is only produced
-  // once the user supplies one (see handleGenerateExport).
-  const handleExport = useCallback(() => {
-    setExportText('');
-    setExportPassphrase('');
-    setExportVisible(true);
-  }, []);
-
-  const handleGenerateExport = useCallback(async () => {
-    if (!user?.uid) return;
-    if (exportPassphrase.length < MIN_BACKUP_PASSPHRASE_LENGTH) {
-      Alert.alert(
-        t('common.error'),
-        t('profile.alerts.passphraseTooShort', {min: MIN_BACKUP_PASSPHRASE_LENGTH}),
-      );
-      return;
-    }
-    setExporting(true);
-    try {
-      // scrypt is deliberately slow (~100ms+); yield first so the spinner paints.
-      await new Promise(resolve => setTimeout(resolve, 0));
-      const backup = await encryptedExportAll(user.uid, exportPassphrase);
-      setExportText(backup);
-    } catch (error) {
-      reportError(error, 'export_backup_failed');
-      Alert.alert(t('profile.alerts.exportFailedTitle'), t('profile.alerts.exportFailedBody'));
-    } finally {
-      setExporting(false);
-    }
-  }, [exportPassphrase, t, user?.uid]);
-
   // "Download my data": a human-readable, decrypted copy of the account's
   // Firestore data (profile, conversations, moments, social graph), distinct
   // from Export Backup below, which produces an encrypted, still-ciphertext
@@ -320,33 +276,9 @@ export default function ProfileScreen() {
     }
   }, [t, user?.uid]);
 
-  const openImport = useCallback(() => {
-    setImportVisible(true);
-  }, []);
-
   const openFeedback = useCallback(() => {
     setFeedbackVisible(true);
   }, []);
-
-  const handleCopyExport = useCallback(() => {
-    Clipboard.setString(exportText);
-    Alert.alert(t('profile.alerts.copiedTitle'), t('profile.alerts.copiedBody'));
-  }, [exportText, t]);
-
-  const handleImport = useCallback(async () => {
-    try {
-      await decryptedImportAll(importText.trim(), importPassphrase);
-      setImportText('');
-      setImportPassphrase('');
-      setImportVisible(false);
-      Alert.alert(t('profile.alerts.importSuccessTitle'), t('profile.alerts.importSuccessBody'));
-    } catch (error) {
-      // A wrong passphrase and a tampered payload both land here — Poly1305
-      // rejects rather than returning garbage, so we can say so specifically.
-      reportError(error, 'import_backup_failed');
-      Alert.alert(t('profile.alerts.importFailedTitle'), t('profile.alerts.importFailedBody'));
-    }
-  }, [importText, importPassphrase, t]);
 
   const handleSendFeedback = useCallback(async () => {
     if (!user?.uid) return;
@@ -561,16 +493,6 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity
-          style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
-          onPress={handleExport}>
-          <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.buttons.export')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonSecondary, {backgroundColor: colors.primary}]}
-          onPress={openImport}>
-          <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('profile.buttons.import')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: colors.surface}]}
           onPress={() => navigation.navigate('Chats', {screen: 'PrivacyPolicy'})}>
           <Text style={[styles.buttonText, {color: colors.textOnPrimary}, {color: colors.text}]}>
@@ -641,101 +563,6 @@ export default function ProfileScreen() {
           </SafeAreaView>
         </Modal>
       )}
-
-      {exportVisible && (
-        <Modal visible animationType="slide">
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.modals.exportTitle')}</Text>
-            {exportText ? (
-              <TextInput
-                style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
-                value={exportText}
-                multiline
-                editable={false}
-              />
-            ) : (
-              <>
-                <Text style={[styles.modalHint, {color: colors.textSecondary}]}>
-                  {t('profile.modals.exportPassphraseHint', {min: MIN_BACKUP_PASSPHRASE_LENGTH})}
-                </Text>
-                <TextInput
-                  style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
-                  value={exportPassphrase}
-                  onChangeText={setExportPassphrase}
-                  placeholder={t('profile.modals.passphrasePlaceholder')}
-                  placeholderTextColor={colors.textSecondary}
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </>
-            )}
-            <View style={styles.modalActions}>
-              {exportText ? (
-                <TouchableOpacity
-                  style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                  onPress={handleCopyExport}>
-                  <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.copy')}</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.modalButton, {backgroundColor: colors.primary, opacity: exporting ? 0.6 : 1}]}
-                  disabled={exporting}
-                  onPress={handleGenerateExport}>
-                  <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>
-                    {exporting ? t('profile.modals.working') : t('profile.modals.encryptBackup')}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => setExportVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.close')}</Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      )}
-
-      {importVisible && (
-        <Modal visible animationType="slide">
-          <SafeAreaView style={[styles.modalContainer, {backgroundColor: colors.background}]} edges={['top', 'bottom']}>
-            <Text style={[styles.modalTitle, {color: colors.text}]}>{t('profile.modals.importTitle')}</Text>
-            <TextInput
-              style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
-              value={importText}
-              onChangeText={setImportText}
-              placeholder={t('profile.modals.importPlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              multiline
-            />
-            <TextInput
-              style={[styles.passphraseInput, {color: colors.text, borderColor: colors.glassBorder}]}
-              value={importPassphrase}
-              onChangeText={setImportPassphrase}
-              placeholder={t('profile.modals.passphrasePlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              secureTextEntry
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.primary}]}
-                onPress={handleImport}>
-                <Text style={[styles.buttonText, {color: colors.textOnPrimary}]}>{t('common.import')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, {backgroundColor: colors.surface}]}
-                onPress={() => setImportVisible(false)}>
-                <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      )}
-
-
 
       {languageModalVisible && (
         <Modal visible animationType="slide" onRequestClose={() => setLanguageModalVisible(false)}>

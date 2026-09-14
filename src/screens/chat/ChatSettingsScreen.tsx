@@ -16,7 +16,6 @@ import {useAuth} from '../../contexts/AuthContext';
 import {
   leaveAndClearOwnContent,
   exportChat,
-  importChat,
   toggleMuteChat,
   setChatName,
   getChat,
@@ -39,7 +38,6 @@ import Icon, {type IconName} from '../../components/Icon';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
 import {bodyWeight, terminal} from '../../theme/typography';
 
-
 export default function ChatSettingsScreen() {
   const route = useRoute();
   const navigation = useNavigation<any>();
@@ -51,9 +49,7 @@ export default function ChatSettingsScreen() {
   const [nameModalVisible, setNameModalVisible] = useState(false);
   const [customName, setCustomName] = useState('');
   const [exportModalVisible, setExportModalVisible] = useState(false);
-  const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportText, setExportText] = useState('');
-  const [importText, setImportText] = useState('');
   const [members, setMembers] = useState<string[]>([]);
   const [memberNames, setMemberNames] = useState<Record<string, string>>({});
   // Who this chat can be grown with. Not a search: the people you already have
@@ -140,19 +136,6 @@ export default function ChatSettingsScreen() {
     }
   };
 
-  const handleImport = async () => {
-    if (!chatId) return;
-    try {
-      const payload = JSON.parse(importText);
-      await importChat(chatId, payload);
-      setImportText('');
-      setImportModalVisible(false);
-      Alert.alert(t('chatSettings.alerts.importSuccessTitle'), t('chatSettings.alerts.importSuccessBody'));
-    } catch (err) {
-      Alert.alert(t('chatSettings.alerts.invalidJsonTitle'), t('chatSettings.alerts.invalidJsonBody'));
-    }
-  };
-
   const handlePruneMedia = async () => {
     if (!chatId) return;
     Alert.alert(t('chatSettings.alerts.cleanupTitle'), t('chatSettings.alerts.cleanupBody'), [
@@ -203,9 +186,6 @@ export default function ChatSettingsScreen() {
       ],
     );
   };
-
-
-
 
   const handleAddMember = async (contact: Contact) => {
     if (members.length >= MAX_GROUP_MEMBERS) {
@@ -271,8 +251,6 @@ export default function ChatSettingsScreen() {
         </TouchableOpacity>
       </GlassView>
 
-
-
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>
           {t('members.title', {count: members.length})}
@@ -324,7 +302,6 @@ export default function ChatSettingsScreen() {
         </TouchableOpacity>
       </GlassView>
 
-
       <GlassView style={[styles.section, {borderColor: colors.glassBorder}]}>
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.features')}</Text>
       </GlassView>
@@ -359,9 +336,6 @@ export default function ChatSettingsScreen() {
         <Text style={[styles.sectionTitle, {color: colors.text}]}>{t('chatSettings.data')}</Text>
         <TouchableOpacity style={styles.row} onPress={handleExport}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.exportChat')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => setImportModalVisible(true)}>
-          <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.importChat')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={handlePruneMedia}>
           <Text style={[styles.rowLabel, {color: colors.text}]}>{t('chatSettings.cleanupMedia')}</Text>
@@ -398,34 +372,6 @@ export default function ChatSettingsScreen() {
             </View>
           </View>
         </Modal>
-      )}
-
-      {importModalVisible && (
-        <Modal visible animationType="slide">
-        <View style={[styles.modalContainer, {backgroundColor: colors.background}]}>
-          <Text style={[styles.modalTitle, {color: colors.text}]}>{t('chatSettings.importModalTitle')}</Text>
-          <TextInput
-            style={[styles.modalInput, {color: colors.text, borderColor: colors.glassBorder}]}
-            value={importText}
-            onChangeText={setImportText}
-            placeholder={t('chatSettings.pasteJsonPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            multiline
-          />
-          <View style={styles.modalActions}>
-            <TouchableOpacity
-              style={[styles.modalButton, {backgroundColor: colors.primary}]}
-              onPress={handleImport}>
-              <Text style={[styles.modalButtonText, {color: colors.textOnPrimary}]}>{t('chatSettings.import')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, {backgroundColor: colors.surface}]}
-              onPress={() => setImportModalVisible(false)}>
-              <Text style={[styles.modalButtonText, {color: colors.text}]}>{t('chatSettings.cancel')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
       )}
 
       {nameModalVisible && (

@@ -67,8 +67,6 @@ jest.mock('../privacyGuard', () => ({
   isTypingIndicatorEnabled: jest.fn(() => true),
 }));
 jest.mock('../crypto', () => ({
-  decryptWithPassphrase: jest.fn(),
-  encryptWithPassphrase: jest.fn(),
 }));
 jest.mock('../recipient', () => ({assertRecipientReachable: jest.fn(async () => undefined)}));
 jest.mock('../messageMedia', () => ({
@@ -78,7 +76,7 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUsersByIds, importAll, setTyping, upsertUserProfile} from '../firebaseChat';
+import {deleteMessages, getUsersByIds, setTyping, upsertUserProfile} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
 const CHAT_ID = 'chat1';
@@ -133,7 +131,6 @@ describe('deleteMessages', () => {
     await expect(deleteMessages('chat1', ['m1'], 'uid1')).resolves.toBeUndefined();
   });
 });
-
 
 describe('profiles are read one document at a time', () => {
   const mockedGetDocs = getDocs as jest.MockedFunction<typeof getDocs>;
@@ -313,31 +310,3 @@ describe('upsertUserProfile', () => {
  * ran first, so its refusal aborted the import before the chats and messages a
  * restore actually exists for — it silently restored nothing.
  */
-describe('importAll', () => {
-  const mockedSetDoc = setDoc as jest.MockedFunction<typeof setDoc>;
-
-  beforeEach(() => {
-    mockedSetDoc.mockClear();
-    mockBatchSet.mockClear();
-    mockDocs.reads = [];
-  });
-
-  it('does not write profile documents', async () => {
-    await importAll({
-      users: [{uid: 'alice', email: 'alice@example.com', displayName: 'Alice'} as never],
-    });
-    expect(mockBatchSet).not.toHaveBeenCalled();
-  });
-
-  it('still restores the chats and messages, which is the point of a restore', async () => {
-    await importAll({
-      users: [{uid: 'alice', email: 'alice@example.com'} as never],
-      chats: [{id: 'chat1', participants: ['alice', 'bob']} as never],
-      messages: {chat1: [{_id: 'm1', text: 'hi'} as never]},
-    });
-    // The firestore mock's doc() ignores its parent, so these are the ids
-    // rather than full paths: the chat, then the message inside it.
-    const paths = mockBatchSet.mock.calls.map(call => (call[0] as {path: string}).path);
-    expect(paths).toEqual(['chat1', 'm1']);
-  });
-});
