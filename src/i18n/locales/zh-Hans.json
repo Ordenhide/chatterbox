@@ -407,6 +407,7 @@
     "fileOfflineBody": "发送文件需要联网。",
     "voiceOfflineBody": "发送语音消息需要联网。",
     "mediaLoadFailed": "无法载入所选的媒体",
+    "mediaPickerFailed": "无法打开你的照片。如果访问被拒绝，请在系统设置中允许后重试。",
     "videoTooLargeTitle": "视频太大",
     "videoTooLargeBody": "请选择小于 50MB 的视频。",
     "videoSendFailedTitle": "视频没能发出",

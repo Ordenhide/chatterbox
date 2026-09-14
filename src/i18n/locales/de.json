@@ -527,6 +527,7 @@
     "fileOfflineBody": "Dateianhänge brauchen eine Internetverbindung.",
     "voiceOfflineBody": "Sprachnachrichten brauchen eine Internetverbindung.",
     "mediaLoadFailed": "Ausgewählte Medien lassen sich nicht laden",
+    "mediaPickerFailed": "Deine Fotos konnten nicht geöffnet werden. Falls der Zugriff verweigert wurde, erlaube ihn in den Einstellungen und versuche es erneut.",
     "videoTooLargeTitle": "Video zu groß",
     "videoTooLargeBody": "Bitte wähle ein Video unter 50 MB.",
     "videoSendFailedTitle": "Video nicht gesendet",

@@ -527,6 +527,7 @@
     "fileOfflineBody": "Los archivos adjuntos necesitan conexión a internet.",
     "voiceOfflineBody": "Los mensajes de voz necesitan conexión a internet.",
     "mediaLoadFailed": "No se puede cargar el archivo seleccionado",
+    "mediaPickerFailed": "No se pudieron abrir tus fotos. Si se denegó el acceso, permítelo en Ajustes e inténtalo de nuevo.",
     "videoTooLargeTitle": "Vídeo demasiado grande",
     "videoTooLargeBody": "Elige un vídeo de menos de 50 MB.",
     "videoSendFailedTitle": "No se envió el vídeo",

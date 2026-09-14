@@ -527,6 +527,7 @@
     "fileOfflineBody": "Les pièces jointes nécessitent une connexion internet.",
     "voiceOfflineBody": "Les messages vocaux nécessitent une connexion internet.",
     "mediaLoadFailed": "Impossible de charger le média sélectionné",
+    "mediaPickerFailed": "Impossible d'ouvrir vos photos. Si l'accès a été refusé, autorisez-le dans les Réglages et réessayez.",
     "videoTooLargeTitle": "Vidéo trop volumineuse",
     "videoTooLargeBody": "Choisissez une vidéo de moins de 50 Mo.",
     "videoSendFailedTitle": "Vidéo non envoyée",

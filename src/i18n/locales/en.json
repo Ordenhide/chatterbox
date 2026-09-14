@@ -468,6 +468,7 @@
     "fileOfflineBody": "File attachments require an internet connection.",
     "voiceOfflineBody": "Voice messages require an internet connection.",
     "mediaLoadFailed": "Unable to load selected media",
+    "mediaPickerFailed": "Couldn't open your photos. If access was refused, allow it in Settings and try again.",
     "videoTooLargeTitle": "Video too large",
     "videoTooLargeBody": "Please select a video under 50MB.",
     "videoSendFailedTitle": "Couldn't send video",

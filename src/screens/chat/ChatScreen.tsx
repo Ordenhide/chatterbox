@@ -2772,8 +2772,25 @@ export default function ChatScreen() {
       return;
     }
 
+    // The picker says why it failed, and this used to throw that away: a system
+    // photo picker that resolves to no activity, a refused media permission and
+    // an out-of-memory while encoding all arrived here as the same "unable to
+    // load selected media". That is unactionable for the user and invisible in
+    // a bug report — "the gallery doesn't open" was reported from a real device
+    // with nothing to go on, because nothing recorded which of those it was.
+    if (result.errorCode) {
+      reportError(
+        new Error(`${result.errorCode}: ${result.errorMessage ?? 'no message'}`),
+        `media_picker_${source}_failed`,
+      );
+      Alert.alert(t('common.error'), t('chat.mediaPickerFailed'));
+      return;
+    }
+
     const asset = result.assets?.[0];
     if (!asset?.uri) {
+      // Distinct from the branch above: the picker worked and handed back
+      // something unreadable, rather than never opening.
       Alert.alert(t('common.error'), t('chat.mediaLoadFailed'));
       return;
     }
