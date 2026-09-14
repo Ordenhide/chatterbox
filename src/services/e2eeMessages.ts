@@ -33,6 +33,8 @@ import {
   sealText,
 } from './ratchetMessages';
 import {reportError, reportSealedFailure} from './errorLog';
+import {decodeBody} from './messageBody';
+import {saveBodies} from './messageBodyStore';
 
 /**
  * `protection` is reported so a downgrade is never silent.
@@ -147,12 +149,41 @@ export async function resolveMessageText(
   const sealed = message.encrypted;
   if (!sealed) return message.text ?? '';
 
+  /**
+   * Records the body and hands back its text.
+   *
+   * Both halves are load-bearing, and both were missing.
+   *
+   * Recording, because this function's only caller is the background push
+   * handler and a ratchet envelope opens exactly once. Opening one to build a
+   * notification and then dropping the plaintext destroyed the message: the
+   * key was gone by the time the chat screen tried, nothing had written the
+   * body to the one store that outlives the envelope, and the message was
+   * unreadable for good. That happened to every message that arrived while the
+   * app was in the background, which is most of them. Awaited rather than
+   * fired off, because the process this runs in can be killed the moment the
+   * handler resolves. saveBodies merges and never overwrites, so a body the
+   * chat screen already stored wins, and it reports its own failures.
+   *
+   * Decoding, because what the openers return is the *encoded* body, not the
+   * text — the chat screen calls decodeBody on it and this did not. A message
+   * carrying an attachment therefore produced a notification whose body was
+   * the structured form: a NUL marker, then JSON, then the attachment's
+   * content key in base64. Redacted on the lock screen, and still sitting in
+   * the OS notification history.
+   */
+  const remember = async (raw: string): Promise<string> => {
+    const id = String(message._id ?? '');
+    if (id) await saveBodies(myUserId, chatId, new Map([[id, raw]]));
+    return decodeBody(raw).text;
+  };
+
   // Checked before the static shapes: a ratchet envelope carries its own
   // session state and must never be handed to the static-DH opener, which
   // would fail and report the message as undecryptable.
   if (isRatchetEnvelope(sealed)) {
     const outcome = await openRatchetEnvelope(sealed, myUserId, chatId);
-    return outcome.status === 'ok' ? outcome.text : null;
+    return outcome.status === 'ok' ? await remember(outcome.text) : null;
   }
 
   // The non-enrolling read. getOrCreateDeviceKeypair publishes on first
@@ -173,11 +204,11 @@ export async function resolveMessageText(
 
   try {
     if (isSealedEnvelope(sealed)) {
-      return openEnvelope(sealed, keypair.secretKey, myUserId, chatId);
+      return await remember(openEnvelope(sealed, keypair.secretKey, myUserId, chatId));
     }
     if (isEncryptedPayload(sealed)) {
       // Pre-group message: a single payload rather than an envelope.
-      return decryptMessage(sealed, keypair.secretKey, chatId);
+      return await remember(decryptMessage(sealed, keypair.secretKey, chatId));
     }
     return message.text ?? '';
   } catch (error) {

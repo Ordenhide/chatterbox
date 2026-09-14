@@ -23,6 +23,10 @@ jest.mock('../ratchetMessages', () => ({
   sealText: (...args: unknown[]) => mockSealText(...args),
   openEnvelope: (...args: unknown[]) => mockOpenRatchetEnvelope(...args),
 }));
+const mockSaveBodies = jest.fn();
+jest.mock('../messageBodyStore', () => ({
+  saveBodies: (...a: unknown[]) => mockSaveBodies(...a),
+}));
 const mockReportError = jest.fn();
 const mockReportSealedFailure = jest.fn();
 jest.mock('../errorLog', () => ({
@@ -32,6 +36,8 @@ jest.mock('../errorLog', () => ({
 
 import {encryptMessage, generateKeypair, type Keypair} from '../e2ee';
 import {isMessageEncrypted, resolveMessageText, sealedKeyCount, sendTextMessage} from '../e2eeMessages';
+import {encodeBody, isStructuredBody} from '../messageBody';
+import {MEDIA_CRYPTO_ALG} from '../mediaCrypto';
 import type {Message} from '../../types';
 
 const CHAT = 'chat-1';
@@ -327,5 +333,84 @@ describe('choosing between the ratchet and the static path', () => {
     const message = {_id: 'm1', text: '', createdAt: 0, encrypted: ratchetEnvelope} as unknown as Message;
     expect(isMessageEncrypted(message)).toBe(true);
     expect(sealedKeyCount(message)).toBe(1);
+  });
+});
+
+
+/**
+ * Opening a message has to be durable, and has to hand back text.
+ *
+ * This function's only caller is the background push handler, and a ratchet
+ * envelope opens exactly once. Opening one to build a notification and then
+ * dropping the plaintext destroyed the message: by the time the chat screen
+ * looked, the key was gone and nothing had written the body to the store that
+ * outlives the envelope. Every message that arrived while the app was in the
+ * background — most of them — became permanently unreadable.
+ *
+ * And what the openers return is the encoded body, not the text. A message
+ * carrying an attachment therefore put a NUL marker, JSON, and the
+ * attachment's base64 content key into the notification body, which lands in
+ * the OS notification history.
+ */
+describe('resolveMessageText records what it opened', () => {
+  const RATCHET = {alg: 'chatterbox-ratchet-envelope-v1', from: 'bob', message: {}};
+  const KEY = {
+    alg: MEDIA_CRYPTO_ALG,
+    key: 'a'.repeat(43) + '=',
+    nonceBase: 'b'.repeat(22) + '==',
+    chunkBytes: 1024,
+    chunkCount: 1,
+    plaintextBytes: 512,
+  } as const;
+
+  beforeEach(() => {
+    mockSaveBodies.mockReset().mockResolvedValue(undefined);
+    mockOpenRatchetEnvelope.mockReset();
+  });
+
+  it('persists the body it opened, keyed by message id', async () => {
+    mockOpenRatchetEnvelope.mockResolvedValue({status: 'ok', text: 'hello there'});
+    const text = await resolveMessageText(
+      {_id: 'm1', encrypted: RATCHET} as unknown as Message,
+      ME,
+      CHAT,
+    );
+    expect(text).toBe('hello there');
+    expect(mockSaveBodies).toHaveBeenCalledWith(ME, CHAT, new Map([['m1', 'hello there']]));
+  });
+
+  it('returns the text of a structured body, not the body — and not the media key', async () => {
+    const raw = encodeBody({text: 'look at this', media: {image: KEY}});
+    expect(isStructuredBody(raw)).toBe(true);
+    mockOpenRatchetEnvelope.mockResolvedValue({status: 'ok', text: raw});
+
+    const text = await resolveMessageText(
+      {_id: 'm2', encrypted: RATCHET} as unknown as Message,
+      ME,
+      CHAT,
+    );
+    expect(text).toBe('look at this');
+    // The leak, pinned: none of the envelope's machinery reaches the caller.
+    expect(text).not.toContain('cbx-body-1');
+    expect(text).not.toContain(KEY.key);
+
+    // But the *stored* body keeps the key, which is what makes the attachment
+    // openable later (see messageBodyStore).
+    expect(mockSaveBodies).toHaveBeenCalledWith(ME, CHAT, new Map([['m2', raw]]));
+  });
+
+  it('stores nothing when the envelope did not open', async () => {
+    mockOpenRatchetEnvelope.mockResolvedValue({status: 'failed'});
+    expect(
+      await resolveMessageText({_id: 'm3', encrypted: RATCHET} as unknown as Message, ME, CHAT),
+    ).toBeNull();
+    expect(mockSaveBodies).not.toHaveBeenCalled();
+  });
+
+  it('stores nothing for a message that was never sealed', async () => {
+    expect(
+      await resolveMessageText({_id: 'm4', text: 'in the clear'} as unknown as Message, ME, CHAT),
+    ).toBe('in the clear');
+    expect(mockSaveBodies).not.toHaveBeenCalled();
   });
 });

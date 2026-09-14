@@ -10,6 +10,23 @@
  */
 // e2eeMessages imports the send path, which drags in the Firestore SDK. These
 // two functions are pure and touch none of it.
+// e2eeMessages reaches messageBodyStore now — an opened one-shot envelope has
+// to be recorded somewhere that outlives it — and that pulls in MMKV, which is
+// ESM and outside jest's transform. Same stub every other suite that touches
+// the store uses. This file only imports the module for messageProtection; it
+// never opens anything.
+jest.mock('../storageMMKV', () => ({
+  mmkvStorage: {
+    getString: () => undefined,
+    setString: jest.fn(),
+    getBoolean: () => undefined,
+    setBoolean: jest.fn(),
+    getItem: async () => null,
+    setItem: async () => undefined,
+    removeItem: async () => undefined,
+    getAllKeys: async () => [],
+  },
+}));
 jest.mock('../errorLog', () => ({reportError: jest.fn()}));
 jest.mock('../firebaseChat', () => ({sendMessage: jest.fn()}));
 jest.mock('../e2eeKeys', () => ({
