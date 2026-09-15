@@ -179,50 +179,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             reportError(error, 'startup_profile_sync');
           }
         })();
-        // Publishes this device's existing public key if the account is
-        // advertising none, so peers can encrypt to this user. Fire-and-forget:
-        // messaging still works as plaintext if this hasn't completed yet —
-        // see e2eeMessages.ts, which falls back when a peer key is missing.
-        //
-        // This used to *enrol* — mint a keypair when this device had none —
-        // gated on enrollmentReadiness saying it was safe. It can't any more.
-        // An account's identity is now its recovery phrase, and sign-in adopts
-        // the key derived from that phrase (adoptSeedAsDeviceKey); both start
-        // from the same moment, because Firebase fires this callback as soon
-        // as sign-in resolves. A minted key whose publish happened to land
-        // second would leave the account advertising a public key its own
-        // phrase cannot match — permanently, and silently. No ordering fixes
-        // that, so the minting is gone rather than sequenced.
-        republishKeyIfAccountHasNone(firebaseUser.uid);
-
-        /**
-         * Publishes this device's ratchet bundle, which is what turns forward
-         * secrecy on.
-         *
-         * Everything else about the ratchet has been here for a while — X3DH,
-         * the double ratchet, group sender keys, all of it tested — and none
-         * of it ever ran, because this one call was missing. The publish step
-         * is deliberately separate from generating the identity
-         * (getOrCreateRatchetIdentity says so in its own docstring: generating
-         * is local and cheap, publishing is a claim to peers), and nothing
-         * made the claim. So `users/{uid}/publicKeys/ratchet` never existed,
-         * every peer lookup answered 'unenrolled', and both send paths fell
-         * back to the static long-lived key — for every message, in every
-         * conversation, while the privacy policy said most of them were
-         * forward-secret.
-         *
-         * Fire-and-forget, and it swallows its own failures: a device that
-         * cannot publish simply cannot be reached over the ratchet yet, which
-         * the send path already treats as "no session" and answers with the
-         * static path. It must not block signing in.
-         *
-         * Groups need every member to have published before sealGroupText will
-         * use sender keys — it is all-or-nothing, because a message some
-         * members cannot read is worse than one everybody can. So group
-         * forward secrecy arrives per conversation as members update, rather
-         * than all at once.
-         */
-        ensureRatchetKeysPublished(firebaseUser.uid);
       } else {
         setUser(null);
         clearUserCache();
@@ -372,6 +328,66 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
         return;
       }
+
+      // Both key publishes wait for this point — the session confirmed as this
+      // device's — rather than running from the auth-state callback the moment
+      // a persisted user is restored. From there they ran before anything had
+      // checked that this device still held the account, so a device displaced
+      // by a sign-in elsewhere spent its last few hundred milliseconds trying to
+      // publish keys: denied by the session rule, reported as two errors, and
+      // then signed out (seen on an Android emulator, 2026-09-15).
+      //
+      // The errors were the harmless half. The session rule allows a token up
+      // to 120s older than the latest claim, so a device displaced within two
+      // minutes of its own sign-in is *not* denied, and ensureRatchetKeysPublished
+      // republishes whenever the bundle is not this device's — which, on a
+      // displaced device, means overwriting the bundle of the device that now
+      // owns the account. Only the session owner may claim to be reachable.
+
+      // Publishes this device's existing public key if the account is
+      // advertising none, so peers can encrypt to this user. Fire-and-forget:
+      // messaging still works as plaintext if this hasn't completed yet —
+      // see e2eeMessages.ts, which falls back when a peer key is missing.
+      //
+      // This used to *enrol* — mint a keypair when this device had none —
+      // gated on enrollmentReadiness saying it was safe. It can't any more.
+      // An account's identity is now its recovery phrase, and sign-in adopts
+      // the key derived from that phrase (adoptSeedAsDeviceKey); both start
+      // from the same moment, because Firebase fires the auth-state callback
+      // as soon as sign-in resolves. A minted key whose publish happened to land
+      // second would leave the account advertising a public key its own
+      // phrase cannot match — permanently, and silently. No ordering fixes
+      // that, so the minting is gone rather than sequenced.
+      republishKeyIfAccountHasNone(user.uid);
+
+      /**
+       * Publishes this device's ratchet bundle, which is what turns forward
+       * secrecy on.
+       *
+       * Everything else about the ratchet has been here for a while — X3DH,
+       * the double ratchet, group sender keys, all of it tested — and none
+       * of it ever ran, because this one call was missing. The publish step
+       * is deliberately separate from generating the identity
+       * (getOrCreateRatchetIdentity says so in its own docstring: generating
+       * is local and cheap, publishing is a claim to peers), and nothing
+       * made the claim. So `users/{uid}/publicKeys/ratchet` never existed,
+       * every peer lookup answered 'unenrolled', and both send paths fell
+       * back to the static long-lived key — for every message, in every
+       * conversation, while the privacy policy said most of them were
+       * forward-secret.
+       *
+       * Fire-and-forget, and it swallows its own failures: a device that
+       * cannot publish simply cannot be reached over the ratchet yet, which
+       * the send path already treats as "no session" and answers with the
+       * static path. It must not block signing in.
+       *
+       * Groups need every member to have published before sealGroupText will
+       * use sender keys — it is all-or-nothing, because a message some
+       * members cannot read is worse than one everybody can. So group
+       * forward secrecy arrives per conversation as members update, rather
+       * than all at once.
+       */
+      ensureRatchetKeysPublished(user.uid);
 
       // Set up real-time listener for session changes
       unsub = onSnapshot(
