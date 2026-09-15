@@ -93,6 +93,20 @@ Read the actual message in Xcode's console or the Devices window rather than
 guessing between these — they look alike from the outside and have nothing in
 common.
 
+### Red screen: "No script URL provided"
+
+Metro is not running. A Debug build for the **simulator** carries no JS of its
+own — unlike a device build, it has nothing to fall back to — and Xcode's Run
+button does not start Metro. Run `npm start` in a terminal, then Cmd-R in the
+simulator.
+
+### Crashes at launch on iOS 27 with "UIScene life cycle is required"
+
+Fixed on 2026-09-15 (`SceneDelegate` in `AppDelegate.mm`). If it comes back,
+something removed `UIApplicationSceneManifest` from `Info.plist`. It never
+shows in Xcode's issue navigator; the message is only in the console and in
+the crash report.
+
 ### "Command PhaseScriptExecution failed with a nonzero exit code" (ReactCodegen)
 
 The project path contains **spaces**. React Native's build scripts break on
