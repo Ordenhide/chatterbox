@@ -10,7 +10,7 @@
  * ## Deliberately separate from secureKeyStore
  *
  * That module holds the working copy and pins it to the device on purpose —
- * `WHEN_UNLOCKED_THIS_DEVICE_ONLY`, `cloudSync: false`, and a comment
+ * `WHEN_UNLOCKED_THIS_DEVICE_ONLY`, never synchronizable, and a comment
  * explaining that the point is to stop the key following the account onto
  * hardware the user never enrolled. This module is the scoped exception to
  * exactly that, so it lives in its own file under its own service name rather

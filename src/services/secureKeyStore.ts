@@ -27,10 +27,18 @@
  * a device where the Keychain genuinely misbehaves degrades instead of losing
  * the user's identity.
  */
+import {Platform} from 'react-native';
 import {reportError} from './errorLog';
 
 /** Namespace for the one secret this stores, kept distinct per account. */
 const SERVICE_PREFIX = 'com.chatterbox.e2ee.secretKey';
+
+/**
+ * keyBackup.ts's namespace: the recovery phrase, deliberately synced to iCloud
+ * Keychain. Nothing in this file may write or delete under it — see
+ * clearSyncedStrays, whose whole job is deleting *synced* entries.
+ */
+export const RECOVERY_SERVICE_PREFIX = 'com.chatterbox.e2ee.recovery';
 
 export function secretKeyService(userId: string): string {
   return `${SERVICE_PREFIX}.${userId}`;
@@ -91,18 +99,60 @@ export function isSecureStoreAvailable(): boolean {
  * THIS_DEVICE_ONLY keeps the key out of iCloud Keychain and out of encrypted
  * device backups, so it cannot follow the account onto hardware the user
  * never enrolled; WHEN_UNLOCKED means it is unreadable while the phone is
- * locked, which is the state a seized device is usually in. `cloudSync: false`
- * says the same thing again through the library's own flag rather than
- * relying on the accessibility constant alone.
+ * locked, which is the state a seized device is usually in.
+ *
+ * ## Never pass `cloudSync` here, not even `false`
+ *
+ * react-native-keychain 10.0.0 decides iCloud sync on iOS by whether the
+ * option is *present*, not by its value:
+ *
+ *   if (options && options[@"cloudSync"]) return kCFBooleanTrue;
+ *
+ * `false` crosses the bridge as @NO, a non-nil object, so `cloudSync: false`
+ * means kSecAttrSynchronizable = true. This file used to pass exactly that,
+ * as a second guard against syncing. Measured on an iOS 27 simulator on
+ * 2026-09-15: SecItemAdd carried `sync = 1`, while getSecret — which passes
+ * only `service` — queried `sync = 0` and got errSecItemNotFound (-25300).
+ * setSecretVerified could therefore never succeed on iOS, and every secret
+ * routed through it (the MMKV key, the E2EE identity key, ratchet identity,
+ * pre-key, session and message-body keys) stayed in MMKV, whose own key sits
+ * in an unencrypted file beside it — the extraction this module exists to
+ * prevent.
+ *
+ * Absent, the native side reads nil, meaning "not synchronizable", for both
+ * the write and the read. The accessibility constant above already keeps the
+ * entry off iCloud; the flag was never adding anything but the bug.
  */
 function writeOptions(service: string): Record<string, unknown> {
   const mod = keychain();
   const accessible = mod?.ACCESSIBLE?.WHEN_UNLOCKED_THIS_DEVICE_ONLY;
   return {
     service,
-    cloudSync: false,
     ...(accessible ? {accessible} : null),
   };
+}
+
+/**
+ * Deletes synchronizable entries under `service` left by the `cloudSync: false`
+ * writes described above.
+ *
+ * Safe to delete because nothing ever depended on them: every read here asks
+ * for non-synchronizable entries, so none of these was ever returned, and
+ * setSecretVerified reported each such write as failed, which made its caller
+ * keep its existing copy. iOS only — the Android module ignores `cloudSync`,
+ * so this same call there would delete the real entry.
+ *
+ * `cloudSync: true` is used for what it says: select the synced entries. It is
+ * the one value whose meaning the presence bug does not change.
+ */
+async function clearSyncedStrays(mod: KeychainModule, service: string): Promise<void> {
+  if (Platform.OS !== 'ios') return;
+  try {
+    await mod.resetGenericPassword({service, cloudSync: true});
+  } catch (error) {
+    // Leaves a stray that nothing reads. Not a reason to skip the write.
+    reportError(error, 'secure_store_stray_cleanup_failed');
+  }
 }
 
 /** The stored secret for `service`, or null if absent or unreadable. */
@@ -134,6 +184,14 @@ export async function getSecret(service: string): Promise<string | null> {
 export async function setSecretVerified(service: string, secret: string): Promise<boolean> {
   const mod = keychain();
   if (!mod) return false;
+  // The cleanup below deletes synced entries; the recovery backup is one, on
+  // purpose. Refused outright rather than trusted to the service names staying
+  // different forever.
+  if (service.startsWith(RECOVERY_SERVICE_PREFIX)) {
+    reportError(new Error('refused a recovery-backup service'), 'secure_store_recovery_service_refused');
+    return false;
+  }
+  await clearSyncedStrays(mod, service);
   try {
     await mod.setGenericPassword('e2ee', secret, writeOptions(service));
   } catch (error) {
