@@ -6,19 +6,32 @@ shell.
 
 ## Building without DevEco Studio
 
-DevEco bundles its own toolchain, so no separate install is needed:
+DevEco bundles its own toolchain, so no separate install is needed. One command:
 
 ```sh
-export DEVECO=/Applications/DevEco-Studio.app/Contents
-export PATH="$DEVECO/tools/node/bin:$DEVECO/tools/ohpm/bin:$DEVECO/tools/hvigor/bin:$PATH"
-export DEVECO_SDK_HOME="$DEVECO/sdk"
-
-cd harmony && ohpm install          # resolves the RNOH .har
-cd .. && npx react-native bundle-harmony --dev false
-cd harmony && hvigorw assembleHap
+harmony/build-hap.sh          # DEVECO_APP=/path/to/DevEco-Studio.app to override
 ```
 
 Output: `entry/build/default/outputs/default/entry-default-unsigned.hap`.
+
+It bundles the JS, assembles the HAP, and then checks the thing a green build
+log does not tell you: that the bundle inside the HAP is the one it just built.
+Two hazards make that check worth having, both measured on 2026-09-14:
+
+- hvigor packages whatever sits in `entry/src/main/resources/rawfile` and
+  reports `BUILD SUCCESSFUL` regardless. A month-old bundle left there from a
+  previous session gets shipped silently — this is real, it happened, and the
+  HAP looked perfectly healthy.
+- With `rawfile` empty, hvigor still reports `BUILD SUCCESSFUL` and produces a
+  complete-looking 43MB HAP **containing no JS at all**, which installs and
+  boots to a blank screen. A fresh clone is in exactly that state, since the
+  bundle is a build artifact and gitignored.
+
+One ordering constraint, in case the steps are ever run by hand: Metro runs on
+the *system* node, while hvigor needs DevEco's bundled node (18.20.1). Putting
+DevEco's `tools/node/bin` on `PATH` for the whole session — which an earlier
+version of these instructions did — makes `bundle-harmony` fail inside
+`metro-config`. The script scopes that `PATH` to the hvigor step alone.
 
 Unsigned, as the name says — hvigor warns `Will skip sign 'hos_hap'. No
 signingConfigs profile is configured`. Signing needs a Huawei developer account
@@ -216,6 +229,36 @@ Firebase ones, and the two call sites import from it. The HarmonyOS half
 renders nothing for `RTCView`, rejects `getUserMedia`, and throws from every
 constructor with a message naming the file — a peer connection that silently
 never connects is the quiet-failure shape this codebase keeps finding.
+
+## What is and is not runnable on this machine
+
+Checked on 2026-09-14, because two earlier attempts to answer "can you run it"
+got it wrong in both directions.
+
+**Installed and working**: DevEco Studio at `/Applications/DevEco-Studio.app`,
+its bundled SDK (`Contents/sdk/default/openharmony`: ets, js, native,
+previewer, toolchains), `hdc`, `ohpm` 6.1.2, `hvigor`, a bundled node 18.20.1,
+and the emulator runtime — 194MB of it. None of these are on `PATH`; they are
+inside the app bundle, which is why `command -v ohpm` says nothing and why a
+first look concluded the toolchain was absent. It is not.
+
+**Missing, and the single thing that blocks a run**: any emulator *system
+image*. The emulator runtime is there but has no `.qcow2`, `.img` or `system*`
+anywhere, and `~/Library/Huawei` holds 40K of licence files and nothing else.
+Images download through DevEco's Device Manager behind a Huawei developer
+account login, in the GUI. `hdc list targets` is `[Empty]`, so there is no
+physical device either.
+
+**Also missing**: a signature. The HAP at
+`entry/build/default/outputs/default/entry-default-unsigned.hap` is from
+2026-08-16 and unsigned, and an unsigned HAP cannot be installed even to an
+emulator — the note further up about "Automatically generate signature" is
+that same gap.
+
+So from a terminal the port can be *bundled* and *built*; it cannot be *run*.
+To get a screenshot: open DevEco, sign in, Device Manager → download a Phone
+image, File → Project Structure → Signing Configs → Automatically generate
+signature, then Run.
 
 Verified as far as it can be without a device: bundling for `harmony` drops
 `WebRTCModule` from 14 references to none, while the Android bundle keeps all
