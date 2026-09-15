@@ -81,13 +81,22 @@ jest.mock('../storageMMKV', () => ({
   },
 }));
 
-const mockKeychain = {available: false, writeSucceeds: true, store: new Map<string, string>()};
+const mockKeychain = {
+  available: false,
+  writeSucceeds: true,
+  store: new Map<string, string>(),
+  /** Per-write latency in ms, consumed in order. A real keychain write plus
+   * its read-back takes long enough for another caller to interleave. */
+  writeDelays: [] as number[],
+};
 jest.mock('../secureKeyStore', () => ({
   isSecureStoreAvailable: () => mockKeychain.available,
   getSecret: async (service: string) =>
     mockKeychain.available ? mockKeychain.store.get(service) ?? null : null,
   setSecretVerified: async (service: string, secret: string) => {
     if (!mockKeychain.available || !mockKeychain.writeSucceeds) return false;
+    const delay = mockKeychain.writeDelays.shift();
+    if (delay) await new Promise(resolve => setTimeout(resolve, delay));
     mockKeychain.store.set(service, secret);
     return true;
   },
@@ -127,6 +136,7 @@ beforeEach(() => {
   mockKeychain.store.clear();
   mockKeychain.available = false;
   mockKeychain.writeSucceeds = true;
+  mockKeychain.writeDelays = [];
   mockOutage.read = false;
   mockOutage.write = false;
   mockRace.claimUnderneath = false;
@@ -298,6 +308,89 @@ describe('ensureRatchetKeysPublished', () => {
     await ensureRatchetKeysPublished(ME);
     await ensureRatchetKeysPublished(ME);
     expect(mockDocs.get(`users/${ME}/publicKeys/ratchet`)).toEqual(before);
+  });
+});
+
+/**
+ * Whether a peer starting a conversation against what `userId` has published
+ * gets a handshake `userId` can actually answer, using only what is stored on
+ * the device — the property whose failure shows up as
+ * ratchet_respond_missing_prekey.
+ */
+async function publishedBundleIsAnswerable(userId: string, peer: string): Promise<boolean> {
+  _resetRatchetIdentityCache();
+  const peerIdentity = await getOrCreateRatchetIdentity(peer);
+  const fetched = await fetchPeerPreKeyBundle(peer, userId);
+  const {sharedSecret, initial} = initiateX3DH(peerIdentity, fetched!.bundle);
+
+  _resetRatchetIdentityCache();
+  const mine = await getOrCreateRatchetIdentity(userId);
+  const secrets = await preKeySecretsForResponding(userId, initial.signedPreKeyId);
+  if (!secrets) return false;
+  try {
+    return bytesToBase64(respondX3DH(mine, secrets, initial)) === bytesToBase64(sharedSecret);
+  } catch {
+    return false;
+  }
+}
+
+describe('overlapping callers', () => {
+  // AuthContext runs ensureRatchetKeysPublished from an effect keyed on the
+  // user object, which changes during sign-in (the token refresh after
+  // claiming the session), so on a fresh device two publishes overlap. Each
+  // step inside is read-modify-write against local storage and Firestore, and
+  // keychain writes are slow enough to interleave.
+
+  it('two overlapping publishes on a fresh device leave a bundle this device can answer', async () => {
+    mockKeychain.available = true;
+    mockKeychain.writeDelays = [30, 0, 20, 0];
+    await Promise.all([ensureRatchetKeysPublished(ME), ensureRatchetKeysPublished(ME)]);
+    expect(await publishedBundleIsAnswerable(ME, PEER)).toBe(true);
+  });
+
+  it('creates one identity when asked twice at once', async () => {
+    // A message arriving while the first publish is still running asks for
+    // the identity from the receive path at the same moment.
+    mockKeychain.available = true;
+    mockKeychain.writeDelays = [30, 0];
+    const [a, b] = await Promise.all([getOrCreateRatchetIdentity(ME), getOrCreateRatchetIdentity(ME)]);
+    expect(bytesToBase64(a.publicKey)).toBe(bytesToBase64(b.publicKey));
+    _resetRatchetIdentityCache();
+    const stored = await getOrCreateRatchetIdentity(ME);
+    expect(bytesToBase64(stored.publicKey)).toBe(bytesToBase64(a.publicKey));
+  });
+
+  it('a burn during a top-up loses neither change', async () => {
+    await publishRatchetKeys(ME);
+    const burned = [...(await loadPreKeySecrets(ME))!.oneTimePreKeys.keys()][0];
+    mockKeychain.available = true;
+    mockKeychain.writeDelays = [30, 0];
+
+    await Promise.all([topUpOneTimePreKeys(ME, 10), burnOneTimePreKey(ME, burned)]);
+
+    const after = await loadPreKeySecrets(ME);
+    expect(after!.oneTimePreKeys.has(burned)).toBe(false);
+    expect(after!.oneTimePreKeys.size).toBe(ONE_TIME_PREKEY_BATCH - 1 + 10);
+  });
+
+  it('repairs a published signed prekey this device no longer holds', async () => {
+    // However the two diverged — an overlap on an older build, a restored
+    // backup — the identity still matches, so the ownership check alone sees
+    // nothing wrong while every new conversation fails to open.
+    await publishRatchetKeys(ME);
+    const stale = mockMmkvStore.get(`ratchet_prekey_secrets_v1_${ME}`)!;
+    const staleOneTime = [...(await loadPreKeySecrets(ME))!.oneTimePreKeys.keys()];
+    await publishRatchetKeys(ME);
+    mockMmkvStore.set(`ratchet_prekey_secrets_v1_${ME}`, stale);
+    expect(await publishedBundleIsAnswerable(ME, PEER)).toBe(false);
+
+    await ensureRatchetKeysPublished(ME);
+
+    expect(await publishedBundleIsAnswerable(ME, PEER)).toBe(true);
+    // Repaired by rotating, not republishing: one-time keys still held here
+    // stay answerable.
+    const after = await loadPreKeySecrets(ME);
+    for (const id of staleOneTime) expect(after!.oneTimePreKeys.has(id)).toBe(true);
   });
 });
 

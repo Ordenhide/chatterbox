@@ -119,11 +119,32 @@ async function writeProtected(storageKey: string, service: string, value: string
   await mmkvStorage.setItem(storageKey, value);
 }
 
+// ---- serialization ---------------------------------------------------------
+//
+// Every change to the prekey secrets is read-modify-write across two stores
+// (local secrets, then Firestore), and the callers overlap in practice:
+// AuthContext re-runs ensureRatchetKeysPublished whenever the user object
+// changes, which it does during sign-in, and an incoming handshake burns a
+// one-time prekey whenever it arrives. Unserialized, two publishes on a fresh
+// device could store one batch and publish the other — leaving a signed prekey
+// on the server this device cannot answer, so every conversation started
+// against it failed with ratchet_respond_missing_prekey.
+
+const preKeyQueues = new Map<string, Promise<unknown>>();
+
+function serialized<T>(userId: string, task: () => Promise<T>): Promise<T> {
+  const previous = preKeyQueues.get(userId) ?? Promise.resolve();
+  const run = previous.then(task, task);
+  preKeyQueues.set(userId, run.catch(() => undefined));
+  return run;
+}
+
 // ---- identity --------------------------------------------------------------
 
 type StoredIdentity = {v: 1; secretKey: string; publicKey: string};
 
 let cachedIdentity: {userId: string; identity: IdentityKeypair} | null = null;
+let identityInFlight: {userId: string; promise: Promise<IdentityKeypair>} | null = null;
 
 /**
  * This device's Ed25519 ratchet identity, created on first use.
@@ -135,7 +156,20 @@ let cachedIdentity: {userId: string; identity: IdentityKeypair} | null = null;
  */
 export async function getOrCreateRatchetIdentity(userId: string): Promise<IdentityKeypair> {
   if (cachedIdentity?.userId === userId) return cachedIdentity.identity;
+  // Two first-time callers at once would each generate an identity, and the
+  // one stored last need not be the one that signed what got published.
+  if (identityInFlight?.userId === userId) return identityInFlight.promise;
 
+  const promise = loadOrCreateIdentity(userId);
+  identityInFlight = {userId, promise};
+  try {
+    return await promise;
+  } finally {
+    if (identityInFlight?.promise === promise) identityInFlight = null;
+  }
+}
+
+async function loadOrCreateIdentity(userId: string): Promise<IdentityKeypair> {
   const storageKey = IDENTITY_STORAGE_PREFIX + userId;
   const stored = await readProtected(storageKey, identityService(userId));
   if (stored) {
@@ -272,7 +306,11 @@ export async function preKeySecretsForResponding(
  * burning the key before the resulting session is durably stored would make
  * that first message permanently undecryptable if the app died in between.
  */
-export async function burnOneTimePreKey(userId: string, id: string): Promise<void> {
+export function burnOneTimePreKey(userId: string, id: string): Promise<void> {
+  return serialized(userId, () => burnOneTimePreKeyNow(userId, id));
+}
+
+async function burnOneTimePreKeyNow(userId: string, id: string): Promise<void> {
   const secrets = await loadPreKeySecrets(userId);
   if (!secrets || !secrets.oneTimePreKeys.has(id)) return;
   const next = new Map(secrets.oneTimePreKeys);
@@ -332,7 +370,11 @@ async function publishBundleDoc(
  * — turning the first message of every conversation started against it into an
  * undecryptable one.
  */
-export async function publishRatchetKeys(userId: string): Promise<void> {
+export function publishRatchetKeys(userId: string): Promise<void> {
+  return serialized(userId, () => publishRatchetKeysNow(userId));
+}
+
+async function publishRatchetKeysNow(userId: string): Promise<void> {
   const identity = await getOrCreateRatchetIdentity(userId);
   const {published, secrets} = generatePreKeys(identity, ONE_TIME_PREKEY_BATCH);
 
@@ -355,11 +397,15 @@ export async function publishRatchetKeys(userId: string): Promise<void> {
  * complete X3DH against it, and the responder would have no matching secret —
  * a permanently undecryptable first message, reported as nothing at all.
  */
-export async function topUpOneTimePreKeys(userId: string, count = ONE_TIME_PREKEY_BATCH): Promise<void> {
+export function topUpOneTimePreKeys(userId: string, count = ONE_TIME_PREKEY_BATCH): Promise<void> {
+  return serialized(userId, () => topUpOneTimePreKeysNow(userId, count));
+}
+
+async function topUpOneTimePreKeysNow(userId: string, count: number): Promise<void> {
   const identity = await getOrCreateRatchetIdentity(userId);
   const secrets = await loadPreKeySecrets(userId);
   if (!secrets) {
-    await publishRatchetKeys(userId);
+    await publishRatchetKeysNow(userId);
     return;
   }
 
@@ -378,11 +424,15 @@ export async function topUpOneTimePreKeys(userId: string, count = ONE_TIME_PREKE
  * Replaces the signed prekey, keeping the previous one so a message already in
  * flight against it can still be answered. Exactly one generation is retained.
  */
-export async function rotateSignedPreKey(userId: string): Promise<void> {
+export function rotateSignedPreKey(userId: string): Promise<void> {
+  return serialized(userId, () => rotateSignedPreKeyNow(userId));
+}
+
+async function rotateSignedPreKeyNow(userId: string): Promise<void> {
   const identity = await getOrCreateRatchetIdentity(userId);
   const secrets = await loadPreKeySecrets(userId);
   if (!secrets) {
-    await publishRatchetKeys(userId);
+    await publishRatchetKeysNow(userId);
     return;
   }
 
@@ -429,6 +479,14 @@ export type RatchetKeyStatus = {
    * exists to catch for the static key.
    */
   publishedByThisDevice: boolean;
+  /**
+   * ...and the signed prekey it advertises is one this device holds the
+   * secret for. Identity alone does not establish that: if the two ever
+   * diverge, every conversation a peer starts against the bundle fails to open
+   * (ratchet_respond_missing_prekey) while the identity check sees nothing
+   * wrong.
+   */
+  signedPreKeyAnswerable: boolean;
   unclaimedPreKeys: number;
   signedPreKeyAgeMs: number | null;
 };
@@ -441,14 +499,16 @@ export async function ratchetKeyStatus(userId: string): Promise<RatchetKeyStatus
   const unclaimed = await getDocs(query(preKeysCollection(userId), where('claimed', '==', false)));
   const current = secrets?.signedPreKeys.get(secrets.currentSignedPreKeyId);
 
-  const publishedIdentity = bundleSnap.exists()
-    ? (bundleSnap.data() as {identityKey?: string} | undefined)?.identityKey
+  const published = bundleSnap.exists()
+    ? (bundleSnap.data() as {identityKey?: string; signedPreKeyId?: string} | undefined)
     : undefined;
+  const publishedIdentity = published?.identityKey;
   const mine = await getOrCreateRatchetIdentity(userId);
 
   return {
     published: bundleSnap.exists(),
     publishedByThisDevice: !!publishedIdentity && publishedIdentity === bytesToBase64(mine.publicKey),
+    signedPreKeyAnswerable: !!published?.signedPreKeyId && !!secrets?.signedPreKeys.has(published.signedPreKeyId),
     unclaimedPreKeys: unclaimed.size,
     signedPreKeyAgeMs: current ? Date.now() - current.createdAt : null,
   };
@@ -464,28 +524,7 @@ export async function ratchetKeyStatus(userId: string): Promise<RatchetKeyStatus
  */
 export async function ensureRatchetKeysPublished(userId: string): Promise<void> {
   try {
-    const status = await ratchetKeyStatus(userId);
-    const secrets = await loadPreKeySecrets(userId);
-
-    // Republishing when the bundle is someone else's is not the destructive
-    // case the comment above warns about. Those published prekeys belong to
-    // the other device and this one could never have answered them; taking
-    // the identity back is the only way it becomes reachable again.
-    if (!status.published || !status.publishedByThisDevice || !secrets) {
-      await publishRatchetKeys(userId);
-      return;
-    }
-
-    // Claimed keys are dead weight on both sides; clear them before counting
-    // what still needs topping up.
-    await purgeClaimedPreKeys(userId).catch(() => undefined);
-
-    if (status.unclaimedPreKeys <= ONE_TIME_PREKEY_LOW_WATER) {
-      await topUpOneTimePreKeys(userId, ONE_TIME_PREKEY_BATCH - status.unclaimedPreKeys);
-    }
-    if (status.signedPreKeyAgeMs !== null && status.signedPreKeyAgeMs > SIGNED_PREKEY_MAX_AGE_MS) {
-      await rotateSignedPreKey(userId);
-    }
+    await serialized(userId, () => ensureRatchetKeysPublishedNow(userId));
   } catch (error) {
     // Never fatal. A device that cannot publish simply cannot be reached over
     // the ratchet yet, which the send path treats as "no ratchet session" —
@@ -494,8 +533,44 @@ export async function ensureRatchetKeysPublished(userId: string): Promise<void> 
   }
 }
 
+async function ensureRatchetKeysPublishedNow(userId: string): Promise<void> {
+  const status = await ratchetKeyStatus(userId);
+  const secrets = await loadPreKeySecrets(userId);
+
+  // Republishing when the bundle is someone else's is not the destructive
+  // case the comment above warns about. Those published prekeys belong to
+  // the other device and this one could never have answered them; taking
+  // the identity back is the only way it becomes reachable again.
+  if (!status.published || !status.publishedByThisDevice || !secrets) {
+    await publishRatchetKeysNow(userId);
+    return;
+  }
+
+  // Our identity, but a signed prekey we cannot answer. Rotating rather than
+  // republishing keeps the one-time prekeys still held here answerable.
+  if (!status.signedPreKeyAnswerable) {
+    await rotateSignedPreKeyNow(userId);
+  }
+
+  // Claimed keys are dead weight on both sides; clear them before counting
+  // what still needs topping up.
+  await purgeClaimedPreKeys(userId).catch(() => undefined);
+
+  if (status.unclaimedPreKeys <= ONE_TIME_PREKEY_LOW_WATER) {
+    await topUpOneTimePreKeysNow(userId, ONE_TIME_PREKEY_BATCH - status.unclaimedPreKeys);
+  }
+  if (
+    status.signedPreKeyAnswerable &&
+    status.signedPreKeyAgeMs !== null &&
+    status.signedPreKeyAgeMs > SIGNED_PREKEY_MAX_AGE_MS
+  ) {
+    await rotateSignedPreKeyNow(userId);
+  }
+}
+
 export async function clearRatchetKeys(userId: string): Promise<void> {
   cachedIdentity = null;
+  identityInFlight = null;
   await removeSecret(identityService(userId));
   await removeSecret(preKeyService(userId));
   await mmkvStorage.removeItem(IDENTITY_STORAGE_PREFIX + userId);
@@ -676,4 +751,5 @@ export async function fetchPeerPreKeyBundle(
 
 export function _resetRatchetIdentityCache(): void {
   cachedIdentity = null;
+  identityInFlight = null;
 }
