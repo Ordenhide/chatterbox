@@ -118,6 +118,17 @@ export type RatchetSession = {
   pn: number;
   /** Message keys derived but not yet used, keyed by `${dhBase64}:${n}`. */
   skipped: Map<string, Uint8Array>;
+
+  // Bookkeeping for the messaging layer (services/ratchetMessages.ts), kept
+  // on the session so it is stored atomically with it. Nothing in this file
+  // reads them; encrypt and decrypt carry them through unchanged.
+
+  /** Base64 X3DH ephemeral key of the handshake that created this session. */
+  baseKey?: string;
+  /** Base64 ratchet identity of the peer that handshake was with. */
+  peerIdentity?: string;
+  /** Initiator only: the encoded X3DH half, re-sent until the peer is heard from. */
+  pendingInitial?: string;
 };
 
 // ---- primitives ------------------------------------------------------------
@@ -397,6 +408,9 @@ type SerializedSession = {
   nr: number;
   pn: number;
   skipped: [string, string][];
+  baseKey?: string;
+  peerIdentity?: string;
+  pendingInitial?: string;
 };
 
 export function serializeSession(session: RatchetSession): string {
@@ -414,6 +428,9 @@ export function serializeSession(session: RatchetSession): string {
     nr: session.nr,
     pn: session.pn,
     skipped: [...session.skipped].map(([k, v]) => [k, bytesToBase64(v)]),
+    ...(session.baseKey !== undefined ? {baseKey: session.baseKey} : null),
+    ...(session.peerIdentity !== undefined ? {peerIdentity: session.peerIdentity} : null),
+    ...(session.pendingInitial !== undefined ? {pendingInitial: session.pendingInitial} : null),
   };
   return JSON.stringify(out);
 }
@@ -434,6 +451,9 @@ export function deserializeSession(json: string): RatchetSession {
     nr: raw.nr,
     pn: raw.pn,
     skipped: new Map(raw.skipped.map(([k, v]) => [k, base64ToBytes(v)])),
+    ...(typeof raw.baseKey === 'string' ? {baseKey: raw.baseKey} : null),
+    ...(typeof raw.peerIdentity === 'string' ? {peerIdentity: raw.peerIdentity} : null),
+    ...(typeof raw.pendingInitial === 'string' ? {pendingInitial: raw.pendingInitial} : null),
   };
 }
 

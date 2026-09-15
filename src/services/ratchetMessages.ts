@@ -46,15 +46,20 @@ import {
   fetchPeerPreKeyBundle,
   getOrCreateRatchetIdentity,
   preKeySecretsForResponding,
+  publishedSignedPreKeyId,
   type PeerRatchetStatus,
 } from './ratchetKeys';
+import type {RatchetSession} from './ratchet/doubleRatchet';
 import {withSession} from './ratchetSessionStore';
 import {base64ToBytes, bytesToBase64, utf8ToBytes} from './crypto';
 import {reportError} from './errorLog';
 
 export const RATCHET_ENVELOPE_ALG = 'chatterbox-ratchet-envelope-v1';
 
-/** The X3DH half, present only on the first message of a session. */
+/**
+ * The X3DH half. Carried by every message the initiator sends until it hears
+ * back under the session — see sealText.
+ */
 type SerializedInitial = {
   identityKey: string;
   ephemeralKey: string;
@@ -111,6 +116,29 @@ function decodeInitial(initial: SerializedInitial): InitialMessageKeys {
   };
 }
 
+function pendingInitialOf(session: RatchetSession): SerializedInitial | null {
+  if (!session.pendingInitial) return null;
+  try {
+    return JSON.parse(session.pendingInitial) as SerializedInitial;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Whether a session still waiting to hear back was built against a signed
+ * prekey the peer no longer publishes.
+ *
+ * Then the handshake being re-sent names a key the peer may not hold — rotated
+ * past, repaired, or on a device that has since taken the account over — and
+ * resending it forever would never get through. A lookup that fails answers
+ * false: the session is still usable, and a send must not fail over a check.
+ */
+async function peerHasMovedOn(peerUid: string, pending: SerializedInitial): Promise<boolean> {
+  const current = await publishedSignedPreKeyId(peerUid);
+  return current !== null && current !== pending.signedPreKeyId;
+}
+
 export type SealOutcome =
   | {
       protection: 'ratchet';
@@ -143,13 +171,25 @@ export async function sealText(
   const ad = conversationAd(myUid, peerUid, chatId);
 
   return withSession<SealOutcome>(myUid, chatId, peerUid, async session => {
-    if (session) {
+    // Until the peer is heard from under this session, nothing shows they
+    // hold it: the first message may have been lost, or have arrived where it
+    // could not be answered. So every message re-sends the handshake, and the
+    // peer can build the session from whichever one gets through. Only the
+    // first message used to carry it, and when that one failed every later
+    // message was undecryptable with nothing reporting it.
+    const pending = session ? pendingInitialOf(session) : null;
+    if (session && !(pending && (await peerHasMovedOn(peerUid, pending)))) {
       const sent = ratchetEncrypt(session, text, ad);
       return {
         session: sent.session,
         result: {
           protection: 'ratchet',
-          envelope: {alg: RATCHET_ENVELOPE_ALG, from: myUid, message: sent.message},
+          envelope: {
+            alg: RATCHET_ENVELOPE_ALG,
+            from: myUid,
+            message: sent.message,
+            ...(pending ? {initial: pending} : null),
+          },
         },
       };
     }
@@ -161,7 +201,13 @@ export async function sealText(
 
     const identity = await getOrCreateRatchetIdentity(myUid);
     const {sharedSecret, initial} = initiateX3DH(identity, bundle);
-    const fresh = initSessionAsInitiator(sharedSecret, bundle.signedPreKey);
+    const encodedInitial = encodeInitial(initial);
+    const fresh: RatchetSession = {
+      ...initSessionAsInitiator(sharedSecret, bundle.signedPreKey),
+      baseKey: encodedInitial.ephemeralKey,
+      peerIdentity: bytesToBase64(bundle.identityKey),
+      pendingInitial: JSON.stringify(encodedInitial),
+    };
     const sent = ratchetEncrypt(fresh, text, ad);
 
     return {
@@ -173,11 +219,23 @@ export async function sealText(
           alg: RATCHET_ENVELOPE_ALG,
           from: myUid,
           message: sent.message,
-          initial: encodeInitial(initial),
+          initial: encodedInitial,
         },
       },
     };
   });
+}
+
+/**
+ * A replaced session is surfaced (sessionReset) because a peer reinstalling and
+ * an attacker substituting themselves look the same from here. Two things
+ * together rule both out: the same identity key — the handshake only decrypts
+ * with that identity's secret — and a one-time prekey, which burning makes
+ * unrepeatable, so this is not an old handshake replayed. A restart that
+ * lacks either is still flagged.
+ */
+function isSamePeerStartingOver(replaced: RatchetSession, initial: SerializedInitial): boolean {
+  return replaced.peerIdentity === initial.identityKey && !!initial.oneTimePreKeyId;
 }
 
 export type OpenOutcome =
@@ -212,8 +270,11 @@ export async function openEnvelope(
       if (session) {
         try {
           const got = ratchetDecrypt(session, envelope.message, ad);
+          // Hearing from the peer under this session is the proof it was
+          // waiting for: they hold it, so the handshake stops being re-sent.
+          const heard = {...got.session, pendingInitial: undefined};
           return {
-            session: got.session,
+            session: heard,
             result: {status: 'ok', text: got.plaintext, sessionReset: false},
           };
         } catch (error) {
@@ -230,6 +291,15 @@ export async function openEnvelope(
       // Establishing requires the X3DH half; without it there is nothing to
       // build a session from.
       if (!envelope.initial) return {session: null, result: {status: 'undecryptable'}};
+
+      // The handshake the live session was built from, still attached because
+      // the sender has not heard back. The message failing under that session
+      // makes it corrupt or replayed, not a new session — and without a
+      // one-time prekey to burn, re-deriving from it would succeed and replace
+      // the live session with a rewound copy.
+      if (session?.baseKey === envelope.initial.ephemeralKey) {
+        return {session: null, result: {status: 'undecryptable'}};
+      }
 
       const secrets = await preKeySecretsForResponding(myUid, envelope.initial.signedPreKeyId);
       if (!secrets) {
@@ -251,11 +321,15 @@ export async function openEnvelope(
         const fresh = initSessionAsResponder(shared, secrets.signedPreKey);
         const got = ratchetDecrypt(fresh, envelope.message, ad);
         return {
-          session: got.session,
+          session: {
+            ...got.session,
+            baseKey: envelope.initial.ephemeralKey,
+            peerIdentity: envelope.initial.identityKey,
+          },
           result: {
             status: 'ok',
             text: got.plaintext,
-            sessionReset: session !== null,
+            sessionReset: session !== null && !isSamePeerStartingOver(session, envelope.initial),
             burn: envelope.initial.oneTimePreKeyId,
           },
         };

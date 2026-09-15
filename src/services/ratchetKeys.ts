@@ -628,6 +628,26 @@ export async function fetchPeerRatchetIdentity(
   return {identityKey, status: 'changed'};
 }
 
+/**
+ * The id of the signed prekey `peerUserId` currently publishes, or null when
+ * it cannot be read.
+ *
+ * Deliberately bypasses fetchPeerRatchetIdentity: that one records what it
+ * sees for trust-on-first-use, and a background check must not quietly move
+ * the trusted identity forward before a send that would have flagged it.
+ */
+export async function publishedSignedPreKeyId(peerUserId: string): Promise<string | null> {
+  try {
+    const snap = await getDoc(
+      doc(collection(doc(collection(db, 'users'), peerUserId), 'publicKeys'), RATCHET_KEY_DOC),
+    );
+    const id = snap.exists() ? (snap.data()?.signedPreKeyId as string | undefined) : undefined;
+    return id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export class PreKeyBundleUnavailableError extends Error {
   readonly code = 'prekey-bundle-unavailable';
   constructor(message = 'could not retrieve the peer prekey bundle') {

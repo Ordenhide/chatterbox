@@ -101,7 +101,7 @@ jest.mock('../secureKeyStore', () => ({
 jest.mock('../errorLog', () => ({reportError: () => undefined}));
 
 import {openEnvelope, sealText, isRatchetEnvelope, type RatchetEnvelope} from '../ratchetMessages';
-import {publishRatchetKeys} from '../ratchetKeys';
+import {publishRatchetKeys, rotateSignedPreKey} from '../ratchetKeys';
 import {_resetRatchetIdentityCache} from '../ratchetKeys';
 import {_resetSessionKeyCache} from '../ratchetSessionStore';
 
@@ -143,6 +143,33 @@ async function aliceSends(text: string): Promise<RatchetEnvelope> {
 
 async function bobOpens(envelope: RatchetEnvelope) {
   return on('B', () => openEnvelope(envelope, BOB, CHAT));
+}
+
+async function bobReplies(text: string): Promise<RatchetEnvelope> {
+  return on('B', async () => {
+    const outcome = await sealText(BOB, CHAT, ALICE, text);
+    if (outcome.protection !== 'ratchet') throw new Error(`expected ratchet, got ${outcome.protection}`);
+    return outcome.envelope;
+  });
+}
+
+async function aliceOpens(envelope: RatchetEnvelope) {
+  return on('A', () => openEnvelope(envelope, ALICE, CHAT));
+}
+
+/** Leaves Bob with no one-time prekeys to hand out, as a drained batch would. */
+function drainBobsOneTimePreKeys() {
+  for (const path of [...mockDocs.keys()].filter(p => p.startsWith(`users/${BOB}/oneTimePreKeys/`))) {
+    mockDocs.delete(path);
+  }
+}
+
+/** Two rotations: the signed prekey Alice's first message named is gone from Bob's device. */
+async function bobLosesTheSignedPreKey() {
+  await on('B', async () => {
+    await rotateSignedPreKey(BOB);
+    await rotateSignedPreKey(BOB);
+  });
 }
 
 /** Narrows an outcome to the success case, failing the test if it is not. */
@@ -213,13 +240,21 @@ describe('an ongoing conversation', () => {
     expect(back).toEqual({status: 'ok', text: 'from bob', sessionReset: false});
   });
 
-  it('only sends the X3DH half on the very first message', async () => {
+  it('keeps attaching the X3DH half until the peer replies, then stops', async () => {
+    // Bob opening a message tells Alice nothing; only hearing from him under
+    // the session proves he holds it.
     await bobPublishes();
     const first = await aliceSends('one');
     await bobOpens(first);
     const second = await aliceSends('two');
-    expect(second.initial).toBeUndefined();
-    expect(expectOk(await bobOpens(second)).text).toBe('two');
+    expect(second.initial).toEqual(first.initial);
+    expect(expectOk(await bobOpens(second))).toEqual({status: 'ok', text: 'two', sessionReset: false});
+
+    expect(expectOk(await aliceOpens(await bobReplies('back'))).text).toBe('back');
+
+    const third = await aliceSends('three');
+    expect(third.initial).toBeUndefined();
+    expect(expectOk(await bobOpens(third)).text).toBe('three');
   });
 
   it('gives every message a different ciphertext', async () => {
@@ -246,6 +281,110 @@ describe('an ongoing conversation', () => {
 
     expect(expectOk(await bobOpens(m2)).text).toBe('m2');
     expect(expectOk(await bobOpens(m1)).text).toBe('m1');
+  });
+});
+
+describe('a first message that did not establish a session', () => {
+  // Before, only the first message carried the handshake. If it was lost, or
+  // arrived where it could not be answered, the sender went on using a session
+  // the recipient never had, and every later message was undecryptable
+  // without a single error being reported.
+
+  it('is recovered by the next message when the first never arrived', async () => {
+    await bobPublishes();
+    const lost = await aliceSends('lost in transit');
+    const next = await aliceSends('second');
+    expect(expectOk(await bobOpens(next))).toEqual({status: 'ok', text: 'second', sessionReset: false});
+    // ...and the first still opens if it turns up late.
+    expect(expectOk(await bobOpens(lost)).text).toBe('lost in transit');
+  });
+
+  it('is recovered when the recipient no longer holds the prekey it named', async () => {
+    // ratchet_respond_missing_prekey: the bundle Alice used is one Bob's device
+    // cannot answer. Resending the same handshake cannot help, so the sender
+    // notices the bundle has moved on and starts again against the current one.
+    await bobPublishes();
+    const first = await aliceSends('hello');
+    await bobLosesTheSignedPreKey();
+    expect((await bobOpens(first)).status).toBe('undecryptable');
+
+    const retry = await aliceSends('hello again');
+    expect(retry.initial!.signedPreKeyId).not.toBe(first.initial!.signedPreKeyId);
+    expect(expectOk(await bobOpens(retry))).toEqual({status: 'ok', text: 'hello again', sessionReset: false});
+
+    expect(expectOk(await aliceOpens(await bobReplies('got it'))).text).toBe('got it');
+    expect(expectOk(await bobOpens(await aliceSends('good'))).text).toBe('good');
+  });
+
+  it('does not start over while the bundle it was built on is still current', async () => {
+    // Each fresh handshake claims one of the peer's one-time prekeys.
+    await bobPublishes();
+    const first = await aliceSends('one');
+    const unclaimed = () =>
+      [...mockDocs.entries()].filter(
+        ([p, d]) => p.startsWith(`users/${BOB}/oneTimePreKeys/`) && d.claimed === false,
+      ).length;
+    const before = unclaimed();
+    const second = await aliceSends('two');
+    const third = await aliceSends('three');
+    expect(second.initial!.ephemeralKey).toBe(first.initial!.ephemeralKey);
+    expect(third.initial!.ephemeralKey).toBe(first.initial!.ephemeralKey);
+    expect(unclaimed()).toBe(before);
+  });
+
+  it('keeps sending when checking the bundle fails', async () => {
+    // The session works; an unreachable server is not a reason to fail a send.
+    await bobPublishes();
+    await aliceSends('one');
+    mockOutage.read = true;
+    const second = await aliceSends('two');
+    mockOutage.read = false;
+    expect(expectOk(await bobOpens(second)).text).toBe('two');
+  });
+
+  it('does not flag a reset when the same peer starts over with a fresh one-time prekey', async () => {
+    // Bob opened Alice's first message but never replied, then rotated past it;
+    // Alice's next message starts over. Same identity, and the burned one-time
+    // prekey proves the handshake is not a replay, so there is nothing for the
+    // user to verify.
+    await bobPublishes();
+    expect((await bobOpens(await aliceSends('one'))).status).toBe('ok');
+    await bobLosesTheSignedPreKey();
+    const restarted = await aliceSends('two');
+    expect(expectOk(await bobOpens(restarted))).toEqual({status: 'ok', text: 'two', sessionReset: false});
+  });
+
+  it('still flags a reset when the restart carries no one-time prekey', async () => {
+    // Without one, nothing distinguishes a genuine restart from a replay of an
+    // old handshake, so the user is told.
+    await bobPublishes();
+    expect((await bobOpens(await aliceSends('one'))).status).toBe('ok');
+    await bobLosesTheSignedPreKey();
+    drainBobsOneTimePreKeys();
+    const restarted = await aliceSends('two');
+    expect(restarted.initial!.oneTimePreKeyId).toBeUndefined();
+    expect(expectOk(await bobOpens(restarted)).sessionReset).toBe(true);
+  });
+});
+
+describe('replaying a message that carries the handshake', () => {
+  it('opens nothing and costs nothing, even without a one-time prekey', async () => {
+    // Every message sent before the reply now carries the handshake, so any
+    // of them could be replayed. With no one-time prekey to burn, re-deriving
+    // from it would succeed — and replace the live session with a rewound
+    // copy, reopening the message and breaking the conversation.
+    await bobPublishes();
+    drainBobsOneTimePreKeys();
+    const first = await aliceSends('one');
+    const second = await aliceSends('two');
+    expect(first.initial!.oneTimePreKeyId).toBeUndefined();
+    expect((await bobOpens(first)).status).toBe('ok');
+    expect((await bobOpens(second)).status).toBe('ok');
+
+    expect((await bobOpens(first)).status).toBe('undecryptable');
+    expect((await bobOpens(second)).status).toBe('undecryptable');
+
+    expect(expectOk(await bobOpens(await aliceSends('three'))).text).toBe('three');
   });
 });
 

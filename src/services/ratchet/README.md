@@ -35,7 +35,7 @@ Design notes live in each file's header comment rather than here.
 | Forward secrecy | Yes | Yes, along the chain |
 | Post-compromise security | Yes, after one round trip | **No** — only rotation repairs a compromise |
 | Authorship | Implicit (pairwise) | Per-sender Ed25519 signature |
-| Replay of first message | Blocked by one-time prekey | n/a |
+| Replay of a handshake-carrying message | Blocked by one-time prekey, and by the session's base key when there is none | n/a |
 
 The group gap is real and must not be glossed in any user-facing claim: an
 attacker holding a sender's chain key can derive every *future* key in that
