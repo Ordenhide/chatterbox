@@ -1,213 +1,148 @@
-# Installing Chatterbox on Your iPhone
+# Installing Chatterbox on your iPhone
 
-This guide will walk you through installing the app on your physical iPhone device.
+For running the app on a physical device from this checkout. React Native
+0.84.1; the native iOS project is committed, so there is nothing to generate.
 
 ## Prerequisites
 
-1. **macOS** (required for iOS development)
-2. **Xcode** (free from Mac App Store)
-3. **Apple Developer Account** (free account works for personal use)
-4. **iPhone** connected via USB cable
-5. **Node.js** installed (v18+)
+- macOS with Xcode installed
+- An Apple ID added to Xcode (Settings > Accounts). A free one works; see
+  **Free Apple ID** at the bottom for what it costs you.
+- An iPhone on iOS 15.1 or newer (`IPHONEOS_DEPLOYMENT_TARGET = 15.1`)
+- Node 18+ and CocoaPods
 
-## Step 1: Install Dependencies
-
-First, make sure all npm packages are installed:
+## 1. Dependencies
 
 ```bash
 npm install
+cd ios && pod install && cd ..
 ```
 
-## Step 2: Initialize React Native Project (if needed)
+## 2. Enable Developer Mode on the iPhone
 
-If you don't have the iOS native project yet, you need to create it:
+**iOS 16 and newer require this, and without it a build that succeeds will
+refuse to launch** — the most common way to get "it builds but I can't run it".
+
+On the phone: Settings > Privacy & Security > Developer Mode > on, then
+restart. The toggle only appears after the phone has been connected to Xcode
+at least once.
+
+## 3. Open the workspace
 
 ```bash
-npx react-native init Chatterbox --version 0.73.0
+open ios/Chatterbox.xcworkspace
 ```
 
-Then copy your `src/` folder and configuration files into the new project.
+The workspace, never `Chatterbox.xcodeproj` — CocoaPods lives in the workspace.
 
-## Step 3: Install iOS Dependencies
+## 4. Signing
 
-Navigate to the iOS folder and install CocoaPods dependencies:
+Select the **Chatterbox** target > Signing & Capabilities:
+
+- **Automatically manage signing** on
+- **Team**: your Apple ID's team
+
+Leave the **Bundle Identifier** as `com.chatterbox`. It is not arbitrary:
+`ios/Chatterbox/GoogleService-Info.plist` is issued for that exact id, and
+`[FIRApp configure]` runs at startup in `AppDelegate.mm`. Change the id and
+Firebase is configured against a bundle id it was not issued for. If you must
+change it, add an iOS app with the new id in the Firebase console and replace
+the plist with the one it gives you.
+
+Push notifications additionally need the Push Notifications capability and a
+paid account; see `ios/README-push.md`. The app runs without it — only push
+stops working.
+
+## 5. Trust the certificate on the phone (first install only)
+
+Settings > General > VPN & Device Management > your developer certificate >
+Trust.
+
+## 6. Start Metro, then run
 
 ```bash
-cd ios
-pod install
-cd ..
-```
-
-**Note:** If you don't have CocoaPods installed:
-```bash
-sudo gem install cocoapods
-```
-
-## Step 4: Open Project in Xcode
-
-Open the workspace (not the project file):
-
-```bash
-open ios/chatterbox.xcworkspace
-```
-
-**Important:** Always use `.xcworkspace`, not `.xcodeproj` when CocoaPods are involved.
-
-## Step 5: Configure Signing & Capabilities
-
-1. In Xcode, select the **chatterbox** project in the left sidebar
-2. Select the **chatterbox** target
-3. Go to the **Signing & Capabilities** tab
-4. Check **"Automatically manage signing"**
-5. Select your **Team** (your Apple ID)
-   - If you don't see your team, click "Add Account..." and sign in with your Apple ID
-   - A free Apple ID works for personal development
-
-## Step 6: Set Bundle Identifier
-
-1. Still in **Signing & Capabilities**
-2. Change the **Bundle Identifier** to something unique, like:
-   - `com.yourname.chatterbox`
-   - Or `com.chatterbox.yourname`
-   - This must be unique and not used by any other app
-
-## Step 7: Select Your iPhone
-
-1. At the top of Xcode, next to the play button, click the device selector
-2. Select your connected iPhone from the list
-   - Make sure your iPhone is unlocked
-   - You may need to "Trust This Computer" on your iPhone when first connected
-
-## Step 8: Trust Developer Certificate (First Time Only)
-
-When you first install on your iPhone:
-
-1. On your iPhone, go to **Settings** > **General** > **VPN & Device Management** (or **Profiles & Device Management**)
-2. Tap on your developer certificate
-3. Tap **"Trust [Your Name]"**
-4. Confirm by tapping **"Trust"**
-
-## Step 9: Build and Run
-
-### Option A: From Xcode
-1. Click the **Play** button (▶️) in Xcode
-2. Wait for the build to complete
-3. The app will install and launch on your iPhone
-
-### Option B: From Terminal
-```bash
+npm start          # leave running
 npm run ios -- --device
 ```
 
-Or specify your device:
-```bash
-npx react-native run-ios --device "Your iPhone Name"
-```
+Or press Play in Xcode with the phone selected.
 
-## Step 10: Start Metro Bundler
+Start Metro *before* running, not after. A Debug build finds Metro through
+`ip.txt`, a file the build writes into the app containing this Mac's LAN
+address, so the phone and the Mac must be on the same Wi-Fi network. (That
+file was suppressed in this project until 2026-09-15 — a Debug build on a
+device could not discover Metro at all, and fast refresh never worked there.)
 
-In a separate terminal window, start the Metro bundler:
-
-```bash
-npm start
-```
-
-Keep this running while developing.
+If Metro is unreachable the app still runs: a Debug build for a device also
+embeds `main.jsbundle`, and React Native falls back to it. Measured — the app
+starts and works. What you lose is fast refresh, and the JS is frozen as of
+build time, which is its own way to waste an hour.
 
 ## Troubleshooting
 
+### It builds, then will not launch
+
+In rough order of likelihood:
+
+- Developer Mode is off on the phone (step 2)
+- The developer certificate is not trusted yet (step 5)
+- With a free Apple ID, the 7-day signature has expired — rebuild
+- The phone is locked; unlock it and run again
+
+Read the actual message in Xcode's console or the Devices window rather than
+guessing between these — they look alike from the outside and have nothing in
+common.
+
 ### "Command PhaseScriptExecution failed with a nonzero exit code" (ReactCodegen)
 
-**Cause:** Your project path contains **spaces** (e.g. `文稿 - Xiaohan的MacBook Pro - 1`). React Native's build scripts break when paths have spaces.
-
-**Fix:** Move the project to a path **without spaces**:
+The project path contains **spaces**. React Native's build scripts break on
+them. Move the checkout somewhere without spaces:
 
 ```bash
-# Move project to ~/Projects/chatterbox (no spaces)
-mkdir -p ~/Projects
-mv "/Users/xiaohanliu/Documents/文稿 - Xiaohan的MacBook Pro - 1/chatterbox" ~/Projects/chatterbox
+mkdir -p ~/Projects && mv "/path/with spaces/chatterbox" ~/Projects/chatterbox
 cd ~/Projects/chatterbox
-
-# Clean and rebuild
 rm -rf ios/build ios/Pods node_modules/.cache
-npm install
-cd ios && pod install && cd ..
-
-# Build from the new location
-npx react-native run-ios --simulator="iPhone 17"
+npm install && cd ios && pod install && cd ..
 ```
-
-Then open the project from `~/Projects/chatterbox` in Cursor/Xcode instead of the path with spaces.
 
 ### "No devices found"
-- Make sure your iPhone is connected via USB
-- Unlock your iPhone
-- Trust the computer if prompted
-- Try unplugging and replugging the USB cable
 
-### "Signing for chatterbox requires a development team"
-- Make sure you've selected a Team in Signing & Capabilities
-- Sign in with your Apple ID in Xcode Preferences > Accounts
+Connected by USB, phone unlocked, computer trusted on the phone. Then
+`xcrun devicectl list devices` to confirm the Mac sees it at all.
 
-### "Failed to build"
-- Make sure CocoaPods are installed: `cd ios && pod install`
-- Clean build folder: In Xcode, Product > Clean Build Folder (Shift+Cmd+K)
-- Try deleting `ios/build` folder and rebuilding
+### "Signing for Chatterbox requires a development team"
 
-### "Unable to install app"
-- Check that your Bundle Identifier is unique
-- Make sure you've trusted the developer certificate on your iPhone
-- Try restarting both Xcode and your iPhone
+No Team selected in Signing & Capabilities, or no Apple ID in Xcode >
+Settings > Accounts.
 
-### Metro bundler connection issues
-- Make sure your iPhone and Mac are on the same Wi-Fi network
-- Shake your iPhone to open the developer menu
-- Tap "Configure Bundler" and enter your Mac's IP address
-- Or use: `npm start -- --host [YOUR_MAC_IP]`
-
-### App crashes on launch
-- Check Metro bundler is running
-- Check the Xcode console for error messages
-- Try rebuilding: `cd ios && pod install && cd ..` then rebuild
-
-## Alternative: Using TestFlight (For Distribution)
-
-If you want to install on multiple devices or share with others:
-
-1. Enroll in Apple Developer Program ($99/year) - required for TestFlight
-2. Archive the app in Xcode: Product > Archive
-3. Upload to App Store Connect
-4. Add testers in TestFlight
-5. Install TestFlight app on iPhone
-6. Install your app via TestFlight
-
-## Quick Reference Commands
+### Build failures after changing branches
 
 ```bash
-# Install dependencies
-npm install
-
-# Install iOS pods
-cd ios && pod install && cd ..
-
-# Run on connected iPhone
-npm run ios -- --device
-
-# Start Metro bundler
-npm start
-
-# Clean and rebuild
-cd ios
-rm -rf build
-pod deintegrate
-pod install
-cd ..
+cd ios && pod install && cd ..     # first, and usually enough
+# Xcode: Product > Clean Build Folder (Shift-Cmd-K)
 ```
 
-## Notes
+### Metro connection issues
 
-- **Free Apple ID:** Works for 7 days, then you need to re-sign the app
-- **Paid Developer Account:** Apps stay signed for 1 year
-- **Development builds:** Only work on devices registered in your Apple Developer account
-- **App expiration:** Free account apps expire after 7 days and need to be reinstalled
+Same Wi-Fi network, and check `ip.txt` inside the built `.app` if you suspect
+the address is wrong. To override it: shake the phone > Configure Bundler, or
+`npm start -- --host <mac-ip>`.
 
+## Free Apple ID
+
+- The signature lasts 7 days, then the app refuses to open until you rebuild
+- Only devices registered to your account
+- No push notifications (needs a paid account and the capability)
+
+A paid account signs for a year and is what TestFlight needs: Product >
+Archive, upload to App Store Connect, add testers.
+
+## Quick reference
+
+```bash
+npm install
+cd ios && pod install && cd ..
+npm start                      # Metro, leave running
+npm run ios -- --device        # or Play in Xcode
+npx react-native run-ios --simulator="iPhone 17"
+```

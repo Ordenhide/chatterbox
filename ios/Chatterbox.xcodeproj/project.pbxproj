@@ -337,7 +337,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\nexport SKIP_BUNDLING_METRO_IP=1\nIP_ADDRESS=$(ipconfig getifaddr en0 || true)\nif [ -z \"$IP_ADDRESS\" ]; then\n  IP_ADDRESS=$(ipconfig getifaddr en1 || true)\nfi\nif [ -z \"$IP_ADDRESS\" ]; then\n  IP_ADDRESS=\"127.0.0.1\"\nfi\nexport IP_ADDRESS\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
 		0961D63A0CF582B582371119 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
