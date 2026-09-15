@@ -260,6 +260,25 @@ To get a screenshot: open DevEco, sign in, Device Manager → download a Phone
 image, File → Project Structure → Signing Configs → Automatically generate
 signature, then Run.
 
+**Checked again on 2026-09-16, with a real developer account signed in: the
+Phone image is not obtainable at all from this account.** Device Manager's
+category list only offers 穿戴设备 (wearable — 智能表/儿童表); there is no
+Phone entry to download an image for, "全部" included. That gate sits above
+individual real-name verification, which itself requires identity documents
+this account's holder — outside mainland China — cannot supply. A physical
+HarmonyOS NEXT device would sidestep the emulator entirely, but the hardware
+is currently sold only within mainland China, including the SMS verification
+step at checkout.
+
+**Net effect: this port cannot be interactively verified from here, at all,
+for reasons that have nothing to do with the code.** Everything gated on
+"open it and look" — first launch, sign-in, the appLock cold-start window
+flagged above, WebRTC's absence actually degrading rather than crashing — is
+unverified and stays that way until either a mainland account or a physical
+device becomes available. This is a standing gap, not a to-do to burn more
+time on: don't re-attempt the emulator route without one of those two things
+changing.
+
 Verified as far as it can be without a device: bundling for `harmony` drops
 `WebRTCModule` from 14 references to none, while the Android bundle keeps all
 14. The gap is now a gap rather than a crash; calling itself is still out of
