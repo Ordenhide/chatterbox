@@ -282,60 +282,6 @@ exports.claimSession = callable().onCall(async (data, context) => {
   }
 });
 
-/**
- * Heartbeat function to keep session alive
- * Sessions expire after 5 minutes of inactivity
- */
-exports.sessionHeartbeat = callable().onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
-  }
-  // Mobile heartbeats every 60s (see AuthContext.tsx; web doesn't call this
-  // function at all yet), so 10/min is generous headroom over normal use.
-  // The 30s no-write check below already avoids redundant *writes*, but
-  // still pays for a Firestore read on every call — this bounds the call
-  // rate itself.
-  await checkRateLimit(context.auth.uid, 'sessionHeartbeat', {maxCalls: 10, windowMs: 60000});
-
-  const uid = context.auth.uid;
-  const sessionId = data && typeof data.sessionId === 'string' ? data.sessionId.trim() : '';
-  if (!sessionId) {
-    throw new functions.https.HttpsError('invalid-argument', 'Missing sessionId.');
-  }
-  if (sessionId.length > 256) {
-    throw new functions.https.HttpsError('invalid-argument', 'sessionId too long.');
-  }
-
-  try {
-    const userDoc = await admin.firestore().doc(`users/${uid}`).get();
-    const userData = userDoc.data();
-
-    // Verify session is still active
-    if (userData?.activeSessionId !== sessionId) {
-      throw new functions.https.HttpsError('permission-denied', 'Session mismatch');
-    }
-
-    // Rate limit: min 30s between heartbeats to prevent spam
-    const lastHeartbeat = userData?.sessionHeartbeatAt?.toMillis?.();
-    if (lastHeartbeat && Date.now() - lastHeartbeat < 30000) {
-      return {ok: true}; // Already recent, no need to update
-    }
-
-    // Update heartbeat timestamp
-    await admin.firestore().doc(`users/${uid}`).set({
-      sessionHeartbeatAt: FieldValue.serverTimestamp(),
-    }, {merge: true});
-    
-    return {ok: true};
-  } catch (error) {
-    if (error instanceof functions.https.HttpsError) {
-      throw error;
-    }
-    functions.logger.error(`Heartbeat failed for user ${uid}`, error);
-    throw new functions.https.HttpsError('internal', 'Heartbeat failed');
-  }
-});
-
 // Helper: verify caller is a chat participant
 async function verifyChatParticipant(chatId, uid) {
   const chatSnap = await db.doc(`chats/${chatId}`).get();

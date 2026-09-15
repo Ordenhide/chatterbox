@@ -109,7 +109,7 @@ const CLAIM_FUNCTION_TIMEOUT_MS = 8000;
 /**
  * Set once the Cloud Function has proven unreachable in this page session, so
  * later claims skip straight to the direct write instead of each paying the
- * timeout again. Mirrors the mobile heartbeat's `heartbeatUnavailable` flag.
+ * timeout again.
  */
 let claimFunctionUnavailable = false;
 

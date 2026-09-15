@@ -33,9 +33,8 @@ const TOKEN_CHECK_INTERVAL_MS = 30_000;
 const TOKEN_REFRESH_WINDOW_MS = 5 * 60 * 1000;
 const SESSION_CLAIM_WAIT_MS = 15_000;
 const SESSION_ALERT_COOLDOWN_MS = 4_000;
-// The SDK default is 70s. claimSession/sessionHeartbeat both have a fallback
-// for when the function is unreachable (see claimNewSession and the
-// heartbeat's catch block below), but that fallback only helps if the call
+// The SDK default is 70s. claimSession has a fallback for when the function
+// is unreachable (see claimNewSession), but that fallback only helps if the call
 // actually *fails* in a reasonable time — a hung call still blocks sign-in
 // for up to 70s otherwise. This project's Cloud Functions currently run
 // against a closed billing account (2nd-gen functions need active billing to
@@ -88,7 +87,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const sessionIdRef = useRef<string | null>(null);
   const claimInProgressRef = useRef(false);
   const appStateRef = useRef(AppState.currentState);
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastTokenCheckAtRef = useRef(0);
   const lastSessionAlertAtRef = useRef(0);
 
@@ -230,10 +228,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         clearUserCache();
         claimInProgressRef.current = false;
         setSessionReady(true);
-        if (heartbeatIntervalRef.current) {
-          clearInterval(heartbeatIntervalRef.current);
-          heartbeatIntervalRef.current = null;
-        }
       }
       setLoading(false);
     });
@@ -249,7 +243,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     if (!user) return;
     let unsub: (() => void) | null = null;
     let active = true;
-    let heartbeatUnavailable = false;
     const sessionRef = doc(db, 'users', user.uid);
     setSessionReady(false);
 
@@ -398,26 +391,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         },
       );
 
-      // Start heartbeat to keep session alive
-      if (heartbeatIntervalRef.current) {
-        clearInterval(heartbeatIntervalRef.current);
-      }
-      heartbeatIntervalRef.current = setInterval(async () => {
-        if (!active || !user || appStateRef.current !== 'active' || heartbeatUnavailable) return;
-        try {
-          const heartbeatSessionId = await resolveSessionId();
-          const heartbeatFn = httpsCallable(functions, 'sessionHeartbeat', {timeout: CLAIM_FUNCTION_TIMEOUT_MS});
-          await heartbeatFn({sessionId: heartbeatSessionId});
-        } catch (error) {
-          const code = (error as any)?.code;
-          // If function is not deployed, stop retrying every minute.
-          if (code === 'functions/not-found' || code === 'functions/unimplemented') {
-            heartbeatUnavailable = true;
-          }
-          reportError(error, 'session_heartbeat');
-        }
-      }, 60000); // Every 60 seconds
-
       if (active) {
         setSessionReady(true);
       }
@@ -450,10 +423,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       active = false;
       if (unsub) unsub();
       appStateSub.remove();
-      if (heartbeatIntervalRef.current) {
-        clearInterval(heartbeatIntervalRef.current);
-        heartbeatIntervalRef.current = null;
-      }
     };
   }, [user, auth, db, functions]);
 
