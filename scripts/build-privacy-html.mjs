@@ -93,6 +93,14 @@ const CHROME = {
   ko:        {title: '개인정보처리방침 — Chatterbox',        heading: '개인정보처리방침',       updated: '최종 업데이트',      back: 'Chatterbox로 돌아가기',   features: '기능',        download: '다운로드'},
   ar:        {title: 'سياسة الخصوصية — Chatterbox',        heading: 'سياسة الخصوصية',        updated: 'آخر تحديث',          back: 'العودة إلى Chatterbox',   features: 'المزايا',     download: 'تنزيل'},
   hi:        {title: 'गोपनीयता नीति — Chatterbox',          heading: 'गोपनीयता नीति',          updated: 'आख़िरी अपडेट',        back: 'Chatterbox पर वापस',      features: 'सुविधाएँ',     download: 'डाउनलोड'},
+  fa:        {title: 'سیاست حریم خصوصی — Chatterbox',       heading: 'سیاست حریم خصوصی',       updated: 'آخرین به‌روزرسانی',   back: 'بازگشت به Chatterbox',    features: 'ویژگی‌ها',    download: 'دریافت'},
+  he:        {title: 'מדיניות הפרטיות — Chatterbox',        heading: 'מדיניות הפרטיות',        updated: 'עודכן לאחרונה',       back: 'חזרה ל-Chatterbox',       features: 'תכונות',      download: 'הורדה'},
+  ur:        {title: 'پرائیویسی پالیسی — Chatterbox',       heading: 'پرائیویسی پالیسی',       updated: 'آخری بار اپ ڈیٹ کیا گیا', back: 'Chatterbox پر واپس',  features: 'خصوصیات',    download: 'ڈاؤن لوڈ'},
+  pl:        {title: 'Polityka prywatności — Chatterbox',   heading: 'Polityka prywatności',   updated: 'Ostatnia aktualizacja', back: 'Powrót do Chatterbox', features: 'Funkcje',    download: 'Pobierz'},
+  uk:        {title: 'Політика конфіденційності — Chatterbox', heading: 'Політика конфіденційності', updated: 'Востаннє оновлено', back: 'Повернутися до Chatterbox', features: 'Функції', download: 'Завантажити'},
+  id:        {title: 'Kebijakan Privasi — Chatterbox',      heading: 'Kebijakan Privasi',      updated: 'Terakhir diperbarui', back: 'Kembali ke Chatterbox',  features: 'Fitur',       download: 'Unduh'},
+  bn:        {title: 'গোপনীয়তা নীতি — Chatterbox',          heading: 'গোপনীয়তা নীতি',          updated: 'সর্বশেষ আপডেট',       back: 'Chatterbox-এ ফিরে যান',   features: 'ফিচার',      download: 'ডাউনলোড'},
+  th:        {title: 'นโยบายความเป็นส่วนตัว — Chatterbox',   heading: 'นโยบายความเป็นส่วนตัว',   updated: 'อัปเดตล่าสุด',        back: 'กลับไปที่ Chatterbox',    features: 'ฟีเจอร์',     download: 'ดาวน์โหลด'},
 };
 
 /** `privacy.html` for English, `privacy.<code>.html` for the rest. */

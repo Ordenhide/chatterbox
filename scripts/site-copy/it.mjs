@@ -21,7 +21,7 @@ export default {
     lead: `Chatterbox è una messaggistica cifrata end-to-end senza elenco utenti. Nessuno può cercarti, perché non esiste alcun indice da cercare: l'unica via per entrare in una conversazione è un link che consegni tu stesso a qualcuno.`,
     primary: `Scarica Chatterbox`,
     secondary: `Leggi l'informativa sulla privacy`,
-    badges: [`Nessun elenco utenti`, `Solo su invito`, `15 lingue`, `Gratis`],
+    badges: [`Nessun elenco utenti`, `Solo su invito`, `23 lingue`, `Gratis`],
   },
 
   different: {
@@ -72,7 +72,7 @@ export default {
       {
         title: `L'informativa dice ciò che non può fare`,
         body: [
-          `Dichiara che la cifratura non è mai stata verificata da terzi indipendenti, che Google vede i metadati di ogni connessione perché ne affittiamo i server, e che una chiave sostituita prima del tuo primo messaggio sembrerebbe del tutto normale. È lo stesso testo nell'app e su questo sito, in quindici lingue — non un originale inglese con una traduzione più morbida.`,
+          `Dichiara che la cifratura non è mai stata verificata da terzi indipendenti, che Google vede i metadati di ogni connessione perché ne affittiamo i server, e che una chiave sostituita prima del tuo primo messaggio sembrerebbe del tutto normale. È lo stesso testo nell'app e su questo sito, in 23 lingue — non un originale inglese con una traduzione più morbida.`,
         ],
         note: `{policyShort} prima di decidere se fidarti di qualcosa di quanto sopra.`,
       },
@@ -105,8 +105,8 @@ export default {
         body: `La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo. Puoi annotarla come frase di recupero; noi non la conserviamo e non possiamo recuperarla per te.`,
       },
       {
-        title: `Quindici lingue`,
-        body: `Inglese, cinese in entrambe le scritture, giapponese, coreano, spagnolo, francese, tedesco, italiano, portoghese, russo, turco, vietnamita, arabo e hindi — scrittura da destra a sinistra compresa.`,
+        title: `23 lingue`,
+        body: `Inglese, cinese in entrambe le scritture, giapponese, coreano, spagnolo, francese, tedesco, italiano, portoghese, russo, turco, vietnamita, arabo, hindi, persiano, ebraico, urdu, polacco, ucraino, indonesiano, bengalese e thailandese — scrittura da destra a sinistra compresa.`,
       },
     ],
   },

@@ -30,7 +30,7 @@ export default {
     lead: `Chatterbox is an end-to-end encrypted messenger with no user directory. Nobody can search for you, because there is no index to search — the only way into a conversation is a link you hand someone yourself.`,
     primary: 'Get Chatterbox',
     secondary: 'Read the privacy policy',
-    badges: ['No user directory', 'Invite-only', '15 languages', 'Free'],
+    badges: ['No user directory', 'Invite-only', '23 languages', 'Free'],
   },
 
   different: {
@@ -81,7 +81,7 @@ export default {
       {
         title: 'The privacy policy says what it cannot do',
         body: [
-          `It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that a key substituted before your first message would look entirely normal. It is the same text in the app and on this site, in fifteen languages — not an English original with a softer translation.`,
+          `It states that the encryption has never been independently audited, that Google can see the metadata of every connection because we rent their servers, and that a key substituted before your first message would look entirely normal. It is the same text in the app and on this site, in 23 languages — not an English original with a softer translation.`,
         ],
         note: `{policyShort} before you decide to trust any of the above.`,
       },
@@ -114,8 +114,8 @@ export default {
         body: `The private key that decrypts your messages never leaves your device. You can write it down as a recovery phrase; we do not hold it and cannot recover it for you.`,
       },
       {
-        title: 'Fifteen languages',
-        body: `English, both Chinese scripts, Japanese, Korean, Spanish, French, German, Italian, Portuguese, Russian, Turkish, Vietnamese, Arabic and Hindi — right-to-left included.`,
+        title: '23 languages',
+        body: `English, both Chinese scripts, Japanese, Korean, Spanish, French, German, Italian, Portuguese, Russian, Turkish, Vietnamese, Arabic, Hindi, Persian, Hebrew, Urdu, Polish, Ukrainian, Indonesian, Bengali and Thai — right-to-left included.`,
       },
     ],
   },

@@ -21,7 +21,7 @@ export default {
     lead: `Chatterbox là ứng dụng nhắn tin mã hoá đầu cuối, không có danh bạ người dùng. Không ai tìm được bạn, bởi vì chẳng có danh mục nào để tìm — cách duy nhất bước vào một cuộc trò chuyện là một liên kết do chính bạn đưa cho người khác.`,
     primary: `Tải Chatterbox`,
     secondary: `Đọc chính sách quyền riêng tư`,
-    badges: [`Không có danh bạ`, `Chỉ qua lời mời`, `15 ngôn ngữ`, `Miễn phí`],
+    badges: [`Không có danh bạ`, `Chỉ qua lời mời`, `23 ngôn ngữ`, `Miễn phí`],
   },
 
   different: {
@@ -72,7 +72,7 @@ export default {
       {
         title: `Chính sách quyền riêng tư nói rõ những gì nó không làm được`,
         body: [
-          `Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng một khoá bị tráo trước tin nhắn đầu tiên của bạn sẽ trông hoàn toàn bình thường. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng mười lăm ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.`,
+          `Nó ghi rằng phần mã hoá chưa bao giờ được kiểm định độc lập, rằng Google thấy siêu dữ liệu của mọi kết nối vì chúng tôi thuê máy chủ của họ, và rằng một khoá bị tráo trước tin nhắn đầu tiên của bạn sẽ trông hoàn toàn bình thường. Đó là cùng một văn bản trong ứng dụng và trên trang này, bằng 23 ngôn ngữ — không phải một bản gốc tiếng Anh kèm một bản dịch nhẹ giọng hơn.`,
         ],
         note: `{policyShort} trước khi bạn quyết định có tin điều nào ở trên hay không.`,
       },
@@ -105,8 +105,8 @@ export default {
         body: `Khoá riêng giải mã tin nhắn của bạn không bao giờ rời khỏi máy bạn. Bạn có thể chép nó ra thành cụm từ khôi phục; chúng tôi không giữ nó và không thể lấy lại giúp bạn.`,
       },
       {
-        title: `Mười lăm ngôn ngữ`,
-        body: `Tiếng Anh, tiếng Trung ở cả hai lối viết, tiếng Nhật, Hàn, Tây Ban Nha, Pháp, Đức, Ý, Bồ Đào Nha, Nga, Thổ Nhĩ Kỳ, Việt, Ả Rập và Hindi — bao gồm cả lối viết từ phải sang trái.`,
+        title: `23 ngôn ngữ`,
+        body: `Tiếng Anh, tiếng Trung ở cả hai lối viết, tiếng Nhật, Hàn, Tây Ban Nha, Pháp, Đức, Ý, Bồ Đào Nha, Nga, Thổ Nhĩ Kỳ, Việt, Ả Rập, Hindi, Ba Tư, Do Thái, Urdu, Ba Lan, Ukraina, Indonesia, Bengal và Thái — bao gồm cả lối viết từ phải sang trái.`,
       },
     ],
   },

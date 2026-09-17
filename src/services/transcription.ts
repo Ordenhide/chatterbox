@@ -27,6 +27,14 @@ const SPEECH_LANGUAGE_CODES: Record<LanguageCode, string> = {
   it: 'it-IT',
   tr: 'tr-TR',
   vi: 'vi-VN',
+  fa: 'fa-IR',
+  he: 'iw-IL', // Speech-to-Text still uses the old ISO code for Hebrew.
+  ur: 'ur-PK',
+  pl: 'pl-PL',
+  uk: 'uk-UA',
+  id: 'id-ID',
+  bn: 'bn-IN',
+  th: 'th-TH',
 };
 
 /** Maps the app's current UI language to a Speech-to-Text language code, falling back to English. */

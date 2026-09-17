@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="id" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kebijakan Privasi — Chatterbox</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="privacy" />
+  <link rel="alternate" hreflang="zh-Hans" href="privacy.zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="privacy.zh-Hant" />
+  <link rel="alternate" hreflang="es" href="privacy.es" />
+  <link rel="alternate" hreflang="fr" href="privacy.fr" />
+  <link rel="alternate" hreflang="de" href="privacy.de" />
+  <link rel="alternate" hreflang="it" href="privacy.it" />
+  <link rel="alternate" hreflang="pt" href="privacy.pt" />
+  <link rel="alternate" hreflang="ru" href="privacy.ru" />
+  <link rel="alternate" hreflang="tr" href="privacy.tr" />
+  <link rel="alternate" hreflang="vi" href="privacy.vi" />
+  <link rel="alternate" hreflang="ja" href="privacy.ja" />
+  <link rel="alternate" hreflang="ko" href="privacy.ko" />
+  <link rel="alternate" hreflang="ar" href="privacy.ar" />
+  <link rel="alternate" hreflang="hi" href="privacy.hi" />
+  <link rel="alternate" hreflang="fa" href="privacy.fa" />
+  <link rel="alternate" hreflang="he" href="privacy.he" />
+  <link rel="alternate" hreflang="ur" href="privacy.ur" />
+  <link rel="alternate" hreflang="pl" href="privacy.pl" />
+  <link rel="alternate" hreflang="uk" href="privacy.uk" />
+  <link rel="alternate" hreflang="id" href="privacy.id" />
+  <link rel="alternate" hreflang="bn" href="privacy.bn" />
+  <link rel="alternate" hreflang="th" href="privacy.th" />
+  <link rel="alternate" hreflang="x-default" href="privacy" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.id" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.id#features">Fitur</a>
+        <a href="index.id#download" class="nav-cta">Unduh</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.id">← Kembali ke Chatterbox</a>
+    <h1>Kebijakan Privasi</h1>
+    <p class="meta">Terakhir diperbarui: 2026-09-07</p>
+
+    <section>
+      <h2>0. Singkatnya</h2>
+      <p>Teks pesan Anda dienkripsi di perangkat Anda dan hanya dapat dibaca oleh orang yang Anda kirimi. Kami tidak dapat membacanya, begitu pula Google, yang servernya kami sewa.</p>
+      <p>Yang dapat kami lihat adalah bahwa sebuah percakapan terjadi: akun mana saja yang terlibat, dan kapan mereka aktif. Menghilangkan ini lebih sulit daripada mengenkripsi isinya, dan kami belum menyelesaikannya. Kebijakan ini menyatakan dengan tepat di mana batasnya saat ini.</p>
+    </section>
+
+    <section>
+      <h2>1. Apa yang dienkripsi ujung ke ujung</h2>
+      <p>Dienkripsi di perangkat Anda, tidak dapat dibaca oleh kami dan Google:</p>
+      <ul><li>Teks pesan Anda.</li><li>Isi file, foto, audio, dan video yang Anda lampirkan.</li><li>Pratinjau tautan.</li><li>Panggilan suara dan video, yang menggunakan DTLS-SRTP wajib dari WebRTC antara kedua perangkat.</li></ul>
+      <p>Sebagian besar pesan satu-satu dan grup juga menggunakan ratchet, artinya setiap pesan memiliki kuncinya sendiri, sehingga kompromi pada perangkat Anda tidak mengungkap pesan-pesan sebelumnya. Percakapan di mana klien seseorang belum menerbitkan materi kunci yang lebih baru kembali ke satu kunci yang berumur panjang, yang tidak memiliki sifat itu. Label di bawah pesan memberi tahu Anda mana yang sebenarnya diterima.</p>
+      <p>Hanya satu hal yang melintasi batas ini, dan hanya ketika Anda memintanya: mencari nama di Wikipedia hanya mengirimkan nama tersebut, bukan pesan asalnya. Bagian 6 menjelaskan siapa yang menerimanya, dan pencarian hanya berjalan saat diketuk dan tidak dengan cara lain, jadi tidak ada yang perlu dimatikan. Meringkas, menerjemahkan, dan mentranskrip juga akan melintasi batas ini — fitur-fitur itu dimatikan pada rilis ini, dan tidak ada kontrol di mana pun dalam aplikasi yang menyalakannya.</p>
+    </section>
+
+    <section>
+      <h2>2. Apa yang tidak dienkripsi, dan apa yang dapat kami lihat</h2>
+      <p>Enkripsi melindungi isi, bukan fakta bahwa percakapan itu terjadi. Berikut ini tersimpan secara terbuka di server kami:</p>
+      <ul><li>Siapa saja yang ada di setiap percakapan, dan kapan itu dibuat serta terakhir aktif.</li><li>Stempel waktu setiap pesan, dan berapa banyak yang belum Anda baca.</li><li>Nama file, jenis, dan ukuran lampiran. Bytenya dienkripsi; deskripsinya tidak, dan panjang teks sandi juga membatasi panjang aslinya.</li><li>Teman dan permintaan pertemanan Anda.</li><li>Sinyal panggilan — bahwa panggilan telah dilakukan, kepada siapa, dan kapan. Bukan audio atau videonya.</li></ul>
+      <p>Indikator mengetik dan tanda terima baca nonaktif kecuali Anda mengaktifkannya, dan selama nonaktif tidak ada yang dicatat.</p>
+      <p>Yang sudah tidak ada lagi di sini: alamat email dan nama Anda. Sejak September 2026, catatan akun hanya menyimpan pengenal akun — dan sejak itu tidak ada lagi alamat untuk disimpan di mana pun. Pendaftaran tidak menanyakan apa pun tentang Anda: akun Anda adalah frasa pemulihan 24 kata, dan kredensial yang diperiksa Firebase Authentication berasal dari itu. Yang disimpannya hanyalah label acak di bawah domain yang tidak dapat menerima surat.</p>
+      <p>Secara terpisah: karena aplikasi berjalan di Google Firebase, Google dapat melihat alamat IP dan waktu setiap koneksi yang dibuat perangkat Anda kepadanya. Itu adalah sifat dari hosting, bukan aplikasi, dan kami tidak dapat mengenkripsinya.</p>
+    </section>
+
+    <section>
+      <h2>3. Bagaimana orang menemukan Anda</h2>
+      <p>Mereka tidak dapat mencari Anda. Tidak ada direktori di sini — tidak ada pencarian berdasarkan email, nomor telepon, atau nama — dan server menolak permintaan semacam itu.</p>
+      <p>Anda menjangkau seseorang dengan mengirimkan tautan undangan di luar jalur, melalui apa pun yang sudah Anda gunakan. Tautan berfungsi sekali, kedaluwarsa setelah 24 jam, dan dapat ditarik. Apa pun sebutan Anda untuk seseorang adalah label Anda sendiri untuk mereka, disimpan hanya untuk Anda; jika mereka memperkenalkan diri, nama itu sampai kepada Anda dalam keadaan terenkripsi.</p>
+    </section>
+
+    <section>
+      <h2>4. Apa yang kami kumpulkan</h2>
+      <ul><li>Data akun: pengenal akun, dan kredensial yang berasal dari frasa pemulihan Anda, disimpan di Firebase Authentication. Tidak ada alamat email, tidak ada nomor telepon, tidak ada nama — pendaftaran tidak menanyakan salah satunya.</li><li>Teks sandi pesan dan lampiran, ditambah metadata pada bagian 2.</li></ul>
+      <p>Itulah seluruh daftarnya. Tidak ada analitik dan tidak ada pelaporan crash. Aplikasi ini dulunya mengirim tampilan layar ke Firebase Analytics dan laporan crash ke Firebase Crashlytics, keduanya membawa pengenal akun Anda, sehingga tidak ada yang anonim; keduanya sudah hilang, bersama pustaka yang mengirimkannya. Kesalahan dicetak hanya di komputer pengembang sendiri selama pengembangan dan tidak pergi ke mana pun.</p>
+    </section>
+
+    <section>
+      <h2>5. Di mana ini disimpan</h2>
+      <p>Di Google Firebase — Firestore, Storage, dan Authentication — di bawah aturan keamanan yang menentukan siapa yang boleh membaca dan menulis setiap dokumen.</p>
+      <p>Di perangkat Anda, pesan yang di-cache, pengaturan, dan PIN kunci aplikasi dienkripsi dengan kunci khusus per perangkat yang disimpan di penyimpanan kunci platform (Keychain di iOS, Keystore di Android) daripada di penyimpanan aplikasi biasa.</p>
+      <p>Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat Anda, kecuali sebagai frasa pemulihan yang Anda pilih untuk dituliskan. Kami tidak menyimpannya dan tidak dapat memulihkannya untuk Anda. Jika hilang, pesan yang dikirim ke perangkat itu tidak dapat dibaca lagi — oleh siapa pun, termasuk kami.</p>
+    </section>
+
+    <section>
+      <h2>6. Siapa lagi yang menerima data</h2>
+      <p>Kami tidak menjual, memperdagangkan, atau menyewakan informasi pribadi Anda. Data mencapai:</p>
+      <ul><li>Google Firebase — penyedia hosting kami, seperti dijelaskan di atas.</li><li>Wikimedia Foundation — satu nama, ketika Anda mengetuknya untuk mencarinya di Wikipedia.</li><li>Google Cloud Speech-to-Text — audio dari satu pesan suara, ketika Anda meminta transkrip.</li><li>Google Cloud Translation — teks dari satu pesan, ketika Anda meminta terjemahan.</li><li>Cloudflare Workers AI — hingga 50 pesan terakhir dari satu percakapan, ketika Anda meminta ringkasan atau mengajukan pertanyaan tentangnya.</li></ul>
+      <p>Tiga yang terakhir dimatikan pada rilis ini. Tidak ada kontrol di mana pun dalam aplikasi yang menyalakan transkripsi, terjemahan, atau ringkasan, sehingga tidak ada yang mencapai tiga layanan itu. Layanan itu terdaftar alih-alih dihapus karena kodenya masih ada di sini dan fitur-fitur ini dimaksudkan untuk kembali — dan saat kembali, mereka akan kembali dengan pengungkapan ini dan permintaan sebelum penggunaan pertama. Apa yang akan dikirim saat itu dikirim untuk menghasilkan hasil Anda, bukan untuk melatih apa pun; baik transkrip maupun terjemahan tidak disimpan di server kami.</p>
+      <p>Pencarian Wikipedia tidak memiliki sakelar karena tidak ada yang bersifat tetap untuk dimatikan: itu hanya berjalan saat diketuk dan tidak dengan cara lain. Wikipedia menerima hanya nama itu dan alamat IP Anda, persis seperti jika Anda sendiri mengetiknya di kotak pencariannya — tanpa akun, tanpa pesan, tanpa percakapan. Apa yang dikembalikan hanya ditampilkan dan tidak disimpan, dan tidak ada apa pun tentangnya yang dituliskan ke percakapan.</p>
+      <p>Kami dapat mengungkapkan apa yang kami simpan jika hukum mengharuskannya. Apa yang kami simpan adalah daftar pada bagian 2. Kami tidak dapat memberikan isi pesan, karena kami tidak dapat membacanya.</p>
+    </section>
+
+    <section>
+      <h2>7. Notifikasi push</h2>
+      <p>Firebase Cloud Messaging mengirimkan notifikasi. Token perangkat Anda disimpan di bagian pribadi akun Anda yang hanya dapat Anda baca.</p>
+      <p>Notifikasi tidak membawa teks pesan apa pun. Perangkat Anda mendekripsi pesan secara lokal dan menyusun apa yang Anda lihat; Google mengirimkan amplopnya, bukan isinya.</p>
+    </section>
+
+    <section>
+      <h2>8. Apa yang dapat Anda lakukan</h2>
+      <ul><li>Hapus akun Anda dari layar Profil. Konten yang menjadi bagian bersama dari sebuah percakapan — misalnya catatan panggilan — tetap ada pada peserta lain, karena itu juga catatan mereka.</li><li>Ekspor data Anda dari layar Profil.</li><li>Atur kedaluwarsa pesan per obrolan: 1 jam, 24 jam, 7 hari, atau 30 hari.</li><li>Aktifkan atau nonaktifkan indikator mengetik dan tanda terima baca. Keduanya nonaktif secara default.</li><li>Kunci aplikasi dengan PIN atau biometrik.</li><li>Tarik tautan undangan yang telah Anda bagikan.</li></ul>
+      <p>Jika Anda lebih suka kami menghapus sesuatu secara manual, tulis kepada kami.</p>
+    </section>
+
+    <section>
+      <h2>9. Retensi</h2>
+      <p>Kami menyimpan data Anda selama akun Anda ada. Menghapus akun akan menghapusnya, kecuali konten yang dimiliki bersama yang disebutkan di atas. Kedaluwarsa per obrolan menghapus pesan sesuai jadwal yang Anda atur.</p>
+    </section>
+
+    <section>
+      <h2>10. Batasan yang perlu Anda ketahui</h2>
+      <p>Kami lebih suka memberi tahu Anda tentang ini daripada membiarkan Anda menemukannya sendiri.</p>
+      <ul><li>Kunci dipercaya pada pertama kali dilihat. Jika seseorang mengganti kunci sebelum Anda pernah bertukar pesan, percakapan akan dienkripsi ke orang yang salah dan akan tampak sepenuhnya normal. Aplikasi memperingatkan Anda saat kunci berubah setelahnya, dan menampilkan nomor keamanan yang dapat Anda bandingkan di luar jalur — tetapi tidak ada yang memaksa Anda untuk membandingkannya.</li><li>Satu perangkat pada satu waktu. Frasa pemulihan Anda memulihkan kunci yang membuka riwayat Anda, sehingga masuk di perangkat baru tidak menghilangkan apa yang sudah Anda terima. Percakapan dengan kerahasiaan maju menggunakan kunci kedua yang tidak pernah meninggalkan perangkat yang membuatnya: perangkat mana pun yang terakhir masuk adalah yang dijangkau oleh pesan-pesan itu, dan apa pun yang disegel untuk perangkat lain sementara itu tidak dapat dipindahkan ke sana.</li><li>Pesan yang dikirim sebelum enkripsi ada tetap seperti semula. Tidak ada yang dikonversi secara retroaktif.</li><li>Aplikasi ini belum pernah diaudit keamanannya secara independen.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Anak-anak</h2>
+      <p>Chatterbox tidak ditujukan untuk anak-anak di bawah usia 13 tahun, dan kami tidak secara sengaja mengumpulkan informasi mereka. Jika Anda yakin seorang anak telah memberi kami informasi pribadi, hubungi kami dan kami akan menghapusnya.</p>
+    </section>
+
+    <section>
+      <h2>12. Perubahan</h2>
+      <p>Kami dapat memperbarui kebijakan ini. Perubahan signifikan akan diumumkan di aplikasi, dan tanggal di bagian atas adalah kapan kebijakan ini terakhir diubah.</p>
+    </section>
+
+    <section>
+      <h2>13. Kontak</h2>
+      <p>Pertanyaan tentang kebijakan ini: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="site-langs" aria-label="Kebijakan Privasi">
+        <a href="privacy" lang="en" hreflang="en">English</a>
+        <a href="privacy.zh-Hans" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="privacy.zh-Hant" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="privacy.es" lang="es" hreflang="es">Español</a>
+        <a href="privacy.fr" lang="fr" hreflang="fr">Français</a>
+        <a href="privacy.de" lang="de" hreflang="de">Deutsch</a>
+        <a href="privacy.it" lang="it" hreflang="it">Italiano</a>
+        <a href="privacy.pt" lang="pt" hreflang="pt">Português</a>
+        <a href="privacy.ru" lang="ru" hreflang="ru">Русский</a>
+        <a href="privacy.tr" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="privacy.vi" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="privacy.ja" lang="ja" hreflang="ja">日本語</a>
+        <a href="privacy.ko" lang="ko" hreflang="ko">한국어</a>
+        <a href="privacy.ar" lang="ar" hreflang="ar">العربية</a>
+        <a href="privacy.hi" lang="hi" hreflang="hi">हिन्दी</a>
+        <a href="privacy.fa" lang="fa" hreflang="fa">فارسی</a>
+        <a href="privacy.he" lang="he" hreflang="he">עברית</a>
+        <a href="privacy.ur" lang="ur" hreflang="ur">اردو</a>
+        <a href="privacy.pl" lang="pl" hreflang="pl">Polski</a>
+        <a href="privacy.uk" lang="uk" hreflang="uk">Українська</a>
+        <span aria-current="true" lang="id">Bahasa Indonesia</span>
+        <a href="privacy.bn" lang="bn" hreflang="bn">বাংলা</a>
+        <a href="privacy.th" lang="th" hreflang="th">ไทย</a>
+    </nav>
+  </main>
+</body>
+</html>

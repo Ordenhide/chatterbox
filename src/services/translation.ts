@@ -25,6 +25,14 @@ const TRANSLATE_LANGUAGE_CODES: Record<LanguageCode, string> = {
   it: 'it',
   tr: 'tr',
   vi: 'vi',
+  fa: 'fa',
+  he: 'iw', // Cloud Translate still uses the old ISO code for Hebrew.
+  ur: 'ur',
+  pl: 'pl',
+  uk: 'uk',
+  id: 'id',
+  bn: 'bn',
+  th: 'th',
 };
 
 /** Maps the app's current UI language to a Cloud Translate language code, falling back to English. */

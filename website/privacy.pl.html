@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pl" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polityka prywatności — Chatterbox</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="privacy" />
+  <link rel="alternate" hreflang="zh-Hans" href="privacy.zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="privacy.zh-Hant" />
+  <link rel="alternate" hreflang="es" href="privacy.es" />
+  <link rel="alternate" hreflang="fr" href="privacy.fr" />
+  <link rel="alternate" hreflang="de" href="privacy.de" />
+  <link rel="alternate" hreflang="it" href="privacy.it" />
+  <link rel="alternate" hreflang="pt" href="privacy.pt" />
+  <link rel="alternate" hreflang="ru" href="privacy.ru" />
+  <link rel="alternate" hreflang="tr" href="privacy.tr" />
+  <link rel="alternate" hreflang="vi" href="privacy.vi" />
+  <link rel="alternate" hreflang="ja" href="privacy.ja" />
+  <link rel="alternate" hreflang="ko" href="privacy.ko" />
+  <link rel="alternate" hreflang="ar" href="privacy.ar" />
+  <link rel="alternate" hreflang="hi" href="privacy.hi" />
+  <link rel="alternate" hreflang="fa" href="privacy.fa" />
+  <link rel="alternate" hreflang="he" href="privacy.he" />
+  <link rel="alternate" hreflang="ur" href="privacy.ur" />
+  <link rel="alternate" hreflang="pl" href="privacy.pl" />
+  <link rel="alternate" hreflang="uk" href="privacy.uk" />
+  <link rel="alternate" hreflang="id" href="privacy.id" />
+  <link rel="alternate" hreflang="bn" href="privacy.bn" />
+  <link rel="alternate" hreflang="th" href="privacy.th" />
+  <link rel="alternate" hreflang="x-default" href="privacy" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.pl" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.pl#features">Funkcje</a>
+        <a href="index.pl#download" class="nav-cta">Pobierz</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.pl">← Powrót do Chatterbox</a>
+    <h1>Polityka prywatności</h1>
+    <p class="meta">Ostatnia aktualizacja: 2026-09-07</p>
+
+    <section>
+      <h2>0. W skrócie</h2>
+      <p>Tekst Twoich wiadomości jest szyfrowany na Twoim urządzeniu i mogą go odczytać tylko osoby, do których go wysyłasz. My nie możemy go odczytać, podobnie jak Google, którego serwery wynajmujemy.</p>
+      <p>To, co możemy zobaczyć, to fakt, że rozmowa się odbyła: które konta w niej uczestniczą i kiedy były aktywne. Usunięcie tego jest trudniejsze niż zaszyfrowanie treści, i jeszcze tego nie skończyliśmy. Ta polityka mówi dokładnie, gdzie obecnie przebiega granica.</p>
+    </section>
+
+    <section>
+      <h2>1. Co jest zaszyfrowane end-to-end</h2>
+      <p>Zaszyfrowane na Twoim urządzeniu, nieczytelne dla nas i dla Google:</p>
+      <ul><li>Tekst Twoich wiadomości.</li><li>Zawartość plików, zdjęć, audio i wideo, które załączasz.</li><li>Podglądy linków.</li><li>Połączenia głosowe i wideo, które korzystają z obowiązkowego DTLS-SRTP protokołu WebRTC między dwoma urządzeniami.</li></ul>
+      <p>Większość wiadomości jeden na jeden i grupowych dodatkowo korzysta z mechanizmu ratchet, co oznacza, że każda wiadomość ma własny klucz, więc naruszenie Twojego urządzenia nie ujawnia wcześniejszych wiadomości. Rozmowy, w których klient kogoś jeszcze nie opublikował nowszego materiału kluczowego, wracają do jednego, długotrwałego klucza, który nie ma tej właściwości. Etykieta pod wiadomością mówi Ci, którą z nich faktycznie otrzymała.</p>
+      <p>Jedna rzecz przekracza tę granicę, i tylko wtedy, gdy o to poprosisz: wyszukanie nazwy w Wikipedii wysyła tylko tę jedną nazwę, a nie wiadomość, z której pochodzi. Sekcja 6 mówi, kto ją otrzymuje, a wyszukiwanie działa tylko po dotknięciu i w innym przypadku nie, więc nie ma czego wyłączać. Podsumowywanie, tłumaczenie i transkrypcja również przekroczyłyby tę granicę — są wyłączone w tej wersji i nie ma żadnej kontroli w aplikacji, która by je włączyła.</p>
+    </section>
+
+    <section>
+      <h2>2. Co nie jest zaszyfrowane i co możemy zobaczyć</h2>
+      <p>Szyfrowanie chroni treść, a nie sam fakt istnienia rozmowy. Poniższe znajdują się jawnie na naszych serwerach:</p>
+      <ul><li>Kto jest w każdej rozmowie oraz kiedy została utworzona i kiedy była ostatnio aktywna.</li><li>Znacznik czasu każdej wiadomości i ile z nich nie przeczytałeś.</li><li>Nazwa, typ i rozmiar pliku załącznika. Bajty są zaszyfrowane; ich opis nie, a długość szyfrogramu ogranicza również długość oryginału.</li><li>Twoi znajomi i prośby o znajomość.</li><li>Sygnalizacja połączenia — że połączenie zostało nawiązane, do kogo i kiedy. Nie jego dźwięk ani obraz.</li></ul>
+      <p>Wskaźniki pisania i potwierdzenia odczytu są wyłączone, chyba że je włączysz, a dopóki są wyłączone, nic nie jest zapisywane.</p>
+      <p>Czego już tu nie ma: Twój adres e-mail i Twoje imię. Od września 2026 roku rekord konta zawiera tylko identyfikator konta — i od tego czasu nigdzie nie ma adresu do przechowywania. Rejestracja nie pyta o nic na Twój temat: Twoje konto to 24-wyrazowa fraza odzyskiwania, a poświadczenie, które sprawdza Firebase Authentication, jest z niej wyprowadzone. To, co przechowuje, to tylko losowa etykieta pod domeną, która nie może odbierać poczty.</p>
+      <p>Osobno: ponieważ aplikacja działa na Google Firebase, Google może zobaczyć adres IP i czas każdego połączenia, jakie Twoje urządzenie z nim nawiązuje. To cecha hostingu, a nie aplikacji, i nie możemy jej zaszyfrować.</p>
+    </section>
+
+    <section>
+      <h2>3. Jak ludzie Cię znajdują</h2>
+      <p>Nie mogą Cię wyszukać. Nie ma tu katalogu — brak wyszukiwania po e-mailu, numerze telefonu czy nazwie — a serwer odrzuca każde takie zapytanie.</p>
+      <p>Docierasz do kogoś, wysyłając link z zaproszeniem poza aplikacją, dowolnym kanałem, którego już używasz. Link działa raz, wygasa po 24 godzinach i można go wycofać. To, jak kogoś nazywasz, jest Twoją własną etykietą dla tej osoby, przechowywaną tylko u Ciebie; jeśli ta osoba się przedstawiła, to imię dotarło do Ciebie zaszyfrowane.</p>
+    </section>
+
+    <section>
+      <h2>4. Co zbieramy</h2>
+      <ul><li>Dane konta: identyfikator konta oraz poświadczenie wyprowadzone z Twojej frazy odzyskiwania, przechowywane w Firebase Authentication. Bez adresu e-mail, bez numeru telefonu, bez imienia — rejestracja nie pyta o żadne z nich.</li><li>Szyfrogram wiadomości i załączników, plus metadane z sekcji 2.</li></ul>
+      <p>To cała lista. Nie ma analityki ani raportowania awarii. Ta aplikacja wysyłała kiedyś widoki ekranu do Firebase Analytics i raporty o awariach do Firebase Crashlytics, oba niosące Twój identyfikator konta, więc żadne z nich nie było anonimowe; oba zniknęły, wraz z bibliotekami, które je wysyłały. Błędy są drukowane tylko na własnym komputerze programisty podczas rozwoju i nigdzie indziej nie trafiają.</p>
+    </section>
+
+    <section>
+      <h2>5. Gdzie jest przechowywane</h2>
+      <p>W Google Firebase — Firestore, Storage i Authentication — zgodnie z regułami bezpieczeństwa, które decydują, kto może odczytywać i zapisywać każdy dokument.</p>
+      <p>Na Twoim urządzeniu wiadomości w pamięci podręcznej, ustawienia i PIN blokady aplikacji są szyfrowane kluczem unikalnym dla urządzenia, przechowywanym w magazynie kluczy platformy (Keychain w iOS, Keystore w Androidzie), a nie w zwykłej pamięci aplikacji.</p>
+      <p>Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojego urządzenia, z wyjątkiem frazy odzyskiwania, którą decydujesz się zapisać. My go nie przechowujemy i nie możemy go dla Ciebie odzyskać. Jeśli go zgubisz, wiadomości wysłane do tego urządzenia nie będą już mogły zostać odczytane — przez nikogo, łącznie z nami.</p>
+    </section>
+
+    <section>
+      <h2>6. Kto jeszcze otrzymuje dane</h2>
+      <p>Nie sprzedajemy, nie wymieniamy ani nie wynajmujemy Twoich danych osobowych. Dane docierają do:</p>
+      <ul><li>Google Firebase — naszego dostawcy hostingu, jak opisano powyżej.</li><li>Fundacji Wikimedia — jedno imię, gdy dotkniesz go, aby wyszukać w Wikipedii.</li><li>Google Cloud Speech-to-Text — dźwięk jednej wiadomości głosowej, gdy prosisz o transkrypcję.</li><li>Google Cloud Translation — tekst jednej wiadomości, gdy prosisz o tłumaczenie.</li><li>Cloudflare Workers AI — do 50 ostatnich wiadomości jednej rozmowy, gdy prosisz o podsumowanie lub zadajesz o nią pytanie.</li></ul>
+      <p>Ostatnie trzy są wyłączone w tej wersji. Nie ma żadnej kontroli w żadnym miejscu aplikacji, która włączałaby transkrypcję, tłumaczenie czy podsumowania, więc nic nie dociera do tych trzech usług. Są wymienione, a nie usunięte, ponieważ kod nadal tu jest, a te funkcje mają wrócić — a kiedy wrócą, wrócą z tym ujawnieniem i z monitem przed pierwszym użyciem. To, co zostanie wtedy wysłane, jest wysyłane, aby wygenerować Twój wynik, a nie by cokolwiek trenować; ani transkrypcja, ani tłumaczenie nie są przechowywane na naszych serwerach.</p>
+      <p>Wyszukiwanie w Wikipedii nie ma przełącznika, ponieważ nie ma nic trwałego do wyłączenia: działa tylko po dotknięciu i w innym przypadku nie. Wikipedia otrzymuje tylko tę jedną nazwę i Twój adres IP, dokładnie tak, jakbyś sam wpisał ją w polu wyszukiwania — bez konta, bez wiadomości, bez rozmowy. To, co wraca, jest wyświetlane i nie zapisywane, i nic z tego nie jest zapisywane w rozmowie.</p>
+      <p>Możemy ujawnić to, co przechowujemy, jeśli wymaga tego prawo. To, co przechowujemy, to lista z sekcji 2. Nie możemy udostępnić treści wiadomości, ponieważ nie możemy ich odczytać.</p>
+    </section>
+
+    <section>
+      <h2>7. Powiadomienia push</h2>
+      <p>Firebase Cloud Messaging dostarcza powiadomienia. Token Twojego urządzenia jest przechowywany w prywatnej części Twojego konta, którą tylko Ty możesz odczytać.</p>
+      <p>Powiadomienia nie niosą żadnego tekstu wiadomości. Twoje urządzenie odszyfrowuje wiadomość lokalnie i tworzy to, co widzisz; Google dostarcza kopertę, a nie treść.</p>
+    </section>
+
+    <section>
+      <h2>8. Co możesz zrobić</h2>
+      <ul><li>Usuń swoje konto z ekranu Profilu. Treść, która jest wspólną częścią rozmowy — na przykład zapis połączenia — pozostaje u drugiego uczestnika, ponieważ to również jego zapis.</li><li>Wyeksportuj swoje dane z ekranu Profilu.</li><li>Ustaw wygasanie wiadomości dla każdego czatu: 1 godzina, 24 godziny, 7 dni lub 30 dni.</li><li>Włącz lub wyłącz wskaźniki pisania i potwierdzenia odczytu. Oba są domyślnie wyłączone.</li><li>Zablokuj aplikację PIN-em lub biometrią.</li><li>Wycofaj wydany przez siebie link z zaproszeniem.</li></ul>
+      <p>Jeśli wolisz, abyśmy coś usunęli ręcznie, napisz do nas.</p>
+    </section>
+
+    <section>
+      <h2>9. Przechowywanie danych</h2>
+      <p>Przechowujemy Twoje dane tak długo, jak istnieje Twoje konto. Usunięcie konta je usuwa, z wyjątkiem wspólnie posiadanej treści wymienionej powyżej. Wygasanie dla każdego czatu usuwa wiadomości zgodnie z ustawionym przez Ciebie harmonogramem.</p>
+    </section>
+
+    <section>
+      <h2>10. Ograniczenia, które powinieneś znać</h2>
+      <p>Wolelibyśmy Ci o nich powiedzieć, niż żebyś sam je odkrył.</p>
+      <ul><li>Kluczom ufa się przy pierwszym ich zobaczeniu. Gdyby ktoś podmienił klucz, zanim kiedykolwiek wymieniliście wiadomość, rozmowa byłaby zaszyfrowana dla niewłaściwej osoby i wyglądałaby zupełnie normalnie. Aplikacja ostrzega Cię, gdy klucz zmienia się później, i pokazuje numer bezpieczeństwa, który możesz porównać poza aplikacją — ale nic nie zmusza Cię do jego porównania.</li><li>Jedno urządzenie naraz. Twoja fraza odzyskiwania przywraca klucz, który otwiera Twoją historię, więc zalogowanie się na nowym urządzeniu nie traci tego, co już otrzymałeś. Rozmowy z poufnością z wyprzedzeniem korzystają z drugiego klucza, który nigdy nie opuszcza urządzenia, które go utworzyło: docierają do niego na tym urządzeniu, które zalogowało się ostatnio, a wszystko zapieczętowane w międzyczasie dla innego urządzenia nie może zostać tam przeniesione.</li><li>Wiadomości wysłane, zanim istniało szyfrowanie, pozostają takie, jakie były. Nic nie zostało przekonwertowane wstecznie.</li><li>Ta aplikacja nigdy nie przeszła niezależnego audytu bezpieczeństwa.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Dzieci</h2>
+      <p>Chatterbox nie jest przeznaczony dla dzieci poniżej 13 roku życia, i świadomie nie zbieramy ich informacji. Jeśli uważasz, że dziecko przekazało nam dane osobowe, skontaktuj się z nami, a je usuniemy.</p>
+    </section>
+
+    <section>
+      <h2>12. Zmiany</h2>
+      <p>Możemy aktualizować tę politykę. Istotne zmiany zostaną ogłoszone w aplikacji, a data na górze to moment jej ostatniej zmiany.</p>
+    </section>
+
+    <section>
+      <h2>13. Kontakt</h2>
+      <p>Pytania dotyczące tej polityki: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="site-langs" aria-label="Polityka prywatności">
+        <a href="privacy" lang="en" hreflang="en">English</a>
+        <a href="privacy.zh-Hans" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="privacy.zh-Hant" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="privacy.es" lang="es" hreflang="es">Español</a>
+        <a href="privacy.fr" lang="fr" hreflang="fr">Français</a>
+        <a href="privacy.de" lang="de" hreflang="de">Deutsch</a>
+        <a href="privacy.it" lang="it" hreflang="it">Italiano</a>
+        <a href="privacy.pt" lang="pt" hreflang="pt">Português</a>
+        <a href="privacy.ru" lang="ru" hreflang="ru">Русский</a>
+        <a href="privacy.tr" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="privacy.vi" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="privacy.ja" lang="ja" hreflang="ja">日本語</a>
+        <a href="privacy.ko" lang="ko" hreflang="ko">한국어</a>
+        <a href="privacy.ar" lang="ar" hreflang="ar">العربية</a>
+        <a href="privacy.hi" lang="hi" hreflang="hi">हिन्दी</a>
+        <a href="privacy.fa" lang="fa" hreflang="fa">فارسی</a>
+        <a href="privacy.he" lang="he" hreflang="he">עברית</a>
+        <a href="privacy.ur" lang="ur" hreflang="ur">اردو</a>
+        <span aria-current="true" lang="pl">Polski</span>
+        <a href="privacy.uk" lang="uk" hreflang="uk">Українська</a>
+        <a href="privacy.id" lang="id" hreflang="id">Bahasa Indonesia</a>
+        <a href="privacy.bn" lang="bn" hreflang="bn">বাংলা</a>
+        <a href="privacy.th" lang="th" hreflang="th">ไทย</a>
+    </nav>
+  </main>
+</body>
+</html>

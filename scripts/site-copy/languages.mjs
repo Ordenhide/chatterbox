@@ -26,6 +26,14 @@ export const SITE_LANGUAGES = [
   {code: 'ko', lang: 'ko', dir: 'ltr', native: '한국어'},
   {code: 'ar', lang: 'ar', dir: 'rtl', native: 'العربية'},
   {code: 'hi', lang: 'hi', dir: 'ltr', native: 'हिन्दी'},
+  {code: 'fa', lang: 'fa', dir: 'rtl', native: 'فارسی'},
+  {code: 'he', lang: 'he', dir: 'rtl', native: 'עברית'},
+  {code: 'ur', lang: 'ur', dir: 'rtl', native: 'اردو'},
+  {code: 'pl', lang: 'pl', dir: 'ltr', native: 'Polski'},
+  {code: 'uk', lang: 'uk', dir: 'ltr', native: 'Українська'},
+  {code: 'id', lang: 'id', dir: 'ltr', native: 'Bahasa Indonesia'},
+  {code: 'bn', lang: 'bn', dir: 'ltr', native: 'বাংলা'},
+  {code: 'th', lang: 'th', dir: 'ltr', native: 'ไทย'},
 ];
 
 export const SITE_LANGUAGE_CODES = SITE_LANGUAGES.map(l => l.code);

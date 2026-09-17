@@ -12,17 +12,18 @@
  * deriving it would drag the whole i18n module back in and this file exists to
  * not do that. i18n/index.ts asserts the two agree.
  */
-export type LanguageCode = 'en' | 'zh-Hans' | 'zh-Hant' | 'zh' | 'es' | 'fr' | 'de' | 'ja' | 'ko' | 'pt' | 'ru' | 'ar' | 'hi' | 'it' | 'tr' | 'vi';
+export type LanguageCode = 'en' | 'zh-Hans' | 'zh-Hant' | 'zh' | 'es' | 'fr' | 'de' | 'ja' | 'ko' | 'pt' | 'ru' | 'ar' | 'hi' | 'it' | 'tr' | 'vi' | 'fa' | 'he' | 'ur' | 'pl' | 'uk' | 'id' | 'bn' | 'th';
 
 /**
  * The languages actually offered in the picker.
  *
- * All fifteen locale files are now complete, and all fifteen are offered.
+ * All locale files are complete, and all are offered.
  *
- * They were not always. Thirteen of them sat at 42% for long enough that the
- * gap covered the sign-in screen, most of Profile, and the line that tells a
- * user their message is going out unencrypted — and because i18next silently
- * falls back to English, nothing ever broke loudly enough to be noticed.
+ * They were not always. Thirteen of the original fifteen sat at 42% for long
+ * enough that the gap covered the sign-in screen, most of Profile, and the
+ * line that tells a user their message is going out unencrypted — and
+ * because i18next silently falls back to English, nothing ever broke loudly
+ * enough to be noticed.
  *
  * Offering a language is a claim that the app speaks it, and that claim now
  * includes the privacy policy: i18n/privacyPolicy.ts is keyed by
@@ -49,6 +50,14 @@ export const LANGUAGES = [
   {code: 'ko', label: 'Korean', nativeLabel: '한국어'},
   {code: 'ar', label: 'Arabic', nativeLabel: 'العربية'},
   {code: 'hi', label: 'Hindi', nativeLabel: 'हिन्दी'},
+  {code: 'fa', label: 'Persian', nativeLabel: 'فارسی'},
+  {code: 'he', label: 'Hebrew', nativeLabel: 'עברית'},
+  {code: 'ur', label: 'Urdu', nativeLabel: 'اردو'},
+  {code: 'pl', label: 'Polish', nativeLabel: 'Polski'},
+  {code: 'uk', label: 'Ukrainian', nativeLabel: 'Українська'},
+  {code: 'id', label: 'Indonesian', nativeLabel: 'Bahasa Indonesia'},
+  {code: 'bn', label: 'Bengali', nativeLabel: 'বাংলা'},
+  {code: 'th', label: 'Thai', nativeLabel: 'ไทย'},
 ] as const satisfies readonly {code: LanguageCode; label: string; nativeLabel: string}[];
 
 /**

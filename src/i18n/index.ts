@@ -23,6 +23,14 @@ import hi from './locales/hi.json';
 import it from './locales/it.json';
 import tr from './locales/tr.json';
 import vi from './locales/vi.json';
+import fa from './locales/fa.json';
+import he from './locales/he.json';
+import ur from './locales/ur.json';
+import pl from './locales/pl.json';
+import uk from './locales/uk.json';
+import id from './locales/id.json';
+import bn from './locales/bn.json';
+import th from './locales/th.json';
 
 const LANG_STORAGE_KEY = '@chatterbox:language';
 
@@ -43,6 +51,14 @@ const resources = {
   it: {translation: it},
   tr: {translation: tr},
   vi: {translation: vi},
+  fa: {translation: fa},
+  he: {translation: he},
+  ur: {translation: ur},
+  pl: {translation: pl},
+  uk: {translation: uk},
+  id: {translation: id},
+  bn: {translation: bn},
+  th: {translation: th},
 } as const;
 
 

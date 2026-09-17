@@ -21,7 +21,7 @@ export default {
     lead: `Chatterbox, kullanıcı dizini olmayan uçtan uca şifreli bir mesajlaşma uygulamasıdır. Kimse sizi arayıp bulamaz, çünkü aranacak bir dizin yok — bir sohbete girmenin tek yolu, birine kendi elinizle verdiğiniz bir bağlantıdır.`,
     primary: `Chatterbox'ı edinin`,
     secondary: `Gizlilik politikasını okuyun`,
-    badges: [`Dizin yok`, `Yalnızca davetle`, `15 dil`, `Ücretsiz`],
+    badges: [`Dizin yok`, `Yalnızca davetle`, `23 dil`, `Ücretsiz`],
   },
 
   different: {
@@ -72,7 +72,7 @@ export default {
       {
         title: `Gizlilik politikası neyi yapamadığını da yazıyor`,
         body: [
-          `Şifrelemenin hiçbir zaman bağımsız denetimden geçmediğini, sunucularını kiraladığımız için Google'ın her bağlantının üst verisini görebildiğini ve ilk mesajından önce değiştirilmiş bir anahtarın son derece normal görüneceğini yazar. Uygulamadaki ve bu sitedeki metin aynıdır, on beş dilde — İngilizce bir asıl ve daha yumuşak bir çeviri değil.`,
+          `Şifrelemenin hiçbir zaman bağımsız denetimden geçmediğini, sunucularını kiraladığımız için Google'ın her bağlantının üst verisini görebildiğini ve ilk mesajından önce değiştirilmiş bir anahtarın son derece normal görüneceğini yazar. Uygulamadaki ve bu sitedeki metin aynıdır, 23 dilde — İngilizce bir asıl ve daha yumuşak bir çeviri değil.`,
         ],
         note: `Yukarıdakilerin herhangi birine güvenmeye karar vermeden önce: {policyShort}.`,
       },
@@ -105,8 +105,8 @@ export default {
         body: `Mesajlarını çözen özel anahtar cihazından hiç çıkmaz. Onu bir kurtarma ifadesi olarak yazabilirsin; bizde durmaz ve senin için geri getiremeyiz.`,
       },
       {
-        title: `On beş dil`,
-        body: `İngilizce, Çincenin iki yazısı, Japonca, Korece, İspanyolca, Fransızca, Almanca, İtalyanca, Portekizce, Rusça, Türkçe, Vietnamca, Arapça ve Hintçe — sağdan sola yazım dahil.`,
+        title: `23 dil`,
+        body: `İngilizce, Çincenin iki yazısı, Japonca, Korece, İspanyolca, Fransızca, Almanca, İtalyanca, Portekizce, Rusça, Türkçe, Vietnamca, Arapça, Hintçe, Farsça, İbranice, Urduca, Lehçe, Ukraynaca, Endonezce, Bengalce ve Tayca — sağdan sola yazım dahil.`,
       },
     ],
   },

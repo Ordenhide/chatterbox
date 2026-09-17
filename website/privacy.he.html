@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מדיניות הפרטיות — Chatterbox</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="privacy" />
+  <link rel="alternate" hreflang="zh-Hans" href="privacy.zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="privacy.zh-Hant" />
+  <link rel="alternate" hreflang="es" href="privacy.es" />
+  <link rel="alternate" hreflang="fr" href="privacy.fr" />
+  <link rel="alternate" hreflang="de" href="privacy.de" />
+  <link rel="alternate" hreflang="it" href="privacy.it" />
+  <link rel="alternate" hreflang="pt" href="privacy.pt" />
+  <link rel="alternate" hreflang="ru" href="privacy.ru" />
+  <link rel="alternate" hreflang="tr" href="privacy.tr" />
+  <link rel="alternate" hreflang="vi" href="privacy.vi" />
+  <link rel="alternate" hreflang="ja" href="privacy.ja" />
+  <link rel="alternate" hreflang="ko" href="privacy.ko" />
+  <link rel="alternate" hreflang="ar" href="privacy.ar" />
+  <link rel="alternate" hreflang="hi" href="privacy.hi" />
+  <link rel="alternate" hreflang="fa" href="privacy.fa" />
+  <link rel="alternate" hreflang="he" href="privacy.he" />
+  <link rel="alternate" hreflang="ur" href="privacy.ur" />
+  <link rel="alternate" hreflang="pl" href="privacy.pl" />
+  <link rel="alternate" hreflang="uk" href="privacy.uk" />
+  <link rel="alternate" hreflang="id" href="privacy.id" />
+  <link rel="alternate" hreflang="bn" href="privacy.bn" />
+  <link rel="alternate" hreflang="th" href="privacy.th" />
+  <link rel="alternate" hreflang="x-default" href="privacy" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.he" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.he#features">תכונות</a>
+        <a href="index.he#download" class="nav-cta">הורדה</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.he">← חזרה ל-Chatterbox</a>
+    <h1>מדיניות הפרטיות</h1>
+    <p class="meta">עודכן לאחרונה: 2026-09-07</p>
+
+    <section>
+      <h2>0. בקצרה</h2>
+      <p>טקסט ההודעות שלכם מוצפן במכשיר שלכם וניתן לקריאה רק על ידי מי ששלחתם לו אותן. אנחנו לא יכולים לקרוא אותו, וגם לא Google, שאת השרתים שלה אנחנו שוכרים.</p>
+      <p>מה שכן אנחנו יכולים לראות הוא ששיחה התקיימה: אילו חשבונות נמצאים בה, ומתי היו פעילים. הסרת זה קשה יותר מהצפנת התוכן, ועדיין לא סיימנו. מדיניות זו אומרת בדיוק היכן עובר הקו כרגע.</p>
+    </section>
+
+    <section>
+      <h2>1. מה מוצפן מקצה לקצה</h2>
+      <p>מוצפן במכשיר שלכם, בלתי קריא לנו ול-Google:</p>
+      <ul><li>הטקסט של ההודעות שלכם.</li><li>התוכן של קבצים, תמונות, שמע ווידאו שאתם מצרפים.</li><li>תצוגות מקדימות של קישורים.</li><li>שיחות קוליות ווידאו, המשתמשות ב-DTLS-SRTP המחייב של WebRTC בין שני המכשירים.</li></ul>
+      <p>רוב ההודעות האישיות והקבוצתיות משתמשות בנוסף במנגנון רכטה (ratchet), כלומר לכל הודעה יש מפתח משלה, כך שפריצה למכשיר שלכם אינה חושפת הודעות קודמות. שיחות שבהן הלקוח של מישהו עדיין לא פרסם את חומר המפתח החדש יותר חוזרות למפתח יחיד ארוך טווח, שאין לו את התכונה הזו. התווית מתחת להודעה אומרת לכם איזה מהם היא בפועל קיבלה.</p>
+      <p>דבר אחד חוצה את הקו הזה, ורק כשאתם מבקשים זאת: חיפוש שם בוויקיפדיה שולח את השם הזה בלבד, לא את ההודעה שממנה הוא הגיע. סעיף 6 אומר מי מקבל אותו, והחיפוש רץ רק בעת ההקשה ולא אחרת, כך שאין מה לכבות. סיכום, תרגום ותמלול היו חוצים את הקו הזה גם הם — הם כבויים בגרסה זו, ואין שום פקד באפליקציה שמפעיל אותם.</p>
+    </section>
+
+    <section>
+      <h2>2. מה לא מוצפן, ומה אנחנו יכולים לראות</h2>
+      <p>הצפנה מגנה על תוכן, לא על עצם קיומה של שיחה. אלה נמצאים בגלוי בשרתים שלנו:</p>
+      <ul><li>מי נמצא בכל שיחה, ומתי היא נוצרה ומתי הייתה פעילה לאחרונה.</li><li>חותמת הזמן של כל הודעה, וכמה הודעות לא קראתם.</li><li>שם הקובץ, הסוג והגודל של קובץ מצורף. הבייטים מוצפנים; התיאור שלהם לא, ואורך הצופן גם מגביל את אורך המקור.</li><li>החברים ובקשות החברות שלכם.</li><li>איתות שיחה — שהתבצעה שיחה, למי, ומתי. לא השמע או הווידאו שלה.</li></ul>
+      <p>חיווי הקלדה ואישורי קריאה כבויים אלא אם תפעילו אותם, וכל עוד הם כבויים שום דבר לא נכתב.</p>
+      <p>מה שכבר לא כאן: כתובת האימייל והשם שלכם. מאז ספטמבר 2026 רשומת החשבון מכילה רק מזהה חשבון — ומאז אין כתובת לשמור בשום מקום. ההרשמה לא שואלת עליכם שום דבר: החשבון שלכם הוא ביטוי שחזור בן 24 מילים, וההרשאה שאותה בודקת Firebase Authentication נגזרת ממנו. מה שהיא שומרת הוא רק תווית אקראית תחת דומיין שלא יכול לקבל דואר.</p>
+      <p>בנפרד: מכיוון שהאפליקציה פועלת על Google Firebase, Google יכולה לראות את כתובת ה-IP והתזמון של כל חיבור שהמכשיר שלכם יוצר אליה. זו תכונה של האחסון, לא של האפליקציה, ואנחנו לא יכולים להצפין אותה משם.</p>
+    </section>
+
+    <section>
+      <h2>3. איך אנשים מוצאים אתכם</h2>
+      <p>הם לא יכולים לחפש אתכם. אין כאן ספרייה — אין חיפוש לפי אימייל, מספר טלפון או שם — והשרת דוחה כל שאילתה שמנסה זאת.</p>
+      <p>אתם מגיעים למישהו על ידי שליחת קישור הזמנה בערוץ נפרד, דרך כל דבר שאתם כבר משתמשים בו. קישור עובד פעם אחת, פג לאחר 24 שעות, וניתן לבטלו. איך שאתם קוראים למישהו הוא התווית שלכם עבורו, נשמרת רק אצלכם; אם הוא הציג את עצמו, השם הזה הגיע אליכם מוצפן.</p>
+    </section>
+
+    <section>
+      <h2>4. מה אנחנו אוספים</h2>
+      <ul><li>נתוני חשבון: מזהה חשבון, והרשאה שנגזרת מביטוי השחזור שלכם, נשמרים ב-Firebase Authentication. ללא כתובת אימייל, ללא מספר טלפון, ללא שם — ההרשמה לא שואלת אף אחד מהם.</li><li>צופן ההודעות והקבצים המצורפים, בתוספת המטא-דאטה שבסעיף 2.</li></ul>
+      <p>זו הרשימה כולה. אין אנליטיקה ואין דיווח על קריסות. האפליקציה נהגה לשלוח צפיות במסך ל-Firebase Analytics ודוחות קריסה ל-Firebase Crashlytics, שניהם נשאו את מזהה החשבון שלכם, כך שאף אחד מהם לא היה אנונימי; שניהם נעלמו, יחד עם הספריות ששלחו אותם. שגיאות מודפסות רק על המחשב של המפתח עצמו בזמן פיתוח ולא הולכות לשום מקום אחר.</p>
+    </section>
+
+    <section>
+      <h2>5. איפה זה נשמר</h2>
+      <p>ב-Google Firebase — Firestore, Storage ו-Authentication — תחת כללי אבטחה שקובעים מי רשאי לקרוא ולכתוב כל מסמך.</p>
+      <p>במכשיר שלכם, הודעות במטמון, הגדרות וקוד ה-PIN של נעילת האפליקציה מוצפנים במפתח ייחודי למכשיר הנשמר במחסן המפתחות של הפלטפורמה (Keychain באייפון, Keystore באנדרואיד) ולא באחסון אפליקציה רגיל.</p>
+      <p>המפתח הפרטי המפענח את ההודעות שלכם לעולם לא עוזב את המכשיר שלכם, מלבד כביטוי השחזור שאתם בוחרים לרשום. אנחנו לא מחזיקים אותו ולא יכולים לשחזר אותו עבורכם. אם תאבדו אותו, ההודעות שנשלחו לאותו מכשיר לא ניתנות עוד לקריאה — על ידי אף אחד, כולל אנחנו.</p>
+    </section>
+
+    <section>
+      <h2>6. מי עוד מקבל נתונים</h2>
+      <p>אנחנו לא מוכרים, סוחרים או משכירים את המידע האישי שלכם. נתונים מגיעים אל:</p>
+      <ul><li>Google Firebase — ספק האחסון שלנו, כמתואר לעיל.</li><li>קרן ויקימדיה — שם אחד, כשאתם מקישים עליו כדי לחפש אותו בוויקיפדיה.</li><li>Google Cloud Speech-to-Text — השמע של הודעה קולית אחת, כשאתם מבקשים תמלול.</li><li>Google Cloud Translation — הטקסט של הודעה אחת, כשאתם מבקשים תרגום.</li><li>Cloudflare Workers AI — עד 50 ההודעות האחרונות של שיחה אחת, כשאתם מבקשים סיכום או שואלים עליה שאלה.</li></ul>
+      <p>שלושת האחרונים כבויים בגרסה זו. אין שום פקד בשום מקום באפליקציה שמפעיל תמלול, תרגום או סיכומים, כך ששום דבר לא מגיע לשלושת השירותים האלה. הם מופיעים ברשימה במקום להימחק כי הקוד עדיין כאן והתכונות אמורות לחזור — וכשהן יחזרו, הן יחזרו עם הגילוי הזה ועם בקשת אישור לפני השימוש הראשון. מה שיישלח אז נשלח כדי לייצר עבורכם תוצאה, לא כדי לאמן דבר; לא תמלול ולא תרגום נשמרים בשרתים שלנו.</p>
+      <p>לחיפוש בוויקיפדיה אין פקד כי אין מה לכבות באופן קבוע: הוא רץ רק בעת ההקשה ולא אחרת. ויקיפדיה מקבלת את השם הזה בלבד ואת כתובת ה-IP שלכם, בדיוק כאילו הקלדתם אותו בעצמכם בתיבת החיפוש שלה — ללא חשבון, ללא הודעה, ללא שיחה. מה שחוזר מוצג ולא נשמר, ושום דבר ממנו לא נכתב לשיחה.</p>
+      <p>אנו עשויים לחשוף את מה שאנחנו מחזיקים אם החוק מחייב זאת. מה שאנחנו מחזיקים הוא הרשימה שבסעיף 2. אנחנו לא יכולים למסור תוכן הודעות, כי אנחנו לא יכולים לקרוא אותן.</p>
+    </section>
+
+    <section>
+      <h2>7. התראות דחיפה</h2>
+      <p>Firebase Cloud Messaging מספקת התראות. אסימון המכשיר שלכם נשמר בחלק פרטי של החשבון שלכם שרק אתם יכולים לקרוא.</p>
+      <p>התראות לא נושאות טקסט הודעה כלשהו. המכשיר שלכם מפענח את ההודעה מקומית ומרכיב את מה שאתם רואים; Google מספקת את המעטפה, לא את התוכן.</p>
+    </section>
+
+    <section>
+      <h2>8. מה אתם יכולים לעשות</h2>
+      <ul><li>מחקו את החשבון שלכם ממסך הפרופיל. תוכן שהוא חלק משותף משיחה — רשומת שיחה, למשל — נשאר אצל המשתתף האחר, כי זו גם הרשומה שלו.</li><li>ייצאו את הנתונים שלכם ממסך הפרופיל.</li><li>הגדירו הודעות לפוג לפי צ'אט: שעה, 24 שעות, 7 ימים או 30 יום.</li><li>הפעילו או כבו חיווי הקלדה ואישורי קריאה. שניהם כבויים כברירת מחדל.</li><li>נעלו את האפליקציה עם קוד PIN או זיהוי ביומטרי.</li><li>בטלו קישור הזמנה שכבר חילקתם.</li></ul>
+      <p>אם תעדיפו שנמחק משהו ידנית, כתבו לנו.</p>
+    </section>
+
+    <section>
+      <h2>9. שמירת נתונים</h2>
+      <p>אנחנו שומרים את הנתונים שלכם כל עוד החשבון שלכם קיים. מחיקת החשבון מוחקת אותם, מלבד התוכן המשותף שצוין לעיל. תפוגה לפי צ'אט מסירה הודעות בלוח הזמנים שקבעתם.</p>
+    </section>
+
+    <section>
+      <h2>10. מגבלות שכדאי לכם לדעת</h2>
+      <p>היינו מעדיפים לספר לכם על אלה מאשר שתגלו אותן בעצמכם.</p>
+      <ul><li>מפתחות זוכים לאמון בפעם הראשונה שהם נראים. אם מישהו החליף מפתח לפני שאי פעם החלפתם הודעה, השיחה הייתה מוצפנת לאדם הלא נכון והייתה נראית לגמרי רגילה. האפליקציה מזהירה אתכם כשמפתח משתנה לאחר מכן, ומציגה מספר בטיחות שאתם יכולים להשוות בערוץ נפרד — אך שום דבר לא מכריח אתכם להשוות אותו.</li><li>מכשיר אחד בכל פעם. ביטוי השחזור שלכם משחזר את המפתח שפותח את ההיסטוריה שלכם, כך שהתחברות במכשיר חדש לא מאבדת את מה שכבר קיבלתם. שיחות עם סודיות קדימה משתמשות במפתח שני שלעולם לא עוזב את המכשיר שיצר אותו: המכשיר שהתחבר אחרון הוא זה שאליו הן מגיעות, וכל מה שנחתם לאחר עבור המכשיר האחר לא ניתן להעביר בינתיים.</li><li>הודעות שנשלחו לפני שהייתה הצפנה נשארות כפי שהיו. שום דבר לא הומר רטרואקטיבית.</li><li>אפליקציה זו מעולם לא עברה ביקורת אבטחה עצמאית.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. ילדים</h2>
+      <p>Chatterbox אינה מיועדת לילדים מתחת לגיל 13, ואנחנו לא אוספים ביודעין את המידע שלהם. אם אתם סבורים שילד מסר לנו מידע אישי, צרו איתנו קשר ואנחנו נמחק אותו.</p>
+    </section>
+
+    <section>
+      <h2>12. שינויים</h2>
+      <p>אנחנו עשויים לעדכן מדיניות זו. שינויים משמעותיים יפורסמו באפליקציה, והתאריך למעלה הוא מתי שהיא השתנתה לאחרונה.</p>
+    </section>
+
+    <section>
+      <h2>13. יצירת קשר</h2>
+      <p>שאלות על מדיניות זו: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="site-langs" aria-label="מדיניות הפרטיות">
+        <a href="privacy" lang="en" hreflang="en">English</a>
+        <a href="privacy.zh-Hans" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="privacy.zh-Hant" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="privacy.es" lang="es" hreflang="es">Español</a>
+        <a href="privacy.fr" lang="fr" hreflang="fr">Français</a>
+        <a href="privacy.de" lang="de" hreflang="de">Deutsch</a>
+        <a href="privacy.it" lang="it" hreflang="it">Italiano</a>
+        <a href="privacy.pt" lang="pt" hreflang="pt">Português</a>
+        <a href="privacy.ru" lang="ru" hreflang="ru">Русский</a>
+        <a href="privacy.tr" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="privacy.vi" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="privacy.ja" lang="ja" hreflang="ja">日本語</a>
+        <a href="privacy.ko" lang="ko" hreflang="ko">한국어</a>
+        <a href="privacy.ar" lang="ar" hreflang="ar">العربية</a>
+        <a href="privacy.hi" lang="hi" hreflang="hi">हिन्दी</a>
+        <a href="privacy.fa" lang="fa" hreflang="fa">فارسی</a>
+        <span aria-current="true" lang="he">עברית</span>
+        <a href="privacy.ur" lang="ur" hreflang="ur">اردو</a>
+        <a href="privacy.pl" lang="pl" hreflang="pl">Polski</a>
+        <a href="privacy.uk" lang="uk" hreflang="uk">Українська</a>
+        <a href="privacy.id" lang="id" hreflang="id">Bahasa Indonesia</a>
+        <a href="privacy.bn" lang="bn" hreflang="bn">বাংলা</a>
+        <a href="privacy.th" lang="th" hreflang="th">ไทย</a>
+    </nav>
+  </main>
+</body>
+</html>
