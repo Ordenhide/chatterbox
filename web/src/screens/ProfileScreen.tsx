@@ -4,7 +4,7 @@ import type {User} from 'firebase/auth';
 import {avatarColor, colors} from '../theme';
 import {useTheme} from '../context/ThemeContext';
 import {useToast} from '../context/ToastContext';
-import {useT, type Lang} from '../i18n';
+import {useT, LANGUAGES} from '../i18n';
 import {signOut, updateDisplayName} from '../services/auth';
 import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
@@ -174,13 +174,13 @@ export default function ProfileScreen({user}: {user: User}) {
           <section style={styles.card}>
             <div style={styles.cardTitle}>{t('profile.language')}</div>
             <div style={styles.cardDesc}>{t('profile.languageDesc')}</div>
-            <div style={styles.visRow}>
-              {([['en', 'English'], ['zh', '中文']] as [Lang, string][]).map(([code, label]) => (
+            <div style={styles.langGrid}>
+              {LANGUAGES.map(({code, nativeLabel}) => (
                 <button
                   key={code}
                   onClick={() => setLang(code)}
-                  style={{...styles.visChip, ...(lang === code ? styles.chipOn : styles.chipOff)}}>
-                  {label}
+                  style={{...styles.langChip, ...(lang === code ? styles.chipOn : styles.chipOff)}}>
+                  {nativeLabel}
                 </button>
               ))}
             </div>
@@ -313,7 +313,7 @@ export default function ProfileScreen({user}: {user: User}) {
             <a
               className="btn btn-soft"
               style={{...styles.pwSubmit, display: 'inline-block', textAlign: 'center'}}
-              href={lang === 'zh' ? '/privacy.zh-Hans.html' : '/privacy.html'}
+              href={lang === 'en' ? '/privacy.html' : `/privacy.${lang}.html`}
               target="_blank"
               rel="noopener noreferrer">
               {t('privacyPolicy.open')}
@@ -556,6 +556,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chipOn: {background: colors.primary, color: colors.textOnPrimary, borderColor: colors.primary},
   chipOff: {background: 'transparent', color: colors.text},
+  langGrid: {display: 'flex', flexWrap: 'wrap', gap: 8},
+  langChip: {
+    padding: '8px 14px',
+    borderRadius: 2,
+    border: `1px solid ${colors.border}`,
+    fontSize: 13.5,
+    fontWeight: 700,
+    whiteSpace: 'nowrap',
+  },
   pushBtn: {width: '100%', padding: '12px', borderRadius: 2, fontSize: 14.5},
   pushOn: {
     display: 'flex',

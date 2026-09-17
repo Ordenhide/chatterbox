@@ -192,6 +192,14 @@ const WIKI_SUBDOMAIN: Record<string, string> = {
   it: 'it',
   tr: 'tr',
   vi: 'vi',
+  fa: 'fa',
+  he: 'he',
+  ur: 'ur',
+  pl: 'pl',
+  uk: 'uk',
+  id: 'id',
+  bn: 'bn',
+  th: 'th',
 };
 
 /**

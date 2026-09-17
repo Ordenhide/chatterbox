@@ -11,9 +11,31 @@ const functions = getFunctions(getApp());
 // Google Speech-to-Text v2 language codes, mapped from this app's own Lang
 // type — "zh" alone isn't a valid STT language code (it wants the more
 // specific "cmn-Hans-CN" for Mandarin), so this can't be passed through raw.
+// Mirrors src/services/transcription.ts on mobile.
 const SPEECH_LANGUAGE_CODES: Record<Lang, string> = {
   en: 'en-US',
-  zh: 'cmn-Hans-CN',
+  'zh-Hans': 'cmn-Hans-CN',
+  'zh-Hant': 'cmn-Hant-TW',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  de: 'de-DE',
+  it: 'it-IT',
+  pt: 'pt-BR',
+  ru: 'ru-RU',
+  tr: 'tr-TR',
+  vi: 'vi-VN',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+  ar: 'ar-SA',
+  hi: 'hi-IN',
+  fa: 'fa-IR',
+  he: 'iw-IL', // Speech-to-Text still uses the old ISO code for Hebrew.
+  ur: 'ur-PK',
+  pl: 'pl-PL',
+  uk: 'uk-UA',
+  id: 'id-ID',
+  bn: 'bn-IN',
+  th: 'th-TH',
 };
 
 /** Maps the app's current UI language to a Speech-to-Text language code, falling back to English. */
@@ -24,10 +46,32 @@ export function toSpeechLanguageCode(appLanguage: string): string {
 // Google Cloud Translate v2 language codes, mapped from this app's own Lang
 // type — Translate uses plain ISO 639-1 codes (not BCP-47 the way
 // Speech-to-Text does), and distinguishes Chinese as "zh-CN"/"zh-TW"
-// specifically rather than a bare "zh".
+// specifically rather than a bare "zh". Mirrors src/services/translation.ts
+// on mobile.
 const TRANSLATE_LANGUAGE_CODES: Record<Lang, string> = {
   en: 'en',
-  zh: 'zh-CN',
+  'zh-Hans': 'zh-CN',
+  'zh-Hant': 'zh-TW',
+  es: 'es',
+  fr: 'fr',
+  de: 'de',
+  it: 'it',
+  pt: 'pt',
+  ru: 'ru',
+  tr: 'tr',
+  vi: 'vi',
+  ja: 'ja',
+  ko: 'ko',
+  ar: 'ar',
+  hi: 'hi',
+  fa: 'fa',
+  he: 'iw', // Cloud Translate still uses the old ISO code for Hebrew.
+  ur: 'ur',
+  pl: 'pl',
+  uk: 'uk',
+  id: 'id',
+  bn: 'bn',
+  th: 'th',
 };
 
 /** Maps the app's current UI language to a Cloud Translate language code, falling back to English. */
