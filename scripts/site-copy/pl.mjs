@@ -26,7 +26,7 @@ export default {
     lead: `Chatterbox to komunikator szyfrowany end-to-end bez katalogu użytkowników. Nikt nie może Cię wyszukać, bo nie ma indeksu do przeszukania — jedyną drogą do rozmowy jest link, który sam komuś przekazujesz.`,
     primary: 'Pobierz Chatterbox',
     secondary: 'Przeczytaj politykę prywatności',
-    badges: ['Brak katalogu użytkowników', 'Tylko z zaproszenia', '23 języki', 'Za darmo'],
+    badges: ['Brak katalogu użytkowników', 'Tylko z zaproszenia', '53 języki', 'Za darmo'],
   },
 
   different: {
@@ -77,7 +77,7 @@ export default {
       {
         title: 'Polityka prywatności mówi, czego nie potrafi',
         body: [
-          `Stwierdza, że szyfrowanie nigdy nie zostało niezależnie zaudytowane, że Google widzi metadane każdego połączenia, bo wynajmujemy jego serwery, i że klucz podmieniony przed Twoją pierwszą wiadomością wyglądałby zupełnie normalnie. To ten sam tekst w aplikacji i na tej stronie, w 23 językach — nie angielski oryginał z łagodniejszym tłumaczeniem.`,
+          `Stwierdza, że szyfrowanie nigdy nie zostało niezależnie zaudytowane, że Google widzi metadane każdego połączenia, bo wynajmujemy jego serwery, i że klucz podmieniony przed Twoją pierwszą wiadomością wyglądałby zupełnie normalnie. To ten sam tekst w aplikacji i na tej stronie, w 53 językach — nie angielski oryginał z łagodniejszym tłumaczeniem.`,
         ],
         note: `{policyShort}, zanim zdecydujesz się zaufać czemukolwiek powyżej.`,
       },
@@ -110,8 +110,8 @@ export default {
         body: `Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojego urządzenia. Możesz go zapisać jako frazę odzyskiwania; my go nie przechowujemy i nie możemy go dla Ciebie odzyskać.`,
       },
       {
-        title: '23 języki',
-        body: `Angielski, oba pisma chińskie, japoński, koreański, hiszpański, francuski, niemiecki, włoski, portugalski, rosyjski, turecki, wietnamski, arabski, hindi, perski, hebrajski, urdu, polski, ukraiński, indonezyjski, bengalski i tajski — w tym pismo od prawej do lewej.`,
+        title: '53 języki',
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — w tym pismo od prawej do lewej.`,
       },
     ],
   },

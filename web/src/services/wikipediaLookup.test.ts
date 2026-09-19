@@ -11,7 +11,8 @@
  * the kind of bug a test suite has to be asked to look for.
  */
 import {describe, expect, it} from 'vitest';
-import {extractEntities, wikipediaSearchUrl} from './wikipediaLookup';
+import {LANGUAGES} from '../i18n';
+import {extractEntities, wikipediaSearchUrl, wikipediaSubdomain} from './wikipediaLookup';
 
 describe('scripts without ASCII capitals', () => {
   // Chinese marks a work with 《》, which is a stronger signal than a capital.
@@ -178,4 +179,21 @@ describe('wikipediaSearchUrl', () => {
   it('escapes a phrase that would otherwise change the query', () => {
     expect(wikipediaSearchUrl('Guns & Roses', 'en')).toContain('search=Guns%20%26%20Roses');
   });
+});
+
+/**
+ * WIKI_SUBDOMAIN is a plain Record<string, string>, not keyed by Lang, so
+ * leaving a language out of it is not a compile error — it is a silent
+ * fall-through to English. bo, be, ti and mn shipped in the picker for a
+ * full round each without ever being added here, and nothing caught it
+ * because nothing checked. This is the check. Mirrors the same test on
+ * mobile's wikipediaLookup.test.ts.
+ */
+describe('WIKI_SUBDOMAIN completeness', () => {
+  it.each(LANGUAGES.map(l => l.code).filter(code => code !== 'en'))(
+    "doesn't silently fall back to English for %s",
+    code => {
+      expect(wikipediaSubdomain(code)).not.toBe('en');
+    },
+  );
 });

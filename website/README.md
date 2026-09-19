@@ -20,7 +20,7 @@ site that contradicts its own source. That is not hypothetical: the privacy page
 was hand-maintained once and spent months describing a messenger that stored
 messages in the clear.
 
-## Fifteen languages
+## Every language the app offers
 
 The landing page and the policy both ship in every language the app offers.
 `scripts/site-copy/languages.mjs` is the one list of them — writing direction

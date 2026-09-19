@@ -21,7 +21,7 @@ export default {
     lead: `Chatterbox est une messagerie chiffrée de bout en bout sans annuaire d'utilisateurs. Personne ne peut vous rechercher, parce qu'il n'existe aucun index à parcourir : la seule entrée dans une conversation est un lien que vous remettez vous-même à quelqu'un.`,
     primary: `Obtenir Chatterbox`,
     secondary: `Lire la politique de confidentialité`,
-    badges: [`Aucun annuaire`, `Sur invitation`, `23 langues`, `Gratuit`],
+    badges: [`Aucun annuaire`, `Sur invitation`, `53 langues`, `Gratuit`],
   },
 
   different: {
@@ -72,7 +72,7 @@ export default {
       {
         title: `La politique de confidentialité dit ce qu'elle ne peut pas faire`,
         body: [
-          `Elle indique que le chiffrement n’a jamais fait l’objet d’un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et qu’une clé substituée avant votre premier message aurait l’air parfaitement normale. C’est le même texte dans l’application et sur ce site, en 23 langues — pas un original anglais accompagné d’une traduction plus douce.`,
+          `Elle indique que le chiffrement n’a jamais fait l’objet d’un audit indépendant, que Google voit les métadonnées de chaque connexion parce que nous louons ses serveurs, et qu’une clé substituée avant votre premier message aurait l’air parfaitement normale. C’est le même texte dans l’application et sur ce site, en 53 langues — pas un original anglais accompagné d’une traduction plus douce.`,
         ],
         note: `{policyShort} avant de décider de faire confiance à quoi que ce soit de ce qui précède.`,
       },
@@ -105,8 +105,8 @@ export default {
         body: `La clé privée qui déchiffre vos messages ne quitte jamais votre appareil. Vous pouvez la noter sous forme de phrase de récupération ; nous ne la détenons pas et ne pouvons pas la retrouver pour vous.`,
       },
       {
-        title: `23 langues`,
-        body: `Anglais, chinois dans ses deux écritures, japonais, coréen, espagnol, français, allemand, italien, portugais, russe, turc, vietnamien, arabe, hindi, persan, hébreu, ourdou, polonais, ukrainien, indonésien, bengali et thaï — écriture de droite à gauche comprise.`,
+        title: `53 langues`,
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — écriture de droite à gauche comprise.`,
       },
     ],
   },

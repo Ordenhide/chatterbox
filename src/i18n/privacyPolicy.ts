@@ -2724,6 +2724,3507 @@ Jika Anda lebih suka kami menghapus sesuatu secara manual, tulis kepada kami.`,
       body: `คำถามเกี่ยวกับนโยบายนี้: ${POLICY_CONTACT_EMAIL}`,
     },
   ],
+
+  fil: [
+    {
+      title: '0. Sa madaling salita',
+      body: `Ang teksto ng iyong mga mensahe ay naka-encrypt sa iyong device at mababasa lamang ng mga taong ipinadalhan mo. Hindi namin ito mababasa, at gayundin ang Google, na inuupahan naming mga server.
+
+Ang nakikita namin ay may nangyaring pag-uusap: kung sinong mga account ang kasama, at kung kailan sila naging aktibo. Mas mahirap alisin iyon kaysa i-encrypt ang laman, at hindi pa namin ito natatapos. Sinasabi ng patakarang ito kung saan eksaktong nakatayo ang linya ngayon.`,
+    },
+    {
+      title: '1. Ano ang end-to-end encrypted',
+      body: `Naka-encrypt sa iyong device, hindi mababasa ng amin at ng Google:
+
+• Ang teksto ng iyong mga mensahe.
+• Ang laman ng mga file, larawan, audio at video na iyong inilalakip.
+• Mga preview ng link.
+• Voice at video call, na gumagamit ng ipinag-uutos na DTLS-SRTP ng WebRTC sa pagitan ng dalawang device.
+
+Karamihan sa one-to-one at group na mensahe ay gumagamit din ng ratchet, ibig sabihin ang bawat mensahe ay may sariling key, kaya ang pagkasira ng iyong device ay hindi nagbubunyag ng mga naunang mensahe. Ang mga pag-uusap kung saan hindi pa nailalathala ng kliyente ng ibang tao ang mas bagong key material ay bumabalik sa isang mahabang-buhay na key, na walang katangiang iyon. Sinasabi sa iyo ng label sa ilalim ng isang mensahe kung alin ang aktwal na natanggap nito.
+
+Isang bagay ang lumalampas sa linyang ito, at tanging kapag hiniling mo lamang: ang paghahanap ng pangalan sa Wikipedia ay nagpapadala ng isang pangalang iyon, hindi ang mensaheng pinagmulan nito. Sinasabi ng Seksyon 6 kung sino ang tatanggap nito, at ang paghahanap ay tumatakbo sa tap at wala nang iba, kaya walang anumang kailangang i-off. Ang pagbubuod, pagsasalin, at pagsasatitik ay lalampas din dito — pinapatay ang mga ito sa release na ito, na walang kontrol kahit saan sa app na magbubukas sa mga ito.`,
+    },
+    {
+      title: '2. Ano ang hindi naka-encrypt, at ano ang aming nakikita',
+      body: `Pinoprotektahan ng encryption ang laman, hindi ang katotohanan ng isang pag-uusap. Nananatili ang mga ito nang malinaw sa aming mga server:
+
+• Sino ang kasama sa bawat pag-uusap, at kailan ito nilikha at huling naging aktibo.
+• Ang timestamp ng bawat mensahe, at ilan ang hindi mo pa nababasa.
+• Ang pangalan, uri, at laki ng file ng isang attachment. Ang mga byte ay naka-encrypt; ang deskripsyon ng mga ito ay hindi, at ang haba ng ciphertext ay naglilimita sa haba ng orihinal.
+• Ang iyong mga kaibigan at mga kahilingan sa pagkakaibigan.
+• Signaling ng tawag — na may tawag na ginawa, kanino, at kailan. Hindi ang audio o video nito.
+
+Ang mga typing indicator at read receipt ay naka-off maliban kung i-on mo, at habang naka-off ay walang naisusulat.
+
+Ano na ang wala na rito: ang iyong email address at pangalan. Simula Setyembre 2026, ang talaan ng account ay may lamang identifier ng account — at mula noon, walang address na itinatago kahit saan. Walang tinatanong ang pag-sign up tungkol sa iyo: ang iyong account ay isang 24-word na recovery phrase, at ang kredensyal na sinusuri ng Firebase Authentication ay hinango mula rito. Ang iniimbak nito ay isang random na label sa ilalim ng isang domain na hindi maaaring tumanggap ng mail.
+
+Hiwalay: dahil ang app ay tumatakbo sa Google Firebase, makikita ng Google ang IP address at oras ng bawat koneksyon na ginagawa ng iyong device dito. Isa itong katangian ng hosting, hindi ng app, at hindi namin ito maaaring i-encrypt palayo.`,
+    },
+    {
+      title: '3. Paano ka nahahanap ng mga tao',
+      body: `Hindi ka nila mahahanap sa paghahanap. Walang direktoryo — walang paghahanap gamit ang email, numero ng telepono, o pangalan — at tinatanggihan ng server ang anumang query na sumusubok nito.
+
+Nakakarating ka sa isang tao sa pagpapadala sa kanila ng invite link nang labas sa channel, sa anumang ginagamit mo na. Isang beses gumagana ang link, mag-e-expire pagkatapos ng 24 oras, at maaaring bawiin. Anumang itawag mo sa isang tao ay ang sarili mong label para sa kanila, itinatago para sa iyo; kung nagpakilala sila sa kanilang sarili, ang pangalang iyon ay dumating sa iyo nang naka-encrypt.`,
+    },
+    {
+      title: '4. Ano ang kinokolekta namin',
+      body: `• Data ng account: isang identifier ng account, at isang kredensyal na hinango mula sa iyong recovery phrase, na itinatago sa Firebase Authentication. Walang email address, walang numero ng telepono, walang pangalan — walang hinihinging alinman sa mga ito ang pag-sign up.
+• Ciphertext ng mensahe at attachment, kasama ang metadata sa seksyon 2.
+
+Iyon ang buong listahan. Walang analytics at walang crash reporting. Dati ay nagpapadala ang app ng screen view sa Firebase Analytics at crash report sa Firebase Crashlytics, na parehong may dalang identifier ng iyong account, kaya wala sa mga ito ang anonymous; wala na ang dalawa, kasama ang mga library na nagpadala ng mga ito. Ang mga error ay naka-print lamang sa sariling makina ng developer habang sa development at wala nang ibang pupuntahan.`,
+    },
+    {
+      title: '5. Saan ito iniimbak',
+      body: `Sa Google Firebase — Firestore, Storage, at Authentication — sa ilalim ng mga panuntunan sa seguridad na nagpapasya kung sino ang maaaring magbasa at magsulat ng bawat dokumento.
+
+Sa iyong device, ang mga na-cache na mensahe, setting, at iyong app-lock PIN ay naka-encrypt gamit ang isang per-device key na itinatago sa platform keystore (iOS Keychain, Android Keystore) sa halip na sa karaniwang imbakan ng app.
+
+Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay hindi kailanman umaalis sa iyong device, maliban bilang recovery phrase na piniling isulat mo. Hindi namin ito hawak at hindi namin ito maaaring bawiin para sa iyo. Kung mawala ito, ang mga mensaheng ipinadala sa device na iyon ay hindi na mababasang muli — ninuman, kabilang kami.`,
+    },
+    {
+      title: '6. Sino pa ang tumatanggap ng data',
+      body: `Hindi namin ibinebenta, ipinagpapalit, o inuupahan ang iyong personal na impormasyon. Ang data ay nakakarating sa:
+
+• Google Firebase — ang aming provider ng hosting, gaya ng inilarawan sa itaas.
+• Wikimedia Foundation — isang pangalan, kapag na-tap mo ito para hanapin sa Wikipedia.
+• Google Cloud Speech-to-Text — ang audio ng isang voice message, kapag humihiling ka ng transcript.
+• Google Cloud Translation — ang teksto ng isang mensahe, kapag humihiling ka ng pagsasalin.
+• Cloudflare Workers AI — hanggang sa huling 50 mensahe ng isang pag-uusap, kapag humihiling ka ng buod o nagtatanong tungkol dito.
+
+Ang huling tatlo ay naka-off sa release na ito. Walang kontrol kahit saan sa app na magbubukas sa transcription, translation, o mga buod, kaya walang nakakarating sa tatlong serbisyong iyon. Nakalista ang mga ito sa halip na tanggalin dahil narito pa rin ang code at ang mga feature ay nilalayong bumalik — at kapag bumalik ang mga ito, babalik ito kasama ang paglalantad na ito at isang prompt bago ang unang paggamit. Anumang ipapadala sa oras na iyon ay ipapadala upang makagawa ng iyong resulta, hindi upang magsanay ng anuman; walang transcript o pagsasalin na naiimbak sa aming mga server.
+
+Ang paghahanap sa Wikipedia ay walang switch dahil walang anumang kailangang i-off: tumatakbo lang ito sa tap at wala nang iba. Ang Wikipedia ay tumatanggap ng isang pangalang iyon at ng iyong IP address, kapareho ng kung na-type mo ito sa kanilang search box — walang account, walang mensahe, walang pag-uusap. Ang ibinabalik ay ipinapakita at hindi naiimbak, at walang anumang tungkol dito ang naisusulat sa pag-uusap.
+
+Maaari naming ilantad ang aming hawak kung ito ay hinihiling ng batas. Ang aming hawak ay ang listahan sa seksyon 2. Hindi namin maibibigay ang laman ng mensahe, dahil hindi namin ito mababasa.`,
+    },
+    {
+      title: '7. Push notification',
+      body: `Ang Firebase Cloud Messaging ang naghahatid ng mga notification. Ang token ng iyong device ay naka-imbak sa isang pribadong bahagi ng iyong account na ikaw lamang ang makakabasa.
+
+Ang mga notification ay walang dalang teksto ng mensahe. Ang iyong device ang nagde-decrypt ng mensahe nang lokal at bumubuo ng nakikita mo; ang Google ang naghahatid ng sobre, hindi ng laman.`,
+    },
+    {
+      title: '8. Ano ang magagawa mo',
+      body: `• Burahin ang iyong account mula sa Profile screen. Ang nilalamang magkasamang bahagi ng isang pag-uusap — halimbawa, isang tala ng tawag — ay mananatili sa ibang kalahok, dahil ito ay tala rin nila.
+• I-export ang iyong data mula sa Profile screen.
+• Itakda ang mga mensahe na mag-expire kada chat: 1 oras, 24 oras, 7 araw, o 30 araw.
+• I-on o i-off ang typing indicator at read receipt. Naka-off ang pareho bilang default.
+• I-lock ang app gamit ang PIN o biometrics.
+• Bawiin ang isang invite link na ipinamahagi mo na.
+
+Kung mas gugustuhin mong burahin namin nang manu-mano ang isang bagay, sumulat sa amin.`,
+    },
+    {
+      title: '9. Pagpapanatili',
+      body: `Iniingatan namin ang iyong data habang umiiral ang iyong account. Ang pagbura ng account ay bumubura nito, maliban sa nilalamang magkasamang hawak na nabanggit sa itaas. Ang per-chat na expiry ay nag-aalis ng mga mensahe sa iskedyul na itinakda mo.`,
+    },
+    {
+      title: '10. Mga limitasyong dapat mong malaman',
+      body: `Mas gugustuhin naming sabihin sa iyo ang mga ito kaysa hayaan kang makita mo ang mga ito.
+
+• Ang mga key ay pinagkakatiwalaan sa unang pagkakataong makita. Kung may nagpalit ng key bago ka kailanman nakipagpalitan ng mensahe, ang pag-uusap ay maie-encrypt sa maling tao at magiging ganap na normal ang itsura. Binabalaan ka ng app kapag nagbago ang key pagkatapos, at ipinapakita ang isang safety number na maaari mong ihambing sa labas ng channel — pero walang pumipilit sa iyong ihambing ito.
+• Isang device sa isang pagkakataon. Ang iyong recovery phrase ay nagbabalik ng key na nagbubukas sa iyong history, kaya ang pag-sign in sa isang bagong device ay hindi nawawalan ng natanggap mo na. Ang mga pag-uusap na forward-secret ay gumagamit ng pangalawang key na hindi kailanman umaalis sa device na lumikha nito: alinmang device ang pinakahuling nag-sign in ang siyang naaabot nila, at anumang naka-seal sa ibang device sa pagitan ay hindi maililipat.
+• Ang mga mensaheng ipinadala bago magkaroon ng encryption ay nananatiling gaya ng dati. Walang na-convert nang retroactive.
+• Ang app na ito ay hindi pa nasuri sa seguridad ng independiyenteng partido.`,
+    },
+    {
+      title: '11. Mga bata',
+      body: `Ang Chatterbox ay hindi inilaan para sa mga batang wala pang 13 taong gulang, at hindi namin sinasadyang kinokolekta ang kanilang impormasyon. Kung naniniwala kang nagbigay sa amin ng personal na impormasyon ang isang bata, makipag-ugnayan sa amin at ito ay aming buburahin.`,
+    },
+    {
+      title: '12. Mga pagbabago',
+      body: `Maaari naming i-update ang patakarang ito. Ianunsyo ang mga makabuluhang pagbabago sa app, at ang petsa sa itaas ay kung kailan huling nagbago ito.`,
+    },
+    {
+      title: '13. Contact',
+      body: `Mga tanong tungkol sa patakarang ito: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  ms: [
+    {
+      title: '0. Secara ringkas',
+      body: `Teks mesej anda disulitkan pada peranti anda dan hanya boleh dibaca oleh orang yang anda hantar mesej itu. Kami tidak dapat membacanya, begitu juga Google, yang pelayannya kami sewa.
+
+Apa yang kami dapat lihat ialah perbualan telah berlaku: akaun mana yang terlibat, dan bila mereka aktif. Menghapuskan itu lebih sukar daripada menyulitkan kandungan, dan kami belum selesai. Dasar ini menyatakan dengan tepat di mana garis itu berada sekarang.`,
+    },
+    {
+      title: '1. Apa yang disulitkan hujung ke hujung',
+      body: `Disulitkan pada peranti anda, tidak boleh dibaca oleh kami dan Google:
+
+• Teks mesej anda.
+• Kandungan fail, foto, audio dan video yang anda lampirkan.
+• Pratonton pautan.
+• Panggilan suara dan video, yang menggunakan DTLS-SRTP wajib WebRTC antara dua peranti.
+
+Kebanyakan mesej satu-lawan-satu dan kumpulan juga menggunakan ratchet, bermakna setiap mesej mempunyai kuncinya sendiri, jadi kompromi peranti anda tidak mendedahkan mesej sebelumnya. Perbualan di mana klien seseorang belum menerbitkan bahan kunci yang lebih baharu kembali menggunakan satu kunci berjangka hayat panjang, yang tidak mempunyai ciri itu. Label di bawah mesej memberitahu anda yang mana sebenarnya diterima.
+
+Satu perkara melintasi garis ini, dan hanya apabila anda memintanya: mencari nama di Wikipedia menghantar nama itu sahaja, bukan mesej asalnya. Bahagian 6 menyatakan siapa yang menerimanya, dan carian dijalankan hanya semasa ketikan dan tidak sebaliknya, jadi tiada apa untuk dimatikan. Meringkaskan, menterjemah dan mentranskripsi juga akan melintasi ini — ia dimatikan dalam keluaran ini, tanpa kawalan di mana-mana dalam apl untuk menghidupkannya.`,
+    },
+    {
+      title: '2. Apa yang tidak disulitkan, dan apa yang kami boleh lihat',
+      body: `Penyulitan melindungi kandungan, bukan fakta perbualan. Perkara ini berada dalam bentuk jelas pada pelayan kami:
+
+• Siapa yang terlibat dalam setiap perbualan, dan bila ia dicipta dan terakhir aktif.
+• Cap masa setiap mesej, dan berapa banyak yang belum anda baca.
+• Nama fail, jenis dan saiz lampiran. Bait disulitkan; keterangannya tidak, dan panjang teks sifer mengehadkan panjang asal.
+• Rakan dan permintaan rakan anda.
+• Isyarat panggilan — bahawa panggilan telah dibuat, kepada siapa, dan bila. Bukan audio atau videonya.
+
+Penunjuk menaip dan resit bacaan dimatikan melainkan anda menghidupkannya, dan semasa dimatikan tiada apa yang ditulis.
+
+Apa yang tiada lagi di sini: alamat e-mel dan nama anda. Sejak September 2026 rekod akaun hanya menyimpan pengecam akaun — dan sejak itu tiada alamat untuk disimpan di mana-mana. Pendaftaran tidak bertanya apa-apa tentang anda: akaun anda ialah frasa pemulihan 24 perkataan, dan bukti kelayakan yang diperiksa oleh Firebase Authentication diperoleh daripadanya. Apa yang disimpannya ialah label rawak di bawah domain yang tidak boleh menerima mel.
+
+Berasingan: kerana apl berjalan pada Google Firebase, Google boleh melihat alamat IP dan masa setiap sambungan yang dibuat peranti anda kepadanya. Itu ciri pengehosan, bukan apl, dan kami tidak boleh menyulitkannya.`,
+    },
+    {
+      title: '3. Bagaimana orang mencari anda',
+      body: `Mereka tidak boleh mencari anda. Tiada direktori — tiada carian mengikut e-mel, nombor telefon atau nama — dan pelayan menolak sebarang pertanyaan yang cuba berbuat demikian.
+
+Anda menghubungi seseorang dengan menghantar pautan jemputan di luar talian, melalui apa sahaja yang anda sudah gunakan. Pautan berfungsi sekali, tamat tempoh selepas 24 jam, dan boleh ditarik balik. Apa sahaja yang anda panggil seseorang ialah label anda sendiri untuk mereka, disimpan untuk anda; jika mereka memperkenalkan diri, nama itu sampai kepada anda dalam bentuk disulitkan.`,
+    },
+    {
+      title: '4. Apa yang kami kumpulkan',
+      body: `• Data akaun: pengecam akaun, dan bukti kelayakan yang diperoleh daripada frasa pemulihan anda, disimpan dalam Firebase Authentication. Tiada alamat e-mel, tiada nombor telefon, tiada nama — pendaftaran tidak meminta mana-mana daripadanya.
+• Teks sifer mesej dan lampiran, ditambah metadata dalam bahagian 2.
+
+Itulah keseluruhan senarai. Tiada analitik dan tiada laporan ranap. Apl dahulu menghantar paparan skrin ke Firebase Analytics dan laporan ranap ke Firebase Crashlytics, kedua-duanya membawa pengecam akaun anda, jadi tiada satu pun tanpa nama; kedua-duanya kini hilang, bersama pustaka yang menghantarnya. Ralat dicetak pada mesin pembangun sendiri semasa pembangunan dan tidak pergi ke mana-mana lagi.`,
+    },
+    {
+      title: '5. Di mana ia disimpan',
+      body: `Pada Google Firebase — Firestore, Storage dan Authentication — di bawah peraturan keselamatan yang menentukan siapa boleh membaca dan menulis setiap dokumen.
+
+Pada peranti anda, mesej yang dicache, tetapan dan PIN kunci apl anda disulitkan dengan kunci setiap peranti yang disimpan dalam keystore platform (iOS Keychain, Android Keystore) berbanding storan apl biasa.
+
+Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti anda, kecuali sebagai frasa pemulihan yang anda pilih untuk ditulis. Kami tidak menyimpannya dan tidak boleh memulihkannya untuk anda. Kehilangannya bermakna mesej yang dihantar ke peranti itu tidak boleh dibaca semula — oleh sesiapa, termasuk kami.`,
+    },
+    {
+      title: '6. Siapa lagi yang menerima data',
+      body: `Kami tidak menjual, berdagang atau menyewakan maklumat peribadi anda. Data sampai kepada:
+
+• Google Firebase — pembekal pengehosan kami, seperti yang diterangkan di atas.
+• Wikimedia Foundation — satu nama, apabila anda mengetik untuk mencarinya di Wikipedia.
+• Google Cloud Speech-to-Text — audio satu mesej suara, apabila anda meminta transkrip.
+• Google Cloud Translation — teks satu mesej, apabila anda meminta terjemahan.
+• Cloudflare Workers AI — sehingga 50 mesej terakhir satu perbualan, apabila anda meminta ringkasan atau bertanya soalan mengenainya.
+
+Tiga yang terakhir dimatikan dalam keluaran ini. Tiada kawalan di mana-mana dalam apl untuk menghidupkan transkripsi, terjemahan atau ringkasan, jadi tiada apa sampai ke tiga perkhidmatan itu. Ia disenaraikan berbanding dipadam kerana kod masih ada di sini dan ciri-ciri itu dimaksudkan untuk kembali — dan apabila ia kembali, ia kembali dengan pendedahan ini dan gesaan sebelum penggunaan pertama. Apa yang akan dihantar pada masa itu dihantar untuk menghasilkan keputusan anda, bukan untuk melatih apa-apa; tiada transkrip atau terjemahan yang disimpan pada pelayan kami.
+
+Carian Wikipedia tiada suis kerana tiada apa untuk dimatikan: ia berjalan hanya semasa ketikan dan tidak sebaliknya. Wikipedia menerima nama itu sahaja dan alamat IP anda, sama seperti jika anda menaipnya sendiri dalam kotak carian mereka — tiada akaun, tiada mesej, tiada perbualan. Apa yang dikembalikan dipaparkan dan tidak disimpan, dan tiada apa mengenainya ditulis ke dalam perbualan.
+
+Kami mungkin mendedahkan apa yang kami pegang jika undang-undang memerlukannya. Apa yang kami pegang ialah senarai dalam bahagian 2. Kami tidak boleh menghasilkan kandungan mesej, kerana kami tidak boleh membacanya.`,
+    },
+    {
+      title: '7. Pemberitahuan tolak',
+      body: `Firebase Cloud Messaging menyampaikan pemberitahuan. Token peranti anda disimpan dalam bahagian peribadi akaun anda yang hanya anda boleh baca.
+
+Pemberitahuan tidak membawa teks mesej. Peranti anda menyahsulit mesej secara tempatan dan menyusun apa yang anda lihat; Google menyampaikan sampul, bukan kandungan.`,
+    },
+    {
+      title: '8. Apa yang anda boleh lakukan',
+      body: `• Padam akaun anda daripada skrin Profil. Kandungan yang menjadi sebahagian bersama perbualan — rekod panggilan, contohnya — kekal bersama peserta lain, kerana ia juga rekod mereka.
+• Eksport data anda daripada skrin Profil.
+• Tetapkan mesej untuk tamat tempoh setiap sembang: 1 jam, 24 jam, 7 hari atau 30 hari.
+• Hidup atau matikan penunjuk menaip dan resit bacaan. Kedua-duanya dimatikan secara lalai.
+• Kunci apl dengan PIN atau biometrik.
+• Tarik balik pautan jemputan yang telah anda berikan.
+
+Jika anda lebih suka kami memadamkan sesuatu secara manual, tulis kepada kami.`,
+    },
+    {
+      title: '9. Pengekalan',
+      body: `Kami menyimpan data anda selagi akaun anda wujud. Memadam akaun memadamkannya, kecuali kandungan yang dipegang bersama yang dinyatakan di atas. Tamat tempoh setiap sembang mengeluarkan mesej mengikut jadual yang anda tetapkan.`,
+    },
+    {
+      title: '10. Had yang perlu anda ketahui',
+      body: `Kami lebih suka memberitahu anda perkara ini berbanding anda menemuinya sendiri.
+
+• Kunci dipercayai kali pertama ia dilihat. Jika seseorang menggantikan kunci sebelum anda pernah bertukar mesej, perbualan itu akan disulitkan kepada orang yang salah dan akan kelihatan sepenuhnya normal. Apl memberi amaran apabila kunci berubah selepas itu, dan menunjukkan nombor keselamatan yang boleh anda bandingkan di luar talian — tetapi tiada apa yang memaksa anda membandingkannya.
+• Satu peranti pada satu masa. Frasa pemulihan anda memulihkan kunci yang membuka sejarah anda, jadi mendaftar masuk pada peranti baharu tidak kehilangan apa yang telah anda terima. Perbualan rahsia-hadapan menggunakan kunci kedua yang tidak pernah meninggalkan peranti yang menciptanya: peranti mana sahaja yang mendaftar masuk terakhir adalah yang dicapai, dan apa sahaja yang dimeterai kepada peranti lain sementara itu tidak boleh dipindahkan.
+• Mesej yang dihantar sebelum penyulitan wujud kekal seperti sedia ada. Tiada apa yang ditukar secara retroaktif.
+• Apl ini belum diaudit keselamatan secara bebas.`,
+    },
+    {
+      title: '11. Kanak-kanak',
+      body: `Chatterbox tidak ditujukan untuk kanak-kanak di bawah 13 tahun, dan kami tidak mengumpul maklumat mereka secara sedar. Jika anda percaya seorang kanak-kanak telah memberikan kami maklumat peribadi, hubungi kami dan kami akan memadamkannya.`,
+    },
+    {
+      title: '12. Perubahan',
+      body: `Kami mungkin mengemas kini dasar ini. Perubahan ketara akan diumumkan dalam apl, dan tarikh di bahagian atas ialah bila ia terakhir berubah.`,
+    },
+    {
+      title: '13. Hubungi',
+      body: `Soalan mengenai dasar ini: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  my: [
+    {
+      title: '0. အကျဉ်းချုပ်',
+      body: `သင့်စာသားများကို သင့်စက်ပေါ်တွင် လျှို့ဝှက်ကုဒ်ဖြင့်ပြောင်းထားပြီး သင်ပို့သည့်သူများသာ ဖတ်နိုင်သည်။ ကျွန်ုပ်တို့ မဖတ်နိုင်ပါ၊ ကျွန်ုပ်တို့ ငှားရမ်းအသုံးပြုနေသော ဆာဗာများပိုင်ရှင် Google ကလည်း မဖတ်နိုင်ပါ။
+
+ကျွန်ုပ်တို့မြင်နိုင်သည်မှာ စကားပြောဆိုမှု တစ်ခုဖြစ်ပျက်ခဲ့သည်ဆိုသည့်အချက်ဖြစ်သည်— မည်သည့်အကောင့်များပါဝင်သည်၊ မည်သည့်အချိန်တွင် အသုံးပြုခဲ့သည်။ ၎င်းကိုဖယ်ရှားခြင်းသည် အကြောင်းအရာများကို ကုဒ်ဝှက်ခြင်းထက် ပိုမိုခက်ခဲပြီး ကျွန်ုပ်တို့ လက်ရှိအထိ မပြီးမြောက်သေးပါ။ ဤမူဝါဒသည် ယခုအချိန်တွင် မျဉ်းသည်အတိအကျ မည်သို့ရှိနေသည်ကို ဖော်ပြထားသည်။`,
+    },
+    {
+      title: '1. End-to-end encryption ဖြင့်ကာကွယ်ထားသည့်အရာများ',
+      body: `သင့်စက်ပေါ်တွင် ကုဒ်ဝှက်ထားပြီး၊ ကျွန်ုပ်တို့နှင့် Google မဖတ်နိုင်သည်များ—
+
+• သင့်စာသားများ။
+• သင်ပူးတွဲပို့သည့် ဖိုင်၊ ဓာတ်ပုံ၊ အသံနှင့် ဗီဒီယိုများ၏ အကြောင်းအရာ။
+• လင့်ခ်အစမ်းကြည့်ရှုမှုများ။
+• WebRTC ၏မဖြစ်မနေလိုအပ်သည့် DTLS-SRTP ကိုအသုံးပြုသော အသံနှင့်ဗီဒီယိုခေါ်ဆိုမှုများ၊ စက်နှစ်ခုကြား။
+
+one-to-one နှင့် group စာများအများစုသည် ratchet ကိုပါအသုံးပြုပြီး၊ ၎င်းသည် စာတိုင်းတွင် သီးခြား key ရှိသည်ဟုဆိုလိုသဖြင့် သင့်စက်ကို ထိပါးခံရလျှင်ပင် ယခင်စာများကို မဖော်ထုတ်နိုင်ပါ။ တစ်ဖက်၏ client မှ ပိုသစ်သော key material ကို မထုတ်ပြန်ရသေးသည့် စကားပြောဆိုမှုများသည် သီးခြားဂုဏ်သတ္တိမရှိသော long-lived key တစ်ခုတည်းအားပြန်လည် အသုံးပြုသည်။ စာတစ်စောင်၏အောက်ရှိ label က ၎င်းအမှန်တကယ်ရရှိသည့်အမျိုးအစားကို ပြောပြပါသည်။
+
+ဤမျဉ်းကို ဖြတ်ကျော်သွားသော တစ်ခုတည်းသောအရာမှာ သင်တောင်းဆိုမှသာဖြစ်ပြီး၊ Wikipedia တွင်အမည်တစ်ခုရှာခြင်းသည် ၎င်းစာလာသည့် စာကို မဟုတ်ဘဲ အမည်တစ်ခုတည်းကိုသာ ပို့သည်။ အပိုင်း ၆ တွင် မည်သူရရှိသည်ကို ဖော်ပြထားပြီး၊ ရှာဖွေမှုသည် တို့ထိမှသာ အလုပ်လုပ်ပြီး အခြားနည်းလမ်းမရှိသဖြင့် ပိတ်ရန်မလိုအပ်ပါ။ အနှစ်ချုပ်ခြင်း၊ ဘာသာပြန်ခြင်းနှင့် စာသားပြောင်းခြင်းများသည်လည်း ဤမျဉ်းကို ဖြတ်ကျော်မည်ဖြစ်သည် — ၎င်းတို့ကို ဤဗားရှင်းတွင် ပိတ်ထားပြီး၊ အက်ပ်တွင် ဖွင့်ရန်ထိန်းချုပ်မှု မရှိပါ။`,
+    },
+    {
+      title: '2. ကုဒ်ဝှက်မထားသည့်အရာများနှင့် ကျွန်ုပ်တို့မြင်နိုင်သည့်အရာများ',
+      body: `ကုဒ်ဝှက်ခြင်းသည် အကြောင်းအရာကို ကာကွယ်ပေးသော်လည်း၊ စကားပြောဆိုမှုတစ်ခု ဖြစ်ပျက်ခဲ့သည်ဆိုသည့်အချက်ကို မကာကွယ်ပါ။ ဤအရာများသည် ကျွန်ုပ်တို့ ဆာဗာများပေါ်တွင် ရှင်းလင်းစွာရှိနေသည်—
+
+• စကားပြောဆိုမှုတစ်ခုစီတွင် မည်သူပါဝင်သည်၊ မည်သည့်အချိန်တွင် ဖန်တီးခဲ့ပြီး နောက်ဆုံးအသုံးပြုခဲ့သည်။
+• စာတိုင်း၏ အချိန်တံဆိပ်နှင့် သင်မဖတ်ရသေးသောစာအရေအတွက်။
+• ပူးတွဲဖိုင်၏ ဖိုင်အမည်၊ အမျိုးအစားနှင့် အရွယ်အစား။ ဘိုက်များကို ကုဒ်ဝှက်ထားသော်လည်း ၎င်းတို့၏ ဖော်ပြချက်ကို ကုဒ်ဝှက်မထားပါ၊ ciphertext ၏အရှည်သည် မူရင်း၏အရှည်ကို ကန့်သတ်ပေးသည်။
+• သင့်မိတ်ဆွေများနှင့် မိတ်ဆွေတောင်းဆိုမှုများ။
+• ခေါ်ဆိုမှု signaling — ခေါ်ဆိုမှုတစ်ခု ပြုလုပ်ခဲ့သည်၊ မည်သူထံ၊ မည်သည့်အချိန်တွင်။ ၎င်း၏ အသံ (သို့) ဗီဒီယိုကိုမဟုတ်ပါ။
+
+Typing indicators နှင့် read receipts များသည် သင်ဖွင့်မှသာ အလုပ်လုပ်ပြီး ပိတ်ထားစဉ် မည်သည့်အရာမျှ မမှတ်တမ်းတင်ပါ။
+
+ယခုမရှိတော့သည့်အရာများ— သင့်အီးမေးလ်လိပ်စာနှင့် အမည်။ ၂၀၂၆ စက်တင်ဘာလမှစတင်၍ အကောင့်မှတ်တမ်းတွင် account identifier တစ်ခုသာရှိပြီး၊ ထိုအချိန်မှစ၍ မည်သည့်နေရာတွင်မျှ လိပ်စာမရှိတော့ပါ။ အကောင့်ဖွင့်ခြင်းသည် သင့်အကြောင်း မည်သည့်အရာမျှ မမေးပါ— သင့်အကောင့်သည် စကားလုံး ၂၄ လုံးပါ recovery phrase တစ်ခုဖြစ်ပြီး Firebase Authentication စစ်ဆေးသည့် credential ကို ၎င်းမှ ဆင်းသက်ထုတ်ယူသည်။ ၎င်းကသိမ်းဆည်းထားသည်မှာ မေးလ်လက်ခံနိုင်သည့် domain မဟုတ်သော domain တစ်ခုအောက်ရှိ ကျပန်း label တစ်ခုသာဖြစ်သည်။
+
+သီးခြားစွာ— အက်ပ်သည် Google Firebase ပေါ်တွင် လည်ပတ်နေသောကြောင့်၊ Google သည် သင့်စက်၏ ၎င်းသို့ ချိတ်ဆက်မှုတိုင်း၏ IP လိပ်စာနှင့် အချိန်ကို မြင်နိုင်သည်။ ၎င်းသည် hosting ၏ဂုဏ်သတ္တိတစ်ခုဖြစ်ပြီး၊ အက်ပ်၏ဂုဏ်သတ္တိမဟုတ်ဘဲ ကျွန်ုပ်တို့ ကုဒ်ဝှက်၍ ဖယ်ရှားလို့မရပါ။`,
+    },
+    {
+      title: '3. လူများသည် သင့်ကိုမည်သို့ ရှာဖွေတွေ့ရှိနိုင်သနည်း',
+      body: `၎င်းတို့သည် သင့်ကို ရှာဖွေ၍မရနိုင်ပါ။ directory မရှိပါ — email၊ ဖုန်းနံပါတ် သို့မဟုတ် အမည်ဖြင့် ရှာဖွေခြင်းမရှိပါ — ထိုသို့ကြိုးစားသော query ကို ဆာဗာက ငြင်းပယ်ပါသည်။
+
+သင်သည် လူတစ်ဦးထံ invite link ကို channel ပြင်ပမှတစ်ဆင့် သင်အသုံးပြုနေရင်းဖြင့် ပေးပို့ခြင်းဖြင့် ဆက်သွယ်နိုင်သည်။ link တစ်ခုသည် တစ်ကြိမ်သာ အသုံးပြု၍ရပြီး ၂၄ နာရီအကြာတွင် သက်တမ်းကုန်ဆုံးကာ ရုပ်သိမ်းနိုင်သည်။ သင်လူတစ်ဦးအား မည်သို့ခေါ်သည်ဆိုသည်မှာ သင့်အတွက်သိမ်းဆည်းထားသော သင်ကိုယ်တိုင်၏ label ဖြစ်ပြီး၊ ၎င်းတို့ကိုယ်တိုင်မိတ်ဆက်ခဲ့ပါက ထိုအမည်သည် ကုဒ်ဝှက်ထားသောပုံစံဖြင့် သင့်ထံရောက်ရှိလာသည်။`,
+    },
+    {
+      title: '4. ကျွန်ုပ်တို့ စုဆောင်းသည့်အရာများ',
+      body: `• အကောင့်ဒေတာ— account identifier တစ်ခုနှင့် Firebase Authentication တွင်သိမ်းဆည်းထားသော သင့် recovery phrase မှ ဆင်းသက်ထုတ်ယူသော credential တစ်ခု။ email လိပ်စာ၊ ဖုန်းနံပါတ်၊ အမည် မရှိပါ — အကောင့်ဖွင့်ခြင်းသည် ၎င်းတို့မှ မည်သည့်အရာမျှ မတောင်းဆိုပါ။
+• စာနှင့် ပူးတွဲဖိုင်များ၏ ciphertext၊ အပိုင်း ၂ ရှိ metadata နှင့်အတူ။
+
+ထိုစာရင်းသည် အားလုံးပင်ဖြစ်သည်။ analytics နှင့် crash reporting မရှိပါ။ အက်ပ်သည် ယခင်က screen views များကို Firebase Analytics သို့နှင့် crash reports များကို Firebase Crashlytics သို့ ပို့ခဲ့ပြီး၊ ၎င်းနှစ်ခုစလုံးသည် သင့်အကောင့် identifier ကို ပါဝင်စေခဲ့သဖြင့် မည်သည့်တစ်ခုမျှ အမည်ဝှက်မဟုတ်ခဲ့ပါ; ၎င်းနှစ်ခုစလုံးကို ၎င်းတို့ပို့ခဲ့သော library များနှင့်အတူ ဖယ်ရှားလိုက်ပါသည်။ Error များကို developer ၏ကိုယ်ပိုင်စက်ပေါ်တွင် development လုပ်နေစဉ်သာ print ထုတ်ပြီး အခြားနေရာသို့ မသွားပါ။`,
+    },
+    {
+      title: '5. မည်သည့်နေရာတွင် သိမ်းဆည်းထားသနည်း',
+      body: `Google Firebase — Firestore, Storage နှင့် Authentication — တွင် documnet တစ်ခုစီကို မည်သူဖတ်နိုင်ရေးနိုင်သည်ကို ဆုံးဖြတ်သည့် security rules များအောက်တွင်။
+
+သင့်စက်ပေါ်တွင်၊ cache လုပ်ထားသော စာများ၊ settings နှင့် သင့် app-lock PIN ကို ပုံမှန် app storage အစား platform keystore (iOS Keychain, Android Keystore) တွင် သိမ်းဆည်းထားသော per-device key ဖြင့် ကုဒ်ဝှက်ထားသည်။
+
+သင့်စာများကို decrypt ပြုလုပ်သည့် private key သည် သင်ရေးမှတ်ရန်ရွေးချယ်သော recovery phrase မှလွဲ၍ သင့်စက်မှ တစ်ခါမျှ ထွက်မသွားပါ။ ကျွန်ုပ်တို့ ၎င်းကိုမကိုင်ဆောင်ပါ၊ သင့်အတွက်ပြန်လည်ရယူပေးလည်း မရနိုင်ပါ။ ၎င်းကိုဆုံးရှုံးပါက ထိုစက်သို့ပို့ထားသောစာများကို ကျွန်ုပ်တို့အပါအဝင် မည်သူမျှ ထပ်မံဖတ်ရှုနိုင်တော့မည်မဟုတ်ပါ။`,
+    },
+    {
+      title: '6. အခြားမည်သူများက ဒေတာရရှိသနည်း',
+      body: `ကျွန်ုပ်တို့သည် သင့်ကိုယ်ရေးအချက်အလက်ကို မရောင်း၊ မလဲလှယ်၊ မငှားရမ်းပါ။ ဒေတာ ရောက်ရှိသည့်နေရာများ—
+
+• Google Firebase — အထက်တွင်ဖော်ပြထားသည့်အတိုင်း ကျွန်ုပ်တို့၏ hosting provider။
+• Wikimedia Foundation — Wikipedia တွင်ရှာဖွေရန် တို့နှိပ်သောအခါ အမည်တစ်ခု။
+• Google Cloud Speech-to-Text — transcript တောင်းဆိုသောအခါ voice message တစ်ခု၏ အသံ။
+• Google Cloud Translation — ဘာသာပြန်ဆိုမှုတောင်းဆိုသောအခါ စာတစ်စောင်၏ စာသား။
+• Cloudflare Workers AI — အနှစ်ချုပ်တောင်းဆိုသည့်အခါ (သို့) ၎င်းအကြောင်း မေးမြန်းသည့်အခါ စကားပြောဆိုမှုတစ်ခု၏ နောက်ဆုံးစာ ၅၀ အထိ။
+
+နောက်ဆုံးသုံးခုကို ဤဗားရှင်းတွင် ပိတ်ထားသည်။ transcription၊ translation (သို့) summaries များကို ဖွင့်ရန် app တွင် ထိန်းချုပ်မှုမရှိသဖြင့် ထိုဝန်ဆောင်မှုသုံးခုသို့ မည်သည့်အရာမျှ မရောက်ရှိပါ။ code သည် ယခုတိုင်ရှိနေဆဲဖြစ်ပြီး feature များ ပြန်လာရန်ရည်ရွယ်ထားသောကြောင့် ၎င်းတို့ကို ဖျက်မည့်အစား စာရင်းသွင်းထားခြင်းဖြစ်သည် — ၎င်းတို့ပြန်လာသောအခါ ဤဖော်ပြချက်နှင့်အတူ ပထမဆုံးအသုံးပြုမီ prompt တစ်ခုနှင့်အတူ ပြန်လာမည်ဖြစ်သည်။ ထိုအချိန်တွင် ပို့မည့်အရာသည် သင့်ရလဒ်ထုတ်လုပ်ရန်အတွက်သာဖြစ်ပြီး မည်သည့်အရာမျှ လေ့ကျင့်ရန်မဟုတ်ပါ; transcript (သို့) translation မည်သည့်တစ်ခုမျှ ကျွန်ုပ်တို့ ဆာဗာများတွင် သိမ်းဆည်းမထားပါ။
+
+Wikipedia ရှာဖွေမှုတွင် switch မရှိပါ၊ အကြောင်းမှာ ပိတ်ရန် မည်သည့်အရာမျှ မရှိသောကြောင့်ဖြစ်သည်— ၎င်းသည် tap ချိန်တွင်သာ အလုပ်လုပ်ပြီး အခြားနည်းဖြင့် မဟုတ်ပါ။ Wikipedia သည် ထိုအမည်တစ်ခုတည်းနှင့် သင့် IP လိပ်စာကို ရရှိသည်၊ ၎င်းတို့၏ ရှာဖွေရေးဘောက်စ်တွင် သင်ကိုယ်တိုင်ရိုက်ထည့်သကဲ့သို့ပင် — account, message, conversation မရှိပါ။ ပြန်ရလာသည်များကို ပြသပြီး သိမ်းမထားပါ၊ ၎င်းနှင့်ပတ်သက်၍ မည်သည့်အရာမျှ စကားဝိုင်းထဲသို့ ရေးမထားပါ။
+
+ဥပဒေကတောင်းဆိုပါက ကျွန်ုပ်တို့ကိုင်ဆောင်ထားသည်များကို ဖော်ပြပေးနိုင်ပါသည်။ ကျွန်ုပ်တို့ကိုင်ဆောင်ထားသည်မှာ အပိုင်း ၂ ရှိစာရင်းဖြစ်သည်။ ကျွန်ုပ်တို့သည် message contents များကို မဖတ်နိုင်သောကြောင့် ၎င်းတို့ကို ထုတ်ပေးနိုင်မည်မဟုတ်ပါ။`,
+    },
+    {
+      title: '7. Push notifications',
+      body: `Firebase Cloud Messaging က notification များကို ပေးပို့ပါသည်။ သင့်စက်၏ token ကို သင်သာဖတ်နိုင်သော သင့်အကောင့်၏ private အပိုင်းတွင် သိမ်းဆည်းထားသည်။
+
+Notifications များတွင် message စာသား မပါဝင်ပါ။ သင့်စက်သည် message ကို local တွင် decrypt လုပ်ပြီး သင်မြင်ရသည်များကို ဖန်တီးသည်; Google က content မဟုတ်ဘဲ envelope ကိုသာ ပေးပို့သည်။`,
+    },
+    {
+      title: '8. သင်ပြုလုပ်နိုင်သည့်အရာများ',
+      body: `• Profile screen မှသင့်အကောင့်ကို ဖျက်ပါ။ စကားပြောဆိုမှု၏ ဖက်နှစ်ဖက်ပိုင်အကြောင်းအရာ — ဥပမာ ခေါ်ဆိုမှုမှတ်တမ်း — သည် အခြားပါဝင်သူထံတွင် ကျန်ရှိနေမည်ဖြစ်သည်၊ အကြောင်းမှာ ၎င်းသည် သူတို့၏မှတ်တမ်းလည်းဖြစ်သောကြောင့်ဖြစ်သည်။
+• Profile screen မှ သင့်ဒေတာကို export ပါ။
+• chat တစ်ခုစီအလိုက် message expire ရန်သတ်မှတ်ပါ— ၁ နာရီ၊ ၂၄ နာရီ၊ ၇ ရက် (သို့) ၃၀ ရက်။
+• Typing indicators နှင့် read receipts ကို ဖွင့်/ပိတ်ပါ။ နှစ်ခုစလုံးကို default အနေဖြင့် ပိတ်ထားသည်။
+• PIN (သို့) biometrics ဖြင့် app ကိုသော့ခတ်ပါ။
+• သင်ပေးထားသော invite link ကို ရုပ်သိမ်းပါ။
+
+တစ်စုံတစ်ခုကို ကျွန်ုပ်တို့ကိုယ်တိုင် ဖျက်စေလိုပါက ကျွန်ုပ်တို့ထံစာရေးပါ။`,
+    },
+    {
+      title: '9. ထိန်းသိမ်းမှု',
+      body: `သင့်အကောင့်တည်ရှိနေသရွေ့ ကျွန်ုပ်တို့သည် သင့်ဒေတာကို ထိန်းသိမ်းထားပါသည်။ အကောင့်ဖျက်ခြင်းသည် အထက်တွင်ဖော်ပြထားသော ဖက်နှစ်ဖက်ပိုင်အကြောင်းအရာမှလွဲ၍ ၎င်းကို ဖျက်ပစ်ပါသည်။ chat အလိုက်ကာလကုန်ဆုံးမှုသည် သင်သတ်မှတ်ထားသော အချိန်ဇယားအတိုင်း message များကို ဖယ်ရှားပါသည်။`,
+    },
+    {
+      title: '10. သင်သိထားသင့်သော ကန့်သတ်ချက်များ',
+      body: `ကျွန်ုပ်တို့သည် သင့်အား ၎င်းတို့ကိုမတွေ့ရမီ ပြောပြလိုပါသည်။
+
+• Key များကို ပထမဆုံးတွေ့ချိန်တွင် ယုံကြည်ကိုးစားထားသည်။ တစ်စုံတစ်ဦးက သင်စာမပြောင်းလဲဆက်ဆံမီ key ကိုအစားထိုးထားပါက စကားပြောဆိုမှုသည် လူမှားသို့ encrypt လုပ်ပြီး လုံးဝပုံမှန်ကဲ့သို့ ပေါ်လိမ့်မည်။ Key ပြောင်းလဲသွားပါက app က သင့်ကိုသတိပေးပြီး channel ပြင်ပတွင်နှိုင်းယှဉ်နိုင်သော safety number ကို ပြသပါသည် — သို့သော် ၎င်းကိုနှိုင်းယှဉ်ရန် မည်သည့်အရာမျှ မတွန်းအားပေးပါ။
+• တစ်ကြိမ်တွင် စက်တစ်ခုသာ။ သင့် recovery phrase သည် သင့်history ကိုဖွင့်သော key ကို ပြန်လည်ရယူပေးသည်၊ ထို့ကြောင့် စက်အသစ်တွင် sign in ခြင်းသည် သင်ရရှိပြီးသားများကို မဆုံးရှုံးစေပါ။ Forward-secret စကားပြောဆိုမှုများသည် ၎င်းကို ဖန်တီးသောစက်မှ တစ်ခါမျှ မထွက်သည့် ဒုတိယ key ကို အသုံးပြုသည်— နောက်ဆုံး sign in ဝင်သောစက်ကသာ ၎င်းသို့ ရောက်ရှိနိုင်ပြီး ထိုအတောအတွင်း အခြားစက်သို့ ပိတ်ထားသောအရာများကို ကူးပြောင်း၍မရနိုင်ပါ။
+• Encryption မတည်ရှိမီ ပို့ထားသော message များသည် ယခင်အတိုင်း ရှိနေပါသည်။ Retroactive အနေဖြင့် ပြောင်းလဲမှု မရှိပါ။
+• ဤ app ကို လွတ်လပ်သော security audit ပြုလုပ်ရသေးခြင်း မရှိပါ။`,
+    },
+    {
+      title: '11. ကလေးများ',
+      body: `Chatterbox ကို အသက် ၁၃ နှစ်အောက် ကလေးများအတွက် ရည်ရွယ်ထားခြင်း မဟုတ်ပါ၊ ၎င်းတို့၏အချက်အလက်ကို ကျွန်ုပ်တို့ သိလျက်နှင့် မစုဆောင်းပါ။ ကလေးတစ်ဦးက ကျွန်ုပ်တို့ကို ကိုယ်ရေးအချက်အလက်ပေးထားသည်ဟု သင်ယုံကြည်ပါက ကျွန်ုပ်တို့ထံဆက်သွယ်ပါ၊ ကျွန်ုပ်တို့ ၎င်းကိုဖျက်ပေးပါမည်။`,
+    },
+    {
+      title: '12. ပြောင်းလဲမှုများ',
+      body: `ကျွန်ုပ်တို့သည် ဤမူဝါဒကို update လုပ်နိုင်ပါသည်။ သိသာထင်ရှားသော ပြောင်းလဲမှုများကို app တွင်ကြေညာမည်ဖြစ်ပြီး၊ ထိပ်ဆုံးရှိရက်စွဲသည် ၎င်း နောက်ဆုံးပြောင်းလဲခဲ့သည့်အချိန်ဖြစ်သည်။`,
+    },
+    {
+      title: '13. ဆက်သွယ်ရန်',
+      body: `ဤမူဝါဒနှင့်ပတ်သက်သည့် မေးခွန်းများ— ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  km: [
+    {
+      title: '0. សង្ខេប',
+      body: `អត្ថបទសាររបស់អ្នកត្រូវបានអ៊ិនគ្រីបនៅលើឧបករណ៍របស់អ្នក ហើយអាចអានបានតែដោយអ្នកដែលអ្នកផ្ញើសារនោះទៅឱ្យប៉ុណ្ណោះ។ យើងមិនអាចអានវាបានទេ ហើយ Google ដែលយើងជួលម៉ាស៊ីនមេក៏មិនអាចអានវាបានដែរ។
+
+អ្វីដែលយើងអាចមើលឃើញគឺមានការសន្ទនាបានកើតឡើង៖ គណនីណាខ្លះនៅក្នុងនោះ និងពេលណាដែលពួកគេសកម្ម។ ការលុបបំបាត់រឿងនោះពិបាកជាងការអ៊ិនគ្រីបមាតិកា ហើយយើងនៅមិនទាន់បញ្ចប់នៅឡើយទេ។ គោលការណ៍នេះប្រាប់យ៉ាងច្បាស់ថាព្រំដែននោះនៅត្រង់ណាឥឡូវនេះ។`,
+    },
+    {
+      title: '1. អ្វីដែលអ៊ិនគ្រីបពីចុងដល់ចុង',
+      body: `អ៊ិនគ្រីបនៅលើឧបករណ៍របស់អ្នក មិនអាចអានបានទាំងយើងនិង Google៖
+
+• អត្ថបទសាររបស់អ្នក។
+• មាតិកានៃឯកសារ រូបថត អូឌីយ៉ូ និងវីដេអូដែលអ្នកភ្ជាប់មកជាមួយ។
+• ការមើលជាមុននៃតំណភ្ជាប់។
+• ការហៅសំឡេង និងវីដេអូ ដែលប្រើ DTLS-SRTP ដែលចាំបាច់របស់ WebRTC រវាងឧបករណ៍ទាំងពីរ។
+
+សារភាគច្រើនរវាងមនុស្សពីរនាក់ និងក្រុមក៏ប្រើប្រព័ន្ធ ratchet ផងដែរ មានន័យថាសារនីមួយៗមានកូនសោផ្ទាល់ខ្លួន ដូច្នេះការសម្របសម្រួលឧបករណ៍របស់អ្នកមិនបង្ហាញសារមុនៗឡើយ។ ការសន្ទនាដែលកម្មវិធីរបស់អ្នកណាម្នាក់មិនទាន់បានផ្សព្វផ្សាយសម្ភារៈកូនសោថ្មីជាងនេះ ត្រឡប់ទៅប្រើកូនសោមួយដែលមានអាយុកាលវែងជំនួសវិញ ដែលមិនមានលក្ខណៈពិសេសនោះទេ។ ស្លាកនៅក្រោមសារនីមួយៗប្រាប់អ្នកថាតើវាទទួលបានប្រភេទណាជាក់ស្តែង។
+
+មានតែរឿងតែមួយប៉ុណ្ណោះដែលឆ្លងកាត់បន្ទាត់នេះ ហើយតែពេលអ្នកស្នើសុំប៉ុណ្ណោះ៖ ការស្វែងរកឈ្មោះនៅលើវិគីភីឌាផ្ញើឈ្មោះនោះតែមួយ មិនមែនសារដែលវាមកពីនោះទេ។ ផ្នែកទី ៦ ប្រាប់ថាអ្នកណាទទួលបានវា ហើយការស្វែងរកដំណើរការតែពេលចុចប៉ុណ្ណោះ មិនមែនតាមវិធីផ្សេង ដូច្នេះមិនមានអ្វីត្រូវបិទឡើយ។ ការសង្ខេប ការបកប្រែ និងការសរសេរតាមសំឡេងក៏នឹងឆ្លងកាត់វាដែរ — ពួកវាត្រូវបានបិទក្នុងកំណែនេះ ដោយគ្មានការគ្រប់គ្រងណាមួយក្នុងកម្មវិធីដែលបើកពួកវាឡើយ។`,
+    },
+    {
+      title: '2. អ្វីដែលមិនអ៊ិនគ្រីប និងអ្វីដែលយើងអាចមើលឃើញ',
+      body: `ការអ៊ិនគ្រីបការពារមាតិកា មិនមែនការពិតនៃការសន្ទនាទេ។ ទាំងនេះស្ថិតនៅច្បាស់លាស់នៅលើម៉ាស៊ីនមេរបស់យើង៖
+
+• អ្នកណានៅក្នុងការសន្ទនានីមួយៗ និងពេលណាដែលវាត្រូវបានបង្កើត និងសកម្មចុងក្រោយ។
+• ត្រាពេលវេលារបស់សារនីមួយៗ និងចំនួនប៉ុន្មានដែលអ្នកមិនទាន់អាន។
+• ឈ្មោះឯកសារ ប្រភេទ និងទំហំរបស់ឯកសារភ្ជាប់។ ប៊ៃត្រូវបានអ៊ិនគ្រីប ការពិពណ៌នារបស់វាមិនមែនទេ ហើយប្រវែងនៃអត្ថបទសម្ងាត់កំណត់ព្រំដែនប្រវែងដើម។
+• មិត្តភក្តិ និងសំណើមិត្តភក្តិរបស់អ្នក។
+• សញ្ញាហៅ — ការហៅត្រូវបានធ្វើឡើង ទៅកាន់អ្នកណា និងពេលណា។ មិនមែនអូឌីយ៉ូ ឬវីដេអូរបស់វាទេ។
+
+ការបង្ហាញការវាយអក្សរ និងបង្កាន់ដៃការអានត្រូវបានបិទ លុះត្រាតែអ្នកបើកវា ហើយខណៈពេលដែលបិទគ្មានអ្វីត្រូវបានសរសេរឡើយ។
+
+អ្វីដែលលែងមាននៅទីនេះទៀត៖ អាសយដ្ឋានអ៊ីមែល និងឈ្មោះរបស់អ្នក។ ចាប់តាំងពីខែកញ្ញា ២០២៦ កំណត់ត្រាគណនីមានតែអត្តសញ្ញាណគណនីប៉ុណ្ណោះ — ហើយចាប់តាំងពីពេលនោះមក គ្មានអាសយដ្ឋានត្រូវរក្សាទុកនៅកន្លែងណាមួយឡើយ។ ការចុះឈ្មោះមិនសួរអ្វីអំពីអ្នកទេ៖ គណនីរបស់អ្នកគឺជាឃ្លាសង្គ្រោះ ២៤ ពាក្យ ហើយលិខិតបញ្ជាក់ដែល Firebase Authentication ពិនិត្យត្រូវបានទាញយកពីវា។ អ្វីដែលវារក្សាទុកគឺជាស្លាកចៃដន្យក្រោមដែនដែលមិនអាចទទួលសំបុត្របាន។
+
+ដាច់ដោយឡែក៖ ដោយសារកម្មវិធីដំណើរការនៅលើ Google Firebase, Google អាចមើលឃើញអាសយដ្ឋាន IP និងពេលវេលានៃការតភ្ជាប់នីមួយៗដែលឧបករណ៍របស់អ្នកធ្វើទៅកាន់វា។ នោះជាលក្ខណៈពិសេសនៃការបង្ហោះ មិនមែនកម្មវិធីទេ ហើយយើងមិនអាចអ៊ិនគ្រីបវាចេញបានឡើយ។`,
+    },
+    {
+      title: '3. របៀបដែលមនុស្សរកឃើញអ្នក',
+      body: `ពួកគេមិនអាចស្វែងរកអ្នកបានទេ។ គ្មានបញ្ជីឈ្មោះ — គ្មានការស្វែងរកតាមអ៊ីមែល លេខទូរស័ព្ទ ឬឈ្មោះ — ហើយម៉ាស៊ីនមេបដិសេធសំណើណាមួយដែលព្យាយាមធ្វើដូច្នេះ។
+
+អ្នកទាក់ទងនរណាម្នាក់ដោយផ្ញើតំណភ្ជាប់អញ្ជើញទៅឱ្យគាត់ក្រៅបណ្តាញ តាមរយៈអ្វីដែលអ្នកកំពុងប្រើប្រាស់រួចហើយ។ តំណភ្ជាប់ដំណើរការតែម្តង ផុតកំណត់បន្ទាប់ពី ២៤ ម៉ោង ហើយអាចដកហូតវិញបាន។ អ្វីដែលអ្នកហៅនរណាម្នាក់គឺជាស្លាកផ្ទាល់ខ្លួនរបស់អ្នកសម្រាប់ពួកគេ រក្សាទុកសម្រាប់អ្នក; ប្រសិនបើពួកគេណែនាំខ្លួនឯង ឈ្មោះនោះបានមកដល់អ្នកតាមរបៀបអ៊ិនគ្រីប។`,
+    },
+    {
+      title: '4. អ្វីដែលយើងប្រមូល',
+      body: `• ទិន្នន័យគណនី៖ អត្តសញ្ញាណគណនី និងលិខិតបញ្ជាក់ដែលទាញយកពីឃ្លាសង្គ្រោះរបស់អ្នក រក្សាទុកនៅក្នុង Firebase Authentication។ គ្មានអាសយដ្ឋានអ៊ីមែល គ្មានលេខទូរស័ព្ទ គ្មានឈ្មោះ — ការចុះឈ្មោះមិនសួររឿងណាមួយក្នុងចំណោមទាំងនេះទេ។
+• អត្ថបទសម្ងាត់នៃសារ និងឯកសារភ្ជាប់ បូកនឹងទិន្នន័យមេតានៅផ្នែកទី ២។
+
+នោះជាបញ្ជីទាំងអស់។ គ្មានការវិភាគ និងគ្មានការរាយការណ៍ការគាំង។ កម្មវិធីធ្លាប់ផ្ញើទិដ្ឋភាពអេក្រង់ទៅ Firebase Analytics និងរបាយការណ៍ការគាំងទៅ Firebase Crashlytics ទាំងពីរនាំយកអត្តសញ្ញាណគណនីរបស់អ្នក ដូច្នេះទាំងពីរមិនអនាមិកទេ; ទាំងពីរបានបាត់ទៅហើយ ជាមួយបណ្ណាល័យដែលបានផ្ញើពួកវា។ កំហុសត្រូវបានបោះពុម្ពនៅលើម៉ាស៊ីនផ្ទាល់របស់អ្នកអភិវឌ្ឍកំឡុងពេលអភិវឌ្ឍ ហើយមិនទៅកន្លែងផ្សេងទៀតឡើយ។`,
+    },
+    {
+      title: '5. កន្លែងដែលវារក្សាទុក',
+      body: `នៅលើ Google Firebase — Firestore, Storage និង Authentication — ក្រោមច្បាប់សុវត្ថិភាពដែលសម្រេចថាអ្នកណាអាចអាន និងសរសេរឯកសារនីមួយៗ។
+
+នៅលើឧបករណ៍របស់អ្នក សារដែលបានផ្ទុកសម្រាប់ការចូលប្រើលឿន ការកំណត់ និង PIN ចាក់សោកម្មវិធីរបស់អ្នកត្រូវបានអ៊ិនគ្រីបជាមួយកូនសោក្នុងឧបករណ៍នីមួយៗដែលរក្សាទុកនៅក្នុងឃ្លាំងគ្រាប់ចុចវេទិកា (iOS Keychain, Android Keystore) ជំនួសឱ្យផ្ទុកកម្មវិធីធម្មតា។
+
+កូនសោឯកជនដែលឌិគ្រីបសាររបស់អ្នកមិនចេញពីឧបករណ៍របស់អ្នកឡើយ លើកលែងតែជាឃ្លាសង្គ្រោះដែលអ្នកជ្រើសរើសសរសេរចុះ។ យើងមិនកាន់កាប់វា ហើយមិនអាចយកវាមកវិញឱ្យអ្នកបានទេ។ បើបាត់វា សារដែលបានផ្ញើទៅឧបករណ៍នោះមិនអាចអានឡើងវិញបានទេ — ដោយនរណាម្នាក់ រួមទាំងយើងផងដែរ។`,
+    },
+    {
+      title: '6. អ្នកណាផ្សេងទៀតទទួលបានទិន្នន័យ',
+      body: `យើងមិនលក់ ដោះដូរ ឬឱ្យជួលព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកឡើយ។ ទិន្នន័យទៅដល់៖
+
+• Google Firebase — អ្នកផ្តល់សេវាបង្ហោះរបស់យើង ដូចបានពិពណ៌នាខាងលើ។
+• មូលនិធិវិគីមេឌា — ឈ្មោះមួយ នៅពេលអ្នកចុចដើម្បីស្វែងរកនៅលើវិគីភីឌា។
+• Google Cloud Speech-to-Text — សំឡេងនៃសារសំឡេងមួយ នៅពេលអ្នកស្នើសុំអត្ថបទចម្លង។
+• Google Cloud Translation — អត្ថបទនៃសារមួយ នៅពេលអ្នកស្នើសុំការបកប្រែ។
+• Cloudflare Workers AI — រហូតដល់សារ ៥០ ចុងក្រោយនៃការសន្ទនាមួយ នៅពេលអ្នកស្នើសុំសេចក្តីសង្ខេប ឬសួរសំណួរអំពីវា។
+
+បីចុងក្រោយត្រូវបានបិទក្នុងកំណែនេះ។ គ្មានការគ្រប់គ្រងណាមួយក្នុងកម្មវិធីដែលបើកការសរសេរតាមសំឡេង ការបកប្រែ ឬសេចក្តីសង្ខេប ដូច្នេះគ្មានអ្វីទៅដល់សេវាទាំងបីនោះទេ។ ពួកវាត្រូវបានរាយបញ្ជីជំនួសឱ្យលុប ពីព្រោះកូដនៅតែមាននៅទីនេះ ហើយលក្ខណៈពិសេសទាំងនោះមានបំណងនឹងត្រឡប់មកវិញ — ហើយនៅពេលពួកវាត្រឡប់មកវិញ ពួកវានឹងត្រឡប់មកជាមួយការបង្ហាញនេះ និងសារជូនដំណឹងមុនពេលប្រើប្រាស់លើកដំបូង។ អ្វីដែលនឹងត្រូវផ្ញើនៅពេលនោះត្រូវបានផ្ញើដើម្បីបង្កើតលទ្ធផលរបស់អ្នក មិនមែនដើម្បីបណ្តុះបណ្តាលអ្វីទេ; គ្មានអត្ថបទចម្លង ឬការបកប្រែណាមួយត្រូវបានរក្សាទុកនៅលើម៉ាស៊ីនមេរបស់យើងឡើយ។
+
+ការស្វែងរកលើវិគីភីឌាគ្មានកុងតាក់ទេ ពីព្រោះគ្មានអ្វីត្រូវបិទឡើយ៖ វាដំណើរការតែពេលចុចប៉ុណ្ណោះ មិនមែនតាមវិធីផ្សេង។ វិគីភីឌាទទួលបានឈ្មោះនោះតែមួយ និងអាសយដ្ឋាន IP របស់អ្នក ដូចជាអ្នកបានវាយវាចូលក្នុងប្រអប់ស្វែងរករបស់ពួកគេផ្ទាល់ — គ្មានគណនី គ្មានសារ គ្មានការសន្ទនា។ អ្វីដែលត្រឡប់មកវិញត្រូវបានបង្ហាញ ហើយមិនត្រូវបានរក្សាទុក ហើយគ្មានអ្វីអំពីវាត្រូវបានសរសេរទៅក្នុងការសន្ទនាឡើយ។
+
+យើងអាចបង្ហាញអ្វីដែលយើងកាន់កាប់ប្រសិនបើច្បាប់តម្រូវ។ អ្វីដែលយើងកាន់កាប់គឺជាបញ្ជីនៅផ្នែកទី ២។ យើងមិនអាចផលិតមាតិកាសារបានទេ ពីព្រោះយើងមិនអាចអានវាបាន។`,
+    },
+    {
+      title: '7. ការជូនដំណឹងរុញច្រាន',
+      body: `Firebase Cloud Messaging ដឹកជញ្ជូនការជូនដំណឹង។ សញ្ញាសម្គាល់ឧបករណ៍របស់អ្នកត្រូវបានរក្សាទុកនៅក្នុងផ្នែកឯកជននៃគណនីរបស់អ្នកដែលមានតែអ្នកទេអាចអាន។
+
+ការជូនដំណឹងមិននាំយកអត្ថបទសារឡើយ។ ឧបករណ៍របស់អ្នកឌិគ្រីបសារនៅមូលដ្ឋាន ហើយចងក្រងអ្វីដែលអ្នកឃើញ; Google ដឹកជញ្ជូនស្រោមសំបុត្រ មិនមែនមាតិកាទេ។`,
+    },
+    {
+      title: '8. អ្វីដែលអ្នកអាចធ្វើបាន',
+      body: `• លុបគណនីរបស់អ្នកចេញពីអេក្រង់ប្រវត្តិរូប។ មាតិកាដែលជាផ្នែកមួយរួមនៃការសន្ទនា — កំណត់ត្រាការហៅឧទាហរណ៍ — នៅតែស្ថិតនៅជាមួយអ្នកចូលរួមផ្សេងទៀត ពីព្រោះវាជាកំណត់ត្រារបស់ពួកគេផងដែរ។
+• នាំចេញទិន្នន័យរបស់អ្នកពីអេក្រង់ប្រវត្តិរូប។
+• កំណត់សារឱ្យផុតកំណត់តាមការជជែកនីមួយៗ៖ ១ ម៉ោង ២៤ ម៉ោង ៧ ថ្ងៃ ឬ ៣០ ថ្ងៃ។
+• បើក ឬបិទការបង្ហាញការវាយអក្សរ និងបង្កាន់ដៃការអាន។ ទាំងពីរត្រូវបានបិទតាមលំនាំដើម។
+• ចាក់សោកម្មវិធីជាមួយ PIN ឬជីវមាត្រ។
+• ដកហូតតំណភ្ជាប់អញ្ជើញដែលអ្នកបានប្រគល់ឱ្យ។
+
+ប្រសិនបើអ្នកចង់ឱ្យយើងលុបអ្វីមួយដោយដៃ សូមសរសេរមកយើង។`,
+    },
+    {
+      title: '9. ការរក្សាទុក',
+      body: `យើងរក្សាទុកទិន្នន័យរបស់អ្នកខណៈពេលដែលគណនីរបស់អ្នកមាន។ ការលុបគណនីនឹងលុបវាចេញ លើកលែងតែមាតិកាដែលកាន់កាប់រួមគ្នាដែលបានកត់សម្គាល់ខាងលើ។ ការផុតកំណត់តាមការជជែកនីមួយៗលុបសារតាមកាលវិភាគដែលអ្នកបានកំណត់។`,
+    },
+    {
+      title: '10. ដែនកំណត់ដែលអ្នកគួរដឹង',
+      body: `យើងចង់ប្រាប់អ្នកអំពីរឿងទាំងនេះជាជាងឱ្យអ្នករកឃើញវាដោយខ្លួនឯង។
+
+• កូនសោត្រូវបានទុកចិត្តលើកដំបូងដែលវាត្រូវបានឃើញ។ ប្រសិនបើនរណាម្នាក់បានជំនួសកូនសោមុនពេលអ្នកធ្លាប់ផ្លាស់ប្តូរសារ ការសន្ទនានឹងត្រូវអ៊ិនគ្រីបទៅមនុស្សខុស ហើយនឹងមើលទៅធម្មតាទាំងស្រុង។ កម្មវិធីព្រមានអ្នកនៅពេលកូនសោផ្លាស់ប្តូរនៅពេលក្រោយ ហើយបង្ហាញលេខសុវត្ថិភាពដែលអ្នកអាចប្រៀបធៀបក្រៅបណ្តាញ — ប៉ុន្តែគ្មានអ្វីបង្ខំអ្នកឱ្យប្រៀបធៀបវាឡើយ។
+• ឧបករណ៍តែមួយក្នុងពេលតែមួយ។ ឃ្លាសង្គ្រោះរបស់អ្នកស្តារកូនសោដែលបើកប្រវត្តិរបស់អ្នក ដូច្នេះការចូលនៅឧបករណ៍ថ្មីមិនបាត់អ្វីដែលអ្នកបានទទួលរួចហើយឡើយ។ ការសន្ទនាការពារជាមុនប្រើកូនសោទីពីរដែលមិនចេញពីឧបករណ៍ដែលបានបង្កើតវាឡើយ៖ ឧបករណ៍ណាដែលចូលចុងក្រោយគឺជាឧបករណ៍ដែលពួកគេទៅដល់ ហើយអ្វីដែលបានបិទសោទៅឧបករណ៍ផ្សេងកំឡុងពេលនោះមិនអាចផ្លាស់ប្តូរបានទេ។
+• សារដែលបានផ្ញើមុនពេលមានការអ៊ិនគ្រីបនៅតែដដែល។ គ្មានអ្វីត្រូវបានបំប្លែងតាមក្រោយឡើយ។
+• កម្មវិធីនេះមិនទាន់ត្រូវបានត្រួតពិនិត្យសុវត្ថិភាពដោយឯករាជ្យទេ។`,
+    },
+    {
+      title: '11. កុមារ',
+      body: `Chatterbox មិនត្រូវបានបម្រុងទុកសម្រាប់កុមារអាយុក្រោម ១៣ ឆ្នាំទេ ហើយយើងមិនចេតនាប្រមូលព័ត៌មានរបស់ពួកគេឡើយ។ ប្រសិនបើអ្នកជឿថាកុមារម្នាក់បានផ្តល់ព័ត៌មានផ្ទាល់ខ្លួនដល់យើង សូមទាក់ទងយើង ហើយយើងនឹងលុបវាចេញ។`,
+    },
+    {
+      title: '12. ការផ្លាស់ប្តូរ',
+      body: `យើងអាចធ្វើបច្ចុប្បន្នភាពគោលការណ៍នេះ។ ការផ្លាស់ប្តូរសំខាន់ៗនឹងត្រូវប្រកាសក្នុងកម្មវិធី ហើយកាលបរិច្ឆេទនៅខាងលើគឺជាពេលដែលវាបានផ្លាស់ប្តូរចុងក្រោយ។`,
+    },
+    {
+      title: '13. ទំនាក់ទំនង',
+      body: `សំណួរអំពីគោលការណ៍នេះ៖ ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  lo: [
+    {
+      title: '0. ໂດຍຫຍໍ້',
+      body: `ຂໍ້ຄວາມຂອງທ່ານຖືກເຂົ້າລະຫັດຢູ່ໃນອຸປະກອນຂອງທ່ານ ແລະ ສາມາດອ່ານໄດ້ໂດຍຄົນທີ່ທ່ານສົ່ງໃຫ້ເທົ່ານັ້ນ. ພວກເຮົາບໍ່ສາມາດອ່ານມັນໄດ້, ແລະ Google, ຜູ້ທີ່ພວກເຮົາເຊົ່າເຊີບເວີກໍ່ບໍ່ສາມາດອ່ານໄດ້ຄືກັນ.
+
+ສິ່ງທີ່ພວກເຮົາເຫັນໄດ້ແມ່ນມີການສົນທະນາເກີດຂຶ້ນ: ບັນຊີໃດແດ່ຢູ່ໃນນັ້ນ, ແລະ ເມື່ອໃດພວກເຂົາໃຊ້ງານຢູ່. ການເອົາອັນນັ້ນອອກຍາກກວ່າການເຂົ້າລະຫັດເນື້ອຫາ, ແລະ ພວກເຮົາຍັງເຮັດບໍ່ສຳເລັດ. ນະໂຍບາຍນີ້ບອກຢ່າງແນ່ນອນວ່າເສັ້ນແບ່ງຢູ່ໃສໃນປັດຈຸບັນ.`,
+    },
+    {
+      title: '1. ຫຍັງແດ່ທີ່ຖືກເຂົ້າລະຫັດແບບຕົ້ນທາງເຖິງປາຍທາງ',
+      body: `ເຂົ້າລະຫັດຢູ່ໃນອຸປະກອນຂອງທ່ານ, ບໍ່ສາມາດອ່ານໄດ້ໂດຍພວກເຮົາ ແລະ Google:
+
+• ຂໍ້ຄວາມຂອງທ່ານ.
+• ເນື້ອຫາຂອງໄຟລ໌, ຮູບພາບ, ສຽງ ແລະ ວິດີໂອທີ່ທ່ານແນບມາ.
+• ຕົວຢ່າງລິ້ງ.
+• ການໂທດ້ວຍສຽງ ແລະ ວິດີໂອ, ເຊິ່ງໃຊ້ DTLS-SRTP ທີ່ບັງຄັບຂອງ WebRTC ລະຫວ່າງສອງອຸປະກອນ.
+
+ຂໍ້ຄວາມແບບໜຶ່ງຕໍ່ໜຶ່ງ ແລະ ກຸ່ມສ່ວນຫຼາຍຍັງໃຊ້ ratchet ນຳ, ໝາຍຄວາມວ່າແຕ່ລະຂໍ້ຄວາມມີກະແຈຂອງຕົນເອງ, ດັ່ງນັ້ນການຖືກບຸກລຸກອຸປະກອນຂອງທ່ານຈະບໍ່ເປີດເຜີຍຂໍ້ຄວາມກ່ອນໜ້ານັ້ນ. ການສົນທະນາທີ່ລູກຄ້າຂອງຄົນອື່ນຍັງບໍ່ໄດ້ເຜີຍແຜ່ວັດສະດຸກະແຈໃໝ່ຈະກັບໄປໃຊ້ກະແຈຄົງທີ່ອາຍຸຍາວອັນດຽວ, ເຊິ່ງບໍ່ມີຄຸນສົມບັດນັ້ນ. ປ້າຍກຳກັບຢູ່ໃຕ້ຂໍ້ຄວາມບອກທ່ານວ່າມັນໄດ້ຮັບແບບໃດແທ້ຈິງ.
+
+ມີພຽງແຕ່ຢ່າງດຽວທີ່ຂ້າມເສັ້ນນີ້, ແລະ ສະເພາະເມື່ອທ່ານຮ້ອງຂໍເທົ່ານັ້ນ: ການຄົ້ນຫາຊື່ໃນວິກິພີເດຍສົ່ງຊື່ອັນນັ້ນເທົ່ານັ້ນ, ບໍ່ແມ່ນຂໍ້ຄວາມທີ່ມັນມາຈາກ. ພາກທີ 6 ບອກວ່າໃຜເປັນຜູ້ຮັບມັນ, ແລະ ການຄົ້ນຫາເຮັດວຽກເມື່ອແຕະເທົ່ານັ້ນ ບໍ່ແມ່ນວິທີອື່ນ, ດັ່ງນັ້ນຈຶ່ງບໍ່ມີຫຍັງໃຫ້ປິດ. ການສະຫຼຸບ, ການແປ ແລະ ການຖອດຂໍ້ຄວາມກໍ່ຈະຂ້າມເສັ້ນນີ້ຄືກັນ — ພວກມັນຖືກປິດຢູ່ໃນລຸ້ນນີ້, ໂດຍບໍ່ມີການຄວບຄຸມໃດໆໃນແອັບທີ່ຈະເປີດພວກມັນ.`,
+    },
+    {
+      title: '2. ຫຍັງແດ່ທີ່ບໍ່ໄດ້ເຂົ້າລະຫັດ, ແລະ ຫຍັງແດ່ທີ່ພວກເຮົາເຫັນໄດ້',
+      body: `ການເຂົ້າລະຫັດປົກປ້ອງເນື້ອຫາ, ບໍ່ແມ່ນຄວາມຈິງທີ່ວ່າມີການສົນທະນາ. ສິ່ງເຫຼົ່ານີ້ຢູ່ຢ່າງເປີດເຜີຍຢູ່ໃນເຊີບເວີຂອງພວກເຮົາ:
+
+• ໃຜຢູ່ໃນແຕ່ລະການສົນທະນາ, ແລະ ມັນຖືກສ້າງຂຶ້ນເມື່ອໃດ ແລະ ໃຊ້ງານຫຼ້າສຸດເມື່ອໃດ.
+• ໂຕປະທັບເວລາຂອງທຸກຂໍ້ຄວາມ, ແລະ ຈຳນວນທີ່ທ່ານຍັງບໍ່ໄດ້ອ່ານ.
+• ຊື່ໄຟລ໌, ປະເພດ ແລະ ຂະໜາດຂອງໄຟລ໌ແນບ. ໄບຕ໌ຖືກເຂົ້າລະຫັດ; ຄຳອະທິບາຍຂອງພວກມັນບໍ່ຖືກເຂົ້າລະຫັດ, ແລະ ຄວາມຍາວຂອງ ciphertext ຈຳກັດຄວາມຍາວຂອງຕົ້ນສະບັບ.
+• ໝູ່ ແລະ ຄຳຂໍເປັນໝູ່ຂອງທ່ານ.
+• ສັນຍານການໂທ — ວ່າມີການໂທເກີດຂຶ້ນ, ໂທຫາໃຜ, ແລະ ເມື່ອໃດ. ບໍ່ແມ່ນສຽງ ຫຼືວິດີໂອຂອງມັນ.
+
+ຕົວບົ່ງບອກການພິມ ແລະ ໃບຮັບອ່ານປິດຢູ່ ເວັ້ນເສຍແຕ່ທ່ານເປີດມັນ, ແລະ ໃນຂະນະທີ່ປິດຢູ່ບໍ່ມີຫຍັງຖືກຂຽນ.
+
+ຫຍັງແດ່ທີ່ບໍ່ຢູ່ນີ້ອີກຕໍ່ໄປ: ທີ່ຢູ່ອີເມວ ແລະ ຊື່ຂອງທ່ານ. ນັບຕັ້ງແຕ່ເດືອນກັນຍາ 2026 ບັນທຶກບັນຊີມີພຽງແຕ່ຕົວລະບຸບັນຊີເທົ່ານັ້ນ — ແລະ ນັບຕັ້ງແຕ່ນັ້ນມາບໍ່ມີທີ່ຢູ່ໃຫ້ຖືໄວ້ຢູ່ໃສເລີຍ. ການສະໝັກສະມາຊິກບໍ່ຖາມຫຍັງກ່ຽວກັບທ່ານ: ບັນຊີຂອງທ່ານແມ່ນວະລີກູ້ຄືນ 24 ຄຳ, ແລະ ຂໍ້ມູນຢັ້ງຢືນທີ່ Firebase Authentication ກວດສອບແມ່ນມາຈາກມັນ. ສິ່ງທີ່ມັນເກັບໄວ້ແມ່ນປ້າຍກຳກັບແບບສຸ່ມພາຍໃຕ້ໂດເມນທີ່ບໍ່ສາມາດຮັບເມວໄດ້.
+
+ແຍກຕ່າງຫາກ: ເນື່ອງຈາກແອັບເຮັດວຽກຢູ່ເທິງ Google Firebase, Google ສາມາດເຫັນທີ່ຢູ່ IP ແລະ ເວລາຂອງທຸກການເຊື່ອມຕໍ່ທີ່ອຸປະກອນຂອງທ່ານເຮັດຫາມັນ. ນັ້ນແມ່ນຄຸນສົມບັດຂອງໂຮດສະຕິງ, ບໍ່ແມ່ນຂອງແອັບ, ແລະ ພວກເຮົາບໍ່ສາມາດເຂົ້າລະຫັດມັນອອກໄດ້.`,
+    },
+    {
+      title: '3. ຄົນອື່ນຊອກຫາທ່ານແນວໃດ',
+      body: `ພວກເຂົາບໍ່ສາມາດຄົ້ນຫາທ່ານໄດ້. ບໍ່ມີໄດເລກທໍລີ — ບໍ່ມີການຄົ້ນຫາດ້ວຍອີເມວ, ເບີໂທລະສັບ ຫຼືຊື່ — ແລະ ເຊີບເວີປະຕິເສດຄຳຮ້ອງຂໍໃດໆທີ່ພະຍາຍາມນັ້ນ.
+
+ທ່ານເຂົ້າຫາໃຜຄົນໜຶ່ງໂດຍການສົ່ງລິ້ງເຊີນໃຫ້ເຂົາອອກນອກຊ່ອງທາງ, ຜ່ານສິ່ງທີ່ທ່ານໃຊ້ຢູ່ແລ້ວ. ລິ້ງໜຶ່ງໃຊ້ໄດ້ຄັ້ງດຽວ, ໝົດອາຍຸຫຼັງຈາກ 24 ຊົ່ວໂມງ, ແລະ ສາມາດຖອນອອກໄດ້. ສິ່ງທີ່ທ່ານເອີ້ນໃຜຄົນໜຶ່ງແມ່ນປ້າຍກຳກັບຂອງທ່ານເອງສຳລັບເຂົາ, ເກັບໄວ້ສຳລັບທ່ານ; ຖ້າເຂົາແນະນຳຕົນເອງ, ຊື່ນັ້ນມາຮອດທ່ານແບບເຂົ້າລະຫັດ.`,
+    },
+    {
+      title: '4. ຫຍັງແດ່ທີ່ພວກເຮົາເກັບກຳ',
+      body: `• ຂໍ້ມູນບັນຊີ: ຕົວລະບຸບັນຊີ, ແລະ ຂໍ້ມູນຢັ້ງຢືນທີ່ມາຈາກວະລີກູ້ຄືນຂອງທ່ານ, ເກັບໄວ້ໃນ Firebase Authentication. ບໍ່ມີທີ່ຢູ່ອີເມວ, ບໍ່ມີເບີໂທລະສັບ, ບໍ່ມີຊື່ — ການສະໝັກສະມາຊິກບໍ່ຖາມສິ່ງໃດເຫຼົ່ານີ້ເລີຍ.
+• Ciphertext ຂອງຂໍ້ຄວາມ ແລະ ໄຟລ໌ແນບ, ບວກກັບຂໍ້ມູນເມຕາໃນພາກທີ 2.
+
+ນັ້ນແມ່ນລາຍການທັງໝົດ. ບໍ່ມີການວິເຄາະ ແລະ ບໍ່ມີການລາຍງານຄວາມຜິດພາດ. ແອັບເຄີຍສົ່ງມຸມມອງໜ້າຈໍໄປຫາ Firebase Analytics ແລະ ລາຍງານຄວາມຜິດພາດໄປຫາ Firebase Crashlytics, ທັງສອງພາເອົາຕົວລະບຸບັນຊີຂອງທ່ານໄປນຳ, ດັ່ງນັ້ນອັນໃດອັນໜຶ່ງກໍ່ບໍ່ນິລະນາມ; ທັງສອງອັນຫາຍໄປແລ້ວ, ພ້ອມກັບຫ້ອງສະໝຸດທີ່ສົ່ງພວກມັນ. ຂໍ້ຜິດພາດຖືກພິມອອກເທິງເຄື່ອງຂອງນັກພັດທະນາເອງໃນລະຫວ່າງການພັດທະນາ ແລະ ບໍ່ໄປໃສອີກ.`,
+    },
+    {
+      title: '5. ຂໍ້ມູນຖືກເກັບໄວ້ໃສ',
+      body: `ຢູ່ Google Firebase — Firestore, Storage ແລະ Authentication — ພາຍໃຕ້ກົດລະບຽບຄວາມປອດໄພທີ່ຕັດສິນວ່າໃຜສາມາດອ່ານ ແລະ ຂຽນເອກະສານແຕ່ລະສະບັບ.
+
+ຢູ່ອຸປະກອນຂອງທ່ານ, ຂໍ້ຄວາມທີ່ບັນທຶກໄວ້ຊົ່ວຄາວ, ການຕັ້ງຄ່າ ແລະ PIN ລັອກແອັບຂອງທ່ານຖືກເຂົ້າລະຫັດດ້ວຍກະແຈສະເພາະອຸປະກອນທີ່ເກັບໄວ້ໃນບ່ອນເກັບກະແຈຂອງແພລດຟອມ (iOS Keychain, Android Keystore) ແທນທີ່ຈະເປັນບ່ອນເກັບຂໍ້ມູນແອັບທຳມະດາ.
+
+ກະແຈສ່ວນຕົວທີ່ຖອດລະຫັດຂໍ້ຄວາມຂອງທ່ານບໍ່ເຄີຍອອກຈາກອຸປະກອນຂອງທ່ານເລີຍ, ຍົກເວັ້ນເປັນວະລີກູ້ຄືນທີ່ທ່ານເລືອກທີ່ຈະຂຽນລົງໄວ້. ພວກເຮົາບໍ່ຖືມັນໄວ້ ແລະ ບໍ່ສາມາດກູ້ຄືນມັນໃຫ້ທ່ານໄດ້. ຖ້າເສຍມັນໄປ, ຂໍ້ຄວາມທີ່ສົ່ງໄປຫາອຸປະກອນນັ້ນຈະບໍ່ສາມາດອ່ານໄດ້ອີກ — ໂດຍໃຜກໍ່ຕາມ, ລວມທັງພວກເຮົາ.`,
+    },
+    {
+      title: '6. ໃຜອີກແດ່ທີ່ໄດ້ຮັບຂໍ້ມູນ',
+      body: `ພວກເຮົາບໍ່ຂາຍ, ແລກປ່ຽນ ຫຼືໃຫ້ເຊົ່າຂໍ້ມູນສ່ວນຕົວຂອງທ່ານ. ຂໍ້ມູນໄປຮອດ:
+
+• Google Firebase — ຜູ້ໃຫ້ບໍລິການໂຮດສະຕິງຂອງພວກເຮົາ, ຕາມທີ່ອະທິບາຍຂ້າງເທິງ.
+• ມູນນິທິວິກິມີເດຍ — ຊື່ໜຶ່ງ, ເມື່ອທ່ານແຕະເພື່ອຄົ້ນຫາໃນວິກິພີເດຍ.
+• Google Cloud Speech-to-Text — ສຽງຂອງຂໍ້ຄວາມສຽງໜຶ່ງ, ເມື່ອທ່ານຂໍການຖອດຂໍ້ຄວາມ.
+• Google Cloud Translation — ຂໍ້ຄວາມຂອງຂໍ້ຄວາມໜຶ່ງ, ເມື່ອທ່ານຂໍການແປ.
+• Cloudflare Workers AI — ຮອດ 50 ຂໍ້ຄວາມຫຼ້າສຸດຂອງການສົນທະນາໜຶ່ງ, ເມື່ອທ່ານຂໍສະຫຼຸບ ຫຼືຖາມຄຳຖາມກ່ຽວກັບມັນ.
+
+ສາມອັນສຸດທ້າຍປິດຢູ່ໃນລຸ້ນນີ້. ບໍ່ມີການຄວບຄຸມໃດໆໃນແອັບທີ່ຈະເປີດການຖອດຂໍ້ຄວາມ, ການແປ ຫຼືການສະຫຼຸບ, ດັ່ງນັ້ນຈຶ່ງບໍ່ມີຫຍັງໄປຮອດສາມບໍລິການນັ້ນ. ພວກມັນຖືກລະບຸໄວ້ແທນທີ່ຈະຖືກລຶບ ເພາະໂຄ້ດຍັງຢູ່ທີ່ນີ້ ແລະ ຄຸນສົມບັດເຫຼົ່ານັ້ນຕັ້ງໃຈຈະກັບຄືນມາ — ແລະ ເມື່ອພວກມັນກັບຄືນມາ, ພວກມັນຈະກັບຄືນມາພ້ອມກັບການເປີດເຜີຍນີ້ ແລະ ຄຳເຕືອນກ່ອນການໃຊ້ງານຄັ້ງທຳອິດ. ສິ່ງທີ່ຈະຖືກສົ່ງໃນຕອນນັ້ນຖືກສົ່ງເພື່ອສ້າງຜົນລັບຂອງທ່ານ, ບໍ່ແມ່ນເພື່ອຝຶກຝົນສິ່ງໃດ; ບໍ່ມີການຖອດຂໍ້ຄວາມ ຫຼືການແປໃດຖືກເກັບໄວ້ໃນເຊີບເວີຂອງພວກເຮົາ.
+
+ການຄົ້ນຫາວິກິພີເດຍບໍ່ມີສະວິດ ເພາະບໍ່ມີຫຍັງໃຫ້ປິດ: ມັນເຮັດວຽກເມື່ອແຕະເທົ່ານັ້ນ ບໍ່ແມ່ນວິທີອື່ນ. ວິກິພີເດຍໄດ້ຮັບຊື່ນັ້ນອັນດຽວ ແລະ ທີ່ຢູ່ IP ຂອງທ່ານ, ຄືກັນກັບວ່າທ່ານໄດ້ພິມມັນເອງໃສ່ກ່ອງຄົ້ນຫາຂອງພວກເຂົາ — ບໍ່ມີບັນຊີ, ບໍ່ມີຂໍ້ຄວາມ, ບໍ່ມີການສົນທະນາ. ສິ່ງທີ່ກັບຄືນມາຖືກສະແດງ ແລະ ບໍ່ຖືກບັນທຶກ, ແລະ ບໍ່ມີຫຍັງກ່ຽວກັບມັນຖືກຂຽນລົງໃນການສົນທະນາ.
+
+ພວກເຮົາອາດເປີດເຜີຍສິ່ງທີ່ພວກເຮົາຖືໄວ້ຖ້າກົດໝາຍຮຽກຮ້ອງ. ສິ່ງທີ່ພວກເຮົາຖືໄວ້ແມ່ນລາຍການໃນພາກທີ 2. ພວກເຮົາບໍ່ສາມາດຜະລິດເນື້ອຫາຂໍ້ຄວາມໄດ້, ເພາະພວກເຮົາບໍ່ສາມາດອ່ານມັນໄດ້.`,
+    },
+    {
+      title: '7. ການແຈ້ງເຕືອນແບບພຸດຊ໌',
+      body: `Firebase Cloud Messaging ສົ່ງການແຈ້ງເຕືອນ. ໂທເຄັນອຸປະກອນຂອງທ່ານຖືກເກັບໄວ້ໃນສ່ວນສ່ວນຕົວຂອງບັນຊີຂອງທ່ານທີ່ມີແຕ່ທ່ານເທົ່ານັ້ນທີ່ອ່ານໄດ້.
+
+ການແຈ້ງເຕືອນບໍ່ມີຂໍ້ຄວາມຂອງຂໍ້ຄວາມນຳໄປ. ອຸປະກອນຂອງທ່ານຖອດລະຫັດຂໍ້ຄວາມຢູ່ໃນເຄື່ອງ ແລະ ປະກອບສິ່ງທີ່ທ່ານເຫັນ; Google ສົ່ງພຽງແຕ່ຊອງ, ບໍ່ແມ່ນເນື້ອຫາ.`,
+    },
+    {
+      title: '8. ສິ່ງທີ່ທ່ານສາມາດເຮັດໄດ້',
+      body: `• ລຶບບັນຊີຂອງທ່ານຈາກໜ້າຈໍໂປຣໄຟລ໌. ເນື້ອຫາທີ່ເປັນສ່ວນຮ່ວມຂອງການສົນທະນາ — ບັນທຶກການໂທ, ຕົວຢ່າງ — ຍັງຄົງຢູ່ກັບຜູ້ເຂົ້າຮ່ວມອື່ນ, ເພາະມັນເປັນບັນທຶກຂອງເຂົາຄືກັນ.
+• ສົ່ງອອກຂໍ້ມູນຂອງທ່ານຈາກໜ້າຈໍໂປຣໄຟລ໌.
+• ຕັ້ງຄ່າໃຫ້ຂໍ້ຄວາມໝົດອາຍຸຕໍ່ແຊັດ: 1 ຊົ່ວໂມງ, 24 ຊົ່ວໂມງ, 7 ວັນ ຫຼື 30 ວັນ.
+• ເປີດ ຫຼືປິດຕົວບົ່ງບອກການພິມ ແລະ ໃບຮັບອ່ານ. ທັງສອງປິດຢູ່ໂດຍຄ່າເລີ່ມຕົ້ນ.
+• ລັອກແອັບດ້ວຍ PIN ຫຼືໄບໂອເມັດຣິກ.
+• ຖອນລິ້ງເຊີນທີ່ທ່ານໄດ້ແຈກໄປແລ້ວ.
+
+ຖ້າທ່ານຢາກໃຫ້ພວກເຮົາລຶບບາງສິ່ງດ້ວຍມື, ຂຽນມາຫາພວກເຮົາ.`,
+    },
+    {
+      title: '9. ການເກັບຮັກສາ',
+      body: `ພວກເຮົາເກັບຂໍ້ມູນຂອງທ່ານໄວ້ໃນຂະນະທີ່ບັນຊີຂອງທ່ານຍັງມີຢູ່. ການລຶບບັນຊີຈະລຶບມັນ, ຍົກເວັ້ນເນື້ອຫາທີ່ຖືຮ່ວມກັນທີ່ໄດ້ກ່າວມາຂ້າງເທິງ. ການໝົດອາຍຸຕໍ່ແຊັດຈະເອົາຂໍ້ຄວາມອອກຕາມກຳນົດເວລາທີ່ທ່ານຕັ້ງໄວ້.`,
+    },
+    {
+      title: '10. ຂໍ້ຈຳກັດທີ່ທ່ານຄວນຮູ້',
+      body: `ພວກເຮົາຢາກບອກທ່ານກ່ຽວກັບສິ່ງເຫຼົ່ານີ້ຫຼາຍກວ່າໃຫ້ທ່ານມາພົບເຫັນມັນເອງ.
+
+• ກະແຈຖືກໄວ້ວາງໃຈຄັ້ງທຳອິດທີ່ເຫັນມັນ. ຖ້າໃຜຄົນໜຶ່ງແທນທີ່ກະແຈກ່ອນທີ່ທ່ານຈະເຄີຍແລກປ່ຽນຂໍ້ຄວາມກັນ, ການສົນທະນາຈະຖືກເຂົ້າລະຫັດຫາຄົນຜິດ ແລະ ຈະເບິ່ງຄືປົກກະຕິທຸກຢ່າງ. ແອັບເຕືອນທ່ານເມື່ອກະແຈປ່ຽນແປງພາຍຫຼັງ, ແລະ ສະແດງເລກຄວາມປອດໄພທີ່ທ່ານສາມາດປຽບທຽບນອກຊ່ອງທາງໄດ້ — ແຕ່ບໍ່ມີຫຍັງບັງຄັບໃຫ້ທ່ານປຽບທຽບມັນ.
+• ອຸປະກອນດຽວໃນເວລາໃດໜຶ່ງ. ວະລີກູ້ຄືນຂອງທ່ານກູ້ຄືນກະແຈທີ່ເປີດປະຫວັດຂອງທ່ານ, ດັ່ງນັ້ນການເຂົ້າສູ່ລະບົບຢູ່ອຸປະກອນໃໝ່ຈະບໍ່ເສຍສິ່ງທີ່ທ່ານໄດ້ຮັບແລ້ວ. ການສົນທະນາທີ່ມີການປົກປ້ອງລ່ວງໜ້າໃຊ້ກະແຈທີສອງທີ່ບໍ່ເຄີຍອອກຈາກອຸປະກອນທີ່ສ້າງມັນຂຶ້ນມາ: ອຸປະກອນໃດກໍ່ຕາມທີ່ເຂົ້າສູ່ລະບົບຫຼ້າສຸດແມ່ນອຸປະກອນທີ່ພວກມັນໄປຮອດ, ແລະ ສິ່ງໃດກໍ່ຕາມທີ່ຖືກປິດຜະນຶກໄວ້ໃຫ້ອຸປະກອນອື່ນໃນລະຫວ່າງນັ້ນບໍ່ສາມາດຍ້າຍໄປໄດ້.
+• ຂໍ້ຄວາມທີ່ສົ່ງກ່ອນທີ່ຈະມີການເຂົ້າລະຫັດຍັງຄົງເປັນຄືເກົ່າ. ບໍ່ມີຫຍັງຖືກປ່ຽນແປງຍ້ອນຫຼັງ.
+• ແອັບນີ້ຍັງບໍ່ໄດ້ຖືກກວດສອບຄວາມປອດໄພຢ່າງເປັນເອກະລາດ.`,
+    },
+    {
+      title: '11. ເດັກນ້ອຍ',
+      body: `Chatterbox ບໍ່ໄດ້ມີຈຸດປະສົງສຳລັບເດັກນ້ອຍອາຍຸຕ່ຳກວ່າ 13 ປີ, ແລະ ພວກເຮົາບໍ່ໄດ້ເກັບກຳຂໍ້ມູນຂອງເຂົາຢ່າງຮູ້ເຫັນ. ຖ້າທ່ານເຊື່ອວ່າເດັກນ້ອຍໄດ້ໃຫ້ຂໍ້ມູນສ່ວນຕົວແກ່ພວກເຮົາ, ຕິດຕໍ່ພວກເຮົາ ແລະ ພວກເຮົາຈະລຶບມັນອອກ.`,
+    },
+    {
+      title: '12. ການປ່ຽນແປງ',
+      body: `ພວກເຮົາອາດອັບເດດນະໂຍບາຍນີ້. ການປ່ຽນແປງທີ່ສຳຄັນຈະຖືກປະກາດຢູ່ໃນແອັບ, ແລະ ວັນທີຢູ່ເທິງສຸດແມ່ນເວລາທີ່ມັນປ່ຽນແປງຫຼ້າສຸດ.`,
+    },
+    {
+      title: '13. ຕິດຕໍ່',
+      body: `ຄຳຖາມກ່ຽວກັບນະໂຍບາຍນີ້: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  ta: [
+    {
+      title: '0. சுருக்கமாக',
+      body: `உங்கள் செய்திகளின் உரை உங்கள் சாதனத்தில் குறியாக்கம் செய்யப்பட்டு, நீங்கள் அதை அனுப்பும் நபர்களால் மட்டுமே படிக்க முடியும். எங்களால் அதைப் படிக்க முடியாது, நாங்கள் வாடகைக்கு எடுத்திருக்கும் சர்வர்களைச் சொந்தமாக்கிய Google-ஆலும் படிக்க முடியாது.
+
+நாங்கள் காணக்கூடியது ஒரு உரையாடல் நடந்தது என்பதே: எந்த கணக்குகள் அதில் உள்ளன, எப்போது அவை செயலிலிருந்தன. உள்ளடக்கத்தை குறியாக்கம் செய்வதை விட அதை அகற்றுவது கடினம், மேலும் நாங்கள் அதை முடிக்கவில்லை. இந்தக் கொள்கை தற்போது அந்த எல்லை எங்கு உள்ளது என்பதை சரியாகக் கூறுகிறது.`,
+    },
+    {
+      title: '1. முனையிலிருந்து முனைவரை குறியாக்கம் செய்யப்பட்டது என்ன',
+      body: `உங்கள் சாதனத்தில் குறியாக்கம் செய்யப்பட்டு, எங்களாலும் Google-ஆலும் படிக்க முடியாதவை:
+
+• உங்கள் செய்திகளின் உரை.
+• நீங்கள் இணைக்கும் கோப்புகள், புகைப்படங்கள், ஆடியோ மற்றும் வீடியோவின் உள்ளடக்கம்.
+• இணைப்பு முன்னோட்டங்கள்.
+• குரல் மற்றும் வீடியோ அழைப்புகள், இரண்டு சாதனங்களுக்கு இடையே WebRTC-இன் கட்டாய DTLS-SRTP ஐப் பயன்படுத்துகின்றன.
+
+பெரும்பாலான ஒன்றுக்கொன்று மற்றும் குழு செய்திகள் கூடுதலாக ஒரு ratchet ஐப் பயன்படுத்துகின்றன, அதாவது ஒவ்வொரு செய்திக்கும் அதன் சொந்த திறவுகோல் உள்ளது, எனவே உங்கள் சாதனத்தை சமரசம் செய்வது முந்தையவற்றை வெளிப்படுத்தாது. ஒருவரின் கிளையன்ட் புதிய திறவுகோல் பொருளை வெளியிடாத உரையாடல்கள் அந்தப் பண்பு இல்லாத ஒற்றை நீண்டகால திறவுகோலுக்குத் திரும்புகின்றன. ஒரு செய்திக்குக் கீழே உள்ள லேபிள் அது உண்மையில் எதைப் பெற்றது என்பதை உங்களுக்குச் சொல்கிறது.
+
+இந்த எல்லையைத் தாண்டும் ஒரே விஷயம், நீங்கள் கேட்கும்போது மட்டுமே: விக்கிபீடியாவில் ஒரு பெயரைத் தேடுவது அந்த ஒரு பெயரை மட்டுமே அனுப்புகிறது, அது வந்த செய்தியை அல்ல. பிரிவு 6 அதை யார் பெறுகிறார்கள் என்பதைக் கூறுகிறது, மேலும் தேடல் தட்டும்போது மட்டுமே இயங்குகிறது வேறு வழியில் அல்ல, எனவே அணைக்க எதுவும் நிற்கவில்லை. சுருக்கம், மொழிபெயர்ப்பு மற்றும் படியெடுத்தல் ஆகியவையும் இதைத் தாண்டும் — அவை இந்த வெளியீட்டில் அணைக்கப்பட்டுள்ளன, அவற்றை இயக்கும் எந்த கட்டுப்பாடும் ஆப்பில் எங்கும் இல்லை.`,
+    },
+    {
+      title: '2. என்ன குறியாக்கம் செய்யப்படவில்லை, மேலும் நாங்கள் என்ன பார்க்க முடியும்',
+      body: `குறியாக்கம் உள்ளடக்கத்தைப் பாதுகாக்கிறது, உரையாடலின் உண்மையை அல்ல. இவை எங்கள் சர்வர்களில் தெளிவாக உள்ளன:
+
+• ஒவ்வொரு உரையாடலிலும் யார் உள்ளனர், அது எப்போது உருவாக்கப்பட்டது மற்றும் கடைசியாக எப்போது செயலில் இருந்தது.
+• ஒவ்வொரு செய்தியின் நேர முத்திரை, மற்றும் நீங்கள் படிக்காதவை எத்தனை.
+• ஒரு இணைப்பின் கோப்பு பெயர், வகை மற்றும் அளவு. பைட்டுகள் குறியாக்கம் செய்யப்பட்டுள்ளன; அவற்றின் விளக்கம் இல்லை, மேலும் மறைகுறியாக்கப்பட்ட உரையின் நீளம் அசலின் நீளத்தை வரம்பிடுகிறது.
+• உங்கள் நண்பர்கள் மற்றும் நட்பு கோரிக்கைகள்.
+• அழைப்பு சிக்னலிங் — ஒரு அழைப்பு வைக்கப்பட்டது, யாருக்கு, எப்போது என்பது. அதன் ஆடியோ அல்லது வீடியோ அல்ல.
+
+நீங்கள் அவற்றை இயக்கும் வரை தட்டச்சு குறிகாட்டிகள் மற்றும் படித்த ரசீதுகள் அணைக்கப்பட்டுள்ளன, அணைந்திருக்கும் போது எதுவும் எழுதப்படாது.
+
+இங்கு இனி இல்லாதது: உங்கள் மின்னஞ்சல் முகவரி மற்றும் பெயர். செப்டம்பர் 2026 முதல் கணக்கு பதிவு ஒரு கணக்கு அடையாளங்காட்டியை மட்டுமே கொண்டுள்ளது — அதன் பின்னர் எங்கும் வைத்திருக்க முகவரி இல்லை. பதிவு செய்வது உங்களைப் பற்றி எதுவும் கேட்காது: உங்கள் கணக்கு 24-சொல் மீட்பு சொற்றொடர், Firebase Authentication சரிபார்க்கும் நற்சான்றிதழ் அதிலிருந்து பெறப்படுகிறது. அது சேமிப்பது அஞ்சல் பெற முடியாத ஒரு டொமைனின் கீழ் ஒரு சீரற்ற லேபிள் மட்டுமே.
+
+தனியாக: ஆப் Google Firebase இல் இயங்குவதால், உங்கள் சாதனம் அதற்கு செய்யும் ஒவ்வொரு இணைப்பின் IP முகவரி மற்றும் நேரத்தையும் Google பார்க்க முடியும். இது ஹோஸ்டிங்கின் பண்பு, ஆப்பினுடையது அல்ல, மேலும் அதை நாங்கள் குறியாக்கம் செய்து அகற்ற முடியாது.`,
+    },
+    {
+      title: '3. மக்கள் உங்களை எப்படி கண்டுபிடிக்கிறார்கள்',
+      body: `அவர்களால் உங்களைத் தேட முடியாது. அடைவு இல்லை — மின்னஞ்சல், தொலைபேசி எண் அல்லது பெயர் மூலம் தேடல் இல்லை — அதற்கு முயற்சிக்கும் எந்த வினவலையும் சர்வர் நிராகரிக்கிறது.
+
+நீங்கள் ஏற்கனவே பயன்படுத்தும் எதன் மூலமாகவும், சேனலுக்கு வெளியே ஒருவருக்கு அழைப்பு இணைப்பை அனுப்புவதன் மூலம் நீங்கள் ஒருவரை அடைகிறீர்கள். ஒரு இணைப்பு ஒருமுறை வேலை செய்கிறது, 24 மணி நேரத்திற்குப் பிறகு காலாவதியாகும், மேலும் திரும்பப் பெறலாம். நீங்கள் ஒருவரை எப்படி அழைக்கிறீர்களோ அது அவர்களுக்கான உங்கள் சொந்த லேபிள், உங்களுக்காக வைக்கப்பட்டுள்ளது; அவர்கள் தங்களை அறிமுகப்படுத்திக் கொண்டிருந்தால், அந்த பெயர் குறியாக்கப்பட்ட வடிவில் உங்களை அடைந்தது.`,
+    },
+    {
+      title: '4. நாங்கள் எதை சேகரிக்கிறோம்',
+      body: `• கணக்கு தரவு: ஒரு கணக்கு அடையாளங்காட்டி, மற்றும் Firebase Authentication இல் வைக்கப்பட்டுள்ள உங்கள் மீட்பு சொற்றொடரிலிருந்து பெறப்பட்ட ஒரு நற்சான்றிதழ். மின்னஞ்சல் முகவரி இல்லை, தொலைபேசி எண் இல்லை, பெயர் இல்லை — பதிவு செய்வது இவற்றில் எதையும் கேட்காது.
+• செய்தி மற்றும் இணைப்பு மறைகுறியாக்கப்பட்ட உரை, பிரிவு 2 இல் உள்ள மெட்டாடேட்டாவுடன்.
+
+அதுவே முழு பட்டியல். பகுப்பாய்வு இல்லை, செயலிழப்பு அறிக்கை இல்லை. ஆப் முன்பு திரை காட்சிகளை Firebase Analytics-க்கும் செயலிழப்பு அறிக்கைகளை Firebase Crashlytics-க்கும் அனுப்பியது, இரண்டும் உங்கள் கணக்கு அடையாளங்காட்டியை சுமந்து சென்றன, எனவே எதுவும் அநாமதேயமாக இல்லை; இரண்டும் இப்போது அவற்றை அனுப்பிய நூலகங்களுடன் போய்விட்டன. டெவலப்பரின் சொந்த இயந்திரத்தில் மேம்பாட்டின் போது மட்டுமே பிழைகள் அச்சிடப்படுகின்றன, வேறு எங்கும் செல்லாது.`,
+    },
+    {
+      title: '5. இது எங்கு சேமிக்கப்படுகிறது',
+      body: `Google Firebase இல் — Firestore, Storage மற்றும் Authentication — ஒவ்வொரு ஆவணத்தையும் யார் படிக்கலாம் எழுதலாம் என்பதை தீர்மானிக்கும் பாதுகாப்பு விதிகளின் கீழ்.
+
+உங்கள் சாதனத்தில், கேச் செய்யப்பட்ட செய்திகள், அமைப்புகள் மற்றும் உங்கள் ஆப்-லாக் பின் சாதாரண ஆப் சேமிப்பிற்கு பதிலாக பிளாட்ஃபார்ம் கீஸ்டோரில் (iOS Keychain, Android Keystore) வைக்கப்பட்டுள்ள ஒரு சாதன-வாரியான திறவுகோலுடன் குறியாக்கம் செய்யப்பட்டுள்ளது.
+
+உங்கள் செய்திகளை மறைகுறியாக்கம் நீக்கும் தனிப்பட்ட திறவுகோல் உங்கள் சாதனத்தை விட்டு ஒருபோதும் வெளியேறாது, நீங்கள் எழுத தேர்ந்தெடுக்கும் மீட்பு சொற்றொடராக தவிர. நாங்கள் அதை வைத்திருக்கவில்லை, உங்களுக்காக அதை மீட்டெடுக்கவும் முடியாது. அதை இழந்தால், அந்த சாதனத்திற்கு அனுப்பப்பட்ட செய்திகளை மீண்டும் படிக்க முடியாது — யாராலும், எங்களை உட்பட.`,
+    },
+    {
+      title: '6. வேறு யார் தரவைப் பெறுகிறார்கள்',
+      body: `நாங்கள் உங்கள் தனிப்பட்ட தகவலை விற்கவோ, மாற்றவோ, வாடகைக்கு விடவோ மாட்டோம். தரவு அடைகிறது:
+
+• Google Firebase — மேலே விவரிக்கப்பட்டுள்ளபடி, எங்கள் ஹோஸ்டிங் வழங்குநர்.
+• விக்கிமீடியா அறக்கட்டளை — விக்கிபீடியாவில் தேட நீங்கள் தட்டும்போது ஒரு பெயர்.
+• Google Cloud Speech-to-Text — நீங்கள் ஒரு டிரான்ஸ்கிரிப்ட் கேட்கும்போது ஒரு குரல் செய்தியின் ஆடியோ.
+• Google Cloud Translation — நீங்கள் ஒரு மொழிபெயர்ப்பு கேட்கும்போது ஒரு செய்தியின் உரை.
+• Cloudflare Workers AI — நீங்கள் சுருக்கம் கேட்கும்போது அல்லது அதைப் பற்றி ஒரு கேள்வி கேட்கும்போது ஒரு உரையாடலின் கடைசி 50 செய்திகள் வரை.
+
+கடைசி மூன்றும் இந்த வெளியீட்டில் அணைக்கப்பட்டுள்ளன. படியெடுத்தல், மொழிபெயர்ப்பு அல்லது சுருக்கங்களை இயக்கும் எந்த கட்டுப்பாடும் ஆப்பில் எங்கும் இல்லை, எனவே அந்த மூன்று சேவைகளுக்கும் எதுவும் அடையாது. அவை நீக்கப்படுவதற்கு பதிலாக பட்டியலிடப்பட்டுள்ளன, ஏனெனில் குறியீடு இன்னும் இங்கே உள்ளது மற்றும் அம்சங்கள் திரும்ப வர வேண்டும் என்று உத்தேசிக்கப்பட்டுள்ளது — அவை திரும்பும்போது, அவை இந்த வெளிப்படுத்தலுடனும் முதல் பயன்பாட்டிற்கு முன் ஒரு அறிவிப்புடனும் திரும்பும். அப்போது அனுப்பப்படுவது உங்கள் முடிவை உருவாக்க அனுப்பப்படுகிறது, எதையும் பயிற்றுவிக்க அல்ல; எங்கள் சர்வர்களில் டிரான்ஸ்கிரிப்ட் அல்லது மொழிபெயர்ப்பு சேமிக்கப்படவில்லை.
+
+விக்கிபீடியா தேடலுக்கு சுவிட்ச் இல்லை, ஏனெனில் அணைக்க எதுவும் நிற்கவில்லை: அது தட்டும்போது மட்டுமே இயங்குகிறது வேறு வழியில் அல்ல. விக்கிபீடியா அந்த ஒரு பெயரையும் உங்கள் IP முகவரியையும் பெறுகிறது, அவர்களின் தேடல் பெட்டியில் நீங்கள் அதை தட்டச்சு செய்ததைப் போல — கணக்கு இல்லை, செய்தி இல்லை, உரையாடல் இல்லை. திரும்பி வருவது காட்டப்பட்டு சேமிக்கப்படவில்லை, அதைப் பற்றி எதுவும் உரையாடலில் எழுதப்படவில்லை.
+
+சட்டம் தேவைப்பட்டால் நாங்கள் வைத்திருப்பதை வெளிப்படுத்தலாம். நாங்கள் வைத்திருப்பது பிரிவு 2 இல் உள்ள பட்டியல். எங்களால் செய்தி உள்ளடக்கத்தை உருவாக்க முடியாது, ஏனெனில் எங்களால் அதைப் படிக்க முடியாது.`,
+    },
+    {
+      title: '7. புஷ் அறிவிப்புகள்',
+      body: `Firebase Cloud Messaging அறிவிப்புகளை வழங்குகிறது. உங்கள் சாதன டோக்கன் நீங்கள் மட்டுமே படிக்கக்கூடிய உங்கள் கணக்கின் தனிப்பட்ட பகுதியில் சேமிக்கப்பட்டுள்ளது.
+
+அறிவிப்புகள் செய்தி உரையை சுமக்காது. உங்கள் சாதனம் உள்நாட்டில் செய்தியை மறைகுறியாக்கம் நீக்கி நீங்கள் பார்ப்பதை உருவாக்குகிறது; Google உள்ளடக்கத்தை அல்ல, உறையை வழங்குகிறது.`,
+    },
+    {
+      title: '8. நீங்கள் என்ன செய்யலாம்',
+      body: `• பைல் திரையிலிருந்து உங்கள் கணக்கை நீக்கவும். ஒரு உரையாடலின் கூட்டு பகுதியாக இருக்கும் உள்ளடக்கம் — உதாரணமாக, ஒரு அழைப்பு பதிவு — மற்ற பங்கேற்பாளருடன் இருக்கும், ஏனெனில் இது அவர்களின் பதிவும் கூட.
+• பைல் திரையிலிருந்து உங்கள் தரவை ஏற்றுமதி செய்யவும்.
+• ஒவ்வொரு அரட்டைக்கும் செய்திகள் காலாவதியாக அமைக்கவும்: 1 மணி நேரம், 24 மணி நேரம், 7 நாட்கள் அல்லது 30 நாட்கள்.
+• தட்டச்சு குறிகாட்டிகள் மற்றும் படித்த ரசீதுகளை இயக்கவும் அல்லது அணைக்கவும். இரண்டும் இயல்பாக அணைக்கப்பட்டுள்ளன.
+• பின் அல்லது பயோமெட்ரிக்ஸ் மூலம் ஆப்பை பூட்டவும்.
+• நீங்கள் கொடுத்த ஒரு அழைப்பு இணைப்பை திரும்பப் பெறவும்.
+
+நாங்கள் ஏதாவது கையால் நீக்க வேண்டும் என்று நீங்கள் விரும்பினால், எங்களுக்கு எழுதுங்கள்.`,
+    },
+    {
+      title: '9. தக்கவைப்பு',
+      body: `உங்கள் கணக்கு இருக்கும் வரை உங்கள் தரவை நாங்கள் வைத்திருக்கிறோம். கணக்கை நீக்குவது அதை நீக்குகிறது, மேலே குறிப்பிட்ட கூட்டாக வைக்கப்பட்ட உள்ளடக்கத்தைத் தவிர. ஒவ்வொரு அரட்டைக்கும் காலாவதி நீங்கள் அமைத்த அட்டவணையில் செய்திகளை அகற்றுகிறது.`,
+    },
+    {
+      title: '10. நீங்கள் தெரிந்து கொள்ள வேண்டிய வரம்புகள்',
+      body: `நீங்கள் அவற்றைக் கண்டுபிடிப்பதை விட, நாங்கள் இவற்றை உங்களிடம் சொல்ல விரும்புகிறோம்.
+
+• முதல் முறையாகப் பார்க்கும்போது திறவுகோல்கள் நம்பப்படுகின்றன. நீங்கள் எப்போதும் ஒரு செய்தியைப் பரிமாறிக்கொள்வதற்கு முன் யாராவது ஒரு திறவுகோலை மாற்றியிருந்தால், உரையாடல் தவறான நபருக்கு குறியாக்கம் செய்யப்படும் மற்றும் முற்றிலும் இயல்பாகத் தோன்றும். திறவுகோல் பின்னர் மாறும்போது ஆப் உங்களை எச்சரிக்கிறது, மேலும் நீங்கள் சேனலுக்கு வெளியே ஒப்பிடக்கூடிய பாதுகாப்பு எண்ணைக் காட்டுகிறது — ஆனால் அதை ஒப்பிட உங்களை எதுவும் கட்டாயப்படுத்தாது.
+• ஒரு நேரத்தில் ஒரு சாதனம். உங்கள் மீட்பு சொற்றொடர் உங்கள் வரலாற்றைத் திறக்கும் திறவுகோலை மீட்டெடுக்கிறது, எனவே ஒரு புதிய சாதனத்தில் உள்நுழைவது நீங்கள் ஏற்கனவே பெற்றதை இழக்காது. முன்னோக்கி-ரகசிய உரையாடல்கள் அதை உருவாக்கிய சாதனத்தை ஒருபோதும் விட்டு வெளியேறாத இரண்டாவது திறவுகோலைப் பயன்படுத்துகின்றன: கடைசியாக உள்நுழைந்த சாதனம் எதுவாக இருந்தாலும் அவை அடையும் ஒன்று, அந்த நேரத்தில் மற்றொன்றுக்கு முத்திரையிடப்பட்ட எதுவும் அதற்கு நகர்த்த முடியாது.
+• குறியாக்கம் இருப்பதற்கு முன் அனுப்பப்பட்ட செய்திகள் அவ்வாறே இருக்கும். எதுவும் பின்னோக்கி மாற்றப்படவில்லை.
+• இந்த ஆப் சுயாதீனமாக பாதுகாப்பு தணிக்கை செய்யப்படவில்லை.`,
+    },
+    {
+      title: '11. குழந்தைகள்',
+      body: `Chatterbox 13 வயதுக்குட்பட்ட குழந்தைகளுக்கு நோக்கம் கொண்டது அல்ல, மேலும் அவர்களின் தகவலை நாங்கள் அறிந்தே சேகரிக்க மாட்டோம். ஒரு குழந்தை எங்களுக்கு தனிப்பட்ட தகவலை வழங்கியிருக்கிறது என்று நீங்கள் நம்பினால், எங்களைத் தொடர்பு கொள்ளுங்கள், நாங்கள் அதை நீக்குவோம்.`,
+    },
+    {
+      title: '12. மாற்றங்கள்',
+      body: `நாங்கள் இந்தக் கொள்கையைப் புதுப்பிக்கலாம். குறிப்பிடத்தக்க மாற்றங்கள் ஆப்பில் அறிவிக்கப்படும், மேலும் மேலே உள்ள தேதி அது கடைசியாக மாறிய நேரம்.`,
+    },
+    {
+      title: '13. தொடர்பு',
+      body: `இந்தக் கொள்கை பற்றிய கேள்விகள்: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  te: [
+    {
+      title: '0. క్లుప్తంగా',
+      body: `మీ సందేశాల వచనం మీ పరికరంలో గుప్తీకరించబడి, మీరు పంపే వ్యక్తులు మాత్రమే దాన్ని చదవగలరు. మేము దాన్ని చదవలేము, మేము అద్దెకు తీసుకున్న సర్వర్లను కలిగి ఉన్న Google కూడా చదవలేదు.
+
+మేము చూడగలిగేది ఒక సంభాషణ జరిగిందని: ఏ ఖాతాలు అందులో ఉన్నాయి, అవి ఎప్పుడు క్రియాశీలంగా ఉన్నాయి. దాన్ని తొలగించడం విషయాలను గుప్తీకరించడం కంటే కష్టం, మరియు మేము ఇంకా పూర్తి చేయలేదు. ఈ విధానం ప్రస్తుతం ఆ గీత ఎక్కడ ఉందో ఖచ్చితంగా చెబుతుంది.`,
+    },
+    {
+      title: '1. ఎండ్-టు-ఎండ్ గుప్తీకరించబడినది ఏమిటి',
+      body: `మీ పరికరంలో గుప్తీకరించబడి, మాకు మరియు Googleకు చదవలేనిది:
+
+• మీ సందేశాల వచనం.
+• మీరు జోడించే ఫైళ్లు, ఫోటోలు, ఆడియో మరియు వీడియో యొక్క కంటెంట్‌లు.
+• లింక్ ప్రివ్యూలు.
+• రెండు పరికరాల మధ్య WebRTC యొక్క తప్పనిసరి DTLS-SRTP ఉపయోగించే వాయిస్ మరియు వీడియో కాల్‌లు.
+
+చాలా వన్-టు-వన్ మరియు గ్రూప్ సందేశాలు అదనంగా ratchet ను ఉపయోగిస్తాయి, అంటే ప్రతి సందేశానికి దాని స్వంత కీ ఉంటుంది, కాబట్టి మీ పరికరం రాజీపడటం మునుపటివాటిని బహిర్గతం చేయదు. ఎవరి క్లయింట్ కొత్త కీ మెటీరియల్‌ను ప్రచురించని సంభాషణలు ఆ లక్షణం లేని ఒకే దీర్ఘకాలిక కీకి తిరిగి వస్తాయి. సందేశం క్రింద ఉన్న లేబుల్ అది వాస్తవానికి ఏది పొందిందో మీకు చెబుతుంది.
+
+ఈ గీతను దాటే ఒకే విషయం, మీరు అడిగినప్పుడు మాత్రమే: వికీపీడియాలో ఒక పేరును వెతకడం ఆ ఒక్క పేరును మాత్రమే పంపుతుంది, అది వచ్చిన సందేశాన్ని కాదు. విభాగం 6 దాన్ని ఎవరు స్వీకరిస్తారో చెబుతుంది, మరియు వెతుకులాట టాప్‌లో మాత్రమే నడుస్తుంది కాకుండా కాదు, కాబట్టి ఆఫ్ చేయడానికి ఏమీ నిలబడి లేదు. సారాంశం, అనువాదం మరియు లిప్యంతరీకరణ కూడా దీన్ని దాటేవి — అవి ఈ విడుదలలో ఆఫ్ చేయబడ్డాయి, వాటిని ఆన్ చేసే నియంత్రణ యాప్‌లో ఎక్కడా లేదు.`,
+    },
+    {
+      title: '2. ఏది గుప్తీకరించబడలేదు, మరియు మేము ఏమి చూడగలము',
+      body: `గుప్తీకరణ కంటెంట్‌ను రక్షిస్తుంది, సంభాషణ వాస్తవాన్ని కాదు. ఇవి మా సర్వర్లలో స్పష్టంగా ఉంటాయి:
+
+• ప్రతి సంభాషణలో ఎవరు ఉన్నారు, మరియు అది ఎప్పుడు సృష్టించబడింది మరియు చివరిగా క్రియాశీలంగా ఉంది.
+• ప్రతి సందేశం యొక్క టైమ్‌స్టాంప్, మరియు మీరు చదవని వాటి సంఖ్య.
+• జోడింపు యొక్క ఫైల్ పేరు, రకం మరియు పరిమాణం. బైట్‌లు గుప్తీకరించబడ్డాయి; వాటి వివరణ కాదు, మరియు సైఫర్‌టెక్స్ట్ పొడవు అసలు పొడవును పరిమితం చేస్తుంది.
+• మీ స్నేహితులు మరియు స్నేహిత అభ్యర్థనలు.
+• కాల్ సిగ్నలింగ్ — ఒక కాల్ చేయబడింది, ఎవరికి, మరియు ఎప్పుడు. దాని ఆడియో లేదా వీడియో కాదు.
+
+మీరు ఆన్ చేయనంత వరకు టైపింగ్ సూచికలు మరియు చదివిన రసీదులు ఆఫ్‌లో ఉంటాయి, ఆఫ్‌లో ఉన్నప్పుడు ఏమీ వ్రాయబడదు.
+
+ఇక్కడ ఇకపై లేనిది: మీ ఇమెయిల్ చిరునామా మరియు పేరు. సెప్టెంబర్ 2026 నుండి ఖాతా రికార్డు ఒక ఖాతా గుర్తింపును మాత్రమే కలిగి ఉంటుంది — మరియు అప్పటి నుండి ఎక్కడా ఉంచడానికి చిరునామా లేదు. సైన్ అప్ మీ గురించి ఏమీ అడగదు: మీ ఖాతా 24-పద పునరుద్ధరణ పదబంధం, మరియు Firebase Authentication తనిఖీ చేసే క్రెడెన్షియల్ దాని నుండి తీసుకోబడింది. అది నిల్వ చేసేది మెయిల్ స్వీకరించలేని డొమైన్ కింద యాదృచ్ఛిక లేబుల్ మాత్రమే.
+
+విడిగా: యాప్ Google Firebaseలో నడుస్తున్నందున, మీ పరికరం దానికి చేసే ప్రతి కనెక్షన్ యొక్క IP చిరునామా మరియు సమయాన్ని Google చూడగలదు. అది హోస్టింగ్ యొక్క లక్షణం, యాప్‌ది కాదు, మరియు మేము దానిని గుప్తీకరించి తొలగించలేము.`,
+    },
+    {
+      title: '3. వ్యక్తులు మిమ్మల్ని ఎలా కనుగొంటారు',
+      body: `వారు మిమ్మల్ని వెతకలేరు. డైరెక్టరీ లేదు — ఇమెయిల్, ఫోన్ నంబర్ లేదా పేరు ద్వారా శోధన లేదు — మరియు అలా ప్రయత్నించే ఏ ప్రశ్నను అయినా సర్వర్ తిరస్కరిస్తుంది.
+
+మీరు ఇప్పటికే ఉపయోగిస్తున్న దేనితోనైనా, ఛానెల్ వెలుపల ఆహ్వాన లింక్‌ను పంపడం ద్వారా మీరు ఎవరినైనా చేరుకుంటారు. ఒక లింక్ ఒకసారి పనిచేస్తుంది, 24 గంటల తర్వాత గడువు ముగుస్తుంది, మరియు ఉపసంహరించుకోవచ్చు. మీరు ఎవరినైనా ఏమని పిలుస్తారో అది వారి కోసం మీ స్వంత లేబుల్, మీ కోసం ఉంచబడింది; వారు తమను తాము పరిచయం చేసుకుంటే, ఆ పేరు గుప్తీకరించిన రూపంలో మీకు చేరింది.`,
+    },
+    {
+      title: '4. మేము ఏమి సేకరిస్తాము',
+      body: `• ఖాతా డేటా: ఖాతా గుర్తింపు, మరియు Firebase Authenticationలో ఉంచబడిన మీ పునరుద్ధరణ పదబంధం నుండి తీసుకోబడిన క్రెడెన్షియల్. ఇమెయిల్ చిరునామా లేదు, ఫోన్ నంబర్ లేదు, పేరు లేదు — సైన్ అప్ వీటిలో దేనినీ అడగదు.
+• సందేశం మరియు జోడింపు సైఫర్‌టెక్స్ట్, విభాగం 2లోని మెటాడేటాతో పాటు.
+
+అదే మొత్తం జాబితా. విశ్లేషణ లేదు మరియు క్రాష్ రిపోర్టింగ్ లేదు. యాప్ గతంలో స్క్రీన్ వీక్షణలను Firebase Analyticsకు మరియు క్రాష్ నివేదికలను Firebase Crashlyticsకు పంపేది, రెండూ మీ ఖాతా గుర్తింపును కలిగి ఉన్నాయి, కాబట్టి రెండూ అనామకమైనవి కావు; రెండూ ఇప్పుడు వాటిని పంపిన లైబ్రరీలతో పాటు పోయాయి. డెవలపర్ యొక్క స్వంత మెషీన్‌లో అభివృద్ధి సమయంలో మాత్రమే లోపాలు ముద్రించబడతాయి మరియు మరెక్కడికీ వెళ్లవు.`,
+    },
+    {
+      title: '5. ఇది ఎక్కడ నిల్వ చేయబడింది',
+      body: `Google Firebaseలో — Firestore, Storage మరియు Authentication — ప్రతి పత్రాన్ని ఎవరు చదవవచ్చు మరియు వ్రాయవచ్చు అని నిర్ణయించే భద్రతా నియమాల కింద.
+
+మీ పరికరంలో, కాష్ చేయబడిన సందేశాలు, సెట్టింగ్‌లు మరియు మీ యాప్-లాక్ PIN సాధారణ యాప్ నిల్వకు బదులుగా ప్లాట్‌ఫారమ్ కీస్టోర్‌లో (iOS Keychain, Android Keystore) ఉంచబడిన పర్-డివైస్ కీతో గుప్తీకరించబడతాయి.
+
+మీ సందేశాలను డిక్రిప్ట్ చేసే ప్రైవేట్ కీ మీరు వ్రాయాలని ఎంచుకున్న పునరుద్ధరణ పదబంధం తప్ప మీ పరికరాన్ని ఎప్పుడూ వదిలిపెట్టదు. మేము దానిని కలిగి ఉండము మరియు మీ కోసం దానిని తిరిగి పొందలేము. దాన్ని కోల్పోతే, ఆ పరికరానికి పంపిన సందేశాలను మళ్లీ చదవలేరు — మమ్మల్ని కలుపుకొని ఎవరూ కూడా.`,
+    },
+    {
+      title: '6. మరెవరు డేటాను స్వీకరిస్తారు',
+      body: `మేము మీ వ్యక్తిగత సమాచారాన్ని విక్రయించము, వర్తకం చేయము లేదా అద్దెకు ఇవ్వము. డేటా చేరేది:
+
+• Google Firebase — పైన వివరించినట్లు, మా హోస్టింగ్ ప్రొవైడర్.
+• వికీమీడియా ఫౌండేషన్ — వికీపీడియాలో వెతకడానికి మీరు నొక్కినప్పుడు ఒక పేరు.
+• Google Cloud Speech-to-Text — మీరు ట్రాన్స్క్రిప్ట్ కోసం అడిగినప్పుడు ఒక వాయిస్ మెసేజ్ యొక్క ఆడియో.
+• Google Cloud Translation — మీరు అనువాదం కోసం అడిగినప్పుడు ఒక సందేశం యొక్క వచనం.
+• Cloudflare Workers AI — మీరు సారాంశం కోసం అడిగినప్పుడు లేదా దాని గురించి ప్రశ్న అడిగినప్పుడు ఒక సంభాషణ యొక్క చివరి 50 సందేశాల వరకు.
+
+చివరి మూడు ఈ విడుదలలో ఆఫ్ చేయబడ్డాయి. లిప్యంతరీకరణ, అనువాదం లేదా సారాంశాలను ఆన్ చేసే నియంత్రణ యాప్‌లో ఎక్కడా లేదు, కాబట్టి ఆ మూడు సేవలకు ఏమీ చేరదు. కోడ్ ఇప్పటికీ ఇక్కడ ఉన్నందున మరియు ఆ ఫీచర్లు తిరిగి రావాలని ఉద్దేశించినందున అవి తొలగించబడటానికి బదులుగా జాబితా చేయబడ్డాయి — అవి తిరిగి వచ్చినప్పుడు, అవి ఈ బహిర్గతంతో మరియు మొదటి ఉపయోగానికి ముందు ప్రాంప్ట్‌తో తిరిగి వస్తాయి. అప్పుడు పంపేది మీ ఫలితాన్ని ఉత్పత్తి చేయడానికి పంపబడుతుంది, దేనినైనా శిక్షణ ఇవ్వడానికి కాదు; మా సర్వర్లలో ట్రాన్స్క్రిప్ట్ లేదా అనువాదం నిల్వ చేయబడదు.
+
+వికీపీడియా శోధనకు స్విచ్ లేదు ఎందుకంటే ఆఫ్ చేయడానికి ఏమీ నిలబడి లేదు: ఇది టాప్‌లో మాత్రమే నడుస్తుంది కాకుండా కాదు. వికీపీడియా ఆ ఒక్క పేరును మరియు మీ IP చిరునామాను స్వీకరిస్తుంది, మీరు దానిని వారి శోధన పెట్టెలో టైప్ చేసినట్లే — ఖాతా లేదు, సందేశం లేదు, సంభాషణ లేదు. తిరిగి వచ్చేది చూపబడుతుంది మరియు సేవ్ చేయబడదు, మరియు దాని గురించి ఏదీ సంభాషణలో వ్రాయబడదు.
+
+చట్టం అవసరమైతే మేము కలిగి ఉన్నదాన్ని బహిర్గతం చేయవచ్చు. మేము కలిగి ఉన్నది విభాగం 2లోని జాబితా. మేము సందేశ కంటెంట్‌లను ఉత్పత్తి చేయలేము, ఎందుకంటే మేము వాటిని చదవలేము.`,
+    },
+    {
+      title: '7. పుష్ నోటిఫికేషన్‌లు',
+      body: `Firebase Cloud Messaging నోటిఫికేషన్‌లను అందిస్తుంది. మీ పరికర టోకెన్ మీరు మాత్రమే చదవగలిగే మీ ఖాతా యొక్క ప్రైవేట్ భాగంలో నిల్వ చేయబడుతుంది.
+
+నోటిఫికేషన్‌లు సందేశ వచనాన్ని కలిగి ఉండవు. మీ పరికరం స్థానికంగా సందేశాన్ని డిక్రిప్ట్ చేసి మీరు చూసేదాన్ని కంపోజ్ చేస్తుంది; Google కంటెంట్‌ను కాదు, కవరును బట్వాడా చేస్తుంది.`,
+    },
+    {
+      title: '8. మీరు ఏమి చేయవచ్చు',
+      body: `• ప్రొఫైల్ స్క్రీన్ నుండి మీ ఖాతాను తొలగించండి. సంభాషణలో సంయుక్తంగా భాగమైన కంటెంట్ — ఉదాహరణకు, ఒక కాల్ రికార్డు — ఇతర పాల్గొనేవారితో ఉంటుంది, ఎందుకంటే ఇది వారి రికార్డు కూడా.
+• ప్రొఫైల్ స్క్రీన్ నుండి మీ డేటాను ఎగుమతి చేయండి.
+• ప్రతి చాట్‌కు సందేశాలు గడువు ముగియడానికి సెట్ చేయండి: 1 గంట, 24 గంటలు, 7 రోజులు లేదా 30 రోజులు.
+• టైపింగ్ సూచికలు మరియు చదివిన రసీదులను ఆన్ లేదా ఆఫ్ చేయండి. రెండూ డిఫాల్ట్‌గా ఆఫ్‌లో ఉన్నాయి.
+• PIN లేదా బయోమెట్రిక్స్‌తో యాప్‌ను లాక్ చేయండి.
+• మీరు ఇచ్చిన ఆహ్వాన లింక్‌ను ఉపసంహరించుకోండి.
+
+మీరు ఏదైనా చేతితో తొలగించాలని కోరుకుంటే, మాకు వ్రాయండి.`,
+    },
+    {
+      title: '9. నిలుపుదల',
+      body: `మీ ఖాతా ఉన్నంత వరకు మేము మీ డేటాను ఉంచుతాము. ఖాతాను తొలగించడం దానిని తొలగిస్తుంది, పైన పేర్కొన్న సంయుక్తంగా ఉంచబడిన కంటెంట్ మినహా. ప్రతి చాట్ గడువు ముగింపు మీరు సెట్ చేసిన షెడ్యూల్‌లో సందేశాలను తొలగిస్తుంది.`,
+    },
+    {
+      title: '10. మీరు తెలుసుకోవలసిన పరిమితులు',
+      body: `మీరు వాటిని కనుగొనడం కంటే మేము మీకు ఇవి చెప్పడానికి ఇష్టపడతాము.
+
+• కీలు మొదటిసారి చూసినప్పుడు విశ్వసించబడతాయి. మీరు ఎప్పుడైనా సందేశాన్ని మార్పిడి చేసుకోకముందే ఎవరైనా కీని భర్తీ చేస్తే, సంభాషణ తప్పు వ్యక్తికి గుప్తీకరించబడుతుంది మరియు పూర్తిగా సాధారణంగా కనిపిస్తుంది. కీ తర్వాత మారినప్పుడు యాప్ మిమ్మల్ని హెచ్చరిస్తుంది మరియు మీరు ఛానెల్ వెలుపల పోల్చగలిగే భద్రతా సంఖ్యను చూపిస్తుంది — కానీ దానిని పోల్చమని మిమ్మల్ని ఏదీ బలవంతం చేయదు.
+• ఒక సమయంలో ఒక పరికరం. మీ పునరుద్ధరణ పదబంధం మీ చరిత్రను తెరిచే కీని పునరుద్ధరిస్తుంది, కాబట్టి కొత్త పరికరంలో సైన్ ఇన్ చేయడం మీరు ఇప్పటికే స్వీకరించినదాన్ని కోల్పోదు. ఫార్వర్డ్-సీక్రెట్ సంభాషణలు దానిని సృష్టించిన పరికరాన్ని ఎప్పుడూ వదిలిపెట్టని రెండవ కీని ఉపయోగిస్తాయి: ఏ పరికరం చివరిగా సైన్ ఇన్ చేసిందో అదే అవి చేరుకునేది, మరియు ఆ సమయంలో మరొక దానికి మూసివేయబడిన ఏదీ దానికి తరలించబడదు.
+• గుప్తీకరణ ఉనికిలో ఉండటానికి ముందు పంపిన సందేశాలు అలాగే ఉంటాయి. ఏదీ పునరాలోచనగా మార్చబడలేదు.
+• ఈ యాప్ స్వతంత్రంగా భద్రతా ఆడిట్ చేయబడలేదు.`,
+    },
+    {
+      title: '11. పిల్లలు',
+      body: `Chatterbox 13 సంవత్సరాల కంటే తక్కువ వయస్సు ఉన్న పిల్లల కోసం ఉద్దేశించబడలేదు, మరియు మేము తెలిసి వారి సమాచారాన్ని సేకరించము. ఒక పిల్లవాడు మాకు వ్యక్తిగత సమాచారాన్ని ఇచ్చాడని మీరు నమ్మితే, మమ్మల్ని సంప్రదించండి మరియు మేము దానిని తొలగిస్తాము.`,
+    },
+    {
+      title: '12. మార్పులు',
+      body: `మేము ఈ విధానాన్ని అప్‌డేట్ చేయవచ్చు. ముఖ్యమైన మార్పులు యాప్‌లో ప్రకటించబడతాయి, మరియు పైన ఉన్న తేదీ అది చివరిగా ఎప్పుడు మారిందో.`,
+    },
+    {
+      title: '13. సంప్రదించండి',
+      body: `ఈ విధానం గురించి ప్రశ్నలు: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  mr: [
+    {
+      title: '0. थोडक्यात',
+      body: `तुमच्या संदेशांचा मजकूर तुमच्या डिव्हाइसवर एन्क्रिप्ट केलेला असतो आणि तुम्ही ज्यांना पाठवता त्यांनाच तो वाचता येतो. आम्ही तो वाचू शकत नाही, आणि आम्ही ज्यांचे सर्व्हर भाड्याने घेतले आहेत ते Google देखील वाचू शकत नाही.
+
+आम्हाला जे दिसू शकते ते म्हणजे संभाषण झाले: कोणती खाती त्यात आहेत, आणि ते कधी सक्रिय होते. ते काढून टाकणे सामग्री एन्क्रिप्ट करण्यापेक्षा कठीण आहे, आणि आम्ही अद्याप पूर्ण केलेले नाही. हे धोरण नेमके सांगते की सध्या ती रेषा कुठे आहे.`,
+    },
+    {
+      title: '1. एंड-टू-एंड एन्क्रिप्टेड काय आहे',
+      body: `तुमच्या डिव्हाइसवर एन्क्रिप्ट केलेले, आम्हाला आणि Google ला न वाचता येणारे:
+
+• तुमच्या संदेशांचा मजकूर.
+• तुम्ही जोडलेल्या फाइल्स, फोटो, ऑडिओ आणि व्हिडिओची सामग्री.
+• लिंक प्रीव्ह्यू.
+• व्हॉइस आणि व्हिडिओ कॉल, जे दोन डिव्हाइसमध्ये WebRTC च्या अनिवार्य DTLS-SRTP चा वापर करतात.
+
+बहुतेक एक-ते-एक आणि गट संदेश अतिरिक्त ratchet वापरतात, म्हणजे प्रत्येक संदेशाची स्वतःची की असते, त्यामुळे तुमचे डिव्हाइस धोक्यात आल्यास आधीचे संदेश उघड होत नाहीत. ज्या संभाषणांमध्ये एखाद्याच्या क्लायंटने नवीन की मटेरियल प्रकाशित केलेले नाही ती एकाच दीर्घायुषी कीकडे परत जातात, ज्यात ते वैशिष्ट्य नाही. संदेशाखालील लेबल तुम्हाला सांगते की त्याला प्रत्यक्षात कोणते मिळाले.
+
+ही रेषा ओलांडणारी एकच गोष्ट, आणि फक्त जेव्हा तुम्ही विचाराल तेव्हाच: Wikipedia वर नाव शोधणे फक्त तेच एक नाव पाठवते, तो संदेश नाही ज्यातून ते आले. विभाग 6 सांगतो की ते कोणाला मिळते, आणि शोध फक्त टॅपवर चालतो अन्यथा नाही, त्यामुळे बंद करण्यासाठी काहीही उभे नाही. सारांश, भाषांतर आणि लिप्यंतरण देखील हे ओलांडतील — ते या रिलीजमध्ये बंद केलेले आहेत, अॅपमध्ये कोठेही ते चालू करणारे नियंत्रण नाही.`,
+    },
+    {
+      title: '2. काय एन्क्रिप्ट केलेले नाही, आणि आम्हाला काय दिसू शकते',
+      body: `एन्क्रिप्शन सामग्रीचे संरक्षण करते, संभाषण झाल्याच्या वस्तुस्थितीचे नाही. हे आमच्या सर्व्हरवर स्पष्टपणे राहते:
+
+• प्रत्येक संभाषणात कोण आहे, आणि ते कधी तयार झाले आणि शेवटचे सक्रिय होते.
+• प्रत्येक संदेशाचा टाइमस्टॅम्प, आणि तुम्ही किती वाचलेले नाहीत.
+• संलग्नकाचे फाइल नाव, प्रकार आणि आकार. बाइट्स एन्क्रिप्ट केलेले आहेत; त्यांचे वर्णन नाही, आणि सायफरटेक्स्टची लांबी मूळची लांबी मर्यादित करते.
+• तुमचे मित्र आणि मैत्री विनंत्या.
+• कॉल सिग्नलिंग — की कॉल केला गेला, कोणाला, आणि कधी. त्याचा ऑडिओ किंवा व्हिडिओ नाही.
+
+तुम्ही ते चालू करेपर्यंत टायपिंग इंडिकेटर आणि वाचन पावत्या बंद असतात, आणि बंद असताना काहीही लिहिले जात नाही.
+
+येथे यापुढे काय नाही: तुमचा ईमेल पत्ता आणि नाव. सप्टेंबर 2026 पासून खाते रेकॉर्डमध्ये फक्त एक खाते ओळखकर्ता आहे — आणि तेव्हापासून कुठेही ठेवण्यासाठी पत्ता नाही. साइन अप तुमच्याबद्दल काहीही विचारत नाही: तुमचे खाते 24-शब्द पुनर्प्राप्ती वाक्यांश आहे, आणि Firebase Authentication तपासते ते क्रेडेन्शियल त्यातून घेतले जाते. ते साठवते ते मेल प्राप्त करू न शकणाऱ्या डोमेनखालील एक यादृच्छिक लेबल आहे.
+
+वेगळे: कारण अॅप Google Firebase वर चालते, तुमच्या डिव्हाइसने त्याच्याशी केलेल्या प्रत्येक कनेक्शनचा IP पत्ता आणि वेळ Google पाहू शकते. हे होस्टिंगचे वैशिष्ट्य आहे, अॅपचे नाही, आणि आम्ही ते एन्क्रिप्ट करून काढून टाकू शकत नाही.`,
+    },
+    {
+      title: '3. लोक तुम्हाला कसे शोधतात',
+      body: `ते तुम्हाला शोधू शकत नाहीत. कोणतीही डिरेक्टरी नाही — ईमेल, फोन नंबर किंवा नावाने शोध नाही — आणि सर्व्हर असा प्रयत्न करणारी कोणतीही क्वेरी नाकारतो.
+
+तुम्ही आधीच वापरत असलेल्या कशाहीद्वारे, चॅनेलच्या बाहेर आमंत्रण लिंक पाठवून एखाद्यापर्यंत पोहोचता. लिंक एकदा काम करते, 24 तासांनंतर कालबाह्य होते, आणि मागे घेतली जाऊ शकते. तुम्ही एखाद्याला जे काही म्हणता ते त्यांच्यासाठी तुमचे स्वतःचे लेबल आहे, तुमच्यासाठी ठेवलेले; जर त्यांनी स्वतःची ओळख करून दिली, तर ते नाव एन्क्रिप्टेड स्वरूपात तुमच्यापर्यंत पोहोचले.`,
+    },
+    {
+      title: '4. आम्ही काय गोळा करतो',
+      body: `• खाते डेटा: एक खाते ओळखकर्ता, आणि तुमच्या पुनर्प्राप्ती वाक्यांशातून घेतलेले क्रेडेन्शियल, Firebase Authentication मध्ये ठेवलेले. ईमेल पत्ता नाही, फोन नंबर नाही, नाव नाही — साइन अप यापैकी कशाचीही विचारणा करत नाही.
+• संदेश आणि संलग्नक सायफरटेक्स्ट, तसेच विभाग 2 मधील मेटाडेटा.
+
+तीच संपूर्ण यादी आहे. विश्लेषण नाही आणि क्रॅश रिपोर्टिंग नाही. अॅप पूर्वी Firebase Analytics ला स्क्रीन व्ह्यूज आणि Firebase Crashlytics ला क्रॅश रिपोर्ट्स पाठवत असे, दोन्ही तुमच्या खाते ओळखकर्त्यासह, त्यामुळे कोणतेही निनावी नव्हते; दोन्ही आता ते पाठवणाऱ्या लायब्ररींसह गेले आहेत. विकासादरम्यान विकासकाच्या स्वतःच्या मशीनवर त्रुटी छापल्या जातात आणि अन्यत्र जात नाहीत.`,
+    },
+    {
+      title: '5. ते कुठे साठवले जाते',
+      body: `Google Firebase वर — Firestore, Storage आणि Authentication — सुरक्षा नियमांखाली जे ठरवतात की प्रत्येक दस्तऐवज कोण वाचू आणि लिहू शकतो.
+
+तुमच्या डिव्हाइसवर, कॅश केलेले संदेश, सेटिंग्ज, आणि तुमचा अॅप-लॉक पिन सामान्य अॅप स्टोरेजऐवजी प्लॅटफॉर्म कीस्टोअरमध्ये (iOS Keychain, Android Keystore) ठेवलेल्या प्रति-डिव्हाइस कीने एन्क्रिप्ट केलेले आहेत.
+
+तुमचे संदेश डिक्रिप्ट करणारी खाजगी की तुम्ही लिहून ठेवण्याचे निवडलेल्या पुनर्प्राप्ती वाक्यांशाशिवाय तुमचे डिव्हाइस कधीही सोडत नाही. आम्ही ती ठेवत नाही आणि तुमच्यासाठी ती पुनर्प्राप्त करू शकत नाही. ती हरवल्यास, त्या डिव्हाइसला पाठवलेले संदेश पुन्हा वाचता येणार नाहीत — आम्हासह कोणीही.`,
+    },
+    {
+      title: '6. इतर कोण डेटा प्राप्त करतो',
+      body: `आम्ही तुमची वैयक्तिक माहिती विकत नाही, व्यापार करत नाही, किंवा भाड्याने देत नाही. डेटा येथे पोहोचतो:
+
+• Google Firebase — वर वर्णन केल्याप्रमाणे, आमचा होस्टिंग प्रदाता.
+• विकिमीडिया फाउंडेशन — जेव्हा तुम्ही Wikipedia वर शोधण्यासाठी टॅप करता तेव्हा एक नाव.
+• Google Cloud Speech-to-Text — जेव्हा तुम्ही ट्रान्सक्रिप्टची विनंती करता तेव्हा एका व्हॉइस मेसेजचा ऑडिओ.
+• Google Cloud Translation — जेव्हा तुम्ही भाषांतराची विनंती करता तेव्हा एका संदेशाचा मजकूर.
+• Cloudflare Workers AI — जेव्हा तुम्ही सारांशाची विनंती करता किंवा त्याबद्दल प्रश्न विचारता तेव्हा एका संभाषणाचे शेवटचे 50 संदेश.
+
+शेवटचे तीन या रिलीजमध्ये बंद केलेले आहेत. लिप्यंतरण, भाषांतर किंवा सारांश चालू करणारे कोणतेही नियंत्रण अॅपमध्ये कोठेही नाही, त्यामुळे त्या तीन सेवांपर्यंत काहीही पोहोचत नाही. ते काढून टाकण्याऐवजी सूचीबद्ध केले आहेत कारण कोड अजूनही येथे आहे आणि ती वैशिष्ट्ये परत येण्याचा हेतू आहे — आणि जेव्हा ती परत येतात, तेव्हा ती या प्रकटीकरणासह आणि पहिल्या वापरापूर्वी प्रॉम्प्टसह परत येतात. तेव्हा जे पाठवले जाईल ते तुमचा निकाल तयार करण्यासाठी पाठवले जाईल, काहीही प्रशिक्षित करण्यासाठी नाही; आमच्या सर्व्हरवर कोणताही ट्रान्सक्रिप्ट किंवा भाषांतर साठवले जात नाही.
+
+Wikipedia शोधासाठी स्विच नाही कारण बंद करण्यासाठी काहीही उभे नाही: ते फक्त टॅपवर चालते अन्यथा नाही. Wikipedia ला फक्त ते एक नाव आणि तुमचा IP पत्ता मिळतो, जणू तुम्ही तो त्यांच्या शोध बॉक्समध्ये स्वतः टाइप केला आहे — खाते नाही, संदेश नाही, संभाषण नाही. जे परत येते ते दाखवले जाते आणि जतन केले जात नाही, आणि त्याबद्दल काहीही संभाषणात लिहिले जात नाही.
+
+कायद्याने आवश्यक असल्यास आम्ही आमच्याकडे असलेले उघड करू शकतो. आमच्याकडे जे आहे ते विभाग 2 मधील यादी आहे. आम्ही संदेश सामग्री देऊ शकत नाही, कारण आम्ही ती वाचू शकत नाही.`,
+    },
+    {
+      title: '7. पुश सूचना',
+      body: `Firebase Cloud Messaging सूचना वितरीत करते. तुमचा डिव्हाइस टोकन तुमच्या खात्याच्या खाजगी भागात साठवला जातो जो फक्त तुम्हीच वाचू शकता.
+
+सूचनांमध्ये संदेश मजकूर नसतो. तुमचे डिव्हाइस स्थानिक पातळीवर संदेश डिक्रिप्ट करते आणि तुम्ही जे पाहता ते तयार करते; Google सामग्री नाही, लिफाफा वितरीत करते.`,
+    },
+    {
+      title: '8. तुम्ही काय करू शकता',
+      body: `• प्रोफाइल स्क्रीनवरून तुमचे खाते हटवा. संभाषणाचा संयुक्तपणे भाग असलेली सामग्री — उदाहरणार्थ, कॉल रेकॉर्ड — इतर सहभागीकडे राहते, कारण ते त्यांचेही रेकॉर्ड आहे.
+• प्रोफाइल स्क्रीनवरून तुमचा डेटा निर्यात करा.
+• प्रत्येक चॅटसाठी संदेश कालबाह्य होण्यासाठी सेट करा: 1 तास, 24 तास, 7 दिवस किंवा 30 दिवस.
+• टायपिंग इंडिकेटर आणि वाचन पावत्या चालू किंवा बंद करा. दोन्ही डीफॉल्टनुसार बंद आहेत.
+• पिन किंवा बायोमेट्रिक्ससह अॅप लॉक करा.
+• तुम्ही दिलेली आमंत्रण लिंक मागे घ्या.
+
+जर तुम्हाला आम्ही काहीतरी हाताने हटवावे असे वाटत असेल, तर आम्हाला लिहा.`,
+    },
+    {
+      title: '9. धारणा',
+      body: `तुमचे खाते अस्तित्वात असेपर्यंत आम्ही तुमचा डेटा ठेवतो. खाते हटवल्याने ते हटते, वर नमूद केलेल्या संयुक्तपणे धारण केलेल्या सामग्रीशिवाय. प्रति-चॅट कालबाह्यता तुम्ही सेट केलेल्या वेळापत्रकानुसार संदेश काढून टाकते.`,
+    },
+    {
+      title: '10. तुम्हाला माहित असाव्या अशा मर्यादा',
+      body: `तुम्हाला त्या सापडण्यापेक्षा आम्ही तुम्हाला या सांगण्यास प्राधान्य देतो.
+
+• की पहिल्यांदा पाहिल्यावर विश्वासार्ह मानल्या जातात. जर तुम्ही कधीही संदेशाची देवाणघेवाण करण्यापूर्वी कोणीतरी की बदलली असेल, तर संभाषण चुकीच्या व्यक्तीला एन्क्रिप्ट केले जाईल आणि पूर्णपणे सामान्य दिसेल. की नंतर बदलल्यास अॅप तुम्हाला चेतावणी देते, आणि तुम्ही चॅनेलबाहेर तुलना करू शकता असा सुरक्षा क्रमांक दाखवते — पण त्याची तुलना करण्यास कोणीही तुम्हाला भाग पाडत नाही.
+• एका वेळी एक डिव्हाइस. तुमचा पुनर्प्राप्ती वाक्यांश तुमचा इतिहास उघडणारी की पुनर्संचयित करतो, त्यामुळे नवीन डिव्हाइसवर साइन इन केल्याने तुम्ही आधीच मिळवलेले गमावत नाही. फॉरवर्ड-सिक्रेट संभाषणे दुसरी की वापरतात जी ती तयार करणारे डिव्हाइस कधीही सोडत नाही: जे डिव्हाइस शेवटचे साइन इन झाले तेच ते पोहोचते, आणि त्या दरम्यान दुसऱ्याला सील केलेले काहीही हलवता येत नाही.
+• एन्क्रिप्शन अस्तित्वात येण्यापूर्वी पाठवलेले संदेश जसे होते तसेच राहतात. काहीही पूर्वलक्षीपणे रूपांतरित केले गेले नाही.
+• या अॅपचे स्वतंत्रपणे सुरक्षा ऑडिट केलेले नाही.`,
+    },
+    {
+      title: '11. मुले',
+      body: `Chatterbox 13 वर्षांखालील मुलांसाठी नाही, आणि आम्ही जाणूनबुजून त्यांची माहिती गोळा करत नाही. जर तुम्हाला वाटत असेल की एखाद्या मुलाने आम्हाला वैयक्तिक माहिती दिली आहे, तर आमच्याशी संपर्क साधा आणि आम्ही ती हटवू.`,
+    },
+    {
+      title: '12. बदल',
+      body: `आम्ही हे धोरण अद्यतनित करू शकतो. महत्त्वपूर्ण बदल अॅपमध्ये जाहीर केले जातील, आणि वरची तारीख ती शेवटची कधी बदलली हे आहे.`,
+    },
+    {
+      title: '13. संपर्क',
+      body: `या धोरणाबद्दल प्रश्न: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  pa: [
+    {
+      title: '0. ਸੰਖੇਪ ਵਿੱਚ',
+      body: `ਤੁਹਾਡੇ ਸੁਨੇਹਿਆਂ ਦਾ ਟੈਕਸਟ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਉੱਤੇ ਇਨਕ੍ਰਿਪਟ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਅਤੇ ਸਿਰਫ਼ ਉਹੀ ਲੋਕ ਇਸਨੂੰ ਪੜ੍ਹ ਸਕਦੇ ਹਨ ਜਿਨ੍ਹਾਂ ਨੂੰ ਤੁਸੀਂ ਭੇਜਦੇ ਹੋ। ਅਸੀਂ ਇਸਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਸਕਦੇ, ਅਤੇ ਨਾ ਹੀ Google, ਜਿਸਦੇ ਸਰਵਰ ਅਸੀਂ ਕਿਰਾਏ ਉੱਤੇ ਲੈਂਦੇ ਹਾਂ।
+
+ਜੋ ਅਸੀਂ ਦੇਖ ਸਕਦੇ ਹਾਂ ਉਹ ਇਹ ਹੈ ਕਿ ਇੱਕ ਗੱਲਬਾਤ ਹੋਈ: ਕਿਹੜੇ ਖਾਤੇ ਇਸ ਵਿੱਚ ਹਨ, ਅਤੇ ਉਹ ਕਦੋਂ ਸਰਗਰਮ ਸਨ। ਇਸਨੂੰ ਹਟਾਉਣਾ ਸਮੱਗਰੀ ਨੂੰ ਇਨਕ੍ਰਿਪਟ ਕਰਨ ਨਾਲੋਂ ਔਖਾ ਹੈ, ਅਤੇ ਅਸੀਂ ਪੂਰਾ ਨਹੀਂ ਕੀਤਾ। ਇਹ ਨੀਤੀ ਬਿਲਕੁਲ ਦੱਸਦੀ ਹੈ ਕਿ ਲਾਈਨ ਹੁਣ ਕਿੱਥੇ ਹੈ।`,
+    },
+    {
+      title: '1. ਐਂਡ-ਟੂ-ਐਂਡ ਕੀ ਇਨਕ੍ਰਿਪਟ ਹੈ',
+      body: `ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਉੱਤੇ ਇਨਕ੍ਰਿਪਟ ਕੀਤਾ ਗਿਆ, ਸਾਡੇ ਅਤੇ Google ਲਈ ਨਾ-ਪੜ੍ਹਨਯੋਗ:
+
+• ਤੁਹਾਡੇ ਸੁਨੇਹਿਆਂ ਦਾ ਟੈਕਸਟ।
+• ਫਾਈਲਾਂ, ਫੋਟੋਆਂ, ਆਡੀਓ ਅਤੇ ਵੀਡੀਓ ਦੀ ਸਮੱਗਰੀ ਜੋ ਤੁਸੀਂ ਨੱਥੀ ਕਰਦੇ ਹੋ।
+• ਲਿੰਕ ਪੂਰਵਦਰਸ਼ਨ।
+• ਆਵਾਜ਼ ਅਤੇ ਵੀਡੀਓ ਕਾਲਾਂ, ਜੋ ਦੋ ਡਿਵਾਈਸਾਂ ਵਿਚਕਾਰ WebRTC ਦੇ ਲਾਜ਼ਮੀ DTLS-SRTP ਦੀ ਵਰਤੋਂ ਕਰਦੀਆਂ ਹਨ।
+
+ਜ਼ਿਆਦਾਤਰ ਇੱਕ-ਤੋਂ-ਇੱਕ ਅਤੇ ਗਰੁੱਪ ਸੁਨੇਹੇ ਵਾਧੂ ਤੌਰ ਉੱਤੇ ਇੱਕ ratchet ਵਰਤਦੇ ਹਨ, ਭਾਵ ਹਰੇਕ ਸੁਨੇਹੇ ਦੀ ਆਪਣੀ ਕੁੰਜੀ ਹੁੰਦੀ ਹੈ, ਇਸ ਲਈ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਨਾਲ ਸਮਝੌਤਾ ਪਹਿਲਾਂ ਵਾਲੇ ਸੁਨੇਹਿਆਂ ਨੂੰ ਬੇਪਰਦ ਨਹੀਂ ਕਰਦਾ। ਜਿੱਥੇ ਕਿਸੇ ਦੇ ਕਲਾਇੰਟ ਨੇ ਨਵੀਂ ਕੁੰਜੀ ਸਮੱਗਰੀ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤੀ, ਉਹ ਗੱਲਬਾਤਾਂ ਇੱਕ ਲੰਬੇ ਸਮੇਂ ਵਾਲੀ ਕੁੰਜੀ ਵੱਲ ਵਾਪਸ ਚਲੀਆਂ ਜਾਂਦੀਆਂ ਹਨ, ਜਿਸ ਵਿੱਚ ਇਹ ਗੁਣ ਨਹੀਂ ਹੈ। ਸੁਨੇਹੇ ਹੇਠਾਂ ਦਾ ਲੇਬਲ ਤੁਹਾਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਇਸਨੂੰ ਅਸਲ ਵਿੱਚ ਕਿਹੜਾ ਮਿਲਿਆ।
+
+ਸਿਰਫ਼ ਇੱਕ ਚੀਜ਼ ਇਸ ਲਾਈਨ ਨੂੰ ਪਾਰ ਕਰਦੀ ਹੈ, ਅਤੇ ਸਿਰਫ਼ ਉਦੋਂ ਜਦੋਂ ਤੁਸੀਂ ਇਸਨੂੰ ਪੁੱਛਦੇ ਹੋ: ਵਿਕੀਪੀਡੀਆ ਉੱਤੇ ਨਾਮ ਲੱਭਣਾ ਉਹ ਇੱਕ ਨਾਮ ਭੇਜਦਾ ਹੈ, ਉਹ ਸੁਨੇਹਾ ਨਹੀਂ ਜਿਸ ਤੋਂ ਇਹ ਆਇਆ। ਭਾਗ 6 ਦੱਸਦਾ ਹੈ ਕਿ ਇਸਨੂੰ ਕੌਣ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ, ਅਤੇ ਖੋਜ ਟੈਪ ਉੱਤੇ ਹੀ ਚੱਲਦੀ ਹੈ ਨਹੀਂ ਤਾਂ ਨਹੀਂ, ਇਸ ਲਈ ਬੰਦ ਕਰਨ ਲਈ ਕੁਝ ਵੀ ਖੜ੍ਹਾ ਨਹੀਂ ਹੈ। ਸੰਖੇਪ, ਅਨੁਵਾਦ ਅਤੇ ਲਿਪੀਅੰਤਰਨ ਵੀ ਇਸਨੂੰ ਪਾਰ ਕਰਨਗੇ — ਇਹ ਇਸ ਰੀਲੀਜ਼ ਵਿੱਚ ਬੰਦ ਹਨ, ਐਪ ਵਿੱਚ ਕਿਤੇ ਵੀ ਕੋਈ ਕੰਟਰੋਲ ਨਹੀਂ ਜੋ ਇਹਨਾਂ ਨੂੰ ਚਾਲੂ ਕਰੇ।`,
+    },
+    {
+      title: '2. ਕੀ ਇਨਕ੍ਰਿਪਟ ਨਹੀਂ ਹੈ, ਅਤੇ ਅਸੀਂ ਕੀ ਦੇਖ ਸਕਦੇ ਹਾਂ',
+      body: `ਇਨਕ੍ਰਿਪਸ਼ਨ ਸਮੱਗਰੀ ਦੀ ਰੱਖਿਆ ਕਰਦੀ ਹੈ, ਗੱਲਬਾਤ ਦੇ ਤੱਥ ਦੀ ਨਹੀਂ। ਇਹ ਸਾਡੇ ਸਰਵਰਾਂ ਉੱਤੇ ਸਾਫ਼ ਬੈਠਦੇ ਹਨ:
+
+• ਹਰੇਕ ਗੱਲਬਾਤ ਵਿੱਚ ਕੌਣ ਹੈ, ਅਤੇ ਇਹ ਕਦੋਂ ਬਣਾਈ ਗਈ ਅਤੇ ਆਖਰੀ ਵਾਰ ਸਰਗਰਮ ਹੋਈ।
+• ਹਰੇਕ ਸੁਨੇਹੇ ਦਾ ਟਾਈਮਸਟੈਂਪ, ਅਤੇ ਤੁਸੀਂ ਕਿੰਨੇ ਨਹੀਂ ਪੜ੍ਹੇ।
+• ਅਟੈਚਮੈਂਟ ਦਾ ਫਾਈਲ ਨਾਮ, ਕਿਸਮ ਅਤੇ ਆਕਾਰ। ਬਾਈਟ ਇਨਕ੍ਰਿਪਟ ਹਨ; ਉਹਨਾਂ ਦਾ ਵੇਰਵਾ ਨਹੀਂ ਹੈ, ਅਤੇ ਸਿਫਰਟੈਕਸਟ ਦੀ ਲੰਬਾਈ ਅਸਲ ਦੀ ਲੰਬਾਈ ਨੂੰ ਸੀਮਤ ਕਰਦੀ ਹੈ।
+• ਤੁਹਾਡੇ ਦੋਸਤ ਅਤੇ ਦੋਸਤੀ ਬੇਨਤੀਆਂ।
+• ਕਾਲ ਸਿਗਨਲਿੰਗ — ਕਿ ਇੱਕ ਕਾਲ ਕੀਤੀ ਗਈ ਸੀ, ਕਿਸਨੂੰ, ਅਤੇ ਕਦੋਂ। ਇਸਦਾ ਆਡੀਓ ਜਾਂ ਵੀਡੀਓ ਨਹੀਂ।
+
+ਟਾਈਪਿੰਗ ਸੂਚਕ ਅਤੇ ਪੜ੍ਹਨ ਦੀਆਂ ਰਸੀਦਾਂ ਬੰਦ ਹਨ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਇਹਨਾਂ ਨੂੰ ਚਾਲੂ ਨਹੀਂ ਕਰਦੇ, ਅਤੇ ਬੰਦ ਹੋਣ ਦੌਰਾਨ ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਜਾਂਦਾ।
+
+ਹੁਣ ਇੱਥੇ ਕੀ ਨਹੀਂ ਹੈ: ਤੁਹਾਡਾ ਈਮੇਲ ਪਤਾ ਅਤੇ ਨਾਮ। ਸਤੰਬਰ 2026 ਤੋਂ ਖਾਤਾ ਰਿਕਾਰਡ ਸਿਰਫ਼ ਇੱਕ ਖਾਤਾ ਪਛਾਣਕਰਤਾ ਰੱਖਦਾ ਹੈ — ਅਤੇ ਉਦੋਂ ਤੋਂ ਕਿਤੇ ਵੀ ਰੱਖਣ ਲਈ ਕੋਈ ਪਤਾ ਨਹੀਂ ਹੈ। ਸਾਈਨ ਅੱਪ ਤੁਹਾਡੇ ਬਾਰੇ ਕੁਝ ਨਹੀਂ ਪੁੱਛਦਾ: ਤੁਹਾਡਾ ਖਾਤਾ ਇੱਕ 24-ਸ਼ਬਦ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਹੈ, ਅਤੇ Firebase Authentication ਜਿਸ ਪ੍ਰਮਾਣ ਦੀ ਜਾਂਚ ਕਰਦਾ ਹੈ ਉਹ ਇਸ ਤੋਂ ਲਿਆ ਗਿਆ ਹੈ। ਇਹ ਜੋ ਸਟੋਰ ਕਰਦਾ ਹੈ ਉਹ ਇੱਕ ਡੋਮੇਨ ਹੇਠ ਇੱਕ ਬੇਤਰਤੀਬ ਲੇਬਲ ਹੈ ਜੋ ਮੇਲ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦਾ।
+
+ਵੱਖਰੇ ਤੌਰ ਉੱਤੇ: ਕਿਉਂਕਿ ਐਪ Google Firebase ਉੱਤੇ ਚੱਲਦੀ ਹੈ, Google ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਦੁਆਰਾ ਇਸ ਨਾਲ ਕੀਤੇ ਹਰੇਕ ਕਨੈਕਸ਼ਨ ਦਾ IP ਪਤਾ ਅਤੇ ਸਮਾਂ ਦੇਖ ਸਕਦਾ ਹੈ। ਇਹ ਹੋਸਟਿੰਗ ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ ਹੈ, ਐਪ ਦੀ ਨਹੀਂ, ਅਤੇ ਅਸੀਂ ਇਸਨੂੰ ਇਨਕ੍ਰਿਪਟ ਕਰਕੇ ਦੂਰ ਨਹੀਂ ਕਰ ਸਕਦੇ।`,
+    },
+    {
+      title: '3. ਲੋਕ ਤੁਹਾਨੂੰ ਕਿਵੇਂ ਲੱਭਦੇ ਹਨ',
+      body: `ਉਹ ਤੁਹਾਨੂੰ ਖੋਜ ਨਹੀਂ ਸਕਦੇ। ਕੋਈ ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ — ਈਮੇਲ, ਫ਼ੋਨ ਨੰਬਰ ਜਾਂ ਨਾਮ ਦੁਆਰਾ ਕੋਈ ਖੋਜ ਨਹੀਂ — ਅਤੇ ਸਰਵਰ ਕਿਸੇ ਵੀ ਪੁੱਛਗਿੱਛ ਨੂੰ ਰੱਦ ਕਰਦਾ ਹੈ ਜੋ ਇਸਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦੀ ਹੈ।
+
+ਤੁਸੀਂ ਪਹਿਲਾਂ ਤੋਂ ਵਰਤੀ ਜਾ ਰਹੀ ਕਿਸੇ ਵੀ ਚੀਜ਼ ਰਾਹੀਂ, ਚੈਨਲ ਤੋਂ ਬਾਹਰ ਸੱਦਾ ਲਿੰਕ ਭੇਜ ਕੇ ਕਿਸੇ ਤੱਕ ਪਹੁੰਚਦੇ ਹੋ। ਇੱਕ ਲਿੰਕ ਇੱਕ ਵਾਰ ਕੰਮ ਕਰਦਾ ਹੈ, 24 ਘੰਟਿਆਂ ਬਾਅਦ ਸਮਾਪਤ ਹੁੰਦਾ ਹੈ, ਅਤੇ ਵਾਪਸ ਲਿਆ ਜਾ ਸਕਦਾ ਹੈ। ਤੁਸੀਂ ਕਿਸੇ ਨੂੰ ਜੋ ਵੀ ਕਹਿੰਦੇ ਹੋ ਉਹ ਉਹਨਾਂ ਲਈ ਤੁਹਾਡਾ ਆਪਣਾ ਲੇਬਲ ਹੈ, ਤੁਹਾਡੇ ਲਈ ਰੱਖਿਆ; ਜੇ ਉਹਨਾਂ ਨੇ ਆਪਣੀ ਜਾਣ-ਪਛਾਣ ਕਰਵਾਈ, ਤਾਂ ਉਹ ਨਾਮ ਤੁਹਾਡੇ ਤੱਕ ਇਨਕ੍ਰਿਪਟਿਡ ਪਹੁੰਚਿਆ।`,
+    },
+    {
+      title: '4. ਅਸੀਂ ਕੀ ਇਕੱਠਾ ਕਰਦੇ ਹਾਂ',
+      body: `• ਖਾਤਾ ਡਾਟਾ: ਇੱਕ ਖਾਤਾ ਪਛਾਣਕਰਤਾ, ਅਤੇ ਤੁਹਾਡੇ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਤੋਂ ਲਿਆ ਗਿਆ ਪ੍ਰਮਾਣ, Firebase Authentication ਵਿੱਚ ਰੱਖਿਆ ਗਿਆ। ਕੋਈ ਈਮੇਲ ਪਤਾ ਨਹੀਂ, ਕੋਈ ਫ਼ੋਨ ਨੰਬਰ ਨਹੀਂ, ਕੋਈ ਨਾਮ ਨਹੀਂ — ਸਾਈਨ ਅੱਪ ਇਹਨਾਂ ਵਿੱਚੋਂ ਕੋਈ ਵੀ ਨਹੀਂ ਪੁੱਛਦਾ।
+• ਸੁਨੇਹਾ ਅਤੇ ਅਟੈਚਮੈਂਟ ਸਿਫਰਟੈਕਸਟ, ਭਾਗ 2 ਵਿੱਚ ਮੈਟਾਡੇਟਾ ਦੇ ਨਾਲ।
+
+ਇਹੀ ਪੂਰੀ ਸੂਚੀ ਹੈ। ਕੋਈ ਵਿਸ਼ਲੇਸ਼ਣ ਨਹੀਂ ਅਤੇ ਕੋਈ ਕਰੈਸ਼ ਰਿਪੋਰਟਿੰਗ ਨਹੀਂ। ਐਪ ਪਹਿਲਾਂ Firebase Analytics ਨੂੰ ਸਕ੍ਰੀਨ ਵਿਊਜ਼ ਅਤੇ Firebase Crashlytics ਨੂੰ ਕਰੈਸ਼ ਰਿਪੋਰਟਾਂ ਭੇਜਦੀ ਸੀ, ਦੋਵੇਂ ਤੁਹਾਡੇ ਖਾਤਾ ਪਛਾਣਕਰਤਾ ਨੂੰ ਲੈ ਕੇ ਜਾਂਦੇ ਸਨ, ਇਸ ਲਈ ਕੋਈ ਵੀ ਗੁਮਨਾਮ ਨਹੀਂ ਸੀ; ਦੋਵੇਂ ਹੁਣ ਉਹਨਾਂ ਲਾਇਬ੍ਰੇਰੀਆਂ ਦੇ ਨਾਲ ਚਲੇ ਗਏ ਹਨ ਜਿਨ੍ਹਾਂ ਨੇ ਉਹਨਾਂ ਨੂੰ ਭੇਜਿਆ। ਗਲਤੀਆਂ ਵਿਕਾਸ ਦੌਰਾਨ ਡਿਵੈਲਪਰ ਦੀ ਆਪਣੀ ਮਸ਼ੀਨ ਉੱਤੇ ਪ੍ਰਿੰਟ ਹੁੰਦੀਆਂ ਹਨ ਅਤੇ ਕਿਤੇ ਹੋਰ ਨਹੀਂ ਜਾਂਦੀਆਂ।`,
+    },
+    {
+      title: '5. ਇਹ ਕਿੱਥੇ ਸਟੋਰ ਹੈ',
+      body: `Google Firebase ਉੱਤੇ — Firestore, Storage ਅਤੇ Authentication — ਸੁਰੱਖਿਆ ਨਿਯਮਾਂ ਹੇਠ ਜੋ ਫੈਸਲਾ ਕਰਦੇ ਹਨ ਕਿ ਹਰੇਕ ਦਸਤਾਵੇਜ਼ ਨੂੰ ਕੌਣ ਪੜ੍ਹ ਅਤੇ ਲਿਖ ਸਕਦਾ ਹੈ।
+
+ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਉੱਤੇ, ਕੈਸ਼ ਕੀਤੇ ਸੁਨੇਹੇ, ਸੈਟਿੰਗਾਂ, ਅਤੇ ਤੁਹਾਡਾ ਐਪ-ਲਾਕ PIN ਸਧਾਰਨ ਐਪ ਸਟੋਰੇਜ ਦੀ ਬਜਾਏ ਪਲੇਟਫਾਰਮ ਕੀਸਟੋਰ (iOS Keychain, Android Keystore) ਵਿੱਚ ਰੱਖੀ ਗਈ ਪ੍ਰਤੀ-ਡਿਵਾਈਸ ਕੁੰਜੀ ਨਾਲ ਇਨਕ੍ਰਿਪਟ ਕੀਤੇ ਗਏ ਹਨ।
+
+ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਜੋ ਤੁਹਾਡੇ ਸੁਨੇਹਿਆਂ ਨੂੰ ਡੀਕ੍ਰਿਪਟ ਕਰਦੀ ਹੈ ਕਦੇ ਵੀ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਨੂੰ ਨਹੀਂ ਛੱਡਦੀ, ਸਿਵਾਏ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਵਜੋਂ ਜੋ ਤੁਸੀਂ ਲਿਖਣਾ ਚੁਣਦੇ ਹੋ। ਅਸੀਂ ਇਸਨੂੰ ਨਹੀਂ ਰੱਖਦੇ ਅਤੇ ਤੁਹਾਡੇ ਲਈ ਇਸਨੂੰ ਮੁੜ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦੇ। ਇਸਨੂੰ ਗੁਆਉਣ ਉੱਤੇ, ਉਸ ਡਿਵਾਈਸ ਨੂੰ ਭੇਜੇ ਸੁਨੇਹੇ ਦੁਬਾਰਾ ਨਹੀਂ ਪੜ੍ਹੇ ਜਾ ਸਕਦੇ — ਕਿਸੇ ਦੁਆਰਾ ਵੀ, ਸਾਡੇ ਸਮੇਤ।`,
+    },
+    {
+      title: '6. ਹੋਰ ਕੌਣ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ',
+      body: `ਅਸੀਂ ਤੁਹਾਡੀ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਵੇਚਦੇ, ਵਪਾਰ ਕਰਦੇ ਜਾਂ ਕਿਰਾਏ ਉੱਤੇ ਨਹੀਂ ਦਿੰਦੇ। ਡਾਟਾ ਇੱਥੇ ਪਹੁੰਚਦਾ ਹੈ:
+
+• Google Firebase — ਉੱਪਰ ਦੱਸੇ ਅਨੁਸਾਰ, ਸਾਡਾ ਹੋਸਟਿੰਗ ਪ੍ਰਦਾਤਾ।
+• ਵਿਕੀਮੀਡੀਆ ਫਾਊਂਡੇਸ਼ਨ — ਇੱਕ ਨਾਮ, ਜਦੋਂ ਤੁਸੀਂ ਵਿਕੀਪੀਡੀਆ ਉੱਤੇ ਲੱਭਣ ਲਈ ਟੈਪ ਕਰਦੇ ਹੋ।
+• Google Cloud Speech-to-Text — ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਦਾ ਆਡੀਓ, ਜਦੋਂ ਤੁਸੀਂ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਦੀ ਬੇਨਤੀ ਕਰਦੇ ਹੋ।
+• Google Cloud Translation — ਇੱਕ ਸੁਨੇਹੇ ਦਾ ਟੈਕਸਟ, ਜਦੋਂ ਤੁਸੀਂ ਅਨੁਵਾਦ ਦੀ ਬੇਨਤੀ ਕਰਦੇ ਹੋ।
+• Cloudflare Workers AI — ਜਦੋਂ ਤੁਸੀਂ ਸੰਖੇਪ ਦੀ ਬੇਨਤੀ ਕਰਦੇ ਹੋ ਜਾਂ ਇਸ ਬਾਰੇ ਸਵਾਲ ਪੁੱਛਦੇ ਹੋ ਤਾਂ ਇੱਕ ਗੱਲਬਾਤ ਦੇ ਆਖਰੀ 50 ਸੁਨੇਹਿਆਂ ਤੱਕ।
+
+ਆਖਰੀ ਤਿੰਨ ਇਸ ਰੀਲੀਜ਼ ਵਿੱਚ ਬੰਦ ਹਨ। ਟ੍ਰਾਂਸਕ੍ਰਿਪਸ਼ਨ, ਅਨੁਵਾਦ ਜਾਂ ਸੰਖੇਪਾਂ ਨੂੰ ਚਾਲੂ ਕਰਨ ਵਾਲਾ ਐਪ ਵਿੱਚ ਕਿਤੇ ਵੀ ਕੋਈ ਕੰਟਰੋਲ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਉਹਨਾਂ ਤਿੰਨ ਸੇਵਾਵਾਂ ਤੱਕ ਕੁਝ ਵੀ ਨਹੀਂ ਪਹੁੰਚਦਾ। ਇਹ ਹਟਾਏ ਜਾਣ ਦੀ ਬਜਾਏ ਸੂਚੀਬੱਧ ਹਨ ਕਿਉਂਕਿ ਕੋਡ ਅਜੇ ਵੀ ਇੱਥੇ ਹੈ ਅਤੇ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵਾਪਸ ਆਉਣ ਦਾ ਇਰਾਦਾ ਹੈ — ਅਤੇ ਜਦੋਂ ਇਹ ਵਾਪਸ ਆਉਣਗੀਆਂ, ਇਹ ਇਸ ਖੁਲਾਸੇ ਅਤੇ ਪਹਿਲੀ ਵਰਤੋਂ ਤੋਂ ਪਹਿਲਾਂ ਇੱਕ ਪ੍ਰੋਂਪਟ ਨਾਲ ਵਾਪਸ ਆਉਣਗੀਆਂ। ਜੋ ਉਸ ਵੇਲੇ ਭੇਜਿਆ ਜਾਵੇਗਾ ਉਹ ਤੁਹਾਡਾ ਨਤੀਜਾ ਪੈਦਾ ਕਰਨ ਲਈ ਭੇਜਿਆ ਜਾਂਦਾ ਹੈ, ਕਿਸੇ ਚੀਜ਼ ਨੂੰ ਸਿਖਲਾਈ ਦੇਣ ਲਈ ਨਹੀਂ; ਸਾਡੇ ਸਰਵਰਾਂ ਉੱਤੇ ਕੋਈ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਜਾਂ ਅਨੁਵਾਦ ਸਟੋਰ ਨਹੀਂ ਹੁੰਦਾ।
+
+ਵਿਕੀਪੀਡੀਆ ਖੋਜ ਦਾ ਕੋਈ ਸਵਿੱਚ ਨਹੀਂ ਹੈ ਕਿਉਂਕਿ ਬੰਦ ਕਰਨ ਲਈ ਕੁਝ ਵੀ ਖੜ੍ਹਾ ਨਹੀਂ ਹੈ: ਇਹ ਟੈਪ ਉੱਤੇ ਹੀ ਚੱਲਦਾ ਹੈ ਨਹੀਂ ਤਾਂ ਨਹੀਂ। ਵਿਕੀਪੀਡੀਆ ਉਹ ਇੱਕ ਨਾਮ ਅਤੇ ਤੁਹਾਡਾ IP ਪਤਾ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ, ਜਿਵੇਂ ਤੁਸੀਂ ਇਸਨੂੰ ਆਪਣੇ ਖੋਜ ਬਾਕਸ ਵਿੱਚ ਟਾਈਪ ਕੀਤਾ ਹੋਵੇ — ਕੋਈ ਖਾਤਾ ਨਹੀਂ, ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ, ਕੋਈ ਗੱਲਬਾਤ ਨਹੀਂ। ਜੋ ਵਾਪਸ ਆਉਂਦਾ ਹੈ ਉਹ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ ਅਤੇ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ, ਅਤੇ ਇਸ ਬਾਰੇ ਕੁਝ ਵੀ ਗੱਲਬਾਤ ਵਿੱਚ ਨਹੀਂ ਲਿਖਿਆ ਜਾਂਦਾ।
+
+ਅਸੀਂ ਜੋ ਰੱਖਦੇ ਹਾਂ ਉਸਨੂੰ ਪ੍ਰਗਟ ਕਰ ਸਕਦੇ ਹਾਂ ਜੇ ਕਾਨੂੰਨ ਇਸਦੀ ਲੋੜ ਹੈ। ਜੋ ਅਸੀਂ ਰੱਖਦੇ ਹਾਂ ਉਹ ਭਾਗ 2 ਵਿੱਚ ਸੂਚੀ ਹੈ। ਅਸੀਂ ਸੁਨੇਹਾ ਸਮੱਗਰੀ ਪੈਦਾ ਨਹੀਂ ਕਰ ਸਕਦੇ, ਕਿਉਂਕਿ ਅਸੀਂ ਇਸਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਸਕਦੇ।`,
+    },
+    {
+      title: '7. ਪੁਸ਼ ਸੂਚਨਾਵਾਂ',
+      body: `Firebase Cloud Messaging ਸੂਚਨਾਵਾਂ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ। ਤੁਹਾਡਾ ਡਿਵਾਈਸ ਟੋਕਨ ਤੁਹਾਡੇ ਖਾਤੇ ਦੇ ਇੱਕ ਪ੍ਰਾਈਵੇਟ ਹਿੱਸੇ ਵਿੱਚ ਸਟੋਰ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਜਿਸਨੂੰ ਸਿਰਫ਼ ਤੁਸੀਂ ਹੀ ਪੜ੍ਹ ਸਕਦੇ ਹੋ।
+
+ਸੂਚਨਾਵਾਂ ਵਿੱਚ ਕੋਈ ਸੁਨੇਹਾ ਟੈਕਸਟ ਨਹੀਂ ਹੁੰਦਾ। ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਸਥਾਨਕ ਤੌਰ ਉੱਤੇ ਸੁਨੇਹੇ ਨੂੰ ਡੀਕ੍ਰਿਪਟ ਕਰਦੀ ਹੈ ਅਤੇ ਜੋ ਤੁਸੀਂ ਦੇਖਦੇ ਹੋ ਉਸਨੂੰ ਰਚਦੀ ਹੈ; Google ਲਿਫਾਫਾ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ, ਸਮੱਗਰੀ ਨਹੀਂ।`,
+    },
+    {
+      title: '8. ਤੁਸੀਂ ਕੀ ਕਰ ਸਕਦੇ ਹੋ',
+      body: `• ਪ੍ਰੋਫਾਈਲ ਸਕ੍ਰੀਨ ਤੋਂ ਆਪਣਾ ਖਾਤਾ ਮਿਟਾਓ। ਗੱਲਬਾਤ ਦਾ ਸਾਂਝਾ ਹਿੱਸਾ ਸਮੱਗਰੀ — ਉਦਾਹਰਨ ਲਈ, ਇੱਕ ਕਾਲ ਰਿਕਾਰਡ — ਦੂਜੇ ਭਾਗੀਦਾਰ ਨਾਲ ਰਹਿੰਦੀ ਹੈ, ਕਿਉਂਕਿ ਇਹ ਉਹਨਾਂ ਦਾ ਰਿਕਾਰਡ ਵੀ ਹੈ।
+• ਪ੍ਰੋਫਾਈਲ ਸਕ੍ਰੀਨ ਤੋਂ ਆਪਣਾ ਡਾਟਾ ਐਕਸਪੋਰਟ ਕਰੋ।
+• ਹਰੇਕ ਚੈਟ ਲਈ ਸੁਨੇਹੇ ਸਮਾਪਤ ਹੋਣ ਲਈ ਸੈੱਟ ਕਰੋ: 1 ਘੰਟਾ, 24 ਘੰਟੇ, 7 ਦਿਨ ਜਾਂ 30 ਦਿਨ।
+• ਟਾਈਪਿੰਗ ਸੂਚਕ ਅਤੇ ਪੜ੍ਹਨ ਦੀਆਂ ਰਸੀਦਾਂ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰੋ। ਦੋਵੇਂ ਡਿਫਾਲਟ ਰੂਪ ਵਿੱਚ ਬੰਦ ਹਨ।
+• PIN ਜਾਂ ਬਾਇਓਮੈਟ੍ਰਿਕਸ ਨਾਲ ਐਪ ਨੂੰ ਲਾਕ ਕਰੋ।
+• ਸੱਦਾ ਲਿੰਕ ਵਾਪਸ ਲਓ ਜੋ ਤੁਸੀਂ ਦਿੱਤਾ ਹੈ।
+
+ਜੇ ਤੁਸੀਂ ਚਾਹੁੰਦੇ ਹੋ ਕਿ ਅਸੀਂ ਹੱਥੀਂ ਕੁਝ ਮਿਟਾਈਏ, ਸਾਨੂੰ ਲਿਖੋ।`,
+    },
+    {
+      title: '9. ਧਾਰਨ',
+      body: `ਅਸੀਂ ਤੁਹਾਡਾ ਡਾਟਾ ਉਦੋਂ ਤੱਕ ਰੱਖਦੇ ਹਾਂ ਜਦੋਂ ਤੱਕ ਤੁਹਾਡਾ ਖਾਤਾ ਮੌਜੂਦ ਹੈ। ਖਾਤਾ ਮਿਟਾਉਣਾ ਇਸਨੂੰ ਮਿਟਾ ਦਿੰਦਾ ਹੈ, ਉੱਪਰ ਦੱਸੀ ਸਾਂਝੇ ਤੌਰ ਉੱਤੇ ਰੱਖੀ ਸਮੱਗਰੀ ਨੂੰ ਛੱਡ ਕੇ। ਪ੍ਰਤੀ-ਚੈਟ ਸਮਾਪਤੀ ਤੁਹਾਡੇ ਸੈੱਟ ਕੀਤੇ ਸਮਾਂ-ਸਾਰਣੀ ਉੱਤੇ ਸੁਨੇਹੇ ਹਟਾਉਂਦੀ ਹੈ।`,
+    },
+    {
+      title: '10. ਸੀਮਾਵਾਂ ਜੋ ਤੁਹਾਨੂੰ ਪਤਾ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ',
+      body: `ਅਸੀਂ ਤੁਹਾਨੂੰ ਇਹ ਦੱਸਣਾ ਪਸੰਦ ਕਰਾਂਗੇ ਇਸ ਤੋਂ ਪਹਿਲਾਂ ਕਿ ਤੁਸੀਂ ਇਹਨਾਂ ਨੂੰ ਲੱਭੋ।
+
+• ਕੁੰਜੀਆਂ ਉੱਤੇ ਪਹਿਲੀ ਵਾਰ ਦੇਖੇ ਜਾਣ ਉੱਤੇ ਭਰੋਸਾ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਜੇ ਕਿਸੇ ਨੇ ਤੁਹਾਡੇ ਕਦੇ ਸੁਨੇਹਾ ਵਟਾਂਦਰਾ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਕੁੰਜੀ ਬਦਲ ਦਿੱਤੀ, ਗੱਲਬਾਤ ਗਲਤ ਵਿਅਕਤੀ ਨੂੰ ਇਨਕ੍ਰਿਪਟ ਹੋ ਜਾਵੇਗੀ ਅਤੇ ਬਿਲਕੁਲ ਸਧਾਰਨ ਦਿਖਾਈ ਦੇਵੇਗੀ। ਐਪ ਤੁਹਾਨੂੰ ਚੇਤਾਵਨੀ ਦਿੰਦੀ ਹੈ ਜਦੋਂ ਕੁੰਜੀ ਬਾਅਦ ਵਿੱਚ ਬਦਲਦੀ ਹੈ, ਅਤੇ ਇੱਕ ਸੁਰੱਖਿਆ ਨੰਬਰ ਦਿਖਾਉਂਦੀ ਹੈ ਜਿਸਦੀ ਤੁਸੀਂ ਚੈਨਲ ਤੋਂ ਬਾਹਰ ਤੁਲਨਾ ਕਰ ਸਕਦੇ ਹੋ — ਪਰ ਕੁਝ ਵੀ ਤੁਹਾਨੂੰ ਇਸਦੀ ਤੁਲਨਾ ਕਰਨ ਲਈ ਮਜਬੂਰ ਨਹੀਂ ਕਰਦਾ।
+• ਇੱਕ ਸਮੇਂ ਵਿੱਚ ਇੱਕ ਡਿਵਾਈਸ। ਤੁਹਾਡਾ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਉਹ ਕੁੰਜੀ ਮੁੜ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ ਜੋ ਤੁਹਾਡਾ ਇਤਿਹਾਸ ਖੋਲ੍ਹਦੀ ਹੈ, ਇਸ ਲਈ ਨਵੀਂ ਡਿਵਾਈਸ ਉੱਤੇ ਸਾਈਨ ਇਨ ਕਰਨਾ ਉਹ ਨਹੀਂ ਗੁਆਉਂਦਾ ਜੋ ਤੁਸੀਂ ਪਹਿਲਾਂ ਹੀ ਪ੍ਰਾਪਤ ਕਰ ਚੁੱਕੇ ਹੋ। ਫਾਰਵਰਡ-ਸੀਕਰੇਟ ਗੱਲਬਾਤਾਂ ਇੱਕ ਦੂਜੀ ਕੁੰਜੀ ਵਰਤਦੀਆਂ ਹਨ ਜੋ ਕਦੇ ਵੀ ਉਸ ਡਿਵਾਈਸ ਨੂੰ ਨਹੀਂ ਛੱਡਦੀ ਜਿਸਨੇ ਇਸਨੂੰ ਬਣਾਇਆ: ਜੋ ਵੀ ਡਿਵਾਈਸ ਆਖਰੀ ਵਾਰ ਸਾਈਨ ਇਨ ਹੋਈ ਉਹ ਹੈ ਜਿਸ ਤੱਕ ਉਹ ਪਹੁੰਚਦੀਆਂ ਹਨ, ਅਤੇ ਇਸ ਦੌਰਾਨ ਦੂਜੀ ਲਈ ਸੀਲ ਕੀਤੀ ਕੋਈ ਵੀ ਚੀਜ਼ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।
+• ਇਨਕ੍ਰਿਪਸ਼ਨ ਮੌਜੂਦ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਭੇਜੇ ਸੁਨੇਹੇ ਉਵੇਂ ਹੀ ਰਹਿੰਦੇ ਹਨ। ਪਿਛਾਖੜੀ ਤੌਰ ਉੱਤੇ ਕੁਝ ਵੀ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।
+• ਇਸ ਐਪ ਦੀ ਸੁਤੰਤਰ ਤੌਰ ਉੱਤੇ ਸੁਰੱਖਿਆ-ਆਡਿਟ ਨਹੀਂ ਕੀਤੀ ਗਈ ਹੈ।`,
+    },
+    {
+      title: '11. ਬੱਚੇ',
+      body: `Chatterbox 13 ਸਾਲ ਤੋਂ ਘੱਟ ਉਮਰ ਦੇ ਬੱਚਿਆਂ ਲਈ ਨਹੀਂ ਹੈ, ਅਤੇ ਅਸੀਂ ਜਾਣਬੁੱਝ ਕੇ ਉਹਨਾਂ ਦੀ ਜਾਣਕਾਰੀ ਇਕੱਠੀ ਨਹੀਂ ਕਰਦੇ। ਜੇ ਤੁਹਾਨੂੰ ਵਿਸ਼ਵਾਸ ਹੈ ਕਿ ਇੱਕ ਬੱਚੇ ਨੇ ਸਾਨੂੰ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਦਿੱਤੀ ਹੈ, ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ ਅਤੇ ਅਸੀਂ ਇਸਨੂੰ ਮਿਟਾ ਦੇਵਾਂਗੇ।`,
+    },
+    {
+      title: '12. ਬਦਲਾਅ',
+      body: `ਅਸੀਂ ਇਸ ਨੀਤੀ ਨੂੰ ਅਪਡੇਟ ਕਰ ਸਕਦੇ ਹਾਂ। ਮਹੱਤਵਪੂਰਨ ਬਦਲਾਅ ਐਪ ਵਿੱਚ ਐਲਾਨੇ ਜਾਣਗੇ, ਅਤੇ ਉੱਪਰ ਦੀ ਤਾਰੀਖ ਹੈ ਜਦੋਂ ਇਹ ਆਖਰੀ ਵਾਰ ਬਦਲੀ ਗਈ।`,
+    },
+    {
+      title: '13. ਸੰਪਰਕ',
+      body: `ਇਸ ਨੀਤੀ ਬਾਰੇ ਸਵਾਲ: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  ne: [
+    {
+      title: '0. छोटकरीमा',
+      body: `तपाईंको सन्देशहरूको पाठ तपाईंको यन्त्रमा इन्क्रिप्ट गरिएको छ र तपाईंले पठाउनुभएका मानिसहरूले मात्र यसलाई पढ्न सक्छन्। हामी यसलाई पढ्न सक्दैनौं, र हामीले भाडामा लिएका सर्भरहरूका मालिक Google ले पनि पढ्न सक्दैन।
+
+हामीले देख्न सक्ने कुरा भनेको कुराकानी भएको हो: कुन खाताहरू त्यसमा छन्, र तिनीहरू कहिले सक्रिय थिए। त्यो हटाउनु सामग्री इन्क्रिप्ट गर्नुभन्दा गाह्रो छ, र हामीले अझै पूरा गरेका छैनौं। यो नीतिले हाल रेखा ठ्याक्कै कहाँ छ भनेर बताउँछ।`,
+    },
+    {
+      title: '1. एन्ड-टु-एन्ड इन्क्रिप्टेड के हो',
+      body: `तपाईंको यन्त्रमा इन्क्रिप्ट गरिएको, हामी र Google ले पढ्न नसक्ने:
+
+• तपाईंको सन्देशहरूको पाठ।
+• तपाईंले संलग्न गर्नुभएका फाइल, फोटो, अडियो र भिडियोको सामग्री।
+• लिङ्क पूर्वावलोकनहरू।
+• आवाज र भिडियो कलहरू, जसले दुई यन्त्रहरू बीच WebRTC को अनिवार्य DTLS-SRTP प्रयोग गर्छ।
+
+धेरैजसो एक-देखि-एक र समूह सन्देशहरूले थप ratchet पनि प्रयोग गर्छन्, अर्थात् प्रत्येक सन्देशको आफ्नै कुञ्जी हुन्छ, त्यसैले तपाईंको यन्त्र सम्झौता हुनुले पहिलेका सन्देशहरू उजागर गर्दैन। कसैको क्लाइन्टले नयाँ कुञ्जी सामग्री प्रकाशित नगरेको कुराकानीहरू त्यो विशेषता नभएको एकल दीर्घकालीन कुञ्जीमा फर्किन्छन्। सन्देश मुनिको लेबलले तपाईंलाई यसले वास्तवमा के पायो भन्ने बताउँछ।
+
+यो रेखा पार गर्ने एउटै कुरा, र तपाईंले सोध्दा मात्र: विकिपिडियामा नाम खोज्नुले त्यो सन्देश होइन जुन यो आयो, त्यो एउटा नाम मात्र पठाउँछ। खण्ड ६ ले यसलाई को प्राप्त गर्छ भनेर बताउँछ, र खोज ट्यापमा मात्र चल्छ अन्यथा होइन, त्यसैले बन्द गर्न केही उभिएको छैन। सारांश, अनुवाद र ट्रान्सक्रिप्सनले पनि यसलाई पार गर्नेछ — तिनीहरू यो संस्करणमा बन्द छन्, एपमा कतै तिनीहरूलाई खोल्ने नियन्त्रण छैन।`,
+    },
+    {
+      title: '2. के इन्क्रिप्ट गरिएको छैन, र हामी के देख्न सक्छौं',
+      body: `इन्क्रिप्सनले सामग्रीको सुरक्षा गर्छ, कुराकानी भएको तथ्यको होइन। यी हाम्रो सर्भरहरूमा स्पष्ट रूपमा बस्छन्:
+
+• प्रत्येक कुराकानीमा को छ, र यो कहिले सिर्जना गरियो र अन्तिम पटक सक्रिय थियो।
+• प्रत्येक सन्देशको टाइमस्ट्याम्प, र तपाईंले कति पढ्नुभएको छैन।
+• संलग्नकको फाइल नाम, प्रकार र आकार। बाइटहरू इन्क्रिप्ट गरिएका छन्; तिनीहरूको विवरण छैन, र सिफरटेक्स्टको लम्बाइले मूलको लम्बाइलाई सीमित गर्छ।
+• तपाईंका साथीहरू र मित्रता अनुरोधहरू।
+• कल सिग्नलिङ — कल गरिएको थियो, कसलाई, र कहिले। यसको अडियो वा भिडियो होइन।
+
+तपाईंले तिनीहरूलाई खोल्नुभएसम्म टाइपिङ सूचकहरू र पढेको रसिदहरू बन्द छन्, र बन्द हुँदा केही लेखिँदैन।
+
+अब यहाँ के छैन: तपाईंको इमेल ठेगाना र नाम। सेप्टेम्बर २०२६ देखि खाता रेकर्डमा खाता पहिचायक मात्र छ — र त्यसदेखि जहाँ पनि राख्नको लागि ठेगाना छैन। साइन अपले तपाईंको बारेमा केही सोध्दैन: तपाईंको खाता २४-शब्द पुनःप्राप्ति वाक्यांश हो, र Firebase Authentication ले जाँच गर्ने प्रमाणपत्र यसबाट लिइएको हो। यसले भण्डारण गर्ने कुरा मेल प्राप्त गर्न नसक्ने डोमेन अन्तर्गत एउटा अनियमित लेबल मात्र हो।
+
+अलग रूपमा: किनभने एप Google Firebase मा चल्छ, Google ले तपाईंको यन्त्रले यसमा गरेको प्रत्येक जडानको IP ठेगाना र समय देख्न सक्छ। त्यो होस्टिङको विशेषता हो, एपको होइन, र हामी यसलाई इन्क्रिप्ट गरेर हटाउन सक्दैनौं।`,
+    },
+    {
+      title: '3. मानिसहरूले तपाईंलाई कसरी भेट्टाउँछन्',
+      body: `तिनीहरूले तपाईंलाई खोज्न सक्दैनन्। कुनै डाइरेक्टरी छैन — इमेल, फोन नम्बर वा नामद्वारा खोज छैन — र सर्भरले त्यसो गर्न खोज्ने कुनै पनि प्रश्नलाई अस्वीकार गर्छ।
+
+तपाईं पहिले नै प्रयोग गरिरहेको जुनसुकै माध्यमबाट च्यानल बाहिर आमन्त्रण लिङ्क पठाएर कसैसम्म पुग्नुहुन्छ। एउटा लिङ्क एकपटक काम गर्छ, २४ घण्टापछि म्याद सकिन्छ, र फिर्ता लिन सकिन्छ। तपाईंले कसैलाई जे भन्नुहुन्छ त्यो उनीहरूका लागि तपाईंको आफ्नै लेबल हो, तपाईंको लागि राखिएको; यदि उनीहरूले आफूलाई परिचय गराए भने, त्यो नाम तपाईंसम्म इन्क्रिप्टेड रूपमा पुग्यो।`,
+    },
+    {
+      title: '4. हामी के सङ्कलन गर्छौं',
+      body: `• खाता डेटा: एउटा खाता पहिचायक, र तपाईंको पुनःप्राप्ति वाक्यांशबाट लिइएको प्रमाणपत्र, Firebase Authentication मा राखिएको। कुनै इमेल ठेगाना छैन, कुनै फोन नम्बर छैन, कुनै नाम छैन — साइन अपले यीमध्ये कुनै पनि सोध्दैन।
+• सन्देश र संलग्नक सिफरटेक्स्ट, खण्ड २ मा भएको मेटाडेटासहित।
+
+त्यो नै पूरा सूची हो। कुनै विश्लेषण छैन र कुनै क्र्यास रिपोर्टिङ छैन। एपले पहिले Firebase Analytics लाई स्क्रिन दृश्यहरू र Firebase Crashlytics लाई क्र्यास रिपोर्टहरू पठाउँथ्यो, दुवैले तपाईंको खाता पहिचायक बोकेको थियो, त्यसैले कुनै पनि गुमनाम थिएन; दुवै अब तिनीहरूलाई पठाएका लाइब्रेरीहरूसँगै गइसकेका छन्। त्रुटिहरू विकासको क्रममा डेभलपरको आफ्नै मेसिनमा मात्र छापिन्छन् र अरू कतै जाँदैनन्।`,
+    },
+    {
+      title: '5. यो कहाँ भण्डारण गरिएको छ',
+      body: `Google Firebase मा — Firestore, Storage र Authentication — सुरक्षा नियमहरू अन्तर्गत जसले प्रत्येक कागजात कसले पढ्न र लेख्न सक्छ भनेर निर्णय गर्छ।
+
+तपाईंको यन्त्रमा, क्यास गरिएका सन्देशहरू, सेटिङहरू, र तपाईंको एप-लक PIN सामान्य एप भण्डारणको सट्टा प्लेटफर्म किस्टोर (iOS Keychain, Android Keystore) मा राखिएको प्रति-यन्त्र कुञ्जीले इन्क्रिप्ट गरिएका छन्।
+
+तपाईंको सन्देशहरू डिक्रिप्ट गर्ने निजी कुञ्जी तपाईंले लेख्न रोज्नुभएको पुनःप्राप्ति वाक्यांशको रूपमा बाहेक तपाईंको यन्त्रबाट कहिल्यै बाहिर जाँदैन। हामी यसलाई राख्दैनौं र तपाईंको लागि यसलाई फिर्ता ल्याउन सक्दैनौं। यो हराएमा, त्यो यन्त्रमा पठाइएका सन्देशहरू फेरि पढ्न सकिँदैन — हामीलगायत कसैले पनि।`,
+    },
+    {
+      title: '6. अरू कसले डेटा प्राप्त गर्छ',
+      body: `हामी तपाईंको व्यक्तिगत जानकारी बेच्दैनौं, व्यापार गर्दैनौं, वा भाडामा दिँदैनौं। डेटा यहाँ पुग्छ:
+
+• Google Firebase — माथि वर्णन गरिए अनुसार, हाम्रो होस्टिङ प्रदायक।
+• विकिमिडिया प्रतिष्ठान — विकिपिडियामा खोज्न ट्याप गर्दा एउटा नाम।
+• Google Cloud Speech-to-Text — तपाईंले ट्रान्सक्रिप्ट अनुरोध गर्दा एउटा आवाज सन्देशको अडियो।
+• Google Cloud Translation — तपाईंले अनुवाद अनुरोध गर्दा एउटा सन्देशको पाठ।
+• Cloudflare Workers AI — तपाईंले सारांश अनुरोध गर्दा वा यसको बारेमा प्रश्न सोध्दा एउटा कुराकानीको अन्तिम ५० सन्देशसम्म।
+
+अन्तिम तीन यो संस्करणमा बन्द छन्। ट्रान्सक्रिप्सन, अनुवाद वा सारांशहरू खोल्ने एपमा कतै कुनै नियन्त्रण छैन, त्यसैले ती तीन सेवाहरूमा केही पुग्दैन। तिनीहरू हटाइनुको सट्टा सूचीबद्ध गरिएका छन् किनभने कोड अझै यहाँ छ र सुविधाहरू फर्कने उद्देश्य छ — र जब तिनीहरू फर्कन्छन्, तिनीहरू यो खुलासा र पहिलो प्रयोग अघि सूचनासहित फर्कन्छन्। त्यतिबेला के पठाइनेछ त्यो तपाईंको नतिजा उत्पादन गर्न पठाइन्छ, केही तालिम दिन होइन; हाम्रो सर्भरमा कुनै ट्रान्सक्रिप्ट वा अनुवाद भण्डारण गरिँदैन।
+
+विकिपिडिया खोजमा स्विच छैन किनभने बन्द गर्न केही उभिएको छैन: यो ट्यापमा मात्र चल्छ अन्यथा होइन। विकिपिडियाले त्यो एउटा नाम र तपाईंको IP ठेगाना पाउँछ, जस्तै तपाईंले यसलाई आफैं तिनीहरूको खोज बक्समा टाइप गर्नुभएको भए — कुनै खाता छैन, कुनै सन्देश छैन, कुनै कुराकानी छैन। फर्केर आउने कुरा देखाइन्छ र भण्डारण गरिँदैन, र यसको बारेमा केही पनि कुराकानीमा लेखिँदैन।
+
+कानूनले आवश्यक भएमा हामीले राखेको कुरा प्रकट गर्न सक्छौं। हामीले राखेको कुरा खण्ड २ मा भएको सूची हो। हामी सन्देश सामग्री उत्पादन गर्न सक्दैनौं, किनभने हामी यसलाई पढ्न सक्दैनौं।`,
+    },
+    {
+      title: '7. पुश सूचनाहरू',
+      body: `Firebase Cloud Messaging ले सूचनाहरू डेलिभर गर्छ। तपाईंको यन्त्र टोकन तपाईंको खाताको निजी भागमा भण्डारण गरिन्छ जुन तपाईंले मात्र पढ्न सक्नुहुन्छ।
+
+सूचनाहरूमा सन्देशको पाठ हुँदैन। तपाईंको यन्त्रले स्थानीय रूपमा सन्देश डिक्रिप्ट गर्छ र तपाईंले देख्नुहुने कुरा बनाउँछ; Google ले सामग्री होइन, खाम डेलिभर गर्छ।`,
+    },
+    {
+      title: '8. तपाईं के गर्न सक्नुहुन्छ',
+      body: `• प्रोफाइल स्क्रिनबाट तपाईंको खाता मेटाउनुहोस्। कुराकानीको संयुक्त भाग भएको सामग्री — उदाहरणका लागि, कल रेकर्ड — अर्को सहभागीसँग रहन्छ, किनभने यो उनीहरूको पनि रेकर्ड हो।
+• प्रोफाइल स्क्रिनबाट तपाईंको डेटा निर्यात गर्नुहोस्।
+• प्रति च्याट सन्देशहरू म्याद सकिने सेट गर्नुहोस्: १ घण्टा, २४ घण्टा, ७ दिन वा ३० दिन।
+• टाइपिङ सूचकहरू र पढेको रसिदहरू अन र बन्द गर्नुहोस्। दुवै पूर्वनिर्धारित रूपमा बन्द छन्।
+• PIN वा बायोमेट्रिक्ससँग एप लक गर्नुहोस्।
+• तपाईंले दिनुभएको आमन्त्रण लिङ्क फिर्ता लिनुहोस्।
+
+यदि तपाईं चाहनुहुन्छ कि हामीले हातैले केही मेटाउनुपर्छ भने, हामीलाई लेख्नुहोस्।`,
+    },
+    {
+      title: '9. प्रतिधारण',
+      body: `तपाईंको खाता अस्तित्वमा रहेसम्म हामी तपाईंको डेटा राख्छौं। खाता मेटाउनुले माथि उल्लेख गरिएको संयुक्त रूपमा राखिएको सामग्री बाहेक यसलाई मेटाउँछ। प्रति-च्याट म्याद समाप्तिले तपाईंले सेट गर्नुभएको तालिकामा सन्देशहरू हटाउँछ।`,
+    },
+    {
+      title: '10. तपाईंले जान्नुपर्ने सीमाहरू',
+      body: `हामी तपाईंलाई यी कुराहरू फेला पार्नुभन्दा बताउन रुचाउँछौं।
+
+• कुञ्जीहरू पहिलो पटक देखिँदा विश्वास गरिन्छ। यदि तपाईंले कहिल्यै सन्देश आदानप्रदान गर्नुअघि कसैले कुञ्जी प्रतिस्थापन गरेको थियो भने, कुराकानी गलत व्यक्तिलाई इन्क्रिप्ट हुनेछ र पूर्णतया सामान्य देखिनेछ। एपले कुञ्जी पछि परिवर्तन हुँदा तपाईंलाई चेतावनी दिन्छ, र तपाईंले च्यानल बाहिर तुलना गर्न सक्ने सुरक्षा नम्बर देखाउँछ — तर केहीले पनि तपाईंलाई यसलाई तुलना गर्न बाध्य पार्दैन।
+• एक पटकमा एउटा यन्त्र। तपाईंको पुनःप्राप्ति वाक्यांशले तपाईंको इतिहास खोल्ने कुञ्जी पुनःस्थापित गर्छ, त्यसैले नयाँ यन्त्रमा साइन इन गर्नुले तपाईंले पहिले नै प्राप्त गर्नुभएको कुरा गुमाउँदैन। फर्वार्ड-सिक्रेट कुराकानीहरूले दोस्रो कुञ्जी प्रयोग गर्छन् जुन यसलाई सिर्जना गर्ने यन्त्रबाट कहिल्यै बाहिर जाँदैन: जुनसुकै यन्त्र अन्तिम पटक साइन इन भयो त्यो नै तिनीहरूले पुग्ने हो, र त्यस बीचमा अर्कोमा सील गरिएको कुनै पनि कुरा त्यहाँ सार्न सकिँदैन।
+• इन्क्रिप्सन अस्तित्वमा आउनुअघि पठाइएका सन्देशहरू उस्तै रहन्छन्। कुनै पनि कुरा पूर्वव्यापी रूपमा रूपान्तरण गरिएको छैन।
+• यो एप स्वतन्त्र रूपमा सुरक्षा-लेखापरीक्षण गरिएको छैन।`,
+    },
+    {
+      title: '11. बालबालिका',
+      body: `Chatterbox १३ वर्षभन्दा कम उमेरका बालबालिकाका लागि होइन, र हामी जानाजानी तिनीहरूको जानकारी सङ्कलन गर्दैनौं। यदि तपाईंलाई विश्वास छ कि कुनै बालकले हामीलाई व्यक्तिगत जानकारी दिएको छ भने, हामीलाई सम्पर्क गर्नुहोस् र हामी यसलाई मेटाउनेछौं।`,
+    },
+    {
+      title: '12. परिवर्तनहरू',
+      body: `हामी यो नीति अद्यावधिक गर्न सक्छौं। महत्त्वपूर्ण परिवर्तनहरू एपमा घोषणा गरिनेछ, र माथिको मिति यो अन्तिम पटक कहिले परिवर्तन भयो भन्ने हो।`,
+    },
+    {
+      title: '13. सम्पर्क',
+      body: `यो नीतिको बारेमा प्रश्नहरू: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  si: [
+    {
+      title: '0. සැකෙවින්',
+      body: `ඔබේ පණිවිඩවල පෙළ ඔබේ උපාංගයේ සංකේතාංකනය කර ඇති අතර, ඔබ එය යවන පුද්ගලයන්ට පමණක් එය කියවිය හැක. අපට එය කියවිය නොහැක, අප සේවාදායක කුලියට ගන්නා Google ට ද එසේම ය.
+
+අපට දැකිය හැක්කේ සංවාදයක් සිදු වූ බවයි: ඒ තුළ ඇති ගිණුම් මොනවාද, ඒවා ක්‍රියාකාරී වූයේ කවදාද යන්නයි. එය ඉවත් කිරීම අන්තර්ගතය සංකේතාංකනය කිරීමට වඩා අපහසුය, අප තවම එය අවසන් කර නොමැත. මෙම ප්‍රතිපත්තිය දැන් එම මායිම ඇත්තේ කොතැනද යන්න හරියටම කියයි.`,
+    },
+    {
+      title: '1. අන්තයේ සිට අන්තය දක්වා සංකේතාංකනය කර ඇත්තේ කුමක්ද',
+      body: `ඔබේ උපාංගයේ සංකේතාංකනය කර ඇති, අපටත් Google ටත් කියවිය නොහැකි:
+
+• ඔබේ පණිවිඩවල පෙළ.
+• ඔබ අමුණන ගොනු, ඡායාරූප, ශ්‍රව්‍ය සහ වීඩියෝවල අන්තර්ගතය.
+• සබැඳි පෙරදසුන්.
+• උපාංග දෙක අතර WebRTC හි අනිවාර්ය DTLS-SRTP භාවිතා කරන හඬ සහ වීඩියෝ ඇමතුම්.
+
+බොහෝ එකින් එක සහ සමූහ පණිවිඩ අමතරව ratchet එකක් ද භාවිතා කරයි, එනම් සෑම පණිවිඩයකටම එහිම යතුරක් ඇති අතර, එබැවින් ඔබේ උපාංගය හානියට පත් වීම පෙර පණිවිඩ හෙළි නොකරයි. කෙනෙකුගේ සේවාදායකයා නව යතුරු ද්‍රව්‍ය ප්‍රකාශයට පත් නොකළ සංවාද එම ගුණාංගය නොමැති තනි දිගු කාලීන යතුරකට ආපසු යයි. පණිවිඩයක් යටතේ ඇති ලේබලය එය ලද්දේ කුමක්දැයි ඔබට කියයි.
+
+මෙම මායිම තරණය කරන එකම දෙය, ඔබ එය ඉල්ලා සිටින විට පමණි: විකිපීඩියාවේ නමක් සෙවීම එම නම පමණක් යවයි, එය පැමිණි පණිවිඩය නොවේ. කොටස 6 එය ලබන්නේ කවුරුන්දැයි කියයි, සෙවීම ක්‍රියාත්මක වන්නේ තට්ටු කිරීමේදී පමණි වෙනත් ආකාරයකින් නොවේ, එබැවින් අක්‍රිය කිරීමට කිසිවක් නොපවතී. සාරාංශ කිරීම, පරිවර්තනය කිරීම සහ පිටපත් කිරීම ද මෙය තරණය කරනු ඇත — ඒවා මෙම නිකුතුවේ අක්‍රිය කර ඇති අතර, ඒවා සක්‍රිය කරන පාලනයක් යෙදුමේ කොහේවත් නොමැත.`,
+    },
+    {
+      title: '2. සංකේතාංකනය කර නොමැත්තේ කුමක්ද, සහ අපට දැකිය හැක්කේ කුමක්ද',
+      body: `සංකේතාංකනය අන්තර්ගතය ආරක්ෂා කරයි, සංවාදයක් සිදු වූ බව නොවේ. මේවා අපගේ සේවාදායකවල පැහැදිලිව පවතී:
+
+• සෑම සංවාදයකම සිටින්නේ කවුරුන්ද, එය නිර්මාණය කළේ කවදාද අවසන් වරට ක්‍රියාකාරී වූයේ කවදාද.
+• සෑම පණිවිඩයකම කාල මුද්‍රාව, ඔබ නොකියවූ ප්‍රමාණය.
+• ඇමුණුමක ගොනු නාමය, වර්ගය සහ ප්‍රමාණය. බයිට් සංකේතාංකනය කර ඇත; ඒවායේ විස්තරය එසේ නොවේ, සයිෆර්ටෙක්ස්ට් හි දිග මුල් පිටපතේ දිග සීමා කරයි.
+• ඔබේ මිතුරන් සහ මිත්‍ර ඉල්ලීම්.
+• ඇමතුම් සංඥා කිරීම — ඇමතුමක් ලබා දුන් බව, කාට, සහ කවදාද. එහි ශ්‍රව්‍ය හෝ වීඩියෝව නොවේ.
+
+ඔබ ඒවා සක්‍රිය කරන තෙක් ටයිප් කිරීමේ දර්ශක සහ කියවීම් රිසිට්පත් අක්‍රිය ය, අක්‍රිය කර ඇති අතරතුර කිසිවක් ලියනු නොලැබේ.
+
+මින් ඉදිරියට මෙහි නොමැත්තේ: ඔබේ විද්‍යුත් තැපැල් ලිපිනය සහ නම. 2026 සැප්තැම්බර් සිට ගිණුම් වාර්තාවේ ඇත්තේ ගිණුම් හඳුනාගැනීමක් පමණි — එතැන් සිට කොතැනකවත් තබා ගැනීමට ලිපිනයක් නොමැත. ලියාපදිංචි වීම ඔබ ගැන කිසිවක් අසන්නේ නැත: ඔබේ ගිණුම වචන 24ක නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩයකි, Firebase Authentication පරීක්ෂා කරන අක්තපත්‍රය ඉන් ලබාගනු ලැබේ. එය ගබඩා කරන්නේ තැපැල් ලබාගත නොහැකි වසමක් යටතේ අහඹු ලේබලයකි.
+
+වෙන වශයෙන්: යෙදුම Google Firebase මත ක්‍රියාත්මක වන බැවින්, ඔබේ උපාංගය එයට කරන සෑම සම්බන්ධතාවයකම IP ලිපිනය සහ වේලාව Google ට දැක ගත හැක. එය සත්කාරකත්වයේ ගුණාංගයකි, යෙදුමේ නොවේ, අපට එය සංකේතාංකනය කර ඉවත් කළ නොහැක.`,
+    },
+    {
+      title: '3. මිනිසුන් ඔබව සොයා ගන්නේ කෙසේද',
+      body: `ඔවුන්ට ඔබව සෙවිය නොහැක. නාමාවලියක් නොමැත — විද්‍යුත් තැපෑල, දුරකථන අංකය හෝ නම මගින් සෙවීමක් නොමැත — එසේ උත්සාහ කරන ඕනෑම විමසුමක් සේවාදායකය ප්‍රතික්ෂේප කරයි.
+
+ඔබ දැනටමත් භාවිතා කරන ඕනෑම දෙයක් හරහා නාලිකාවෙන් පිටත ආරාධනා සබැඳියක් යැවීමෙන් ඔබ කෙනෙකුට ළඟා වේ. සබැඳියක් වරක් ක්‍රියා කරයි, පැය 24කට පසු කල් ඉකුත් වේ, ආපසු ගත හැක. ඔබ කෙනෙකුට කුමක් ලෙස හඳුන්වයිද එය ඔවුන් සඳහා ඔබේම ලේබලය වන අතර, ඔබ වෙනුවෙන් තබා ඇත; ඔවුන් තමන්ව හඳුන්වා දුන්නේ නම්, එම නම සංකේතාංකනය කළ ආකාරයෙන් ඔබට ළඟා විය.`,
+    },
+    {
+      title: '4. අප එකතු කරන්නේ කුමක්ද',
+      body: `• ගිණුම් දත්ත: ගිණුම් හඳුනාගැනීමක්, සහ Firebase Authentication හි තබා ඇති ඔබේ නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩයෙන් ලබාගත් අක්තපත්‍රයක්. විද්‍යුත් තැපැල් ලිපිනයක් නැත, දුරකථන අංකයක් නැත, නමක් නැත — ලියාපදිංචි වීම ඉන් කිසිවක් නොඅසයි.
+• පණිවිඩ සහ ඇමුණුම් සයිෆර්ටෙක්ස්ට්, කොටස 2 හි ඇති පශ්චාත් දත්ත සමඟ.
+
+එය සම්පූර්ණ ලැයිස්තුවයි. විශ්ලේෂණයක් නොමැත සහ බිඳවැටීම් වාර්තා කිරීමක් නොමැත. යෙදුම කලින් තිර දර්ශන Firebase Analytics වෙතත් බිඳවැටීම් වාර්තා Firebase Crashlytics වෙතත් යවා ඇති අතර, දෙකම ඔබේ ගිණුම් හඳුනාගැනීම රැගෙන ගිය බැවින්, කිසිවක් නිර්නාමික නොවීය; දෙකම දැන් ඒවා යැවූ පුස්තකාල සමඟ ගොස් ඇත. දෝෂ සංවර්ධකයාගේම යන්ත්‍රයේ සංවර්ධන කාලය තුළ පමණක් මුද්‍රණය වන අතර වෙනත් තැනකට නොයයි.`,
+    },
+    {
+      title: '5. එය ගබඩා කර ඇත්තේ කොහේද',
+      body: `Google Firebase මත — Firestore, Storage සහ Authentication — සෑම ලේඛනයක්ම කියවීමට හා ලිවීමට හැක්කේ කාටද යන්න තීරණය කරන ආරක්ෂක නීති යටතේ.
+
+ඔබේ උපාංගයේ, කෑෂ් කළ පණිවිඩ, සැකසුම් සහ ඔබේ යෙදුම් අගුළු PIN සාමාන්‍ය යෙදුම් ගබඩාවට වඩා වේදිකා යතුරු ගබඩාවක (iOS Keychain, Android Keystore) තබා ඇති උපාංග-විශේෂිත යතුරකින් සංකේතාංකනය කර ඇත.
+
+ඔබේ පණිවිඩ විකේතනය කරන පුද්ගලික යතුර ඔබ ලියා තැබීමට තෝරාගන්නා නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩය හැර ඔබේ උපාංගය කිසි විටෙකත් හැර නොයයි. අප එය තබා නොගනිමු, ඔබ වෙනුවෙන් එය නැවත ලබා ගත නොහැක. එය නැති වුවහොත්, එම උපාංගයට යවන ලද පණිවිඩ නැවත කියවිය නොහැක — අප ඇතුළුව කිසිවෙකුට වත්.`,
+    },
+    {
+      title: '6. වෙනත් කවුරුන් දත්ත ලබන්නේද',
+      body: `අප ඔබේ පුද්ගලික තොරතුරු විකුණන්නේ, හුවමාරු කරන්නේ හෝ කුලියට දෙන්නේ නැත. දත්ත ළඟා වන්නේ:
+
+• Google Firebase — ඉහත විස්තර කර ඇති පරිදි, අපගේ සත්කාරක සපයන්නා.
+• විකිමීඩියා පදනම — ඔබ විකිපීඩියාවේ සෙවීමට තට්ටු කරන විට එක් නමක්.
+• Google Cloud Speech-to-Text — ඔබ ලේඛනයක් ඉල්ලා සිටින විට එක් හඬ පණිවිඩයක ශ්‍රව්‍යය.
+• Google Cloud Translation — ඔබ පරිවර්තනයක් ඉල්ලා සිටින විට එක් පණිවිඩයක පෙළ.
+• Cloudflare Workers AI — ඔබ සාරාංශයක් ඉල්ලා සිටින විට හෝ ඒ ගැන ප්‍රශ්නයක් අසන විට එක් සංවාදයක අවසාන පණිවිඩ 50 දක්වා.
+
+අවසාන තුන මෙම නිකුතුවේ අක්‍රිය කර ඇත. පිටපත් කිරීම, පරිවර්තනය හෝ සාරාංශ සක්‍රිය කරන පාලනයක් යෙදුමේ කොහේවත් නොමැති බැවින්, එම සේවා තුනට කිසිවක් ළඟා නොවේ. කේතය තවමත් මෙහි ඇති අතර ලක්ෂණ ආපසු පැමිණීමට අදහස් කර ඇති බැවින් ඒවා මකා දැමීමට වඩා ලැයිස්තුගත කර ඇත — ඒවා ආපසු පැමිණෙන විට, ඒවා මෙම හෙළිදරව්ව සමඟත් පළමු භාවිතයට පෙර ඉඟියක් සමඟත් ආපසු පැමිණේ. එවිට යවනු ලබන දේ ඔබේ ප්‍රතිඵලය නිෂ්පාදනය කිරීමට යවනු ලැබේ, කිසිවක් පුහුණු කිරීමට නොවේ; ලේඛනයක් හෝ පරිවර්තනයක් අපගේ සේවාදායකවල ගබඩා කර නොමැත.
+
+විකිපීඩියා සෙවීමට ස්විචයක් නොමැත්තේ අක්‍රිය කිරීමට කිසිවක් නොපවතින බැවිනි: එය තට්ටු කිරීමේදී පමණක් ක්‍රියාත්මක වේ වෙනත් ආකාරයකින් නොවේ. විකිපීඩියාව එම එක් නම සහ ඔබේ IP ලිපිනය ලබා ගනී, ඔබ එය ඔවුන්ගේ සෙවුම් පෙට්ටියේ ටයිප් කළාක් මෙනි — ගිණුමක් නැත, පණිවිඩයක් නැත, සංවාදයක් නැත. ආපසු පැමිණෙන දේ පෙන්වන අතර ගබඩා කර නොමැත, එය ගැන කිසිවක් සංවාදයට ලියා නොමැත.
+
+නීතිය අවශ්‍ය කරන්නේ නම් අප තබාගෙන ඇති දේ අප හෙළි කළ හැක. අප තබාගෙන ඇත්තේ කොටස 2 හි ලැයිස්තුවයි. අපට පණිවිඩ අන්තර්ගතය නිෂ්පාදනය කළ නොහැක, මන්ද අපට එය කියවිය නොහැකි බැවිනි.`,
+    },
+    {
+      title: '7. තල්ලු දැනුම්දීම්',
+      body: `Firebase Cloud Messaging මගින් දැනුම්දීම් ලබා දේ. ඔබේ උපාංග ටෝකනය ඔබට පමණක් කියවිය හැකි ඔබේ ගිණුමේ පුද්ගලික කොටසක ගබඩා කර ඇත.
+
+දැනුම්දීම්වල පණිවිඩ පෙළ නොමැත. ඔබේ උපාංගය දේශීයව පණිවිඩය විකේතනය කර ඔබ දකින දේ සම්පාදනය කරයි; Google අන්තර්ගතය නොව, කවරය ලබා දෙයි.`,
+    },
+    {
+      title: '8. ඔබට කළ හැක්කේ කුමක්ද',
+      body: `• පැතිකඩ තිරයෙන් ඔබේ ගිණුම මකන්න. සංවාදයක ඒකාබද්ධ කොටසක් වන අන්තර්ගතය — උදාහරණයක් ලෙස, ඇමතුම් වාර්තාවක් — වෙනත් සහභාගිකයා සමඟ පවතී, මන්ද එය ඔවුන්ගේද වාර්තාවක් වන බැවිනි.
+• පැතිකඩ තිරයෙන් ඔබේ දත්ත අපනයනය කරන්න.
+• එක් එක් කතාබසය සඳහා පණිවිඩ කල් ඉකුත් වීමට සකසන්න: පැය 1, පැය 24, දින 7 හෝ දින 30.
+• ටයිප් කිරීමේ දර්ශක සහ කියවීම් රිසිට්පත් සක්‍රිය හෝ අක්‍රිය කරන්න. දෙකම පෙරනිමියෙන් අක්‍රියයි.
+• PIN එකකින් හෝ ජෛවමිතික මගින් යෙදුම අගුළු දමන්න.
+• ඔබ දී ඇති ආරාධනා සබැඳියක් ආපසු ගන්න.
+
+ඔබට යමක් අතින් මකා දැමීමට අවශ්‍ය නම්, අපට ලියන්න.`,
+    },
+    {
+      title: '9. රඳවා තබා ගැනීම',
+      body: `ඔබේ ගිණුම පවතින තාක් කල් අප ඔබේ දත්ත තබා ගනිමු. ගිණුම මකා දැමීම, ඉහත සඳහන් කළ ඒකාබද්ධව තබාගෙන ඇති අන්තර්ගතය හැර, එය මකා දමයි. එක් එක් කතාබසයකට කල් ඉකුත්වීම ඔබ සකසන කාලසටහන අනුව පණිවිඩ ඉවත් කරයි.`,
+    },
+    {
+      title: '10. ඔබ දැනගත යුතු සීමාවන්',
+      body: `ඔබ ඒවා සොයා ගැනීමට වඩා අප ඔබට මේවා පැවසීමට කැමැත්තෙමු.
+
+• යතුරු පළමු වරට දකින විට විශ්වාස කරනු ලැබේ. ඔබ කිසි විටෙකත් පණිවිඩයක් හුවමාරු කර නොගත් විට කවුරුන් හෝ යතුරක් ප්‍රතිස්ථාපනය කර ඇත්නම්, සංවාදය වැරදි පුද්ගලයාට සංකේතාංකනය වන අතර සම්පූර්ණයෙන්ම සාමාන්‍ය ලෙස පෙනෙනු ඇත. යතුර පසුව වෙනස් වන විට යෙදුම ඔබට අනතුරු අඟවන අතර, ඔබට නාලිකාවෙන් පිටත සංසන්දනය කළ හැකි ආරක්ෂක අංකයක් පෙන්වයි — නමුත් එය සංසන්දනය කිරීමට කිසිවක් ඔබට බල නොකරයි.
+• එක් වේලාවක එක් උපාංගයක්. ඔබේ නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩය ඔබේ ඉතිහාසය විවෘත කරන යතුර ප්‍රතිසාධනය කරයි, එබැවින් නව උපාංගයක පුරනය වීම ඔබ දැනටමත් ලැබූ දේ අහිමි නොකරයි. ඉදිරි-රහස්‍යභාවී සංවාද එය නිර්මාණය කළ උපාංගය කිසි විටෙකත් හැර නොයන දෙවන යතුරක් භාවිතා කරයි: අවසන් වරට පුරනය වූ උපාංගය කුමක් වුවත් ඒවා ළඟා වන්නේ එයටයි, එම කාලය තුළ අනෙකට මුද්‍රා තැබූ ඕනෑම දෙයක් එයට මාරු කළ නොහැක.
+• සංකේතාංකනය පැවතීමට පෙර යවන ලද පණිවිඩ එසේම පවතී. කිසිවක් පසුබැවින් පරිවර්තනය කර නොමැත.
+• මෙම යෙදුම ස්වාධීනව ආරක්ෂක-විගණනය කර නොමැත.`,
+    },
+    {
+      title: '11. ළමයින්',
+      body: `Chatterbox වයස අවුරුදු 13ට අඩු ළමයින් සඳහා අදහස් කර නොමැත, අප දැනුවත්වම ඔවුන්ගේ තොරතුරු එකතු නොකරමු. දරුවෙකු අපට පුද්ගලික තොරතුරු ලබා දී ඇති බව ඔබ විශ්වාස කරන්නේ නම්, අප හා සම්බන්ධ වන්න, අප එය මකා දමන්නෙමු.`,
+    },
+    {
+      title: '12. වෙනස්කම්',
+      body: `අප මෙම ප්‍රතිපත්තිය යාවත්කාලීන කළ හැක. සැලකිය යුතු වෙනස්කම් යෙදුමේ නිවේදනය කරනු ලබන අතර, ඉහත දිනය එය අවසන් වරට වෙනස් වූ අවස්ථාවයි.`,
+    },
+    {
+      title: '13. සම්බන්ධතාවය',
+      body: `මෙම ප්‍රතිපත්තිය පිළිබඳ ප්‍රශ්න: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  sw: [
+    {
+      title: '0. Kwa muhtasari',
+      body: `Maandishi ya ujumbe wako yamesimbwa kwenye kifaa chako na yanaweza kusomwa tu na watu unaowatumia. Hatuwezi kuyasoma, wala Google, ambaye tunakodisha seva zake, hawezi.
+
+Kile tunachoweza kuona ni kwamba mazungumzo yalifanyika: akaunti zipi ziko humo, na walikuwa hai lini. Kuondoa hilo ni ngumu zaidi kuliko kusimba maudhui, na hatujamaliza bado. Sera hii inasema kwa usahihi mstari huo uko wapi sasa.`,
+    },
+    {
+      title: '1. Ni nini kilichosimbwa mwanzo hadi mwisho',
+      body: `Kimesimbwa kwenye kifaa chako, hakiwezi kusomwa na sisi na Google:
+
+• Maandishi ya ujumbe wako.
+• Maudhui ya faili, picha, sauti na video unazoambatanisha.
+• Muhtasari wa viungo.
+• Simu za sauti na video, zinazotumia DTLS-SRTP ya lazima ya WebRTC kati ya vifaa viwili.
+
+Ujumbe mwingi wa mtu-kwa-mtu na wa kikundi pia hutumia ratchet, ikimaanisha kila ujumbe una ufunguo wake mwenyewe, hivyo kuathiriwa kwa kifaa chako hakufichui ujumbe wa awali. Mazungumzo ambapo kifaa cha mtu hakijachapisha nyenzo mpya za ufunguo hurudi kwenye ufunguo mmoja wa muda mrefu, ambao hauna sifa hiyo. Lebo iliyo chini ya ujumbe inakuambia ni ipi hasa iliyopokea.
+
+Jambo moja tu linalovuka mstari huu, na tu unapouliza: kutafuta jina kwenye Wikipedia hutuma jina hilo moja tu, si ujumbe ulikotoka. Sehemu ya 6 inasema ni nani anayelipokea, na utafutaji unaendesha wakati wa kugusa tu si vinginevyo, hivyo hakuna kitu kinachosimama kuzimwa. Kufupisha, kutafsiri na kuandika kwa maneno pia kungevuka hili — vimezimwa katika toleo hili, bila udhibiti wowote popote katika programu unaoviwasha.`,
+    },
+    {
+      title: '2. Ni nini hakijasimbwa, na tunachoweza kuona',
+      body: `Usimbaji hulinda maudhui, si ukweli wa mazungumzo. Haya yapo wazi kwenye seva zetu:
+
+• Nani yuko katika kila mazungumzo, na yaliundwa lini na yalikuwa hai mara ya mwisho lini.
+• Muhuri wa muda wa kila ujumbe, na ni mingapi ambayo hujaisoma.
+• Jina la faili la kiambatisho, aina na ukubwa. Baiti zimesimbwa; maelezo yake hayajasimbwa, na urefu wa maandishi yaliyosimbwa unaweka kikomo cha urefu wa asili.
+• Marafiki zako na maombi ya urafiki.
+• Ishara za simu — kwamba simu ilipigwa, kwa nani, na lini. Si sauti au video yake.
+
+Viashiria vya kuandika na risiti za kusoma vimezimwa isipokuwa uviwashe, na wakati vimezimwa hakuna kinachoandikwa.
+
+Kisichopo hapa tena: anwani yako ya barua pepe na jina. Tangu Septemba 2026 rekodi ya akaunti ina kitambulisho cha akaunti pekee — na tangu wakati huo hakuna anwani ya kushikilia mahali popote. Kujisajili hakuulizi chochote kukuhusu: akaunti yako ni kifungu cha kurejesha cha maneno 24, na kitambulisho ambacho Firebase Authentication huangalia kinatokana na hicho. Kinachohifadhiwa ni lebo ya nasibu chini ya kikoa kisichoweza kupokea barua pepe.
+
+Kwa kando: kwa sababu programu inaendesha kwenye Google Firebase, Google inaweza kuona anwani ya IP na muda wa kila muunganisho ambao kifaa chako kinafanya nayo. Hiyo ni sifa ya uwekaji mwenyeji, si ya programu, na hatuwezi kuisimba na kuiondoa.`,
+    },
+    {
+      title: '3. Watu wanakupataje',
+      body: `Hawawezi kukutafuta. Hakuna orodha — hakuna utafutaji kwa barua pepe, nambari ya simu au jina — na seva inakataa ombi lolote linalojaribu hilo.
+
+Unamfikia mtu kwa kumtumia kiungo cha mwaliko nje ya njia, kupitia chochote unachotumia tayari. Kiungo hufanya kazi mara moja, kinaisha muda baada ya masaa 24, na kinaweza kuondolewa. Chochote unachomwita mtu ni lebo yako mwenyewe kwa ajili yake, iliyowekwa kwa ajili yako; kama alijitambulisha, jina hilo lilikufikia likiwa limesimbwa.`,
+    },
+    {
+      title: '4. Tunachokusanya',
+      body: `• Data ya akaunti: kitambulisho cha akaunti, na kitambulisho kinachotokana na kifungu chako cha kurejesha, kilichowekwa katika Firebase Authentication. Hakuna anwani ya barua pepe, hakuna nambari ya simu, hakuna jina — kujisajili hakuulizi chochote kati ya hivyo.
+• Maandishi yaliyosimbwa ya ujumbe na kiambatisho, pamoja na metadata katika sehemu ya 2.
+
+Hiyo ndiyo orodha nzima. Hakuna uchambuzi na hakuna kuripoti hitilafu. Programu zamani ilikuwa ikituma mionekano ya skrini kwa Firebase Analytics na ripoti za hitilafu kwa Firebase Crashlytics, zote mbili zikiwa na kitambulisho chako cha akaunti, hivyo hakuna iliyokuwa bila jina; zote mbili sasa zimeondoka, pamoja na maktaba zilizozituma. Makosa yanachapishwa kwenye kompyuta ya mwandaaji programu mwenyewe wakati wa uundaji na hayaendi mahali pengine.`,
+    },
+    {
+      title: '5. Inahifadhiwa wapi',
+      body: `Kwenye Google Firebase — Firestore, Storage na Authentication — chini ya kanuni za usalama zinazoamua ni nani anaweza kusoma na kuandika kila hati.
+
+Kwenye kifaa chako, ujumbe uliohifadhiwa kwa muda, mipangilio, na PIN yako ya kufunga programu vimesimbwa kwa ufunguo wa kila kifaa uliowekwa katika hifadhi ya funguo za jukwaa (iOS Keychain, Android Keystore) badala ya hifadhi ya kawaida ya programu.
+
+Ufunguo wa faragha unaofungua ujumbe wako haondoki kamwe kwenye kifaa chako, isipokuwa kama kifungu cha kurejesha unachochagua kuandika. Hatukishikilii na hatuwezi kukirejesha kwa ajili yako. Ukipotea, ujumbe uliotumwa kwa kifaa hicho hauwezi kusomwa tena — na yeyote, ikiwa ni pamoja na sisi.`,
+    },
+    {
+      title: '6. Nani mwingine anapokea data',
+      body: `Hatuuzi, kubadilishana au kukodisha taarifa zako binafsi. Data inafikia:
+
+• Google Firebase — mtoa huduma wetu wa uwekaji mwenyeji, kama ilivyoelezwa hapo juu.
+• Wikimedia Foundation — jina moja, unapogusa kutafuta kwenye Wikipedia.
+• Google Cloud Speech-to-Text — sauti ya ujumbe mmoja wa sauti, unapoomba nakala ya maandishi.
+• Google Cloud Translation — maandishi ya ujumbe mmoja, unapoomba tafsiri.
+• Cloudflare Workers AI — hadi ujumbe 50 wa mwisho wa mazungumzo moja, unapoomba muhtasari au kuuliza swali kuhusu hayo.
+
+Tatu za mwisho zimezimwa katika toleo hili. Hakuna udhibiti wowote popote katika programu unaowasha uandishi, tafsiri au muhtasari, hivyo hakuna kinachofika huduma hizo tatu. Zimeorodheshwa badala ya kufutwa kwa sababu msimbo bado uko hapa na vipengele hivyo vinakusudiwa kurudi — na vinaporudi, vinarudi na ufunuo huu na ujumbe kabla ya matumizi ya kwanza. Kitakachotumwa wakati huo kinatumwa kutoa matokeo yako, si kufundisha chochote; hakuna nakala ya maandishi wala tafsiri inayohifadhiwa kwenye seva zetu.
+
+Utafutaji wa Wikipedia hauna swichi kwa sababu hakuna kinachosimama kuzimwa: unaendesha wakati wa kugusa tu si vinginevyo. Wikipedia inapokea jina hilo moja na anwani yako ya IP, sawa na ungeliandika mwenyewe kwenye kisanduku chao cha utafutaji — hakuna akaunti, hakuna ujumbe, hakuna mazungumzo. Kinachorudi kinaonyeshwa na hakihifadhiwi, na hakuna chochote kuhusu hicho kinachoandikwa kwenye mazungumzo.
+
+Tunaweza kufichua tunachoshikilia iwapo sheria inahitaji. Tunachoshikilia ni orodha katika sehemu ya 2. Hatuwezi kutoa maudhui ya ujumbe, kwa sababu hatuwezi kuyasoma.`,
+    },
+    {
+      title: '7. Arifa za kusukuma',
+      body: `Firebase Cloud Messaging hupeleka arifa. Tokeni ya kifaa chako imehifadhiwa katika sehemu ya faragha ya akaunti yako ambayo wewe pekee unaweza kusoma.
+
+Arifa hazibebi maandishi ya ujumbe. Kifaa chako hufungua ujumbe mahali hapo na kutunga unachokiona; Google inapeleka bahasha, si maudhui.`,
+    },
+    {
+      title: '8. Unachoweza kufanya',
+      body: `• Futa akaunti yako kutoka skrini ya Wasifu. Maudhui yaliyo sehemu ya pamoja ya mazungumzo — rekodi ya simu, kwa mfano — inabaki na mshiriki mwingine, kwa sababu ni rekodi yake pia.
+• Hamisha data yako kutoka skrini ya Wasifu.
+• Weka ujumbe uishe muda kwa kila mazungumzo: saa 1, saa 24, siku 7 au siku 30.
+• Washa au zima viashiria vya kuandika na risiti za kusoma. Vyote viwili vimezimwa kwa chaguo-msingi.
+• Funga programu kwa PIN au biometriki.
+• Ondoa kiungo cha mwaliko ulichokwisha kutoa.
+
+Ikiwa ungependa tufute kitu kwa mkono, tuandikie.`,
+    },
+    {
+      title: '9. Uhifadhi',
+      body: `Tunahifadhi data yako wakati akaunti yako ipo. Kufuta akaunti kunaifuta, isipokuwa maudhui yaliyoshikiliwa kwa pamoja yaliyotajwa hapo juu. Kuisha muda kwa kila mazungumzo huondoa ujumbe kulingana na ratiba uliyoweka.`,
+    },
+    {
+      title: '10. Vikwazo unavyopaswa kujua',
+      body: `Tungependelea kukuambia haya kuliko wewe kuvigundua.
+
+• Funguo zinaaminiwa mara ya kwanza zinapoonekana. Kama mtu alibadilisha ufunguo kabla haujawahi kubadilishana ujumbe, mazungumzo yangesimbwa kwa mtu asiye sahihi na yangeonekana ya kawaida kabisa. Programu inakuonya ufunguo unapobadilika baadaye, na kuonyesha nambari ya usalama unayoweza kulinganisha nje ya njia — lakini hakuna kinachokulazimisha kuilinganisha.
+• Kifaa kimoja kwa wakati mmoja. Kifungu chako cha kurejesha kinarejesha ufunguo unaofungua historia yako, hivyo kuingia kwenye kifaa kipya hakupotezi ulichokwisha pokea. Mazungumzo yenye usiri wa mbele hutumia ufunguo wa pili ambao haondoki kamwe kwenye kifaa kilichouunda: chochote kifaa kilichoingia mwisho ndicho kinachofikiwa, na chochote kilichofungwa kwa kingine wakati huo hakiwezi kuhamishwa.
+• Ujumbe uliotumwa kabla ya usimbaji kuwepo unabaki kama ulivyokuwa. Hakuna kilichobadilishwa kwa nyuma.
+• Programu hii haijafanyiwa ukaguzi wa usalama wa kujitegemea.`,
+    },
+    {
+      title: '11. Watoto',
+      body: `Chatterbox haikusudiwa kwa watoto walio chini ya umri wa miaka 13, na hatukusanyi taarifa zao kwa makusudi. Ukiamini kwamba mtoto alitupatia taarifa binafsi, wasiliana nasi na tutazifuta.`,
+    },
+    {
+      title: '12. Mabadiliko',
+      body: `Tunaweza kusasisha sera hii. Mabadiliko makubwa yatatangazwa kwenye programu, na tarehe iliyo juu ndiyo ilipobadilika mwisho.`,
+    },
+    {
+      title: '13. Mawasiliano',
+      body: `Maswali kuhusu sera hii: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  ha: [
+    {
+      title: '0. A taƙaice',
+      body: `An sanya wa rubutun saƙonninka lambar sirri a na'urarka kuma mutanen da ka aika wa ne kaɗai za su iya karanta shi. Ba za mu iya karanta shi ba, kuma haka Google, wanda muke hayan sabar dinsa, ba zai iya ba.
+
+Abin da za mu iya gani shi ne cewa an yi tattaunawa: waɗanne asusu ke ciki, da lokacin da suke aiki. Cire wannan ya fi wahala fiye da sanya lambar sirri ga abin ciki, kuma ba mu gama ba tukuna. Wannan manufa ta faɗi daidai inda layin yake a yanzu.`,
+    },
+    {
+      title: '1. Menene aka sanya lambar sirri daga ƙarshe zuwa ƙarshe',
+      body: `An sanya wa lambar sirri a na'urarka, ba za mu iya karantawa ba mu da Google:
+
+• Rubutun saƙonninka.
+• Abin cikin fayiloli, hotuna, sauti da bidiyo da kake haɗawa.
+• Gwajin hanyar haɗi.
+• Kirayen murya da bidiyo, waɗanda ke amfani da DTLS-SRTP na tilas na WebRTC tsakanin na'urori biyu.
+
+Yawancin saƙonnin mutum-da-mutum da na rukuni suna kuma amfani da ratchet, ma'ana kowane saƙo yana da nasa mabudin, don haka satar na'urarka ba ya bayyana saƙonnin baya. Tattaunawar da abokin ciniki na wani bai buga sabon abin mabudi ba yana komawa zuwa mabudi guda ɗaya na dogon lokaci, wanda ba shi da wannan sifa. Alamar da ke ƙarƙashin saƙo tana gaya maka wanda ya samu na gaske.
+
+Abu ɗaya kaɗai ke ƙetare wannan layi, kuma sai lokacin da ka nema kaɗai: neman suna a Wikipedia yana aika sunan ɗaya kawai, ba saƙon da ya fito daga shi ba. Sashe na 6 ya faɗi wanda ke karɓarsa, kuma bincike yana aiki ne kawai a lokacin danna kuma ba wata hanya ba, don haka babu abin da ya tsaya don kashewa. Taƙaitawa, fassara da rubuta magana kuma za su ƙetare wannan — an kashe su a wannan sakin, ba tare da wani sarrafawa a ko'ina a cikin manhajar da zai kunna su ba.`,
+    },
+    {
+      title: '2. Menene ba a sanya lambar sirri ba, da abin da za mu iya gani',
+      body: `Sanya lambar sirri yana kāre abin ciki, ba hujjar cewa an yi tattaunawa ba. Waɗannan suna zaune a fili a kan sabobinmu:
+
+• Wanda ke cikin kowace tattaunawa, da lokacin da aka ƙirƙira ta kuma lokacin ƙarshe da take aiki.
+• Alamar lokaci na kowane saƙo, da yawan da ba ka karanta ba.
+• Sunan fayil, nau'i da girman abin da aka haɗa. An sanya wa bytes lambar sirri; bayanin su ba haka ba, kuma tsawon rubutun sirrin yana iyakance tsawon na asali.
+• Abokanka da buƙatun abokantaka.
+• Sigina na kira — cewa an yi kira, ga wanene, da lokacin. Ba sauti ko bidiyon sa ba.
+
+Alamun rubutu da rasit na karantawa an kashe su sai ka kunna su, kuma yayin da aka kashe babu abin da ake rubutawa.
+
+Abin da ba ya nan yanzu: adireshin imel ɗinka da suna. Tun daga Satumba 2026 rikodin asusun yana da alamar asusu kaɗai — kuma tun daga lokacin babu adireshin da za a riƙe a ko'ina. Yin rijista ba ya tambayar komai game da kai: asusunka jimla ce ta dawo da kalmomi 24, kuma sirrin da Firebase Authentication ke duba an samo shi daga wannan. Abin da yake ajiyewa alama ce ta bazuwar ƙarƙashin yanki wanda ba zai iya karɓar wasiƙa ba.
+
+Daban: saboda manhajar tana aiki a kan Google Firebase, Google na iya ganin adireshin IP da lokacin kowane haɗi da na'urarka take yi da shi. Wannan siffa ce ta karɓar baƙunci, ba ta manhajar ba, kuma ba za mu iya sanya masa lambar sirri mu kawar da shi ba.`,
+    },
+    {
+      title: '3. Yadda mutane ke samun ka',
+      body: `Ba za su iya neman ka ba. Babu jerin sunaye — babu bincike ta imel, lambar waya ko suna — kuma sabar tana ƙin kowace tambaya da ke ƙoƙarin haka.
+
+Kana kaiwa wani ta hanyar aika masa hanyar haɗin gayyata a wajen tashar, ta kowace hanya da kake amfani da ita tuni. Hanyar haɗi tana aiki sau ɗaya, tana ƙarewa bayan sa'o'i 24, ana kuma iya janye ta. Duk abin da kake kiran wani shi ne alamar ka don su, an ajiye don kai; idan sun gabatar da kansu, sunan ya isar maka a sanya masa lambar sirri.`,
+    },
+    {
+      title: '4. Abin da muke tattarawa',
+      body: `• Bayanan asusu: alamar asusu, da sirrin da aka samo daga jimlar dawowarka, aka ajiye a Firebase Authentication. Babu adireshin imel, babu lambar waya, babu suna — yin rijista ba ya tambayar kowanne daga cikinsu.
+• Rubutun sirrin saƙo da abin haɗawa, tare da bayanan da ke sashe na 2.
+
+Wannan ita ce jerin gaba ɗaya. Babu bincike da babu rahoton fadowa. Manhajar da can tana aika ganin allo zuwa Firebase Analytics da rahoton fadowa zuwa Firebase Crashlytics, dukansu suna ɗauke da alamar asusunka, don haka babu wanda ba a san shi ba; dukansu yanzu sun tafi, tare da laburaren da suka aika su. Ana buga kurakurai a kan injin mai haɓakawa kansa yayin haɓakawa kawai kuma ba ya zuwa wani wuri.`,
+    },
+    {
+      title: '5. Inda ake ajiyewa',
+      body: `A kan Google Firebase — Firestore, Storage da Authentication — a ƙarƙashin ƙa'idojin tsaro waɗanda ke tantance wanda zai iya karantawa da rubuta kowane takarda.
+
+A na'urarka, saƙonnin da aka ɓoye, saitunan, da PIN ɗin kulle manhajar an sanya musu lambar sirri da mabudin kowace na'ura da aka ajiye a keystore na dandali (iOS Keychain, Android Keystore) maimakon ajiyar manhaja ta yau da kullun.
+
+Mabudin sirri da ke buɗe saƙonninka ba ya taɓa barin na'urarka, sai dai a matsayin jimlar dawowa da ka zaɓi rubutawa. Ba mu riƙe shi ba kuma ba za mu iya dawo maka da shi ba. Idan ka rasa shi, saƙonnin da aka aika zuwa wannan na'ura ba za a iya sake karantawa ba — ta kowa, har da mu.`,
+    },
+    {
+      title: '6. Su waye kuma ke karɓar bayanai',
+      body: `Ba ma sayar, canzawa, ko yin hayar bayananka na sirri. Bayanai suna kaiwa:
+
+• Google Firebase — mai bayar da mu na karɓar baƙunci, kamar yadda aka bayyana a sama.
+• Gidauniyar Wikimedia — suna ɗaya, lokacin da ka danna don nema a Wikipedia.
+• Google Cloud Speech-to-Text — sautin saƙon murya ɗaya, lokacin da ka nemi rubutu.
+• Google Cloud Translation — rubutun saƙo ɗaya, lokacin da ka nemi fassara.
+• Cloudflare Workers AI — har zuwa saƙonni 50 na ƙarshe na tattaunawa ɗaya, lokacin da ka nemi taƙaitawa ko ka yi tambaya game da shi.
+
+Ukun na ƙarshe an kashe su a wannan sakin. Babu wani sarrafawa a ko'ina a cikin manhaja da zai kunna rubutun magana, fassara ko taƙaitawa, don haka babu abin da ke kaiwa waɗannan sabis guda uku. An lissafta su maimakon a share su domin lambar tana nan har yanzu kuma an nufi fasalulluka su dawo — kuma lokacin da suka dawo, za su dawo tare da wannan bayyanawa da tambaya kafin amfani na farko. Abin da za a aika a lokacin ana aika shi ne don samar da sakamakonka, ba don horar da wani abu ba; ba a ajiye rubutu ko fassara a sabobinmu.
+
+Neman Wikipedia ba shi da maɓalli saboda babu abin da ya tsaya don kashewa: yana aiki ne kawai a lokacin danna kuma ba wata hanya ba. Wikipedia na karɓar sunan ɗaya kawai da adireshin IP ɗinka, kamar dai ka buga shi da kanka a cikin akwatin binciken su — babu asusu, babu saƙo, babu tattaunawa. Abin da ya dawo ana nuna shi kuma ba a ajiye shi ba, kuma babu abin da ke game da shi da aka rubuta a cikin tattaunawar.
+
+Za mu iya bayyana abin da muke riƙe idan doka ta buƙaci. Abin da muke riƙe shi ne jerin da ke sashe na 2. Ba za mu iya samar da abin cikin saƙo ba, domin ba za mu iya karanta shi ba.`,
+    },
+    {
+      title: '7. Sanarwar tura',
+      body: `Firebase Cloud Messaging tana isar da sanarwa. An ajiye alamar na'urarka a wani sashi na sirri na asusunka wanda kai kaɗai za ka iya karantawa.
+
+Sanarwa ba sa ɗauke da rubutun saƙo. Na'urarka tana buɗe saƙon a gida kuma tana tsara abin da kake gani; Google tana isar da ambulaf, ba abin ciki ba.`,
+    },
+    {
+      title: '8. Abin da za ka iya yi',
+      body: `• Share asusunka daga allon Bayani. Abin cikin da ke sashi na tare na tattaunawa — rikodin kira, alal misali — yana zama tare da sauran mahalarta, domin rikodin su ne shi ma.
+• Fitar da bayananka daga allon Bayani.
+• Saita saƙonni su ƙare kowace hira: sa'a 1, sa'o'i 24, kwana 7 ko kwana 30.
+• Kunna ko kashe alamun rubutu da rasit na karantawa. Dukansu an kashe su ta tsohuwa.
+• Kulle manhajar da PIN ko biometrics.
+• Janye hanyar haɗin gayyata da ka riga ka bayar.
+
+Idan kana son mu share wani abu da hannu, rubuto mana.`,
+    },
+    {
+      title: '9. Ajiyewa',
+      body: `Muna riƙe bayananka yayin da asusunka ke wanzuwa. Share asusun yana share shi, sai dai abin cikin da aka riƙe tare da aka ambata a sama. Ƙarewar kowace hira tana cire saƙonni bisa jadawalin da ka saita.`,
+    },
+    {
+      title: '10. Iyakoki da ya kamata ka sani',
+      body: `Mun fi son gaya maka waɗannan fiye da ka same su da kanka.
+
+• Ana amincewa da mabudai a karo na farko da aka gan su. Idan wani ya maye gurbin mabudi kafin ka taɓa musanya saƙo, tattaunawar za a sanya mata lambar sirri zuwa mutumin da ba daidai ba kuma za ta yi kama da al'ada gaba ɗaya. Manhajar tana gargaɗe ka lokacin da mabudi ya canza daga baya, kuma tana nuna lambar tsaro da za ka iya kwatanta a wajen tashar — amma babu abin da zai tilasta maka kwatanta ta.
+• Na'ura ɗaya a lokaci ɗaya. Jimlar dawowarka tana dawo da mabudin da ke buɗe tarihinka, don haka shiga a sabuwar na'ura ba ya rasa abin da ka riga ka samu. Tattaunawar sirrin gaba suna amfani da mabudi na biyu wanda ba ya taɓa barin na'urar da ta ƙirƙira shi: duk wace na'ura ta shiga na ƙarshe ita ce wadda za su kaiwa, kuma duk abin da aka rufe wa wata na'ura a wannan lokacin ba za a iya matsar da shi zuwa can ba.
+• Saƙonnin da aka aika kafin sanya lambar sirri ta wanzu suna zama kamar yadda suke. Ba a canza komai baya ba.
+• Wannan manhaja ba a taɓa yin bincike na tsaro mai zaman kanta ba a kanta.`,
+    },
+    {
+      title: '11. Yara',
+      body: `Chatterbox ba don yara 'yan ƙasa da shekaru 13 ba ne, kuma ba mu tattara bayanansu da sani ba. Idan ka gaskata cewa yaro ya bayar mana da bayanan sirri, tuntuɓe mu kuma za mu share su.`,
+    },
+    {
+      title: '12. Canje-canje',
+      body: `Za mu iya sabunta wannan manufa. Za a sanar da manyan canje-canje a cikin manhaja, kuma ranar da ke sama ita ce lokacin ƙarshe da ta canza.`,
+    },
+    {
+      title: '13. Tuntuɓi',
+      body: `Tambayoyi game da wannan manufa: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  am: [
+    {
+      title: '0. በአጭሩ',
+      body: `የመልዕክቶችዎ ጽሑፍ በመሣሪያዎ ላይ ተመስጥሮ የሚላክላቸው ሰዎች ብቻ ሊያነቡት ይችላሉ። እኛ ልናነበው አንችልም፣ አገልጋዮቻቸውን የምንከራይበት Google ም አይችልም።
+
+እኛ ልናይ የምንችለው ውይይት መደረጉን ነው፦ የትኞቹ መለያዎች በውስጡ እንዳሉ፣ እና መቼ ንቁ እንደነበሩ። ያንን ማስወገድ ይዘቱን ከማመስጠር የበለጠ ከባድ ነው፣ እኛም ገና አልጨረስንም። ይህ ፖሊሲ አሁን መስመሩ በትክክል የት እንዳለ ይናገራል።`,
+    },
+    {
+      title: '1. ከጫፍ እስከ ጫፍ የተመሰጠረው ምንድን ነው',
+      body: `በመሣሪያዎ ላይ ተመስጥሮ፣ ለእኛም ለGoogle ም የማይነበብ፦
+
+• የመልዕክቶችዎ ጽሑፍ።
+• የሚያያይዟቸው ፋይሎች፣ ፎቶዎች፣ ኦዲዮ እና ቪዲዮ ይዘት።
+• የአገናኝ ቅድመ እይታዎች።
+• በሁለት መሣሪያዎች መካከል የWebRTC አስገዳጅ DTLS-SRTP የሚጠቀሙ የድምጽ እና የቪዲዮ ጥሪዎች።
+
+አብዛኞቹ አንድ ለአንድ እና የቡድን መልዕክቶች በተጨማሪ ራትሼት ይጠቀማሉ፣ ይህም ማለት እያንዳንዱ መልዕክት የራሱ ቁልፍ አለው ማለት ነው፣ ስለዚህ መሣሪያዎ መደፍረስ ቀደም ያሉትን አያጋልጥም። የአንድ ሰው ደንበኛ አዲሱን የቁልፍ ቁሳቁስ ያላወጣባቸው ውይይቶች ያ ባህሪ ወደሌለው ወደ አንድ ረጅም ዕድሜ ያለው ቁልፍ ይመለሳሉ። ከመልዕክት በታች ያለው መለያ በትክክል የትኛውን እንዳገኘ ይነግርዎታል።
+
+ይህን መስመር የሚያቋርጠው አንድ ነገር ብቻ ነው፣ እርስዎ ሲጠይቁት ብቻ፦ በዊኪፔዲያ ላይ ስም መፈለግ ያንን አንድ ስም ብቻ ይልካል፣ ከየትኛው መልዕክት እንደመጣ አይደለም። ክፍል 6 ማን እንደሚቀበለው ይናገራል፣ እና ፍለጋው የሚሠራው በንኪያ ጊዜ ብቻ ነው ካልሆነ በስተቀር፣ ስለዚህ ለማጥፋት የቆመ ምንም ነገር የለም። ማጠቃለል፣ መተርጎም እና ግልባጭ ማድረግም ይህን ያቋርጣሉ — በዚህ ስሪት ውስጥ ጠፍተዋል፣ በመተግበሪያው ውስጥ የትም የሚያበራ ቁጥጥር የለም።`,
+    },
+    {
+      title: '2. ያልተመሰጠረው ምንድን ነው፣ እና እኛ ልናይ የምንችለው ምንድን ነው',
+      body: `ምስጠራ ይዘትን ይጠብቃል፣ ውይይት መደረጉን አይደለም። እነዚህ በአገልጋዮቻችን ላይ ግልጽ ሆነው ይቀመጣሉ፦
+
+• በእያንዳንዱ ውይይት ውስጥ ማን እንዳለ፣ እና መቼ እንደተፈጠረ እና መጨረሻ መቼ ንቁ እንደነበረ።
+• የእያንዳንዱ መልዕክት የጊዜ ማህተም፣ እና ስንት እንዳላነበቡ።
+• የአባሪ ፋይል ስም፣ ዓይነት እና መጠን። ባይቶች ተመስጥረዋል፤ መግለጫቸው ግን አይደለም፣ እና የተመሰጠረው ጽሑፍ ርዝመት የመጀመሪያውን ርዝመት ይገድባል።
+• የእርስዎ ጓደኞች እና የጓደኝነት ጥያቄዎች።
+• የጥሪ ምልክት — ጥሪ መደረጉን፣ ለማን፣ እና መቼ። ድምጹን ወይም ቪዲዮውን አይደለም።
+
+የመተየብ አመልካቾች እና የንባብ ደረሰኞች እርስዎ እስኪያበሩዋቸው ድረስ ጠፍተዋል፣ ጠፍተው ባሉበት ጊዜ ምንም አይመዘገብም።
+
+ከዚህ በኋላ እዚህ የሌለው፦ የኢሜይል አድራሻዎ እና ስምዎ። ከመስከረም 2026 ጀምሮ የመለያ መዝገብ የያዘው የመለያ መለያ ብቻ ነው — እናም ከዚያ ጊዜ ጀምሮ የትም የሚቀመጥ አድራሻ የለም። መመዝገብ ስለ እርስዎ ምንም አይጠይቅም፦ መለያዎ የ24-ቃል መልሶ ማግኛ ሐረግ ነው፣ Firebase Authentication የሚያረጋግጠው ማረጋገጫ ከዚያ የተገኘ ነው። የሚያከማቸው ደብዳቤ መቀበል በማይችል ጎራ ስር ያለ የዘፈቀደ መለያ ብቻ ነው።
+
+ለየብቻ፦ መተግበሪያው በGoogle Firebase ላይ ስለሚሠራ፣ Google መሣሪያዎ ወደ እሱ የሚያደርገውን እያንዳንዱን ግንኙነት የIP አድራሻ እና ጊዜ ማየት ይችላል። ያ የማስተናገጃው ባህሪ ነው፣ የመተግበሪያው አይደለም፣ እኛም አመስጥረን ልናስወግደው አንችልም።`,
+    },
+    {
+      title: '3. ሰዎች እርስዎን እንዴት ያገኙዎታል',
+      body: `እርስዎን መፈለግ አይችሉም። ማውጫ የለም — በኢሜይል፣ በስልክ ቁጥር ወይም በስም ፍለጋ የለም — እና አገልጋዩ ይህን የሚሞክር ማንኛውንም ጥያቄ ውድቅ ያደርጋል።
+
+አስቀድመው በሚጠቀሙት በማንኛውም ነገር በኩል ከቻናል ውጭ የግብዣ አገናኝ በመላክ አንድን ሰው ያገኛሉ። አንድ አገናኝ አንድ ጊዜ ይሠራል፣ ከ24 ሰዓታት በኋላ ጊዜው ያልፍበታል፣ እና ሊሰረዝ ይችላል። አንድን ሰው የሚጠሩት ማንኛውም ነገር ለእነሱ የራስዎ መለያ ነው፣ ለእርስዎ ተይዞ; እነሱ ራሳቸውን ካስተዋወቁ፣ ያ ስም ተመስጥሮ ደርሶዎታል።`,
+    },
+    {
+      title: '4. እኛ የምንሰበስበው ምንድን ነው',
+      body: `• የመለያ ውሂብ፦ የመለያ መለያ፣ እና ከመልሶ ማግኛ ሐረግዎ የተገኘ ማረጋገጫ፣ በFirebase Authentication ውስጥ የተያዘ። የኢሜይል አድራሻ የለም፣ የስልክ ቁጥር የለም፣ ስም የለም — መመዝገብ ከእነዚህ ውስጥ አንዳቸውንም አይጠይቅም።
+• የመልዕክት እና የአባሪ የተመሰጠረ ጽሑፍ፣ ከክፍል 2 ውስጥ ካለው ሜታዳታ ጋር።
+
+ያ ሙሉው ዝርዝር ነው። ትንታኔ የለም እና የብልሽት ሪፖርት ማድረግ የለም። መተግበሪያው ቀደም ሲል የማያ ገጽ እይታዎችን ወደ Firebase Analytics እና የብልሽት ሪፖርቶችን ወደ Firebase Crashlytics ይልክ ነበር፣ ሁለቱም የመለያ መለያዎን ይዘው ስለሚሄዱ፣ ስለዚህ አንዳቸውም ስም-አልባ አልነበሩም፤ ሁለቱም አሁን ከላኳቸው ቤተ-መጻሕፍት ጋር ጠፍተዋል። ስህተቶች የሚታተሙት በገንቢው የራሱ ማሽን ላይ በልማት ጊዜ ብቻ ነው እና ወደ ሌላ ቦታ አይሄዱም።`,
+    },
+    {
+      title: '5. የት ነው የተከማቸው',
+      body: `በGoogle Firebase ላይ — Firestore, Storage እና Authentication — እያንዳንዱን ሰነድ ማን ማንበብ እና መጻፍ እንደሚችል በሚወስኑ የደህንነት ደንቦች ስር።
+
+በመሣሪያዎ ላይ፣ የተሸጎጡ መልዕክቶች፣ ቅንብሮች፣ እና የመተግበሪያ ቁልፍ PIN ከመደበኛው የመተግበሪያ ማከማቻ ይልቅ በመድረክ ቁልፍ ማከማቻ (iOS Keychain, Android Keystore) ውስጥ በተያዘ በእያንዳንዱ መሣሪያ ቁልፍ ተመስጥረዋል።
+
+መልዕክቶችዎን የሚፈታው የግል ቁልፍ ለመጻፍ በሚመርጡት መልሶ ማግኛ ሐረግ ካልሆነ በስተቀር መሣሪያዎን በጭራሽ አይለቅም። እኛ አንይዘውም ለእርስዎም ልንመልሰው አንችልም። ካጡት፣ ወደዚያ መሣሪያ የተላኩ መልዕክቶች እንደገና ሊነበቡ አይችሉም — በማንም፣ እኛን ጨምሮ።`,
+    },
+    {
+      title: '6. ሌላ ማን ውሂብ ይቀበላል',
+      body: `የግል መረጃዎን አንሸጥም፣ አንለዋወጥም ወይም አናከራይም። ውሂብ የሚደርሰው፦
+
+• Google Firebase — ከላይ እንደተገለጸው፣ የእኛ የማስተናገጃ አቅራቢ።
+• የዊኪሚዲያ ፋውንዴሽን — በዊኪፔዲያ ላይ ለመፈለግ ሲነኩ አንድ ስም።
+• Google Cloud Speech-to-Text — ግልባጭ ሲጠይቁ የአንድ የድምጽ መልዕክት ድምጽ።
+• Google Cloud Translation — ትርጉም ሲጠይቁ የአንድ መልዕክት ጽሑፍ።
+• Cloudflare Workers AI — ማጠቃለያ ሲጠይቁ ወይም ስለእሱ ጥያቄ ሲጠይቁ የአንድ ውይይት እስከ መጨረሻ 50 መልዕክቶች።
+
+የመጨረሻዎቹ ሦስቱ በዚህ ስሪት ውስጥ ጠፍተዋል። ግልባጭ ማድረግን፣ ትርጉምን ወይም ማጠቃለያዎችን የሚያበራ ቁጥጥር በመተግበሪያው ውስጥ የትም የለም፣ ስለዚህ ለእነዚያ ሦስት አገልግሎቶች ምንም አይደርስም። ኮዱ አሁንም እዚህ ስላለ እና ባህሪያቱ እንዲመለሱ ስለታሰቡ ከመሰረዝ ይልቅ ተዘርዝረዋል — እና ሲመለሱ፣ በዚህ ይፋ ማድረግ እና ከመጀመሪያው አጠቃቀም በፊት በሚደረግ ማሳሰቢያ ይመለሳሉ። በዚያ ጊዜ የሚላከው ውጤትዎን ለማምረት ነው የሚላከው፣ ምንም ነገር ለማሰልጠን አይደለም፤ ግልባጭም ሆነ ትርጉም በአገልጋዮቻችን ላይ አይቀመጥም።
+
+የዊኪፔዲያ ፍለጋ መቀየሪያ የለውም ምክንያቱም ለማጥፋት የቆመ ምንም ነገር የለም፦ የሚሠራው በንኪያ ጊዜ ብቻ ነው ካልሆነ በስተቀር። ዊኪፔዲያ ያንን አንድ ስም እና የIP አድራሻዎን ይቀበላል፣ እርስዎ በራሳቸው የፍለጋ ሳጥን ውስጥ እንደተየቡት ያህል — መለያ የለም፣ መልዕክት የለም፣ ውይይት የለም። የሚመለሰው ይታያል እና አይቀመጥም፣ እና ስለእሱ ምንም ነገር ወደ ውይይቱ አይጻፍም።
+
+ህግ የሚጠይቅ ከሆነ የያዝነውን ልናጋልጥ እንችላለን። የያዝነው በክፍል 2 ውስጥ ያለው ዝርዝር ነው። የመልዕክት ይዘቶችን ልናቀርብ አንችልም፣ ምክንያቱም ልናነባቸው ስለማንችል።`,
+    },
+    {
+      title: '7. የግፊት ማሳወቂያዎች',
+      body: `Firebase Cloud Messaging ማሳወቂያዎችን ያደርሳል። የመሣሪያዎ ቶከን እርስዎ ብቻ ማንበብ በሚችሉት የመለያዎ የግል ክፍል ውስጥ ተቀምጧል።
+
+ማሳወቂያዎች የመልዕክት ጽሑፍ አይይዙም። መሣሪያዎ በአካባቢው መልዕክቱን ይፈታል እና የሚያዩትን ያዘጋጃል፤ Google ይዘቱን ሳይሆን ፖስታውን ያደርሳል።`,
+    },
+    {
+      title: '8. እርስዎ ማድረግ የሚችሉት',
+      body: `• መለያዎን ከመገለጫ ማያ ገጽ ይሰርዙ። በጋራ የውይይት አካል የሆነ ይዘት — ለምሳሌ የጥሪ መዝገብ — ከሌላው ተሳታፊ ጋር ይቀራል፣ ምክንያቱም የእነሱም መዝገብ ስለሆነ።
+• ውሂብዎን ከመገለጫ ማያ ገጽ ይላኩ።
+• መልዕክቶች በእያንዳንዱ ውይይት እንዲያልፉ ያዘጋጁ፦ 1 ሰዓት፣ 24 ሰዓታት፣ 7 ቀናት ወይም 30 ቀናት።
+• የመተየብ አመልካቾችን እና የንባብ ደረሰኞችን ያብሩ ወይም ያጥፉ። ሁለቱም በነባሪነት ጠፍተዋል።
+• መተግበሪያውን በPIN ወይም ባዮሜትሪክስ ይቆልፉ።
+• የሰጡትን የግብዣ አገናኝ ይሰርዙ።
+
+የሆነ ነገር በእጅ እንድንሰርዝ ከፈለጉ፣ ይጻፉልን።`,
+    },
+    {
+      title: '9. ማቆየት',
+      body: `መለያዎ እስካለ ድረስ ውሂብዎን እንይዛለን። መለያን መሰረዝ ከላይ ከተጠቀሰው በጋራ ከተያዘው ይዘት በስተቀር ይሰርዘዋል። በእያንዳንዱ ውይይት ማብቂያ እርስዎ ባዘጋጁት መርሃ ግብር መሠረት መልዕክቶችን ያስወግዳል።`,
+    },
+    {
+      title: '10. እርስዎ ሊያውቋቸው የሚገቡ ገደቦች',
+      body: `እርስዎ እነሱን ከማግኘት ይልቅ እኛ እነዚህን ልንነግርዎት እንመርጣለን።
+
+• ቁልፎች ለመጀመሪያ ጊዜ ሲታዩ ይታመናሉ። እርስዎ በጭራሽ መልዕክት ከመለዋወጥዎ በፊት አንድ ሰው ቁልፍን ተክቶ ከሆነ፣ ውይይቱ ወደ ስህተተኛው ሰው ይመሰጠራል እና ሙሉ በሙሉ የተለመደ ይመስላል። መተግበሪያው ቁልፉ በኋላ ሲቀየር ያስጠነቅቅዎታል፣ እና ከቻናል ውጭ ማወዳደር የሚችሉትን የደህንነት ቁጥር ያሳያል — ነገር ግን እንዲያወዳድሩት የሚያስገድድ ምንም ነገር የለም።
+• በአንድ ጊዜ አንድ መሣሪያ። የመልሶ ማግኛ ሐረግዎ ታሪክዎን የሚከፍተውን ቁልፍ ይመልሳል፣ ስለዚህ በአዲስ መሣሪያ ላይ መግባት ቀደም ሲል ያገኙትን አያጣም። ወደፊት-ምስጢርነት ያላቸው ውይይቶች የፈጠረውን መሣሪያ በጭራሽ የማይለቅ ሁለተኛ ቁልፍ ይጠቀማሉ፦ የትኛውም መሣሪያ በመጨረሻ ቢገባ እነሱ የሚደርሱበት ያ ነው፣ እና በዚያ ጊዜ ውስጥ ለሌላው የታሸገ ማንኛውም ነገር ወደዚያ ሊዛወር አይችልም።
+• ምስጠራ ከመኖሩ በፊት የተላኩ መልዕክቶች እንደነበሩ ይቆያሉ። ወደኋላ ተመልሶ የተለወጠ ምንም ነገር የለም።
+• ይህ መተግበሪያ በገለልተኛ ወገን የደህንነት ኦዲት አልተደረገለትም።`,
+    },
+    {
+      title: '11. ልጆች',
+      body: `Chatterbox ከ13 ዓመት በታች ለሆኑ ልጆች የታሰበ አይደለም፣ እናም እኛ እያወቅን መረጃቸውን አንሰበስብም። አንድ ልጅ ለእኛ የግል መረጃ ሰጥቶናል ብለው የሚያምኑ ከሆነ፣ ያግኙን እኛም እንሰርዘዋለን።`,
+    },
+    {
+      title: '12. ለውጦች',
+      body: `ይህን ፖሊሲ ልናዘምን እንችላለን። ጉልህ ለውጦች በመተግበሪያው ውስጥ ይገለጻሉ፣ እና ከላይ ያለው ቀን መጨረሻ የተቀየረበት ጊዜ ነው።`,
+    },
+    {
+      title: '13. አግኙን',
+      body: `ስለዚህ ፖሊሲ ጥያቄዎች፦ ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  nl: [
+    {
+      title: '0. In het kort',
+      body: `De tekst van je berichten wordt op je apparaat versleuteld en kan alleen worden gelezen door de mensen aan wie je het stuurt. Wij kunnen het niet lezen, en Google, van wie we servers huren, ook niet.
+
+Wat we wel kunnen zien is dat er een gesprek heeft plaatsgevonden: welke accounts erbij betrokken zijn en wanneer ze actief waren. Dat verwijderen is moeilijker dan de inhoud versleutelen, en we zijn nog niet klaar. Dit beleid vertelt precies waar de grens op dit moment ligt.`,
+    },
+    {
+      title: '1. Wat is end-to-end versleuteld',
+      body: `Versleuteld op je apparaat, onleesbaar voor ons en voor Google:
+
+• De tekst van je berichten.
+• De inhoud van bestanden, foto's, audio en video die je bijvoegt.
+• Linkvoorvertoningen.
+• Spraak- en video-oproepen, die de verplichte DTLS-SRTP van WebRTC gebruiken tussen de twee apparaten.
+
+De meeste één-op-één- en groepsberichten gebruiken bovendien een ratchet, wat betekent dat elk bericht zijn eigen sleutel heeft, zodat het compromitteren van je apparaat eerdere berichten niet blootlegt. Gesprekken waarbij iemands client het nieuwere sleutelmateriaal nog niet heeft gepubliceerd, vallen terug op één langlevende sleutel, die deze eigenschap niet heeft. Het label onder een bericht vertelt je welke het daadwerkelijk kreeg.
+
+Eén ding overschrijdt deze grens, en alleen wanneer je erom vraagt: het opzoeken van een naam op Wikipedia stuurt die ene naam, niet het bericht waar het vandaan kwam. Sectie 6 vertelt wie het ontvangt, en de opzoeking loopt alleen bij de tik en niet anders, dus er is niets dat uitgeschakeld kan worden. Samenvatten, vertalen en transcriberen zouden dit ook overschrijden — ze zijn in deze release uitgeschakeld, zonder enige bediening ergens in de app die ze inschakelt.`,
+    },
+    {
+      title: '2. Wat is niet versleuteld, en wat wij kunnen zien',
+      body: `Versleuteling beschermt inhoud, niet het feit van een gesprek. Deze staan onversleuteld op onze servers:
+
+• Wie in elk gesprek zit, en wanneer het is aangemaakt en voor het laatst actief was.
+• De tijdstempel van elk bericht, en hoeveel je er niet hebt gelezen.
+• De bestandsnaam, het type en de grootte van een bijlage. De bytes zijn versleuteld; de beschrijving ervan niet, en de lengte van de cijfertekst begrenst de lengte van het origineel.
+• Je vrienden en vriendschapsverzoeken.
+• Belsignalering — dat er een oproep is geplaatst, aan wie, en wanneer. Niet de audio of video ervan.
+
+Typindicatoren en leesbevestigingen staan uit tenzij je ze inschakelt, en terwijl ze uit staan wordt er niets geschreven.
+
+Wat hier niet meer is: je e-mailadres en naam. Sinds september 2026 bevat het accountrecord alleen een accountidentificatie — en sindsdien is er nergens een adres om te bewaren. Aanmelden vraagt niets over jou: je account is een herstelzin van 24 woorden, en de credential die Firebase Authentication controleert, is daarvan afgeleid. Wat het opslaat is een willekeurig label onder een domein dat geen post kan ontvangen.
+
+Apart: omdat de app draait op Google Firebase, kan Google het IP-adres en de timing zien van elke verbinding die je apparaat ermee maakt. Dat is een eigenschap van de hosting, niet van de app, en we kunnen dat niet wegversleutelen.`,
+    },
+    {
+      title: '3. Hoe mensen je vinden',
+      body: `Ze kunnen je niet opzoeken. Er is geen adresboek — geen opzoeken op e-mail, telefoonnummer of naam — en de server weigert elke query die dat probeert.
+
+Je bereikt iemand door hen buiten het kanaal om een uitnodigingslink te sturen, via wat je al gebruikt. Een link werkt eenmaal, verloopt na 24 uur, en kan worden ingetrokken. Hoe je iemand ook noemt, dat is jouw eigen label voor hen, voor jou bewaard; als ze zichzelf voorstelden, bereikte die naam je versleuteld.`,
+    },
+    {
+      title: '4. Wat we verzamelen',
+      body: `• Accountgegevens: een accountidentificatie, en een credential afgeleid van je herstelzin, bewaard in Firebase Authentication. Geen e-mailadres, geen telefoonnummer, geen naam — bij aanmelden wordt naar geen van deze gevraagd.
+• Bericht- en bijlagecijfertekst, plus de metadata uit sectie 2.
+
+Dat is de hele lijst. Er is geen analytics en geen crashrapportage. De app stuurde vroeger schermweergaven naar Firebase Analytics en crashrapporten naar Firebase Crashlytics, beide met je accountidentificatie, dus geen van beide was anoniem; beide zijn nu weg, samen met de bibliotheken die ze verstuurden. Fouten worden alleen tijdens ontwikkeling op de eigen machine van een ontwikkelaar afgedrukt en gaan verder nergens heen.`,
+    },
+    {
+      title: '5. Waar het wordt opgeslagen',
+      body: `Op Google Firebase — Firestore, Storage en Authentication — onder beveiligingsregels die bepalen wie elk document mag lezen en schrijven.
+
+Op je apparaat worden gecachete berichten, instellingen en je app-vergrendelings-pincode versleuteld met een per-apparaat-sleutel die wordt bewaard in de platformsleutelopslag (iOS Keychain, Android Keystore) in plaats van in gewone app-opslag.
+
+De privésleutel die je berichten ontsleutelt, verlaat je apparaat nooit, behalve als de herstelzin die je ervoor kiest om op te schrijven. Wij bewaren die niet en kunnen die niet voor je herstellen. Verlies je die, dan kunnen de berichten die naar dat apparaat zijn gestuurd nooit meer worden gelezen — door niemand, ons inbegrepen.`,
+    },
+    {
+      title: '6. Wie nog meer gegevens ontvangt',
+      body: `We verkopen, verhandelen of verhuren je persoonlijke informatie niet. Gegevens bereiken:
+
+• Google Firebase — onze hostingprovider, zoals hierboven beschreven.
+• De Wikimedia Foundation — één naam, wanneer je erop tikt om op Wikipedia op te zoeken.
+• Google Cloud Speech-to-Text — het audio van één spraakbericht, wanneer je om een transcript vraagt.
+• Google Cloud Translation — de tekst van één bericht, wanneer je om een vertaling vraagt.
+• Cloudflare Workers AI — tot de laatste 50 berichten van één gesprek, wanneer je om een samenvatting vraagt of er een vraag over stelt.
+
+De laatste drie zijn in deze release uitgeschakeld. Er is nergens in de app een bediening die transcriptie, vertaling of samenvattingen inschakelt, dus er bereikt niets die drie diensten. Ze staan vermeld in plaats van verwijderd omdat de code hier nog is en de functies bedoeld zijn om terug te keren — en wanneer ze terugkeren, doen ze dat met deze openbaarmaking en een prompt vóór het eerste gebruik. Wat dan wordt verzonden, wordt verzonden om je resultaat te produceren, niet om iets te trainen; geen transcript of vertaling wordt op onze servers opgeslagen.
+
+De Wikipedia-opzoeking heeft geen schakelaar omdat er niets is om uit te schakelen: het loopt alleen bij de tik en niet anders. Wikipedia ontvangt die ene naam en je IP-adres, net zoals wanneer je het zelf in hun zoekvak had getypt — geen account, geen bericht, geen gesprek. Wat terugkomt wordt getoond en niet opgeslagen, en niets erover wordt in het gesprek geschreven.
+
+We kunnen onthullen wat we bewaren als de wet dat vereist. Wat we bewaren is de lijst in sectie 2. We kunnen geen berichtinhoud produceren, omdat we die niet kunnen lezen.`,
+    },
+    {
+      title: '7. Pushmeldingen',
+      body: `Firebase Cloud Messaging levert meldingen af. Je apparaattoken wordt bewaard in een privédeel van je account dat alleen jij kunt lezen.
+
+Meldingen bevatten geen berichttekst. Je apparaat ontsleutelt het bericht lokaal en stelt samen wat je ziet; Google levert de envelop af, niet de inhoud.`,
+    },
+    {
+      title: '8. Wat je kunt doen',
+      body: `• Verwijder je account vanuit het Profielscherm. Inhoud die gezamenlijk deel uitmaakt van een gesprek — bijvoorbeeld een gespreksregistratie — blijft bij de andere deelnemer, omdat het ook hun registratie is.
+• Exporteer je gegevens vanuit het Profielscherm.
+• Stel berichten in om per chat te verlopen: 1 uur, 24 uur, 7 dagen of 30 dagen.
+• Zet typindicatoren en leesbevestigingen aan of uit. Beide staan standaard uit.
+• Vergrendel de app met een pincode of biometrie.
+• Trek een uitnodigingslink in die je hebt uitgedeeld.
+
+Als je liever hebt dat we iets handmatig verwijderen, schrijf ons dan.`,
+    },
+    {
+      title: '9. Bewaring',
+      body: `We bewaren je gegevens zolang je account bestaat. Het verwijderen van het account verwijdert deze, met uitzondering van de hierboven genoemde gezamenlijk gehouden inhoud. Per-chat vervaltijd verwijdert berichten volgens het schema dat je instelt.`,
+    },
+    {
+      title: '10. Beperkingen die je moet kennen',
+      body: `We vertellen je dit liever dan dat je het zelf ontdekt.
+
+• Sleutels worden vertrouwd de eerste keer dat ze worden gezien. Als iemand een sleutel had vervangen voordat je ooit een bericht had uitgewisseld, zou het gesprek versleuteld worden naar de verkeerde persoon en er volkomen normaal uitzien. De app waarschuwt je wanneer een sleutel achteraf verandert, en toont een veiligheidsnummer dat je buiten het kanaal om kunt vergelijken — maar niets dwingt je om het te vergelijken.
+• Eén apparaat tegelijk. Je herstelzin herstelt de sleutel die je geschiedenis opent, dus inloggen op een nieuw apparaat verliest niet wat je al hebt ontvangen. Forward-secret gesprekken gebruiken een tweede sleutel die het apparaat dat hem heeft aangemaakt nooit verlaat: welk apparaat het laatst is ingelogd, is het apparaat dat ze bereiken, en alles wat ondertussen aan het andere is verzegeld, kan er niet naartoe worden verplaatst.
+• Berichten die zijn verzonden voordat encryptie bestond, blijven zoals ze waren. Niets is met terugwerkende kracht geconverteerd.
+• Deze app is niet onafhankelijk beveiligingsgeaudit.`,
+    },
+    {
+      title: '11. Kinderen',
+      body: `Chatterbox is niet bedoeld voor kinderen onder de 13 jaar, en we verzamelen niet bewust hun informatie. Als je gelooft dat een kind ons persoonlijke informatie heeft gegeven, neem dan contact met ons op en we zullen het verwijderen.`,
+    },
+    {
+      title: '12. Wijzigingen',
+      body: `We kunnen dit beleid bijwerken. Significante wijzigingen worden in de app aangekondigd, en de datum bovenaan is wanneer het voor het laatst is veranderd.`,
+    },
+    {
+      title: '13. Contact',
+      body: `Vragen over dit beleid: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  el: [
+    {
+      title: '0. Εν συντομία',
+      body: `Το κείμενο των μηνυμάτων σας κρυπτογραφείται στη συσκευή σας και μπορεί να διαβαστεί μόνο από τα άτομα στα οποία το στέλνετε. Εμείς δεν μπορούμε να το διαβάσουμε, ούτε η Google, από την οποία νοικιάζουμε διακομιστές.
+
+Αυτό που μπορούμε να δούμε είναι ότι έγινε μια συνομιλία: ποιοι λογαριασμοί συμμετέχουν, και πότε ήταν ενεργοί. Η αφαίρεση αυτού είναι πιο δύσκολη από την κρυπτογράφηση του περιεχομένου, και δεν έχουμε τελειώσει ακόμα. Αυτή η πολιτική λέει ακριβώς πού βρίσκεται τώρα αυτή η γραμμή.`,
+    },
+    {
+      title: '1. Τι είναι κρυπτογραφημένο από άκρο σε άκρο',
+      body: `Κρυπτογραφημένο στη συσκευή σας, μη αναγνώσιμο από εμάς και τη Google:
+
+• Το κείμενο των μηνυμάτων σας.
+• Το περιεχόμενο αρχείων, φωτογραφιών, ήχου και βίντεο που επισυνάπτετε.
+• Προεπισκοπήσεις συνδέσμων.
+• Φωνητικές κλήσεις και βιντεοκλήσεις, που χρησιμοποιούν το υποχρεωτικό DTLS-SRTP του WebRTC μεταξύ των δύο συσκευών.
+
+Τα περισσότερα μηνύματα ένας-προς-έναν και ομάδας χρησιμοποιούν επιπλέον ένα ratchet, που σημαίνει ότι κάθε μήνυμα έχει το δικό του κλειδί, οπότε η παραβίαση της συσκευής σας δεν αποκαλύπτει προηγούμενα μηνύματα. Οι συνομιλίες όπου ο πελάτης κάποιου δεν έχει δημοσιεύσει το νεότερο υλικό κλειδιού επιστρέφουν σε ένα ενιαίο μακρόβιο κλειδί, το οποίο δεν έχει αυτή την ιδιότητα. Η ετικέτα κάτω από ένα μήνυμα σας λέει ποιο πράγματι έλαβε.
+
+Ένα πράγμα διασχίζει αυτή τη γραμμή, και μόνο όταν το ζητήσετε: η αναζήτηση ενός ονόματος στη Wikipedia στέλνει μόνο εκείνο το όνομα, όχι το μήνυμα από το οποίο προήλθε. Η ενότητα 6 λέει ποιος το λαμβάνει, και η αναζήτηση εκτελείται με το πάτημα και όχι διαφορετικά, οπότε δεν υπάρχει τίποτα να απενεργοποιηθεί. Η σύνοψη, η μετάφραση και η απομαγνητοφώνηση θα διέσχιζαν επίσης αυτό — είναι απενεργοποιημένα σε αυτή την έκδοση, χωρίς κανένα χειριστήριο πουθενά στην εφαρμογή που να τα ενεργοποιεί.`,
+    },
+    {
+      title: '2. Τι δεν είναι κρυπτογραφημένο, και τι μπορούμε να δούμε',
+      body: `Η κρυπτογράφηση προστατεύει το περιεχόμενο, όχι το γεγονός μιας συνομιλίας. Αυτά βρίσκονται ξεκάθαρα στους διακομιστές μας:
+
+• Ποιος συμμετέχει σε κάθε συνομιλία, και πότε δημιουργήθηκε και ήταν τελευταία ενεργή.
+• Η χρονοσφραγίδα κάθε μηνύματος, και πόσα δεν έχετε διαβάσει.
+• Το όνομα, ο τύπος και το μέγεθος ενός συνημμένου αρχείου. Τα bytes είναι κρυπτογραφημένα· η περιγραφή τους όχι, και το μήκος του κρυπτοκειμένου οριοθετεί το μήκος του πρωτοτύπου.
+• Οι φίλοι σας και τα αιτήματα φιλίας.
+• Σηματοδότηση κλήσης — ότι έγινε μια κλήση, σε ποιον, και πότε. Όχι ο ήχος ή το βίντεό της.
+
+Οι ενδείξεις πληκτρολόγησης και οι αποδείξεις ανάγνωσης είναι απενεργοποιημένες εκτός αν τις ενεργοποιήσετε, και όσο είναι απενεργοποιημένες τίποτα δεν γράφεται.
+
+Τι δεν υπάρχει πλέον εδώ: η διεύθυνση email και το όνομά σας. Από τον Σεπτέμβριο του 2026 η εγγραφή λογαριασμού διατηρεί μόνο ένα αναγνωριστικό λογαριασμού — και από τότε δεν υπάρχει διεύθυνση να διατηρηθεί πουθενά. Η εγγραφή δεν ρωτά τίποτα για εσάς: ο λογαριασμός σας είναι μια φράση ανάκτησης 24 λέξεων, και το διαπιστευτήριο που ελέγχει το Firebase Authentication προέρχεται από αυτήν. Αυτό που αποθηκεύει είναι μια τυχαία ετικέτα κάτω από έναν τομέα που δεν μπορεί να λάβει αλληλογραφία.
+
+Ξεχωριστά: επειδή η εφαρμογή τρέχει στο Google Firebase, η Google μπορεί να δει τη διεύθυνση IP και τη χρονική στιγμή κάθε σύνδεσης που κάνει η συσκευή σας με αυτήν. Αυτό είναι ιδιότητα της φιλοξενίας, όχι της εφαρμογής, και δεν μπορούμε να το κρυπτογραφήσουμε.`,
+    },
+    {
+      title: '3. Πώς σας βρίσκουν οι άνθρωποι',
+      body: `Δεν μπορούν να σας αναζητήσουν. Δεν υπάρχει κατάλογος — καμία αναζήτηση με email, αριθμό τηλεφώνου ή όνομα — και ο διακομιστής απορρίπτει οποιοδήποτε ερώτημα που το προσπαθεί.
+
+Φτάνετε σε κάποιον στέλνοντάς του έναν σύνδεσμο πρόσκλησης εκτός καναλιού, μέσω οτιδήποτε ήδη χρησιμοποιείτε. Ένας σύνδεσμος λειτουργεί μία φορά, λήγει μετά από 24 ώρες, και μπορεί να ανακληθεί. Ό,τι κι αν αποκαλείτε κάποιον είναι η δική σας ετικέτα για αυτόν, διατηρημένη για εσάς· αν συστήθηκαν οι ίδιοι, αυτό το όνομα σας έφτασε κρυπτογραφημένο.`,
+    },
+    {
+      title: '4. Τι συλλέγουμε',
+      body: `• Δεδομένα λογαριασμού: ένα αναγνωριστικό λογαριασμού, και ένα διαπιστευτήριο που προέρχεται από τη φράση ανάκτησής σας, που διατηρείται στο Firebase Authentication. Καμία διεύθυνση email, κανένας αριθμός τηλεφώνου, κανένα όνομα — η εγγραφή δεν ζητά τίποτα από αυτά.
+• Κρυπτοκείμενο μηνυμάτων και συνημμένων, συν τα μεταδεδομένα στην ενότητα 2.
+
+Αυτή είναι όλη η λίστα. Δεν υπάρχει ανάλυση και καμία αναφορά σφαλμάτων. Η εφαρμογή παλαιότερα έστελνε προβολές οθόνης στο Firebase Analytics και αναφορές σφαλμάτων στο Firebase Crashlytics, και τα δύο φέροντας το αναγνωριστικό του λογαριασμού σας, οπότε κανένα δεν ήταν ανώνυμο· και τα δύο έχουν φύγει τώρα, μαζί με τις βιβλιοθήκες που τα έστελναν. Τα σφάλματα εκτυπώνονται μόνο στο δικό του μηχάνημα του προγραμματιστή κατά τη διάρκεια της ανάπτυξης και δεν πηγαίνουν πουθενά αλλού.`,
+    },
+    {
+      title: '5. Πού αποθηκεύεται',
+      body: `Στο Google Firebase — Firestore, Storage και Authentication — υπό κανόνες ασφαλείας που αποφασίζουν ποιος μπορεί να διαβάσει και να γράψει κάθε έγγραφο.
+
+Στη συσκευή σας, τα προσωρινά αποθηκευμένα μηνύματα, οι ρυθμίσεις και το PIN κλειδώματος εφαρμογής σας είναι κρυπτογραφημένα με ένα κλειδί ανά συσκευή που διατηρείται στο keystore της πλατφόρμας (iOS Keychain, Android Keystore) αντί για τον συνηθισμένο αποθηκευτικό χώρο εφαρμογών.
+
+Το ιδιωτικό κλειδί που αποκρυπτογραφεί τα μηνύματά σας δεν φεύγει ποτέ από τη συσκευή σας, εκτός ως η φράση ανάκτησης που επιλέγετε να σημειώσετε. Δεν το κρατάμε και δεν μπορούμε να το ανακτήσουμε για εσάς. Αν το χάσετε, τα μηνύματα που στάλθηκαν σε αυτή τη συσκευή δεν μπορούν να διαβαστούν ξανά — από κανέναν, συμπεριλαμβανομένων και εμάς.`,
+    },
+    {
+      title: '6. Ποιος άλλος λαμβάνει δεδομένα',
+      body: `Δεν πουλάμε, ανταλλάσσουμε ή ενοικιάζουμε τις προσωπικές σας πληροφορίες. Τα δεδομένα φτάνουν σε:
+
+• Google Firebase — ο πάροχος φιλοξενίας μας, όπως περιγράφηκε παραπάνω.
+• Wikimedia Foundation — ένα όνομα, όταν το πατάτε για να το αναζητήσετε στη Wikipedia.
+• Google Cloud Speech-to-Text — ο ήχος ενός φωνητικού μηνύματος, όταν ζητάτε απομαγνητοφώνηση.
+• Google Cloud Translation — το κείμενο ενός μηνύματος, όταν ζητάτε μετάφραση.
+• Cloudflare Workers AI — έως τα τελευταία 50 μηνύματα μιας συνομιλίας, όταν ζητάτε σύνοψη ή κάνετε μια ερώτηση σχετικά με αυτήν.
+
+Οι τρεις τελευταίες είναι απενεργοποιημένες σε αυτή την έκδοση. Δεν υπάρχει πουθενά στην εφαρμογή χειριστήριο που να ενεργοποιεί την απομαγνητοφώνηση, τη μετάφραση ή τις συνόψεις, οπότε τίποτα δεν φτάνει σε αυτές τις τρεις υπηρεσίες. Αναφέρονται αντί να διαγραφούν επειδή ο κώδικας εξακολουθεί να είναι εδώ και οι λειτουργίες προορίζονται να επιστρέψουν — και όταν επιστρέψουν, επιστρέφουν με αυτή τη γνωστοποίηση και μια προτροπή πριν από την πρώτη χρήση. Ό,τι θα σταλεί τότε στέλνεται για να παράγει το αποτέλεσμά σας, όχι για να εκπαιδεύσει οτιδήποτε· καμία απομαγνητοφώνηση ή μετάφραση δεν αποθηκεύεται στους διακομιστές μας.
+
+Η αναζήτηση στη Wikipedia δεν έχει διακόπτη επειδή δεν υπάρχει τίποτα να απενεργοποιηθεί: εκτελείται μόνο με το πάτημα και όχι διαφορετικά. Η Wikipedia λαμβάνει εκείνο το ένα όνομα και τη διεύθυνση IP σας, ακριβώς όπως αν το είχατε πληκτρολογήσει εσείς στο πλαίσιο αναζήτησής τους — κανένας λογαριασμός, κανένα μήνυμα, καμία συνομιλία. Ό,τι επιστρέφει εμφανίζεται και δεν αποθηκεύεται, και τίποτα σχετικά με αυτό δεν γράφεται στη συνομιλία.
+
+Μπορεί να αποκαλύψουμε αυτό που κατέχουμε αν το απαιτεί ο νόμος. Αυτό που κατέχουμε είναι η λίστα στην ενότητα 2. Δεν μπορούμε να παράγουμε το περιεχόμενο μηνυμάτων, επειδή δεν μπορούμε να το διαβάσουμε.`,
+    },
+    {
+      title: '7. Ειδοποιήσεις push',
+      body: `Το Firebase Cloud Messaging παραδίδει ειδοποιήσεις. Το token της συσκευής σας αποθηκεύεται σε ένα ιδιωτικό μέρος του λογαριασμού σας που μόνο εσείς μπορείτε να διαβάσετε.
+
+Οι ειδοποιήσεις δεν φέρουν κείμενο μηνύματος. Η συσκευή σας αποκρυπτογραφεί το μήνυμα τοπικά και συνθέτει αυτό που βλέπετε· η Google παραδίδει τον φάκελο, όχι το περιεχόμενο.`,
+    },
+    {
+      title: '8. Τι μπορείτε να κάνετε',
+      body: `• Διαγράψτε τον λογαριασμό σας από την οθόνη Προφίλ. Το περιεχόμενο που αποτελεί κοινό μέρος μιας συνομιλίας — ένα αρχείο κλήσης, για παράδειγμα — παραμένει με τον άλλο συμμετέχοντα, επειδή είναι και δικό του αρχείο.
+• Εξαγάγετε τα δεδομένα σας από την οθόνη Προφίλ.
+• Ρυθμίστε τα μηνύματα να λήγουν ανά συνομιλία: 1 ώρα, 24 ώρες, 7 ημέρες ή 30 ημέρες.
+• Ενεργοποιήστε ή απενεργοποιήστε τις ενδείξεις πληκτρολόγησης και τις αποδείξεις ανάγνωσης. Και οι δύο είναι απενεργοποιημένες από προεπιλογή.
+• Κλειδώστε την εφαρμογή με PIN ή βιομετρικά.
+• Ανακαλέστε έναν σύνδεσμο πρόσκλησης που έχετε δώσει.
+
+Αν προτιμάτε να διαγράψουμε κάτι με το χέρι, γράψτε μας.`,
+    },
+    {
+      title: '9. Διατήρηση',
+      body: `Διατηρούμε τα δεδομένα σας όσο υπάρχει ο λογαριασμός σας. Η διαγραφή του λογαριασμού τα διαγράφει, εκτός από το κοινά διατηρούμενο περιεχόμενο που σημειώθηκε παραπάνω. Η λήξη ανά συνομιλία αφαιρεί μηνύματα σύμφωνα με το πρόγραμμα που ορίζετε.`,
+    },
+    {
+      title: '10. Περιορισμοί που πρέπει να γνωρίζετε',
+      body: `Θα προτιμούσαμε να σας τα πούμε αυτά παρά να τα ανακαλύψετε μόνοι σας.
+
+• Τα κλειδιά είναι έμπιστα την πρώτη φορά που εμφανίζονται. Αν κάποιος είχε αντικαταστήσει ένα κλειδί προτού ανταλλάξετε ποτέ ένα μήνυμα, η συνομιλία θα κρυπτογραφούνταν στο λάθος άτομο και θα φαινόταν εντελώς φυσιολογική. Η εφαρμογή σας προειδοποιεί όταν ένα κλειδί αλλάζει στη συνέχεια, και εμφανίζει έναν αριθμό ασφαλείας που μπορείτε να συγκρίνετε εκτός καναλιού — αλλά τίποτα δεν σας αναγκάζει να τον συγκρίνετε.
+• Μία συσκευή τη φορά. Η φράση ανάκτησής σας επαναφέρει το κλειδί που ανοίγει το ιστορικό σας, οπότε η σύνδεση σε μια νέα συσκευή δεν χάνει αυτό που έχετε ήδη λάβει. Οι συνομιλίες με forward secrecy χρησιμοποιούν ένα δεύτερο κλειδί που δεν φεύγει ποτέ από τη συσκευή που το δημιούργησε: όποια συσκευή συνδέθηκε τελευταία είναι αυτή που φτάνουν, και οτιδήποτε σφραγισμένο στην άλλη στο μεταξύ δεν μπορεί να μεταφερθεί εκεί.
+• Τα μηνύματα που στάλθηκαν πριν υπάρξει κρυπτογράφηση παραμένουν όπως ήταν. Τίποτα δεν μετατράπηκε αναδρομικά.
+• Αυτή η εφαρμογή δεν έχει ελεγχθεί ανεξάρτητα για ασφάλεια.`,
+    },
+    {
+      title: '11. Παιδιά',
+      body: `Το Chatterbox δεν προορίζεται για παιδιά κάτω των 13 ετών, και δεν συλλέγουμε εν γνώσει μας τις πληροφορίες τους. Αν πιστεύετε ότι ένα παιδί μας έχει δώσει προσωπικές πληροφορίες, επικοινωνήστε μαζί μας και θα τις διαγράψουμε.`,
+    },
+    {
+      title: '12. Αλλαγές',
+      body: `Μπορεί να ενημερώσουμε αυτή την πολιτική. Σημαντικές αλλαγές θα ανακοινώνονται στην εφαρμογή, και η ημερομηνία στην κορυφή είναι πότε άλλαξε τελευταία φορά.`,
+    },
+    {
+      title: '13. Επικοινωνία',
+      body: `Ερωτήσεις σχετικά με αυτή την πολιτική: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  sv: [
+    {
+      title: '0. I korthet',
+      body: `Texten i dina meddelanden krypteras på din enhet och kan bara läsas av personerna du skickar den till. Vi kan inte läsa den, och det kan inte heller Google, vars servrar vi hyr.
+
+Det vi kan se är att en konversation ägde rum: vilka konton som är inblandade, och när de var aktiva. Att ta bort det är svårare än att kryptera innehållet, och vi är inte klara än. Denna policy säger exakt var gränsen ligger just nu.`,
+    },
+    {
+      title: '1. Vad som är totalsträckskrypterat',
+      body: `Krypterat på din enhet, oläsligt för oss och Google:
+
+• Texten i dina meddelanden.
+• Innehållet i filer, foton, ljud och video du bifogar.
+• Länkförhandsvisningar.
+• Röst- och videosamtal, som använder WebRTC:s obligatoriska DTLS-SRTP mellan de två enheterna.
+
+De flesta en-till-en- och gruppmeddelanden använder dessutom en ratchet, vilket innebär att varje meddelande har sin egen nyckel, så att komprometterande av din enhet inte exponerar tidigare meddelanden. Konversationer där någons klient inte har publicerat det nyare nyckelmaterialet faller tillbaka på en enda långlivad nyckel, som inte har den egenskapen. Etiketten under ett meddelande talar om vilken det faktiskt fick.
+
+En sak korsar denna gräns, och bara när du ber om det: att slå upp ett namn på Wikipedia skickar bara det namnet, inte meddelandet det kom från. Avsnitt 6 säger vem som tar emot det, och uppslagningen körs vid tryckningen och inte annars, så det finns inget att stänga av. Att sammanfatta, översätta och transkribera skulle också korsa detta — de är avstängda i denna version, utan någon kontroll någonstans i appen som slår på dem.`,
+    },
+    {
+      title: '2. Vad som inte är krypterat, och vad vi kan se',
+      body: `Kryptering skyddar innehåll, inte faktumet att en konversation ägde rum. Dessa ligger öppet på våra servrar:
+
+• Vem som är med i varje konversation, och när den skapades och senast var aktiv.
+• Tidsstämpeln för varje meddelande, och hur många du inte har läst.
+• En bilagas filnamn, typ och storlek. Bytena är krypterade; beskrivningen av dem är det inte, och längden på chiffertexten begränsar längden på originalet.
+• Dina vänner och vänförfrågningar.
+• Samtalssignalering — att ett samtal ringdes, till vem, och när. Inte dess ljud eller video.
+
+Skrivindikatorer och läskvitton är avstängda om du inte slår på dem, och medan de är avstängda skrivs ingenting.
+
+Vad som inte längre finns här: din e-postadress och ditt namn. Sedan september 2026 innehåller kontoposten endast en kontoidentifierare — och sedan dess finns det ingen adress att hålla någonstans. Registrering frågar ingenting om dig: ditt konto är en återställningsfras på 24 ord, och autentiseringsuppgiften som Firebase Authentication kontrollerar är härledd från den. Vad den lagrar är en slumpmässig etikett under en domän som inte kan ta emot post.
+
+Separat: eftersom appen körs på Google Firebase kan Google se IP-adressen och tidpunkten för varje anslutning din enhet gör till den. Det är en egenskap hos hostingen, inte appen, och vi kan inte kryptera bort det.`,
+    },
+    {
+      title: '3. Hur folk hittar dig',
+      body: `De kan inte söka efter dig. Det finns ingen katalog — ingen sökning på e-post, telefonnummer eller namn — och servern avvisar alla förfrågningar som försöker det.
+
+Du når någon genom att skicka dem en inbjudningslänk utanför kanalen, via vad du redan använder. En länk fungerar en gång, upphör efter 24 timmar, och kan återkallas. Vad du än kallar någon är din egen etikett för dem, sparad för dig; om de presenterade sig själva, nådde det namnet dig krypterat.`,
+    },
+    {
+      title: '4. Vad vi samlar in',
+      body: `• Kontodata: en kontoidentifierare, och en autentiseringsuppgift härledd från din återställningsfras, som hålls i Firebase Authentication. Ingen e-postadress, inget telefonnummer, inget namn — registrering frågar efter inget av detta.
+• Meddelande- och bilagechiffertext, plus metadata i avsnitt 2.
+
+Det är hela listan. Det finns ingen analys och ingen kraschrapportering. Appen brukade skicka skärmvisningar till Firebase Analytics och kraschrapporter till Firebase Crashlytics, båda bärande din kontoidentifierare, så ingen av dem var anonym; båda är nu borta, tillsammans med biblioteken som skickade dem. Fel skrivs bara ut på en utvecklares egen maskin under utveckling och går ingen annanstans.`,
+    },
+    {
+      title: '5. Var det lagras',
+      body: `På Google Firebase — Firestore, Storage och Authentication — under säkerhetsregler som avgör vem som får läsa och skriva varje dokument.
+
+På din enhet är cachade meddelanden, inställningar och din app-låskod krypterade med en nyckel per enhet som hålls i plattformens nyckelringen (iOS Keychain, Android Keystore) snarare än i vanlig applagring.
+
+Den privata nyckeln som dekrypterar dina meddelanden lämnar aldrig din enhet, förutom som återställningsfrasen du väljer att skriva ner. Vi håller den inte och kan inte återställa den åt dig. Förlorar du den kan meddelanden som skickats till den enheten inte läsas igen — av någon, inklusive oss.`,
+    },
+    {
+      title: '6. Vem mer tar emot data',
+      body: `Vi säljer, byter eller hyr inte ut din personliga information. Data når:
+
+• Google Firebase — vår värdleverantör, som beskrivits ovan.
+• Wikimedia Foundation — ett namn, när du trycker för att slå upp det på Wikipedia.
+• Google Cloud Speech-to-Text — ljudet av ett röstmeddelande, när du ber om en transkription.
+• Google Cloud Translation — texten i ett meddelande, när du ber om en översättning.
+• Cloudflare Workers AI — upp till de senaste 50 meddelandena i en konversation, när du ber om en sammanfattning eller ställer en fråga om den.
+
+De sista tre är avstängda i denna version. Det finns ingen kontroll någonstans i appen som slår på transkribering, översättning eller sammanfattningar, så inget når dessa tre tjänster. De listas snarare än raderas eftersom koden fortfarande finns här och funktionerna är avsedda att återkomma — och när de gör det, återkommer de med detta avslöjande och en uppmaning före första användning. Vad som då skulle skickas skickas för att producera ditt resultat, inte för att träna något; varken en transkription eller översättning lagras på våra servrar.
+
+Wikipedia-uppslagningen har ingen brytare eftersom det inte finns något att stänga av: den körs vid tryckningen och inte annars. Wikipedia tar emot det ena namnet och din IP-adress, precis som om du hade skrivit in det i deras sökruta — inget konto, inget meddelande, ingen konversation. Det som kommer tillbaka visas och sparas inte, och inget om det skrivs in i konversationen.
+
+Vi kan avslöja vad vi håller om lagen kräver det. Vad vi håller är listan i avsnitt 2. Vi kan inte lämna ut meddelandeinnehåll, eftersom vi inte kan läsa det.`,
+    },
+    {
+      title: '7. Push-aviseringar',
+      body: `Firebase Cloud Messaging levererar aviseringar. Din enhets token lagras i en privat del av ditt konto som bara du kan läsa.
+
+Aviseringar bär ingen meddelandetext. Din enhet dekrypterar meddelandet lokalt och komponerar det du ser; Google levererar kuvertet, inte innehållet.`,
+    },
+    {
+      title: '8. Vad du kan göra',
+      body: `• Radera ditt konto från profilskärmen. Innehåll som är en gemensam del av en konversation — en samtalspost, till exempel — stannar hos den andra deltagaren, eftersom det också är deras post.
+• Exportera dina data från profilskärmen.
+• Ställ in meddelanden att förfalla per chatt: 1 timme, 24 timmar, 7 dagar eller 30 dagar.
+• Slå på eller av skrivindikatorer och läskvitton. Båda är avstängda som standard.
+• Lås appen med en pinkod eller biometri.
+• Återkalla en inbjudningslänk du delat ut.
+
+Om du hellre vill att vi raderar något för hand, skriv till oss.`,
+    },
+    {
+      title: '9. Bevarande',
+      body: `Vi behåller dina data så länge ditt konto finns. Att radera kontot raderar dem, förutom det gemensamt hållna innehållet som noterats ovan. Per-chatt-förfall tar bort meddelanden enligt det schema du ställer in.`,
+    },
+    {
+      title: '10. Begränsningar du bör känna till',
+      body: `Vi vill hellre berätta detta för dig än att du hittar dem själv.
+
+• Nycklar litas på första gången de ses. Om någon hade ersatt en nyckel innan du någonsin utbytte ett meddelande, skulle konversationen krypteras till fel person och se helt normal ut. Appen varnar dig när en nyckel ändras efteråt, och visar ett säkerhetsnummer du kan jämföra utanför kanalen — men inget tvingar dig att jämföra det.
+• En enhet i taget. Din återställningsfras återställer nyckeln som öppnar din historik, så att logga in på en ny enhet förlorar inte det du redan tagit emot. Forward secret-konversationer använder en andra nyckel som aldrig lämnar enheten som skapade den: vilken enhet som senast loggade in är den de når, och allt som förseglats till den andra under tiden kan inte flyttas dit.
+• Meddelanden som skickats innan kryptering fanns förblir som de var. Inget konverterades retroaktivt.
+• Denna app har inte oberoende säkerhetsgranskats.`,
+    },
+    {
+      title: '11. Barn',
+      body: `Chatterbox är inte avsedd för barn under 13 år, och vi samlar inte medvetet in deras information. Om du tror att ett barn har gett oss personlig information, kontakta oss så tar vi bort den.`,
+    },
+    {
+      title: '12. Ändringar',
+      body: `Vi kan uppdatera denna policy. Betydande ändringar kommer att tillkännages i appen, och datumet högst upp är när den senast ändrades.`,
+    },
+    {
+      title: '13. Kontakt',
+      body: `Frågor om denna policy: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  da: [
+    {
+      title: '0. Kort sagt',
+      body: `Teksten i dine beskeder krypteres på din enhed og kan kun læses af de personer, du sender den til. Vi kan ikke læse den, og det kan Google, hvis servere vi lejer, heller ikke.
+
+Det, vi kan se, er, at en samtale fandt sted: hvilke konti der indgår, og hvornår de var aktive. At fjerne det er sværere end at kryptere indholdet, og vi er ikke færdige endnu. Denne politik siger præcis, hvor grænsen ligger lige nu.`,
+    },
+    {
+      title: '1. Hvad er end-to-end-krypteret',
+      body: `Krypteret på din enhed, ulæseligt for os og Google:
+
+• Teksten i dine beskeder.
+• Indholdet af filer, fotos, lyd og video, du vedhæfter.
+• Linkforhåndsvisninger.
+• Tale- og videoopkald, som bruger WebRTC's obligatoriske DTLS-SRTP mellem de to enheder.
+
+De fleste en-til-en- og gruppebeskeder bruger desuden en ratchet, hvilket betyder, at hver besked har sin egen nøgle, så en kompromitteret enhed ikke afslører tidligere beskeder. Samtaler, hvor en persons klient ikke har offentliggjort det nyere nøglemateriale, falder tilbage til en enkelt langlivet nøgle, som ikke har den egenskab. Etiketten under en besked fortæller dig, hvilken den faktisk fik.
+
+Én ting krydser denne linje, og kun når du beder om det: at slå et navn op på Wikipedia sender kun det ene navn, ikke beskeden, det kom fra. Afsnit 6 siger, hvem der modtager det, og opslaget kører kun ved tryk og ikke ellers, så der er intet at slå fra. At opsummere, oversætte og transskribere ville også krydse dette — de er slået fra i denne udgivelse, uden nogen kontrol nogen steder i appen, der tænder dem.`,
+    },
+    {
+      title: '2. Hvad er ikke krypteret, og hvad vi kan se',
+      body: `Kryptering beskytter indhold, ikke det faktum, at en samtale fandt sted. Disse ligger klart på vores servere:
+
+• Hvem der er i hver samtale, og hvornår den blev oprettet og sidst var aktiv.
+• Tidsstemplet for hver besked, og hvor mange du ikke har læst.
+• Filnavn, type og størrelse på en vedhæftet fil. Bytes er krypteret; beskrivelsen af dem er ikke, og ciffertekstens længde begrænser originalens længde.
+• Dine venner og venneanmodninger.
+• Opkaldssignalering — at et opkald blev foretaget, til hvem, og hvornår. Ikke dets lyd eller video.
+
+Skriveindikatorer og læsekvitteringer er slået fra, medmindre du slår dem til, og mens de er slået fra, skrives der intet.
+
+Hvad der ikke længere er her: din e-mailadresse og dit navn. Siden september 2026 indeholder kontoposten kun en kontoidentifikator — og siden da har der ikke været nogen adresse at opbevare nogen steder. Tilmelding spørger ikke om noget om dig: din konto er en gendannelsessætning på 24 ord, og legitimationsoplysningen, som Firebase Authentication kontrollerer, er afledt af den. Det, den gemmer, er en tilfældig etiket under et domæne, der ikke kan modtage post.
+
+Separat: fordi appen kører på Google Firebase, kan Google se IP-adressen og tidspunktet for hver forbindelse, din enhed laver til den. Det er en egenskab ved hostingen, ikke appen, og vi kan ikke kryptere det væk.`,
+    },
+    {
+      title: '3. Sådan finder folk dig',
+      body: `De kan ikke søge efter dig. Der er ingen adressebog — ingen søgning efter e-mail, telefonnummer eller navn — og serveren afviser enhver forespørgsel, der forsøger det.
+
+Du når nogen ved at sende dem et invitationslink uden for kanalen, via hvad du allerede bruger. Et link virker én gang, udløber efter 24 timer, og kan trækkes tilbage. Hvad du end kalder nogen, er din egen etiket for dem, gemt til dig; hvis de introducerede sig selv, nåede det navn dig krypteret.`,
+    },
+    {
+      title: '4. Hvad vi indsamler',
+      body: `• Kontodata: en kontoidentifikator, og en legitimationsoplysning afledt af din gendannelsessætning, opbevaret i Firebase Authentication. Ingen e-mailadresse, intet telefonnummer, intet navn — tilmelding spørger om ingen af disse.
+• Besked- og vedhæftningsciffertekst, plus metadata i afsnit 2.
+
+Det er hele listen. Der er ingen analyse og ingen crashrapportering. Appen sendte tidligere skærmvisninger til Firebase Analytics og crashrapporter til Firebase Crashlytics, begge bærende din kontoidentifikator, så ingen af dem var anonym; begge er nu væk, sammen med de biblioteker, der sendte dem. Fejl udskrives kun på en udviklers egen maskine under udvikling og går ikke andre steder hen.`,
+    },
+    {
+      title: '5. Hvor det gemmes',
+      body: `På Google Firebase — Firestore, Storage og Authentication — under sikkerhedsregler, der afgør, hvem der må læse og skrive hvert dokument.
+
+På din enhed er cachede beskeder, indstillinger og din app-lås-PIN krypteret med en per-enhed-nøgle, der opbevares i platformens nøglelager (iOS Keychain, Android Keystore) frem for i almindelig applagring.
+
+Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed, undtagen som den gendannelsessætning, du vælger at skrive ned. Vi opbevarer den ikke og kan ikke gendanne den for dig. Mister du den, kan beskeder sendt til den enhed ikke læses igen — af nogen, os inkluderet.`,
+    },
+    {
+      title: '6. Hvem ellers modtager data',
+      body: `Vi sælger, handler eller udlejer ikke dine personlige oplysninger. Data når:
+
+• Google Firebase — vores hostingudbyder, som beskrevet ovenfor.
+• Wikimedia Foundation — ét navn, når du trykker for at slå det op på Wikipedia.
+• Google Cloud Speech-to-Text — lyden af én talebesked, når du beder om en transskription.
+• Google Cloud Translation — teksten i én besked, når du beder om en oversættelse.
+• Cloudflare Workers AI — op til de sidste 50 beskeder i én samtale, når du beder om et resumé eller stiller et spørgsmål om det.
+
+De sidste tre er slået fra i denne udgivelse. Der er ingen kontrol nogen steder i appen, der slår transskription, oversættelse eller resuméer til, så intet når disse tre tjenester. De er listet i stedet for slettet, fordi koden stadig er her, og funktionerne er beregnet til at vende tilbage — og når de gør, vender de tilbage med denne oplysning og en prompt før første brug. Det, der så ville blive sendt, sendes for at producere dit resultat, ikke for at træne noget; hverken en transskription eller oversættelse gemmes på vores servere.
+
+Wikipedia-opslaget har ingen kontakt, fordi der intet er at slå fra: det kører kun ved tryk og ikke ellers. Wikipedia modtager det ene navn og din IP-adresse, ligesom hvis du selv havde skrevet det i deres søgefelt — ingen konto, ingen besked, ingen samtale. Det, der kommer tilbage, vises og gemmes ikke, og intet om det skrives ind i samtalen.
+
+Vi kan afsløre, hvad vi opbevarer, hvis loven kræver det. Hvad vi opbevarer, er listen i afsnit 2. Vi kan ikke fremskaffe beskedindhold, fordi vi ikke kan læse det.`,
+    },
+    {
+      title: '7. Push-notifikationer',
+      body: `Firebase Cloud Messaging leverer notifikationer. Din enheds token opbevares i en privat del af din konto, som kun du kan læse.
+
+Notifikationer bærer ingen beskedtekst. Din enhed dekrypterer beskeden lokalt og sammensætter det, du ser; Google leverer konvolutten, ikke indholdet.`,
+    },
+    {
+      title: '8. Hvad du kan gøre',
+      body: `• Slet din konto fra profilskærmen. Indhold, der er en fælles del af en samtale — en opkaldsregistrering, for eksempel — bliver hos den anden deltager, fordi det også er deres registrering.
+• Eksportér dine data fra profilskærmen.
+• Indstil beskeder til at udløbe pr. chat: 1 time, 24 timer, 7 dage eller 30 dage.
+• Slå skriveindikatorer og læsekvitteringer til eller fra. Begge er slået fra som standard.
+• Lås appen med en PIN-kode eller biometri.
+• Tilbagekald et invitationslink, du har udleveret.
+
+Hvis du hellere vil have, at vi sletter noget manuelt, så skriv til os.`,
+    },
+    {
+      title: '9. Opbevaring',
+      body: `Vi opbevarer dine data, så længe din konto eksisterer. Sletning af kontoen sletter dem, bortset fra det fælles indhold nævnt ovenfor. Per-chat-udløb fjerner beskeder efter den tidsplan, du indstiller.`,
+    },
+    {
+      title: '10. Begrænsninger, du bør kende',
+      body: `Vi vil hellere fortælle dig dette, end at du finder det selv.
+
+• Nøgler betros første gang, de ses. Hvis nogen havde erstattet en nøgle, før du nogensinde udvekslede en besked, ville samtalen blive krypteret til den forkerte person og se helt normal ud. Appen advarer dig, når en nøgle ændrer sig bagefter, og viser et sikkerhedsnummer, du kan sammenligne uden for kanalen — men intet tvinger dig til at sammenligne det.
+• Én enhed ad gangen. Din gendannelsessætning gendanner nøglen, der åbner din historik, så login på en ny enhed mister ikke det, du allerede har modtaget. Forward secret-samtaler bruger en anden nøgle, der aldrig forlader den enhed, der oprettede den: hvilken enhed der sidst loggede ind, er den, de når, og alt, der er forseglet til den anden i mellemtiden, kan ikke flyttes derhen.
+• Beskeder sendt før kryptering fandtes, forbliver som de var. Intet blev konverteret med tilbagevirkende kraft.
+• Denne app er ikke blevet uafhængigt sikkerhedstestet.`,
+    },
+    {
+      title: '11. Børn',
+      body: `Chatterbox er ikke beregnet til børn under 13 år, og vi indsamler ikke bevidst deres oplysninger. Hvis du tror, at et barn har givet os personlige oplysninger, bedes du kontakte os, så sletter vi dem.`,
+    },
+    {
+      title: '12. Ændringer',
+      body: `Vi kan opdatere denne politik. Væsentlige ændringer annonceres i appen, og datoen øverst er, hvornår den sidst blev ændret.`,
+    },
+    {
+      title: '13. Kontakt',
+      body: `Spørgsmål om denne politik: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  no: [
+    {
+      title: '0. Kort sagt',
+      body: `Teksten i meldingene dine krypteres på enheten din og kan bare leses av personene du sender den til. Vi kan ikke lese den, og det kan heller ikke Google, som vi leier servere fra.
+
+Det vi kan se, er at en samtale fant sted: hvilke kontoer som er involvert, og når de var aktive. Å fjerne det er vanskeligere enn å kryptere innholdet, og vi er ikke ferdige ennå. Denne policyen sier nøyaktig hvor grensen ligger akkurat nå.`,
+    },
+    {
+      title: '1. Hva som er ende-til-ende-kryptert',
+      body: `Kryptert på enheten din, ikke lesbart for oss og Google:
+
+• Teksten i meldingene dine.
+• Innholdet i filer, bilder, lyd og video du legger ved.
+• Lenkeforhåndsvisninger.
+• Tale- og videosamtaler, som bruker WebRTCs obligatoriske DTLS-SRTP mellom de to enhetene.
+
+De fleste en-til-en- og gruppemeldinger bruker i tillegg en ratchet, som betyr at hver melding har sin egen nøkkel, slik at kompromittering av enheten din ikke avslører tidligere meldinger. Samtaler der noens klient ikke har publisert det nyere nøkkelmaterialet, faller tilbake til en enkelt langlivet nøkkel, som ikke har den egenskapen. Etiketten under en melding forteller deg hvilken den faktisk fikk.
+
+Én ting krysser denne grensen, og bare når du ber om det: å slå opp et navn på Wikipedia sender bare det ene navnet, ikke meldingen det kom fra. Del 6 sier hvem som mottar det, og oppslaget kjører bare ved trykk og ikke ellers, så det er ingenting å slå av. Å oppsummere, oversette og transkribere ville også krysse dette — de er slått av i denne utgivelsen, uten noen kontroll noe sted i appen som slår dem på.`,
+    },
+    {
+      title: '2. Hva som ikke er kryptert, og hva vi kan se',
+      body: `Kryptering beskytter innhold, ikke det faktum at en samtale fant sted. Disse ligger åpent på våre servere:
+
+• Hvem som er i hver samtale, og når den ble opprettet og sist var aktiv.
+• Tidsstempelet for hver melding, og hvor mange du ikke har lest.
+• Filnavn, type og størrelse på et vedlegg. Bytene er kryptert; beskrivelsen av dem er det ikke, og lengden på chifferteksten begrenser lengden på originalen.
+• Vennene dine og venneforespørsler.
+• Samtalesignalering — at en samtale ble ringt, til hvem, og når. Ikke lyden eller videoen.
+
+Skriveindikatorer og lesekvitteringer er slått av med mindre du slår dem på, og mens de er slått av skrives ingenting.
+
+Hva som ikke lenger er her: e-postadressen og navnet ditt. Siden september 2026 inneholder kontoposten bare en kontoidentifikator — og siden da har det ikke vært noen adresse å oppbevare noe sted. Registrering spør ikke om noe om deg: kontoen din er en gjenopprettingsfrase på 24 ord, og legitimasjonen som Firebase Authentication sjekker, er utledet fra den. Det den lagrer, er en tilfeldig etikett under et domene som ikke kan motta post.
+
+Separat: fordi appen kjører på Google Firebase, kan Google se IP-adressen og tidspunktet for hver tilkobling enheten din gjør til den. Det er en egenskap ved hostingen, ikke appen, og vi kan ikke kryptere det bort.`,
+    },
+    {
+      title: '3. Hvordan folk finner deg',
+      body: `De kan ikke søke etter deg. Det finnes ingen katalog — ingen søk på e-post, telefonnummer eller navn — og serveren avviser enhver forespørsel som prøver dette.
+
+Du når noen ved å sende dem en invitasjonslenke utenfor kanalen, via noe du allerede bruker. En lenke fungerer én gang, utløper etter 24 timer, og kan tilbakekalles. Hva du enn kaller noen, er din egen etikett for dem, lagret for deg; hvis de presenterte seg selv, nådde det navnet deg kryptert.`,
+    },
+    {
+      title: '4. Hva vi samler inn',
+      body: `• Kontodata: en kontoidentifikator, og en legitimasjon utledet fra gjenopprettingsfrasen din, holdt i Firebase Authentication. Ingen e-postadresse, ingen telefonnummer, ingen navn — registrering spør om ingen av disse.
+• Melding- og vedleggschiffertekst, pluss metadataene i del 2.
+
+Det er hele listen. Det finnes ingen analyse og ingen krasjrapportering. Appen pleide å sende skjermvisninger til Firebase Analytics og krasjrapporter til Firebase Crashlytics, begge med kontoidentifikatoren din, så ingen av dem var anonym; begge er nå borte, sammen med bibliotekene som sendte dem. Feil skrives bare ut på en utviklers egen maskin under utvikling og går ingen andre steder.`,
+    },
+    {
+      title: '5. Hvor det lagres',
+      body: `På Google Firebase — Firestore, Storage og Authentication — under sikkerhetsregler som avgjør hvem som kan lese og skrive hvert dokument.
+
+På enheten din er bufrede meldinger, innstillinger og app-lås-PIN-koden din kryptert med en per-enhet-nøkkel som holdes i plattformens nøkkellager (iOS Keychain, Android Keystore) i stedet for i vanlig applagring.
+
+Den private nøkkelen som dekrypterer meldingene dine, forlater aldri enheten din, bortsett fra som gjenopprettingsfrasen du velger å skrive ned. Vi holder den ikke og kan ikke gjenopprette den for deg. Mister du den, kan meldinger sendt til den enheten ikke leses igjen — av noen, oss inkludert.`,
+    },
+    {
+      title: '6. Hvem andre mottar data',
+      body: `Vi selger, bytter eller leier ikke ut din personlige informasjon. Data når:
+
+• Google Firebase — vår hostingleverandør, som beskrevet ovenfor.
+• Wikimedia Foundation — ett navn, når du trykker for å slå det opp på Wikipedia.
+• Google Cloud Speech-to-Text — lyden av én talemelding, når du ber om en transkripsjon.
+• Google Cloud Translation — teksten i én melding, når du ber om en oversettelse.
+• Cloudflare Workers AI — opptil de siste 50 meldingene i én samtale, når du ber om et sammendrag eller stiller et spørsmål om det.
+
+De siste tre er slått av i denne utgivelsen. Det finnes ingen kontroll noe sted i appen som slår på transkripsjon, oversettelse eller sammendrag, så ingenting når disse tre tjenestene. De er listet opp i stedet for slettet fordi koden fortsatt er her og funksjonene er ment å komme tilbake — og når de gjør det, kommer de tilbake med denne opplysningen og en melding før første bruk. Det som da ville bli sendt, sendes for å produsere resultatet ditt, ikke for å trene noe; verken en transkripsjon eller oversettelse lagres på våre servere.
+
+Wikipedia-oppslaget har ingen bryter fordi det ikke finnes noe å slå av: det kjører bare ved trykk og ikke ellers. Wikipedia mottar det ene navnet og IP-adressen din, akkurat som om du hadde skrevet det selv i søkeboksen deres — ingen konto, ingen melding, ingen samtale. Det som kommer tilbake vises og lagres ikke, og ingenting om det skrives inn i samtalen.
+
+Vi kan avsløre hva vi oppbevarer hvis loven krever det. Hva vi oppbevarer er listen i del 2. Vi kan ikke fremskaffe meldingsinnhold, fordi vi ikke kan lese det.`,
+    },
+    {
+      title: '7. Push-varsler',
+      body: `Firebase Cloud Messaging leverer varsler. Enhetstokenet ditt lagres i en privat del av kontoen din som bare du kan lese.
+
+Varsler bærer ingen meldingstekst. Enheten din dekrypterer meldingen lokalt og setter sammen det du ser; Google leverer konvolutten, ikke innholdet.`,
+    },
+    {
+      title: '8. Hva du kan gjøre',
+      body: `• Slett kontoen din fra profilskjermen. Innhold som er en felles del av en samtale — en samtaleregistrering, for eksempel — blir hos den andre deltakeren, fordi det også er deres registrering.
+• Eksporter dataene dine fra profilskjermen.
+• Sett meldinger til å utløpe per samtale: 1 time, 24 timer, 7 dager eller 30 dager.
+• Slå skriveindikatorer og lesekvitteringer på eller av. Begge er slått av som standard.
+• Lås appen med en PIN-kode eller biometri.
+• Tilbakekall en invitasjonslenke du har delt ut.
+
+Hvis du heller vil at vi sletter noe manuelt, skriv til oss.`,
+    },
+    {
+      title: '9. Oppbevaring',
+      body: `Vi beholder dataene dine så lenge kontoen din eksisterer. Å slette kontoen sletter dem, bortsett fra det felles innholdet nevnt ovenfor. Per-samtale-utløp fjerner meldinger etter tidsplanen du angir.`,
+    },
+    {
+      title: '10. Begrensninger du bør kjenne til',
+      body: `Vi vil heller fortelle deg dette enn at du oppdager det selv.
+
+• Nøkler stoles på første gang de sees. Hvis noen hadde erstattet en nøkkel før du noensinne utvekslet en melding, ville samtalen bli kryptert til feil person og se helt normal ut. Appen advarer deg når en nøkkel endrer seg etterpå, og viser et sikkerhetsnummer du kan sammenligne utenfor kanalen — men ingenting tvinger deg til å sammenligne det.
+• Én enhet om gangen. Gjenopprettingsfrasen din gjenoppretter nøkkelen som åpner historikken din, så innlogging på en ny enhet mister ikke det du allerede har mottatt. Forward secret-samtaler bruker en andre nøkkel som aldri forlater enheten som opprettet den: hvilken enhet som sist logget inn, er den de når, og alt som er forseglet til den andre i mellomtiden, kan ikke flyttes dit.
+• Meldinger sendt før kryptering fantes, forblir som de var. Ingenting ble konvertert retroaktivt.
+• Denne appen er ikke uavhengig sikkerhetsrevidert.`,
+    },
+    {
+      title: '11. Barn',
+      body: `Chatterbox er ikke ment for barn under 13 år, og vi samler ikke bevisst inn informasjonen deres. Hvis du tror at et barn har gitt oss personlig informasjon, kontakt oss, så sletter vi den.`,
+    },
+    {
+      title: '12. Endringer',
+      body: `Vi kan oppdatere denne policyen. Betydelige endringer vil bli kunngjort i appen, og datoen øverst er når den sist ble endret.`,
+    },
+    {
+      title: '13. Kontakt',
+      body: `Spørsmål om denne policyen: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  cs: [
+    {
+      title: '0. Ve zkratce',
+      body: `Text vašich zpráv je šifrován na vašem zařízení a mohou ho číst pouze lidé, kterým ho posíláte. My ho číst nemůžeme, a nemůže ani Google, jehož servery si pronajímáme.
+
+Co vidíme, je, že proběhla konverzace: které účty jsou v ní zapojeny a kdy byly aktivní. Odstranění toho je těžší než šifrování obsahu, a ještě jsme to nedokončili. Tyto zásady přesně říkají, kde tato hranice v současnosti leží.`,
+    },
+    {
+      title: '1. Co je šifrováno end-to-end',
+      body: `Šifrováno na vašem zařízení, nečitelné pro nás a pro Google:
+
+• Text vašich zpráv.
+• Obsah souborů, fotografií, zvuku a videa, které přikládáte.
+• Náhledy odkazů.
+• Hlasové a video hovory, které používají povinné DTLS-SRTP WebRTC mezi dvěma zařízeními.
+
+Většina zpráv jeden na jednoho a skupinových zpráv navíc používá ratchet, což znamená, že každá zpráva má svůj vlastní klíč, takže kompromitace vašeho zařízení neodhalí dřívější zprávy. Konverzace, kde klient někoho nezveřejnil novější klíčový materiál, se vrací k jednomu dlouhodobému klíči, který tuto vlastnost nemá. Štítek pod zprávou vám řekne, který skutečně dostala.
+
+Jedna věc tuto hranici překračuje, a to jen když o to požádáte: vyhledání jména na Wikipedii odešle pouze toto jméno, ne zprávu, ze které pochází. Oddíl 6 říká, kdo to dostane, a vyhledávání běží pouze při klepnutí a jinak ne, takže není co vypnout. Shrnutí, překlad a přepis by tuto hranici také překročily — v tomto vydání jsou vypnuty, bez jakéhokoli ovládání kdekoli v aplikaci, které by je zapnulo.`,
+    },
+    {
+      title: '2. Co není šifrováno, a co vidíme',
+      body: `Šifrování chrání obsah, ne skutečnost, že konverzace proběhla. Tyto věci leží jasně na našich serverech:
+
+• Kdo je v každé konverzaci a kdy byla vytvořena a naposledy aktivní.
+• Časové razítko každé zprávy a kolik jich nemáte přečteno.
+• Název souboru přílohy, typ a velikost. Bajty jsou šifrovány; jejich popis ne, a délka šifrovaného textu omezuje délku originálu.
+• Vaši přátelé a žádosti o přátelství.
+• Signalizace hovoru — že hovor byl uskutečněn, komu a kdy. Ne jeho zvuk nebo video.
+
+Indikátory psaní a potvrzení o přečtení jsou vypnuté, dokud je nezapnete, a dokud jsou vypnuté, nic se nezapisuje.
+
+Co už tady není: vaše e-mailová adresa a jméno. Od září 2026 obsahuje záznam účtu pouze identifikátor účtu — a od té doby neexistuje adresa, kterou by bylo kde uchovávat. Registrace se vás na nic neptá: váš účet je obnovovací fráze o 24 slovech, a přihlašovací údaj, který Firebase Authentication kontroluje, je z ní odvozen. Co ukládá, je náhodný štítek pod doménou, která nemůže přijímat poštu.
+
+Odděleně: protože aplikace běží na Google Firebase, Google vidí IP adresu a čas každého připojení, které vaše zařízení k němu vytvoří. To je vlastnost hostingu, ne aplikace, a nemůžeme to zašifrovat pryč.`,
+    },
+    {
+      title: '3. Jak vás lidé najdou',
+      body: `Nemohou vás vyhledat. Neexistuje adresář — žádné vyhledávání podle e-mailu, telefonního čísla nebo jména — a server odmítá jakýkoli dotaz, který se o to pokusí.
+
+Někoho oslovíte tak, že mu mimo kanál pošlete pozvánkový odkaz, prostřednictvím čehokoli, co již používáte. Odkaz funguje jednou, po 24 hodinách vyprší platnost a lze ho odvolat. Jakkoli někoho nazýváte, je to váš vlastní štítek pro něj, uchovávaný pro vás; pokud se představili sami, dostalo se k vám toto jméno zašifrované.`,
+    },
+    {
+      title: '4. Co shromažďujeme',
+      body: `• Údaje o účtu: identifikátor účtu a přihlašovací údaj odvozený z vaší obnovovací fráze, uchovávaný ve Firebase Authentication. Žádná e-mailová adresa, žádné telefonní číslo, žádné jméno — registrace se na nic z toho neptá.
+• Šifrovaný text zprávy a přílohy, plus metadata v oddílu 2.
+
+To je celý seznam. Neexistuje žádná analytika ani hlášení chyb. Aplikace dříve posílala zobrazení obrazovky do Firebase Analytics a hlášení chyb do Firebase Crashlytics, obě nesla identifikátor vašeho účtu, takže žádné z nich nebylo anonymní; obě jsou nyní pryč, spolu s knihovnami, které je odesílaly. Chyby se vytisknou pouze na vlastním počítači vývojáře během vývoje a nikam jinam nejdou.`,
+    },
+    {
+      title: '5. Kde je to uloženo',
+      body: `Na Google Firebase — Firestore, Storage a Authentication — pod bezpečnostními pravidly, která rozhodují, kdo může každý dokument číst a zapisovat.
+
+Na vašem zařízení jsou zprávy uložené v mezipaměti, nastavení a váš PIN zámku aplikace šifrovány klíčem pro jednotlivé zařízení, uchovávaným v úložišti klíčů platformy (iOS Keychain, Android Keystore) namísto v běžném úložišti aplikace.
+
+Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zařízení, kromě jako obnovovací fráze, kterou se rozhodnete si zapsat. My ho nedržíme a nemůžeme ho pro vás obnovit. Ztratíte-li ho, zprávy odeslané na toto zařízení již nelze znovu přečíst — nikým, včetně nás.`,
+    },
+    {
+      title: '6. Kdo další dostává data',
+      body: `Vaše osobní údaje neprodáváme, neobchodujeme s nimi ani je nepronajímáme. Data se dostávají k:
+
+• Google Firebase — náš poskytovatel hostingu, jak je popsáno výše.
+• Wikimedia Foundation — jedno jméno, když na něj klepnete pro vyhledání na Wikipedii.
+• Google Cloud Speech-to-Text — zvuk jedné hlasové zprávy, když požádáte o přepis.
+• Google Cloud Translation — text jedné zprávy, když požádáte o překlad.
+• Cloudflare Workers AI — až posledních 50 zpráv jedné konverzace, když požádáte o shrnutí nebo se na ni zeptáte.
+
+Poslední tři jsou v tomto vydání vypnuty. Nikde v aplikaci není žádné ovládání, které by zapínalo přepis, překlad nebo shrnutí, takže k těmto třem službám nic nedosáhne. Jsou uvedeny místo smazány, protože kód je stále zde a funkce mají v úmyslu se vrátit — a když se vrátí, vrátí se s tímto zveřejněním a výzvou před prvním použitím. Co by se tehdy odesílalo, je odesíláno k vytvoření vašeho výsledku, ne k trénování čehokoli; na našich serverech se neukládá ani přepis, ani překlad.
+
+Vyhledávání na Wikipedii nemá přepínač, protože není co vypnout: běží pouze při klepnutí a jinak ne. Wikipedie dostane pouze toto jedno jméno a vaši IP adresu, stejně jako kdybyste ho sami napsali do jejich vyhledávacího pole — žádný účet, žádná zpráva, žádná konverzace. Co se vrátí, je zobrazeno a neuloženo, a nic o tom se nezapíše do konverzace.
+
+Můžeme odhalit, co držíme, pokud to vyžaduje zákon. Co držíme, je seznam v oddílu 2. Nemůžeme poskytnout obsah zpráv, protože ho nemůžeme přečíst.`,
+    },
+    {
+      title: '7. Push oznámení',
+      body: `Firebase Cloud Messaging doručuje oznámení. Token vašeho zařízení je uložen v soukromé části vašeho účtu, kterou můžete číst pouze vy.
+
+Oznámení nenesou žádný text zprávy. Vaše zařízení dešifruje zprávu lokálně a sestaví, co vidíte; Google doručuje obálku, ne obsah.`,
+    },
+    {
+      title: '8. Co můžete dělat',
+      body: `• Smazat svůj účet z obrazovky Profil. Obsah, který je společnou součástí konverzace — například záznam hovoru — zůstává u druhého účastníka, protože je to i jeho záznam.
+• Exportovat svá data z obrazovky Profil.
+• Nastavit vypršení zpráv podle konverzace: 1 hodina, 24 hodin, 7 dní nebo 30 dní.
+• Zapnout nebo vypnout indikátory psaní a potvrzení o přečtení. Obě jsou ve výchozím nastavení vypnuté.
+• Uzamknout aplikaci PINem nebo biometrikou.
+• Odvolat pozvánkový odkaz, který jste rozdali.
+
+Pokud byste raději, abychom něco smazali ručně, napište nám.`,
+    },
+    {
+      title: '9. Uchovávání',
+      body: `Vaše data uchováváme, dokud váš účet existuje. Smazání účtu je smaže, kromě společně drženého obsahu uvedeného výše. Vypršení podle konverzace odstraňuje zprávy podle harmonogramu, který nastavíte.`,
+    },
+    {
+      title: '10. Omezení, o kterých byste měli vědět',
+      body: `Raději bychom vám to řekli, než abyste to zjistili sami.
+
+• Klíčům se důvěřuje při prvním zobrazení. Pokud by někdo nahradil klíč dříve, než jste si kdy vyměnili zprávu, konverzace by se šifrovala nesprávné osobě a vypadala by naprosto normálně. Aplikace vás upozorní, když se klíč později změní, a zobrazí bezpečnostní číslo, které můžete porovnat mimo kanál — ale nic vás nenutí ho porovnávat.
+• Jedno zařízení najednou. Vaše obnovovací fráze obnoví klíč, který otevírá vaši historii, takže přihlášení na novém zařízení neztratí to, co jste již obdrželi. Konverzace s forward secrecy používají druhý klíč, který nikdy neopustí zařízení, které ho vytvořilo: ať už se naposledy přihlásilo jakékoli zařízení, je to to, které dosáhnou, a cokoli mezitím zapečetěné pro to druhé tam nelze přesunout.
+• Zprávy odeslané před existencí šifrování zůstávají tak, jak byly. Nic nebylo zpětně převedeno.
+• Tato aplikace nebyla nezávisle bezpečnostně auditována.`,
+    },
+    {
+      title: '11. Děti',
+      body: `Chatterbox není určen pro děti mladší 13 let, a jejich informace vědomě neshromažďujeme. Pokud se domníváte, že nám dítě poskytlo osobní údaje, kontaktujte nás a my je smažeme.`,
+    },
+    {
+      title: '12. Změny',
+      body: `Tyto zásady můžeme aktualizovat. Významné změny budou oznámeny v aplikaci a datum nahoře je, kdy se naposledy změnily.`,
+    },
+    {
+      title: '13. Kontakt',
+      body: `Dotazy ohledně těchto zásad: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  ro: [
+    {
+      title: '0. Pe scurt',
+      body: `Textul mesajelor tale este criptat pe dispozitivul tău și poate fi citit doar de persoanele cărora le trimiți. Noi nu îl putem citi, și nici Google, ale cărui servere le închiriem.
+
+Ce putem vedea este că a avut loc o conversație: ce conturi sunt implicate și când au fost active. Eliminarea acestui lucru este mai dificilă decât criptarea conținutului, și încă nu am terminat. Această politică spune exact unde se află linia în prezent.`,
+    },
+    {
+      title: '1. Ce este criptat integral (end-to-end)',
+      body: `Criptat pe dispozitivul tău, ilizibil pentru noi și pentru Google:
+
+• Textul mesajelor tale.
+• Conținutul fișierelor, fotografiilor, audio și video pe care le atașezi.
+• Previzualizările linkurilor.
+• Apelurile audio și video, care folosesc DTLS-SRTP WebRTC obligatoriu între dispozitive.
+
+Majoritatea mesajelor unu-la-unu și de grup folosesc suplimentar un mecanism de tip ratchet, ceea ce înseamnă că fiecare mesaj are propria cheie, astfel încât compromiterea dispozitivului tău nu expune mesajele anterioare. Conversațiile în care un client nu a publicat material de cheie mai nou pentru cineva revin la o singură cheie de lungă durată, care nu are această proprietate. Eticheta de sub un mesaj îți spune pe care a primit-o de fapt.
+
+Un singur lucru traversează această linie, și doar atunci când o ceri: căutarea unui nume pe Wikipedia trimite doar acel nume, nu mesajul din care provine. Secțiunea 6 spune cine primește asta, iar căutarea rulează doar la apăsare și altfel deloc, deci nu este nimic de dezactivat. Rezumarea, traducerea și transcrierea ar traversa de asemenea această linie — sunt dezactivate în această versiune, fără niciun control nicăieri în aplicație care să le activeze.`,
+    },
+    {
+      title: '2. Ce nu este criptat, și ce putem vedea',
+      body: `Criptarea protejează conținutul, nu faptul că a avut loc o conversație. Aceste lucruri stau în clar pe serverele noastre:
+
+• Cine este în fiecare conversație, și când a fost creată și activă ultima dată.
+• Marcajul temporal al fiecărui mesaj, și câte ai necitite.
+• Numele fișierului atașat, tipul și dimensiunea. Octeții sunt criptați; descrierea lor nu, iar lungimea textului cifrat limitează lungimea originalului.
+• Prietenii tăi și cererile de prietenie.
+• Semnalizarea apelurilor — că a avut loc un apel, cu cine și când. Nu audio sau video-ul său.
+
+Indicatorii de scriere și confirmările de citire sunt dezactivate până le activezi, și cât timp sunt dezactivate, nu se scrie nimic.
+
+Ce nu mai este aici: adresa ta de e-mail și numele. Începând din septembrie 2026, înregistrarea contului conține doar un identificator de cont — și de atunci nu mai există nicio adresă pe care să o dețină. Înregistrarea nu îți cere așa ceva: contul tău este o frază de recuperare din 24 de cuvinte, iar acreditarea pe care Firebase Authentication o verifică este derivată din aceasta. Ce stochează este o etichetă aleatorie sub un domeniu care nu poate primi poștă.
+
+Separat: deoarece aplicația rulează pe Google Firebase, Google poate vedea adresa IP și momentul fiecărei conexiuni pe care dispozitivul tău o face către acesta. Aceasta este o proprietate a găzduirii, nu a aplicației, și nu o putem cripta.`,
+    },
+    {
+      title: '3. Cum te găsesc oamenii',
+      body: `Nu te pot căuta. Nu există niciun director — nicio căutare după e-mail, număr de telefon sau nume — iar serverul respinge orice interogare care încearcă asta.
+
+Ajungi la cineva trimițându-i un link de invitație în afara canalului, prin orice folosești deja. Linkul funcționează o singură dată, expiră după 24 de ore și poate fi revocat. Oricum îi spui cuiva este propria ta etichetă pentru el, păstrată pentru tine; dacă s-a prezentat singur, acel nume a ajuns la tine criptat.`,
+    },
+    {
+      title: '4. Ce colectăm',
+      body: `• Date de cont: un identificator de cont și o acreditare derivată din fraza ta de recuperare, păstrate în Firebase Authentication. Nicio adresă de e-mail, niciun număr de telefon, niciun nume — înregistrarea nu cere nimic din toate acestea.
+• Textul cifrat al mesajelor și atașamentelor, plus metadatele din secțiunea 2.
+
+Aceasta este lista completă. Nu există analiză (analytics) și nicio raportare a erorilor. Aplicația obișnuia să trimită vizualizări de ecran către Firebase Analytics și rapoarte de erori către Firebase Crashlytics, ambele purtând identificatorul contului tău, deci niciuna nu era anonimă; ambele au dispărut acum, împreună cu bibliotecile care le trimiteau. Erorile se afișează doar pe mașina proprie a dezvoltatorului în timpul dezvoltării și nu ajung nicăieri altundeva.`,
+    },
+    {
+      title: '5. Unde este stocat',
+      body: `Pe Google Firebase — Firestore, Storage și Authentication — sub reguli de securitate care decid cine poate citi și scrie fiecare document.
+
+Pe dispozitivul tău, mesajele stocate în cache, setările și codul PIN de blocare a aplicației sunt criptate cu o cheie specifică dispozitivului, păstrată în keystore-ul platformei (iOS Keychain, Android Keystore) în loc de stocarea obișnuită a aplicației.
+
+Cheia privată care decriptează mesajele tale nu părăsește niciodată dispozitivul tău, cu excepția frazei de recuperare pe care alegi să o notezi. Noi nu o deținem și nu o putem recupera pentru tine. Dacă o pierzi, mesajele trimise către acel dispozitiv nu mai pot fi citite — de nimeni, inclusiv de noi.`,
+    },
+    {
+      title: '6. Cine altcineva primește date',
+      body: `Nu vindem, nu comercializăm și nu închiriem informațiile tale personale. Datele ajung la:
+
+• Google Firebase — furnizorul nostru de găzduire, așa cum este descris mai sus.
+• Wikimedia Foundation — un singur nume, când apeși pentru a-l căuta pe Wikipedia.
+• Google Cloud Speech-to-Text — audio-ul unui singur mesaj vocal, când soliciți o transcriere.
+• Google Cloud Translation — textul unui singur mesaj, când soliciți o traducere.
+• Cloudflare Workers AI — până la ultimele 50 de mesaje ale unei conversații, când soliciți un rezumat sau îi pui o întrebare.
+
+Ultimele trei sunt dezactivate în această versiune. Nu există niciun control nicăieri în aplicație care să activeze transcrierea, traducerea sau rezumarea, deci nimic nu ajunge la aceste trei servicii. Sunt listate în loc de șterse pentru că respectivul cod este încă aici și funcțiile sunt menite să revină — și când o vor face, vor reveni cu această dezvăluire și o solicitare înainte de prima utilizare. Ce s-ar trimite atunci este trimis pentru a produce rezultatul tău, nu pentru a antrena ceva; nici transcrierea, nici traducerea nu sunt stocate pe serverele noastre.
+
+Căutarea pe Wikipedia nu are un comutator, pentru că nu este nimic de dezactivat: rulează doar la apăsare și altfel deloc. Wikipedia primește doar acel nume și adresa ta IP, exact ca și cum l-ai fi tastat tu însuți în propriul lor câmp de căutare — niciun cont, niciun mesaj, nicio conversație. Ce se întoarce este afișat și nu stocat, și nimic despre asta nu este scris în conversație.
+
+Putem dezvălui ce deținem dacă legea o cere. Ce deținem este lista din secțiunea 2. Nu putem produce conținutul mesajelor, pentru că nu îl putem citi.`,
+    },
+    {
+      title: '7. Notificări push',
+      body: `Firebase Cloud Messaging livrează notificările. Tokenul dispozitivului tău este stocat într-o parte privată a contului tău pe care doar tu o poți citi.
+
+Notificările nu conțin niciun text de mesaj. Dispozitivul tău decriptează mesajul local și construiește ce vezi; Google livrează plicul, nu conținutul.`,
+    },
+    {
+      title: '8. Ce poți face',
+      body: `• Șterge-ți contul din ecranul Profil. Conținutul care face parte comună dintr-o conversație — cum ar fi o înregistrare a unui apel — rămâne la celălalt participant, pentru că este și înregistrarea lui.
+• Exportă-ți datele din ecranul Profil.
+• Setează expirarea mesajelor per conversație: 1 oră, 24 de ore, 7 zile sau 30 de zile.
+• Activează sau dezactivează indicatorii de scriere și confirmările de citire. Ambele sunt dezactivate implicit.
+• Blochează aplicația cu un PIN sau biometrie.
+• Retrage un link de invitație pe care l-ai distribuit.
+
+Dacă preferi să ștergem noi ceva manual, scrie-ne.`,
+    },
+    {
+      title: '9. Păstrarea datelor',
+      body: `Îți păstrăm datele cât timp contul tău există. Ștergerea contului tău le elimină, cu excepția conținutului deținut în comun ca mai sus. Expirarea per conversație elimină mesajele conform programului pe care îl stabilești.`,
+    },
+    {
+      title: '10. Limitări pe care ar trebui să le cunoști',
+      body: `Preferăm să-ți spunem noi decât să descoperi singur.
+
+• Cheile sunt de încredere la prima vedere. Dacă cineva a substituit o cheie înainte să faceți vreodată schimb de mesaje, conversația s-ar cripta către persoana greșită și ar arăta complet normal. Aplicația te avertizează când o cheie se schimbă ulterior și afișează un număr de siguranță pe care îl poți compara în afara canalului — dar nimic nu te obligă să-l compari.
+• Un singur dispozitiv la un moment dat. Fraza ta de recuperare restaurează cheia care deblochează istoricul tău, deci autentificarea pe un dispozitiv nou nu pierde ce ai primit deja. Conversațiile cu forward secrecy folosesc o a doua cheie care nu părăsește niciodată dispozitivul care a creat-o: oricare dispozitiv s-a autentificat cel mai recent este cel pe care îl ating, iar orice sigilat pentru celălalt între timp nu se poate muta acolo.
+• Mesajele trimise înainte ca criptarea să existe rămân așa cum au fost. Nimic nu a fost convertit retroactiv.
+• Această aplicație nu a fost auditată independent din punct de vedere al securității.`,
+    },
+    {
+      title: '11. Copii',
+      body: `Chatterbox nu este destinat copiilor sub 13 ani, și nu colectăm cu bună știință informațiile lor. Dacă crezi că un copil ne-a furnizat informații personale, contactează-ne și le vom șterge.`,
+    },
+    {
+      title: '12. Modificări',
+      body: `Putem actualiza această politică. Modificările semnificative vor fi anunțate în aplicație, iar data de sus este momentul ultimei modificări.`,
+    },
+    {
+      title: '13. Contact',
+      body: `Întrebări despre această politică: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  hu: [
+    {
+      title: '0. Röviden',
+      body: `Üzeneteid szövege a készülékeden titkosított, és csak azok olvashatják, akiknek küldöd. Mi nem tudjuk elolvasni, és a Google sem, akiktől a szervereket béreljük.
+
+Amit látunk, az az, hogy egy beszélgetés megtörtént: mely fiókok vesznek részt benne, és mikor voltak aktívak. Ennek eltávolítása nehezebb, mint a tartalom titkosítása, és még nem fejeztük be. Ez a szabályzat pontosan megmondja, hol húzódik jelenleg a határ.`,
+    },
+    {
+      title: '1. Mi van végpontok között titkosítva',
+      body: `A készülékeden titkosított, számunkra és a Google számára olvashatatlan:
+
+• Üzeneteid szövege.
+• A csatolt fájlok, fotók, hang- és videótartalmak.
+• A hivatkozás-előnézetek.
+• A hang- és videóhívások, amelyek kötelező, eszközök közötti DTLS-SRTP WebRTC-t használnak.
+
+A legtöbb egy-az-egyhez és csoportos üzenet emellett egy úgynevezett ratchet mechanizmust is használ, ami azt jelenti, hogy minden üzenetnek saját kulcsa van, így a készüléked feltörése nem fedi fel a korábbi üzeneteket. Azok a beszélgetések, ahol egy kliens nem tett közzé újabb kulcsanyagot valakinek, egyetlen hosszú élettartamú kulcsra esnek vissza, amelynek nincs ez a tulajdonsága. Az üzenet alatti jelvény megmondja, melyiket kapta valójában.
+
+Egyetlen dolog lépi át ezt a határt, és csak akkor, ha kéred: egy név Wikipédián való keresése csak azt a nevet küldi el, nem az üzenetet, amelyből származik. A 6. szakasz elmondja, ki kapja ezt meg, és a keresés csak koppintásra fut, egyébként nem, így nincs mit kikapcsolni. Az összefoglalás, fordítás és átirat készítése szintén átlépné ezt a határt — ebben a kiadásban ki vannak kapcsolva, és az alkalmazásban sehol nincs olyan vezérlő, amely bekapcsolná őket.`,
+    },
+    {
+      title: '2. Mi nincs titkosítva, és mit láthatunk',
+      body: `A titkosítás a tartalmat védi, nem azt a tényt, hogy egy beszélgetés megtörtént. Ezek a dolgok nyíltan állnak a szervereinken:
+
+• Ki van benne minden beszélgetésben, és mikor jött létre, illetve mikor volt utoljára aktív.
+• Minden üzenet időbélyege, és hogy hány olvasatlan van.
+• A melléklet fájlneve, típusa és mérete. A bájtok titkosítottak; a leírásuk nem, és a titkosított szöveg hossza korlátozza az eredeti hosszát.
+• A barátaid és a barátkérelmek.
+• A hívás jelzése — hogy egy hívás megtörtént, kivel és mikor. Nem annak hangja vagy videója.
+
+A gépelésjelzők és az olvasási visszaigazolások ki vannak kapcsolva, amíg be nem kapcsolod őket, és amíg ki vannak kapcsolva, semmi nem kerül rögzítésre.
+
+Ami már nincs itt: az e-mail-címed és a neved. 2026 szeptemberétől a fiók bejegyzése csak egy fiókazonosítót tartalmaz — és azóta nincs is cím, amit tárolni lehetne. A regisztráció nem kér ilyet: a fiókod egy 24 szavas helyreállítási mondat, és a Firebase Authentication által ellenőrzött hitelesítő adat ebből származik. Amit tárol, az egy véletlenszerű címke egy olyan domain alatt, amely nem tud postát fogadni.
+
+Külön: mivel az alkalmazás a Google Firebase-en fut, a Google láthatja az IP-címet és minden kapcsolat időzítését, amelyet a készüléked hozzá létesít. Ez a hosztolás tulajdonsága, nem az alkalmazásé, és ezt nem tudjuk titkosítással eltüntetni.`,
+    },
+    {
+      title: '3. Hogyan találnak meg téged az emberek',
+      body: `Nem kereshetnek rád. Nincs névjegyzék — nincs keresés e-mail, telefonszám vagy név alapján —, és a szerver elutasít minden erre irányuló lekérdezést.
+
+Valakit úgy érsz el, hogy egy meghívólinket küldesz neki a csatornán kívül, bármin keresztül, amit már használsz. A link egyszer működik, 24 óra után lejár, és visszavonható. Bárhogy is nevezel valakit, az a saját címkéd rá, neked megőrizve; ha ő mutatkozott be, az a név titkosítva érkezett hozzád.`,
+    },
+    {
+      title: '4. Mit gyűjtünk',
+      body: `• Fiókadatok: egy fiókazonosító és egy, a helyreállítási mondatodból származó hitelesítő adat, a Firebase Authentication-ben tárolva. Nincs e-mail-cím, nincs telefonszám, nincs név — a regisztráció ezek egyikét sem kéri.
+• Az üzenetek és mellékletek titkosított szövege, plusz a 2. szakaszban leírt metaadatok.
+
+Ez a teljes lista. Nincs elemzés (analytics) és nincs hibajelentés. Az alkalmazás korábban képernyőnézeteket küldött a Firebase Analyticsnek és hibajelentéseket a Firebase Crashlyticsnek, mindkettő a fiókazonosítódat hordozta, így egyik sem volt anonim; mindkettő megszűnt már, az őket küldő könyvtárakkal együtt. A hibák csak a fejlesztő saját gépén jelennek meg fejlesztés közben, és sehova máshova nem jutnak el.`,
+    },
+    {
+      title: '5. Hol van tárolva',
+      body: `A Google Firebase-en — Firestore, Storage és Authentication —, olyan biztonsági szabályok alatt, amelyek eldöntik, ki olvashatja és írhatja az egyes dokumentumokat.
+
+A készülékeden a gyorsítótárazott üzenetek, a beállítások és az alkalmazászár PIN-kódod egy eszközönkénti kulccsal vannak titkosítva, amelyet a platform kulcstárolójában (iOS Keychain, Android Keystore) tartunk, nem a szokásos alkalmazástárolóban.
+
+A magánkulcs, amely dekódolja üzeneteidet, soha nem hagyja el a készülékedet, kivéve a helyreállítási mondat formájában, amelyet leírhatsz. Mi nem tartjuk meg, és nem tudjuk helyreállítani neked. Ha elveszíted, az arra a készülékre küldött üzenetek többé nem olvashatók el — senki által, minket is beleértve.`,
+    },
+    {
+      title: '6. Ki más kap adatot',
+      body: `Nem adjuk el, nem cseréljük és nem béreljük ki a személyes adataidat. Az adatok eljutnak:
+
+• A Google Firebase-hez — a fent leírt hosztolási szolgáltatónkhoz.
+• A Wikimedia Foundationhöz — egyetlen névhez, amikor rákoppintasz a Wikipédián való kereséshez.
+• A Google Cloud Speech-to-Texthez — egyetlen hangüzenet hangjához, amikor átiratot kérsz.
+• A Google Cloud Translationhöz — egyetlen üzenet szövegéhez, amikor fordítást kérsz.
+• A Cloudflare Workers AI-hoz — egy beszélgetés utolsó legfeljebb 50 üzenetéhez, amikor összefoglalást kérsz, vagy kérdezel tőle.
+
+Az utolsó három ebben a kiadásban ki van kapcsolva. Az alkalmazásban sehol nincs olyan vezérlő, amely bekapcsolná az átiratkészítést, a fordítást vagy az összefoglalást, így semmi nem jut el ehhez a három szolgáltatáshoz. Azért vannak felsorolva, nem törölve, mert a kód még mindig itt van, és a funkciók célja a visszatérés — és amikor visszatérnek, ezzel a nyilatkozattal és egy, az első használat előtti felszólítással térnek vissza. Amit akkor küldenénk, azt az eredményed előállítására küldenénk, nem bármi betanítására; sem az átirat, sem a fordítás nincs tárolva a szervereinken.
+
+A Wikipédia-keresésnek nincs kapcsolója, mert nincs mit kikapcsolni: csak koppintásra fut, egyébként nem. A Wikipédia csak azt az egy nevet és az IP-címedet kapja meg, pontosan úgy, mintha te magad gépelted volna be a saját keresőmezőjükbe — nincs fiók, nincs üzenet, nincs beszélgetés. Ami visszajön, az megjelenik és nincs tárolva, és semmi nem kerül belőle a beszélgetésbe.
+
+Felfedhetjük, amit tartunk, ha a törvény ezt megköveteli. Amit tartunk, az a 2. szakaszban lévő lista. Az üzenetek tartalmát nem tudjuk kiadni, mert nem tudjuk elolvasni.`,
+    },
+    {
+      title: '7. Push-értesítések',
+      body: `A Firebase Cloud Messaging kézbesíti az értesítéseket. A készülékazonosítód a fiókod egy privát részében van tárolva, amelyet csak te olvashatsz.
+
+Az értesítések nem tartalmaznak üzenetszöveget. A készüléked helyben dekódolja az üzenetet, és felépíti, amit látsz; a Google a borítékot kézbesíti, nem a tartalmat.`,
+    },
+    {
+      title: '8. Mit tehetsz',
+      body: `• Töröld a fiókodat a Profil képernyőről. A beszélgetés közös részét képező tartalom — például egy híváslejegyzés — a másik résztvevőnél marad, mert az az ő feljegyzése is.
+• Exportáld az adataidat a Profil képernyőről.
+• Állítsd be az üzenetek lejáratát beszélgetésenként: 1 óra, 24 óra, 7 nap vagy 30 nap.
+• Kapcsold be vagy ki a gépelésjelzőket és az olvasási visszaigazolásokat. Mindkettő alapértelmezetten ki van kapcsolva.
+• Zárold az alkalmazást PIN-kóddal vagy biometrikus azonosítással.
+• Vonj vissza egy általad kiadott meghívólinket.
+
+Ha inkább azt szeretnéd, hogy kézzel töröljünk valamit, írj nekünk.`,
+    },
+    {
+      title: '9. Megőrzés',
+      body: `Az adataidat addig őrizzük meg, amíg a fiókod létezik. A fiókod törlése eltávolítja azokat, kivéve a fent említett közösen tartott tartalmat. A beszélgetésenkénti lejárat az általad beállított ütemezés szerint távolítja el az üzeneteket.`,
+    },
+    {
+      title: '10. Korlátok, amelyekről tudnod kell',
+      body: `Inkább elmondjuk neked, minthogy magadtól fedezd fel.
+
+• A kulcsok az első látásra megbízhatók. Ha valaki egy kulcsot kicserélt volna, mielőtt valaha üzenetet váltottatok volna, a beszélgetés a rossz személyhez titkosítana, és teljesen normálisnak tűnne. Az alkalmazás figyelmeztet, ha egy kulcs később megváltozik, és megjelenít egy biztonsági számot, amelyet a csatornán kívül összehasonlíthatsz — de semmi nem kényszerít arra, hogy összehasonlítsd.
+• Egyszerre egy készülék. A helyreállítási mondatod visszaállítja azt a kulcsot, amely megnyitja az előzményeidet, így az új készüléken való bejelentkezés nem veszíti el, amit már megkaptál. A forward secrecy-vel rendelkező beszélgetések egy második kulcsot használnak, amely soha nem hagyja el az azt létrehozó készüléket: amelyik készülék legutóbb jelentkezett be, az az, amelyiket elérik, és bármi, ami közben a másiknak lett lezárva, oda nem tud átkerülni.
+• A titkosítás létezése előtt küldött üzenetek olyanok maradnak, amilyenek voltak. Semmi nem lett visszamenőlegesen konvertálva.
+• Ezt az alkalmazást nem auditálta függetlenül biztonsági szempontból.`,
+    },
+    {
+      title: '11. Gyermekek',
+      body: `A Chatterbox nem 13 év alatti gyermekeknek készült, és tudatosan nem gyűjtjük az adataikat. Ha úgy gondolod, hogy egy gyermek személyes adatokat adott meg nekünk, lépj kapcsolatba velünk, és töröljük azokat.`,
+    },
+    {
+      title: '12. Változások',
+      body: `Frissíthetjük ezt a szabályzatot. A jelentős változásokról az alkalmazásban tájékoztatunk, és a tetején lévő dátum mutatja, mikor változott utoljára.`,
+    },
+    {
+      title: '13. Kapcsolat',
+      body: `Kérdések ezzel a szabályzattal kapcsolatban: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  kk: [
+    {
+      title: '0. Қысқаша',
+      body: `Хабарламаларыңыздың мәтіні құрылғыңызда шифрланған және оны тек сіз жіберген адамдар ғана оқи алады. Біз оны оқи алмаймыз, серверлерін жалдап отырған Google та оқи алмайды.
+
+Біз көре алатыны — әңгіме болғаны: онда қандай аккаунттар бар және олар қашан белсенді болғаны. Мұны алып тастау мазмұнды шифрлаудан қиынырақ, және біз әлі бітірген жоқпыз. Бұл саясат сызықтың дәл қазір қай жерде екенін айтады.`,
+    },
+    {
+      title: '1. Соңынан соңына дейін не шифрланған',
+      body: `Құрылғыңызда шифрланған, біз үшін де, Google үшін де оқылмайды:
+
+• Хабарламаларыңыздың мәтіні.
+• Тіркейтін файлдардың, фотосуреттердің, аудио мен бейненің мазмұны.
+• Сілтеме алдын ала қарау көріністері.
+• Дауыстық және бейне қоңыраулар, олар құрылғылар арасында міндетті DTLS-SRTP WebRTC пайдаланады.
+
+Көптеген бір-біреуге және топтық хабарламалар қосымша ратчет механизмін пайдаланады, яғни әр хабарламаның өз кілті бар, сондықтан құрылғыңыздың бұзылуы бұрынғы хабарламаларды ашпайды. Клиент біреу үшін жаңа кілт материалын жарияламаған әңгімелер осы қасиеті жоқ жалғыз ұзақ мерзімді кілтке оралады. Хабарламаның астындағы белгі оның нақты қайсысын алғанын айтады.
+
+Тек бір нәрсе осы сызықтан өтеді, тек сіз сұрағанда ғана: Википедиядан атты іздеу тек сол атты жібереді, ол шыққан хабарламаны емес. 6-бөлім оны кім алатынын айтады, ал іздеу тек түртілгенде іске қосылады және басқаша жоқ, сондықтан өшіретін ештеңе жоқ. Қысқаша мазмұндау, аудару және мәтінге түсіру де осы сызықтан өтер еді — олар осы шығарылымда өшірулі, қолданбада оларды қосатын ешбір басқару элементі жоқ.`,
+    },
+    {
+      title: '2. Не шифрланбаған және біз не көре аламыз',
+      body: `Шифрлау мазмұнды қорғайды, әңгіме болған фактіні емес. Мына нәрселер біздің серверлерімізде ашық жатыр:
+
+• Әр әңгімеде кім бар, ол қашан құрылған және соңғы рет қашан белсенді болған.
+• Әр хабарламаның уақыт белгісі, және сізде қанша оқылмағаны бар.
+• Тіркеменің файл аты, түрі және өлшемі. Байттар шифрланған; олардың сипаттамасы жоқ, және шифрланған мәтіннің ұзындығы түпнұсқаның ұзындығын шектейді.
+• Достарыңыз бен достық сұраулары.
+• Қоңырау сигналдары — қоңырау болғаны, кіммен және қашан. Оның аудиосы немесе бейнесі емес.
+
+Теру көрсеткіштері мен оқылғаны туралы растаулар сіз оларды қоспағанша өшірулі, және олар өшірулі кезде ештеңе жазылмайды.
+
+Енді мұнда жоғы: электрондық пошта мекенжайыңыз бен атыңыз. 2026 жылдың қыркүйегінен бастап аккаунт жазбасында тек аккаунт идентификаторы ғана бар — және содан бері оның ұстайтын мекенжайы жоқ. Тіркелу сізден мұны сұрамайды: аккаунтыңыз 24 сөзден тұратын қалпына келтіру фразасы, ал Firebase Authentication тексеретін тіркелгі деректері одан алынады. Ол сақтайтыны — пошта қабылдай алмайтын домен астындағы кездейсоқ белгі.
+
+Бөлек: қолданба Google Firebase-де жұмыс істейтіндіктен, Google құрылғыңыз оған жасайтын әрбір қосылымның IP мекенжайы мен уақытын көре алады. Бұл хостингтің қасиеті, қолданбаныкі емес, және біз оны шифрлап жасыра алмаймыз.`,
+    },
+    {
+      title: '3. Адамдар сізді қалай табады',
+      body: `Олар сізді іздей алмайды. Каталог жоқ — электрондық пошта, телефон нөмірі немесе аты бойынша іздеу жоқ — және сервер мұны көздейтін кез келген сұрауды қабылдамайды.
+
+Сіз біреуге арна сыртында, қазірдің өзінде пайдаланатын кез келген нәрсе арқылы шақыру сілтемесін жіберу арқылы жетесіз. Сілтеме бір рет жұмыс істейді, 24 сағаттан кейін мерзімі бітеді және қайтарып алуға болады. Біреуді қалай атасаңыз да, бұл сіз үшін сақталған сіздің өз белгіңіз; егер ол өзін таныстырса, бұл ат сізге шифрланған түрде жетті.`,
+    },
+    {
+      title: '4. Біз нені жинаймыз',
+      body: `• Аккаунт деректері: аккаунт идентификаторы және қалпына келтіру фразаңыздан алынған, Firebase Authentication-де сақталатын тіркелгі деректері. Электрондық пошта мекенжайы жоқ, телефон нөмірі жоқ, ат жоқ — тіркелу мұның бірде-бірін сұрамайды.
+• Хабарламалар мен тіркемелердің шифрланған мәтіні, оған қоса 2-бөлімдегі метадеректер.
+
+Бұл толық тізім. Аналитика да, ақаулар туралы есеп беру де жоқ. Қолданба бұрын экран көріністерін Firebase Analytics-ке және ақаулар туралы есептерді Firebase Crashlytics-ке жіберетін, екеуі де аккаунт идентификаторыңызды алып жүретін, сондықтан ешқайсысы анонимді болмады; екеуі де енді жоқ, оларды жіберген кітапханалармен бірге. Қателер тек әзірлеу кезінде әзірлеушінің өз машинасында басылады және басқа ешжерге бармайды.`,
+    },
+    {
+      title: '5. Ол қайда сақталады',
+      body: `Google Firebase-де — Firestore, Storage және Authentication — әр құжатты кім оқи және жаза алатынын шешетін қауіпсіздік ережелерінің астында.
+
+Құрылғыңызда кэштелген хабарламалар, параметрлер және қолданба құлпыңыздың PIN коды әдеттегі қолданба сақтауының орнына платформаның кілт қоймасында (iOS Keychain, Android Keystore) сақталатын құрылғыға тән кілтпен шифрланған.
+
+Хабарламаларыңызды шешетін жеке кілт сіз жазып алуды таңдаған қалпына келтіру фразасынан басқа ешқашан құрылғыңыздан шықпайды. Біз оны ұстамаймыз және сіз үшін қалпына келтіре алмаймыз. Егер оны жоғалтсаңыз, сол құрылғыға жіберілген хабарламаларды ешкім, соның ішінде біз де, қайта оқи алмайды.`,
+    },
+    {
+      title: '6. Тағы кім деректер алады',
+      body: `Біз сіздің жеке ақпаратыңызды сатпаймыз, саудаламаймыз және жалдамаймыз. Деректер мыналарға жетеді:
+
+• Google Firebase — жоғарыда сипатталғандай біздің хостинг провайдеріміз.
+• Wikimedia Foundation — Википедиядан іздеу үшін түрткенде бір ат.
+• Google Cloud Speech-to-Text — мәтінге түсіруді сұрағанда бір дауыстық хабарламаның аудиосы.
+• Google Cloud Translation — аударманы сұрағанда бір хабарламаның мәтіні.
+• Cloudflare Workers AI — қысқаша мазмұндауды сұрағанда немесе одан сұрақ қойғанда бір әңгіменің соңғы 50 хабарламасына дейін.
+
+Соңғы үшеуі осы шығарылымда өшірулі. Қолданбада мәтінге түсіруді, аударманы немесе қысқаша мазмұндауды қосатын ешбір басқару элементі жоқ, сондықтан осы үш қызметке ештеңе жетпейді. Олар жойылған емес, тізімделген, себебі код әлі осында және мүмкіндіктер қайта оралуға тиіс — және олар қайтқанда, осы ашумен және алғаш пайдаланар алдында сұраумен қайтады. Сол кезде жіберілетін нәрсе кез келгенді үйрету үшін емес, нәтижеңізді шығару үшін жіберіледі; не транскрипт, не аударма біздің серверлерімізде сақталмайды.
+
+Википедия іздеуінің қосқышы жоқ, себебі өшіретін ештеңе жоқ: ол тек түртілгенде іске қосылады және басқаша жоқ. Википедия тек сол бір атты және сіздің IP мекенжайыңызды алады, дәл сіз оны олардың өз іздеу өрісіне өзіңіз теріп жазғандай — аккаунт жоқ, хабарлама жоқ, әңгіме жоқ. Қайтарылған нәрсе көрсетіледі және сақталмайды, және ол туралы ештеңе әңгімеге жазылмайды.
+
+Заң талап етсе, біз ұстап тұрған нәрсені аша аламыз. Біз ұстап тұрғаны — 2-бөлімдегі тізім. Хабарлама мазмұнын бере алмаймыз, себебі оны оқи алмаймыз.`,
+    },
+    {
+      title: '7. Push хабарландырулары',
+      body: `Firebase Cloud Messaging хабарландыруларды жеткізеді. Құрылғы токеніңіз тек өзіңіз оқи алатын аккаунтыңыздың жеке бөлігінде сақталады.
+
+Хабарландырулар ешбір хабарлама мәтінін алып жүрмейді. Құрылғыңыз хабарламаны жергілікті түрде шешеді және сіз көретінді құрастырады; Google хатты жеткізеді, мазмұнды емес.`,
+    },
+    {
+      title: '8. Сіз не істей аласыз',
+      body: `• Профиль экранынан аккаунтыңызды жойыңыз. Әңгіменің ортақ бөлігі болып табылатын мазмұн — мысалы, қоңырау жазбасы — екінші қатысушыда қалады, себебі бұл оның да жазбасы.
+• Профиль экранынан деректеріңізді экспорттаңыз.
+• Хабарлама мерзімін әр әңгіме бойынша орнатыңыз: 1 сағат, 24 сағат, 7 күн немесе 30 күн.
+• Теру көрсеткіштері мен оқылғаны туралы растауларды қосыңыз немесе өшіріңіз. Екеуі де әдепкі бойынша өшірулі.
+• Қолданбаны PIN кодымен немесе биометриямен құлыптаңыз.
+• Сіз таратқан шақыру сілтемесін қайтарып алыңыз.
+
+Егер бір нәрсені қолмен жойғанымызды қаласаңыз, бізге жазыңыз.`,
+    },
+    {
+      title: '9. Сақтау мерзімі',
+      body: `Аккаунтыңыз бар кезде деректеріңізді сақтаймыз. Аккаунтыңызды жою жоғарыдағыдай бірлесіп ұсталатын мазмұннан басқасын жояды. Әр әңгіме бойынша мерзім хабарламаларды сіз орнатқан кесте бойынша жояды.`,
+    },
+    {
+      title: '10. Білуіңіз керек шектеулер',
+      body: `Сізге өзіңіз біліп алғаннан гөрі, өзіміз айтқанды жөн көреміз.
+
+• Кілттер алғаш көргенде сенімді деп есептеледі. Егер біреу сіз ешқашан хабарласпай тұрып кілтті ауыстырса, әңгіме дұрыс емес адамға шифрланады және мүлдем қалыпты көрінеді. Қолданба кілт кейін өзгергенде сізді ескертеді және арнадан тыс салыстыруға болатын қауіпсіздік нөмірін көрсетеді — бірақ ештеңе сізді оны салыстыруға мәжбүрлемейді.
+• Бір уақытта бір құрылғы. Қалпына келтіру фразаңыз тарихыңызды ашатын кілтті қалпына келтіреді, сондықтан жаңа құрылғыда кіру сіз бұрын алғанды жоғалтпайды. Тікелей құпиялылығы бар әңгімелер оны жасаған құрылғыдан ешқашан шықпайтын екінші кілтті пайдаланады: соңғы рет кірген қай құрылғы болса, олар соған жетеді, ал аралықта екіншісіне мөрленген кез келген нәрсе оған көше алмайды.
+• Шифрлау болмай тұрып жіберілген хабарламалар бұрынғыдай қалады. Ештеңе кейін өзгертілмеді.
+• Бұл қолданба тәуелсіз қауіпсіздік аудитінен өткен жоқ.`,
+    },
+    {
+      title: '11. Балалар',
+      body: `Chatterbox 13 жасқа толмаған балаларға арналмаған, және біз олардың ақпаратын білместен жинамаймыз. Егер бала бізге жеке ақпарат бергенін білсеңіз, бізбен байланысыңыз, біз оны жоямыз.`,
+    },
+    {
+      title: '12. Өзгерістер',
+      body: `Біз бұл саясатты жаңарта аламыз. Маңызды өзгерістер қолданбада хабарланады, ал жоғарыдағы күн оның соңғы рет қашан өзгергенін көрсетеді.`,
+    },
+    {
+      title: '13. Байланыс',
+      body: `Осы саясат туралы сұрақтар: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  uz: [
+    {
+      title: '0. Qisqacha',
+      body: `Xabarlaringiz matni qurilmangizda shifrlangan va uni faqat siz yuborgan kishilar o'qiy oladi. Biz uni o'qiy olmaymiz, serverlarini ijaraga olayotgan Google ham o'qiy olmaydi.
+
+Biz ko'ra oladigan narsa — suhbat bo'lganligi: unda qaysi akkauntlar borligi va ular qachon faol bo'lgani. Buni olib tashlash mazmunni shifrlashdan qiyinroq, va biz hali tugatganimiz yo'q. Ushbu siyosat chegara hozir aynan qayerda ekanini aytadi.`,
+    },
+    {
+      title: "1. Uchidan uchigacha nima shifrlangan",
+      body: `Qurilmangizda shifrlangan, biz uchun ham, Google uchun ham o'qib bo'lmaydi:
+
+• Xabarlaringiz matni.
+• Biriktirgan fayllar, fotosuratlar, audio va videoning mazmuni.
+• Havola oldindan ko'rishlari.
+• Qurilmalar orasida majburiy DTLS-SRTP WebRTC ishlatadigan ovozli va video qo'ng'iroqlar.
+
+Ko'pgina bir-birov va guruh xabarlari qo'shimcha ravishda ratchet mexanizmini ishlatadi, ya'ni har bir xabarning o'z kaliti bor, shuning uchun qurilmangizning buzilishi oldingi xabarlarni ochib bermaydi. Klient kimdir uchun yangiroq kalit materialini e'lon qilmagan suhbatlar bu xususiyatga ega bo'lmagan yagona uzoq muddatli kalitga qaytadi. Xabar ostidagi belgi u aslida qaysi birini olganini aytadi.
+
+Faqat bitta narsa shu chegaradan o'tadi, faqat siz so'raganda: Vikipediyadan ismni qidirish faqat o'sha ismni yuboradi, u kelib chiqqan xabarni emas. 6-bo'lim buni kim olishini aytadi, va qidiruv faqat bosilganda ishlaydi va boshqacha yo'q, shuning uchun o'chiradigan hech narsa yo'q. Qisqacha bayon qilish, tarjima qilish va matnga aylantirish ham shu chegaradan o'tar edi — ular ushbu versiyada o'chirilgan, ilovada ularni yoqadigan hech qanday boshqaruv yo'q.`,
+    },
+    {
+      title: '2. Nima shifrlanmagan va biz nimani ko\'ra olamiz',
+      body: `Shifrlash mazmunni himoya qiladi, suhbat bo'lgan faktni emas. Quyidagi narsalar serverlarimizda ochiq holda yotadi:
+
+• Har bir suhbatda kim borligi va u qachon yaratilgani hamda oxirgi marta qachon faol bo'lgani.
+• Har bir xabarning vaqt belgisi va sizda nechta o'qilmagan borligi.
+• Biriktirmaning fayl nomi, turi va hajmi. Baytlar shifrlangan; ularning tavsifi shifrlanmagan, va shifrlangan matnning uzunligi asl nusxaning uzunligini cheklaydi.
+• Do'stlaringiz va do'stlik so'rovlari.
+• Qo'ng'iroq signalizatsiyasi — qo'ng'iroq bo'lgani, kim bilan va qachon. Uning ovozi yoki videosi emas.
+
+Yozayotganlik ko'rsatkichlari va o'qilganlik tasdiqlari siz ularni yoqmaguningizcha o'chirilgan, va ular o'chirilgan paytda hech narsa yozilmaydi.
+
+Endi bu yerda yo'q narsa: elektron pochta manzilingiz va ismingiz. 2026-yil sentyabridan boshlab akkaunt yozuvida faqat akkaunt identifikatori bor — va o'shandan beri uning saqlaydigan manzili yo'q. Ro'yxatdan o'tish sizdan buni so'ramaydi: akkauntingiz 24 so'zdan iborat tiklash iborasi, va Firebase Authentication tekshiradigan hisob ma'lumoti undan olinadi. U saqlaydigan narsa — pochta qabul qila olmaydigan domen ostidagi tasodifiy yorliq.
+
+Alohida: ilova Google Firebase'da ishlagani uchun, Google qurilmangiz unga qiladigan har bir ulanishning IP manzili va vaqtini ko'ra oladi. Bu xosting xususiyati, ilovaniki emas, va biz buni shifrlash bilan yo'qota olmaymiz.`,
+    },
+    {
+      title: '3. Odamlar sizni qanday topadi',
+      body: `Ular sizni qidira olmaydi. Katalog yo'q — elektron pochta, telefon raqami yoki ism bo'yicha qidiruv yo'q — va server buni sinaydigan har qanday so'rovni rad etadi.
+
+Siz kimgadir kanaldan tashqarida, allaqachon ishlatayotgan har qanday narsa orqali taklif havolasini yuborish orqali murojaat qilasiz. Havola bir marta ishlaydi, 24 soatdan keyin muddati tugaydi va bekor qilinishi mumkin. Kimnidir qanday nomlashingizdan qat'iy nazar, bu siz uchun saqlanadigan sizning o'z yorlig'ingiz; agar u o'zini tanishtirgan bo'lsa, bu ism sizga shifrlangan holda yetib kelgan.`,
+    },
+    {
+      title: '4. Biz nimalarni to\'playmiz',
+      body: `• Akkaunt ma'lumotlari: akkaunt identifikatori va tiklash iborangizdan olingan, Firebase Authentication'da saqlanadigan hisob ma'lumoti. Elektron pochta manzili yo'q, telefon raqami yo'q, ism yo'q — ro'yxatdan o'tish bularning birortasini ham so'ramaydi.
+• Xabarlar va biriktirmalarning shifrlangan matni, hamda 2-bo'limdagi metama'lumotlar.
+
+Bu to'liq ro'yxat. Analitika ham, xatoliklar haqida hisobot ham yo'q. Ilova ilgari ekran ko'rinishlarini Firebase Analytics'ga va xatolik hisobotlarini Firebase Crashlytics'ga yuborar edi, ikkalasi ham akkaunt identifikatoringizni olib yurar edi, shuning uchun ularning hech biri anonim emas edi; ikkalasi ham endi yo'q, ularni yuborgan kutubxonalar bilan birga. Xatolar faqat ishlab chiqish paytida dasturchining o'z kompyuterida chop etiladi va boshqa hech qayerga bormaydi.`,
+    },
+    {
+      title: '5. U qayerda saqlanadi',
+      body: `Google Firebase'da — Firestore, Storage va Authentication — har bir hujjatni kim o'qiy va yoza olishini hal qiladigan xavfsizlik qoidalari ostida.
+
+Qurilmangizda keshlangan xabarlar, sozlamalar va ilova qulfingizning PIN kodi odatiy ilova xotirasi o'rniga platforma kalit ombori (iOS Keychain, Android Keystore) da saqlanadigan qurilmaga xos kalit bilan shifrlangan.
+
+Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit siz yozib qo'yishni tanlagan tiklash iborasidan boshqa hech qachon qurilmangizdan chiqmaydi. Biz uni saqlamaymiz va siz uchun tiklay olmaymiz. Agar uni yo'qotsangiz, o'sha qurilmaga yuborilgan xabarlarni hech kim, shu jumladan biz ham, qayta o'qiy olmaydi.`,
+    },
+    {
+      title: '6. Yana kim ma\'lumot oladi',
+      body: `Biz shaxsiy ma'lumotlaringizni sotmaymiz, savdo qilmaymiz va ijaraga bermaymiz. Ma'lumotlar quyidagilarga yetib boradi:
+
+• Google Firebase — yuqorida tavsiflangan bizning xosting provayderimiz.
+• Wikimedia Foundation — Vikipediyada qidirish uchun bosganingizda bitta ism.
+• Google Cloud Speech-to-Text — matnga aylantirishni so'raganingizda bitta ovozli xabarning audiosi.
+• Google Cloud Translation — tarjima so'raganingizda bitta xabarning matni.
+• Cloudflare Workers AI — qisqacha bayonni so'raganingizda yoki undan savol so'raganingizda bitta suhbatning oxirgi 50 tagacha xabari.
+
+Oxirgi uchtasi ushbu versiyada o'chirilgan. Ilovada matnga aylantirish, tarjima yoki qisqacha bayon qilishni yoqadigan hech qanday boshqaruv yo'q, shuning uchun bu uchta xizmatga hech narsa yetib bormaydi. Ular o'chirilmagan, ro'yxatga kiritilgan, chunki kod hali ham shu yerda va funksiyalar qaytishi kerak — va ular qaytganda, ushbu oshkoralik va birinchi foydalanishdan oldingi so'rov bilan qaytadi. O'shanda yuboriladigan narsa har qanday narsani o'rgatish uchun emas, natijangizni yaratish uchun yuboriladi; na transkript, na tarjima serverlarimizda saqlanmaydi.
+
+Vikipediya qidiruvining kalit-o'chirgichi yo'q, chunki o'chiradigan hech narsa yo'q: u faqat bosilganda ishlaydi va boshqacha yo'q. Vikipediya faqat o'sha bitta ismni va IP manzilingizni oladi, xuddi siz uni ularning o'z qidiruv maydoniga o'zingiz kiritgandek — akkaunt yo'q, xabar yo'q, suhbat yo'q. Qaytib kelgan narsa ko'rsatiladi va saqlanmaydi, va u haqida hech narsa suhbatga yozilmaydi.
+
+Qonun talab qilsa, biz saqlayotgan narsani oshkor qila olamiz. Biz saqlayotgan narsa — 2-bo'limdagi ro'yxat. Xabar mazmunini taqdim eta olmaymiz, chunki uni o'qiy olmaymiz.`,
+    },
+    {
+      title: '7. Push bildirishnomalari',
+      body: `Firebase Cloud Messaging bildirishnomalarni yetkazadi. Qurilma tokeningiz faqat siz o'qiy oladigan akkauntingizning shaxsiy qismida saqlanadi.
+
+Bildirishnomalar hech qanday xabar matnini olib yurmaydi. Qurilmangiz xabarni mahalliy ravishda shifrdan chiqaradi va siz ko'radigan narsani quradi; Google konvertni yetkazadi, mazmunni emas.`,
+    },
+    {
+      title: '8. Siz nima qila olasiz',
+      body: `• Profil ekranidan akkauntingizni o'chiring. Suhbatning umumiy qismi bo'lgan mazmun — masalan, qo'ng'iroq yozuvi — boshqa ishtirokchida qoladi, chunki bu uning ham yozuvi.
+• Profil ekranidan ma'lumotlaringizni eksport qiling.
+• Har bir suhbat uchun xabar muddatini belgilang: 1 soat, 24 soat, 7 kun yoki 30 kun.
+• Yozayotganlik ko'rsatkichlari va o'qilganlik tasdiqlarini yoqing yoki o'chiring. Ikkalasi ham sukut bo'yicha o'chirilgan.
+• Ilovani PIN kod yoki biometriya bilan qulflang.
+• Siz tarqatgan taklif havolasini bekor qiling.
+
+Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
+    },
+    {
+      title: '9. Saqlash muddati',
+      body: `Akkauntingiz mavjud bo'lgan vaqtda ma'lumotlaringizni saqlaymiz. Akkauntingizni o'chirish yuqorida aytilgan birgalikda saqlanadigan mazmundan boshqasini olib tashlaydi. Har bir suhbat bo'yicha muddat xabarlarni siz belgilagan jadval bo'yicha olib tashlaydi.`,
+    },
+    {
+      title: '10. Bilishingiz kerak bo\'lgan cheklovlar',
+      body: `Buni o'zingiz bilib olishingizdan ko'ra, biz aytib qo'yishni afzal ko'ramiz.
+
+• Kalitlar birinchi ko'rishda ishonchli deb hisoblanadi. Agar kimdir siz hech qachon xabar almashmasdan oldin kalitni almashtirgan bo'lsa, suhbat noto'g'ri odamga shifrlanadi va mutlaqo normal ko'rinadi. Ilova kalit keyinroq o'zgarganda sizni ogohlantiradi va kanaldan tashqarida solishtirishingiz mumkin bo'lgan xavfsizlik raqamini ko'rsatadi — ammo hech narsa sizni uni solishtirishga majburlamaydi.
+• Bir vaqtning o'zida bitta qurilma. Tiklash iborangiz tarixingizni ochadigan kalitni tiklaydi, shuning uchun yangi qurilmada tizimga kirish siz allaqachon olgan narsani yo'qotmaydi. Forward secrecy'ga ega suhbatlar uni yaratgan qurilmadan hech qachon chiqmaydigan ikkinchi kalitdan foydalanadi: eng oxirgi tizimga kirgan qurilma qaysi bo'lsa, ular o'shanga yetadi, va bu orada ikkinchisiga muhrlangan har qanday narsa u yerga ko'chib o'ta olmaydi.
+• Shifrlash mavjud bo'lmasdan oldin yuborilgan xabarlar o'zgarishsiz qoladi. Hech narsa orqaga qarab o'zgartirilmagan.
+• Ushbu ilova mustaqil xavfsizlik auditidan o'tkazilmagan.`,
+    },
+    {
+      title: '11. Bolalar',
+      body: `Chatterbox 13 yoshgacha bo'lgan bolalar uchun mo'ljallanmagan, va biz ularning ma'lumotlarini bilib-bila turib to'plamaymiz. Agar bola bizga shaxsiy ma'lumot bergan deb hisoblasangiz, biz bilan bog'laning, biz uni o'chirib tashlaymiz.`,
+    },
+    {
+      title: '12. O\'zgarishlar',
+      body: `Biz ushbu siyosatni yangilashimiz mumkin. Muhim o'zgarishlar ilovada e'lon qilinadi, va yuqoridagi sana uning oxirgi marta qachon o'zgarganini bildiradi.`,
+    },
+    {
+      title: '13. Aloqa',
+      body: `Ushbu siyosat haqida savollar: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  ka: [
+    {
+      title: '0. მოკლედ',
+      body: `თქვენი შეტყობინებების ტექსტი დაშიფრულია თქვენს მოწყობილობაზე და მისი წაკითხვა შეუძლიათ მხოლოდ იმ ადამიანებს, ვისაც უგზავნით. ჩვენ ვერ ვკითხულობთ მას და ვერც Google, რომლის სერვერებსაც ვქირაობთ.
+
+რასაც ჩვენ ვხედავთ, არის ის, რომ საუბარი შედგა: რომელი ანგარიშები მონაწილეობენ და როდის იყვნენ აქტიურები. ამის მოცილება უფრო რთულია, ვიდრე შინაარსის დაშიფვრა, და ჩვენ ჯერ არ დაგვისრულებია. ეს პოლიტიკა ზუსტად ამბობს, სად გადის ეს ზღვარი ამჟამად.`,
+    },
+    {
+      title: '1. რა არის ბოლოდან ბოლომდე დაშიფრული',
+      body: `დაშიფრულია თქვენს მოწყობილობაზე, წაუკითხავია ჩვენთვისაც და Google-სთვისაც:
+
+• თქვენი შეტყობინებების ტექსტი.
+• ფაილების, ფოტოების, აუდიოსა და ვიდეოს შინაარსი, რომელსაც ურთავთ.
+• ბმულის წინასწარი გადახედვები.
+• ხმოვანი და ვიდეო ზარები, რომლებიც იყენებენ სავალდებულო DTLS-SRTP WebRTC-ს მოწყობილობებს შორის.
+
+ერთ-ერთზე და ჯგუფური შეტყობინებების უმეტესობა დამატებით იყენებს რეჩეტ მექანიზმს, რაც ნიშნავს, რომ თითოეულ შეტყობინებას აქვს საკუთარი გასაღები, ასე რომ თქვენი მოწყობილობის კომპრომეტირება წინა შეტყობინებებს არ ააშკარავებს. საუბრები, სადაც კლიენტმა ვინმესთვის უახლესი გასაღების მასალა არ გამოაქვეყნა, უბრუნდება ერთ ხანგრძლივვადიან გასაღებს, რომელსაც ეს თვისება არ აქვს. შეტყობინების ქვეშ ნიშანი გეუბნებათ, რომელი მიიღო ფაქტობრივად.
+
+მხოლოდ ერთი რამ კვეთს ამ ზღვარს, და მხოლოდ მაშინ, როცა ამას ითხოვთ: ვიკიპედიაზე სახელის ძიება აგზავნის მხოლოდ ამ სახელს და არა შეტყობინებას, საიდანაც ის მოვიდა. მე-6 ნაწილი ამბობს, ვინ იღებს ამას, და ძიება მუშაობს მხოლოდ შეხებისას და სხვაგვარად არა, ასე რომ არაფერია გამორთვის საჭირო. შეჯამება, თარგმნა და ტრანსკრიფცია ასევე გადაკვეთდნენ ამ ზღვარს — ისინი გამორთულია ამ ვერსიაში, აპლიკაციაში არსად არსებობს მართვის საშუალება, რომელიც მათ ჩართავდა.`,
+    },
+    {
+      title: '2. რა არ არის დაშიფრული და რა შეგვიძლია დავინახოთ',
+      body: `დაშიფვრა იცავს შინაარსს და არა იმ ფაქტს, რომ საუბარი შედგა. ეს ნივთები ღიად დევს ჩვენს სერვერებზე:
+
+• ვინ არის თითოეულ საუბარში და როდის შეიქმნა და ბოლოს როდის იყო აქტიური.
+• თითოეული შეტყობინების დროის ნიშანი და რამდენი გაქვთ წაუკითხავი.
+• დანართის ფაილის სახელი, ტიპი და ზომა. ბაიტები დაშიფრულია; მათი აღწერა არა, და დაშიფრული ტექსტის სიგრძე ზღუდავს ორიგინალის სიგრძეს.
+• თქვენი მეგობრები და მეგობრობის მოთხოვნები.
+• ზარის სიგნალიზაცია — რომ ზარი შედგა, ვისთან და როდის. არა მისი აუდიო ან ვიდეო.
+
+აკრეფის ინდიკატორები და წაკითხვის დადასტურებები გამორთულია, სანამ არ ჩართავთ, და სანამ გამორთულია, არაფერი იწერება.
+
+რაც აღარ არის აქ: თქვენი ელფოსტის მისამართი და სახელი. 2026 წლის სექტემბრიდან ანგარიშის ჩანაწერი შეიცავს მხოლოდ ანგარიშის იდენტიფიკატორს — და მას შემდეგ არ არსებობს მისამართი, რომლის შენახვაც შეეძლო. რეგისტრაცია არ გთხოვთ ამას: თქვენი ანგარიში არის 24-სიტყვიანი აღდგენის ფრაზა, და Firebase Authentication-ის მიერ შემოწმებული სავალდებულო მონაცემი მისგან არის მიღებული. რასაც ის ინახავს, არის შემთხვევითი ნიშანი დომენის ქვეშ, რომელსაც ფოსტის მიღება არ შეუძლია.
+
+ცალკე: რადგან აპლიკაცია მუშაობს Google Firebase-ზე, Google-ს შეუძლია დაინახოს IP მისამართი და თითოეული კავშირის დროულობა, რომელსაც თქვენი მოწყობილობა მასთან ამყარებს. ეს არის ჰოსტინგის თვისება და არა აპლიკაციის, და ჩვენ ვერ დავშიფრავთ მას.`,
+    },
+    {
+      title: '3. როგორ გპოულობენ ხალხი',
+      body: `მათ არ შეუძლიათ თქვენი მოძებნა. არ არსებობს დირექტორია — არ არსებობს ძიება ელფოსტის, ტელეფონის ნომრის ან სახელის მიხედვით — და სერვერი უარყოფს ნებისმიერ მოთხოვნას, რომელიც ამას ცდილობს.
+
+ვინმეს მისწვდებით მისთვის მოსაწვევი ბმულის გაგზავნით არხის გარეთ, რაც არ უნდა უკვე იყენებდეთ. ბმული მუშაობს ერთხელ, იწურება 24 საათის შემდეგ და შეიძლება გაუქმდეს. როგორც არ უნდა უწოდოთ ვინმეს, ეს არის თქვენი საკუთარი ნიშანი მისთვის, თქვენთვის შენახული; თუ მან თავად წარმოადგინა თავი, ეს სახელი დაშიფრული მოვიდა თქვენთან.`,
+    },
+    {
+      title: '4. რას ვაგროვებთ',
+      body: `• ანგარიშის მონაცემები: ანგარიშის იდენტიფიკატორი და თქვენი აღდგენის ფრაზისგან მიღებული სავალდებულო მონაცემი, შენახული Firebase Authentication-ში. ელფოსტის მისამართი არ არის, ტელეფონის ნომერი არ არის, სახელი არ არის — რეგისტრაცია არცერთს არ ითხოვს.
+• შეტყობინებებისა და დანართების დაშიფრული ტექსტი, პლუს მე-2 ნაწილში მოცემული მეტამონაცემები.
+
+ეს არის სრული სია. არ არსებობს ანალიტიკა და არ არსებობს ავარიების შესახებ ანგარიშგება. აპლიკაცია ადრე უგზავნიდა ეკრანის ხედვებს Firebase Analytics-ს და ავარიების ანგარიშებს Firebase Crashlytics-ს, ორივე ატარებდა თქვენი ანგარიშის იდენტიფიკატორს, ასე რომ არცერთი მათგანი არ იყო ანონიმური; ორივე ახლა აღარ არსებობს, მათი გამგზავნი ბიბლიოთეკებთან ერთად. შეცდომები იბეჭდება მხოლოდ დეველოპერის საკუთარ მანქანაზე შემუშავების დროს და არსად სხვაგან არ მიდის.`,
+    },
+    {
+      title: '5. სად ინახება ეს',
+      body: `Google Firebase-ზე — Firestore, Storage და Authentication — უსაფრთხოების წესების ქვეშ, რომლებიც წყვეტენ, ვის შეუძლია თითოეული დოკუმენტის წაკითხვა და ჩაწერა.
+
+თქვენს მოწყობილობაზე, ქეშირებული შეტყობინებები, პარამეტრები და თქვენი აპლიკაციის დაბლოკვის PIN კოდი დაშიფრულია მოწყობილობის ცალკეული გასაღებით, რომელიც ინახება პლატფორმის გასაღების საცავში (iOS Keychain, Android Keystore) ჩვეულებრივი აპლიკაციის საცავის ნაცვლად.
+
+პირადი გასაღები, რომელიც შიფრავს თქვენს შეტყობინებებს, არასდროს ტოვებს თქვენს მოწყობილობას, გარდა აღდგენის ფრაზისა, რომლის ჩაწერასაც აირჩევთ. ჩვენ არ ვინახავთ მას და ვერ აღვადგენთ თქვენთვის. თუ დაკარგავთ მას, იმ მოწყობილობაზე გაგზავნილი შეტყობინებები ვეღარ წაიკითხება — არავის მიერ, ჩვენს ჩათვლით.`,
+    },
+    {
+      title: '6. ვინ სხვა იღებს მონაცემებს',
+      body: `ჩვენ არ ვყიდით, არ ვვაჭრობთ და არ ვქირავებთ თქვენს პირად ინფორმაციას. მონაცემები აღწევს:
+
+• Google Firebase-ს — ჩვენს ჰოსტინგ პროვაიდერს, როგორც ზემოთ არის აღწერილი.
+• Wikimedia Foundation-ს — ერთი სახელი, როცა შეხებთ ვიკიპედიაზე მის საძებნელად.
+• Google Cloud Speech-to-Text-ს — ერთი ხმოვანი შეტყობინების აუდიო, როცა ტრანსკრიფციას ითხოვთ.
+• Google Cloud Translation-ს — ერთი შეტყობინების ტექსტი, როცა თარგმანს ითხოვთ.
+• Cloudflare Workers AI-ს — ერთი საუბრის ბოლო 50 შეტყობინებამდე, როცა შეჯამებას ითხოვთ ან კითხვას უსვამთ.
+
+ბოლო სამი გამორთულია ამ ვერსიაში. აპლიკაციაში არსად არსებობს მართვის საშუალება, რომელიც ჩართავდა ტრანსკრიფციას, თარგმანს ან შეჯამებას, ასე რომ ამ სამ სერვისს არაფერი აღწევს. ისინი ჩამოთვლილია და არა წაშლილი, რადგან კოდი ჯერ კიდევ აქ არის და ფუნქციები უნდა დაბრუნდნენ — და როცა დაბრუნდებიან, დაბრუნდებიან ამ გამჟღავნებით და მოთხოვნით პირველი გამოყენების წინ. რაც მაშინ გაიგზავნებოდა, იგზავნება თქვენი შედეგის შესაქმნელად და არა რაიმეს გასაწვრთნელად; არც ტრანსკრიფცია და არც თარგმანი არ ინახება ჩვენს სერვერებზე.
+
+ვიკიპედიის ძიებას არ აქვს გადამრთველი, რადგან არაფერია გამორთვის საჭირო: ის მუშაობს მხოლოდ შეხებისას და სხვაგვარად არა. ვიკიპედია იღებს მხოლოდ ერთ ამ სახელს და თქვენს IP მისამართს, ზუსტად ისე, თითქოს თავად აკრიფეთ ის მათივე საძებნელ ველში — არანაირი ანგარიში, არანაირი შეტყობინება, არანაირი საუბარი. რაც უკან მოდის, ნაჩვენებია და არ ინახება, და მის შესახებ არაფერი იწერება საუბარში.
+
+ჩვენ შეგვიძლია გავამჟღავნოთ, რასაც ვინახავთ, თუ კანონი მოითხოვს. რასაც ვინახავთ, არის მე-2 ნაწილში მოცემული სია. ჩვენ ვერ წარმოვადგენთ შეტყობინებების შინაარსს, რადგან ვერ ვკითხულობთ მას.`,
+    },
+    {
+      title: '7. პუშ შეტყობინებები',
+      body: `Firebase Cloud Messaging აწვდის შეტყობინებებს. თქვენი მოწყობილობის ტოკენი ინახება თქვენი ანგარიშის კერძო ნაწილში, რომლის წაკითხვაც მხოლოდ თქვენ შეგიძლიათ.
+
+შეტყობინებები არ ატარებენ არავითარ შეტყობინების ტექსტს. თქვენი მოწყობილობა შიფრავს შეტყობინებას ლოკალურად და აწყობს იმას, რასაც ხედავთ; Google აწვდის კონვერტს და არა შინაარსს.`,
+    },
+    {
+      title: '8. რისი გაკეთება შეგიძლიათ',
+      body: `• წაშალეთ თქვენი ანგარიში პროფილის ეკრანიდან. შინაარსი, რომელიც საუბრის საერთო ნაწილია — მაგალითად, ზარის ჩანაწერი — რჩება მეორე მონაწილესთან, რადგან ეს მისი ჩანაწერიც არის.
+• გაიტანეთ თქვენი მონაცემები პროფილის ეკრანიდან.
+• დააყენეთ შეტყობინების ვადა თითოეული საუბრისთვის: 1 საათი, 24 საათი, 7 დღე ან 30 დღე.
+• ჩართეთ ან გამორთეთ აკრეფის ინდიკატორები და წაკითხვის დადასტურებები. ორივე ნაგულისხმევად გამორთულია.
+• დაბლოკეთ აპლიკაცია PIN კოდით ან ბიომეტრიით.
+• გააუქმეთ მოსაწვევი ბმული, რომელიც გასცით.
+
+თუ გირჩევნიათ, რომ ჩვენ ხელით წავშალოთ რაღაც, მოგვწერეთ.`,
+    },
+    {
+      title: '9. შენახვა',
+      body: `ჩვენ ვინახავთ თქვენს მონაცემებს, სანამ თქვენი ანგარიში არსებობს. ანგარიშის წაშლა შლის მათ, ზემოთ მითითებული ერთობლივად შენახული შინაარსის გარდა. თითოეული საუბრის ვადა შლის შეტყობინებებს თქვენ მიერ დაყენებული განრიგის მიხედვით.`,
+    },
+    {
+      title: '10. შეზღუდვები, რომლებიც უნდა იცოდეთ',
+      body: `გვირჩევნია გითხრათ, ვიდრე თავად აღმოაჩინოთ.
+
+• გასაღებებს ენდობიან პირველივე ნახვისას. თუ ვინმემ შეცვალა გასაღები, სანამ ოდესმე შეტყობინება გაცვალეთ, საუბარი დაშიფრდებოდა არასწორ ადამიანთან და სრულიად ნორმალურად გამოიყურებოდა. აპლიკაცია გაფრთხილებთ, როცა გასაღები მოგვიანებით იცვლება, და აჩვენებს უსაფრთხოების ნომერს, რომლის შედარებაც შეგიძლიათ არხის გარეთ — მაგრამ არაფერი გაიძულებთ მის შედარებას.
+• ერთდროულად ერთი მოწყობილობა. თქვენი აღდგენის ფრაზა აღადგენს გასაღებს, რომელიც ხსნის თქვენს ისტორიას, ასე რომ ახალ მოწყობილობაზე შესვლა არ კარგავს იმას, რაც უკვე მიიღეთ. საუბრები წინსვლის საიდუმლოებით იყენებენ მეორე გასაღებს, რომელიც არასდროს ტოვებს მის შემქმნელ მოწყობილობას: რომელი მოწყობილობაც ბოლოს შევიდა, ის არის ის, რასაც ისინი აღწევენ, და ნებისმიერი რამ, რაც ამასობაში მეორისთვის დაილუქა, იქ ვერ გადავა.
+• შეტყობინებები, გაგზავნილი დაშიფვრის არსებობამდე, რჩება ისეთივე, როგორიც იყო. არაფერი გარდაქმნილა უკუღმა.
+• ეს აპლიკაცია არ გაუვლია დამოუკიდებელი უსაფრთხოების აუდიტს.`,
+    },
+    {
+      title: '11. ბავშვები',
+      body: `Chatterbox არ არის განკუთვნილი 13 წლამდე ბავშვებისთვის, და ჩვენ შეგნებულად არ ვაგროვებთ მათ ინფორმაციას. თუ გგონიათ, რომ ბავშვმა მოგვაწოდა პირადი ინფორმაცია, დაგვიკავშირდით და ჩვენ წავშლით მას.`,
+    },
+    {
+      title: '12. ცვლილებები',
+      body: `ჩვენ შეიძლება განვაახლოთ ეს პოლიტიკა. მნიშვნელოვანი ცვლილებები გამოცხადდება აპლიკაციაში, და თარიღი ზემოთ არის მაშინ, როცა ბოლოს შეიცვალა.`,
+    },
+    {
+      title: '13. კონტაქტი',
+      body: `კითხვები ამ პოლიტიკის შესახებ: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  hy: [
+    {
+      title: '0. Համառոտ',
+      body: `Ձեր հաղորդագրությունների տեքստը գաղտնագրված է ձեր սարքում և կարող են կարդալ միայն այն մարդիկ, ում ուղարկում եք։ Մենք չենք կարող կարդալ այն, և չի կարող նաև Google-ը, որի սերվերները վարձակալում ենք։
+
+Ինչ մենք կարող ենք տեսնել, այն է, որ խոսակցություն է տեղի ունեցել՝ որ հաշիվներն են դրանում, և երբ են եղել ակտիվ։ Դա հեռացնելը ավելի դժվար է, քան բովանդակությունը գաղտնագրելը, և մենք դեռ չենք ավարտել։ Այս քաղաքականությունը ճշգրիտ ասում է, թե որտեղ է գիծն այժմ։`,
+    },
+    {
+      title: '1. Ինչն է ծայրից ծայր գաղտնագրված',
+      body: `Գաղտնագրված է ձեր սարքում, անընթեռնելի է մեզ և Google-ի համար.
+
+• Ձեր հաղորդագրությունների տեքստը։
+• Ձեր կցած ֆայլերի, լուսանկարների, աուդիոյի և տեսանյութի բովանդակությունը։
+• Հղումների նախադիտումները։
+• Ձայնային և տեսազանգերը, որոնք օգտագործում են սարքերի միջև պարտադիր DTLS-SRTP WebRTC։
+
+Մեկ առ մեկ և խմբային հաղորդագրությունների մեծ մասը լրացուցիչ օգտագործում է ratchet մեխանիզմ, ինչը նշանակում է, որ յուրաքանչյուր հաղորդագրություն ունի իր սեփական բանալին, ուստի ձեր սարքի վտանգված լինելը չի բացահայտում ավելի վաղ հաղորդագրությունները։ Խոսակցությունները, որտեղ հաճախորդը ինչ-որ մեկի համար չի հրապարակել ավելի նոր բանալի նյութ, վերադառնում են մեկ երկարաժամկետ բանալու, որն այս հատկությունը չունի։ Հաղորդագրության տակի նշանը ասում է, թե որն է իրականում ստացվել։
+
+Միայն մեկ բան է հատում այս գիծը, և միայն երբ դուք դա խնդրում եք. Վիքիպեդիայում անվան որոնումն ուղարկում է միայն այդ անունը, ոչ թե այն հաղորդագրությունը, որտեղից այն եկել է։ Բաժին 6-ը ասում է, թե ով է դա ստանում, և որոնումն աշխատում է միայն հպման ժամանակ և այլապես ոչ, ուստի ոչինչ չկա անջատելու։ Ամփոփումը, թարգմանությունը և տառադարձումը նույնպես կհատեին այս գիծը — դրանք անջատված են այս թողարկման մեջ, հավելվածում ոչ մի կառավարման միջոց չկա, որը դրանք կմիացներ։`,
+    },
+    {
+      title: '2. Ինչը գաղտնագրված չէ, և ինչ կարող ենք տեսնել',
+      body: `Գաղտնագրումը պաշտպանում է բովանդակությունը, ոչ թե այն փաստը, որ խոսակցություն է տեղի ունեցել։ Այս բաները բացահայտորեն ընկած են մեր սերվերների վրա.
+
+• Ով է յուրաքանչյուր խոսակցության մեջ, և երբ է ստեղծվել ու վերջին անգամ եղել ակտիվ։
+• Յուրաքանչյուր հաղորդագրության ժամանակի կնիքը, և քանիսն ունեք չկարդացած։
+• Կցորդի ֆայլի անունը, տեսակը և չափը։ Բայթերը գաղտնագրված են; դրանց նկարագրությունը՝ ոչ, և գաղտնագրված տեքստի երկարությունը սահմանափակում է բնօրինակի երկարությունը։
+• Ձեր ընկերները և ընկերության հայցերը։
+• Զանգի ազդանշանավորումը — որ զանգ է եղել, ում հետ և երբ։ Ոչ դրա աուդիոն կամ տեսանյութը։
+
+Մուտքագրման ցուցիչները և ընթերցման հաստատումները անջատված են, մինչև դրանք միացնեք, և քանի դեռ անջատված են, ոչինչ չի գրանցվում։
+
+Ինչն այլևս այստեղ չէ. ձեր էլ. փոստի հասցեն և անունը։ 2026 թվականի սեպտեմբերից հաշվի գրառումը պարունակում է միայն հաշվի նույնացուցիչ — և այդ ժամանակից ի վեր չկա հասցե, որը կարող էր պահվել։ Գրանցումը դա ձեզանից չի հարցնում. ձեր հաշիվը 24 բառից բաղկացած վերականգնման արտահայտություն է, և Firebase Authentication-ի ստուգած հավատարմագիրը ստացվում է դրանից։ Ինչ այն պահում է, պատահական պիտակ է մի տիրույթի տակ, որը չի կարող փոստ ստանալ։
+
+Առանձին. քանի որ հավելվածն աշխատում է Google Firebase-ի վրա, Google-ը կարող է տեսնել IP հասցեն և ձեր սարքի կողմից նրան կատարվող յուրաքանչյուր կապի ժամանակացույցը։ Սա հոսթինգի հատկություն է, ոչ թե հավելվածի, և մենք չենք կարող այն գաղտնագրելով վերացնել։`,
+    },
+    {
+      title: '3. Ինչպես են մարդիկ գտնում ձեզ',
+      body: `Նրանք չեն կարող փնտրել ձեզ։ Չկա գրացուցակ — չկա որոնում ըստ էլ. փոստի, հեռախոսահամարի կամ անվան — և սերվերը մերժում է ցանկացած հարցում, որը փորձում է դա։
+
+Դուք հասնում եք որևէ մեկին՝ ուղարկելով նրան հրավերի հղում ալիքից դուրս, ինչ էլ որ արդեն օգտագործում եք։ Հղումն աշխատում է մեկ անգամ, լրանում է 24 ժամից հետո և կարող է չեղարկվել։ Ինչպես էլ որևէ մեկին անվանեք, դա ձեր սեփական պիտակն է նրա համար, պահված ձեզ համար; եթե նա ինքն է իրեն ներկայացրել, այդ անունը ձեզ հասել է գաղտնագրված։`,
+    },
+    {
+      title: '4. Ինչ ենք հավաքում',
+      body: `• Հաշվի տվյալներ. հաշվի նույնացուցիչ և ձեր վերականգնման արտահայտությունից ստացված հավատարմագիր, պահված Firebase Authentication-ում։ Ոչ մի էլ. փոստի հասցե, ոչ մի հեռախոսահամար, ոչ մի անուն — գրանցումը դրանցից ոչ մեկը չի հարցնում։
+• Հաղորդագրությունների և կցորդների գաղտնագրված տեքստը, գումարած բաժին 2-ում նշված մետատվյալները։
+
+Սա ամբողջական ցանկն է։ Չկա վերլուծություն և չկա վթարների զեկուցում։ Հավելվածն ավելի վաղ ուղարկում էր էկրանի դիտումներ Firebase Analytics և վթարների զեկույցներ Firebase Crashlytics, երկուսն էլ կրում էին ձեր հաշվի նույնացուցիչը, ուստի դրանցից ոչ մեկը անանուն չէր; երկուսն էլ այժմ վերացված են, դրանք ուղարկող գրադարանների հետ միասին։ Սխալները տպագրվում են միայն մշակողի սեփական մեքենայի վրա մշակման ընթացքում և այլուր չեն գնում։`,
+    },
+    {
+      title: '5. Որտեղ է այն պահվում',
+      body: `Google Firebase-ի վրա — Firestore, Storage և Authentication — անվտանգության կանոնների ներքո, որոնք որոշում են, թե ով կարող է կարդալ և գրել յուրաքանչյուր փաստաթուղթ։
+
+Ձեր սարքում, քեշավորված հաղորդագրությունները, կարգավորումները և ձեր հավելվածի կողպման PIN կոդը գաղտնագրված են սարքին հատուկ բանալիով, պահված հարթակի բանալիների պահեստում (iOS Keychain, Android Keystore) սովորական հավելվածի պահեստի փոխարեն։
+
+Գաղտնի բանալին, որը վերծանում է ձեր հաղորդագրությունները, երբեք չի լքում ձեր սարքը, բացառությամբ որպես վերականգնման արտահայտություն, որը դուք ընտրում եք գրանցել։ Մենք չենք պահում այն և չենք կարող այն վերականգնել ձեզ համար։ Եթե կորցնեք այն, այդ սարքին ուղարկված հաղորդագրությունները այլևս չեն կարող կարդացվել — ոչ ոքի կողմից, ներառյալ մեզ։`,
+    },
+    {
+      title: '6. Ով ուրիշ է ստանում տվյալներ',
+      body: `Մենք չենք վաճառում, չենք առևտրում և չենք վարձակալում ձեր անձնական տեղեկությունները։ Տվյալները հասնում են.
+
+• Google Firebase — մեր հոսթինգի մատակարարը, ինչպես նկարագրված է վերևում։
+• Wikimedia Foundation — մեկ անուն, երբ դուք հպում եք այն Վիքիպեդիայում փնտրելու համար։
+• Google Cloud Speech-to-Text — մեկ ձայնային հաղորդագրության աուդիո, երբ դուք խնդրում եք տառադարձություն։
+• Google Cloud Translation — մեկ հաղորդագրության տեքստ, երբ դուք խնդրում եք թարգմանություն։
+• Cloudflare Workers AI — մինչև մեկ խոսակցության վերջին 50 հաղորդագրությունը, երբ դուք խնդրում եք ամփոփում կամ հարց եք տալիս դրան։
+
+Վերջին երեքն անջատված են այս թողարկման մեջ։ Հավելվածում ոչ մի կառավարման միջոց չկա, որը կմիացներ տառադարձումը, թարգմանությունը կամ ամփոփումը, ուստի այս երեք ծառայություններին ոչինչ չի հասնում։ Դրանք թվարկված են, ոչ թե ջնջված, քանի որ կոդը դեռ այստեղ է, և հատկանիշները նախատեսված են վերադառնալու — և երբ վերադառնան, կվերադառնան այս բացահայտմամբ և հուշումով նախքան առաջին օգտագործումը։ Ինչ կուղարկվեր այդ ժամանակ, ուղարկվում է ձեր արդյունքը ստեղծելու համար, ոչ թե որևէ բան մարզելու; ոչ տառադարձությունը, ոչ թարգմանությունը չեն պահվում մեր սերվերներում։
+
+Վիքիպեդիայի որոնումն անջատիչ չունի, քանի որ ոչինչ չկա անջատելու. այն աշխատում է միայն հպման ժամանակ և այլապես ոչ։ Վիքիպեդիան ստանում է միայն այդ մեկ անունը և ձեր IP հասցեն, ճիշտ այնպես, կարծես դուք ինքներդ մուտքագրած լինեիք այն նրանց սեփական որոնման դաշտում — ոչ մի հաշիվ, ոչ մի հաղորդագրություն, ոչ մի խոսակցություն։ Ինչ վերադառնում է, ցուցադրվում է և չի պահվում, և դրա մասին ոչինչ չի գրվում խոսակցության մեջ։
+
+Մենք կարող ենք բացահայտել այն, ինչ ունենք, եթե օրենքը դա պահանջում է։ Ինչ ունենք, բաժին 2-ում նշված ցանկն է։ Մենք չենք կարող տրամադրել հաղորդագրությունների բովանդակությունը, քանի որ չենք կարող կարդալ այն։`,
+    },
+    {
+      title: '7. Push ծանուցումներ',
+      body: `Firebase Cloud Messaging-ը հասցնում է ծանուցումները։ Ձեր սարքի նշանը պահվում է ձեր հաշվի մասնավոր մասում, որը կարող եք կարդալ միայն դուք։
+
+Ծանուցումները չեն կրում որևէ հաղորդագրության տեքստ։ Ձեր սարքը տեղում վերծանում է հաղորդագրությունը և կառուցում այն, ինչ տեսնում եք; Google-ը հասցնում է ծրարը, ոչ թե բովանդակությունը։`,
+    },
+    {
+      title: '8. Ինչ կարող եք անել',
+      body: `• Ջնջեք ձեր հաշիվը Պրոֆիլ էկրանից։ Բովանդակությունը, որը խոսակցության համատեղ մասն է — օրինակ՝ զանգի գրառումը — մնում է մյուս մասնակցի մոտ, քանի որ դա նաև նրա գրառումն է։
+• Արտահանեք ձեր տվյալները Պրոֆիլ էկրանից։
+• Սահմանեք հաղորդագրության ժամկետը ըստ խոսակցության. 1 ժամ, 24 ժամ, 7 օր կամ 30 օր։
+• Միացրեք կամ անջատեք մուտքագրման ցուցիչները և ընթերցման հաստատումները։ Երկուսն էլ լռելյայն անջատված են։
+• Կողպեք հավելվածը PIN կոդով կամ բիոմետրիկայով։
+• Չեղարկեք հրավերի հղումը, որը դուք տվել եք։
+
+Եթե նախընտրում եք, որ մենք ինչ-որ բան ձեռքով ջնջենք, գրեք մեզ։`,
+    },
+    {
+      title: '9. Պահպանում',
+      body: `Մենք պահում ենք ձեր տվյալները, քանի դեռ ձեր հաշիվը գոյություն ունի։ Ձեր հաշվի ջնջումը հեռացնում է դրանք, բացառությամբ վերևում նշված համատեղ պահվող բովանդակության։ Ըստ խոսակցության ժամկետը հեռացնում է հաղորդագրությունները ձեր սահմանած ժամանակացույցով։`,
+    },
+    {
+      title: '10. Սահմանափակումներ, որոնց մասին պետք է իմանաք',
+      body: `Մենք նախընտրում ենք ասել ձեզ, քան դուք ինքներդ հայտնաբերեք։
+
+• Բանալիներին վստահում են առաջին տեսքից։ Եթե ինչ-որ մեկը փոխարիներ բանալին, նախքան դուք երբևէ հաղորդագրություն փոխանակեիք, խոսակցությունը կգաղտնագրվեր սխալ մարդու համար և կթվար լիովին նորմալ։ Հավելվածը զգուշացնում է ձեզ, երբ բանալին փոխվում է ավելի ուշ, և ցույց է տալիս անվտանգության համար, որը կարող եք համեմատել ալիքից դուրս — բայց ոչինչ ձեզ չի ստիպում այն համեմատել։
+• Մեկ սարք միաժամանակ։ Ձեր վերականգնման արտահայտությունը վերականգնում է բանալին, որը բացում է ձեր պատմությունը, ուստի նոր սարքի վրա մուտք գործելը չի կորցնում այն, ինչ արդեն ստացել եք։ Առաջընթաց գաղտնիությամբ խոսակցություններն օգտագործում են երկրորդ բանալի, որը երբեք չի լքում այն ստեղծած սարքը. որ սարքն էլ վերջին անգամ մուտք է գործել, հենց այն է, որին նրանք հասնում են, և ինչ էլ միջանկյալ ժամանակ կնքված լինի մյուսի համար, չի կարող տեղափոխվել այնտեղ։
+• Հաղորդագրությունները, որոնք ուղարկվել են գաղտնագրման գոյությունից առաջ, մնում են այնպիսին, ինչպիսին եղել են։ Ոչինչ հետադարձորեն չի փոխարկվել։
+• Այս հավելվածը անկախ անվտանգության աուդիտի չի ենթարկվել։`,
+    },
+    {
+      title: '11. Երեխաներ',
+      body: `Chatterbox-ը նախատեսված չէ 13 տարեկանից փոքր երեխաների համար, և մենք գիտակցաբար չենք հավաքում նրանց տեղեկությունները։ Եթե կարծում եք, որ երեխան մեզ տրամադրել է անձնական տեղեկություններ, կապվեք մեզ հետ, և մենք կջնջենք դրանք։`,
+    },
+    {
+      title: '12. Փոփոխություններ',
+      body: `Մենք կարող ենք թարմացնել այս քաղաքականությունը։ Էական փոփոխությունները կհայտարարվեն հավելվածում, և վերևի ամսաթիվը ցույց է տալիս, թե երբ է այն վերջին անգամ փոխվել։`,
+    },
+    {
+      title: '13. Կապ',
+      body: `Հարցեր այս քաղաքականության մասին. ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  be: [
+    {
+      title: '0. Коратка',
+      body: `Тэкст вашых паведамленняў зашыфраваны на вашай прыладзе, і прачытаць яго могуць толькі тыя, каму вы яго дасылаеце. Мы не можам яго прачытаць, і Google, чые серверы мы арандуем, таксама не можа.
+
+Тое, што мы можам бачыць, — гэта факт, што адбылася размова: якія акаунты ў ёй удзельнічалі і калі яны былі актыўныя. Прыбраць гэта складаней, чым зашыфраваць змест, і мы яшчэ не скончылі. Гэтая палітыка дакладна кажа, дзе зараз праходзіць гэтая мяжа.`,
+    },
+    {
+      title: '1. Што зашыфравана скразным шыфраваннем',
+      body: `Зашыфравана на вашай прыладзе, нечытэльна для нас і для Google:
+
+• Тэкст вашых паведамленняў.
+• Змест файлаў, фота, аудыё і відэа, якія вы прымацоўваеце.
+• Папярэднія прагляды спасылак.
+• Галасавыя і відэазванкі, якія выкарыстоўваюць абавязковы DTLS-SRTP пратакол WebRTC паміж дзвюма прыладамі.
+
+Большасць паведамленняў адзін-на-адзін і групавых дадаткова выкарыстоўваюць механізм ratchet, што азначае, што кожнае паведамленне мае свой уласны ключ, таму кампраметацыя вашай прылады не раскрывае больш раннія паведамленні. Размовы, дзе кліент кагосьці яшчэ не апублікаваў новы ключавы матэрыял, вяртаюцца да аднаго доўгачасовага ключа, які не мае гэтай уласцівасці. Метка пад паведамленнем кажа, які з іх яно сапраўды атрымала.
+
+Адна рэч перасякае гэтую мяжу, і толькі калі вы гэтага просіце: пошук імя ў Вікіпедыі дасылае толькі гэтае адно імя, а не паведамленне, з якога яно ўзята. Раздзел 6 кажа, хто яго атрымлівае, а пошук працуе толькі пры націску і больш ніколі, таму няма чаго выключаць. Рэзюмаванне, пераклад і расшыфроўка голасу таксама перасеклі б гэтую мяжу — яны выключаны ў гэтай версіі, і ў праграме няма ніякага пераключальніка, які б іх уключыў.`,
+    },
+    {
+      title: '2. Што не зашыфравана, і што мы можам бачыць',
+      body: `Шыфраванне абараняе змест, а не сам факт размовы. Гэта адкрыта ляжыць на нашых серверах:
+
+• Хто ўдзельнічае ў кожнай размове, і калі яна была створана і апошні раз актыўная.
+• Адзнака часу кожнага паведамлення, і колькі паведамленняў вы не прачыталі.
+• Назва, тып і памер файла ўкладання. Байты зашыфраваны; іх апісанне — не, а даўжыня зашыфраванага тэксту абмяжоўвае даўжыню арыгінала.
+• Вашы сябры і запыты на дружбу.
+• Сігналізацыя званкоў — што званок быў зроблены, каму і калі. Не яго аудыё або відэа.
+
+Індыкатары набору тэксту і пацвярджэнні прачытання выключаны, пакуль вы іх не ўключыце, і пакуль яны выключаны, нічога не запісваецца.
+
+Чаго тут больш няма: вашага адраса электроннай пошты і вашага імя. З верасня 2026 года запіс акаунта захоўвае толькі ідэнтыфікатар акаунта — і з таго часу няма адраса, які можна было б дзе-небудзь захоўваць. Рэгістрацыя нічога пра вас не пытае: ваш акаунт — гэта фраза аднаўлення з 24 слоў, а іменныя даныя, якія правярае Firebase Authentication, атрыманы з яе. Тое, што яна захоўвае, — гэта выпадковая метка пад даменам, які не можа атрымліваць пошту.
+
+Асобна: паколькі праграма працуе на Google Firebase, Google можа бачыць IP-адрас і час кожнага злучэння, якое ваша прылада да яго робіць. Гэта ўласцівасць хостынгу, а не праграмы, і мы не можам зашыфраваць гэта.`,
+    },
+    {
+      title: '3. Як людзі знаходзяць вас',
+      body: `Яны не могуць шукаць вас. Тут няма даведніка — няма пошуку па электроннай пошце, нумары тэлефона ці імені — і сервер адхіляе любы запыт, які спрабуе гэта зрабіць.
+
+Вы дасягаеце кагосьці, дасылаючы яму спасылку-запрашэнне па-за гэтым каналам, праз тое, чым вы ўжо карыстаецеся. Спасылка працуе адзін раз, дзейнічае 24 гадзіны і можа быць адклікана. Як бы вы кагосьці ні назвалі, гэта ваша ўласная метка для яго, захаваная толькі для вас; калі ён сам сябе прадставіў, гэтае імя дайшло да вас зашыфраваным.`,
+    },
+    {
+      title: '4. Што мы збіраем',
+      body: `• Даныя акаунта: ідэнтыфікатар акаунта і іменныя даныя, атрыманыя з вашай фразы аднаўлення, захаваныя ў Firebase Authentication. Ніякага адраса электроннай пошты, ніякага нумара тэлефона, ніякага імя — рэгістрацыя не пытае нічога з гэтага.
+• Зашыфраваны тэкст паведамленняў і ўкладанняў, плюс метаданыя з раздзела 2.
+
+Гэта поўны спіс. Няма аналітыкі і няма справаздач пра збоі. Раней праграма дасылала прагляды экрана ў Firebase Analytics і справаздачы пра збоі ў Firebase Crashlytics, абодва з якіх неслі ідэнтыфікатар вашага акаунта, таму ніводнае з іх не было ананімным; абодва цяпер прыбраны разам з бібліятэкамі, якія іх дасылалі. Памылкі друкуюцца толькі на ўласнай машыне распрацоўшчыка падчас распрацоўкі і больш нікуды не ідуць.`,
+    },
+    {
+      title: '5. Дзе гэта захоўваецца',
+      body: `На Google Firebase — Firestore, Storage і Authentication — паводле правілаў бяспекі, якія вызначаюць, хто можа чытаць і пісаць у кожны дакумент.
+
+На вашай прыладзе кэшаваныя паведамленні, налады і PIN-код блакіроўкі праграмы зашыфраваны ключом, унікальным для гэтай прылады, захаваным у сховішчы ключоў платформы (iOS Keychain, Android Keystore), а не ў звычайным сховішчы праграмы.
+
+Прыватны ключ, які расшыфроўвае вашы паведамленні, ніколі не пакідае вашу прыладу, за выключэннем як фраза аднаўлення, якую вы вырашаеце запісаць. Мы не захоўваем яго і не можам аднавіць яго для вас. Страціце яго — і паведамленні, дасланыя на тую прыладу, больш нельга прачытаць — нікому, уключаючы нас.`,
+    },
+    {
+      title: '6. Хто яшчэ атрымлівае даныя',
+      body: `Мы не прадаём, не абменьваем і не здаём у арэнду вашу асабістую інфармацыю. Даныя дасягаюць:
+
+• Google Firebase — нашага пастаўшчыка хостынгу, як апісана вышэй.
+• Wikimedia Foundation — адно імя, калі вы націскаеце на яго, каб знайсці ў Вікіпедыі.
+• Google Cloud Speech-to-Text — аудыё аднаго галасавога паведамлення, калі вы просіце расшыфроўку.
+• Google Cloud Translation — тэкст аднаго паведамлення, калі вы просіце пераклад.
+• Cloudflare Workers AI — да апошніх 50 паведамленняў адной размовы, калі вы просіце рэзюмэ або задаяце пытанне пра яе.
+
+Апошнія тры выключаны ў гэтай версіі. У праграме няма ніякага пераключальніка, які б уключыў расшыфроўку, пераклад або рэзюмаванне, таму да гэтых трох сэрвісаў нічога не дасягае. Яны пералічаны, а не выдалены, бо код усё яшчэ тут, і гэтыя функцыі павінны вярнуцца — і калі яны вернуцца, яны вернуцца з гэтым раскрыццём і з запытам перад першым выкарыстаннем. Тое, што было б адпраўлена тады, дасылаецца, каб атрымаць ваш вынік, а не для навучання чагосьці; ні расшыфроўка, ні пераклад не захоўваюцца на нашых серверах.
+
+У пошуку Вікіпедыі няма пераключальніка, бо няма чаго выключаць: ён працуе толькі пры націску і больш ніколі. Вікіпедыя атрымлівае толькі гэтае адно імя і ваш IP-адрас, гэтак жа, як калі б вы самі ўвялі яго ў іх уласнае поле пошуку — ніякага акаунта, ніякага паведамлення, ніякай размовы. Тое, што вяртаецца, паказваецца і не захоўваецца, і нічога пра гэта не запісваецца ў размову.
+
+Мы можам раскрыць тое, што маем, калі гэтага патрабуе закон. Тое, што мы маем, — гэта спіс з раздзела 2. Мы не можам прадаставіць змест паведамленняў, бо не можам яго прачытаць.`,
+    },
+    {
+      title: '7. Push-апавяшчэнні',
+      body: `Firebase Cloud Messaging дастаўляе апавяшчэнні. Токен вашай прылады захоўваецца ў прыватнай частцы вашага акаунта, якую можаце прачытаць толькі вы.
+
+Апавяшчэнні не нясуць тэкст паведамлення. Ваша прылада расшыфроўвае паведамленне лакальна і складае тое, што вы бачыце; Google дастаўляе канверт, а не змест.`,
+    },
+    {
+      title: '8. Што вы можаце зрабіць',
+      body: `• Выдаліце свой акаунт з экрана Профіль. Змест, які з'яўляецца сумеснай часткай размовы — напрыклад, запіс званка — застаецца ў іншага ўдзельніка, бо гэта таксама яго запіс.
+• Экспартуйце свае даныя з экрана Профіль.
+• Задайце тэрмін дзеяння паведамленняў для кожнага чата: 1 гадзіна, 24 гадзіны, 7 дзён або 30 дзён.
+• Уключыце або выключыце індыкатары набору тэксту і пацвярджэнні прачытання. Абодва па змаўчанні выключаны.
+• Заблакіруйце праграму PIN-кодам або біяметрыяй.
+• Адклічце спасылку-запрашэнне, якую вы раздалі.
+
+Калі вы аддаеце перавагу, каб мы выдалілі нешта ўручную, напішыце нам.`,
+    },
+    {
+      title: '9. Захаванне',
+      body: `Мы захоўваем вашы даныя, пакуль існуе ваш акаунт. Выдаленне акаунта выдаляе іх, за выключэннем сумесна захоўванага зместу, згаданага вышэй. Тэрмін дзеяння для кожнага чата выдаляе паведамленні паводле раскладу, які вы задалі.`,
+    },
+    {
+      title: '10. Абмежаванні, пра якія вам варта ведаць',
+      body: `Мы аддаем перавагу расказаць вам пра гэта, а не каб вы самі гэта знайшлі.
+
+• Ключам давяраюць з першага разу, калі іх бачаць. Калі б хтосьці замяніў ключ да таго, як вы калі-небудзь абмяняліся паведамленнем, размова была б зашыфравана не таму чалавеку і выглядала б цалкам звычайна. Праграма папярэджвае вас, калі ключ мяняецца пазней, і паказвае нумар бяспекі, які вы можаце параўнаць па-за каналам — але нішто не прымушае вас яго параўноўваць.
+• Адна прылада ў кожны момант. Ваша фраза аднаўлення аднаўляе ключ, які адкрывае вашу гісторыю, таму ўваход на новай прыладзе не губляе тое, што вы ўжо атрымалі. Размовы з прамой сакрэтнасцю выкарыстоўваюць другі ключ, які ніколі не пакідае прыладу, якая яго стварыла: якая б прылада ні ўвайшла апошняй, менавіта яна атрымлівае паведамленні, а ўсё, што ў гэты час было запячатана для другой, не можа быць перанесена туды.
+• Паведамленні, дасланыя да з'яўлення шыфравання, застаюцца такімі, якімі яны былі. Нічога не было пераўтворана заднім лікам.
+• Гэтая праграма не праходзіла незалежны аўдыт бяспекі.`,
+    },
+    {
+      title: '11. Дзеці',
+      body: `Chatterbox не прызначаны для дзяцей да 13 гадоў, і мы наўмысна не збіраем іх інфармацыю. Калі вы лічыце, што дзіця дало нам асабістую інфармацыю, звярніцеся да нас, і мы яе выдалім.`,
+    },
+    {
+      title: '12. Змены',
+      body: `Мы можам абнаўляць гэтую палітыку. Значныя змены будуць абвешчаны ў праграме, а дата ўверсе паказвае, калі яна змянялася апошні раз.`,
+    },
+    {
+      title: '13. Кантакт',
+      body: `Пытанні пра гэтую палітыку: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  ti: [
+    {
+      title: '0. ብሓጺሩ',
+      body: `ጽሑፍ መልእኽትታትካ ኣብ መሳርሒኻ ተመስጢሩ ኣሎ፡ ንዝሰደድካሎም ሰባት ጥራይ ክንበብ ይኽእል። ንሕና ክንርድኦ ኣይንኽእልን፡ ሰርቨርታቱ እንኻረየሉ Google እውን ክርድኦ ኣይክእልን።
+
+ክንርኢ እንኽእል ዝርርብ ከምዝተኻየደ እዩ፦ ኣየኖት ሕሳባት ከምዝሓቖፈን መዓስ ንጡፋት ከምዝነበራን። ንዝገበሮ ምድምሳስ ካብ ትሕዝቶ ምምስጣር ዝኸበደ እዩ፡ ጌና ኣይወዳእናዮን። እዚ ፖሊሲ ሕጂ እታ መስመር ኣበይ ከምዘላ ብትኽክል ይነግር።`,
+    },
+    {
+      title: '1. እንታይ እዩ ካብ ወገን ናብ ወገን ተመስጢሩ',
+      body: `ኣብ መሳርሒኻ ተመስጢሩ፡ ንዓናን ንGoogleን ክንበብ ዘይክእል፦
+
+• ጽሑፍ መልእኽትታትካ።
+• ትሕዝቶ ዘተሓሓዝካዮም ፋይላት፡ ስእልታት፡ ድምጽን ቪድዮን።
+• ቅድመ-ርእይቶ ሊንክ።
+• ኣብ መንጎ ክልቲኡ መሳርሒ ግድነታዊ ናይ WebRTC DTLS-SRTP ዝጥቀም ናይ ድምጽን ቪድዮን ጻውዒት።
+
+መብዛሕትኦም ሓደ-ንሓደን ናይ ጉጅለ መልእኽትታትን ተወሳኺ ratchet ዝበሃል ኣገባብ ይጥቀሙ፡ እዚ ማለት ነፍስወከፍ መልእኽቲ ናታ ልዩ መፍትሕ ኣለዋ፡ ስለዚ መሳርሒኻ ምጥላፍ ንቐደም ዝነበሩ መልእኽትታት ኣየቃልዖምን። ናይ ካልኦት ክላይንት ሓድሽ መፍትሕ ገና ዘይተዘርግሐሉ ዝርርባት ናብ ሓደ ነዊሕ ዝጸንሕ መፍትሕ ይምለሱ፡ እዚ ድማ እዚ ጠባይ የብሉን። ኣብ ትሕቲ መልእኽቲ ዘሎ ምልክት ብሓቂ ኣየናይ ከምዝረኸበ ይነግረካ።
+
+ሓንቲ ነገር ጥራይ ንዛ መስመር ትሰግር፡ ንስኻ ክትገብሮ ምስ እትሓትት ጥራይ፦ ኣብ ዊኪፐዲያ ስም ምድላይ ነቲ ሓደ ስም ጥራይ ይሰዲ፡ ካብቲ ዝመጸሉ መልእኽቲ ኣይኰነን። ክፍሊ 6 መን ከምዝቕበሎ ይነግር፡ እቲ ምድላይ ድማ ኣብ ግዜ ምንካፍ ጥራይ ይሰርሕ፡ ካልእ ግዜ ኣይሰርሕን፡ ስለዚ ዝጠፍእ ነገር የለን። ምጽማቕ፡ ምትርጓምን ናብ ጽሑፍ ምቕያርን እውን ነዚ መስመር ምሰገሩ ነይሮም — ኣብዚ ሕታም ጠፊኦም ኣለዉ፡ ኣብ መተግበሪ ውሽጢ ንዝኾነ ቦታ ዘርኣዮም መቆጻጸሪ የለን።`,
+    },
+    {
+      title: '2. እንታይ ኣይተመስጠረን፡ እንታይከ ክንርኢ ንኽእል',
+      body: `ምስጢር ትሕዝቶ ይከላኸል፡ ንባዕሉ ናይ ዝርርብ ህላወ ኣይኰነን። እዚኦም ብንጹር ኣብ ሰርቨርታትና ኣለዉ፦
+
+• መን ኣብ ነፍስወከፍ ዝርርብ ከምዘሎ፡ መዓስ ከምዝተፈጥረን ናይ መወዳእታ ግዜ ንጡፍ ከምዝነበረን።
+• ግዜ ምልክት ናይ ነፍስወከፍ መልእኽቲ፡ ክንደይ ዘይተነበቡ ከምዘለዉኻ።
+• ስም፡ ዓይነትን መጠንን ናይ ተወሳኺ ፋይል። ባይትታት ተመስጢሮም ኣለዉ፣ መግለጺኦም ግና ኣይኰነን፡ ንውሓት ናይቲ ዝተመስጠረ ጽሑፍ ንውሓት እቲ በዅሪ ይድርት።
+• ኣዕሩኽትኻን ናይ ዕርክነት ሕቶታትካን።
+• ናይ ጻውዒት ምልክት ምሃብ — ጻውዒት ከምዝተገብረ፡ ናብ መንን መዓስን። ናይ ድምጹ ወይ ቪድዩ ግና ኣይኰነን።
+
+ናይ ምጽሓፍ ምልክትን ናይ ንባብ መረጋገጺን ክሳብ ዘይከፈትካዮም ጠፊኦም ይነብሩ፡ ኣብ ዝጠፍኡሉ ግዜ ዝኾነ ነገር ኣይምዝገብን።
+
+ኣብዚ ጌና ዘየለ፦ ናይ ኢመይል ኣድራሻካን ስምካን። ካብ መስከረም 2026 ጀሚሩ ናይ ሕሳብ መዝገብ ናይ ሕሳብ መለለዪ ጥራይ ይሓዝ — ካብቲ ግዜ እቲ ጀሚሩ ኣብ ዝኾነ ቦታ ክዕቀብ ዝኽእል ኣድራሻ የለን። ምዝገባ ብዛዕባኻ ዝኾነ ነገር ኣይሓትትን፦ ሕሳብካ ናይ 24 ቃላት ናይ ምምላስ ሓረግ እዩ፡ Firebase Authentication ዘረጋግጾ ምስክር ወረቐት ድማ ካብኡ ዝርከብ እዩ። ትሕዝቶ ናይቲ ዝዕቀብ ብዘይሕሳብ ዝተመርጸ ምልክት ኮይኑ፡ ኢመይል ክቕበል ዘይክእል ዶመይን ኣብ ትሕቲ ይርከብ።
+
+ብተወሳኺ፦ እዚ መተግበሪ ኣብ Google Firebase ስለዝሰርሕ፡ Google ናይ IP ኣድራሻን ናይ ነፍስወከፍ ርክብ ናይ መሳርሒኻ ግዜን ክርኢ ይኽእል። እዚ ናይ ኣተኣንግዳ ጠባይ እዩ፡ ናይ መተግበሪ ኣይኰነን፡ ብምምስጣር ክንድምስሶ ኣይንኽእልን።`,
+    },
+    {
+      title: '3. ሰባት ብኸመይ ይረኽቡኻ',
+      body: `ብምድላይ ክረኽቡኻ ኣይክእሉን። ኣብዚ ዶክተር የለን — ብኢመይል፡ ቁጽሪ ተሌፎን ወይ ስም ምድላይ የለን — ሰርቨር ድማ ንዝኾነ ከምኡ ዝፍትን ሕቶ ይኣቢ።
+
+ንሓደ ሰብ ትረኽቦ ናይ ዕድመ ሊንክ ብኻልእ መስመር ብምስዳድ፡ ብዝኾነ ድሮ እትጥቀመሉ ኣገባብ እዩ። ሊንክ ሓደ ግዜ ይሰርሕ፡ ድሕሪ 24 ሰዓት ይውዳእ፡ ክምለስ እውን ይኽእል። ንሓደ ሰብ ብዝኾነ ትጽውዖ ስም ናትካ ጥራይ ናይ ግል ምልክት ኮይኑ ንዓኻ ተዓቂቡ ይነብር፣ ንሱ ባዕሉ ንርእሱ እንተኣላሊዩ፡ እቲ ስም ናባኻ ተመስጢሩ ተበጺሑ እዩ።`,
+    },
+    {
+      title: '4. እንታይ ንእክብ',
+      body: `• ናይ ሕሳብ ሓበሬታ፦ ናይ ሕሳብ መለለዪን ካብ ናይ ምምላስ ሓረግካ ዝርከብ ምስክር ወረቐትን፡ ኣብ Firebase Authentication ተዓቂቡ። ናይ ኢመይል ኣድራሻ የለን፡ ናይ ተሌፎን ቁጽሪ የለን፡ ስም የለን — ምዝገባ ካብዚኦም ዝኾነ ኣይሓትትን።
+• ናይ መልእኽትን ተወሳኺን ዝተመስጠረ ጽሑፍ፡ ብተወሳኺ ኣብ ክፍሊ 2 ተጠቒሱ ዘሎ ሓበሬታ።
+
+እዚ ምሉእ ዝርዝር እዩ። ትንተናን ናይ ብልሽት ጸብጻብን የለን። ቅድም እዚ መተግበሪ ናይ ስክሪን ርእይቶ ናብ Firebase Analytics ናይ ብልሽት ጸብጻብ ድማ ናብ Firebase Crashlytics ይሰድድ ነይሩ፡ ክልቲኦም ናይ ሕሳብካ መለለዪ ዝሓዙ፡ ስለዚ ክልቲኦም ስም-ኣልቦ ኣይነበሩን፣ ክልቲኦም ምስቶም ዝሰድድዎም ቤተ-ንባባትን ሓቢሮም ጠፊኦም ኣለዉ። ጌጋታት ኣብ ግዜ ምምዕባል ኣብ ናይ ገንባሪ ዋሕስ ማሽን ጥራይ ይሕተሙ፡ ካልእ ቦታ ኣይኸዱን።`,
+    },
+    {
+      title: '5. ኣበይ ተዓቂቡ',
+      body: `ኣብ Google Firebase — Firestore, Storage ንAuthentication — ኣብ ትሕቲ ናይ ውሕስነት ሕግታት፡ መን ናብ ነፍስወከፍ ሰነድ ክንብብን ክጽሕፍን ከምዝኽእል ዝውስን።
+
+ኣብ መሳርሒኻ፡ ዝተዓቀቡ መልእኽትታት፡ ቅንብራትን ናይ መተግበሪ መቕለቢ PIN ኮድካን ብናይ መሳርሒ-ፍሉይ መፍትሕ ኣብ ናይ መድረኽ ናይ መፍትሕ መዕቆቢ (iOS Keychain, Android Keystore) ተመስጢሮም ኣለዉ፡ ኣብ ልሙድ ናይ መተግበሪ መዕቆቢ ኣይኰነን።
+
+ናይ ምስጢር መፍትሕ ንመልእኽትታትካ ዝፈትሕ ካብ መሳርሒኻ ፈጺሙ ኣይወጽእን፡ ብዘይ ንክትጽሕፎ እትመርጾ ናይ ምምላስ ሓረግ። ንሕና ኣይንሕዞን ንዓኻ ኽንመልሶ ኣይንኽእልን። እንተጥፊኡካ፡ ናብ ብእቲ መሳርሒ ዝተላእኩ መልእኽትታት ደጊሞም ክንበቡ ኣይክእሉን — ብማንም፡ ንሕና ሓዊስና።`,
+    },
+    {
+      title: '6. ካልእ መን ሓበሬታ ይቕበል',
+      body: `ናይ ውልቅኻ ሓበሬታ ኣይንሸይጦን፡ ኣይንልውጦን ኣይነካርን። ሓበሬታ ናብዞም ይበጽሕ፦
+
+• Google Firebase — ልዕል ኢሉ ከምዝተገልጸ፡ ናትና ናይ ኣተኣንግዳ ኣቕራቢ።
+• Wikimedia Foundation — ኣብ ዊኪፐዲያ ንምድላዩ ምስ እትጠውቖ ሓደ ስም ጥራይ።
+• Google Cloud Speech-to-Text — ናብ ጽሑፍ ምቕያር ምስ እትሓትት ናይ ሓደ ናይ ድምጺ መልእኽቲ ድምጺ።
+• Google Cloud Translation — ትርጉም ምስ እትሓትት ናይ ሓደ መልእኽቲ ጽሑፍ።
+• Cloudflare Workers AI — ጽማቝ ወይ ሕቶ ምስ እትሓትት ክሳብ ናይ ሓደ ዝርርብ ናይ ዳሕረዋይ 50 መልእኽትታት።
+
+ዳሕረወት ሰለስተ ኣብዚ ሕታም ጠፊኦም ኣለዉ። ኣብ መተግበሪ ናብ ጽሑፍ ምቕያር፡ ትርጉም ወይ ጽማቝ ዝኸፍት ዝኾነ መቆጻጸሪ የለን፡ ስለዚ ናብዞም ሰለስተ ኣገልግሎት ዝኾነ ነገር ኣይበጽሕን። ኮድ ጌና ኣብዚ ስለዘሎን እዞም ባህርያት ክምለሱ ስለዝድለዩን ተዘርዚሮም ኣለዉ፡ ኣይተደምሰሱን — ክምለሱ ከለዉ ድማ ምስዚ ምግላጽን ቅድሚ ቀዳማይ ጥቕም ምስ ዝቐርብ ሕቶን ክምለሱ እዮም። ኣብቲ ግዜ እቲ ዝኽለኣኽ ንውጽኢትካ ንምፍራይ ጥራይ ክለኣኽ እዩ፡ ንምስልጣን ዝኾነ ነገር ኣይኰነን፣ ኣብ ሰርቨርታትና ናብ ጽሑፍ ዝተቐየረ ወይ ትርጉም ኣይዕቀብን።
+
+ኣብ ናይ ዊኪፐዲያ ምድላይ መቆጻጸሪ የለን፡ ዝጠፍእ ነገር ስለዘየለ፦ ኣብ ግዜ ምንካፍ ጥራይ ይሰርሕ፡ ካልእ ግዜ ኣይሰርሕን። ዊኪፐዲያ እቲ ሓደ ስምን ናትካ IP ኣድራሻን ጥራይ ይቕበል፡ ልክዕ ብናትካ ኣብ ናቶም ናይ ምድላይ ሳጹን እንተኣቲኻዮ ዝመስል — ሕሳብ የለን፡ መልእኽቲ የለን፡ ዝርርብ የለን። ዝምለስ ነገር ይረአ እሞ ኣይዕቀብን፡ ብዛዕባኡ ዝኾነ ነገር ናብቲ ዝርርብ ኣይጽሓፍን።
+
+ሕጊ እንተሓቲቱ ንዘሎና ክንገልጽ ንኽእል። ንሕና ንሓዝ ናይ ክፍሊ 2 ዝርዝር እዩ። ትሕዝቶ መልእኽትታት ከነቕርብ ኣይንኽእልን፡ ክንርድኦ ስለዘይንኽእል።`,
+    },
+    {
+      title: '7. ናይ ደፍኢት ምልክታታት',
+      body: `Firebase Cloud Messaging ምልክታታት የብጽሕ። ናይ መሳርሒኻ ቶከን ኣብ ናይ ሕሳብካ ብሕታዊ ክፋል ተዓቂቡ፡ ንስኻ ጥራይ ከተንብቦ ትኽእል።
+
+ምልክታታት ዝኾነ ናይ መልእኽቲ ጽሑፍ ኣይሓዙን። መሳርሒኻ ብቦታ መልእኽቲ ይፈትሕ እሞ ንዝርእዮ ይሃንጽ፣ Google ፖስጣ ይበጽሕ፡ ትሕዝቶ ኣይኰነን።`,
+    },
+    {
+      title: '8. እንታይ ክትገብር ትኽእል',
+      body: `• ካብ መግለጺ ገጽ ሕሳብካ ደምስስ። ናይ ሓባር ክፋል ናይ ዝርርብ ዝኾነ ትሕዝቶ — ንኣብነት፡ ናይ ጻውዒት መዝገብ — ምስቲ ካልእ ተሳታፊ ይጸንሕ፡ ናቱ እውን መዝገብ ስለዝኾነ።
+• ካብ መግለጺ ገጽ ሓበሬታኻ ኣውጽእ።
+• ንነፍስወከፍ ዝርርብ ናይ መልእኽቲ ግዜ ወሰን ኣዘጋጅ፦ 1 ሰዓት፡ 24 ሰዓት፡ 7 መዓልቲ ወይ 30 መዓልቲ።
+• ናይ ምጽሓፍ ምልክትን ናይ ንባብ መረጋገጺን ክፈት ወይ ኣጥፍእ። ክልቲኦም ብቀደም ጠፊኦም ኣለዉ።
+• መተግበሪ ብPIN ወይ ባዮሜትሪክስ ዕጾ።
+• ዝሃብካዮ ናይ ዕድመ ሊንክ ኣውጽእ።
+
+ንሕና ብኢድ ገለ ነገር ክንድምስስ እንተመሪጽካ፡ ጽሓፈልና።`,
+    },
+    {
+      title: '9. ምዕቃብ',
+      body: `ሕሳብካ ክሳብ ዘሎ ሓበሬታኻ ንዕቅብ። ሕሳብ ምድምሳስ ካብ ላዕሊ ተጠቒሱ ካብ ዘሎ ናይ ሓባር ትሕዝቶ ወጻኢ ይድምስሶ። ንነፍስወከፍ ዝርርብ ግዜ ወሰን ንዝገበርካዮ መደብ መልእኽትታት ይድምስስ።`,
+    },
+    {
+      title: '10. ክትፈልጦም ዝግብኦም ደረታት',
+      body: `ባዕልኻ ካብ እትረኽቦም ንሕና ክንነግረካ ንመርጽ።
+
+• መፍትሕታት ኣብ ቀዳማይ ግዜ ምስ ተራእዩ ይእመኑ። ሓደ ሰብ ቅድሚ ዝኾነ መልእኽቲ ምልውዋጥካ መፍትሕ እንተተኪኡ፡ እቲ ዝርርብ ንግጉይ ሰብ ምተመስጠረ ነይሩ፡ ብምሉኡ ንቡር ምመሰለ። መተግበሪ መፍትሕ ደሓር ምስ ተቐየረ የፍልጠካ፡ ብኻልእ መስመር ክተወዳድሮ እትኽእል ናይ ውሕስነት ቁጽሪ ድማ የርኢ — ግን ከተወዳድሮ ዘገድድ ነገር የለን።
+• ሓደ መሳርሒ ብሓደ ግዜ። ናይ ምምላስ ሓረግካ ንታሪኽካ ዝኸፍት መፍትሕ ይመልስ፡ ስለዚ ኣብ ሓድሽ መሳርሒ ምእታው ድሮ ዝረኸብካዮ ኣየጥፍኦን። ናይ ቅድሚት ምስጢራውነት ዘለዎም ዝርርባት ካብ ዝፈጠሮ መሳርሒ ፈጺሙ ዘይወጽእ ካልኣይ መፍትሕ ይጥቀሙ፦ ኣየናይ መሳርሒ ኣብ መወዳእታ እተኣተወ፡ ንሱ እዩ ዝበጽሕዎ፡ ኣብቲ ግዜ እቲ ንካልኦት ተመስጢሩ ዝጸንሐ ድማ ናብኡ ክግዕዝ ኣይክእልን።
+• ቅድሚ ምስጢራውነት ምህላዉ ዝተላእኩ መልእኽትታት ከምዝነበሩ ይነብሩ። ናብ ድሕሪት ተመሊሱ ዝተቐየረ ነገር የለን።
+• እዚ መተግበሪ ብናጻ ኣካል ናይ ውሕስነት መርመራ ኣይተገብረሉን።`,
+    },
+    {
+      title: '11. ቆልዑ',
+      body: `Chatterbox ንትሕቲ 13 ዓመት ቆልዑ ኣይተዳለወን፡ ንሕና ድማ ብፍላጥ ሓበሬታኦም ኣይንእክብን። ሓደ ቖልዓ ናይ ውልቁ ሓበሬታ ከምዝሃበና እንተኣሚንካ፡ ርኸበና፡ ንሕና ክንድምስሶ ኢና።`,
+    },
+    {
+      title: '12. ለውጥታት',
+      body: `ንዚ ፖሊሲ ከነሐድስ ንኽእል። ኣገደስቲ ለውጥታት ኣብ መተግበሪ ክግለጹ እዮም፡ ኣብ ላዕሊ ዘሎ ዕለት ድማ ናይ መወዳእታ ግዜ ምስ ተቐየረ የርኢ።`,
+    },
+    {
+      title: '13. ርክብ',
+      body: `ብዛዕባ እዚ ፖሊሲ ሕቶታት፦ ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+  bo: [
+    {
+      title: '0. མདོར་བསྡུས།',
+      body: `ཁྱེད་ཀྱི་འཕྲིན་ཡིག་གི་ཡིག་གེ་ཁྱེད་ཀྱི་ཆས་གྲལ་ཐོག་གསང་སྦས་ཡོད་ལ། ཁྱེད་ཀྱིས་བསྐུར་བའི་མི་ཚོས་ཁོ་ནས་ཀློག་ཐུབ། ང་ཚོས་དེ་ཀློག་མི་ཐུབ། ང་ཚོའི་ཡར་སྐད་གླ་རྔན་སྤྲོད་པའི་ Google་ཡིས་ཀྱང་ཀློག་མི་ཐུབ།
+
+ང་ཚོས་མཐོང་ཐུབ་པ་ནི། ཁ་བརྡ་ཞིག་བྱུང་བའི་གནས་ཚུལ་ཡིན། སུ་དང་སུ་ཡི་ཞིབ་ཡིག་དེའི་ནང་ཡོད་པ་དང་། ནམ་ནང་ནུས་ལྡན་ཡིན་པ། དེ་འདོན་པ་ནི་ནང་དོན་གསང་སྦས་བྱེད་པ་ལས་ཁག་པོ་ཡིན་ལ། ང་ཚོས་ད་དུང་མཇུག་མ་སྒྲིལ། ད་ལྟ་ཚུད་མཚམས་གང་ཡིན་པ་སྲིད་བྱུས་འདིས་ཏག་ཏག་བཤད་ཀྱི་ཡོད།`,
+    },
+    {
+      title: '1. ཅི་ཞིག་མཐའ་མཇུག་གསང་སྦས་ཡིན།',
+      body: `ཁྱེད་ཀྱི་ཆས་གྲལ་ཐོག་གསང་སྦས་ཡོད་ལ། ང་ཚོ་དང་ Google ལ་ཀློག་མི་ཐུབ་པ།
+
+• ཁྱེད་ཀྱི་འཕྲིན་ཡིག་གི་ཡིག་གེ།
+• ཁྱེད་ཀྱིས་སྦྲེལ་བའི་ཡིག་ཆ། པར། སྐད་སྒྲ་དང་བརྙན་ཡིག་གི་ནང་དོན།
+• འབྲེལ་མཐུད་ཀྱི་སྔོན་ལྟ།
+• ཆས་གྲལ་གཉིས་བར་གྱི་གལ་ཆེའི་ WebRTC DTLS-SRTP བེད་སྤྱོད་བྱེད་པའི་སྐད་སྒྲ་དང་བརྙན་ཡིག་ཁ་པར།
+
+མི་གཉིས་བར་དང་ཚོགས་པའི་འཕྲིན་ཡིག་མང་ཆེ་བས་ ratchet ཟེར་བའི་ལག་ཆ་ཡང་བེད་སྤྱོད་བྱེད་ཀྱིས། འདིའི་དོན་ནི་འཕྲིན་ཡིག་རེ་རེ་ལ་རང་གི་ལྡེ་མིག་ཡོད་པ་ཡིན་ལ། ཁྱེད་ཀྱི་ཆས་གྲལ་གནོད་སྐྱོན་བྱུང་ཡང་སྔོན་གྱི་འཕྲིན་ཡིག་མི་ཐོན། སུ་ཞིག་གི་ཆས་གྲལ་གྱིས་ལྡེ་མིག་གསར་པ་མ་སྤེལ་བའི་ཁ་བརྡ་རྣམས་ཡུན་རིང་ལྡེ་མིག་གཅིག་ལ་སླར་ལོག་ཡོང་། དེར་ཁྱད་ཆོས་འདི་མེད། འཕྲིན་ཡིག་འོག་གི་བརྡ་མཚོན་གྱིས་གང་ཐོབ་པ་ངོས་བཟུང་བཤད།
+
+གཅིག་པུ་ཞིག་ཚུད་མཚམས་འདི་སྒྲོལ་ཐུབ། ཁྱེད་ཀྱིས་ཞུས་པའི་སྐབས་ཁོ་ན། Wikipedia ཐོག་མིང་འཚོལ་བས་མིང་དེ་ཁོ་ན་བསྐུར། གང་ནས་ཐོན་པའི་འཕྲིན་ཡིག་མིན། ཡན་ལག་ ༦ ནང་སུས་ཐོབ་པ་བཤད། འཚོལ་ཞིབ་དེ་ནོན་སྐབས་ཁོ་ན་ལས་སྦྱོར་ཡིན་ལ། གཞན་དུ་མིན་པས་སྒོ་རྒྱག་རྒྱུའི་ཅི་ཡང་མེད། བསྡུས་དོན་བཟོ་བ། སྐད་སྒྱུར་དང་ཡིག་སྒྱུར་ཡང་མཚམས་འདི་སྒྲོལ་ངེས་ཡིན་ལ། པར་ལེན་འདིའི་ནང་སྒོ་བརྒྱབ་ཡོད་ལ། མེའུ་ཆུང་ཐོག་ཕྱེ་ཐུབ་པའི་སྒྲིག་ཆས་གང་ཡང་མེད།`,
+    },
+    {
+      title: '2. ཅི་ཞིག་གསང་སྦས་མིན་ཞིང་ང་ཚོས་ཅི་མཐོང་ཐུབ།',
+      body: `གསང་སྦས་ཀྱིས་ནང་དོན་སྲུང་སྐྱོབ་བྱེད་ཀྱི་ཡོད་ལ། ཁ་བརྡ་བྱུང་བའི་གནས་ཚུལ་ཉིད་མིན། འདི་དག་ང་ཚོའི་སར་བར་ཐོག་གསལ་པོར་ཡོད།
+
+• ཁ་བརྡ་རེ་རེའི་ནང་སུ་ཡོད་པ་དང་ནམ་བཟོས་ཤིང་མཐའ་མའི་ནང་ནུས་ལྡན་ཡིན་པ།
+• འཕྲིན་ཡིག་རེ་རེའི་དུས་ཚོད་བརྡ་མཚོན་དང་ཁྱེད་ཀློགས་མེད་པའི་གྲངས་ཀ།
+• སྦྲེལ་ཡིག་གི་ཡིག་ཆའི་མིང་། རིགས་དང་ཆེ་ཆུང་། ཡིག་གྲངས་ཚང་མ་གསང་སྦས་ཡོད། ངོ་སྤྲོད་གསང་སྦས་མིན། གསང་སྦས་ཡིག་གེའི་རིང་ཚད་ཀྱིས་གཞི་མའི་རིང་ཚད་ཚད་གཞི་བཟོ།
+• ཁྱེད་ཀྱི་གྲོགས་པོ་དང་གྲོགས་པོའི་ཞུ་བ།
+• ཁ་པར་བརྡ་མཚོན་སྤེལ་བ། ཁ་པར་ཞིག་བཏང་བ། སུ་ལ་དང་ནམ། དེའི་སྐད་སྒྲའམ་བརྙན་ཡིག་མིན།
+
+ཡིག་འབྲིའི་བརྡ་མཚོན་དང་ཀློག་པའི་གཏན་འཁེལ་ཁྱེད་ཀྱིས་མ་ཕྱེ་བར་སྒོ་བརྒྱབ་ཡོད། སྒོ་བརྒྱག་བཞིན་པའི་སྐབས་ཅི་ཡང་མི་འབྲི།
+
+ད་དུང་ཡོད་མེད་པ། ཁྱེད་ཀྱི་གློག་འཕྲིན་ཁ་བྱང་དང་མིང་། ༢༠༢༦ ལོའི་ཟླ་ ༩ ནས་བཟུང་ཞིབ་ཡིག་ཐོ་གཞུང་གིས་ཞིབ་ཡིག་ངོ་རྟགས་ཁོ་ན་འཛིན། དེ་ནས་བཟུང་ག་ནའང་ཉར་ཐུབ་པའི་ཁ་བྱང་མེད། ཐོ་འགོད་བྱེད་སྐབས་ཁྱེད་སྐོར་ཅི་ཡང་མི་འདྲི། ཁྱེད་ཀྱི་ཞིབ་ཡིག་ནི་ཚིག་ ༢༤ ཡི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་ཡིན་ལ། Firebase Authentication ཞིབ་བཤེར་བྱེད་པའི་ཡིད་ཆེས་ཡིག་ཆ་དེ་ནས་ཐོན། ཉར་ཚགས་བྱེད་པ་ནི་གློག་འཕྲིན་ལེན་མི་ཐུབ་པའི་ཁྱབ་ཁོངས་འོག་གི་གང་བྱུང་བརྡ་མཚོན་ཞིག་ཡིན།
+
+སོ་སོར། མེཊགྷེར་ Chatterbox Google Firebase ཐོག་ལས་སྦྱོར་བྱེད་པས། ཁྱེད་ཀྱི་ཆས་གྲལ་གྱིས་དེར་བྱེད་པའི་འབྲེལ་མཐུད་རེ་རེའི་ IP ཁ་བྱང་དང་དུས་ཚོད་ Google་ལ་མཐོང་ཐུབ། འདི་ཨེན་ཊར་ནེཊ་འཛིན་སྐྱོང་གི་ཁྱད་ཆོས་ཡིན་ལ། མེའུ་ཆུང་གི་མིན། གསང་སྦས་ཐོག་འདི་འདོན་ཐབས་ང་ཚོར་མེད།`,
+    },
+    {
+      title: '3. མི་ཚོས་ཁྱེད་ག་འདྲ་ཞིག་རྙེད་པ།',
+      body: `ཁོང་ཚོས་ཁྱེད་འཚོལ་མི་ཐུབ། འདིར་ཐོ་གཞུང་མེད། གློག་འཕྲིན། ཁ་པར་ཨང་གྲངས་སམ་མིང་ཐོག་འཚོལ་ཞིབ་མེད། སར་བར་གྱིས་དེ་ལྟར་ཚོད་ལྟ་བྱེད་པའི་འདྲི་བ་གང་ཡང་ངོ་རྒོལ་བྱེད།
+
+ཁྱེད་ཀྱིས་མི་ཞིག་ལ་ད་ལྟ་བེད་སྤྱོད་བྱེད་བཞིན་པའི་གང་ཐོག་གནས་ཚུལ་ལམ་གཞན་ནས་བོས་འགུགས་འབྲེལ་མཐུད་བསྐུར་ནས་བཅར་ཐུབ། འབྲེལ་མཐུད་ལན་གཅིག་ལས་ཀ་བྱེད་ལ། ཆུ་ཚོད་ ༢༤ ནང་དུས་ཚོད་ཚང་ལ་ཕྱིར་འཐེན་ཐུབ། ཁྱེད་ཀྱིས་མི་ཞིག་ག་འདྲ་ཞིག་བོས་ཀྱང་། དེ་ཁྱེད་རང་གི་བརྡ་མཚོན་ཁོ་ན་ཡིན་ལ་ཁྱེད་ཆེད་ཉར་ཡོད། ཁོང་གིས་རང་ཉིད་ངོ་སྤྲོད་བྱས་ན་མིང་དེ་ཁྱེད་ལ་གསང་སྦས་ཐོག་སླེབས།`,
+    },
+    {
+      title: '4. ང་ཚོས་ཅི་ཞིག་བསྡུ་ལེན་བྱེད།',
+      body: `• ཞིབ་ཡིག་གནས་ཚུལ། ཞིབ་ཡིག་ངོ་རྟགས་དང་ཁྱེད་ཀྱི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་ནས་ཐོན་པའི་ཡིད་ཆེས་ཡིག་ཆ། Firebase Authentication ནང་ཉར་ཡོད། གློག་འཕྲིན་ཁ་བྱང་མེད། ཁ་པར་ཨང་གྲངས་མེད། མིང་མེད། ཐོ་འགོད་བྱེད་སྐབས་འདི་དག་ནས་གང་ཡང་མི་འདྲི།
+• འཕྲིན་ཡིག་དང་སྦྲེལ་ཡིག་གི་གསང་སྦས་ཡིག་གེ། ཡན་ལག་ ༢ ནང་བཤད་པའི་ལོ་རྒྱུས་གནས་ཚུལ་ཡང་།
+
+འདི་ཐོ་ཡོངས་རྫོགས་ཡིན། ཞིབ་འཇུག་དང་གནོད་སྐྱོན་སྙན་ཞུ་མེད། སྔོན་ལ་མེའུ་ཆུང་གིས་བརྙན་ཤོག་མཐོང་ཚུལ་ Firebase Analytics ལ་དང་གནོད་སྐྱོན་སྙན་ཞུ་ Firebase Crashlytics ལ་བསྐུར་ཞིང་། གཉིས་ཀར་ཁྱེད་ཀྱི་ཞིབ་ཡིག་ངོ་རྟགས་འཁྱེར་བས་གཉིས་ཀ་མིང་མེད་མིན་ཡིན། གཉིས་ཀ་ད་ལྟ་དེ་དག་བསྐུར་བའི་སྤྱོད་ཆས་དང་མཉམ་དུ་ཕྱིར་འདོན་ཟིན། ནོར་འཁྲུལ་ནི་སྐད་སྒྱུར་མཁན་གྱི་རང་ཉིད་ཀྱི་མེའུ་ཆུང་ཐོག་བཟོ་བའི་སྐབས་གཞིར་ལས་གང་ཡང་ཕར་མི་འགྲོ།`,
+    },
+    {
+      title: '5. ག་ཏེར་ཉར་ཡོད།',
+      body: `Google Firebase ཐོག — Firestore, Storage དང་ Authentication — ཡིག་ཆ་རེ་རེར་སུས་ཀློག་བྲིས་ཐུབ་པ་ཐག་གཅོད་བྱེད་པའི་བདེ་སྲུང་སྒྲིག་གཞིའི་འོག་ཏུ།
+
+ཁྱེད་ཀྱི་ཆས་གྲལ་ཐོག་ཉར་ཚགས་བྱས་པའི་འཕྲིན་ཡིག ་སྒྲིག་འགོད་དང་ཁྱེད་ཀྱི་ཆས་གྲལ་སྒོ་རྒྱག་ PIN་ཨང་ཡིག་ཆས་གྲལ་སོ་སོའི་ལྡེ་མིག་ཐོག་གནས་སྟངས་ལྡེ་མིག་མཛོད་ (iOS Keychain, Android Keystore) ནང་གསང་སྦས་ཡོད། ཐུན་མོང་མའི་ཆས་གྲལ་མཛོད་ནང་མིན།
+
+ཁྱེད་ཀྱི་འཕྲིན་ཡིག་གསང་སྒྲོལ་བྱེད་པའི་གསང་བའི་ལྡེ་མིག་ཁྱེད་ཀྱིས་བྲིས་ཐོག་ཉར་བར་གདམ་ག་བྱེད་པའི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་ལས་ཁྱེད་ཀྱི་ཆས་གྲལ་ནས་ནམ་ཡང་མི་འཐོན། ང་ཚོས་མི་འཛིན་ལ་ཁྱེད་ཆེད་སླར་གསོ་མི་ཐུབ། བརླག་ན། ཆས་གྲལ་དེར་བསྐུར་བའི་འཕྲིན་ཡིག་སླར་ཀློག་མི་ཐུབ། ང་ཚོ་ཡང་ཚུད་ཟིན་པའི་སུ་ལའང་མིན།`,
+    },
+    {
+      title: '6. ཁྱེད་ཀྱི་གནས་ཚུལ་སུས་ཐོབ།',
+      body: `ཁྱེད་ཀྱི་སྒེར་གྱི་གནས་ཚུལ་ང་ཚོས་མི་འཚོང་། མི་བརྗེ། མི་གཡར། གནས་ཚུལ་འདིར་སླེབས།
+
+• Google Firebase — སྟེང་དུ་བཤད་པ་བཞིན། ང་ཚོའི་ཆས་གྲལ་སྤེལ་མཁན།
+• Wikimedia Foundation — Wikipedia ཐོག་འཚོལ་ཆེད་ནོན་སྐབས་མིང་གཅིག
+• Google Cloud Speech-to-Text — ཁྱེད་ཡིག་སྒྱུར་ཞུས་སྐབས་སྐད་སྒྲའི་འཕྲིན་ཡིག་གཅིག་གི་སྐད་སྒྲ།
+• Google Cloud Translation — ཁྱེད་སྐད་སྒྱུར་ཞུས་སྐབས་འཕྲིན་ཡིག་གཅིག་གི་ཡིག་གེ།
+• Cloudflare Workers AI — ཁྱེད་བསྡུས་དོན་ཞུས་སམ་དྲིས་སྐབས་ཁ་བརྡ་གཅིག་གི་མཐའ་མའི་འཕྲིན་ཡིག་ ༥༠ བར།
+
+མཐའ་མའི་གསུམ་འདི་ཐོན་འདིར་སྒོ་བརྒྱབ་ཡོད། ཆས་གྲལ་ནང་ཡིག་སྒྱུར། སྐད་སྒྱུར་ཡང་ན་བསྡུས་དོན་ཕྱེ་ཐུབ་པའི་སྒྲིག་ཆས་གང་ཡང་མེད་པས། ཞབས་ཞུ་གསུམ་པོ་འདིར་ཅི་ཡང་མི་སླེབས། ཨང་ཀི་ད་དུང་འདིར་ཡོད་ཅིང་ཁྱད་ཆོས་སླར་ཡོང་དགོས་པས་ཐོ་བཀོད་ཡོད། སུབ་མེད། སླར་ཡོང་སྐབས་འདིའི་གསལ་སྟོན་དང་ཐོག་མའི་བེད་སྤྱོད་སྔོན་ཞུ་གནང་མཁན་ཐོག་སླར་ཡོང་ངེས། དེའི་སྐབས་བསྐུར་བར་གྱུར་བ་ཁྱེད་ཀྱི་གྲུབ་འབྲས་ཐོན་ཆེད་ཡིན་ལ། ཅི་ཞིག་སྦྱོང་བརྡར་བྱེད་ཆེད་མིན། ཡིག་སྒྱུར་རམ་སྐད་སྒྱུར་ང་ཚོའི་སར་བར་ཐོག་མི་ཉར།
+
+Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད། སྒོ་རྒྱག་རྒྱུའི་ཅི་ཡང་མེད་པས། ནོན་སྐབས་ཁོ་ན་ལས་སྦྱོར་ཡིན། Wikipedia ཡིས་མིང་གཅིག་དེ་དང་ཁྱེད་ཀྱི་ IP ཁ་བྱང་ཁོ་ན་ཐོབ། ཁོང་ཚོའི་རང་ཉིད་ཀྱི་འཚོལ་ཞིབ་ཁང་ནང་ཁྱེད་རང་ཉིད་ཀྱིས་བཙུགས་པ་བཞིན། ཞིབ་ཡིག་མེད། འཕྲིན་ཡིག་མེད། ཁ་བརྡ་མེད། སླར་ཡོང་བ་སྟོན་ལ་མི་ཉར། དེའི་སྐོར་ཅི་ཡང་ཁ་བརྡར་མི་འབྲི།
+
+ཁྲིམས་ཀྱིས་དགོས་ན་ང་ཚོར་ཡོད་པ་སྟོན་ཐུབ། ང་ཚོར་ཡོད་པ་ཡན་ལག་ ༢ ཡི་ཐོ་ཡིན། འཕྲིན་ཡིག་གི་ནང་དོན་སྟོན་མི་ཐུབ། ང་ཚོས་ཀློག་མི་ཐུབ་པའི་ཕྱིར།`,
+    },
+    {
+      title: '7. Push་བརྡ་ལན།',
+      body: `Firebase Cloud Messaging གིས་བརྡ་ལན་འབྲེལ་མཐུད་བྱེད། ཁྱེད་ཀྱི་ཆས་གྲལ་ཏོ་ཀེན་ཁྱེད་ཀྱི་ཞིབ་ཡིག་གི་སྒེར་གྱི་ཆ་ཤས་ཐོག་ཉར་ཡོད། ཁྱེད་རང་ཁོ་ནས་ཀློག་ཐུབ།
+
+བརྡ་ལན་གྱིས་འཕྲིན་ཡིག་གི་ཡིག་གེ་ག་ནའང་མི་འཁྱེར། ཁྱེད་ཀྱི་ཆས་གྲལ་ས་ཐོག་གསང་སྒྲོལ་བྱས་ནས་ཁྱེད་མཐོང་བ་བཟོ། Google་གིས་ཡིག་ཟམ་སྤེལ། ནང་དོན་མིན།`,
+    },
+    {
+      title: '8. ཁྱེད་ཀྱིས་ཅི་ཞིག་བྱེད་ཐུབ།',
+      body: `• ངོ་སྤྲོད་ཤོག་ངོས་ནས་ཁྱེད་ཀྱི་ཞིབ་ཡིག་སུབ། ཁ་བརྡའི་མཉམ་ཆ་ཤས་ཡིན་པའི་ནང་དོན — དཔེར་ན་ཁ་པར་གྱི་ཟིན་ཐོ — ཞུགས་མཁན་གཞན་དེར་ལུས། ཁོང་གི་ཟིན་ཐོ་ཡང་ཡིན་པས།
+• ངོ་སྤྲོད་ཤོག་ངོས་ནས་ཁྱེད་ཀྱི་གནས་ཚུལ་ཕྱིར་འདོན།
+• ཁ་བརྡ་རེ་རེར་འཕྲིན་ཡིག་གི་དུས་ཚོད་ཚང་ཚུལ་སྒྲིག༔ ཆུ་ཚོད་ ༡། ཆུ་ཚོད་ ༢༤། ཉིན་ ༧ འམ་ཉིན་ ༣༠།
+• ཡིག་འབྲིའི་བརྡ་མཚོན་དང་ཀློག་པའི་གཏན་འཁེལ་ཕྱེ་འམ་སྒོ་རྒྱག ཁོང་ཚོའི་ཆ་གཉིས་ཀ་སྔར་སྒྲིག་སྒོ་བརྒྱབ་ཡོད།
+• PIN་འམ་ལུས་མཚན་ཐོག་ཆས་གྲལ་སྒོ་རྒྱག
+• ཁྱེད་ཀྱིས་སྤྲད་ཟིན་པའི་བོས་འགུགས་འབྲེལ་མཐུད་ཕྱིར་འཐེན།
+
+ང་ཚོས་ལག་ཐོག་གང་ཞིག་སུབ་བར་ཁྱེད་འདོད་ན། ང་ཚོར་ཡིག་བྲིས།`,
+    },
+    {
+      title: '9. ཉར་ཚགས་རིང་ཚད།',
+      body: `ཁྱེད་ཀྱི་ཞིབ་ཡིག་ཡོད་བར་ང་ཚོས་ཁྱེད་ཀྱི་གནས་ཚུལ་ཉར། ཞིབ་ཡིག་སུབ་པས་སྟེང་དུ་བཤད་པའི་མཉམ་ཆ་ཤས་མ་གཏོགས་གཞན་སུབ། ཁ་བརྡ་རེ་རེའི་དུས་ཚོད་ཚང་ཚུལ་གྱིས་ཁྱེད་ཀྱིས་སྒྲིག་པའི་དུས་ཚོད་ཐོག་འཕྲིན་ཡིག་འདོན།`,
+    },
+    {
+      title: '10. ཁྱེད་ཤེས་དགོས་པའི་ཚད་བཀག',
+      body: `ཁྱེད་རང་ཉིད་ཀྱིས་རྙེད་པའི་ཚབ་ཏུ་ང་ཚོས་ཁྱེད་ལ་བཤད་པར་དགའ།
+
+• ལྡེ་མིག་ཐོག་མར་མཐོང་བའི་སྐབས་ཡིད་ཆེས་བྱེད། ཁྱེད་ཀྱིས་འཕྲིན་ཡིག་གང་ཡང་མ་བརྗེ་བའི་སྔོན་ལ་སུ་ཞིག་གིས་ལྡེ་མིག་ཚབ་བརྗེས་ན། ཁ་བརྡ་དེ་མི་ནོར་བའི་མི་ཞིག་ལ་གསང་སྦས་ཡིན་ལ་བལྟས་ན་ཡོངས་རྫོགས་ཏག་ཏག་འདྲ། ལྡེ་མིག་ཕྱིས་སུ་བརྗེས་ན་མེའུ་ཆུང་གིས་ཁྱེད་ལ་ཐོ་འགོད་བྱེད་ལ། ཕྱིའི་ལམ་ཐོག་བསྡུར་ཐུབ་པའི་བདེ་སྲུང་ཨང་གྲངས་སྟོན། ཡིན་ནའང་བསྡུར་ཐབས་ཁྱེད་ལ་བཙན་གྱིས་བཀལ་བ་གང་ཡང་མེད།
+• དུས་ཚོད་གཅིག་ལ་ཆས་གྲལ་གཅིག་པུ། ཁྱེད་ཀྱི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་ཀྱིས་ཁྱེད་ཀྱི་ལོ་རྒྱུས་ཕྱེ་བའི་ལྡེ་མིག་སླར་གསོ་བྱེད་པས། ཆས་གྲལ་གསར་པར་ནང་འཛུལ་བྱེད་པས་ཁྱེད་ཀྱིས་ད་ལྟ་ཐོབ་ཟིན་པ་མི་བརླག ་མདུན་ཕྱོགས་གསང་བ་ཡོད་པའི་ཁ་བརྡ་རྣམས་ཀྱིས་བཟོ་མཁན་ཆས་གྲལ་ནས་ནམ་ཡང་མི་འཐོན་པའི་ལྡེ་མིག་གཉིས་པ་བེད་སྤྱོད་བྱེད། ཆས་གྲལ་གང་ཞིག་མཐའ་མར་ནང་འཛུལ་བྱས་ཀྱང་ཐད་ཀར་དེར་སླེབས་ལ། དེའི་བར་སྐབས་ཆས་གྲལ་གཞན་དེར་གསང་སྦས་བྱས་པ་གང་ཡང་དེར་སྤོ་མི་ཐུབ།
+• གསང་སྦས་ཡོད་མེད་སྔོན་ལ་བསྐུར་བའི་འཕྲིན་ཡིག་སྔར་ཇི་བཞིན་ལུས། ཕྱིར་ལོག་ནས་བརྗེས་པ་གང་ཡང་མེད།
+• ཆས་གྲལ་འདིར་རང་བཙན་གྱི་བདེ་སྲུང་ཞིབ་བཤེར་བྱས་མེད།`,
+    },
+    {
+      title: '11. བྱིས་པ།',
+      body: `Chatterbox ལོ་ ༡༣ མན་ཆད་ཀྱི་བྱིས་པ་ཆེད་བཟོས་མེད་ལ། ང་ཚོས་ཤེས་བཞིན་དུ་ཁོང་ཚོའི་གནས་ཚུལ་མི་བསྡུ། བྱིས་པ་ཞིག་གིས་ང་ཚོར་སྒེར་གྱི་གནས་ཚུལ་སྤྲད་ཡོད་པར་ཁྱེད་ཀྱིས་ཡིད་ཆེས་ན། ང་ཚོར་འབྲེལ་བ་གནང་། ང་ཚོས་དེ་སུབ་ངེས།`,
+    },
+    {
+      title: '12. བརྗེ་བ།',
+      body: `ང་ཚོས་སྲིད་བྱུས་འདི་གསར་སྒྱུར་ཐུབ། གལ་ཆེའི་བརྗེ་བ་ཆས་གྲལ་ནང་བསྒྲགས་ངེས་ལ། སྟེང་གི་ཚེས་གྲངས་ནི་མཐའ་མའི་བརྗེས་དུས་ཡིན།`,
+    },
+    {
+      title: '13. འབྲེལ་བ།',
+      body: `སྲིད་བྱུས་འདིའི་སྐོར་དྲི་བ། ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
+
+  mn: [
+    {
+      title: '0. Товчхондоо',
+      body: `Таны зурвасын текст таны төхөөрөмж дээр шифрлэгддэг бөгөөд зөвхөн таны илгээсэн хүмүүс уншиж чадна. Бид үүнийг унших боломжгүй, мөн бидний сервер түрээслэдэг Google ч бас чадахгүй.
+
+Бидний харж чадах зүйл бол харилцаа өрнөсөн явдал — ямар данснууд оролцсон, хэзээ идэвхтэй байсан. Үүнийг арилгах нь агуулгыг шифрлэхээс илүү хэцүү бөгөөд бид энэ ажлыг хараахан дуусгаагүй байна. Энэхүү бодлого нь одоогийн байдлаар хил хаана байгааг яг таг хэлж өгнө.`,
+    },
+    {
+      title: '1. Юу нь төгсгөл-төгсгөлийн шифрлэгдсэн бэ',
+      body: `Таны төхөөрөмж дээр шифрлэгдэж, бид болон Google унших боломжгүй:
+
+• Таны зурвасын текст.
+• Таны хавсаргасан файл, зураг, дуу, видеоны агуулга.
+• Холбоосын урьдчилан харах.
+• Дуут ба видео дуудлага — эдгээр нь хоёр төхөөрөмжийн хооронд WebRTC-ийн заавал шаардсан DTLS-SRTP-г ашигладаг.
+
+Ихэнх хоёулхны болон бүлгийн зурвасууд нэмэлтээр ratchet ашигладаг тул зурвас бүр өөрийн гэсэн түлхүүртэй бөгөөд таны төхөөрөмж эвдэрсэн ч өмнөх зурвасууд ил гарахгүй. Хэн нэгний клиент шинэ түлхүүрийн материалыг хараахан нийтлээгүй харилцаанууд нэг л удаан хугацааны түлхүүр рүү буцдаг бөгөөд энэ нь дээрх шинж чанаргүй. Зурвасын доорх тэмдэглэгээ тухайн зурвас яг алийг нь авсныг хэлж өгнө.
+
+Ганцхан зүйл энэ хилийг давдаг бөгөөд зөвхөн та үүнийг хүсэх үед: Википедиагаас нэр хайх нь тэр зурвас биш зөвхөн тэр нэрийг илгээдэг. Хэсэг 6-д хэн үүнийг хүлээн авдгийг хэлсэн бөгөөд хайлт нь товшсон үед л ажилладаг тул унтраах юм байхгүй. Хураангуйлах, орчуулах, текст болгон хувиргах ажиллагаа ч бас энэ хилийг давах байсан — эдгээр нь энэ хувилбарт унтраалттай бөгөөд аппын ямар ч газар үүнийг асаах хяналт байхгүй.`,
+    },
+    {
+      title: '2. Юу нь шифрлэгдээгүй бэ, бид юу харж чадах вэ',
+      body: `Шифрлэлт нь агуулгыг хамгаалдаг, харин харилцаа өрнөсөн баримтыг хамгаалдаггүй. Дараах зүйлс манай серверт нээлттэй хэвээр байна:
+
+• Харилцаа бүрт хэн байгаа, хэзээ үүсгэгдсэн, хамгийн сүүлд хэзээ идэвхтэй байсан.
+• Зурвас бүрийн цаг хугацааны тэмдэглэгээ, мөн та хэдийг уншаагүй.
+• Хавсралтын файлын нэр, төрөл, хэмжээ. Байт нь шифрлэгдсэн; түүний тайлбар шифрлэгдээгүй бөгөөд шифрлэгдсэн текстийн урт нь эх зурвасын уртыг хязгаарладаг.
+• Таны найзууд болон найзын хүсэлтүүд.
+• Дуудлагын дохио — дуудлага хийгдсэн, хэнд, хэзээ гэдэг. Түүний дуу, видео биш.
+
+Бичиж буйг харуулах, уншсан баталгаа нь та тэдгээрийг асаахгүй л бол унтраалттай бөгөөд унтраалттай байх зуур юу ч бичигдэхгүй.
+
+Одоо энд байхгүй болсон зүйл: таны и-мэйл хаяг, таны нэр. 2026 оны 9 сараас хойш дансны бичлэгт зөвхөн дансны танигч л байдаг — тэр цагаас хойш ямар ч газар хадгалах хаяг байхгүй болсон. Бүртгүүлэх нь таны тухай юу ч асуудаггүй: таны данс бол 24 үгтэй сэргээх хэллэг бөгөөд Firebase Authentication шалгадаг итгэмжлэл түүнээс гаргаж авагддаг. Энэ нь захидал хүлээн авах боломжгүй домэйн доорх санамсаргүй шошгыг л хадгалдаг.
+
+Тусад нь хэлэхэд: энэ апп Google Firebase дээр ажилладаг тул Google таны төхөөрөмжийн серверт хийсэн холболт бүрийн IP хаяг, цаг хугацааг харах боломжтой. Энэ нь аппын биш зочилуулгын шинж чанар бөгөөд бид үүнийг шифрлэж арилгах боломжгүй.`,
+    },
+    {
+      title: '3. Хүмүүс таныг хэрхэн олдог вэ',
+      body: `Тэд таныг хайж олох боломжгүй. Энд лавлах алга — и-мэйл, утасны дугаар, нэрээр хайх боломжгүй — сервер ийм асуулга бүрийг татгалзана.
+
+Та хэн нэгэнтэй холбогдохын тулд аль хэдийн ашигладаг сувгаараа урилгын холбоосыг гадуур илгээдэг. Холбоос нэг удаа ажиллаж, 24 цагийн дараа хугацаа дуусаж, цуцлагдах боломжтой. Та хэн нэгнийг юу гэж дуудах нь зөвхөн тантай үлддэг таны өөрийн шошго; хэрэв тэд өөрсдийгөө танилцуулсан бол тэр нэр танд шифрлэгдсэн байдалтай ирсэн.`,
+    },
+    {
+      title: '4. Бид юу цуглуулдаг вэ',
+      body: `• Дансны мэдээлэл: дансны танигч, мөн сэргээх хэллэгээс гаргаж авсан итгэмжлэл, Firebase Authentication-д хадгалагдана. И-мэйл хаяг, утасны дугаар, нэр байхгүй — бүртгүүлэхэд эдгээрийн алийг нь ч асуудаггүй.
+• Зурвас, хавсралтын шифрлэгдсэн текст, мөн 2-р хэсгийн метадата.
+
+Энэ бол бүх жагсаалт. Аналитик, эвдрэлийн тайлан гэж байхгүй. Апп өмнө нь дэлгэцийн үзэлтийг Firebase Analytics-д, эвдрэлийн тайланг Firebase Crashlytics-д илгээдэг байсан бөгөөд хоёулаа таны дансны танигчийг агуулж байсан тул нэрэнд нь ч тодорхойгүй байгаагүй; одоо тэдгээрийг илгээж байсан сангуудын хамт хоёуланг нь устгасан. Алдаа зөвхөн хөгжүүлэгчийн өөрийнх нь машин дээр хөгжүүлэлтийн үед хэвлэгдэж, өөр хаана ч очдоггүй.`,
+    },
+    {
+      title: '5. Хаана хадгалагддаг вэ',
+      body: `Google Firebase дээр — Firestore, Storage, Authentication — баримт бичиг бүрийг хэн унших, бичих боломжтойг шийддэг аюулгүй байдлын дүрмийн дор.
+
+Таны төхөөрөмж дээр кэшлэгдсэн зурвас, тохиргоо, аппын түгжээний PIN код нь энгийн аппын хадгалалт биш платформын түлхүүр сан (iOS Keychain, Android Keystore) дахь төхөөрөмж тус бүрийн түлхүүрээр шифрлэгддэг.
+
+Таны зурвасыг тайлдаг хувийн түлхүүр таны бичиж авахаар сонгосон сэргээх хэллэгээс бусад тохиолдолд таны төхөөрөмжөөс хэзээ ч гардаггүй. Бид үүнийг хадгалдаггүй бөгөөд танд зориулж сэргээх боломжгүй. Үүнийг алдвал тэр төхөөрөмж рүү илгээгдсэн зурвасыг дахин унших боломжгүй болно — бид ч гэсэн хэн ч чадахгүй.`,
+    },
+    {
+      title: '6. Өөр хэн мэдээлэл хүлээн авдаг вэ',
+      body: `Бид таны хувийн мэдээллийг зардаггүй, худалддаггүй, түрээслүүлдэггүй. Мэдээлэл дараах газарт очно:
+
+• Google Firebase — дээр дурдсанчлан манай зочилуулгын үйлчилгээ үзүүлэгч.
+• Wikimedia Foundation — Википедиагаас хайхын тулд товшсон нэг нэр.
+• Google Cloud Speech-to-Text — текст хөрвүүлэлт хүссэн үед нэг дуут зурвасын дуу.
+• Google Cloud Translation — орчуулга хүссэн үед нэг зурвасын текст.
+• Cloudflare Workers AI — хураангуй хүссэн эсвэл харилцааны талаар асуух үед нэг харилцааны сүүлийн 50 хүртэлх зурвас.
+
+Сүүлийн гурав нь энэ хувилбарт унтраалттай. Аппын ямар ч газар текст болгох, орчуулах, эсвэл хураангуйлахыг асаах хяналт байхгүй тул эдгээр гурван үйлчилгээнд юу ч хүрдэггүй. Тэдгээрийг устгаагүй, харин жагсаасан шалтгаан нь код нь одоо ч энд байгаа бөгөөд онцлогууд буцаж ирэх зорилготой — тэдгээр буцаж ирэхэд энэ мэдэгдэл болон анх ашиглахын өмнөх зөвшөөрлийн асуултын хамт буцаж ирнэ. Тэр үед илгээгдэх зүйл нь таны үр дүнг гаргахад зориулагдах бөгөөд юу ч сургахад ашиглагдахгүй; текст хөрвүүлэлт ч, орчуулга ч манай серверт хадгалагддаггүй.
+
+Википедиагаас хайх ажиллагаанд унтраах товч байхгүй, учир нь унтраах ямар ч байнгын зүйл байхгүй: энэ нь товшсон үед л ажиллаж, өөр цагт ажилладаггүй. Википедиа тэр нэг нэр болон таны IP хаягийг хүлээн авдаг — та өөрөө тэдний хайлтын хайрцаг руу бичсэнтэй адил — данс, зурвас, харилцаа хамаагүй. Буцаж ирсэн зүйл харагдаад хадгалагдахгүй, харилцаанд юу ч бичигдэхгүй.
+
+Хуулиар шаардвал бид эзэмшдэг зүйлээ илчилж болно. Бидний эзэмшдэг зүйл бол 2-р хэсэгт байгаа жагсаалт. Бид зурвасын агуулгыг гаргаж чадахгүй, учир нь бид үүнийг унших боломжгүй.`,
+    },
+    {
+      title: '7. Түлхэлт мэдэгдэл',
+      body: `Firebase Cloud Messaging мэдэгдлийг хүргэдэг. Таны төхөөрөмжийн токен зөвхөн та л уншиж чадах дансны хувийн хэсэгт хадгалагддаг.
+
+Мэдэгдэл зурвасын текст агуулдаггүй. Таны төхөөрөмж зурвасыг орон нутагт тайлж, таны хардаг зүйлийг бүрдүүлдэг; Google дугтуй хүргэдэг, агуулгыг биш.`,
+    },
+    {
+      title: '8. Та юу хийж чадах вэ',
+      body: `• Профайл дэлгэцээс дансаа устгах. Дуудлагын бичлэг гэх мэт харилцааны хамтын хэсэг байх агуулга нь бусад оролцогчид үлдэнэ, учир нь энэ бас тэдний бичлэг юм.
+• Профайл дэлгэцээс мэдээллээ экспортлох.
+• Чат тус бүрээр зурвасын хугацаа дуусахыг тохируулах: 1 цаг, 24 цаг, 7 хоног эсвэл 30 хоног.
+• Бичиж буйг харуулах, уншсан баталгааг асаах эсвэл унтраах. Хоёулаа анхдагчаар унтраалттай.
+• Аппаа PIN код эсвэл биометрикээр түгжих.
+• Гаргаж өгсөн урилгын холбоосоо цуцлах.
+
+Хэрэв та бидэнд ямар нэг зүйлийг гараар устгуулахыг хүсвэл бидэнд бичнэ үү.`,
+    },
+    {
+      title: '9. Хадгалалтын хугацаа',
+      body: `Таны данс байх хугацаанд бид таны мэдээллийг хадгалдаг. Дансыг устгах нь дээр дурдсан хамтын эзэмшлийн агуулгаас бусад бүх зүйлийг устгадаг. Чат тус бүрийн хугацаа дуусах тохиргоо таны тохируулсан хуваарийн дагуу зурвасыг устгадаг.`,
+    },
+    {
+      title: '10. Мэдэх ёстой хязгаарлалтууд',
+      body: `Бид эдгээрийг таны өөрөө олж мэдэхээс илүү өөрсдөө хэлж өгөхийг илүүд үздэг.
+
+• Түлхүүрүүд анх удаа харагдахдаа итгэмжлэгддэг. Хэрэв хэн нэгэн та нар зурвас солилцохоос өмнө түлхүүрийг сольсон бол харилцаа буруу хүнд шифрлэгдэх бөгөөд бүрэн хэвийн харагдана. Дараа нь түлхүүр өөрчлөгдвөл апп танд анхааруулж, гадуур харьцуулах боломжтой аюулгүйн дугаар харуулна — гэвч үүнийг харьцуулахыг хэн ч танд албаддаггүй.
+• Нэг удаад нэг л төхөөрөмж. Таны сэргээх хэллэг таны түүхийг нээдэг түлхүүрийг сэргээдэг тул шинэ төхөөрөмж дээр нэвтрэх нь та аль хэдийн хүлээн авсан зүйлээ алдахгүй. Урагшилсан нууцлалтай харилцаанууд нь үүсгэсэн төхөөрөмжөөс хэзээ ч гардаггүй хоёр дахь түлхүүрийг ашигладаг: хамгийн сүүлд нэвтэрсэн төхөөрөмж л тэдгээрийг хүлээн авдаг бөгөөд энэ хооронд нөгөө төхөөрөмжид битүүмжлэгдсэн зүйлийг шилжүүлэх боломжгүй.
+• Шифрлэлт үүсэхээс өмнө илгээсэн зурвасууд хуучин хэвээрээ үлддэг. Юу ч ухарч хувиргагдаагүй.
+• Энэ апп бие даасан аюулгүй байдлын аудитад ороогүй байна.`,
+    },
+    {
+      title: '11. Хүүхэд',
+      body: `Chatterbox нь 13-аас доош насны хүүхдэд зориулагдаагүй бөгөөд бид тэдний мэдээллийг мэдэж байж цуглуулдаггүй. Хэрэв хүүхэд бидэнд хувийн мэдээлэл өгсөн гэж та бодож байвал бидэнтэй холбогдоно уу, бид үүнийг устгах болно.`,
+    },
+    {
+      title: '12. Өөрчлөлт',
+      body: `Бид энэ бодлогыг шинэчилж болно. Чухал өөрчлөлтийг апп дотор зарлах бөгөөд дээд талын огноо нь хамгийн сүүлд өөрчлөгдсөн он сар өдөр юм.`,
+    },
+    {
+      title: '13. Холбоо барих',
+      body: `Энэ бодлогын талаарх асуулт: ${POLICY_CONTACT_EMAIL}`,
+    },
+  ],
 };
 
 /**

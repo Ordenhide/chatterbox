@@ -21,7 +21,7 @@ export default {
     lead: `O Chatterbox é uma aplicação de mensagens cifrada ponta a ponta, sem diretório de utilizadores. Ninguém te consegue pesquisar, porque não existe índice nenhum para pesquisar — a única entrada numa conversa é um link que entregas tu próprio a alguém.`,
     primary: `Obter o Chatterbox`,
     secondary: `Ler a política de privacidade`,
-    badges: [`Sem diretório`, `Só por convite`, `23 idiomas`, `Grátis`],
+    badges: [`Sem diretório`, `Só por convite`, `53 idiomas`, `Grátis`],
   },
 
   different: {
@@ -72,7 +72,7 @@ export default {
       {
         title: `A política de privacidade diz o que não consegue fazer`,
         body: [
-          `Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que uma chave substituída antes da tua primeira mensagem pareceria perfeitamente normal. É o mesmo texto na aplicação e neste site, em 23 idiomas — não um original inglês com uma tradução mais suave.`,
+          `Declara que a cifra nunca foi auditada de forma independente, que a Google vê os metadados de todas as ligações porque lhe alugamos os servidores, e que uma chave substituída antes da tua primeira mensagem pareceria perfeitamente normal. É o mesmo texto na aplicação e neste site, em 53 idiomas — não um original inglês com uma tradução mais suave.`,
         ],
         note: `{policyShort} antes de decidires confiar em alguma das afirmações acima.`,
       },
@@ -105,8 +105,8 @@ export default {
         body: `A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo. Podes anotá-la como frase de recuperação; nós não a temos e não a conseguimos recuperar por ti.`,
       },
       {
-        title: `23 idiomas`,
-        body: `Inglês, chinês nas duas escritas, japonês, coreano, espanhol, francês, alemão, italiano, português, russo, turco, vietnamita, árabe, hindi, persa, hebraico, urdu, polaco, ucraniano, indonésio, bengali e tailandês — incluindo escrita da direita para a esquerda.`,
+        title: `53 idiomas`,
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — incluindo escrita da direita para a esquerda.`,
       },
     ],
   },

@@ -10,7 +10,13 @@ const functions = getFunctions();
 // 1:1 (e.g. this app's "zh-Hans"/"zh-Hant" vs. STT's "cmn-Hans-CN"), so a
 // raw pass-through would silently mistranscribe or error for most non-English
 // users instead of just defaulting to English.
-const SPEECH_LANGUAGE_CODES: Record<LanguageCode, string> = {
+//
+// Partial, not Record: Speech-to-Text's language list is narrower than the
+// app's, and a language missing here is a documented gap, not an oversight —
+// see the two omitted below. toSpeechLanguageCode() already falls back to
+// English for a missing entry, which is the honest behaviour: transcribing
+// Tibetan speech as if it were English would be worse than saying so.
+const SPEECH_LANGUAGE_CODES: Partial<Record<LanguageCode, string>> = {
   en: 'en-US',
   zh: 'cmn-Hans-CN', // resources.zh aliases zh-Hans (src/i18n/index.ts)
   'zh-Hans': 'cmn-Hans-CN',
@@ -35,6 +41,38 @@ const SPEECH_LANGUAGE_CODES: Record<LanguageCode, string> = {
   id: 'id-ID',
   bn: 'bn-IN',
   th: 'th-TH',
+  fil: 'fil-PH',
+  ms: 'ms-MY',
+  my: 'my-MM',
+  km: 'km-KH',
+  lo: 'lo-LA',
+  ta: 'ta-IN',
+  te: 'te-IN',
+  mr: 'mr-IN',
+  pa: 'pa-Guru-IN',
+  ne: 'ne-NP',
+  si: 'si-LK',
+  sw: 'sw-KE',
+  ha: 'ha-NG',
+  am: 'am-ET',
+  nl: 'nl-NL',
+  el: 'el-GR',
+  sv: 'sv-SE',
+  da: 'da-DK',
+  no: 'nb-NO',
+  cs: 'cs-CZ',
+  ro: 'ro-RO',
+  hu: 'hu-HU',
+  kk: 'kk-KZ',
+  uz: 'uz-UZ',
+  ka: 'ka-GE',
+  hy: 'hy-AM',
+  be: 'be-BY',
+  mn: 'mn-MN',
+  // ti (Tigrinya) and bo (Tibetan): no Speech-to-Text support as of this
+  // writing — verified against Google's own supported-languages page, not
+  // guessed. See translation.ts for the same two languages' Cloud Translate
+  // status, which differs (Tigrinya has translate support; Tibetan has neither).
 };
 
 /** Maps the app's current UI language to a Speech-to-Text language code, falling back to English. */

@@ -10,7 +10,8 @@
  * for `Le Caf`. Nothing failed; the menu row simply never appeared, which is
  * the kind of bug a test suite has to be asked to look for.
  */
-import {extractEntities, wikipediaSearchUrl} from '../wikipediaLookup';
+import {LANGUAGES} from '../../i18n/languages';
+import {extractEntities, wikipediaSearchUrl, wikipediaSubdomain} from '../wikipediaLookup';
 
 describe('scripts without ASCII capitals', () => {
   // Chinese marks a work with 《》, which is a stronger signal than a capital.
@@ -177,4 +178,21 @@ describe('wikipediaSearchUrl', () => {
   it('escapes a phrase that would otherwise change the query', () => {
     expect(wikipediaSearchUrl('Guns & Roses', 'en')).toContain('search=Guns%20%26%20Roses');
   });
+});
+
+/**
+ * WIKI_SUBDOMAIN is a plain Record<string, string>, not keyed by
+ * OfferedLanguage, so leaving a language out of it is not a compile error —
+ * it is a silent fall-through to English, exactly what wikipediaSubdomain's
+ * own doc comment says this file exists to stop. bo, be, ti and mn shipped
+ * in the picker for a full round each without ever being added here, and
+ * nothing caught it because nothing checked. This is the check.
+ */
+describe('WIKI_SUBDOMAIN completeness', () => {
+  it.each(LANGUAGES.map(l => l.code).filter(code => code !== 'en'))(
+    "doesn't silently fall back to English for %s",
+    code => {
+      expect(wikipediaSubdomain(code)).not.toBe('en');
+    },
+  );
 });

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="cs" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zásady ochrany osobních údajů — Chatterbox</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="privacy" />
+  <link rel="alternate" hreflang="zh-Hans" href="privacy.zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="privacy.zh-Hant" />
+  <link rel="alternate" hreflang="es" href="privacy.es" />
+  <link rel="alternate" hreflang="fr" href="privacy.fr" />
+  <link rel="alternate" hreflang="de" href="privacy.de" />
+  <link rel="alternate" hreflang="it" href="privacy.it" />
+  <link rel="alternate" hreflang="pt" href="privacy.pt" />
+  <link rel="alternate" hreflang="ru" href="privacy.ru" />
+  <link rel="alternate" hreflang="tr" href="privacy.tr" />
+  <link rel="alternate" hreflang="vi" href="privacy.vi" />
+  <link rel="alternate" hreflang="ja" href="privacy.ja" />
+  <link rel="alternate" hreflang="ko" href="privacy.ko" />
+  <link rel="alternate" hreflang="ar" href="privacy.ar" />
+  <link rel="alternate" hreflang="hi" href="privacy.hi" />
+  <link rel="alternate" hreflang="fa" href="privacy.fa" />
+  <link rel="alternate" hreflang="he" href="privacy.he" />
+  <link rel="alternate" hreflang="ur" href="privacy.ur" />
+  <link rel="alternate" hreflang="pl" href="privacy.pl" />
+  <link rel="alternate" hreflang="uk" href="privacy.uk" />
+  <link rel="alternate" hreflang="id" href="privacy.id" />
+  <link rel="alternate" hreflang="bn" href="privacy.bn" />
+  <link rel="alternate" hreflang="th" href="privacy.th" />
+  <link rel="alternate" hreflang="fil" href="privacy.fil" />
+  <link rel="alternate" hreflang="ms" href="privacy.ms" />
+  <link rel="alternate" hreflang="my" href="privacy.my" />
+  <link rel="alternate" hreflang="km" href="privacy.km" />
+  <link rel="alternate" hreflang="lo" href="privacy.lo" />
+  <link rel="alternate" hreflang="ta" href="privacy.ta" />
+  <link rel="alternate" hreflang="te" href="privacy.te" />
+  <link rel="alternate" hreflang="mr" href="privacy.mr" />
+  <link rel="alternate" hreflang="pa" href="privacy.pa" />
+  <link rel="alternate" hreflang="ne" href="privacy.ne" />
+  <link rel="alternate" hreflang="si" href="privacy.si" />
+  <link rel="alternate" hreflang="sw" href="privacy.sw" />
+  <link rel="alternate" hreflang="ha" href="privacy.ha" />
+  <link rel="alternate" hreflang="am" href="privacy.am" />
+  <link rel="alternate" hreflang="nl" href="privacy.nl" />
+  <link rel="alternate" hreflang="el" href="privacy.el" />
+  <link rel="alternate" hreflang="sv" href="privacy.sv" />
+  <link rel="alternate" hreflang="da" href="privacy.da" />
+  <link rel="alternate" hreflang="no" href="privacy.no" />
+  <link rel="alternate" hreflang="cs" href="privacy.cs" />
+  <link rel="alternate" hreflang="ro" href="privacy.ro" />
+  <link rel="alternate" hreflang="hu" href="privacy.hu" />
+  <link rel="alternate" hreflang="kk" href="privacy.kk" />
+  <link rel="alternate" hreflang="uz" href="privacy.uz" />
+  <link rel="alternate" hreflang="ka" href="privacy.ka" />
+  <link rel="alternate" hreflang="hy" href="privacy.hy" />
+  <link rel="alternate" hreflang="bo" href="privacy.bo" />
+  <link rel="alternate" hreflang="be" href="privacy.be" />
+  <link rel="alternate" hreflang="ti" href="privacy.ti" />
+  <link rel="alternate" hreflang="mn" href="privacy.mn" />
+  <link rel="alternate" hreflang="x-default" href="privacy" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.cs" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="index.cs#features">Funkce</a>
+        <a href="index.cs#download" class="nav-cta">Stáhnout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <a class="back-link" href="index.cs">← Zpět na Chatterbox</a>
+    <h1>Zásady ochrany osobních údajů</h1>
+    <p class="meta">Naposledy aktualizováno: 2026-09-07</p>
+
+    <section>
+      <h2>0. Ve zkratce</h2>
+      <p>Text vašich zpráv je šifrován na vašem zařízení a mohou ho číst pouze lidé, kterým ho posíláte. My ho číst nemůžeme, a nemůže ani Google, jehož servery si pronajímáme.</p>
+      <p>Co vidíme, je, že proběhla konverzace: které účty jsou v ní zapojeny a kdy byly aktivní. Odstranění toho je těžší než šifrování obsahu, a ještě jsme to nedokončili. Tyto zásady přesně říkají, kde tato hranice v současnosti leží.</p>
+    </section>
+
+    <section>
+      <h2>1. Co je šifrováno end-to-end</h2>
+      <p>Šifrováno na vašem zařízení, nečitelné pro nás a pro Google:</p>
+      <ul><li>Text vašich zpráv.</li><li>Obsah souborů, fotografií, zvuku a videa, které přikládáte.</li><li>Náhledy odkazů.</li><li>Hlasové a video hovory, které používají povinné DTLS-SRTP WebRTC mezi dvěma zařízeními.</li></ul>
+      <p>Většina zpráv jeden na jednoho a skupinových zpráv navíc používá ratchet, což znamená, že každá zpráva má svůj vlastní klíč, takže kompromitace vašeho zařízení neodhalí dřívější zprávy. Konverzace, kde klient někoho nezveřejnil novější klíčový materiál, se vrací k jednomu dlouhodobému klíči, který tuto vlastnost nemá. Štítek pod zprávou vám řekne, který skutečně dostala.</p>
+      <p>Jedna věc tuto hranici překračuje, a to jen když o to požádáte: vyhledání jména na Wikipedii odešle pouze toto jméno, ne zprávu, ze které pochází. Oddíl 6 říká, kdo to dostane, a vyhledávání běží pouze při klepnutí a jinak ne, takže není co vypnout. Shrnutí, překlad a přepis by tuto hranici také překročily — v tomto vydání jsou vypnuty, bez jakéhokoli ovládání kdekoli v aplikaci, které by je zapnulo.</p>
+    </section>
+
+    <section>
+      <h2>2. Co není šifrováno, a co vidíme</h2>
+      <p>Šifrování chrání obsah, ne skutečnost, že konverzace proběhla. Tyto věci leží jasně na našich serverech:</p>
+      <ul><li>Kdo je v každé konverzaci a kdy byla vytvořena a naposledy aktivní.</li><li>Časové razítko každé zprávy a kolik jich nemáte přečteno.</li><li>Název souboru přílohy, typ a velikost. Bajty jsou šifrovány; jejich popis ne, a délka šifrovaného textu omezuje délku originálu.</li><li>Vaši přátelé a žádosti o přátelství.</li><li>Signalizace hovoru — že hovor byl uskutečněn, komu a kdy. Ne jeho zvuk nebo video.</li></ul>
+      <p>Indikátory psaní a potvrzení o přečtení jsou vypnuté, dokud je nezapnete, a dokud jsou vypnuté, nic se nezapisuje.</p>
+      <p>Co už tady není: vaše e-mailová adresa a jméno. Od září 2026 obsahuje záznam účtu pouze identifikátor účtu — a od té doby neexistuje adresa, kterou by bylo kde uchovávat. Registrace se vás na nic neptá: váš účet je obnovovací fráze o 24 slovech, a přihlašovací údaj, který Firebase Authentication kontroluje, je z ní odvozen. Co ukládá, je náhodný štítek pod doménou, která nemůže přijímat poštu.</p>
+      <p>Odděleně: protože aplikace běží na Google Firebase, Google vidí IP adresu a čas každého připojení, které vaše zařízení k němu vytvoří. To je vlastnost hostingu, ne aplikace, a nemůžeme to zašifrovat pryč.</p>
+    </section>
+
+    <section>
+      <h2>3. Jak vás lidé najdou</h2>
+      <p>Nemohou vás vyhledat. Neexistuje adresář — žádné vyhledávání podle e-mailu, telefonního čísla nebo jména — a server odmítá jakýkoli dotaz, který se o to pokusí.</p>
+      <p>Někoho oslovíte tak, že mu mimo kanál pošlete pozvánkový odkaz, prostřednictvím čehokoli, co již používáte. Odkaz funguje jednou, po 24 hodinách vyprší platnost a lze ho odvolat. Jakkoli někoho nazýváte, je to váš vlastní štítek pro něj, uchovávaný pro vás; pokud se představili sami, dostalo se k vám toto jméno zašifrované.</p>
+    </section>
+
+    <section>
+      <h2>4. Co shromažďujeme</h2>
+      <ul><li>Údaje o účtu: identifikátor účtu a přihlašovací údaj odvozený z vaší obnovovací fráze, uchovávaný ve Firebase Authentication. Žádná e-mailová adresa, žádné telefonní číslo, žádné jméno — registrace se na nic z toho neptá.</li><li>Šifrovaný text zprávy a přílohy, plus metadata v oddílu 2.</li></ul>
+      <p>To je celý seznam. Neexistuje žádná analytika ani hlášení chyb. Aplikace dříve posílala zobrazení obrazovky do Firebase Analytics a hlášení chyb do Firebase Crashlytics, obě nesla identifikátor vašeho účtu, takže žádné z nich nebylo anonymní; obě jsou nyní pryč, spolu s knihovnami, které je odesílaly. Chyby se vytisknou pouze na vlastním počítači vývojáře během vývoje a nikam jinam nejdou.</p>
+    </section>
+
+    <section>
+      <h2>5. Kde je to uloženo</h2>
+      <p>Na Google Firebase — Firestore, Storage a Authentication — pod bezpečnostními pravidly, která rozhodují, kdo může každý dokument číst a zapisovat.</p>
+      <p>Na vašem zařízení jsou zprávy uložené v mezipaměti, nastavení a váš PIN zámku aplikace šifrovány klíčem pro jednotlivé zařízení, uchovávaným v úložišti klíčů platformy (iOS Keychain, Android Keystore) namísto v běžném úložišti aplikace.</p>
+      <p>Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zařízení, kromě jako obnovovací fráze, kterou se rozhodnete si zapsat. My ho nedržíme a nemůžeme ho pro vás obnovit. Ztratíte-li ho, zprávy odeslané na toto zařízení již nelze znovu přečíst — nikým, včetně nás.</p>
+    </section>
+
+    <section>
+      <h2>6. Kdo další dostává data</h2>
+      <p>Vaše osobní údaje neprodáváme, neobchodujeme s nimi ani je nepronajímáme. Data se dostávají k:</p>
+      <ul><li>Google Firebase — náš poskytovatel hostingu, jak je popsáno výše.</li><li>Wikimedia Foundation — jedno jméno, když na něj klepnete pro vyhledání na Wikipedii.</li><li>Google Cloud Speech-to-Text — zvuk jedné hlasové zprávy, když požádáte o přepis.</li><li>Google Cloud Translation — text jedné zprávy, když požádáte o překlad.</li><li>Cloudflare Workers AI — až posledních 50 zpráv jedné konverzace, když požádáte o shrnutí nebo se na ni zeptáte.</li></ul>
+      <p>Poslední tři jsou v tomto vydání vypnuty. Nikde v aplikaci není žádné ovládání, které by zapínalo přepis, překlad nebo shrnutí, takže k těmto třem službám nic nedosáhne. Jsou uvedeny místo smazány, protože kód je stále zde a funkce mají v úmyslu se vrátit — a když se vrátí, vrátí se s tímto zveřejněním a výzvou před prvním použitím. Co by se tehdy odesílalo, je odesíláno k vytvoření vašeho výsledku, ne k trénování čehokoli; na našich serverech se neukládá ani přepis, ani překlad.</p>
+      <p>Vyhledávání na Wikipedii nemá přepínač, protože není co vypnout: běží pouze při klepnutí a jinak ne. Wikipedie dostane pouze toto jedno jméno a vaši IP adresu, stejně jako kdybyste ho sami napsali do jejich vyhledávacího pole — žádný účet, žádná zpráva, žádná konverzace. Co se vrátí, je zobrazeno a neuloženo, a nic o tom se nezapíše do konverzace.</p>
+      <p>Můžeme odhalit, co držíme, pokud to vyžaduje zákon. Co držíme, je seznam v oddílu 2. Nemůžeme poskytnout obsah zpráv, protože ho nemůžeme přečíst.</p>
+    </section>
+
+    <section>
+      <h2>7. Push oznámení</h2>
+      <p>Firebase Cloud Messaging doručuje oznámení. Token vašeho zařízení je uložen v soukromé části vašeho účtu, kterou můžete číst pouze vy.</p>
+      <p>Oznámení nenesou žádný text zprávy. Vaše zařízení dešifruje zprávu lokálně a sestaví, co vidíte; Google doručuje obálku, ne obsah.</p>
+    </section>
+
+    <section>
+      <h2>8. Co můžete dělat</h2>
+      <ul><li>Smazat svůj účet z obrazovky Profil. Obsah, který je společnou součástí konverzace — například záznam hovoru — zůstává u druhého účastníka, protože je to i jeho záznam.</li><li>Exportovat svá data z obrazovky Profil.</li><li>Nastavit vypršení zpráv podle konverzace: 1 hodina, 24 hodin, 7 dní nebo 30 dní.</li><li>Zapnout nebo vypnout indikátory psaní a potvrzení o přečtení. Obě jsou ve výchozím nastavení vypnuté.</li><li>Uzamknout aplikaci PINem nebo biometrikou.</li><li>Odvolat pozvánkový odkaz, který jste rozdali.</li></ul>
+      <p>Pokud byste raději, abychom něco smazali ručně, napište nám.</p>
+    </section>
+
+    <section>
+      <h2>9. Uchovávání</h2>
+      <p>Vaše data uchováváme, dokud váš účet existuje. Smazání účtu je smaže, kromě společně drženého obsahu uvedeného výše. Vypršení podle konverzace odstraňuje zprávy podle harmonogramu, který nastavíte.</p>
+    </section>
+
+    <section>
+      <h2>10. Omezení, o kterých byste měli vědět</h2>
+      <p>Raději bychom vám to řekli, než abyste to zjistili sami.</p>
+      <ul><li>Klíčům se důvěřuje při prvním zobrazení. Pokud by někdo nahradil klíč dříve, než jste si kdy vyměnili zprávu, konverzace by se šifrovala nesprávné osobě a vypadala by naprosto normálně. Aplikace vás upozorní, když se klíč později změní, a zobrazí bezpečnostní číslo, které můžete porovnat mimo kanál — ale nic vás nenutí ho porovnávat.</li><li>Jedno zařízení najednou. Vaše obnovovací fráze obnoví klíč, který otevírá vaši historii, takže přihlášení na novém zařízení neztratí to, co jste již obdrželi. Konverzace s forward secrecy používají druhý klíč, který nikdy neopustí zařízení, které ho vytvořilo: ať už se naposledy přihlásilo jakékoli zařízení, je to to, které dosáhnou, a cokoli mezitím zapečetěné pro to druhé tam nelze přesunout.</li><li>Zprávy odeslané před existencí šifrování zůstávají tak, jak byly. Nic nebylo zpětně převedeno.</li><li>Tato aplikace nebyla nezávisle bezpečnostně auditována.</li></ul>
+    </section>
+
+    <section>
+      <h2>11. Děti</h2>
+      <p>Chatterbox není určen pro děti mladší 13 let, a jejich informace vědomě neshromažďujeme. Pokud se domníváte, že nám dítě poskytlo osobní údaje, kontaktujte nás a my je smažeme.</p>
+    </section>
+
+    <section>
+      <h2>12. Změny</h2>
+      <p>Tyto zásady můžeme aktualizovat. Významné změny budou oznámeny v aplikaci a datum nahoře je, kdy se naposledy změnily.</p>
+    </section>
+
+    <section>
+      <h2>13. Kontakt</h2>
+      <p>Dotazy ohledně těchto zásad: privacy@chatterbox.app</p>
+    </section>
+
+    <nav class="site-langs" aria-label="Zásady ochrany osobních údajů">
+        <a href="privacy" lang="en" hreflang="en">English</a>
+        <a href="privacy.zh-Hans" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="privacy.zh-Hant" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="privacy.es" lang="es" hreflang="es">Español</a>
+        <a href="privacy.fr" lang="fr" hreflang="fr">Français</a>
+        <a href="privacy.de" lang="de" hreflang="de">Deutsch</a>
+        <a href="privacy.it" lang="it" hreflang="it">Italiano</a>
+        <a href="privacy.pt" lang="pt" hreflang="pt">Português</a>
+        <a href="privacy.ru" lang="ru" hreflang="ru">Русский</a>
+        <a href="privacy.tr" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="privacy.vi" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="privacy.ja" lang="ja" hreflang="ja">日本語</a>
+        <a href="privacy.ko" lang="ko" hreflang="ko">한국어</a>
+        <a href="privacy.ar" lang="ar" hreflang="ar">العربية</a>
+        <a href="privacy.hi" lang="hi" hreflang="hi">हिन्दी</a>
+        <a href="privacy.fa" lang="fa" hreflang="fa">فارسی</a>
+        <a href="privacy.he" lang="he" hreflang="he">עברית</a>
+        <a href="privacy.ur" lang="ur" hreflang="ur">اردو</a>
+        <a href="privacy.pl" lang="pl" hreflang="pl">Polski</a>
+        <a href="privacy.uk" lang="uk" hreflang="uk">Українська</a>
+        <a href="privacy.id" lang="id" hreflang="id">Bahasa Indonesia</a>
+        <a href="privacy.bn" lang="bn" hreflang="bn">বাংলা</a>
+        <a href="privacy.th" lang="th" hreflang="th">ไทย</a>
+        <a href="privacy.fil" lang="fil" hreflang="fil">Filipino</a>
+        <a href="privacy.ms" lang="ms" hreflang="ms">Bahasa Melayu</a>
+        <a href="privacy.my" lang="my" hreflang="my">မြန်မာဘာသာ</a>
+        <a href="privacy.km" lang="km" hreflang="km">ខ្មែរ</a>
+        <a href="privacy.lo" lang="lo" hreflang="lo">ລາວ</a>
+        <a href="privacy.ta" lang="ta" hreflang="ta">தமிழ்</a>
+        <a href="privacy.te" lang="te" hreflang="te">తెలుగు</a>
+        <a href="privacy.mr" lang="mr" hreflang="mr">मराठी</a>
+        <a href="privacy.pa" lang="pa" hreflang="pa">ਪੰਜਾਬੀ</a>
+        <a href="privacy.ne" lang="ne" hreflang="ne">नेपाली</a>
+        <a href="privacy.si" lang="si" hreflang="si">සිංහල</a>
+        <a href="privacy.sw" lang="sw" hreflang="sw">Kiswahili</a>
+        <a href="privacy.ha" lang="ha" hreflang="ha">Hausa</a>
+        <a href="privacy.am" lang="am" hreflang="am">አማርኛ</a>
+        <a href="privacy.nl" lang="nl" hreflang="nl">Nederlands</a>
+        <a href="privacy.el" lang="el" hreflang="el">Ελληνικά</a>
+        <a href="privacy.sv" lang="sv" hreflang="sv">Svenska</a>
+        <a href="privacy.da" lang="da" hreflang="da">Dansk</a>
+        <a href="privacy.no" lang="no" hreflang="no">Norsk</a>
+        <span aria-current="true" lang="cs">Čeština</span>
+        <a href="privacy.ro" lang="ro" hreflang="ro">Română</a>
+        <a href="privacy.hu" lang="hu" hreflang="hu">Magyar</a>
+        <a href="privacy.kk" lang="kk" hreflang="kk">Қазақша</a>
+        <a href="privacy.uz" lang="uz" hreflang="uz">Oʻzbekcha</a>
+        <a href="privacy.ka" lang="ka" hreflang="ka">ქართული</a>
+        <a href="privacy.hy" lang="hy" hreflang="hy">Հայերեն</a>
+        <a href="privacy.bo" lang="bo" hreflang="bo">བོད་ཡིག</a>
+        <a href="privacy.be" lang="be" hreflang="be">Беларуская</a>
+        <a href="privacy.ti" lang="ti" hreflang="ti">ትግርኛ</a>
+        <a href="privacy.mn" lang="mn" hreflang="mn">Монгол</a>
+    </nav>
+  </main>
+</body>
+</html>

@@ -11,8 +11,11 @@ const functions = getFunctions(getApp());
 // Google Speech-to-Text v2 language codes, mapped from this app's own Lang
 // type — "zh" alone isn't a valid STT language code (it wants the more
 // specific "cmn-Hans-CN" for Mandarin), so this can't be passed through raw.
-// Mirrors src/services/transcription.ts on mobile.
-const SPEECH_LANGUAGE_CODES: Record<Lang, string> = {
+// Mirrors src/services/transcription.ts on mobile, including its Partial
+// type: a language missing here has no Speech-to-Text support (verified
+// against Google's own docs), and toSpeechLanguageCode() falls back to
+// English rather than silently mistranscribing.
+const SPEECH_LANGUAGE_CODES: Partial<Record<Lang, string>> = {
   en: 'en-US',
   'zh-Hans': 'cmn-Hans-CN',
   'zh-Hant': 'cmn-Hant-TW',
@@ -36,6 +39,36 @@ const SPEECH_LANGUAGE_CODES: Record<Lang, string> = {
   id: 'id-ID',
   bn: 'bn-IN',
   th: 'th-TH',
+  fil: 'fil-PH',
+  ms: 'ms-MY',
+  my: 'my-MM',
+  km: 'km-KH',
+  lo: 'lo-LA',
+  ta: 'ta-IN',
+  te: 'te-IN',
+  mr: 'mr-IN',
+  pa: 'pa-Guru-IN', // Punjabi needs the script subtag; a bare "pa-IN" is rejected.
+  ne: 'ne-NP',
+  si: 'si-LK',
+  sw: 'sw-KE',
+  ha: 'ha-NG',
+  am: 'am-ET',
+  nl: 'nl-NL',
+  el: 'el-GR',
+  sv: 'sv-SE',
+  da: 'da-DK',
+  no: 'nb-NO', // Speech-to-Text offers Bokmål specifically, not a bare "no".
+  cs: 'cs-CZ',
+  ro: 'ro-RO',
+  hu: 'hu-HU',
+  kk: 'kk-KZ',
+  uz: 'uz-UZ',
+  ka: 'ka-GE',
+  hy: 'hy-AM',
+  be: 'be-BY',
+  mn: 'mn-MN',
+  // ti (Tigrinya) and bo (Tibetan): no Speech-to-Text support. Mirrors
+  // src/services/transcription.ts on mobile — see its comment.
 };
 
 /** Maps the app's current UI language to a Speech-to-Text language code, falling back to English. */
@@ -47,8 +80,9 @@ export function toSpeechLanguageCode(appLanguage: string): string {
 // type — Translate uses plain ISO 639-1 codes (not BCP-47 the way
 // Speech-to-Text does), and distinguishes Chinese as "zh-CN"/"zh-TW"
 // specifically rather than a bare "zh". Mirrors src/services/translation.ts
-// on mobile.
-const TRANSLATE_LANGUAGE_CODES: Record<Lang, string> = {
+// on mobile, including its Partial type — a language missing here has no
+// Cloud Translate support (verified against Google's own docs).
+const TRANSLATE_LANGUAGE_CODES: Partial<Record<Lang, string>> = {
   en: 'en',
   'zh-Hans': 'zh-CN',
   'zh-Hant': 'zh-TW',
@@ -72,6 +106,37 @@ const TRANSLATE_LANGUAGE_CODES: Record<Lang, string> = {
   id: 'id',
   bn: 'bn',
   th: 'th',
+  fil: 'fil',
+  ms: 'ms',
+  my: 'my',
+  km: 'km',
+  lo: 'lo',
+  ta: 'ta',
+  te: 'te',
+  mr: 'mr',
+  pa: 'pa',
+  ne: 'ne',
+  si: 'si',
+  sw: 'sw',
+  ha: 'ha',
+  am: 'am',
+  nl: 'nl',
+  el: 'el',
+  sv: 'sv',
+  da: 'da',
+  no: 'no',
+  cs: 'cs',
+  ro: 'ro',
+  hu: 'hu',
+  kk: 'kk',
+  uz: 'uz',
+  ka: 'ka',
+  hy: 'hy',
+  be: 'be',
+  ti: 'ti',
+  mn: 'mn',
+  // bo (Tibetan): no Cloud Translate support. Mirrors
+  // src/services/translation.ts on mobile — see its comment.
 };
 
 /** Maps the app's current UI language to a Cloud Translate language code, falling back to English. */

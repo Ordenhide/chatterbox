@@ -4,7 +4,7 @@ import type {User} from 'firebase/auth';
 import {avatarColor, colors} from '../theme';
 import {useTheme} from '../context/ThemeContext';
 import {useToast} from '../context/ToastContext';
-import {useT, LANGUAGES} from '../i18n';
+import {useT, LANGUAGES, languageMatches} from '../i18n';
 import {signOut, updateDisplayName} from '../services/auth';
 import {exportUserData} from '../services/dataExport';
 import {downloadJson} from '../utils/downloadFile';
@@ -45,6 +45,7 @@ export default function ProfileScreen({user}: {user: User}) {
   const [showRecovery, setShowRecovery] = useState(false);
   const [exportingData, setExportingData] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
+  const [langQuery, setLangQuery] = useState('');
   // Per-device, so this reflects the browser you're sitting at.
   const [aiAllowed, setAiAllowed] = useState(hasAiConsent);
   const [previewsOn, setPreviewsOn] = useState(isLinkPreviewEnabled);
@@ -112,6 +113,10 @@ export default function ProfileScreen({user}: {user: User}) {
   // would be a hex digit and the line under the name was a fake address.
   const initial = (savedName || '?').charAt(0).toUpperCase();
 
+  // 49 chips is more than anyone scans, so the grid filters, like the mobile
+  // picker's list does.
+  const langMatches = LANGUAGES.filter(l => languageMatches(l, langQuery));
+
   const sections: {id: SectionId; label: string; node: React.ReactNode}[] = [
     {
       id: 'profile',
@@ -174,8 +179,16 @@ export default function ProfileScreen({user}: {user: User}) {
           <section style={styles.card}>
             <div style={styles.cardTitle}>{t('profile.language')}</div>
             <div style={styles.cardDesc}>{t('profile.languageDesc')}</div>
+            <input
+              style={styles.langSearch}
+              value={langQuery}
+              onChange={e => setLangQuery(e.target.value)}
+              placeholder={t('profile.languageSearchPlaceholder')}
+              aria-label={t('profile.languageSearchPlaceholder')}
+              autoComplete="off"
+            />
             <div style={styles.langGrid}>
-              {LANGUAGES.map(({code, nativeLabel}) => (
+              {langMatches.map(({code, nativeLabel}) => (
                 <button
                   key={code}
                   onClick={() => setLang(code)}
@@ -556,6 +569,17 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chipOn: {background: colors.primary, color: colors.textOnPrimary, borderColor: colors.primary},
   chipOff: {background: 'transparent', color: colors.text},
+  langSearch: {
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '10px 14px',
+    marginBottom: 12,
+    borderRadius: 2,
+    border: `1px solid ${colors.border}`,
+    background: colors.inputBg,
+    fontSize: 14.5,
+    color: colors.text,
+  },
   langGrid: {display: 'flex', flexWrap: 'wrap', gap: 8},
   langChip: {
     padding: '8px 14px',

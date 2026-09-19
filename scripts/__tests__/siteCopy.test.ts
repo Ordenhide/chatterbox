@@ -1,5 +1,5 @@
 /**
- * The landing page ships in fifteen languages, generated from
+ * The landing page ships in every language the app offers, generated from
  * scripts/site-copy/. Two things can go wrong between an edit and a deploy,
  * and neither is visible in review:
  *

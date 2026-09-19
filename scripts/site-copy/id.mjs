@@ -26,7 +26,7 @@ export default {
     lead: `Chatterbox adalah messenger terenkripsi ujung ke ujung tanpa direktori pengguna. Tidak ada yang bisa mencari Anda, karena tidak ada indeks untuk dicari — satu-satunya jalan masuk ke percakapan adalah tautan yang Anda berikan sendiri kepada seseorang.`,
     primary: 'Dapatkan Chatterbox',
     secondary: 'Baca kebijakan privasi',
-    badges: ['Tanpa direktori pengguna', 'Hanya dengan undangan', '23 bahasa', 'Gratis'],
+    badges: ['Tanpa direktori pengguna', 'Hanya dengan undangan', '53 bahasa', 'Gratis'],
   },
 
   different: {
@@ -77,7 +77,7 @@ export default {
       {
         title: 'Kebijakan privasi mengatakan apa yang tidak bisa dilakukannya',
         body: [
-          `Kebijakan itu menyatakan bahwa enkripsinya belum pernah diaudit secara independen, bahwa Google dapat melihat metadata setiap koneksi karena kami menyewa servernya, dan bahwa kunci yang diganti sebelum pesan pertama Anda akan tampak sepenuhnya normal. Ini adalah teks yang sama di aplikasi dan di situs ini, dalam 23 bahasa — bukan aslinya bahasa Inggris dengan terjemahan yang lebih lunak.`,
+          `Kebijakan itu menyatakan bahwa enkripsinya belum pernah diaudit secara independen, bahwa Google dapat melihat metadata setiap koneksi karena kami menyewa servernya, dan bahwa kunci yang diganti sebelum pesan pertama Anda akan tampak sepenuhnya normal. Ini adalah teks yang sama di aplikasi dan di situs ini, dalam 53 bahasa — bukan aslinya bahasa Inggris dengan terjemahan yang lebih lunak.`,
         ],
         note: `{policyShort} sebelum Anda memutuskan untuk memercayai salah satu hal di atas.`,
       },
@@ -110,8 +110,8 @@ export default {
         body: `Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat Anda. Anda dapat menuliskannya sebagai frasa pemulihan; kami tidak menyimpannya dan tidak dapat memulihkannya untuk Anda.`,
       },
       {
-        title: '23 bahasa',
-        body: `Inggris, kedua aksara Tionghoa, Jepang, Korea, Spanyol, Prancis, Jerman, Italia, Portugis, Rusia, Turki, Vietnam, Arab, Hindi, Persia, Ibrani, Urdu, Polandia, Ukraina, Indonesia, Bengali, dan Thai — termasuk penulisan kanan ke kiri.`,
+        title: '53 bahasa',
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — termasuk penulisan kanan ke kiri.`,
       },
     ],
   },

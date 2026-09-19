@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="am" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatterbox — እርስዎን የሚፈልግበት ምንም የሌለው መልእክተኛ</title>
+  <meta name="description" content="ከጫፍ እስከ ጫፍ የተመሰጠረ መልእክት መላላክ፣ የተጠቃሚ ማውጫ የለውም፣ የኢሜይል አድራሻ በጭራሽ የለውም፣ እና ምን ማድረግ እንደማይችል የሚናገር የግላዊነት ፖሊሲ አለው። Web እና Android።" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <link rel="alternate" hreflang="en" href="./" />
+  <link rel="alternate" hreflang="zh-Hans" href="index.zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="index.zh-Hant" />
+  <link rel="alternate" hreflang="es" href="index.es" />
+  <link rel="alternate" hreflang="fr" href="index.fr" />
+  <link rel="alternate" hreflang="de" href="index.de" />
+  <link rel="alternate" hreflang="it" href="index.it" />
+  <link rel="alternate" hreflang="pt" href="index.pt" />
+  <link rel="alternate" hreflang="ru" href="index.ru" />
+  <link rel="alternate" hreflang="tr" href="index.tr" />
+  <link rel="alternate" hreflang="vi" href="index.vi" />
+  <link rel="alternate" hreflang="ja" href="index.ja" />
+  <link rel="alternate" hreflang="ko" href="index.ko" />
+  <link rel="alternate" hreflang="ar" href="index.ar" />
+  <link rel="alternate" hreflang="hi" href="index.hi" />
+  <link rel="alternate" hreflang="fa" href="index.fa" />
+  <link rel="alternate" hreflang="he" href="index.he" />
+  <link rel="alternate" hreflang="ur" href="index.ur" />
+  <link rel="alternate" hreflang="pl" href="index.pl" />
+  <link rel="alternate" hreflang="uk" href="index.uk" />
+  <link rel="alternate" hreflang="id" href="index.id" />
+  <link rel="alternate" hreflang="bn" href="index.bn" />
+  <link rel="alternate" hreflang="th" href="index.th" />
+  <link rel="alternate" hreflang="fil" href="index.fil" />
+  <link rel="alternate" hreflang="ms" href="index.ms" />
+  <link rel="alternate" hreflang="my" href="index.my" />
+  <link rel="alternate" hreflang="km" href="index.km" />
+  <link rel="alternate" hreflang="lo" href="index.lo" />
+  <link rel="alternate" hreflang="ta" href="index.ta" />
+  <link rel="alternate" hreflang="te" href="index.te" />
+  <link rel="alternate" hreflang="mr" href="index.mr" />
+  <link rel="alternate" hreflang="pa" href="index.pa" />
+  <link rel="alternate" hreflang="ne" href="index.ne" />
+  <link rel="alternate" hreflang="si" href="index.si" />
+  <link rel="alternate" hreflang="sw" href="index.sw" />
+  <link rel="alternate" hreflang="ha" href="index.ha" />
+  <link rel="alternate" hreflang="am" href="index.am" />
+  <link rel="alternate" hreflang="nl" href="index.nl" />
+  <link rel="alternate" hreflang="el" href="index.el" />
+  <link rel="alternate" hreflang="sv" href="index.sv" />
+  <link rel="alternate" hreflang="da" href="index.da" />
+  <link rel="alternate" hreflang="no" href="index.no" />
+  <link rel="alternate" hreflang="cs" href="index.cs" />
+  <link rel="alternate" hreflang="ro" href="index.ro" />
+  <link rel="alternate" hreflang="hu" href="index.hu" />
+  <link rel="alternate" hreflang="kk" href="index.kk" />
+  <link rel="alternate" hreflang="uz" href="index.uz" />
+  <link rel="alternate" hreflang="ka" href="index.ka" />
+  <link rel="alternate" hreflang="hy" href="index.hy" />
+  <link rel="alternate" hreflang="bo" href="index.bo" />
+  <link rel="alternate" hreflang="be" href="index.be" />
+  <link rel="alternate" hreflang="ti" href="index.ti" />
+  <link rel="alternate" hreflang="mn" href="index.mn" />
+  <link rel="alternate" hreflang="x-default" href="./" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.am" class="brand">
+        <img class="brand-mark" src="assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+      <div class="nav-links">
+        <a href="#different">ምን ይለያል</a>
+        <a href="#features">ባህሪያት</a>
+        <a href="#limits">ገደቦች</a>
+        <a href="#download" class="nav-cta">ያግኙ</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Web እና Android · iOS በሂደት ላይ</span>
+        <h1>እርስዎን የሚፈልግበት ምንም የለም።</h1>
+        <p class="lead">Chatterbox የተጠቃሚ ማውጫ የሌለው፣ ከጫፍ እስከ ጫፍ የተመሰጠረ መልእክተኛ ነው። ማንም እርስዎን ሊፈልግ አይችልም፣ ምክንያቱም የሚፈልግበት ማውጫ የለም — ወደ ውይይት የሚያስገባው ብቸኛው መንገድ እርስዎ ራስዎ ለሰው የሚሰጡት አገናኝ ነው።</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#download">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Chatterbox ያግኙ
+          </a>
+          <a class="btn btn-secondary" href="privacy.am">የግላዊነት ፖሊሲውን ያንብቡ</a>
+        </div>
+        <div class="hero-badges">
+          <span class="badge">የተጠቃሚ ማውጫ የለም</span>
+          <span class="badge">በግብዣ ብቻ</span>
+          <span class="badge">53 ቋንቋዎች</span>
+          <span class="badge">ነጻ</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="different">
+      <div class="section-head">
+        <span class="eyebrow">ምን ይለያል</span>
+        <h2>አብዛኞቹ መልእክተኞች የማያደርጉት ሰባት ነገር</h2>
+        <p>እያንዳንዳቸው ከኋላቸው ዘዴ ያለው ውሳኔ ናቸው፣ እርስዎ ማግኘት ያለብዎት ቅንብር አይደሉም። አንድ ነገር ልውውጥ ሲሆን፣ ይነገራል።</p>
+      </div>
+
+      <ol class="reasons">
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">01</div>
+          <div class="reason-body">
+            <h3>የተጠቃሚ ማውጫ የለም</h3>
+            <p>በተጠቃሚ ስም ፍለጋ የለም፣ የስልክ ቁጥር ማዛመድ የለም፣ “ሊያውቋቸው የሚችሉ ሰዎች” የለም። ወደ ውይይት የሚያስገባው ብቸኛው መንገድ ከቻናል ውጭ ለሰው የሚልኩት የግብዣ አገናኝ ነው። እያንዳንዱ አገናኝ አንድ ጊዜ ይሠራል እና ከ24 ሰዓታት በኋላ ጊዜው ያልፍበታል፣ እና የታቀደ ሥራ ማን ማንን እንደጋበዘ ቋሚ መዝገብ ከመተው ይልቅ ጊዜያቸው ያለፉትን ይሰርዛል።</p>
+            <p class="reason-note">ይህ የግላዊነት ቅንብር አይደለም። የሚወጡበት ማውጫ የለም።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">02</div>
+          <div class="reason-body">
+            <h3>የሚቀመጥ የኢሜይል አድራሻ የለም</h3>
+            <p>መመዝገብ ስለ እርስዎ ምንም አይጠይቅም። መለያዎ በመሣሪያዎ ላይ የተፈጠረ የ24-ቃል መልሶ ማግኛ ሐረግ ነው፣ እና አገልጋዩ የሚያረጋግጠው ማረጋገጫ ከእነዚያ ቃላት የተገኘ ነው — የሚያከማቸው ደብዳቤ መቀበል በማይችል ጎራ ስር ያለ የዘፈቀደ መለያ ነው። የመገለጫ ሰነድዎ የኢሜይል አድራሻ፣ የሚታይ ስም ወይም የፎቶ URL አይዝም፣ ስለዚህ ሌላ ሰው የሚያነበው መገለጫም የለም።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">03</div>
+          <div class="reason-body">
+            <h3>ከመልዕክቶቹ የበለጠ ተዘግቷል</h3>
+            <p>የመልዕክት ጽሑፍ ቀላሉ ክፍል ነው። የአገናኝ ቅድመ እይታዎችና ቀጥታ አካባቢ በተመሳሳይ መንገድ ወደ ውይይቱ ይመሰጠራሉ — አካባቢ ማጋራት የመጋጠሚያዎች ጅረት ነው፣ እና እንደ ሌላው ሁሉ በሌላው መሣሪያ ቁልፍ ተዘግቷል። አባሪዎች ከመሰቀላቸው በፊት ይመሰጠራሉ፣ ስለዚህ አገልጋዩ የሚይዘው ሊከፍታቸው የማይችላቸው ባይቶች ናቸው።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">04</div>
+          <div class="reason-body">
+            <h3>እያንዳንዱ መልዕክት የራሱ ቁልፍ አለው</h3>
+            <p>አብዛኞቹ አንድ-ለአንድ እና የቡድን ውይይቶች ራትሼት ይጠቀማሉ፣ ስለዚህ የመሣሪያ መደፍረስ ቀደም ብለው የመጡ መልዕክቶችን አያጋልጥም። የአንድ ሰው ደንበኛ አዲሱን የቁልፍ ቁሳቁስ ያላወጣባቸው ውይይቶች ያ ባህሪ ወደሌለው ወደ አንድ ረጅም ዕድሜ ያለው ቁልፍ ይመለሳሉ።</p>
+            <p class="reason-note">ከመልዕክት በታች ያለው መለያ በትክክል የትኛውን እንዳገኘ ይነግርዎታል። ስለ መተግበሪያው የተነገረ አይደለም፤ ስለዚያ መልዕክት የተነገረ ነው።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">05</div>
+          <div class="reason-body">
+            <h3>ምንም AI ውይይቶችዎን አያነብም</h3>
+            <p>ማጠቃለያ የለም፣ ትርጉም የለም፣ ግልባጭ የለም። በዚህ መተግበሪያ ውስጥ ምንም ነገር ውይይትን ፈትቶ ለሶስተኛ ወገን እንዲሠራበት አይልክም፣ ምክንያቱም እዚህ ምንም ባህሪ ያንን አያደርግም። የመልስ ጥቆማዎች ከመጨረሻዎቹ ጥቂት መልዕክቶች በመሣሪያዎ ላይ ይሰላሉ፣ እና ወደ ምንም ቦታ አይሄዱም።</p>
+            <p class="reason-note">እነዚያ ባህሪያት በኮዱ ውስጥ አሉ እና ለዚህ ስሪት ጠፍተዋል፤ እንዲመለሱ ታስበዋል። የግላዊነት ፖሊሲው ክፍል 6 አሁንም የሚደርሱባቸውን ሦስት አገልግሎቶች ይሰይማል እና ዛሬ ምንም ወደ እነሱ አይደርስም ይላል። ሲመለሱ፣ በዚያ ይፋ ማድረግ እና ከመጀመሪያው አጠቃቀም በፊት በሚደረግ ማሳሰቢያ ይመለሳሉ።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">06</div>
+          <div class="reason-body">
+            <h3>አንድ ነገር መፈለግ ከጀርባዎ አይሆንም</h3>
+            <p>በመልዕክት ውስጥ ያለን ስም ይንኩ እና Chatterbox የዊኪፔዲያ መጣጥፉን ያሳይዎታል። ያ ጥያቄ በንኪያ ጊዜ ይሆናል ካልሆነ በስተቀር፣ እና ስለእሱ ምንም ነገር ወደ ውይይቱ አይጻፍም።</p>
+            <p class="reason-note">ቀደም ያለ ስሪት የከፈቱትን የእያንዳንዱን ውይይት የመጨረሻ አስራ አምስት መልዕክቶች ይቃኝ ነበር እና በየመክፈቻው እስከ ሰላሳ ጊዜ ዊኪፔዲያን ይጠይቅ ነበር — ምንም ሳያሳይ፣ ምክንያቱም ካርዶቹ በጭራሽ ያልበራ ባንዲራ ጀርባ ነበሩ። ከመጠገን ይልቅ ተወግዷል።</p>
+          </div>
+        </li>
+
+        <li class="reason">
+          <div class="reason-num" aria-hidden="true">07</div>
+          <div class="reason-body">
+            <h3>የግላዊነት ፖሊሲው ምን ማድረግ እንደማይችል ይናገራል</h3>
+            <p>ምስጠራው በጭራሽ በገለልተኛ ወገን ኦዲት እንዳልተደረገለት፣ አገልጋዮቻቸውን ስለምንከራይ Google የእያንዳንዱን ግንኙነት ሜታዳታ ማየት እንደሚችል፣ እና ከመጀመሪያው መልዕክትዎ በፊት የተተካ ቁልፍ ሙሉ በሙሉ የተለመደ ሆኖ እንደሚታይ ይገልጻል። በመተግበሪያው ውስጥም በዚህ ጣቢያ ላይም ተመሳሳይ ጽሑፍ ነው፣ በ53 ቋንቋዎች — የእንግሊዝኛ ዋና ቅጂ ከለዘበ ትርጉም ጋር አይደለም።</p>
+            <p class="reason-note">ከላይ ካሉት ማናቸውንም ለማመን ከመወሰንዎ በፊት <a href="privacy.am">ያንብቡት</a>።</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-head">
+        <span class="eyebrow">ባህሪያት</span>
+        <h2>በእውነት ምን ያደርጋል</h2>
+        <p>እዚህ የተዘረዘረው ሁሉ መድረስ የሚችሉበት በይነገጽ አለው። በዚህ ገጽ ላይ ምንም ነገር በኮድ ውስጥ ብቻ የሚኖርን ችሎታ አይገልጽም።</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>መልእክት መላላክ</h3>
+          <p>ጽሑፍ፣ ፎቶዎች፣ ቪዲዮ፣ ፋይሎች እና የድምጽ መልዕክቶች። መልሶች፣ ማስተላለፍ፣ ምላሾች፣ የንባብ ደረሰኞች፣ የተሰኩ መልዕክቶች፣ ዕልባቶች እና የታቀዱ መልዕክቶች።</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>የድምጽ እና የቪዲዮ ጥሪዎች</h3>
+          <p>በWebRTC አማካኝነት ቀጥታ ጥሪ፣ ይህም በሁለቱ መሣሪያዎች መካከል ያለውን ሚዲያ እንደ አማራጭ ሳይሆን በነባሪነት ያመሰጥራል።</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>የመልስ ጥቆማዎች</h3>
+          <p>ከውይይቱ የመጨረሻ መልዕክቶች የተወሰዱ ጥቂት የተጠቆሙ መልሶች። በመሣሪያዎ ላይ በቋንቋዎ ካለ የሐረግ ዝርዝር ጋር ይዛመዳሉ — እነሱን ለማዘጋጀት ምንም ወደ ምንም ቦታ አይላክም።</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>የዊኪፔዲያ ፍለጋ</h3>
+          <p>መልዕክትን ተጭነው ይያዙ፣ በውስጡ ያለን ስም ይምረጡ፣ እና ከውይይቱ ሳይወጡ መጣጥፉን ያንብቡ። አንድ ጥያቄ፣ በእርስዎ ንኪያ፣ በራስዎ ቋንቋ።</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h3>ቁልፍዎ፣ የመልሶ ማግኛ ሐረግዎ</h3>
+          <p>መልዕክቶችዎን የሚፈታው የግል ቁልፍ በጭራሽ መሣሪያዎን አይለቅም። እንደ መልሶ ማግኛ ሐረግ ሊጽፉት ይችላሉ፤ እኛ አንይዘውም ለእርስዎም ልንመልሰው አንችልም።</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>53 ቋንቋዎች</h3>
+          <p>English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — ከቀኝ ወደ ግራ የሚጻፉትንም ጨምሮ።</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="section-head">
+        <span class="eyebrow">የግላዊነት መቆጣጠሪያዎች</span>
+        <h2>ምን ሊቆልፉ ይችላሉ</h2>
+      </div>
+
+      <div class="privacy-strip">
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round"/></svg></div>
+          <h4>የመተግበሪያ ቁልፍ</h4>
+          <p>ባዮሜትሪክ ወይም PIN፣ እርስዎ በሚመርጡት የራስ-ቁልፍ መዘግየት።</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h4>አንድ ጊዜ እይታ</h4>
+          <p>ከተከፈቱ በኋላ ለዘላለም የሚዘጉ ፎቶዎችና ቪዲዮዎች።</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4>የሚጠፉ መልዕክቶች</h4>
+          <p>ውይይት ራሱን እንዲያጸዳ ያዘጋጁ፣ ከአንድ ሰዓት እስከ ሰላሳ ቀናት።</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64" stroke-linecap="round"/><path d="M12 2v10" stroke-linecap="round"/></svg></div>
+          <h4>ካነበቡ በኋላ ማጥፋት</h4>
+          <p>ሌላው ሰው ካነበበው በኋላ ራሱን የሚያጠፋ መልዕክት።</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14" stroke-linecap="round"/></svg></div>
+          <h4>ማገድ</h4>
+          <p>ማንንም ያግዱ። ማውጫ ከሌለ፣ የመመለሻ መንገድ አያገኙም።</p>
+        </div>
+        <div class="privacy-item">
+          <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-linecap="round"/></svg></div>
+          <h4>መላክና መሰረዝ</h4>
+          <p>ውሂብዎን ያውጡ፣ ወይም መለያውንና ከሥሩ ያለውን ሁሉ ይሰርዙ።</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="section-head">
+        <span class="eyebrow">ገደቦች</span>
+        <h2>ያልተጠበቀው ምን ነው</h2>
+        <p>ጥንካሬዎችን ብቻ የሚዘረዝር ገጽ በእሱ ውሳኔ ሊያደርጉ የማይችሉበት ገጽ ነው። ይህ አጭሩ ቅጂ ነው፤ <a href="privacy.am">የግላዊነት ፖሊሲ</a> ደግሞ ረጅሙ።</p>
+      </div>
+
+      <div class="ledger">
+        <div class="ledger-col ledger-yes">
+          <h3>በመሣሪያዎ ላይ ተዘግቷል</h3>
+          <ul>
+            <li>የመልዕክቶችዎ ጽሑፍ</li>
+            <li>የሚያያይዟቸው ፎቶዎች፣ ቪዲዮ፣ ኦዲዮ እና ፋይሎች</li>
+            <li>የአገናኝ ቅድመ እይታዎችና ቀጥታ አካባቢ</li>
+            <li>የድምጽ ግልባጮች፣ ወደ እርስዎ ሲመለሱ</li>
+            <li>የጥሪ ድምጽና ቪዲዮ፣ በሁለቱ መሣሪያዎች መካከል</li>
+          </ul>
+        </div>
+        <div class="ledger-col ledger-no">
+          <h3>ለእኛና ለGoogle የሚታይ</h3>
+          <ul>
+            <li>ውይይት መኖሩንና የትኞቹ መለያዎች በውስጡ እንዳሉ</li>
+            <li>እያንዳንዱ መለያ መጨረሻ መቼ ንቁ እንደነበረ</li>
+            <li>የእያንዳንዱ ግንኙነት ሜታዳታ፣ የIP አድራሻዎን ጨምሮ</li>
+            <li>ጥሪ መደረጉን፣ ለማንና መቼ — ድምጹን ወይም ቪዲዮውን አይደለም</li>
+            <li>የሚልኩትን የእያንዳንዱን አባሪ የፋይል ስም፣ ዓይነትና መጠን</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="ledger-note">ምስጠራው በጭራሽ በገለልተኛ ወገን ኦዲት አልተደረገለትም። ያንን ሜታዳታ ማስወገድ ይዘቱን ከማመስጠር የበለጠ ከባድ ነው፣ እና ያ ሥራ አልተጠናቀቀም።</p>
+    </section>
+
+    <section class="section" id="download">
+      <div class="download-card">
+        <h2>Chatterbox ያግኙ</h2>
+        <p>የዌብ መተግበሪያው ምንም ሳይጫን በአሳሽ ውስጥ ይሠራል፣ በስልክም እንደ ኮምፒውተር። የAndroid build ወደ Google Play በመንገድ ላይ ነው።</p>
+        <div class="download-actions">
+          <span class="btn btn-pending" aria-disabled="true">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 3.5v17a1 1 0 0 0 1.5.87l14-8.5a1 1 0 0 0 0-1.74l-14-8.5A1 1 0 0 0 4 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            በቅርቡ በGoogle Play ላይ
+          </span>
+          <a class="btn btn-secondary" href="/app/">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            የዌብ መተግበሪያውን ክፈት
+          </a>
+        </div>
+        <p class="download-note">
+          የAndroid መንገዶች አንዳቸውም እስካሁን አልሠሩም፦ የPlay ዝርዝሩ አልታተመም፣ እና በዚህ ጣቢያ ላይ ማውረድ የለም። አንዳቸው እስኪሠሩ ድረስ የዌብ መተግበሪያው መግቢያው ነው።
+          <br /><br />
+          iOS እስካሁን አልተለቀቀም።
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>© 2026 Chatterbox። የግል ፕሮጀክት፣ በታማኝነት የተገለጸ።</span>
+      <div class="footer-links">
+        <a href="privacy.am">የግላዊነት ፖሊሲ</a>
+      </div>
+    </div>
+    <nav class="wrap site-langs" aria-label="ቋንቋ">
+        <a href="./" lang="en" hreflang="en">English</a>
+        <a href="index.zh-Hans" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+        <a href="index.zh-Hant" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+        <a href="index.es" lang="es" hreflang="es">Español</a>
+        <a href="index.fr" lang="fr" hreflang="fr">Français</a>
+        <a href="index.de" lang="de" hreflang="de">Deutsch</a>
+        <a href="index.it" lang="it" hreflang="it">Italiano</a>
+        <a href="index.pt" lang="pt" hreflang="pt">Português</a>
+        <a href="index.ru" lang="ru" hreflang="ru">Русский</a>
+        <a href="index.tr" lang="tr" hreflang="tr">Türkçe</a>
+        <a href="index.vi" lang="vi" hreflang="vi">Tiếng Việt</a>
+        <a href="index.ja" lang="ja" hreflang="ja">日本語</a>
+        <a href="index.ko" lang="ko" hreflang="ko">한국어</a>
+        <a href="index.ar" lang="ar" hreflang="ar">العربية</a>
+        <a href="index.hi" lang="hi" hreflang="hi">हिन्दी</a>
+        <a href="index.fa" lang="fa" hreflang="fa">فارسی</a>
+        <a href="index.he" lang="he" hreflang="he">עברית</a>
+        <a href="index.ur" lang="ur" hreflang="ur">اردو</a>
+        <a href="index.pl" lang="pl" hreflang="pl">Polski</a>
+        <a href="index.uk" lang="uk" hreflang="uk">Українська</a>
+        <a href="index.id" lang="id" hreflang="id">Bahasa Indonesia</a>
+        <a href="index.bn" lang="bn" hreflang="bn">বাংলা</a>
+        <a href="index.th" lang="th" hreflang="th">ไทย</a>
+        <a href="index.fil" lang="fil" hreflang="fil">Filipino</a>
+        <a href="index.ms" lang="ms" hreflang="ms">Bahasa Melayu</a>
+        <a href="index.my" lang="my" hreflang="my">မြန်မာဘာသာ</a>
+        <a href="index.km" lang="km" hreflang="km">ខ្មែរ</a>
+        <a href="index.lo" lang="lo" hreflang="lo">ລາວ</a>
+        <a href="index.ta" lang="ta" hreflang="ta">தமிழ்</a>
+        <a href="index.te" lang="te" hreflang="te">తెలుగు</a>
+        <a href="index.mr" lang="mr" hreflang="mr">मराठी</a>
+        <a href="index.pa" lang="pa" hreflang="pa">ਪੰਜਾਬੀ</a>
+        <a href="index.ne" lang="ne" hreflang="ne">नेपाली</a>
+        <a href="index.si" lang="si" hreflang="si">සිංහල</a>
+        <a href="index.sw" lang="sw" hreflang="sw">Kiswahili</a>
+        <a href="index.ha" lang="ha" hreflang="ha">Hausa</a>
+        <span aria-current="true" lang="am">አማርኛ</span>
+        <a href="index.nl" lang="nl" hreflang="nl">Nederlands</a>
+        <a href="index.el" lang="el" hreflang="el">Ελληνικά</a>
+        <a href="index.sv" lang="sv" hreflang="sv">Svenska</a>
+        <a href="index.da" lang="da" hreflang="da">Dansk</a>
+        <a href="index.no" lang="no" hreflang="no">Norsk</a>
+        <a href="index.cs" lang="cs" hreflang="cs">Čeština</a>
+        <a href="index.ro" lang="ro" hreflang="ro">Română</a>
+        <a href="index.hu" lang="hu" hreflang="hu">Magyar</a>
+        <a href="index.kk" lang="kk" hreflang="kk">Қазақша</a>
+        <a href="index.uz" lang="uz" hreflang="uz">Oʻzbekcha</a>
+        <a href="index.ka" lang="ka" hreflang="ka">ქართული</a>
+        <a href="index.hy" lang="hy" hreflang="hy">Հայերեն</a>
+        <a href="index.bo" lang="bo" hreflang="bo">བོད་ཡིག</a>
+        <a href="index.be" lang="be" hreflang="be">Беларуская</a>
+        <a href="index.ti" lang="ti" hreflang="ti">ትግርኛ</a>
+        <a href="index.mn" lang="mn" hreflang="mn">Монгол</a>
+    </nav>
+  </footer>
+</body>
+</html>

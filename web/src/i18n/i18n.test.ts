@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {_dicts, LANGUAGES} from './index';
+import {_dicts, LANGUAGES, languageMatches} from './index';
 
 const en = _dicts.en;
 const enKeys = Object.keys(en);
@@ -78,4 +78,45 @@ describe('i18n dictionaries', () => {
       expect(wrong).toEqual([]);
     },
   );
+});
+
+/**
+ * The picker is the only way out of a language you picked by accident, and at
+ * this length it needs a filter to be usable at all. The property worth
+ * pinning is not that the filter works on the language's own name — it is that
+ * it works when you cannot read or type that name: someone stranded in a
+ * script they do not know has the English name and the code left, and both
+ * have to match.
+ */
+describe('the language picker filter', () => {
+  it('matches a language by its own name', () => {
+    const hits = LANGUAGES.filter(l => languageMatches(l, '简体')).map(l => l.code);
+    expect(hits).toEqual(['zh-Hans']);
+  });
+
+  it('matches by English name, which is the way back from an unreadable script', () => {
+    expect(LANGUAGES.filter(l => languageMatches(l, 'english')).map(l => l.code)).toEqual(['en']);
+    expect(LANGUAGES.filter(l => languageMatches(l, 'armen')).map(l => l.code)).toEqual(['hy']);
+    // A short query is allowed to be broad: "eng" is also inside "Bengali".
+    expect(LANGUAGES.filter(l => languageMatches(l, 'eng')).map(l => l.code)).toContain('en');
+  });
+
+  it('matches by code, for anyone who knows the tag', () => {
+    expect(LANGUAGES.filter(l => languageMatches(l, 'km')).map(l => l.code)).toEqual(['km']);
+  });
+
+  it('ignores case and surrounding space', () => {
+    expect(LANGUAGES.filter(l => languageMatches(l, '  SWED  ')).map(l => l.code)).toEqual(['sv']);
+  });
+
+  it('offers everything for an empty query, so the grid is never blank', () => {
+    expect(LANGUAGES.filter(l => languageMatches(l, '')).length).toBe(LANGUAGES.length);
+    expect(LANGUAGES.filter(l => languageMatches(l, '   ')).length).toBe(LANGUAGES.length);
+  });
+
+  it('finds every offered language by its own name, so none is unreachable', () => {
+    for (const lang of LANGUAGES) {
+      expect(LANGUAGES.filter(l => languageMatches(l, lang.nativeLabel))).toContain(lang);
+    }
+  });
 });

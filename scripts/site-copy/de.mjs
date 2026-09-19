@@ -22,7 +22,7 @@ export default {
     lead: `Chatterbox ist ein Ende-zu-Ende-verschlüsselter Messenger ohne Nutzerverzeichnis. Niemand kann nach dir suchen, weil es keinen Index gibt, in dem gesucht werden könnte — der einzige Weg in ein Gespräch ist ein Link, den du selbst jemandem gibst.`,
     primary: 'Chatterbox holen',
     secondary: 'Datenschutzerklärung lesen',
-    badges: ['Kein Verzeichnis', 'Nur per Einladung', '23 Sprachen', 'Kostenlos'],
+    badges: ['Kein Verzeichnis', 'Nur per Einladung', '53 Sprachen', 'Kostenlos'],
   },
 
   different: {
@@ -73,7 +73,7 @@ export default {
       {
         title: 'Die Datenschutzerklärung sagt, was sie nicht kann',
         body: [
-          `Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass ein vor deiner ersten Nachricht ausgetauschter Schlüssel völlig normal aussähe. Es ist derselbe Text in der App und auf dieser Seite, in 23 Sprachen — kein englisches Original mit einer weicheren Übersetzung.`,
+          `Sie hält fest, dass die Verschlüsselung nie unabhängig geprüft wurde, dass Google die Metadaten jeder Verbindung sieht, weil wir seine Server mieten, und dass ein vor deiner ersten Nachricht ausgetauschter Schlüssel völlig normal aussähe. Es ist derselbe Text in der App und auf dieser Seite, in 53 Sprachen — kein englisches Original mit einer weicheren Übersetzung.`,
         ],
         note: `{policyShort}, bevor du entscheidest, ob du irgendetwas davon glaubst.`,
       },
@@ -106,8 +106,8 @@ export default {
         body: `Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie. Du kannst ihn als Wiederherstellungsphrase aufschreiben; wir halten ihn nicht und können ihn dir nicht zurückholen.`,
       },
       {
-        title: '23 Sprachen',
-        body: `Englisch, Chinesisch in beiden Schriften, Japanisch, Koreanisch, Spanisch, Französisch, Deutsch, Italienisch, Portugiesisch, Russisch, Türkisch, Vietnamesisch, Arabisch, Hindi, Persisch, Hebräisch, Urdu, Polnisch, Ukrainisch, Indonesisch, Bengalisch und Thailändisch — Schrift von rechts nach links eingeschlossen.`,
+        title: '53 Sprachen',
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол — Schrift von rechts nach links eingeschlossen.`,
       },
     ],
   },

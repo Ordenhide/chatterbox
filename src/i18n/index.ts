@@ -31,6 +31,36 @@ import uk from './locales/uk.json';
 import id from './locales/id.json';
 import bn from './locales/bn.json';
 import th from './locales/th.json';
+import fil from './locales/fil.json';
+import ms from './locales/ms.json';
+import my from './locales/my.json';
+import km from './locales/km.json';
+import lo from './locales/lo.json';
+import ta from './locales/ta.json';
+import te from './locales/te.json';
+import mr from './locales/mr.json';
+import pa from './locales/pa.json';
+import ne from './locales/ne.json';
+import si from './locales/si.json';
+import sw from './locales/sw.json';
+import ha from './locales/ha.json';
+import am from './locales/am.json';
+import nl from './locales/nl.json';
+import el from './locales/el.json';
+import sv from './locales/sv.json';
+import da from './locales/da.json';
+import no from './locales/no.json';
+import cs from './locales/cs.json';
+import ro from './locales/ro.json';
+import hu from './locales/hu.json';
+import kk from './locales/kk.json';
+import uz from './locales/uz.json';
+import ka from './locales/ka.json';
+import hy from './locales/hy.json';
+import bo from './locales/bo.json';
+import be from './locales/be.json';
+import ti from './locales/ti.json';
+import mn from './locales/mn.json';
 
 const LANG_STORAGE_KEY = '@chatterbox:language';
 
@@ -59,6 +89,36 @@ const resources = {
   id: {translation: id},
   bn: {translation: bn},
   th: {translation: th},
+  fil: {translation: fil},
+  ms: {translation: ms},
+  my: {translation: my},
+  km: {translation: km},
+  lo: {translation: lo},
+  ta: {translation: ta},
+  te: {translation: te},
+  mr: {translation: mr},
+  pa: {translation: pa},
+  ne: {translation: ne},
+  si: {translation: si},
+  sw: {translation: sw},
+  ha: {translation: ha},
+  am: {translation: am},
+  nl: {translation: nl},
+  el: {translation: el},
+  sv: {translation: sv},
+  da: {translation: da},
+  no: {translation: no},
+  cs: {translation: cs},
+  ro: {translation: ro},
+  hu: {translation: hu},
+  kk: {translation: kk},
+  uz: {translation: uz},
+  ka: {translation: ka},
+  hy: {translation: hy},
+  bo: {translation: bo},
+  be: {translation: be},
+  ti: {translation: ti},
+  mn: {translation: mn},
 } as const;
 
 

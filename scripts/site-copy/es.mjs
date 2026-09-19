@@ -22,7 +22,7 @@ export default {
     lead: `Chatterbox es un mensajero cifrado de extremo a extremo sin directorio de usuarios. Nadie puede buscarte, porque no existe ningún índice donde buscar: la única forma de entrar en una conversación es un enlace que tú mismo le entregas a alguien.`,
     primary: 'Obtener Chatterbox',
     secondary: 'Leer la política de privacidad',
-    badges: ['Sin directorio', 'Solo por invitación', '23 idiomas', 'Gratis'],
+    badges: ['Sin directorio', 'Solo por invitación', '53 idiomas', 'Gratis'],
   },
 
   different: {
@@ -73,7 +73,7 @@ export default {
       {
         title: 'La política de privacidad dice lo que no puede hacer',
         body: [
-          `Declara que el cifrado nunca ha sido auditado de forma independiente, que Google puede ver los metadatos de cada conexión porque le alquilamos sus servidores, y que una clave sustituida antes de tu primer mensaje tendría un aspecto completamente normal. Es el mismo texto en la aplicación y en este sitio, en 23 idiomas: no un original en inglés con una traducción más suave.`,
+          `Declara que el cifrado nunca ha sido auditado de forma independiente, que Google puede ver los metadatos de cada conexión porque le alquilamos sus servidores, y que una clave sustituida antes de tu primer mensaje tendría un aspecto completamente normal. Es el mismo texto en la aplicación y en este sitio, en 53 idiomas: no un original en inglés con una traducción más suave.`,
         ],
         note: `{policyShort} antes de decidir si te fías de algo de lo anterior.`,
       },
@@ -106,8 +106,8 @@ export default {
         body: `La clave privada que descifra tus mensajes nunca sale de tu dispositivo. Puedes anotarla como frase de recuperación; nosotros no la tenemos y no podemos recuperarla por ti.`,
       },
       {
-        title: '23 idiomas',
-        body: `Inglés, chino en sus dos escrituras, japonés, coreano, español, francés, alemán, italiano, portugués, ruso, turco, vietnamita, árabe, hindi, persa, hebreo, urdu, polaco, ucraniano, indonesio, bengalí y tailandés, con escritura de derecha a izquierda incluida.`,
+        title: '53 idiomas',
+        body: `English, 简体中文, 繁體中文, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, Tiếng Việt, 日本語, 한국어, العربية, हिन्दी, فارسی, עברית, اردو, Polski, Українська, Bahasa Indonesia, বাংলা, ไทย, Filipino, Bahasa Melayu, မြန်မာဘာသာ, ខ្មែរ, ລາວ, தமிழ், తెలుగు, मराठी, ਪੰਜਾਬੀ, नेपाली, සිංහල, Kiswahili, Hausa, አማርኛ, Nederlands, Ελληνικά, Svenska, Dansk, Norsk, Čeština, Română, Magyar, Қазақша, Oʻzbekcha, ქართული, Հայերեն, བོད་ཡིག, Беларуская, ትግርኛ, Монгол, con escritura de derecha a izquierda incluida.`,
       },
     ],
   },

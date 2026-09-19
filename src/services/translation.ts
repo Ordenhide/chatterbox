@@ -8,7 +8,12 @@ const functions = getFunctions();
 // LanguageCode set — Translate uses plain ISO 639-1 codes (not BCP-47 the
 // way Speech-to-Text does), and distinguishes Chinese variants as
 // "zh-CN"/"zh-TW" rather than this app's "zh-Hans"/"zh-Hant".
-const TRANSLATE_LANGUAGE_CODES: Record<LanguageCode, string> = {
+//
+// Partial, not Record: a language missing here has no Cloud Translate support
+// as of this writing (verified against Google's own docs) — see the omitted
+// entry below. toTranslateLanguageCode() falls back to English rather than
+// silently mistranslating.
+const TRANSLATE_LANGUAGE_CODES: Partial<Record<LanguageCode, string>> = {
   en: 'en',
   zh: 'zh-CN', // resources.zh aliases zh-Hans (src/i18n/index.ts)
   'zh-Hans': 'zh-CN',
@@ -33,6 +38,39 @@ const TRANSLATE_LANGUAGE_CODES: Record<LanguageCode, string> = {
   id: 'id',
   bn: 'bn',
   th: 'th',
+  fil: 'fil',
+  ms: 'ms',
+  my: 'my',
+  km: 'km',
+  lo: 'lo',
+  ta: 'ta',
+  te: 'te',
+  mr: 'mr',
+  pa: 'pa',
+  ne: 'ne',
+  si: 'si',
+  sw: 'sw',
+  ha: 'ha',
+  am: 'am',
+  nl: 'nl',
+  el: 'el',
+  sv: 'sv',
+  da: 'da',
+  no: 'no',
+  cs: 'cs',
+  ro: 'ro',
+  hu: 'hu',
+  kk: 'kk',
+  uz: 'uz',
+  ka: 'ka',
+  hy: 'hy',
+  be: 'be',
+  ti: 'ti',
+  mn: 'mn',
+  // bo (Tibetan): no Cloud Translate support as of this writing — verified
+  // against Google's own docs, not assumed. See transcription.ts for the
+  // matching Speech-to-Text gap (Tibetan has neither; Tigrinya has this one
+  // but not Speech-to-Text).
 };
 
 /** Maps the app's current UI language to a Cloud Translate language code, falling back to English. */

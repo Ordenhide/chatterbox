@@ -3,12 +3,12 @@
  *
  * SHOW_AI_FEATURES hides the summariser, translation, transcription and the
  * Pro tier that sells them. The privacy policy and the marketing site are not
- * driven by that flag — they are prose, in fifteen languages each, and they
- * were edited by hand to match. Nothing but this test connects the two.
+ * driven by that flag — they are prose, in every language the app offers, and
+ * they were edited by hand to match. Nothing but this test connects the two.
  *
  * The failure this exists for is the cheerful one: someone flips the flag
  * back to `true`, ships, and the app now sends message text to Cloudflare and
- * Google while its own privacy policy says in fifteen languages that nothing
+ * Google while its own privacy policy says in every language that nothing
  * reaches those services. That is not a stale sentence — it is a false
  * statement about where your messages go, made by the document whose only job
  * is to be true about that.
@@ -34,7 +34,7 @@ describe('the AI gate matches what the documents claim', () => {
       throw new Error(
         SHOW_AI_FEATURES
           ? `SHOW_AI_FEATURES is on, but section ${n} of the privacy policy still says the AI features are off.\n` +
-            'Before turning them on, in all fifteen languages:\n' +
+            'Before turning them on, in every language the app offers:\n' +
             '  1. src/i18n/privacyPolicy.ts — sections 1 and 6, describe them as available again\n' +
             '  2. scripts/site-copy/*.mjs — reason 5 and the third feature card\n' +
             '  3. put the three provider names back in validate() in scripts/build-site-html.mjs\n' +
