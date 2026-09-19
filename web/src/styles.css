@@ -60,8 +60,16 @@
 :root[data-theme='light'] {
   --cb-canvas: #e9ede9;
   --cb-text: #0a0f0a;
-  --cb-text-secondary: rgba(10, 15, 10, 0.56);
-  --cb-text-tertiary: rgba(10, 15, 10, 0.4);
+  /* 5.46:1 on white. Was 0.56 (4.43:1) — measured by axe-core against the
+     login screen's own subtitle, which sits at this size and found it short
+     of the 4.5:1 normal-text floor. */
+  --cb-text-secondary: rgba(10, 15, 10, 0.62);
+  /* 4.74:1 on white. Was 0.4 (2.66:1) — this token is used at 10.5-12.5px
+     across timestamps, hints and icons app-wide (ChatPane, HomeScreen,
+     ProfileScreen, LoginScreen…), all of which need the normal-text floor,
+     not the large-text one. Kept lighter than --cb-text-secondary above for
+     the same visual hierarchy, just no longer under the line. */
+  --cb-text-tertiary: rgba(10, 15, 10, 0.58);
   --cb-placeholder: rgba(10, 15, 10, 0.36);
 
   --cb-surface: rgba(255, 255, 255, 0.86);
