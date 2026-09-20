@@ -1,3 +1,4 @@
+import {getApp} from 'firebase/app';
 import {
   collection,
   doc,
@@ -8,40 +9,44 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
+import {getFunctions, httpsCallable} from 'firebase/functions';
 import {db} from '../firebase';
 import {deleteQueryInChunks} from './firestoreBatch';
 
 // STUN only gets calls working on the same network or behind friendly NATs.
 // Between two symmetric NATs neither peer is directly reachable and the call
 // fails with no obvious cause, so TURN is what makes calling work off a shared
-// network rather than an optimisation. Configure it via env (VITE_TURN_URL /
-// VITE_TURN_USERNAME / VITE_TURN_CREDENTIAL).
+// network rather than an optimisation.
 //
-// Read at build time, so rotating credentials needs a rebuild and redeploy —
-// acceptable here, where that's a static-site push. The mobile client reads
-// the same three values from Firebase Remote Config instead (config/rtc.ts),
-// since rotating them there would otherwise mean a store release.
-const TURN_URLS = (import.meta.env.VITE_TURN_URL || '')
-  .split(',')
-  .map((u: string) => u.trim())
-  .filter(Boolean);
-const TURN_USERNAME = import.meta.env.VITE_TURN_USERNAME;
-const TURN_CREDENTIAL = import.meta.env.VITE_TURN_CREDENTIAL;
+// The TURN entry comes from the getTurnCredentials Cloud Function rather than
+// a build-time env var: Cloudflare Realtime (the provider, see CALLING.md)
+// doesn't issue a static username/password to bake into a build at all — it
+// mints a short-lived, per-connection credential on request. The mobile
+// client calls the same function (src/config/rtc.ts).
+const functions = getFunctions(getApp());
 
-export const ICE_SERVERS: RTCIceServer[] = [
+const STUN_SERVERS: RTCIceServer[] = [
   {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302']},
-  ...(TURN_URLS.length > 0
-    ? [
-        // Username/credential are omitted rather than passed through as
-        // undefined when unset: a TURN server rejects blank credentials, and
-        // an entry that always fails auth is worse than no entry, since ICE
-        // spends time on it before giving up.
-        TURN_USERNAME && TURN_CREDENTIAL
-          ? ({urls: TURN_URLS, username: TURN_USERNAME, credential: TURN_CREDENTIAL} as RTCIceServer)
-          : ({urls: TURN_URLS} as RTCIceServer),
-      ]
-    : []),
 ];
+
+/**
+ * Never rejects. A call that falls back to STUN may fail to connect across
+ * NATs, but one that throws here fails to start at all — the same contract
+ * as the mobile client's describeIceServers().
+ */
+export async function getIceServers(): Promise<RTCIceServer[]> {
+  try {
+    const fn = httpsCallable<void, {iceServers: RTCIceServer[]}>(functions, 'getTurnCredentials');
+    const res = await fn();
+    const servers = res.data.iceServers;
+    return Array.isArray(servers) && servers.length > 0 ? servers : STUN_SERVERS;
+  } catch {
+    // Covers both an unconfigured server (failed-precondition) and a real
+    // failure (network, auth) — either way, STUN-only is the same safe
+    // fallback the app shipped with before TURN existed.
+    return STUN_SERVERS;
+  }
+}
 
 export type CallType = 'voice' | 'video';
 export type CallStatus = 'ringing' | 'active' | 'ended';

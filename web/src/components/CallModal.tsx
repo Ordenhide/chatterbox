@@ -3,7 +3,7 @@ import {colors} from '../theme';
 import {
   addCallCandidate,
   endCall as endCallDoc,
-  ICE_SERVERS,
+  getIceServers,
   listenCall,
   listenCallCandidates,
   updateCall,
@@ -107,7 +107,7 @@ export default function CallModal({
       localStreamRef.current = stream;
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
 
-      const pc = new RTCPeerConnection({iceServers: ICE_SERVERS});
+      const pc = new RTCPeerConnection({iceServers: await getIceServers()});
       pcRef.current = pc;
       stream.getTracks().forEach(t => pc.addTrack(t, stream));
 

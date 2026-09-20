@@ -13,12 +13,6 @@ export async function initFeatureFlags() {
   // function was removed.
   remoteConfig.defaultConfig = {
     feedback_enabled: true,
-    // Empty means "no TURN server configured" — config/rtc.ts falls back to
-    // STUN only. Declared here so getValue has a known key rather than
-    // depending on the console having been filled in.
-    turn_url: '',
-    turn_username: '',
-    turn_credential: '',
   };
   remoteConfig.settings = {
     minimumFetchIntervalMillis: 60 * 60 * 1000,
@@ -41,17 +35,6 @@ export async function getBooleanFlag(key: string, fallback = false): Promise<boo
   }
   try {
     return getValue(remoteConfig, key).asBoolean();
-  } catch {
-    return fallback;
-  }
-}
-
-export async function getStringFlag(key: string, fallback = ''): Promise<string> {
-  if (!initialized) {
-    await initFeatureFlags();
-  }
-  try {
-    return getValue(remoteConfig, key).asString();
   } catch {
     return fallback;
   }

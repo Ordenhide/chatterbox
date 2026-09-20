@@ -87,10 +87,10 @@ never shipped a function no matter how many times it ran green.
 
 ```
 autoReplyFocusMode   claimSession           createBillingPortalSession
-createCheckoutSession  fetchLinkPreview     markViewOnceViewed
-notifyNewMessage     onCallEnded            sessionHeartbeat
-stripeWebhook        summarizeChat          transcribeVoiceMessage
-translateMessage
+createCheckoutSession  fetchLinkPreview     getTurnCredentials
+markViewOnceViewed   notifyNewMessage       onCallEnded
+sessionHeartbeat     stripeWebhook          summarizeChat
+transcribeVoiceMessage  translateMessage
 ```
 
 Six scheduled (pubsub) functions are defined but stripped from `exports` unless

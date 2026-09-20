@@ -27,78 +27,84 @@ field**, which is the most expensive way to discover this.
 
 | Piece | Where |
 |---|---|
-| Mobile ICE config (reads Remote Config) | `src/config/rtc.ts` → `getIceServers()` |
+| Mobile ICE config (calls the Cloud Function) | `src/config/rtc.ts` → `describeIceServers()` |
 | Mobile call UI + peer connection | `src/screens/chat/CallScreen.tsx` |
-| Web ICE config (reads build-time env) | `web/src/services/call.ts` → `ICE_SERVERS` |
+| Web ICE config (calls the same function) | `web/src/services/call.ts` → `getIceServers()` |
 | Web call UI + peer connection | `web/src/components/CallModal.tsx` |
 | Web screen sharing | `web/src/components/CallModal.tsx` → `startSharing()` |
+| Credential minting | `functions/index.js` → `getTurnCredentials` |
 
-Both clients fall back to STUN-only when TURN is unconfigured, so filling this
-in is additive — nothing breaks if you leave it, beyond what already doesn't
-work.
+Both clients fall back to STUN-only when TURN is unconfigured or the function
+call fails, so filling this in is additive — nothing breaks if you leave it,
+beyond what already doesn't work.
 
-## Recommended: Cloudflare Realtime
+## Provider: Cloudflare Realtime, credentials minted per call
 
 This project already uses a Cloudflare account for Workers AI (see
 `CLOUDFLARE_ACCOUNT_ID` in `functions/.env.example`), so this adds a service
-rather than a vendor. Its free tier covers far more relayed traffic than this
-app will produce.
+rather than a vendor, and its free tier covers far more relayed traffic than
+this app will produce.
 
-Any TURN provider works — Twilio and Metered are equally fine, and self-hosted
-`coturn` is cheaper at volume. The three values below are all that differ.
+It does **not** work the way most TURN setup guides assume. Cloudflare
+doesn't hand out a static username/password to paste into a client config —
+it hands out a **TURN Key** (an ID plus a long-term API token), and the
+actual per-connection `username`/`credential` has to be minted on demand by
+calling Cloudflare's API with that token. `getTurnCredentials` does exactly
+that: a signed-in user calls it right before a call starts, it asks
+Cloudflare for a short-lived (1 hour) credential, and hands back the whole
+`iceServers` array (STUN entry included) to use for that call only. The
+long-term key never reaches a client.
 
-1. Cloudflare dashboard → **Realtime** → **TURN Server** → create one.
-2. Copy the **TURN URLs**, **username**, and **credential** it issues.
+1. Cloudflare dashboard → **Realtime** → **TURN Service** → create a TURN Key.
+2. Copy its **Key ID** and the **API token** it issues.
+
+A different TURN provider that *does* issue static long-lived credentials
+(Twilio, Metered, self-hosted `coturn`) would need `getTurnCredentials`
+rewritten to skip the mint-on-demand step and return a fixed entry instead —
+not a config change, a small code change.
 
 ## Where the values go
 
-The two clients read them from different places, deliberately.
-
-### Mobile — Firebase Remote Config
-
-Firebase Console → **Remote Config** → add three string parameters:
-
-| Key | Example |
-|---|---|
-| `turn_url` | `turn:host:3478?transport=udp,turns:host:5349?transport=tcp` |
-| `turn_username` | *(from your provider)* |
-| `turn_credential` | *(from your provider)* |
-
-`turn_url` accepts a comma-separated list. Publish the changes.
-
-Remote Config rather than a bundled constant because TURN credentials are
-typically short-lived and rotated — baking them into the app would mean an App
-Store review every rotation. Clients pick up changes within Remote Config's
-fetch interval (1 hour, see `src/services/featureFlags.ts`), or immediately on
-next cold start.
-
-### Web — build-time env
-
-In `web/.env.local` (see `web/.env.example`):
+One place, for both clients — `functions/.env` (see
+`functions/.env.example`'s "Calling / TURN" section):
 
 ```
-VITE_TURN_URL=turn:host:3478?transport=udp,turns:host:5349?transport=tcp
-VITE_TURN_USERNAME=...
-VITE_TURN_CREDENTIAL=...
+CLOUDFLARE_TURN_KEY_ID=...
+CLOUDFLARE_TURN_API_TOKEN=...
 ```
 
-Then rebuild. Env vars rather than Remote Config here because rotating means a
-static-site redeploy, not a store release.
-
-If you set the URL but omit username/credential, the entry is sent **without**
-credentials rather than with blank ones — a TURN server rejects blanks, and an
-entry that always fails auth is worse than none, since ICE spends time on it
-before giving up.
+For CI deploys, the same two values also need to exist as the GitHub repo
+secrets `CLOUDFLARE_TURN_KEY_ID` / `CLOUDFLARE_TURN_API_TOKEN`
+(`.github/workflows/deploy-functions.yml` rebuilds `functions/.env` from repo
+secrets at deploy time, the same way it already does for the Workers AI
+pair). Redeploy functions and both clients pick it up on their next call —
+no client-side config, no rebuild, no store release.
 
 ## Verifying it works
 
-Use the standard WebRTC [Trickle ICE
+There's no static credential sitting in a config file to copy any more, so
+getting one to test with means either:
+
+- Calling the deployed function once and reading back its result (e.g. via
+  `firebase functions:shell`, or by adding a temporary log line and starting
+  a call from a real client), or
+- Hitting Cloudflare's endpoint directly:
+  ```
+  curl -X POST \
+    -H "Authorization: Bearer $CLOUDFLARE_TURN_API_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"ttl": 3600}' \
+    https://rtc.live.cloudflare.com/v1/turn/keys/$CLOUDFLARE_TURN_KEY_ID/credentials/generate-ice-servers
+  ```
+
+Either way, paste the resulting `username`/`credential`/TURN URL into the
+standard WebRTC [Trickle ICE
 tester](https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/)
-— paste the URL, username and credential, and gather candidates.
+and gather candidates.
 
 - A candidate of type **`relay`** means TURN is working.
-- Only `host` / `srflx` candidates means it is not — usually a wrong
-  credential, an expired one, or a blocked port.
+- Only `host` / `srflx` candidates means it is not — usually a wrong or
+  already-expired credential, or a blocked port.
 
 This checks the credentials themselves from one machine, which is worth doing
 *before* concluding a failed call is the app's fault.

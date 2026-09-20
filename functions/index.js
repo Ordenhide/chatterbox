@@ -10,6 +10,7 @@ const {Translate} = require('@google-cloud/translate').v2;
 const {validateTranslateInput, extractTranslation} = require('./translate');
 const {buildPrompt, extractAnswer} = require('./aiChat');
 const {profileName} = require('./profileName');
+const {extractIceServers} = require('./turnCredentials');
 
 admin.initializeApp();
 
@@ -32,6 +33,13 @@ const translateClient = new Translate();
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const CLOUDFLARE_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+// A separate Cloudflare product (Realtime TURN) with its own key pair, not
+// the Workers AI credentials above — see getTurnCredentials.
+const CLOUDFLARE_TURN_KEY_ID = process.env.CLOUDFLARE_TURN_KEY_ID;
+const CLOUDFLARE_TURN_API_TOKEN = process.env.CLOUDFLARE_TURN_API_TOKEN;
+// Long enough for any real call, short enough to limit what a leaked
+// credential (logs, a compromised client) would be worth.
+const TURN_CREDENTIAL_TTL_SECONDS = 3600;
 // Set explicitly by 1st-gen Cloud Functions; GOOGLE_CLOUD_PROJECT covers
 // 2nd-gen/Cloud Run. Falling back through both keeps this working regardless
 // of which generation transcribeVoiceMessage ends up deployed as.
@@ -551,6 +559,49 @@ exports.summarizeChat = callable().onCall(async (data, context) => {
 
   const summary = extractAnswer(response) || 'No summary available.';
   return {summary};
+});
+
+// ─── TURN credentials for calling ───────────────────────────────────────────
+// Cloudflare Realtime doesn't hand out a static username/password to bake
+// into a client config the way a traditional TURN provider would — it hands
+// out a long-term Key ID + API token, and the actual per-connection
+// username/credential has to be minted on demand against Cloudflare's own
+// API. So unlike every other callable here, this one isn't chat-scoped and
+// takes no input at all: any signed-in user can ask for a fresh, short-lived
+// TURN credential right before a call starts. See CALLING.md.
+exports.getTurnCredentials = callable().onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Authentication required.');
+  }
+  await checkRateLimit(context.auth.uid, 'getTurnCredentials', {maxCalls: 20, windowMs: 60000});
+
+  if (!CLOUDFLARE_TURN_KEY_ID || !CLOUDFLARE_TURN_API_TOKEN) {
+    throw new functions.https.HttpsError('failed-precondition', 'TURN is not configured.');
+  }
+
+  let response;
+  try {
+    const cfResponse = await fetch(
+      `https://rtc.live.cloudflare.com/v1/turn/keys/${CLOUDFLARE_TURN_KEY_ID}/credentials/generate-ice-servers`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${CLOUDFLARE_TURN_API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ttl: TURN_CREDENTIAL_TTL_SECONDS}),
+      },
+    );
+    response = await cfResponse.json();
+    if (!cfResponse.ok) throw new Error(JSON.stringify(response));
+  } catch (error) {
+    functions.logger.error('getTurnCredentials: Cloudflare Realtime call failed', {
+      message: error?.message,
+    });
+    throw new functions.https.HttpsError('internal', 'Could not get TURN credentials.');
+  }
+
+  return {iceServers: extractIceServers(response)};
 });
 
 // ─── Feature 8: Message Translation ──────────────────────────────────────────
