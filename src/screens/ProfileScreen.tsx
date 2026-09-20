@@ -106,6 +106,10 @@ export default function ProfileScreen() {
   const currentLanguage = useMemo(() => {
     const resolved = i18n.language;
     return LANGUAGES.find(l => l.code === resolved) || LANGUAGES[0];
+    // i18n.language is a plain module value, not state — the rule can't see
+    // that this component still re-renders on a change (via useTranslation's
+    // own subscription below), which is what actually keeps this current.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18n.language]);
 
   const filteredLanguages = useMemo(() => {
@@ -260,7 +264,7 @@ export default function ProfileScreen() {
         },
       },
     ]);
-  }, [signOut]);
+  }, [signOut, t]);
 
   // Matched case-insensitively after trimming: the word is a deliberate
   // speed bump, not a password, and failing someone for a stray space or an
