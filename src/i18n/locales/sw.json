@@ -285,7 +285,10 @@
       "deletePartial": "Akaunti yako imefutwa, lakini baadhi ya data haikuweza kuondolewa. Tafadhali wasiliana na msaada.",
       "downloadDataTitle": "Pakua data yangu",
       "downloadDataDesc": "Pata nakala ya wasifu na mazungumzo yako kama faili la maandishi wazi unaloweza kuhifadhi au kukagua — tofauti na hifadhi rudufu ya usafirishaji hapa chini, ambayo hutengeneza faili lililosimbwa la kuhamisha akaunti yako kwenye kifaa kipya.",
-      "downloadDataButton": "Pakua"
+      "downloadDataButton": "Pakua",
+      "checkUpdatesTitle": "Angalia sasisho",
+      "checkUpdatesDesc": "Chatterbox haipo kwenye Google Play, hivyo hakuna kinachoisasisha nyuma ya pazia. Angalia chatterbox.app kwa toleo jipya zaidi.",
+      "checkUpdatesButton": "Angalia sasa"
     },
     "modals": {
       "feedbackTitle": "Maoni",
@@ -313,6 +316,13 @@
       "signOutFailed": "Imeshindikana kutoka",
       "downloadDataFailedTitle": "Hitilafu",
       "downloadDataFailedBody": "Imeshindikana kuandaa data yako. Tafadhali jaribu tena.",
+      "checkUpdatesUpToDateTitle": "Una toleo la hivi karibuni",
+      "checkUpdatesUpToDateBody": "Hili ndilo toleo jipya zaidi la Chatterbox.",
+      "checkUpdatesAvailableTitle": "Sasisho linapatikana",
+      "checkUpdatesAvailableBody": "Toleo {{version}} linapatikana kwenye chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Fungua chatterbox.app",
+      "checkUpdatesFailedTitle": "Imeshindikana kuangalia sasisho",
+      "checkUpdatesFailedBody": "Angalia muunganisho wako na ujaribu tena.",
       "voiceRecordFailed": "Imeshindikana kuanza kurekodi.",
       "voiceStatusTitle": "Hali ya Sauti",
       "voiceStatusBody": "Shajara yako ya sauti imewekwa! Itaisha muda baada ya saa 24.",

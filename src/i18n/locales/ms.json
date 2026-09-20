@@ -285,7 +285,10 @@
       "deletePartial": "Akaun anda telah dipadam, tetapi sebahagian data tidak dapat dialih keluar. Sila hubungi sokongan.",
       "downloadDataTitle": "Muat turun data saya",
       "downloadDataDesc": "Dapatkan salinan profil dan perbualan anda sebagai fail teks biasa yang anda boleh simpan atau semak — berbeza daripada Eksport Sandaran di bawah, yang mencipta fail disulitkan untuk memindahkan akaun anda ke peranti baharu.",
-      "downloadDataButton": "Muat Turun"
+      "downloadDataButton": "Muat Turun",
+      "checkUpdatesTitle": "Semak kemas kini",
+      "checkUpdatesDesc": "Chatterbox tiada di Google Play, jadi tiada apa yang mengemas kininya di latar belakang. Semak chatterbox.app untuk versi yang lebih baharu.",
+      "checkUpdatesButton": "Semak sekarang"
     },
     "modals": {
       "feedbackTitle": "Maklum Balas",
@@ -313,6 +316,13 @@
       "signOutFailed": "Gagal log keluar",
       "downloadDataFailedTitle": "Ralat",
       "downloadDataFailedBody": "Tidak dapat menyediakan data anda. Sila cuba lagi.",
+      "checkUpdatesUpToDateTitle": "Anda menggunakan versi terkini",
+      "checkUpdatesUpToDateBody": "Ini ialah versi terkini Chatterbox.",
+      "checkUpdatesAvailableTitle": "Kemas kini tersedia",
+      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Buka chatterbox.app",
+      "checkUpdatesFailedTitle": "Tidak dapat menyemak kemas kini",
+      "checkUpdatesFailedBody": "Semak sambungan anda dan cuba lagi.",
       "voiceRecordFailed": "Gagal memulakan rakaman.",
       "voiceStatusTitle": "Status Suara",
       "voiceStatusBody": "Diari suara anda telah ditetapkan! Ia akan tamat tempoh dalam masa 24 jam.",

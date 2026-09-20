@@ -285,7 +285,10 @@
       "deletePartial": "An share asusunka, amma ba a iya cire wasu bayanai ba. Da fatan za a tuntuɓi tallafi.",
       "downloadDataTitle": "Sauke bayanana",
       "downloadDataDesc": "Sami kwafin bayaninka da tattaunawarka a matsayin fayil na rubutu mai sauƙi da za ka iya ajiyewa ko dubawa — daban da ajiyar da aka fitar a ƙasa, wanda yake ƙirƙirar fayil da aka sanya lambar sirri don matsar da asusunka zuwa sabuwar na'ura.",
-      "downloadDataButton": "Sauke"
+      "downloadDataButton": "Sauke",
+      "checkUpdatesTitle": "Duba sabuntawa",
+      "checkUpdatesDesc": "Chatterbox ba ya kan Google Play, don haka babu abin da ke sabunta shi a bango. Duba chatterbox.app don sabon sigar.",
+      "checkUpdatesButton": "Duba yanzu"
     },
     "modals": {
       "feedbackTitle": "Ra'ayi",
@@ -313,6 +316,13 @@
       "signOutFailed": "An kasa fita",
       "downloadDataFailedTitle": "Kuskure",
       "downloadDataFailedBody": "Ba a iya shirya bayananka ba. Da fatan za a sake gwadawa.",
+      "checkUpdatesUpToDateTitle": "Kana da sabon sigar",
+      "checkUpdatesUpToDateBody": "Wannan shi ne sabon sigar Chatterbox.",
+      "checkUpdatesAvailableTitle": "Akwai sabuntawa",
+      "checkUpdatesAvailableBody": "Sigar {{version}} tana samuwa a chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Buɗe chatterbox.app",
+      "checkUpdatesFailedTitle": "An kasa duba sabuntawa",
+      "checkUpdatesFailedBody": "Duba haɗin yanar gizonka sannan a sake gwadawa.",
       "voiceRecordFailed": "An kasa fara ɗaukar rikodi.",
       "voiceStatusTitle": "Matsayin Murya",
       "voiceStatusBody": "An saita littafin rikodin muryarka! Zai ƙare cikin sa'o'i 24.",

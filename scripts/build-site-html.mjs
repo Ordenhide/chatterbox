@@ -44,7 +44,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * clone and the deploying machine all generate the same pages.
  */
 export const PLAY_URL = null;
-export const APK_URL = null;
+export const APK_URL = 'downloads/chatterbox-latest.apk';
 
 const escape = s =>
   String(s)

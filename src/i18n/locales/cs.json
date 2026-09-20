@@ -285,7 +285,10 @@
       "deletePartial": "Váš účet byl smazán, ale některá data se nepodařilo odstranit. Kontaktujte prosím podporu.",
       "downloadDataTitle": "Stáhnout moje data",
       "downloadDataDesc": "Získejte kopii svého profilu a konverzací jako soubor s prostým textem, který si můžete ponechat nebo prohlédnout — na rozdíl od exportní zálohy níže, která vytváří šifrovaný soubor pro přesun vašeho účtu na nové zařízení.",
-      "downloadDataButton": "Stáhnout"
+      "downloadDataButton": "Stáhnout",
+      "checkUpdatesTitle": "Zkontrolovat aktualizace",
+      "checkUpdatesDesc": "Chatterbox není na Google Play, takže nic ho neaktualizuje na pozadí. Zkontrolujte chatterbox.app, zda není k dispozici novější verze.",
+      "checkUpdatesButton": "Zkontrolovat nyní"
     },
     "modals": {
       "feedbackTitle": "Zpětná vazba",
@@ -313,6 +316,13 @@
       "signOutFailed": "Odhlášení se nezdařilo",
       "downloadDataFailedTitle": "Chyba",
       "downloadDataFailedBody": "Nepodařilo se připravit vaše data. Zkuste to prosím znovu.",
+      "checkUpdatesUpToDateTitle": "Máte nejnovější verzi",
+      "checkUpdatesUpToDateBody": "Toto je nejnovější verze Chatterboxu.",
+      "checkUpdatesAvailableTitle": "Je k dispozici aktualizace",
+      "checkUpdatesAvailableBody": "Verze {{version}} je k dispozici na chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Otevřít chatterbox.app",
+      "checkUpdatesFailedTitle": "Aktualizace se nepodařilo zkontrolovat",
+      "checkUpdatesFailedBody": "Zkontrolujte připojení a zkuste to znovu.",
       "voiceRecordFailed": "Zahájení nahrávání se nezdařilo.",
       "voiceStatusTitle": "Stav hlasu",
       "voiceStatusBody": "Váš hlasový deník byl nastaven! Vyprší za 24 hodin.",

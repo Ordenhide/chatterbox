@@ -285,7 +285,10 @@
       "deletePartial": "Akun Anda telah dihapus, tetapi beberapa data tidak dapat dihapus. Silakan hubungi dukungan.",
       "downloadDataTitle": "Unduh data saya",
       "downloadDataDesc": "Dapatkan salinan profil dan percakapan Anda sebagai file teks biasa yang dapat Anda simpan atau periksa — berbeda dari Ekspor Cadangan di bawah, yang membuat file terenkripsi untuk memindahkan akun Anda ke perangkat baru.",
-      "downloadDataButton": "Unduh"
+      "downloadDataButton": "Unduh",
+      "checkUpdatesTitle": "Periksa pembaruan",
+      "checkUpdatesDesc": "Chatterbox tidak ada di Google Play, jadi tidak ada yang memperbaruinya di latar belakang. Periksa chatterbox.app untuk versi yang lebih baru.",
+      "checkUpdatesButton": "Periksa sekarang"
     },
     "modals": {
       "feedbackTitle": "Masukan",
@@ -313,6 +316,13 @@
       "signOutFailed": "Gagal keluar",
       "downloadDataFailedTitle": "Kesalahan",
       "downloadDataFailedBody": "Tidak dapat menyiapkan data Anda. Silakan coba lagi.",
+      "checkUpdatesUpToDateTitle": "Anda sudah menggunakan versi terbaru",
+      "checkUpdatesUpToDateBody": "Ini adalah versi terbaru Chatterbox.",
+      "checkUpdatesAvailableTitle": "Pembaruan tersedia",
+      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Buka chatterbox.app",
+      "checkUpdatesFailedTitle": "Tidak dapat memeriksa pembaruan",
+      "checkUpdatesFailedBody": "Periksa koneksi Anda dan coba lagi.",
       "voiceRecordFailed": "Gagal memulai perekaman.",
       "voiceStatusTitle": "Status Suara",
       "voiceStatusBody": "Buku harian suara Anda telah diatur! Akan kedaluwarsa dalam 24 jam.",

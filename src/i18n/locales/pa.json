@@ -285,7 +285,10 @@
       "deletePartial": "ਤੁਹਾਡਾ ਖਾਤਾ ਮਿਟਾ ਦਿੱਤਾ ਗਿਆ, ਪਰ ਕੁਝ ਡਾਟਾ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
       "downloadDataTitle": "ਮੇਰਾ ਡਾਟਾ ਡਾਊਨਲੋਡ ਕਰੋ",
       "downloadDataDesc": "ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਗੱਲਬਾਤਾਂ ਦੀ ਕਾਪੀ ਇੱਕ ਸਾਦੀ-ਟੈਕਸਟ ਫਾਈਲ ਵਜੋਂ ਪ੍ਰਾਪਤ ਕਰੋ ਜਿਸਨੂੰ ਤੁਸੀਂ ਰੱਖ ਜਾਂ ਜਾਂਚ ਸਕਦੇ ਹੋ — ਹੇਠਾਂ ਨਿਰਯਾਤ ਬੈਕਅੱਪ ਤੋਂ ਵੱਖਰਾ, ਜੋ ਤੁਹਾਡੇ ਖਾਤੇ ਨੂੰ ਨਵੀਂ ਡਿਵਾਈਸ ਵਿੱਚ ਲਿਜਾਣ ਲਈ ਇੱਕ ਇਨਕ੍ਰਿਪਟਿਡ ਫਾਈਲ ਬਣਾਉਂਦਾ ਹੈ।",
-      "downloadDataButton": "ਡਾਊਨਲੋਡ ਕਰੋ"
+      "downloadDataButton": "ਡਾਊਨਲੋਡ ਕਰੋ",
+      "checkUpdatesTitle": "ਅੱਪਡੇਟਾਂ ਦੀ ਜਾਂਚ ਕਰੋ",
+      "checkUpdatesDesc": "Chatterbox Google Play 'ਤੇ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਕੁਝ ਵੀ ਇਸਨੂੰ ਅੱਪਡੇਟ ਨਹੀਂ ਕਰਦਾ। ਨਵੇਂ ਵਰਜਨ ਲਈ chatterbox.app ਦੀ ਜਾਂਚ ਕਰੋ।",
+      "checkUpdatesButton": "ਹੁਣੇ ਜਾਂਚ ਕਰੋ"
     },
     "modals": {
       "feedbackTitle": "ਫੀਡਬੈਕ",
@@ -313,6 +316,13 @@
       "signOutFailed": "ਸਾਈਨ ਆਊਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
       "downloadDataFailedTitle": "ਗਲਤੀ",
       "downloadDataFailedBody": "ਤੁਹਾਡਾ ਡਾਟਾ ਤਿਆਰ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "checkUpdatesUpToDateTitle": "ਤੁਹਾਡੇ ਕੋਲ ਨਵੀਨਤਮ ਵਰਜਨ ਹੈ",
+      "checkUpdatesUpToDateBody": "ਇਹ Chatterbox ਦਾ ਨਵੀਨਤਮ ਵਰਜਨ ਹੈ।",
+      "checkUpdatesAvailableTitle": "ਅੱਪਡੇਟ ਉਪਲਬਧ ਹੈ",
+      "checkUpdatesAvailableBody": "ਵਰਜਨ {{version}} chatterbox.app 'ਤੇ ਉਪਲਬਧ ਹੈ।",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app ਖੋਲ੍ਹੋ",
+      "checkUpdatesFailedTitle": "ਅੱਪਡੇਟਾਂ ਦੀ ਜਾਂਚ ਨਹੀਂ ਹੋ ਸਕੀ",
+      "checkUpdatesFailedBody": "ਆਪਣਾ ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
       "voiceRecordFailed": "ਰਿਕਾਰਡਿੰਗ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।",
       "voiceStatusTitle": "ਵੌਇਸ ਸਥਿਤੀ",
       "voiceStatusBody": "ਤੁਹਾਡੀ ਵੌਇਸ ਡਾਇਰੀ ਸੈੱਟ ਕੀਤੀ ਗਈ ਹੈ! ਇਹ 24 ਘੰਟਿਆਂ ਵਿੱਚ ਸਮਾਪਤ ਹੋ ਜਾਵੇਗੀ।",

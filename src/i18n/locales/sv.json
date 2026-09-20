@@ -285,7 +285,10 @@
       "deletePartial": "Ditt konto raderades, men viss data kunde inte tas bort. Kontakta support.",
       "downloadDataTitle": "Ladda ner mina uppgifter",
       "downloadDataDesc": "Få en kopia av din profil och konversationer som en klartextfil du kan behålla eller granska — skiljer sig från exportsäkerhetskopian nedan, som skapar en krypterad fil för att flytta ditt konto till en ny enhet.",
-      "downloadDataButton": "Ladda ner"
+      "downloadDataButton": "Ladda ner",
+      "checkUpdatesTitle": "Sök efter uppdateringar",
+      "checkUpdatesDesc": "Chatterbox finns inte på Google Play, så ingenting uppdaterar den i bakgrunden. Kolla chatterbox.app för en nyare version.",
+      "checkUpdatesButton": "Sök nu"
     },
     "modals": {
       "feedbackTitle": "Feedback",
@@ -313,6 +316,13 @@
       "signOutFailed": "Utloggning misslyckades",
       "downloadDataFailedTitle": "Fel",
       "downloadDataFailedBody": "Det gick inte att förbereda dina uppgifter. Försök igen.",
+      "checkUpdatesUpToDateTitle": "Du har den senaste versionen",
+      "checkUpdatesUpToDateBody": "Det här är den senaste versionen av Chatterbox.",
+      "checkUpdatesAvailableTitle": "Uppdatering tillgänglig",
+      "checkUpdatesAvailableBody": "Version {{version}} finns tillgänglig på chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Öppna chatterbox.app",
+      "checkUpdatesFailedTitle": "Det gick inte att söka efter uppdateringar",
+      "checkUpdatesFailedBody": "Kontrollera din anslutning och försök igen.",
       "voiceRecordFailed": "Det gick inte att starta inspelningen.",
       "voiceStatusTitle": "Röststatus",
       "voiceStatusBody": "Din röstdagbok har ställts in! Den upphör om 24 timmar.",

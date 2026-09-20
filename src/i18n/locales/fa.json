@@ -285,7 +285,10 @@
       "deletePartial": "حساب شما حذف شد، اما برخی داده‌ها قابل حذف نبودند. لطفاً با پشتیبانی تماس بگیرید.",
       "downloadDataTitle": "دانلود داده‌های من",
       "downloadDataDesc": "نسخه‌ای از پروفایل و گفتگوهایتان را به‌صورت یک فایل متنی ساده که می‌توانید نگه دارید یا بررسی کنید دریافت کنید — این با «خروجی پشتیبان» زیر فرق دارد، که یک فایل رمزنگاری‌شده برای انتقال حساب شما به دستگاه جدید می‌سازد.",
-      "downloadDataButton": "دانلود"
+      "downloadDataButton": "دانلود",
+      "checkUpdatesTitle": "بررسی به‌روزرسانی‌ها",
+      "checkUpdatesDesc": "Chatterbox در Google Play موجود نیست، بنابراین چیزی آن را در پس‌زمینه به‌روزرسانی نمی‌کند. برای نسخهٔ جدیدتر chatterbox.app را بررسی کنید.",
+      "checkUpdatesButton": "اکنون بررسی کن"
     },
     "modals": {
       "feedbackTitle": "بازخورد",
@@ -313,6 +316,13 @@
       "signOutFailed": "خروج از حساب ناموفق بود",
       "downloadDataFailedTitle": "خطا",
       "downloadDataFailedBody": "آماده‌سازی داده‌های شما ممکن نشد. لطفاً دوباره تلاش کنید.",
+      "checkUpdatesUpToDateTitle": "شما به‌روز هستید",
+      "checkUpdatesUpToDateBody": "این آخرین نسخهٔ Chatterbox است.",
+      "checkUpdatesAvailableTitle": "به‌روزرسانی موجود است",
+      "checkUpdatesAvailableBody": "نسخهٔ {{version}} در chatterbox.app موجود است.",
+      "checkUpdatesAvailableOpenButton": "باز کردن chatterbox.app",
+      "checkUpdatesFailedTitle": "بررسی به‌روزرسانی‌ها ممکن نشد",
+      "checkUpdatesFailedBody": "اتصال خود را بررسی کرده و دوباره تلاش کنید.",
       "voiceRecordFailed": "شروع ضبط ناموفق بود.",
       "voiceStatusTitle": "وضعیت صوتی",
       "voiceStatusBody": "یادداشت صوتی شما تنظیم شد! تا ۲۴ ساعت دیگر منقضی می‌شود.",

@@ -285,7 +285,10 @@
       "deletePartial": "आपले खाते हटवले गेले, पण काही डेटा काढता आला नाही. कृपया समर्थनाशी संपर्क साधा.",
       "downloadDataTitle": "माझा डेटा डाउनलोड करा",
       "downloadDataDesc": "आपल्या प्रोफाइल आणि संभाषणांची प्रत साध्या-मजकूर फाइल म्हणून मिळवा जी आपण ठेवू किंवा तपासू शकता — खाली दिलेल्या निर्यात बॅकअपपेक्षा वेगळे, जे आपले खाते नवीन डिव्हाइसवर हलवण्यासाठी एन्क्रिप्टेड फाइल तयार करते.",
-      "downloadDataButton": "डाउनलोड करा"
+      "downloadDataButton": "डाउनलोड करा",
+      "checkUpdatesTitle": "अद्यतनांसाठी तपासा",
+      "checkUpdatesDesc": "Chatterbox Google Play वर नाही, त्यामुळे पार्श्वभूमीत काहीही अपडेट होत नाही. नवीन आवृत्तीसाठी chatterbox.app तपासा.",
+      "checkUpdatesButton": "आता तपासा"
     },
     "modals": {
       "feedbackTitle": "अभिप्राय",
@@ -313,6 +316,13 @@
       "signOutFailed": "साइन आउट करण्यात अयशस्वी",
       "downloadDataFailedTitle": "त्रुटी",
       "downloadDataFailedBody": "आपला डेटा तयार करता आला नाही. कृपया पुन्हा प्रयत्न करा.",
+      "checkUpdatesUpToDateTitle": "आपल्याकडे नवीनतम आवृत्ती आहे",
+      "checkUpdatesUpToDateBody": "ही Chatterbox ची नवीनतम आवृत्ती आहे.",
+      "checkUpdatesAvailableTitle": "अद्यतन उपलब्ध आहे",
+      "checkUpdatesAvailableBody": "आवृत्ती {{version}} chatterbox.app वर उपलब्ध आहे.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app उघडा",
+      "checkUpdatesFailedTitle": "अद्यतन तपासता आले नाही",
+      "checkUpdatesFailedBody": "आपले कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.",
       "voiceRecordFailed": "रेकॉर्डिंग सुरू करण्यात अयशस्वी.",
       "voiceStatusTitle": "व्हॉइस स्थिती",
       "voiceStatusBody": "आपली व्हॉइस डायरी सेट केली आहे! ती 24 तासांत कालबाह्य होईल.",

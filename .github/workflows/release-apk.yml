@@ -53,6 +53,54 @@ jobs:
           CHATTERBOX_KEY_PASSWORD: ${{ secrets.CHATTERBOX_KEY_PASSWORD }}
         run: ./gradlew assembleRelease --no-daemon
 
+      # Only for an actual release tag — workflow_dispatch exists to test that
+      # the signed build still works, and must not touch the live website or
+      # need FIREBASE_SERVICE_ACCOUNT to do it.
+      #
+      # versionName/versionCode come straight out of build.gradle rather than
+      # the git tag, so this can never drift from what Gradle actually built.
+      # chatterbox-latest.apk is a stable filename (not versioned) so the
+      # site's download link never has to change between releases — see
+      # APK_URL's comment in scripts/build-site-html.mjs. version.json is
+      # what src/services/updateCheck.ts polls to tell an installed app a
+      # newer build exists.
+      - name: Compute checksum and write the update manifest
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s+"\K[^"]+' android/app/build.gradle)
+          VERSION_CODE=$(grep -oP 'versionCode\s+\K[0-9]+' android/app/build.gradle)
+          SHA256=$(sha256sum android/app/build/outputs/apk/release/app-release.apk | cut -d' ' -f1)
+          RELEASED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          mkdir -p website/downloads
+          cp android/app/build/outputs/apk/release/app-release.apk website/downloads/chatterbox-latest.apk
+          cat > website/downloads/version.json <<EOF
+          {"versionCode": $VERSION_CODE, "versionName": "$VERSION_NAME", "sha256": "$SHA256", "releasedAt": "$RELEASED_AT", "url": "downloads/chatterbox-latest.apk"}
+          EOF
+
+          echo "APK_SHA256=$SHA256" >> "$GITHUB_ENV"
+
+      # Same secret and pattern as deploy-functions.yml / deploy-rules.yml.
+      - name: Check required secrets
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT is not set. See DEPLOYING.md."
+            exit 1
+          fi
+
+      - name: Authenticate to Google Cloud
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+
+      - name: Deploy the website (Firebase Hosting)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npx firebase-tools@^15 deploy --only hosting --project chatterbox-e5d10 --non-interactive
+
       - name: Remove decoded keystore
         if: always()
         run: rm -f android/app/chatterbox-release.keystore android/app/google-services.json
@@ -69,3 +117,10 @@ jobs:
         with:
           files: android/app/build/outputs/apk/release/app-release.apk
           generate_release_notes: true
+          # A verification channel independent of the site itself: if
+          # chatterbox.app were ever compromised, this SHA-256 lives on
+          # GitHub instead and can be checked against either copy.
+          body: |
+            SHA-256: `${{ env.APK_SHA256 }}`
+
+            Also published to https://chatterbox.app/#download — the same file.

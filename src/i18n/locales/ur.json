@@ -285,7 +285,10 @@
       "deletePartial": "آپ کا اکاؤنٹ حذف کر دیا گیا، لیکن کچھ ڈیٹا ہٹایا نہیں جا سکا۔ براہ کرم سپورٹ سے رابطہ کریں۔",
       "downloadDataTitle": "میرا ڈیٹا ڈاؤن لوڈ کریں",
       "downloadDataDesc": "اپنی پروفائل اور گفتگوؤں کی ایک کاپی ایک سادہ متنی فائل کے طور پر حاصل کریں جسے آپ رکھ یا جانچ سکتے ہیں — یہ نیچے دیے گئے ‘ایکسپورٹ بیک اپ’ سے مختلف ہے، جو آپ کے اکاؤنٹ کو نئی ڈیوائس پر منتقل کرنے کے لیے ایک خفیہ کردہ فائل بناتا ہے۔",
-      "downloadDataButton": "ڈاؤن لوڈ کریں"
+      "downloadDataButton": "ڈاؤن لوڈ کریں",
+      "checkUpdatesTitle": "اپ ڈیٹس کی جانچ کریں",
+      "checkUpdatesDesc": "Chatterbox گوگل پلے پر موجود نہیں ہے، اس لیے کچھ بھی اسے پس منظر میں اپ ڈیٹ نہیں کرتا۔ نئے ورژن کے لیے chatterbox.app چیک کریں۔",
+      "checkUpdatesButton": "ابھی چیک کریں"
     },
     "modals": {
       "feedbackTitle": "رائے",
@@ -313,6 +316,13 @@
       "signOutFailed": "سائن آؤٹ ناکام ہوا",
       "downloadDataFailedTitle": "خرابی",
       "downloadDataFailedBody": "آپ کا ڈیٹا تیار نہیں کیا جا سکا۔ براہ کرم دوبارہ کوشش کریں۔",
+      "checkUpdatesUpToDateTitle": "آپ کے پاس تازہ ترین ورژن ہے",
+      "checkUpdatesUpToDateBody": "یہ Chatterbox کا تازہ ترین ورژن ہے۔",
+      "checkUpdatesAvailableTitle": "اپ ڈیٹ دستیاب ہے",
+      "checkUpdatesAvailableBody": "ورژن {{version}} chatterbox.app پر دستیاب ہے۔",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app کھولیں",
+      "checkUpdatesFailedTitle": "اپ ڈیٹس چیک نہیں کی جا سکیں",
+      "checkUpdatesFailedBody": "اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
       "voiceRecordFailed": "ریکارڈنگ شروع کرنا ناکام ہوا۔",
       "voiceStatusTitle": "صوتی حیثیت",
       "voiceStatusBody": "آپ کی صوتی ڈائری سیٹ ہو گئی ہے! یہ 24 گھنٹوں میں ختم ہو جائے گی۔",

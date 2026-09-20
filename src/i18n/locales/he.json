@@ -285,7 +285,10 @@
       "deletePartial": "החשבון שלכם נמחק, אך חלק מהנתונים לא ניתן היה להסיר. אנא פנו לתמיכה.",
       "downloadDataTitle": "הורידו את הנתונים שלי",
       "downloadDataDesc": "קבלו עותק של הפרופיל והשיחות שלכם כקובץ טקסט פשוט שתוכלו לשמור או לבדוק — שונה מ'ייצוא גיבוי' למטה, שיוצר קובץ מוצפן להעברת החשבון שלכם למכשיר חדש.",
-      "downloadDataButton": "הורדה"
+      "downloadDataButton": "הורדה",
+      "checkUpdatesTitle": "בדיקת עדכונים",
+      "checkUpdatesDesc": "Chatterbox אינו זמין ב-Google Play, כך שדבר אינו מעדכן אותו ברקע. בדקו ב-chatterbox.app אם יש גרסה חדשה יותר.",
+      "checkUpdatesButton": "בדקו עכשיו"
     },
     "modals": {
       "feedbackTitle": "משוב",
@@ -313,6 +316,13 @@
       "signOutFailed": "ההתנתקות נכשלה",
       "downloadDataFailedTitle": "שגיאה",
       "downloadDataFailedBody": "לא ניתן היה להכין את הנתונים שלכם. נסו שוב.",
+      "checkUpdatesUpToDateTitle": "יש לכם את הגרסה העדכנית",
+      "checkUpdatesUpToDateBody": "זוהי הגרסה העדכנית ביותר של Chatterbox.",
+      "checkUpdatesAvailableTitle": "עדכון זמין",
+      "checkUpdatesAvailableBody": "גרסה {{version}} זמינה ב-chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "פתיחת chatterbox.app",
+      "checkUpdatesFailedTitle": "לא ניתן היה לבדוק עדכונים",
+      "checkUpdatesFailedBody": "בדקו את החיבור שלכם ונסו שוב.",
       "voiceRecordFailed": "התחלת ההקלטה נכשלה.",
       "voiceStatusTitle": "סטטוס קולי",
       "voiceStatusBody": "היומן הקולי שלכם הוגדר! הוא יפוג בעוד 24 שעות.",

@@ -162,6 +162,16 @@ If you would rather we deleted something by hand, write to us.`,
       title: '13. Contact',
       body: `Questions about this policy: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Checking for a newer app version',
+      body: `Google Play is not the way this app reaches your Android phone. It is downloaded from chatterbox.app instead, and a store that isn't in the loop cannot check for updates on your behalf — so this app can, if you ask it to.
+
+Tapping "Check now" sends one request to chatterbox.app asking which version is current. That request carries your IP address and nothing else — no account, no device identifier, no message. What comes back is a version number, compared on your phone against the version you're running; nothing is downloaded automatically, and nothing about the check is written to the conversation.
+
+This has no switch because there is nothing standing to switch off: it runs on the tap and not otherwise.
+
+If you install the update, it replaces the app in place using the same signing key, the same way an update from Google Play would.`,
+    },
   ],
 
   'zh-Hans': [
@@ -279,6 +289,16 @@ If you would rather we deleted something by hand, write to us.`,
       title: '13. 联系我们',
       body: `关于这份政策的问题，请联系：${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. 检查新版本',
+      body: `Google Play 并不是这个应用到达你安卓手机的途径,它是从 chatterbox.app 下载的——而一个不在循环里的应用商店没法替你检查更新,所以这个应用可以自己检查,只要你让它这么做。
+
+点击"立即检查"会向 chatterbox.app 发送一次请求,询问当前的版本号。这次请求只携带你的 IP 地址,没有别的——没有账号、没有设备标识符、没有消息内容。返回的是一个版本号,在你的手机上与当前运行的版本比对;不会自动下载任何东西,这次检查也不会写入到对话记录里。
+
+这个功能没有开关,因为没有什么可以关闭的:它只在你点击时运行,除此之外不会运行。
+
+如果你安装了更新,它会用同一个签名密钥原地替换应用,和 Google Play 推送更新的方式一样。`,
+    },
   ],
   'de': [
     {
@@ -394,6 +414,16 @@ Wenn dir lieber ist, dass wir etwas von Hand löschen, schreib uns.`,
     {
       title: '13. Kontakt',
       body: `Fragen zu dieser Richtlinie: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Nach einer neueren App-Version suchen',
+      body: `Google Play ist nicht der Weg, wie diese App auf dein Android-Handy gelangt. Sie wird stattdessen von chatterbox.app heruntergeladen, und ein Store, der nicht eingebunden ist, kann nicht in deinem Namen nach Updates suchen — also kann die App das selbst, wenn du sie darum bittest.
+
+Ein Tippen auf „Jetzt prüfen" sendet eine einzige Anfrage an chatterbox.app, welche Version aktuell ist. Diese Anfrage enthält deine IP-Adresse und sonst nichts — kein Konto, keine Gerätekennung, keine Nachricht. Zurück kommt eine Versionsnummer, die auf deinem Handy mit der laufenden Version verglichen wird; nichts wird automatisch heruntergeladen, und nichts von der Prüfung wird in die Unterhaltung geschrieben.
+
+Dafür gibt es keinen Schalter, weil es nichts abzuschalten gibt: Es läuft nur beim Antippen und sonst nicht.
+
+Installierst du das Update, ersetzt es die App an Ort und Stelle mit demselben Signaturschlüssel — genauso, wie es ein Update von Google Play tun würde.`,
     },
   ],
   'es': [
@@ -511,6 +541,16 @@ Si prefieres que borremos algo a mano, escríbenos.`,
       title: '13. Contacto',
       body: `Dudas sobre esta política: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Buscar una versión más reciente de la app',
+      body: `Google Play no es la forma en que esta app llega a tu teléfono Android. Se descarga desde chatterbox.app, y una tienda que no está en el bucle no puede buscar actualizaciones en tu nombre — así que esta app puede hacerlo, si se lo pides.
+
+Tocar "Buscar ahora" envía una única solicitud a chatterbox.app preguntando cuál es la versión actual. Esa solicitud lleva tu dirección IP y nada más — sin cuenta, sin identificador de dispositivo, sin mensaje. Lo que vuelve es un número de versión, comparado en tu teléfono con la versión que tienes instalada; no se descarga nada automáticamente, y nada de la comprobación se escribe en la conversación.
+
+Esto no tiene interruptor porque no hay nada que apagar: se ejecuta al tocar y no de otra forma.
+
+Si instalas la actualización, reemplaza la app en el mismo lugar usando la misma clave de firma, igual que lo haría una actualización de Google Play.`,
+    },
   ],
   'fr': [
     {
@@ -626,6 +666,16 @@ Si vous préférez que nous supprimions quelque chose à la main, écrivez-nous.
     {
       title: '13. Contact',
       body: `Questions sur cette politique : ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Rechercher une version plus récente de l\'application',
+      body: `Google Play n'est pas le moyen par lequel cette application arrive sur votre téléphone Android. Elle est téléchargée depuis chatterbox.app à la place, et un magasin qui n'est pas dans la boucle ne peut pas rechercher les mises à jour en votre nom — donc cette application le peut, si vous le lui demandez.
+
+Toucher « Rechercher maintenant » envoie une seule requête à chatterbox.app pour demander quelle est la version actuelle. Cette requête transporte votre adresse IP et rien d'autre — pas de compte, pas d'identifiant d'appareil, pas de message. Ce qui revient est un numéro de version, comparé sur votre téléphone à la version que vous utilisez ; rien n'est téléchargé automatiquement, et rien de cette vérification n'est écrit dans la conversation.
+
+Cela n'a pas d'interrupteur car il n'y a rien à désactiver : cela ne s'exécute qu'au toucher, et pas autrement.
+
+Si vous installez la mise à jour, elle remplace l'application sur place avec la même clé de signature, de la même façon qu'une mise à jour depuis Google Play le ferait.`,
     },
   ],
   'it': [
@@ -743,6 +793,16 @@ Se preferisci che cancelliamo qualcosa a mano, scrivici.`,
       title: '13. Contatti',
       body: `Domande su questa informativa: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Verificare una versione più recente dell\'app',
+      body: `Google Play non è il modo in cui questa app arriva sul tuo telefono Android. Viene invece scaricata da chatterbox.app, e uno store che non è coinvolto non può verificare gli aggiornamenti per tuo conto — quindi questa app può farlo, se glielo chiedi.
+
+Toccando "Verifica ora" viene inviata un'unica richiesta a chatterbox.app per sapere qual è la versione attuale. Quella richiesta porta con sé il tuo indirizzo IP e nient'altro — nessun account, nessun identificativo del dispositivo, nessun messaggio. Quello che torna è un numero di versione, confrontato sul tuo telefono con la versione che stai usando; nulla viene scaricato automaticamente, e nulla della verifica viene scritto nella conversazione.
+
+Questo non ha un interruttore perché non c'è nulla da disattivare: si esegue solo al tocco e non altrimenti.
+
+Se installi l'aggiornamento, sostituisce l'app al suo posto usando la stessa chiave di firma, allo stesso modo in cui lo farebbe un aggiornamento da Google Play.`,
+    },
   ],
   'pt': [
     {
@@ -858,6 +918,16 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
     {
       title: '13. Contacto',
       body: `Questões sobre esta política: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Verificar se há uma versão mais recente da app',
+      body: `A Google Play não é a forma como esta app chega ao teu telemóvel Android. É descarregada a partir do chatterbox.app, e uma loja que não está a par não consegue verificar atualizações em teu nome — por isso esta app pode fazê-lo, se lho pedires.
+
+Tocar em "Verificar agora" envia um único pedido ao chatterbox.app a perguntar qual é a versão atual. Esse pedido transporta o teu endereço IP e nada mais — sem conta, sem identificador do dispositivo, sem mensagem. O que volta é um número de versão, comparado no teu telemóvel com a versão que tens instalada; nada é descarregado automaticamente, e nada desta verificação é escrito na conversa.
+
+Isto não tem interruptor porque não há nada para desligar: só corre quando tocas e não de outra forma.
+
+Se instalares a atualização, esta substitui a app no mesmo lugar usando a mesma chave de assinatura, tal como uma atualização da Google Play faria.`,
     },
   ],
   'ru': [
@@ -975,6 +1045,16 @@ Se preferires que apaguemos algo à mão, escreve-nos.`,
       title: '13. Контакты',
       body: `Вопросы по этой политике: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Проверка новой версии приложения',
+      body: `Google Play — не тот способ, которым это приложение попадает на ваш Android-телефон. Оно скачивается с chatterbox.app, а магазин, который не в курсе, не может проверять обновления от вашего имени — поэтому это может делать само приложение, если вы его об этом попросите.
+
+Нажатие «Проверить сейчас» отправляет один запрос на chatterbox.app с вопросом, какая версия актуальна. Этот запрос содержит только ваш IP-адрес и ничего больше — ни аккаунта, ни идентификатора устройства, ни сообщения. В ответ приходит номер версии, который сравнивается на вашем телефоне с установленной версией; ничего не скачивается автоматически, и ничего об этой проверке не записывается в переписку.
+
+У этого нет переключателя, потому что нечего отключать: это выполняется только по нажатию и никак иначе.
+
+Если вы установите обновление, оно заменит приложение на месте с использованием того же ключа подписи — так же, как это сделало бы обновление из Google Play.`,
+    },
   ],
   'tr': [
     {
@@ -1090,6 +1170,16 @@ Bir şeyi elle silmemizi tercih edersen bize yaz.`,
     {
       title: '13. İletişim',
       body: `Bu politikayla ilgili sorular: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Uygulamanın daha yeni bir sürümünü kontrol etme',
+      body: `Google Play, bu uygulamanın Android telefonuna ulaşma yolu değildir. Bunun yerine chatterbox.app'ten indirilir ve sürece dahil olmayan bir mağaza senin adına güncellemeleri kontrol edemez — bu yüzden istersen uygulama bunu kendisi yapabilir.
+
+"Şimdi kontrol et"e dokunmak chatterbox.app'e hangi sürümün güncel olduğunu soran tek bir istek gönderir. Bu istek yalnızca IP adresini taşır, başka hiçbir şey taşımaz — hesap yok, cihaz kimliği yok, mesaj yok. Geri gelen şey bir sürüm numarasıdır, telefonunda kullandığın sürümle karşılaştırılır; hiçbir şey otomatik olarak indirilmez ve kontrolle ilgili hiçbir şey sohbete yazılmaz.
+
+Bunun bir anahtarı yoktur, çünkü kapatılacak bir şey yoktur: yalnızca dokunulduğunda çalışır, başka türlü çalışmaz.
+
+Güncellemeyi kurarsan, aynı imzalama anahtarını kullanarak uygulamayı yerinde değiştirir — tıpkı Google Play'den gelecek bir güncelleme gibi.`,
     },
   ],
   'vi': [
@@ -1207,6 +1297,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '13. Liên hệ',
       body: `Thắc mắc về chính sách này: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Kiểm tra phiên bản ứng dụng mới hơn',
+      body: `Google Play không phải là cách ứng dụng này đến được điện thoại Android của bạn. Nó được tải xuống từ chatterbox.app, và một cửa hàng không tham gia vào quá trình này thì không thể kiểm tra cập nhật thay bạn — vì vậy ứng dụng này có thể tự làm điều đó, nếu bạn yêu cầu.
+
+Chạm vào "Kiểm tra ngay" sẽ gửi một yêu cầu duy nhất đến chatterbox.app để hỏi phiên bản hiện tại là gì. Yêu cầu đó mang theo địa chỉ IP của bạn và không gì khác — không tài khoản, không mã định danh thiết bị, không tin nhắn. Những gì trả về là một số phiên bản, được so sánh trên điện thoại của bạn với phiên bản bạn đang chạy; không có gì được tự động tải xuống, và không có gì về việc kiểm tra này được ghi vào cuộc trò chuyện.
+
+Điều này không có công tắc vì không có gì để tắt: nó chỉ chạy khi được chạm vào và không chạy theo cách nào khác.
+
+Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng tại chỗ bằng cùng một khóa ký, giống như cách một bản cập nhật từ Google Play sẽ làm.`,
+    },
   ],
   'ja': [
     {
@@ -1322,6 +1422,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     {
       title: '13. お問い合わせ',
       body: `このポリシーに関するお問い合わせ: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. 新しいバージョンの確認',
+      body: `Google Playは、このアプリがあなたのAndroid端末に届く経路ではありません。代わりにchatterbox.appからダウンロードされます。輪の外にあるストアはあなたに代わって更新を確認することができないため、このアプリ自身が、あなたが求めたときに確認できるようになっています。
+
+「今すぐ確認」をタップすると、現在のバージョンを尋ねる1回だけのリクエストがchatterbox.appに送られます。このリクエストにはあなたのIPアドレスだけが含まれ、それ以外は何も含まれません——アカウントも、端末識別子も、メッセージも含まれません。返ってくるのはバージョン番号だけで、あなたの端末上で実行中のバージョンと比較されます。何も自動でダウンロードされることはなく、この確認について会話に書き込まれることもありません。
+
+これにはスイッチがありません。オフにするべきものが何もないからです。タップしたときにだけ実行され、それ以外では実行されません。
+
+アップデートをインストールすると、Google Playからの更新と同じように、同じ署名鍵を使ってその場でアプリが置き換えられます。`,
     },
   ],
   'ko': [
@@ -1439,6 +1549,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '13. 문의',
       body: `이 방침에 대한 문의: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. 새 버전 확인하기',
+      body: `Google Play는 이 앱이 안드로이드 휴대전화에 도달하는 방법이 아닙니다. 대신 chatterbox.app에서 다운로드되며, 그 과정에 참여하지 않는 스토어는 사용자를 대신해 업데이트를 확인할 수 없습니다 — 그래서 요청하면 이 앱이 직접 확인할 수 있습니다.
+
+"지금 확인"을 탭하면 현재 버전이 무엇인지 묻는 요청 하나가 chatterbox.app으로 전송됩니다. 이 요청에는 IP 주소만 포함되며 그 외에는 아무것도 포함되지 않습니다 — 계정도, 기기 식별자도, 메시지도 없습니다. 돌아오는 것은 버전 번호이며, 휴대전화에서 현재 실행 중인 버전과 비교됩니다. 아무것도 자동으로 다운로드되지 않으며, 이 확인에 대한 어떤 것도 대화에 기록되지 않습니다.
+
+이 기능에는 스위치가 없습니다. 끌 것이 아무것도 없기 때문입니다: 탭했을 때만 실행되며 그 외에는 실행되지 않습니다.
+
+업데이트를 설치하면 Google Play의 업데이트와 마찬가지로 동일한 서명 키를 사용하여 앱이 제자리에서 교체됩니다.`,
+    },
   ],
   'zh-Hant': [
     {
@@ -1554,6 +1674,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     {
       title: '13. 聯絡我們',
       body: `關於這份政策的問題，請聯絡：${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. 檢查較新的應用程式版本',
+      body: `Google Play 並不是這個應用程式到達你 Android 手機的途徑,它是從 chatterbox.app 下載的——而一個不在循環中的商店沒辦法替你檢查更新,所以只要你要求,這個應用程式可以自己檢查。
+
+點一下「立即檢查」會向 chatterbox.app 發送一次請求,詢問目前的版本。這次請求只帶有你的 IP 位址,沒有其他東西——沒有帳號、沒有裝置識別碼、沒有訊息。回傳的是一個版本號,會在你的手機上與目前執行的版本比對;不會自動下載任何東西,這次檢查的任何內容也不會寫入對話中。
+
+這個功能沒有開關,因為沒有什麼可以關閉的:它只在你點按時執行,除此之外不會執行。
+
+如果你安裝更新,它會使用相同的簽署金鑰原地取代應用程式,就跟 Google Play 推送的更新一樣。`,
     },
   ],
   'ar': [
@@ -1671,6 +1801,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '13. التواصل',
       body: `أسئلة حول هذه السياسة: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. التحقق من وجود إصدار أحدث للتطبيق',
+      body: `Google Play ليست الطريقة التي يصل بها هذا التطبيق إلى هاتفك الذي يعمل بنظام أندرويد. بل يُنزَّل من chatterbox.app بدلاً من ذلك، ومتجر ليس جزءًا من هذه العملية لا يستطيع التحقق من التحديثات نيابةً عنك — لذا يستطيع هذا التطبيق فعل ذلك، إن طلبت منه.
+
+يؤدي النقر على "تحقق الآن" إلى إرسال طلب واحد إلى chatterbox.app للسؤال عن الإصدار الحالي. يحمل هذا الطلب عنوان IP الخاص بك فقط ولا شيء غيره — لا حساب، ولا معرّف جهاز، ولا رسالة. ما يعود هو رقم إصدار، تتم مقارنته على هاتفك بالإصدار الذي تستخدمه؛ لا يُنزَّل شيء تلقائيًا، ولا يُكتب أي شيء عن هذا التحقق في المحادثة.
+
+لا يوجد مفتاح تشغيل لهذا لأنه لا يوجد ما يُطفأ: يعمل فقط عند النقر ولا يعمل بطريقة أخرى.
+
+إذا ثبّت التحديث، فإنه يستبدل التطبيق في مكانه باستخدام نفس مفتاح التوقيع، بنفس الطريقة التي سيفعلها تحديث من Google Play.`,
+    },
   ],
   'hi': [
     {
@@ -1786,6 +1926,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     {
       title: '13. संपर्क',
       body: `इस नीति से जुड़े सवाल: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. ऐप के नए वर्शन की जाँच करना',
+      body: `Google Play वह तरीका नहीं है जिससे यह ऐप आपके Android फ़ोन तक पहुँचता है। इसे इसके बजाय chatterbox.app से डाउनलोड किया जाता है, और जो स्टोर इस प्रक्रिया में शामिल नहीं है वह आपकी ओर से अपडेट की जाँच नहीं कर सकता — इसलिए अगर आप कहें तो यह ऐप खुद ऐसा कर सकता है।
+
+"अभी जाँच करें" पर टैप करने से chatterbox.app को एक अनुरोध भेजा जाता है, यह पूछते हुए कि मौजूदा वर्शन क्या है। उस अनुरोध में सिर्फ़ आपका IP पता होता है, और कुछ नहीं — न कोई खाता, न डिवाइस पहचानकर्ता, न कोई संदेश। जो वापस आता है वह एक वर्शन नंबर है, जिसकी तुलना आपके फ़ोन पर आपके चल रहे वर्शन से की जाती है; कुछ भी अपने आप डाउनलोड नहीं होता, और इस जाँच के बारे में कुछ भी बातचीत में नहीं लिखा जाता।
+
+इसका कोई स्विच नहीं है क्योंकि बंद करने के लिए कुछ है ही नहीं: यह केवल टैप करने पर चलता है, अन्यथा नहीं।
+
+अगर आप अपडेट इंस्टॉल करते हैं, तो यह उसी साइनिंग की का उपयोग करके ऐप को उसी जगह बदल देता है, ठीक वैसे ही जैसे Google Play से आया अपडेट करता।`,
     },
   ],
 
@@ -1904,6 +2054,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '13. تماس',
       body: `سؤالات دربارهٔ این سیاست: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. بررسی نسخهٔ جدیدتر برنامه',
+      body: `Google Play راهی نیست که این برنامه از طریق آن به گوشی اندرویدی شما می‌رسد. این برنامه در عوض از chatterbox.app دانلود می‌شود، و فروشگاهی که در این چرخه نیست نمی‌تواند از طرف شما به‌روزرسانی‌ها را بررسی کند — پس این برنامه می‌تواند این کار را انجام دهد، اگر از آن بخواهید.
+
+ضربه زدن روی «اکنون بررسی کن» یک درخواست به chatterbox.app می‌فرستد که می‌پرسد نسخهٔ فعلی چیست. آن درخواست فقط آدرس IP شما را حمل می‌کند و چیز دیگری نه — نه حساب کاربری، نه شناسهٔ دستگاه، نه پیام. آنچه برمی‌گردد یک شمارهٔ نسخه است که روی گوشی شما با نسخه‌ای که در حال اجراست مقایسه می‌شود؛ هیچ‌چیز به‌طور خودکار دانلود نمی‌شود و هیچ‌چیز دربارهٔ این بررسی در گفتگو نوشته نمی‌شود.
+
+این کار کلیدی ندارد، چون چیزی برای خاموش کردن وجود ندارد: فقط با ضربه زدن اجرا می‌شود و نه به شکل دیگری.
+
+اگر به‌روزرسانی را نصب کنید، برنامه را در جای خود با همان کلید امضا جایگزین می‌کند، درست همان‌طور که یک به‌روزرسانی از Google Play این کار را می‌کرد.`,
+    },
   ],
 
   he: [
@@ -2020,6 +2180,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
     {
       title: '13. יצירת קשר',
       body: `שאלות על מדיניות זו: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. בדיקת גרסה חדשה יותר של האפליקציה',
+      body: `Google Play אינו הדרך שבה האפליקציה הזו מגיעה לטלפון האנדרואיד שלכם. היא מורדת במקום זאת מ-chatterbox.app, וחנות שאינה שותפה לתהליך אינה יכולה לבדוק עדכונים בשמכם — ולכן האפליקציה יכולה לעשות זאת בעצמה, אם תבקשו זאת.
+
+הקשה על "בדקו עכשיו" שולחת בקשה אחת ל-chatterbox.app ושואלת מהי הגרסה הנוכחית. הבקשה הזו נושאת רק את כתובת ה-IP שלכם ולא כלום מעבר לכך — לא חשבון, לא מזהה מכשיר, לא הודעה. מה שחוזר הוא מספר גרסה, שמושווה בטלפון שלכם לגרסה שבה אתם משתמשים; שום דבר לא מורד אוטומטית, ושום דבר על הבדיקה הזו לא נכתב לשיחה.
+
+לפעולה הזו אין מתג, כי אין מה לכבות: היא פועלת רק בהקשה ולא בדרך אחרת.
+
+אם תתקינו את העדכון, הוא יחליף את האפליקציה במקומה באמצעות אותו מפתח חתימה, בדיוק כפי שהיה עושה עדכון מ-Google Play.`,
     },
   ],
 
@@ -2138,6 +2308,16 @@ Nếu bạn muốn chúng tôi xoá thứ gì đó thủ công, hãy viết cho 
       title: '13. رابطہ',
       body: `اس پالیسی کے بارے میں سوالات: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. ایپ کے نئے ورژن کی جانچ کرنا',
+      body: `Google Play وہ طریقہ نہیں ہے جس سے یہ ایپ آپ کے اینڈرائیڈ فون تک پہنچتی ہے۔ یہ اس کے بجائے chatterbox.app سے ڈاؤن لوڈ کی جاتی ہے، اور جو اسٹور اس عمل کا حصہ نہیں ہے وہ آپ کی جانب سے اپ ڈیٹس چیک نہیں کر سکتا — اس لیے اگر آپ کہیں تو یہ ایپ خود ایسا کر سکتی ہے۔
+
+"ابھی چیک کریں" پر ٹیپ کرنے سے chatterbox.app کو ایک درخواست بھیجی جاتی ہے جو پوچھتی ہے کہ موجودہ ورژن کیا ہے۔ اس درخواست میں صرف آپ کا IP ایڈریس ہوتا ہے اور کچھ نہیں — نہ اکاؤنٹ، نہ ڈیوائس شناخت کنندہ، نہ پیغام۔ جو واپس آتا ہے وہ ایک ورژن نمبر ہے، جس کا موازنہ آپ کے فون پر چل رہے ورژن سے کیا جاتا ہے؛ کچھ بھی خودکار طور پر ڈاؤن لوڈ نہیں ہوتا، اور اس جانچ کے بارے میں کچھ بھی گفتگو میں نہیں لکھا جاتا۔
+
+اس کا کوئی سوئچ نہیں ہے کیونکہ بند کرنے کے لیے کچھ ہے ہی نہیں: یہ صرف ٹیپ کرنے پر چلتا ہے اور کسی اور طرح نہیں۔
+
+اگر آپ اپ ڈیٹ انسٹال کرتے ہیں، تو یہ اسی سائننگ کی کا استعمال کرتے ہوئے ایپ کو اسی جگہ تبدیل کر دیتا ہے، بالکل ویسے ہی جیسے Google Play کا اپ ڈیٹ کرتا۔`,
+    },
   ],
 
   pl: [
@@ -2254,6 +2434,16 @@ Jeśli wolisz, abyśmy coś usunęli ręcznie, napisz do nas.`,
     {
       title: '13. Kontakt',
       body: `Pytania dotyczące tej polityki: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Sprawdzanie nowszej wersji aplikacji',
+      body: `Google Play nie jest sposobem, w jaki ta aplikacja trafia na Twój telefon z Androidem. Zamiast tego jest pobierana z chatterbox.app, a sklep, który nie jest częścią tego procesu, nie może sprawdzać aktualizacji w Twoim imieniu — więc ta aplikacja może to zrobić sama, jeśli o to poprosisz.
+
+Dotknięcie „Sprawdź teraz" wysyła jedno zapytanie do chatterbox.app z pytaniem, jaka wersja jest aktualna. To zapytanie niesie tylko Twój adres IP i nic więcej — żadnego konta, żadnego identyfikatora urządzenia, żadnej wiadomości. To, co wraca, to numer wersji, porównywany na Twoim telefonie z wersją, której używasz; nic nie jest pobierane automatycznie, a nic z tego sprawdzenia nie jest zapisywane w rozmowie.
+
+To nie ma przełącznika, bo nie ma czego wyłączać: działa tylko po dotknięciu i w żaden inny sposób.
+
+Jeśli zainstalujesz aktualizację, zastąpi ona aplikację w tym samym miejscu, używając tego samego klucza podpisu — tak samo, jak zrobiłaby to aktualizacja z Google Play.`,
     },
   ],
 
@@ -2372,6 +2562,16 @@ Jeśli wolisz, abyśmy coś usunęli ręcznie, napisz do nas.`,
       title: '13. Контакти',
       body: `Питання щодо цієї політики: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Перевірка новішої версії застосунку',
+      body: `Google Play — це не той спосіб, яким цей застосунок потрапляє на ваш телефон Android. Натомість він завантажується з chatterbox.app, а магазин, який не бере участі в цьому процесі, не може перевіряти оновлення від вашого імені — тож це може робити сам застосунок, якщо ви попросите.
+
+Натискання «Перевірити зараз» надсилає один запит до chatterbox.app із запитанням, яка версія є актуальною. Цей запит містить лише вашу IP-адресу і більше нічого — жодного облікового запису, жодного ідентифікатора пристрою, жодного повідомлення. У відповідь приходить номер версії, який порівнюється на вашому телефоні з версією, яку ви використовуєте; нічого не завантажується автоматично, і нічого про цю перевірку не записується в розмову.
+
+У цього немає перемикача, бо нічого вимикати: це виконується лише при натисканні і ніяк інакше.
+
+Якщо ви встановите оновлення, воно замінить застосунок на місці, використовуючи той самий ключ підпису — так само, як це зробило б оновлення з Google Play.`,
+    },
   ],
 
   id: [
@@ -2488,6 +2688,16 @@ Jika Anda lebih suka kami menghapus sesuatu secara manual, tulis kepada kami.`,
     {
       title: '13. Kontak',
       body: `Pertanyaan tentang kebijakan ini: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Memeriksa versi aplikasi yang lebih baru',
+      body: `Google Play bukan cara aplikasi ini sampai ke ponsel Android Anda. Aplikasi ini diunduh dari chatterbox.app, dan toko yang tidak dilibatkan tidak dapat memeriksa pembaruan atas nama Anda — jadi aplikasi ini bisa melakukannya sendiri, jika Anda memintanya.
+
+Mengetuk "Periksa sekarang" mengirim satu permintaan ke chatterbox.app yang menanyakan versi mana yang terbaru. Permintaan itu hanya membawa alamat IP Anda dan tidak ada yang lain — tanpa akun, tanpa pengenal perangkat, tanpa pesan. Yang kembali adalah nomor versi, dibandingkan di ponsel Anda dengan versi yang sedang Anda jalankan; tidak ada yang diunduh secara otomatis, dan tidak ada apa pun tentang pemeriksaan ini yang ditulis ke percakapan.
+
+Ini tidak memiliki sakelar karena tidak ada yang perlu dimatikan: ini hanya berjalan saat diketuk dan tidak dengan cara lain.
+
+Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggunakan kunci penandatanganan yang sama, sama seperti yang akan dilakukan pembaruan dari Google Play.`,
     },
   ],
 
@@ -2606,6 +2816,16 @@ Jika Anda lebih suka kami menghapus sesuatu secara manual, tulis kepada kami.`,
       title: '13. যোগাযোগ',
       body: `এই নীতি সম্পর্কে প্রশ্ন: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. অ্যাপের নতুন সংস্করণ পরীক্ষা করা',
+      body: `Google Play এই অ্যাপটি আপনার Android ফোনে পৌঁছানোর উপায় নয়। এটি পরিবর্তে chatterbox.app থেকে ডাউনলোড করা হয়, এবং যে স্টোর এই প্রক্রিয়ার অংশ নয় তা আপনার পক্ষ থেকে আপডেট পরীক্ষা করতে পারে না — তাই আপনি চাইলে এই অ্যাপ নিজেই এটি করতে পারে।
+
+"এখনই পরীক্ষা করুন"-এ ট্যাপ করলে chatterbox.app-এ একটি অনুরোধ পাঠানো হয়, যা জিজ্ঞাসা করে বর্তমান সংস্করণ কোনটি। সেই অনুরোধে শুধু আপনার IP ঠিকানা থাকে, আর কিছু নয় — কোনো অ্যাকাউন্ট নয়, ডিভাইস শনাক্তকারী নয়, বার্তা নয়। যা ফিরে আসে তা একটি সংস্করণ নম্বর, যা আপনার ফোনে চলমান সংস্করণের সাথে তুলনা করা হয়; কিছুই স্বয়ংক্রিয়ভাবে ডাউনলোড হয় না, এবং এই পরীক্ষা সম্পর্কে কিছুই কথোপকথনে লেখা হয় না।
+
+এর কোনো সুইচ নেই কারণ বন্ধ করার মতো কিছু নেই: এটি শুধুমাত্র ট্যাপ করলেই চলে, অন্যথায় নয়।
+
+আপনি যদি আপডেট ইনস্টল করেন, তাহলে এটি একই সাইনিং কী ব্যবহার করে অ্যাপটিকে তার জায়গায় প্রতিস্থাপন করে, ঠিক যেমনটি Google Play থেকে একটি আপডেট করত।`,
+    },
   ],
 
   th: [
@@ -2722,6 +2942,16 @@ Jika Anda lebih suka kami menghapus sesuatu secara manual, tulis kepada kami.`,
     {
       title: '13. ติดต่อ',
       body: `คำถามเกี่ยวกับนโยบายนี้: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. การตรวจสอบเวอร์ชันแอปใหม่กว่า',
+      body: `Google Play ไม่ใช่วิธีที่แอปนี้เข้าถึงโทรศัพท์ Android ของคุณ แต่ดาวน์โหลดจาก chatterbox.app แทน และร้านค้าที่ไม่ได้อยู่ในวงจรนี้ไม่สามารถตรวจสอบการอัปเดตแทนคุณได้ — ดังนั้นแอปนี้จึงทำได้เอง หากคุณขอให้ทำ
+
+การแตะ "ตรวจสอบตอนนี้" จะส่งคำขอหนึ่งครั้งไปยัง chatterbox.app เพื่อถามว่าเวอร์ชันปัจจุบันคืออะไร คำขอนั้นมีเพียงที่อยู่ IP ของคุณเท่านั้น ไม่มีอะไรอื่น — ไม่มีบัญชี ไม่มีตัวระบุอุปกรณ์ ไม่มีข้อความ สิ่งที่ส่งกลับมาคือหมายเลขเวอร์ชัน ซึ่งจะถูกเปรียบเทียบบนโทรศัพท์ของคุณกับเวอร์ชันที่คุณกำลังใช้งานอยู่ ไม่มีอะไรถูกดาวน์โหลดโดยอัตโนมัติ และไม่มีสิ่งใดเกี่ยวกับการตรวจสอบนี้ถูกเขียนลงในบทสนทนา
+
+สิ่งนี้ไม่มีสวิตช์เพราะไม่มีอะไรให้ปิด: มันทำงานเมื่อแตะเท่านั้น ไม่ใช่วิธีอื่น
+
+หากคุณติดตั้งการอัปเดต มันจะแทนที่แอปในตำแหน่งเดิมโดยใช้คีย์การลงนามเดียวกัน เช่นเดียวกับที่การอัปเดตจาก Google Play จะทำ`,
     },
   ],
 
@@ -2840,6 +3070,16 @@ Kung mas gugustuhin mong burahin namin nang manu-mano ang isang bagay, sumulat s
       title: '13. Contact',
       body: `Mga tanong tungkol sa patakarang ito: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Pagtingin kung may mas bagong bersyon ng app',
+      body: `Hindi Google Play ang paraan kung paano nakakarating ang app na ito sa iyong Android phone. Dini-download ito mula sa chatterbox.app sa halip, at ang isang store na wala sa loop ay hindi makakapag-check ng mga update para sa iyo — kaya kaya itong gawin mismo ng app na ito, kung hihilingin mo.
+
+Ang pag-tap sa "Tingnan ngayon" ay nagpapadala ng isang kahilingan sa chatterbox.app na nagtatanong kung ano ang kasalukuyang bersyon. Ang kahilingang iyon ay may dalang IP address mo lamang at wala nang iba — walang account, walang device identifier, walang mensahe. Ang bumabalik ay isang numero ng bersyon, na inihahambing sa iyong telepono sa bersyong pinapatakbo mo; walang awtomatikong dina-download, at walang anuman tungkol sa pagsusuring ito ang isinusulat sa usapan.
+
+Walang switch dito dahil walang dapat i-off: tumatakbo lamang ito kapag na-tap, at hindi sa ibang paraan.
+
+Kapag na-install mo ang update, papalitan nito ang app sa kasalukuyang lugar gamit ang parehong signing key, kagaya ng gagawin ng update mula sa Google Play.`,
+    },
   ],
 
   ms: [
@@ -2956,6 +3196,16 @@ Jika anda lebih suka kami memadamkan sesuatu secara manual, tulis kepada kami.`,
     {
       title: '13. Hubungi',
       body: `Soalan mengenai dasar ini: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Menyemak versi aplikasi yang lebih baharu',
+      body: `Google Play bukanlah cara aplikasi ini sampai ke telefon Android anda. Sebaliknya ia dimuat turun daripada chatterbox.app, dan kedai yang tidak terlibat dalam proses ini tidak dapat menyemak kemas kini bagi pihak anda — jadi aplikasi ini boleh melakukannya sendiri, jika anda memintanya.
+
+Mengetik "Semak sekarang" menghantar satu permintaan ke chatterbox.app untuk bertanya versi mana yang terkini. Permintaan itu hanya membawa alamat IP anda dan tiada apa-apa lagi — tiada akaun, tiada pengecam peranti, tiada mesej. Yang kembali ialah nombor versi, dibandingkan pada telefon anda dengan versi yang sedang anda gunakan; tiada apa-apa dimuat turun secara automatik, dan tiada apa-apa mengenai semakan ini ditulis ke dalam perbualan.
+
+Ini tiada suis kerana tiada apa-apa untuk dimatikan: ia hanya berjalan apabila diketik dan tidak dengan cara lain.
+
+Jika anda memasang kemas kini itu, ia akan menggantikan aplikasi di tempatnya menggunakan kunci tandatangan yang sama, sama seperti kemas kini daripada Google Play akan lakukan.`,
     },
   ],
 
@@ -3074,6 +3324,16 @@ Notifications များတွင် message စာသား မပါဝင�
       title: '13. ဆက်သွယ်ရန်',
       body: `ဤမူဝါဒနှင့်ပတ်သက်သည့် မေးခွန်းများ— ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. ပိုမိုအသစ်သော အက်ပ်ဗားရှင်းကို စစ်ဆေးခြင်း',
+      body: `Google Play သည် ဤအက်ပ်ကို သင့် Android ဖုန်းသို့ ရောက်ရှိစေသည့် နည်းလမ်းမဟုတ်ပါ။ ၎င်းကို chatterbox.app မှ ဒေါင်းလုဒ်လုပ်ရသည်၊ ထို့ပြင် ဤလုပ်ငန်းစဉ်တွင် မပါဝင်သော စတိုးသည် သင့်ကိုယ်စား အပ်ဒိတ်များကို စစ်ဆေးပေးနိုင်မည်မဟုတ်ပါ — ထို့ကြောင့် သင်တောင်းဆိုပါက ဤအက်ပ်ကိုယ်တိုင် ၎င်းကို လုပ်ဆောင်နိုင်ပါသည်။
+
+"ယခုစစ်ဆေးရန်" ကို တို့ခြင်းက လက်ရှိဗားရှင်းမှာ မည်သည်ဖြစ်သည်ကို မေးမြန်းသည့် တောင်းဆိုချက်တစ်ခုကို chatterbox.app သို့ ပေးပို့ပါသည်။ ထိုတောင်းဆိုချက်တွင် သင့် IP လိပ်စာသာ ပါဝင်ပြီး အခြားမည်သည့်အရာမျှ မပါဝင်ပါ — အကောင့်မရှိ၊ စက်ပစ္စည်းအမှတ်အသားမရှိ၊ မက်ဆေ့ခ်ျမရှိပါ။ ပြန်လာသည်မှာ ဗားရှင်းနံပါတ်တစ်ခုဖြစ်ပြီး သင့်ဖုန်းပေါ်တွင် လက်ရှိအသုံးပြုနေသောဗားရှင်းနှင့် နှိုင်းယှဉ်ပါသည်၊ မည်သည့်အရာမျှ အလိုအလျောက် ဒေါင်းလုဒ်မလုပ်ပါ၊ ထို့ပြင် ဤစစ်ဆေးမှုနှင့်ပတ်သက်၍ မည်သည့်အရာမျှ စကားဝိုင်းထဲသို့ မရေးမှတ်ပါ။
+
+ဤအရာတွင် ခလုတ်မရှိပါ၊ အဘယ်ကြောင့်ဆိုသော် ပိတ်ရန် မည်သည့်အရာမျှ မရှိသောကြောင့်ဖြစ်သည်— ၎င်းသည် တို့သောအခါတွင်သာ လုပ်ဆောင်ပြီး အခြားနည်းဖြင့် မလုပ်ဆောင်ပါ။
+
+အပ်ဒိတ်ကို သွင်းပါက ၎င်းသည် တူညီသောလက်မှတ်ရေးထိုးသောသော့ကို အသုံးပြု၍ အက်ပ်ကို ၎င်း၏နေရာတွင် အစားထိုးလိမ့်မည်၊ Google Play မှ အပ်ဒိတ်တစ်ခုကဲ့သို့ပင်ဖြစ်သည်။`,
+    },
   ],
 
   km: [
@@ -3190,6 +3450,16 @@ Notifications များတွင် message စာသား မပါဝင�
     {
       title: '13. ទំនាក់ទំនង',
       body: `សំណួរអំពីគោលការណ៍នេះ៖ ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. ការពិនិត្យរកកំណែកម្មវិធីថ្មីជាង',
+      body: `Google Play មិនមែនជាមធ្យោបាយដែលកម្មវិធីនេះមកដល់ទូរស័ព្ទ Android របស់អ្នកទេ។ វាត្រូវបានទាញយកពី chatterbox.app ជំនួសវិញ ហើយហាងដែលមិនបានចូលរួមក្នុងដំណើរការនេះមិនអាចពិនិត្យរកកំណែថ្មីជំនួសអ្នកបានទេ — ដូច្នេះកម្មវិធីនេះអាចធ្វើវាដោយខ្លួនឯង ប្រសិនបើអ្នកស្នើសុំ។
+
+ការចុច "ពិនិត្យឥឡូវនេះ" នឹងផ្ញើសំណើមួយទៅ chatterbox.app សួរថាតើកំណែបច្ចុប្បន្នគឺជាអ្វី។ សំណើនោះមានតែអាសយដ្ឋាន IP របស់អ្នកប៉ុណ្ណោះ និងគ្មានអ្វីផ្សេងទៀត — គ្មានគណនី គ្មានលេខសម្គាល់ឧបករណ៍ គ្មានសារ។ អ្វីដែលត្រឡប់មកវិញគឺជាលេខកំណែមួយ ដែលត្រូវបានប្រៀបធៀបនៅលើទូរស័ព្ទរបស់អ្នកជាមួយនឹងកំណែដែលអ្នកកំពុងដំណើរការ។ គ្មានអ្វីត្រូវបានទាញយកដោយស្វ័យប្រវត្តិទេ ហើយគ្មានអ្វីអំពីការពិនិត្យនេះត្រូវបានសរសេរទៅក្នុងការសន្ទនាទេ។
+
+លក្ខណៈនេះមិនមានកុងតាក់ទេ ព្រោះគ្មានអ្វីត្រូវបិទ៖ វាដំណើរការតែពេលចុចប៉ុណ្ណោះ មិនមែនតាមមធ្យោបាយផ្សេងទេ។
+
+ប្រសិនបើអ្នកដំឡើងកំណែថ្មី វានឹងជំនួសកម្មវិធីនៅកន្លែងដដែលដោយប្រើសោហត្ថលេខាដូចគ្នា ដូចជាការធ្វើបច្ចុប្បន្នភាពពី Google Play ដែរ។`,
     },
   ],
 
@@ -3308,6 +3578,16 @@ Notifications များတွင် message စာသား မပါဝင�
       title: '13. ຕິດຕໍ່',
       body: `ຄຳຖາມກ່ຽວກັບນະໂຍບາຍນີ້: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. ກວດສອບເວີຊັນແອັບໃໝ່ກວ່າ',
+      body: `Google Play ບໍ່ແມ່ນວິທີທີ່ແອັບນີ້ມາເຖິງໂທລະສັບ Android ຂອງທ່ານ. ມັນຖືກດາວໂຫຼດຈາກ chatterbox.app ແທນ, ແລະຮ້ານຄ້າທີ່ບໍ່ໄດ້ຢູ່ໃນຂະບວນການນີ້ບໍ່ສາມາດກວດສອບການອັບເດດແທນທ່ານໄດ້ — ສະນັ້ນແອັບນີ້ຈຶ່ງສາມາດເຮັດແນວນັ້ນເອງໄດ້, ຖ້າທ່ານຂໍໃຫ້ມັນເຮັດ.
+
+ການແຕະ "ກວດສອບດຽວນີ້" ຈະສົ່ງຄຳຮ້ອງຂໍໜຶ່ງໄປຫາ chatterbox.app ເພື່ອຖາມວ່າເວີຊັນປັດຈຸບັນແມ່ນຫຍັງ. ຄຳຮ້ອງຂໍນັ້ນມີພຽງທີ່ຢູ່ IP ຂອງທ່ານເທົ່ານັ້ນ ແລະບໍ່ມີຫຍັງອື່ນອີກ — ບໍ່ມີບັນຊີ, ບໍ່ມີຕົວລະບຸອຸປະກອນ, ບໍ່ມີຂໍ້ຄວາມ. ສິ່ງທີ່ກັບຄືນມາແມ່ນເລກເວີຊັນ, ຖືກປຽບທຽບຢູ່ໃນໂທລະສັບຂອງທ່ານກັບເວີຊັນທີ່ທ່ານກຳລັງໃຊ້ຢູ່; ບໍ່ມີຫຍັງຖືກດາວໂຫຼດອັດຕະໂນມັດ, ແລະບໍ່ມີຫຍັງກ່ຽວກັບການກວດສອບນີ້ຖືກຂຽນລົງໃນການສົນທະນາ.
+
+ນີ້ບໍ່ມີສະວິດ ເພາະບໍ່ມີຫຍັງໃຫ້ປິດ: ມັນເຮັດວຽກສະເພາະເມື່ອແຕະເທົ່ານັ້ນ ແລະບໍ່ແມ່ນວິທີອື່ນ.
+
+ຖ້າທ່ານຕິດຕັ້ງການອັບເດດ, ມັນຈະແທນທີ່ແອັບຢູ່ບ່ອນເກົ່າໂດຍໃຊ້ກະແຈລາຍເຊັນດຽວກັນ, ຄືກັນກັບການອັບເດດຈາກ Google Play ຈະເຮັດ.`,
+    },
   ],
 
   ta: [
@@ -3424,6 +3704,16 @@ Notifications များတွင် message စာသား မပါဝင�
     {
       title: '13. தொடர்பு',
       body: `இந்தக் கொள்கை பற்றிய கேள்விகள்: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. புதிய ஆப் பதிப்பைச் சரிபார்த்தல்',
+      body: `இந்த ஆப் உங்கள் Android தொலைபேசியை அடையும் வழி Google Play அல்ல. அதற்குப் பதிலாக இது chatterbox.app இலிருந்து பதிவிறக்கம் செய்யப்படுகிறது, மேலும் இந்த செயல்முறையில் இல்லாத ஒரு கடை உங்களுக்காக புதுப்பிப்புகளை சரிபார்க்க முடியாது — எனவே நீங்கள் கேட்டால் இந்த ஆப் தானாகவே அதைச் செய்யலாம்.
+
+"இப்போது சரிபார்" என்பதைத் தட்டுவது தற்போதைய பதிப்பு என்ன என்று கேட்டு chatterbox.app-க்கு ஒரு கோரிக்கையை அனுப்புகிறது. அந்த கோரிக்கை உங்கள் IP முகவரியை மட்டுமே கொண்டுள்ளது, வேறு எதுவும் இல்லை — கணக்கு இல்லை, சாதன அடையாளங்காட்டி இல்லை, செய்தி இல்லை. திரும்பி வருவது ஒரு பதிப்பு எண், இது உங்கள் தொலைபேசியில் நீங்கள் இயக்கும் பதிப்புடன் ஒப்பிடப்படுகிறது; எதுவும் தானாக பதிவிறக்கம் செய்யப்படாது, மேலும் இந்த சரிபார்ப்பு பற்றி எதுவும் உரையாடலில் எழுதப்படாது.
+
+இதற்கு ஸ்விட்ச் இல்லை, ஏனெனில் அணைக்க எதுவும் இல்லை: இது தட்டும்போது மட்டுமே இயங்குகிறது, வேறு வழியில் அல்ல.
+
+நீங்கள் புதுப்பிப்பை நிறுவினால், அது அதே கையொப்பம் விசையைப் பயன்படுத்தி ஆப்பை அதன் இடத்திலேயே மாற்றுகிறது, Google Play இலிருந்து வரும் புதுப்பிப்பு செய்வதைப் போலவே.`,
     },
   ],
 
@@ -3542,6 +3832,16 @@ Notifications များတွင် message စာသား မပါဝင�
       title: '13. సంప్రదించండి',
       body: `ఈ విధానం గురించి ప్రశ్నలు: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. కొత్త యాప్ వెర్షన్ కోసం తనిఖీ చేయడం',
+      body: `ఈ యాప్ మీ Android ఫోన్‌కు చేరుకునే మార్గం Google Play కాదు. బదులుగా ఇది chatterbox.app నుండి డౌన్‌లోడ్ చేయబడుతుంది, మరియు ఈ ప్రక్రియలో లేని స్టోర్ మీ తరపున అప్‌డేట్‌లను తనిఖీ చేయలేదు — కాబట్టి మీరు అడిగితే ఈ యాప్ దానంతట అదే చేయగలదు.
+
+"ఇప్పుడు తనిఖీ చేయండి"ని నొక్కడం ప్రస్తుత వెర్షన్ ఏమిటో అడుగుతూ chatterbox.appకి ఒకే అభ్యర్థనను పంపుతుంది. ఆ అభ్యర్థన మీ IP చిరునామాను మాత్రమే కలిగి ఉంటుంది, మరేమీ లేదు — ఖాతా లేదు, పరికర గుర్తింపు లేదు, సందేశం లేదు. తిరిగి వచ్చేది ఒక వెర్షన్ నంబర్, ఇది మీ ఫోన్‌లో మీరు నడుపుతున్న వెర్షన్‌తో పోల్చబడుతుంది; ఏదీ స్వయంచాలకంగా డౌన్‌లోడ్ కాదు, మరియు ఈ తనిఖీ గురించి ఏదీ సంభాషణలో వ్రాయబడదు.
+
+దీనికి స్విచ్ లేదు ఎందుకంటే ఆఫ్ చేయడానికి ఏమీ లేదు: ఇది నొక్కినప్పుడు మాత్రమే నడుస్తుంది, మరే విధంగానూ కాదు.
+
+మీరు అప్‌డేట్‌ను ఇన్‌స్టాల్ చేస్తే, అది అదే సంతకం కీని ఉపయోగించి యాప్‌ను దాని స్థానంలో భర్తీ చేస్తుంది, Google Play నుండి వచ్చే అప్‌డేట్ చేసినట్లుగానే.`,
+    },
   ],
 
   mr: [
@@ -3658,6 +3958,16 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
     {
       title: '13. संपर्क',
       body: `या धोरणाबद्दल प्रश्न: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. अ‍ॅपची नवीन आवृत्ती तपासणे',
+      body: `हे अ‍ॅप तुमच्या Android फोनपर्यंत पोहोचण्याचा मार्ग Google Play नाही. त्याऐवजी ते chatterbox.app वरून डाउनलोड केले जाते, आणि या प्रक्रियेत सामील नसलेले स्टोअर तुमच्या वतीने अद्यतने तपासू शकत नाही — म्हणून जर तुम्ही विचारले तर हे अ‍ॅप स्वतः हे करू शकते.
+
+"आता तपासा" वर टॅप केल्याने सध्याची आवृत्ती कोणती आहे हे विचारणारी एक विनंती chatterbox.app ला पाठवली जाते. त्या विनंतीमध्ये फक्त तुमचा IP पत्ता असतो, आणखी काहीही नाही — खाते नाही, डिव्हाइस ओळखकर्ता नाही, संदेश नाही. जे परत येते ते एक आवृत्ती क्रमांक आहे, जो तुमच्या फोनवर तुम्ही वापरत असलेल्या आवृत्तीशी तुलना केला जातो; काहीही आपोआप डाउनलोड होत नाही, आणि या तपासणीबद्दल काहीही संभाषणात लिहिले जात नाही.
+
+याला स्विच नाही कारण बंद करण्यासारखे काहीही नाही: हे फक्त टॅप केल्यावरच चालते, अन्यथा नाही.
+
+तुम्ही अद्यतन इंस्टॉल केल्यास, ते त्याच स्वाक्षरी कीचा वापर करून अ‍ॅपला त्याच जागी बदलते, जसे Google Play वरून येणारे अद्यतन करेल त्याचप्रमाणे.`,
     },
   ],
 
@@ -3776,6 +4086,16 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
       title: '13. ਸੰਪਰਕ',
       body: `ਇਸ ਨੀਤੀ ਬਾਰੇ ਸਵਾਲ: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. ਐਪ ਦੇ ਨਵੇਂ ਵਰਜਨ ਦੀ ਜਾਂਚ ਕਰਨਾ',
+      body: `Google Play ਉਹ ਤਰੀਕਾ ਨਹੀਂ ਹੈ ਜਿਸ ਨਾਲ ਇਹ ਐਪ ਤੁਹਾਡੇ Android ਫੋਨ ਤੱਕ ਪਹੁੰਚਦੀ ਹੈ। ਇਹ ਇਸ ਦੀ ਬਜਾਏ chatterbox.app ਤੋਂ ਡਾਊਨਲੋਡ ਕੀਤੀ ਜਾਂਦੀ ਹੈ, ਅਤੇ ਜੋ ਸਟੋਰ ਇਸ ਪ੍ਰਕਿਰਿਆ ਵਿੱਚ ਸ਼ਾਮਲ ਨਹੀਂ ਹੈ ਉਹ ਤੁਹਾਡੀ ਤਰਫ਼ੋਂ ਅੱਪਡੇਟਾਂ ਦੀ ਜਾਂਚ ਨਹੀਂ ਕਰ ਸਕਦਾ — ਇਸ ਲਈ ਜੇ ਤੁਸੀਂ ਕਹੋ ਤਾਂ ਇਹ ਐਪ ਖੁਦ ਇਹ ਕਰ ਸਕਦੀ ਹੈ।
+
+"ਹੁਣੇ ਜਾਂਚ ਕਰੋ" 'ਤੇ ਟੈਪ ਕਰਨ ਨਾਲ chatterbox.app ਨੂੰ ਇੱਕ ਬੇਨਤੀ ਭੇਜੀ ਜਾਂਦੀ ਹੈ ਜੋ ਪੁੱਛਦੀ ਹੈ ਕਿ ਮੌਜੂਦਾ ਵਰਜਨ ਕੀ ਹੈ। ਉਸ ਬੇਨਤੀ ਵਿੱਚ ਸਿਰਫ਼ ਤੁਹਾਡਾ IP ਪਤਾ ਹੁੰਦਾ ਹੈ, ਹੋਰ ਕੁਝ ਨਹੀਂ — ਨਾ ਖਾਤਾ, ਨਾ ਡਿਵਾਈਸ ਪਛਾਣਕਰਤਾ, ਨਾ ਸੁਨੇਹਾ। ਜੋ ਵਾਪਸ ਆਉਂਦਾ ਹੈ ਉਹ ਇੱਕ ਵਰਜਨ ਨੰਬਰ ਹੈ, ਜਿਸਦੀ ਤੁਹਾਡੇ ਫੋਨ 'ਤੇ ਤੁਹਾਡੇ ਚੱਲ ਰਹੇ ਵਰਜਨ ਨਾਲ ਤੁਲਨਾ ਕੀਤੀ ਜਾਂਦੀ ਹੈ; ਕੁਝ ਵੀ ਆਪਣੇ ਆਪ ਡਾਊਨਲੋਡ ਨਹੀਂ ਹੁੰਦਾ, ਅਤੇ ਇਸ ਜਾਂਚ ਬਾਰੇ ਕੁਝ ਵੀ ਗੱਲਬਾਤ ਵਿੱਚ ਨਹੀਂ ਲਿਖਿਆ ਜਾਂਦਾ।
+
+ਇਸਦਾ ਕੋਈ ਸਵਿੱਚ ਨਹੀਂ ਹੈ ਕਿਉਂਕਿ ਬੰਦ ਕਰਨ ਲਈ ਕੁਝ ਹੈ ਹੀ ਨਹੀਂ: ਇਹ ਸਿਰਫ਼ ਟੈਪ ਕਰਨ 'ਤੇ ਚੱਲਦਾ ਹੈ, ਹੋਰ ਕਿਸੇ ਤਰੀਕੇ ਨਾਲ ਨਹੀਂ।
+
+ਜੇ ਤੁਸੀਂ ਅੱਪਡੇਟ ਇੰਸਟਾਲ ਕਰਦੇ ਹੋ, ਤਾਂ ਇਹ ਉਸੇ ਸਾਈਨਿੰਗ ਕੁੰਜੀ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਐਪ ਨੂੰ ਉਸੇ ਥਾਂ 'ਤੇ ਬਦਲ ਦਿੰਦਾ ਹੈ, ਬਿਲਕੁਲ ਜਿਵੇਂ Google Play ਤੋਂ ਆਇਆ ਅੱਪਡੇਟ ਕਰੇਗਾ।`,
+    },
   ],
 
   ne: [
@@ -3892,6 +4212,16 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
     {
       title: '13. सम्पर्क',
       body: `यो नीतिको बारेमा प्रश्नहरू: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. नयाँ एप संस्करण जाँच गर्दै',
+      body: `Google Play यो एप तपाईंको Android फोनमा आइपुग्ने तरिका होइन। यो सट्टामा chatterbox.app बाट डाउनलोड गरिन्छ, र यस प्रक्रियामा सामेल नभएको पसलले तपाईंको तर्फबाट अद्यावधिकहरू जाँच गर्न सक्दैन — त्यसैले तपाईंले सोध्नुभयो भने यो एपले आफैं यो गर्न सक्छ।
+
+"अहिले जाँच गर्नुहोस्" मा ट्याप गर्दा हालको संस्करण के हो भनेर सोध्दै chatterbox.app मा एउटा अनुरोध पठाइन्छ। त्यो अनुरोधमा तपाईंको IP ठेगाना मात्र हुन्छ, अरू केही होइन — कुनै खाता होइन, कुनै उपकरण पहिचायक होइन, कुनै सन्देश होइन। फर्कने कुरा एउटा संस्करण नम्बर हो, जुन तपाईंको फोनमा तपाईंले चलाइरहनुभएको संस्करणसँग तुलना गरिन्छ; केही पनि स्वचालित रूपमा डाउनलोड हुँदैन, र यस जाँचको बारेमा केही पनि कुराकानीमा लेखिँदैन।
+
+यसको कुनै स्विच छैन किनभने बन्द गर्नको लागि केही छैन: यो ट्याप गर्दा मात्र चल्छ, अरू कुनै तरिकाले होइन।
+
+तपाईंले अद्यावधिक स्थापना गर्नुभयो भने, यसले उही साइनिङ कुञ्जी प्रयोग गरेर एपलाई त्यसको ठाउँमा बदल्छ, ठ्याक्कै Google Play बाटको अद्यावधिकले गर्ने गरे जस्तै।`,
     },
   ],
 
@@ -4010,6 +4340,16 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
       title: '13. සම්බන්ධතාවය',
       body: `මෙම ප්‍රතිපත්තිය පිළිබඳ ප්‍රශ්න: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. නවතර යෙදුම් අනුවාදයක් සඳහා පරීක්ෂා කිරීම',
+      body: `මෙම යෙදුම ඔබේ Android දුරකථනයට ළඟා වන ක්‍රමය Google Play නොවේ. ඒ වෙනුවට එය chatterbox.app වෙතින් බාගත කෙරේ, තවද මෙම ක්‍රියාවලියට සම්බන්ධ නොවන වෙළඳසැලකට ඔබ වෙනුවෙන් යාවත්කාලීන පරීක්ෂා කළ නොහැක — එබැවින් ඔබ ඉල්ලා සිටියහොත් මෙම යෙදුමට එය තනිවම කළ හැකිය.
+
+"දැන් පරීක්ෂා කරන්න" ස්පර්ශ කිරීමෙන් වත්මන් අනුවාදය කුමක්දැයි විමසමින් chatterbox.app වෙත එක් ඉල්ලීමක් යවනු ලැබේ. එම ඉල්ලීමේ ඇත්තේ ඔබේ IP ලිපිනය පමණි, වෙන කිසිවක් නැත — ගිණුමක් නැත, උපාංග හඳුනාගැනීමක් නැත, පණිවිඩයක් නැත. ආපසු එන්නේ අනුවාද අංකයකි, එය ඔබේ දුරකථනයේ ඔබ ධාවනය කරන අනුවාදය සමඟ සංසන්දනය කෙරේ; කිසිවක් ස්වයංක්‍රීයව බාගත නොවේ, තවද මෙම පරීක්ෂාව ගැන කිසිවක් සංවාදයට ලියනු නොලැබේ.
+
+මෙයට ස්විචයක් නැත්තේ අක්‍රිය කිරීමට කිසිවක් නොමැති බැවිනි: එය ස්පර්ශ කළ විට පමණක් ක්‍රියාත්මක වන අතර වෙනත් ආකාරයකින් නොවේ.
+
+ඔබ යාවත්කාලීනය ස්ථාපනය කළහොත්, එය එම අත්සන් යතුර භාවිතයෙන් යෙදුම එහි ස්ථානයේම ප්‍රතිස්ථාපනය කරයි, Google Play වෙතින් එන යාවත්කාලීනයක් කරන ආකාරයටම.`,
+    },
   ],
 
   sw: [
@@ -4126,6 +4466,16 @@ Ikiwa ungependa tufute kitu kwa mkono, tuandikie.`,
     {
       title: '13. Mawasiliano',
       body: `Maswali kuhusu sera hii: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Kuangalia toleo jipya zaidi la programu',
+      body: `Google Play si njia ambayo programu hii inafikia simu yako ya Android. Badala yake inapakuliwa kutoka chatterbox.app, na duka ambalo halihusiki katika mchakato huu haliwezi kuangalia masasisho kwa niaba yako — hivyo programu hii inaweza kufanya hivyo yenyewe, ukiiomba.
+
+Kugusa "Angalia sasa" hutuma ombi moja kwa chatterbox.app kuuliza ni toleo lipi la sasa. Ombi hilo linabeba tu anwani yako ya IP na hakuna kingine — hakuna akaunti, hakuna kitambulisho cha kifaa, hakuna ujumbe. Kinachorudi ni nambari ya toleo, inayolinganishwa kwenye simu yako na toleo unalotumia; hakuna kinachopakuliwa kiotomatiki, na hakuna kinachohusiana na uangalizi huu kinachoandikwa kwenye mazungumzo.
+
+Hii haina swichi kwa sababu hakuna kitu cha kuzima: inafanya kazi tu unapogusa, na si kwa njia nyingine.
+
+Ukisakinisha sasisho, litabadilisha programu mahali pake kwa kutumia funguo ile ile ya sahihi, kama vile sasisho kutoka Google Play lingefanya.`,
     },
   ],
 
@@ -4244,6 +4594,16 @@ Idan kana son mu share wani abu da hannu, rubuto mana.`,
       title: '13. Tuntuɓi',
       body: `Tambayoyi game da wannan manufa: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Duba sabon sigar app',
+      body: `Google Play ba shine hanyar da wannan app ke isa wayarka ta Android ba. Ana sauke shi daga chatterbox.app maimakon haka, kuma kantin da ba ya cikin wannan tsari ba zai iya duba sabuntawa a madadinka ba — don haka wannan app zai iya yin hakan da kansa, idan ka nema.
+
+Danna "Duba yanzu" yana aika buƙata ɗaya zuwa chatterbox.app yana tambaya wanne sigar ne na yanzu. Wannan buƙatar tana ɗauke da adireshin IP naka kawai, babu wani abu — babu asusu, babu ID na na'ura, babu saƙo. Abin da ke dawowa shine lambar sigar, wanda ake kwatanta a wayarka da sigar da kake amfani da ita; babu abin da ake saukewa ta atomatik, kuma babu wani abu game da wannan dubawa da ake rubutawa a tattaunawar.
+
+Wannan ba shi da sauyawa domin babu abin da za a kashe: yana aiki ne kawai lokacin da aka danna, ba wata hanya ba.
+
+Idan ka shigar da sabuntawar, zai maye gurbin app a wurinsa ta amfani da maɓallin sa hannu iri ɗaya, kamar yadda sabuntawa daga Google Play zai yi.`,
+    },
   ],
 
   am: [
@@ -4360,6 +4720,16 @@ Idan kana son mu share wani abu da hannu, rubuto mana.`,
     {
       title: '13. አግኙን',
       body: `ስለዚህ ፖሊሲ ጥያቄዎች፦ ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. አዲስ የመተግበሪያ ስሪት መፈተሽ',
+      body: `Google Play ይህ መተግበሪያ ወደ Android ስልክዎ የሚደርስበት መንገድ አይደለም። ይልቁንም ከ chatterbox.app ይወርዳል፣ እናም በዚህ ሂደት ውስጥ ያልተካተተ መደብር ስለ እርስዎ ዝማኔዎችን ሊፈትሽ አይችልም — ስለዚህ ከጠየቁት ይህ መተግበሪያ ራሱ ይህን ማድረግ ይችላል።
+
+"አሁን ይፈትሹ" የሚለውን መንካት አሁን ያለው ስሪት ምን እንደሆነ የሚጠይቅ አንድ ጥያቄ ወደ chatterbox.app ይልካል። ያ ጥያቄ የያዘው የእርስዎን IP አድራሻ ብቻ ነው፣ ሌላ ምንም — መለያ የለም፣ የመሣሪያ መለያ የለም፣ መልእክት የለም። የሚመለሰው የስሪት ቁጥር ነው፣ በስልክዎ ላይ እያሄዱት ካለው ስሪት ጋር ይነጻጸራል፤ ምንም በራስ-ሰር አይወርድም፣ እናም ስለዚህ ፍተሻ ምንም ነገር ወደ ውይይቱ አይጻፍም።
+
+ለዚህ መቀየሪያ የለውም ምክንያቱም የሚጠፋ ምንም ነገር የለም፦ የሚሠራው ሲነካ ብቻ ነው፣ በሌላ መንገድ አይደለም።
+
+ዝማኔውን ከጫኑ፣ ተመሳሳይ የፊርማ ቁልፍ በመጠቀም መተግበሪያውን በቦታው ይተካዋል፣ ልክ ከ Google Play የሚመጣ ዝማኔ እንደሚያደርገው።`,
     },
   ],
 
@@ -4478,6 +4848,16 @@ Als je liever hebt dat we iets handmatig verwijderen, schrijf ons dan.`,
       title: '13. Contact',
       body: `Vragen over dit beleid: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Controleren op een nieuwere app-versie',
+      body: `Google Play is niet de manier waarop deze app op je Android-telefoon terechtkomt. Hij wordt in plaats daarvan gedownload van chatterbox.app, en een store die niet in dat proces zit, kan geen updates namens jou controleren — dus deze app kan dat zelf, als je erom vraagt.
+
+Tikken op "Nu controleren" stuurt één verzoek naar chatterbox.app om te vragen welke versie actueel is. Dat verzoek bevat alleen je IP-adres en verder niets — geen account, geen apparaat-ID, geen bericht. Wat terugkomt is een versienummer, dat op je telefoon wordt vergeleken met de versie die je gebruikt; er wordt niets automatisch gedownload, en er wordt niets over deze controle in het gesprek geschreven.
+
+Hier zit geen schakelaar op omdat er niets is om uit te zetten: het draait alleen bij het tikken en niet anders.
+
+Als je de update installeert, vervangt die de app ter plekke met dezelfde ondertekeningssleutel, op dezelfde manier als een update van Google Play zou doen.`,
+    },
   ],
 
   el: [
@@ -4594,6 +4974,16 @@ Als je liever hebt dat we iets handmatig verwijderen, schrijf ons dan.`,
     {
       title: '13. Επικοινωνία',
       body: `Ερωτήσεις σχετικά με αυτή την πολιτική: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Έλεγχος για νεότερη έκδοση της εφαρμογής',
+      body: `Το Google Play δεν είναι ο τρόπος με τον οποίο αυτή η εφαρμογή φτάνει στο Android τηλέφωνό σας. Αντίθετα, κατεβαίνει από το chatterbox.app, και ένα κατάστημα που δεν συμμετέχει σε αυτή τη διαδικασία δεν μπορεί να ελέγξει για ενημερώσεις εκ μέρους σας — έτσι αυτή η εφαρμογή μπορεί να το κάνει η ίδια, αν της το ζητήσετε.
+
+Πατώντας «Έλεγχος τώρα» στέλνεται ένα αίτημα στο chatterbox.app ρωτώντας ποια είναι η τρέχουσα έκδοση. Αυτό το αίτημα μεταφέρει μόνο τη διεύθυνση IP σας και τίποτα άλλο — χωρίς λογαριασμό, χωρίς αναγνωριστικό συσκευής, χωρίς μήνυμα. Αυτό που επιστρέφει είναι ένας αριθμός έκδοσης, ο οποίος συγκρίνεται στο τηλέφωνό σας με την έκδοση που εκτελείτε· τίποτα δεν κατεβαίνει αυτόματα, και τίποτα σχετικό με αυτόν τον έλεγχο δεν γράφεται στη συνομιλία.
+
+Αυτό δεν έχει διακόπτη επειδή δεν υπάρχει τίποτα να απενεργοποιηθεί: εκτελείται μόνο όταν πατηθεί και όχι διαφορετικά.
+
+Αν εγκαταστήσετε την ενημέρωση, αντικαθιστά την εφαρμογή επί τόπου χρησιμοποιώντας το ίδιο κλειδί υπογραφής, όπως ακριβώς θα έκανε μια ενημέρωση από το Google Play.`,
     },
   ],
 
@@ -4712,6 +5102,16 @@ Om du hellre vill att vi raderar något för hand, skriv till oss.`,
       title: '13. Kontakt',
       body: `Frågor om denna policy: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Söka efter en nyare appversion',
+      body: `Google Play är inte det sätt som den här appen når din Android-telefon på. Den laddas i stället ner från chatterbox.app, och en butik som inte är inblandad i processen kan inte söka efter uppdateringar åt dig — så den här appen kan göra det själv, om du ber den.
+
+Att trycka på "Sök nu" skickar en enda förfrågan till chatterbox.app och frågar vilken version som är aktuell. Den förfrågan bär bara med sig din IP-adress och inget annat — inget konto, ingen enhetsidentifierare, inget meddelande. Det som kommer tillbaka är ett versionsnummer, som jämförs på din telefon med versionen du kör; inget laddas ner automatiskt, och inget om denna sökning skrivs till konversationen.
+
+Det här har ingen brytare eftersom det inte finns något att stänga av: det körs bara vid tryck och inte annars.
+
+Om du installerar uppdateringen ersätter den appen på plats med samma signeringsnyckel, precis som en uppdatering från Google Play skulle göra.`,
+    },
   ],
 
   da: [
@@ -4828,6 +5228,16 @@ Hvis du hellere vil have, at vi sletter noget manuelt, så skriv til os.`,
     {
       title: '13. Kontakt',
       body: `Spørgsmål om denne politik: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Søgning efter en nyere app-version',
+      body: `Google Play er ikke den måde, denne app når din Android-telefon på. Den downloades i stedet fra chatterbox.app, og en butik, der ikke er en del af den proces, kan ikke tjekke for opdateringer på dine vegne — så det kan denne app selv gøre, hvis du beder den om det.
+
+Et tryk på "Tjek nu" sender én forespørgsel til chatterbox.app om, hvilken version der er aktuel. Den forespørgsel bærer kun din IP-adresse og intet andet — ingen konto, intet enheds-id, ingen besked. Det, der kommer tilbage, er et versionsnummer, som sammenlignes på din telefon med den version, du kører; intet downloades automatisk, og intet om dette tjek skrives ind i samtalen.
+
+Dette har ingen kontakt, fordi der ikke er noget at slukke for: det kører kun, når der trykkes, og ikke ellers.
+
+Hvis du installerer opdateringen, erstatter den appen på stedet med samme signeringsnøgle, ligesom en opdatering fra Google Play ville gøre.`,
     },
   ],
 
@@ -4946,6 +5356,16 @@ Hvis du heller vil at vi sletter noe manuelt, skriv til oss.`,
       title: '13. Kontakt',
       body: `Spørsmål om denne policyen: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Se etter en nyere appversjon',
+      body: `Google Play er ikke måten denne appen når Android-telefonen din på. Den lastes i stedet ned fra chatterbox.app, og en butikk som ikke er en del av den prosessen, kan ikke se etter oppdateringer på dine vegne — så denne appen kan gjøre det selv, hvis du ber den om det.
+
+Å trykke på "Sjekk nå" sender én forespørsel til chatterbox.app om hvilken versjon som er aktuell. Den forespørselen inneholder bare IP-adressen din og ingenting annet — ingen konto, ingen enhets-ID, ingen melding. Det som kommer tilbake er et versjonsnummer, som sammenlignes på telefonen din med versjonen du kjører; ingenting lastes ned automatisk, og ingenting om denne sjekken skrives inn i samtalen.
+
+Dette har ingen bryter fordi det ikke er noe å slå av: det kjører bare ved trykk og ikke ellers.
+
+Hvis du installerer oppdateringen, erstatter den appen på stedet med samme signeringsnøkkel, akkurat slik en oppdatering fra Google Play ville gjort.`,
+    },
   ],
 
   cs: [
@@ -5063,6 +5483,16 @@ Pokud byste raději, abychom něco smazali ručně, napište nám.`,
       title: '13. Kontakt',
       body: `Dotazy ohledně těchto zásad: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Kontrola novější verze aplikace',
+      body: `Google Play není způsob, jakým se tato aplikace dostává do vašeho telefonu s Androidem. Místo toho se stahuje z chatterbox.app, a obchod, který není součástí tohoto procesu, nemůže kontrolovat aktualizace vaším jménem — takže to může udělat sama tato aplikace, pokud ji o to požádáte.
+
+Klepnutím na „Zkontrolovat nyní" se odešle jeden požadavek na chatterbox.app s dotazem, jaká verze je aktuální. Tento požadavek nese pouze vaši IP adresu a nic jiného — žádný účet, žádný identifikátor zařízení, žádnou zprávu. To, co se vrátí, je číslo verze, které se na vašem telefonu porovná s verzí, kterou používáte; nic se automaticky nestahuje a nic o této kontrole se nezapisuje do konverzace.
+
+Toto nemá přepínač, protože není co vypínat: spouští se pouze klepnutím, a jinak ne.
+
+Pokud aktualizaci nainstalujete, nahradí aplikaci na místě pomocí stejného podpisového klíče, stejně jako by to udělala aktualizace z Google Play.`,
+    },
   ],
   ro: [
     {
@@ -5178,6 +5608,16 @@ Dacă preferi să ștergem noi ceva manual, scrie-ne.`,
     {
       title: '13. Contact',
       body: `Întrebări despre această politică: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Verificarea unei versiuni mai noi a aplicației',
+      body: `Google Play nu este modul în care această aplicație ajunge pe telefonul dvs. Android. Este descărcată în schimb de pe chatterbox.app, iar un magazin care nu face parte din acest proces nu poate verifica actualizările în numele dvs. — deci această aplicație o poate face singură, dacă îi cereți.
+
+Atingerea „Verificați acum" trimite o singură cerere către chatterbox.app, întrebând care este versiunea actuală. Acea cerere conține doar adresa dvs. IP și nimic altceva — fără cont, fără identificator de dispozitiv, fără mesaj. Ce se întoarce este un număr de versiune, comparat pe telefonul dvs. cu versiunea pe care o rulați; nimic nu este descărcat automat și nimic despre această verificare nu este scris în conversație.
+
+Acest lucru nu are un întrerupător deoarece nu este nimic de oprit: se execută doar la atingere și nu altfel.
+
+Dacă instalați actualizarea, aceasta înlocuiește aplicația pe loc folosind aceeași cheie de semnare, la fel cum ar face-o o actualizare de pe Google Play.`,
     },
   ],
   hu: [
@@ -5295,6 +5735,16 @@ Ha inkább azt szeretnéd, hogy kézzel töröljünk valamit, írj nekünk.`,
       title: '13. Kapcsolat',
       body: `Kérdések ezzel a szabályzattal kapcsolatban: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Újabb alkalmazásverzió keresése',
+      body: `A Google Play nem az a mód, ahogyan ez az alkalmazás eljut az Android telefonodra. Ehelyett a chatterbox.app oldalról töltődik le, és egy áruház, amely nem vesz részt ebben a folyamatban, nem tud a nevedben frissítéseket keresni — így ezt maga az alkalmazás is megteheti, ha megkéred rá.
+
+A "Ellenőrzés most" megérintése egyetlen kérést küld a chatterbox.app-nak, megkérdezve, melyik verzió az aktuális. Ez a kérés csak az IP-címedet hordozza, semmi mást — nincs fiók, nincs eszközazonosító, nincs üzenet. Ami visszaérkezik, az egy verziószám, amelyet a telefonodon összehasonlítanak a futtatott verzióval; semmi sem töltődik le automatikusan, és semmi nem kerül be a beszélgetésbe erről az ellenőrzésről.
+
+Ennek nincs kapcsolója, mert nincs mit kikapcsolni: csak érintésre fut, máskor nem.
+
+Ha telepíted a frissítést, az ugyanazzal az aláírási kulccsal cseréli le az alkalmazást a helyén, ugyanúgy, ahogy egy Google Play-es frissítés is tenné.`,
+    },
   ],
   kk: [
     {
@@ -5410,6 +5860,16 @@ Ha inkább azt szeretnéd, hogy kézzel töröljünk valamit, írj nekünk.`,
     {
       title: '13. Байланыс',
       body: `Осы саясат туралы сұрақтар: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Қолданбаның жаңа нұсқасын тексеру',
+      body: `Google Play — бұл қолданбаның Android телефоныңызға жету жолы емес. Ол оның орнына chatterbox.app сайтынан жүктеледі, ал бұл процеске қатыспайтын дүкен сіздің атыңыздан жаңартуларды тексере алмайды — сондықтан сіз сұрасаңыз, бұл қолданба мұны өзі жасай алады.
+
+«Қазір тексеру» түймесін басу chatterbox.app сайтына ағымдағы нұсқа қандай екенін сұрайтын бір ғана сұрау жібереді. Бұл сұрауда тек сіздің IP мекенжайыңыз бар, басқа ештеңе жоқ — есептік жазба жоқ, құрылғы идентификаторы жоқ, хабарлама жоқ. Қайтарылатыны — телефоныңызда қазір іске қосылған нұсқамен салыстырылатын нұсқа нөмірі; ештеңе автоматты түрде жүктелмейді және осы тексеру туралы ештеңе әңгімеге жазылмайды.
+
+Мұның ауыстырып-қосқышы жоқ, себебі өшіретін ештеңе жоқ: ол тек басқан кезде іске қосылады, басқаша емес.
+
+Егер жаңартуды орнатсаңыз, ол қолданбаны сол жерде дәл сол қол қою кілтін пайдаланып ауыстырады, Google Play-ден келетін жаңарту сияқты дәл солай.`,
     },
   ],
   uz: [
@@ -5527,6 +5987,16 @@ Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
       title: '13. Aloqa',
       body: `Ushbu siyosat haqida savollar: ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Yangiroq ilova versiyasini tekshirish',
+      body: `Google Play — bu ilovaning Android telefoningizga yetib borish usuli emas. U buning o'rniga chatterbox.app'dan yuklab olinadi, va bu jarayonda qatnashmaydigan do'kon sizning nomingizdan yangilanishlarni tekshira olmaydi — shuning uchun agar so'rasangiz, bu ilova buni o'zi qila oladi.
+
+"Hozir tekshirish"ga bosish joriy versiya qaysi ekanligini so'rab chatterbox.app'ga bitta so'rov yuboradi. Bu so'rov faqat sizning IP manzilingizni olib boradi, boshqa hech narsa emas — hisob yo'q, qurilma identifikatori yo'q, xabar yo'q. Qaytib keladigan narsa versiya raqami bo'lib, u telefoningizda ishlatayotgan versiyangiz bilan solishtiriladi; hech narsa avtomatik ravishda yuklanmaydi va bu tekshiruv haqida hech narsa suhbatga yozilmaydi.
+
+Bunda kalitcha yo'q, chunki o'chiradigan hech narsa yo'q: u faqat bosilganda ishlaydi va boshqacha emas.
+
+Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilovani o'z o'rnida almashtiradi, xuddi Google Play'dan kelgan yangilanish qiladigandek.`,
+    },
   ],
   ka: [
     {
@@ -5642,6 +6112,16 @@ Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
     {
       title: '13. კონტაქტი',
       body: `კითხვები ამ პოლიტიკის შესახებ: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. აპლიკაციის ახალი ვერსიის შემოწმება',
+      body: `Google Play არ არის გზა, რომლითაც ეს აპლიკაცია თქვენს Android ტელეფონამდე აღწევს. ის ნაცვლად ამისა ჩამოიტვირთება chatterbox.app-დან, და მაღაზია, რომელიც ამ პროცესში არ მონაწილეობს, ვერ შეამოწმებს განახლებებს თქვენი სახელით — ასე რომ, ეს აპლიკაცია თავად შეძლებს ამის გაკეთებას, თუ თხოვთ.
+
+„შემოწმება ახლავე"-ზე შეხებით იგზავნება ერთი მოთხოვნა chatterbox.app-ზე, რომელიც ეკითხება, რომელი ვერსიაა მიმდინარე. ეს მოთხოვნა შეიცავს მხოლოდ თქვენს IP მისამართს და არაფერს სხვას — არც ანგარიშს, არც მოწყობილობის იდენტიფიკატორს, არც შეტყობინებას. რაც ბრუნდება, არის ვერსიის ნომერი, რომელიც შედარებულია თქვენს ტელეფონზე გაშვებულ ვერსიასთან; ავტომატურად არაფერი ჩამოიტვირთება და ამ შემოწმების შესახებ არაფერი იწერება საუბარში.
+
+ამას გადამრთველი არ აქვს, რადგან გამორთვის რაიმე არ არსებობს: ის მუშაობს მხოლოდ შეხებისას და არა სხვაგვარად.
+
+თუ განახლებას დააინსტალირებთ, ის შეცვლის აპლიკაციას იმავე ადგილას იმავე ხელმოწერის გასაღების გამოყენებით, ისევე როგორც Google Play-დან მოსული განახლება გააკეთებდა.`,
     },
   ],
   hy: [
@@ -5759,6 +6239,16 @@ Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
       title: '13. Կապ',
       body: `Հարցեր այս քաղաքականության մասին. ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. Հավելվածի նոր տարբերակի ստուգում',
+      body: `Google Play-ը այն ձևը չէ, որով այս հավելվածը հասնում է ձեր Android հեռախոսին։ Այն փոխարենը ներբեռնվում է chatterbox.app-ից, և խանութը, որը մասնակից չէ այս գործընթացին, չի կարող ձեր փոխարեն ստուգել թարմացումները — ուստի այս հավելվածն ինքն է կարող դա անել, եթե խնդրեք։
+
+«Ստուգել հիմա»-ի հպումն ուղարկում է մեկ հարցում chatterbox.app՝ հարցնելով, թե որն է ընթացիկ տարբերակը։ Այդ հարցումը կրում է միայն ձեր IP հասցեն և ուրիշ ոչինչ՝ ոչ հաշիվ, ոչ սարքի նույնացուցիչ, ոչ հաղորդագրություն։ Ինչ վերադառնում է, տարբերակի համար է, որը համեմատվում է ձեր հեռախոսում աշխատող տարբերակի հետ. ոչինչ ինքնաբերաբար չի ներբեռնվում, և այս ստուգման մասին ոչինչ չի գրվում խոսակցության մեջ։
+
+Սա անջատիչ չունի, քանի որ անջատելու ոչինչ չկա՝ այն աշխատում է միայն հպման ժամանակ և այլ կերպ ոչ։
+
+Եթե տեղադրեք թարմացումը, այն կփոխարինի հավելվածն իր տեղում՝ օգտագործելով նույն ստորագրման բանալին, ճիշտ այնպես, ինչպես Google Play-ից եկած թարմացումը կանի։`,
+    },
   ],
   be: [
     {
@@ -5874,6 +6364,16 @@ Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
     {
       title: '13. Кантакт',
       body: `Пытанні пра гэтую палітыку: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Праверка навейшай версіі праграмы',
+      body: `Google Play — гэта не той спосаб, якім гэтая праграма трапляе на ваш тэлефон Android. Замест гэтага яна спампоўваецца з chatterbox.app, а крама, якая не ўдзельнічае ў гэтым працэсе, не можа правяраць абнаўленні ад вашага імя — таму гэтая праграма можа рабіць гэта сама, калі вы яе папросіце.
+
+Націск на «Праверыць зараз» адпраўляе адзін запыт на chatterbox.app з пытаннем, якая версія актуальная. Гэты запыт нясе толькі ваш IP-адрас і больш нічога — ні акаўнта, ні ідэнтыфікатара прылады, ні паведамлення. Тое, што вяртаецца, — гэта нумар версіі, які параўноўваецца на вашым тэлефоне з версіяй, якую вы выкарыстоўваеце; нічога не спампоўваецца аўтаматычна, і нічога пра гэту праверку не запісваецца ў размову.
+
+У гэтага няма пераключальніка, бо няма чаго выключаць: гэта працуе толькі пры націску і ніяк інакш.
+
+Калі вы ўсталюеце абнаўленне, яно заменіць праграму на месцы з выкарыстаннем таго ж ключа подпісу — гэтак жа, як гэта зрабіла б абнаўленне з Google Play.`,
     },
   ],
   ti: [
@@ -5991,6 +6491,16 @@ Agar biror narsani qo'lda o'chirishimizni afzal ko'rsangiz, bizga yozing.`,
       title: '13. ርክብ',
       body: `ብዛዕባ እዚ ፖሊሲ ሕቶታት፦ ${POLICY_CONTACT_EMAIL}`,
     },
+    {
+      title: '14. ሓድሽ ስሪት መተግበሪ ምፍታሽ',
+      body: `Google Play እዚ መተግበሪ ናብ ተሌፎንካ Android ዝበጽሓሉ መንገዲ ኣይኮነን። ኣብ ክንድኡ ካብ chatterbox.app ይንረድ፣ ከምኡ'ውን ኣብዚ መስርሕ ዘይሳተፈ ድኳን ብወገንካ ዝማናውነት ክፍትሽ ኣይክእልን እዩ — ስለዚ እዚ መተግበሪ እንተ ሓቲትካዮ ባዕሉ ክገብሮ ይኽእል።
+
+"ሕጂ ፈትሽ" ምንካፍ ሓደ ጠለብ ናብ chatterbox.app ይሰዶ፣ እቲ ህሉው ስሪት እንታይ ምዃኑ ይሓትት። እቲ ጠለብ ናይ IP ኣድራሻኻ ጥራይ ኢዩ ዝሓዘ፣ ካልእ ዋላ ሓንቲ የለን — ሕሳብ የለን፣ መለለዪ መሳርሒ የለን፣ መልእኽቲ የለን። ዝምለስ ቁጽሪ ስሪት ኢዩ፣ ኣብ ተሌፎንካ ምስቲ ትጥቀመሉ ዘለኻ ስሪት ይነጻጸር፤ ዋላ ሓንቲ ብቐጥታ ኣይንረድን፣ ብዛዕባ እዚ ምፍታሽ እውን ዋላ ሓንቲ ኣብ ዝርርብ ኣይጽሓፍን።
+
+እዚ መቀየሪ የብሉን ምኽንያቱ ክጠፍእ ዝኽእል ነገር የለን፦ ብምንካፍ ጥራይ ኢዩ ዝሰርሕ፣ ብኻልእ ኣገባብ ኣይኮነን።
+
+እቲ ዝማናውነት እንተ ጌርካዮ፣ ብተመሳሳሊ ፊርማ መፍትሕ ተጠቒሙ ነቲ መተግበሪ ኣብ ቦታኡ ይትክኦ፣ ልክዕ ከምቲ ካብ Google Play ዝመጽእ ዝማናውነት ዝገብሮ።`,
+    },
   ],
   bo: [
     {
@@ -6106,6 +6616,16 @@ Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད�
     {
       title: '13. འབྲེལ་བ།',
       body: `སྲིད་བྱུས་འདིའི་སྐོར་དྲི་བ། ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. སྤྱོད་ཆས་ཀྱི་པར་གཞི་གསར་པ་ཞིབ་བཤེར།',
+      body: `Google Play ནི་སྤྱོད་ཆས་འདི་ཁྱེད་ཀྱི་ Android ཁ་པར་དུ་སླེབས་པའི་ལམ་མིན། དེའི་ཚབ་ཏུ་ chatterbox.app ནས་ཕབ་ལེན་བྱེད་ཀྱི་ཡོད་ལ། འདི་ལྟ་བུའི་བྱ་རིམ་ནང་མ་ཞུགས་པའི་ཚོང་ཁང་ཞིག་གིས་ཁྱེད་ཀྱི་ཚབ་བྱས་ནས་གསར་སྒྱུར་ཞིབ་བཤེར་བྱེད་མི་ཐུབ། དེར་བརྟེན་ཁྱེད་ཀྱིས་བཀའ་འདྲི་ཞུས་ན་སྤྱོད་ཆས་འདི་རང་ཉིད་ཀྱིས་དེ་བྱེད་ཐུབ།
+
+"ད་ལྟ་ཞིབ་བཤེར།" ལ་མནན་ན་ད་ལྟའི་པར་གཞི་གང་ཡིན་ཞེས་འདྲི་བའི་གནང་བ་ཞིག་ chatterbox.app ལ་བཏང་གི་ཡོད། གནང་བ་དེའི་ནང་ཁྱེད་ཀྱི་ IP ཁ་བྱང་གཅིག་པུ་ཡོད་ལ་གཞན་གང་ཡང་མེད། —རྩིས་ཐོ་མེད། སྒྲིག་ཆས་ངོས་འཛིན་མེད། འཕྲིན་ཡིག་མེད། ལོག་སླེབས་བྱུང་བ་ནི་པར་གཞིའི་ཨང་གྲངས་ཤིག་ཡིན་ལ། ཁྱེད་ཀྱི་ཁ་པར་ནང་ད་ལྟ་སྤྱོད་བཞིན་པའི་པར་གཞི་དང་བསྡུར་ཞིབ་བྱེད་ཀྱི་ཡོད། གང་ཡང་རང་འགུལ་གྱིས་ཕབ་ལེན་བྱེད་ཀྱི་མེད་ལ། ཞིབ་བཤེར་འདིའི་སྐོར་གང་ཡང་གླེང་མོལ་ནང་འབྲི་ཀྱི་མེད།
+
+འདིར་ལྡེ་མིག་མེད་དེ་ག་རེ་ཡིན་ཟེར་ན་ཆེད་བརྗོད་བྱེད་རྒྱུའི་གནས་ཚུལ་གང་ཡང་མེད། འདི་ནི་མནན་སྐབས་གཅིག་པུར་ལས་ཀ་བྱེད་ཀྱི་ཡོད་ལ་ལམ་ལུགས་གཞན་གྱིས་མིན།
+
+ཁྱེད་ཀྱིས་གསར་སྒྱུར་སྒྲིག་སྦྱོར་བྱས་ན། དེས་མིང་རྟགས་ལྡེ་མིག་གཅིག་མཚུངས་བེད་སྤྱོད་བྱས་ནས་སྤྱོད་ཆས་དེ་ཉིད་ས་ཆ་གང་ཡིན་སར་ཚབ་བརྗེ་བྱེད་ཀྱི་ཡིན། Google Play ནས་འོང་བའི་གསར་སྒྱུར་ཞིག་གིས་བྱེད་སྟངས་དང་གཅིག་མཚུངས་རེད།`,
     },
   ],
 
@@ -6223,6 +6743,16 @@ Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད�
     {
       title: '13. Холбоо барих',
       body: `Энэ бодлогын талаарх асуулт: ${POLICY_CONTACT_EMAIL}`,
+    },
+    {
+      title: '14. Апп-ын шинэ хувилбарыг шалгах',
+      body: `Google Play бол энэ апп таны Android утсанд хүрч ирдэг арга зам биш юм. Үүний оронд chatterbox.app-аас татаж авдаг бөгөөд энэ үйл явцад оролцдоггүй дэлгүүр таны нэрийн өмнөөс шинэчлэлтийг шалгаж чадахгүй — тиймээс хэрэв та хүсвэл энэ апп үүнийг өөрөө хийж чадна.
+
+"Одоо шалгах"-ыг товших нь одоогийн хувилбар аль нь болохыг асуусан нэг хүсэлтийг chatterbox.app-руу илгээдэг. Тэр хүсэлт зөвхөн таны IP хаягийг агуулж, өөр юу ч байхгүй — данс байхгүй, төхөөрөмжийн танигч байхгүй, мессеж байхгүй. Буцаж ирдэг зүйл бол хувилбарын дугаар бөгөөд таны утсан дээр ажиллаж байгаа хувилбартай харьцуулагддаг; юу ч автоматаар татагдахгүй, энэ шалгалтын тухай юу ч харилцан ярианы дотор бичигдэхгүй.
+
+Үүнд унтраах товч байхгүй, учир нь унтраах ямар ч зүйл байхгүй: энэ нь зөвхөн товшсон үед л ажилладаг бөгөөд өөр ямар ч байдлаар биш.
+
+Хэрэв та шинэчлэлтийг суулгавал, энэ нь ижил гарын үсэг зурах түлхүүрийг ашиглан аппыг яг тэр байрандаа солино, яг л Google Play-ээс ирсэн шинэчлэлт хийдэг шиг.`,
     },
   ],
 };

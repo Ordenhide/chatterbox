@@ -285,7 +285,10 @@
       "deletePartial": "Hisobingiz o'chirildi, ammo ba'zi ma'lumotlarni olib tashlab bo'lmadi. Iltimos, qo'llab-quvvatlash xizmatiga murojaat qiling.",
       "downloadDataTitle": "Ma'lumotlarimni yuklab olish",
       "downloadDataDesc": "Profilingiz va suhbatlaringizning nusxasini saqlashingiz yoki ko'rib chiqishingiz mumkin bo'lgan oddiy matn fayli sifatida oling — bu quyidagi eksport zaxira nusxasidan farqli o'laroq, u hisobingizni yangi qurilmaga ko'chirish uchun shifrlangan fayl yaratadi.",
-      "downloadDataButton": "Yuklab olish"
+      "downloadDataButton": "Yuklab olish",
+      "checkUpdatesTitle": "Yangilanishlarni tekshirish",
+      "checkUpdatesDesc": "Chatterbox Google Play'da yo'q, shuning uchun uni orqa fonda hech narsa yangilamaydi. Yangiroq versiya uchun chatterbox.app'ni tekshiring.",
+      "checkUpdatesButton": "Hozir tekshirish"
     },
     "modals": {
       "feedbackTitle": "Fikr-mulohaza",
@@ -313,6 +316,13 @@
       "signOutFailed": "Tizimdan chiqish amalga oshmadi",
       "downloadDataFailedTitle": "Xato",
       "downloadDataFailedBody": "Ma'lumotlaringizni tayyorlab bo'lmadi. Qayta urinib ko'ring.",
+      "checkUpdatesUpToDateTitle": "Sizda eng so'nggi versiya bor",
+      "checkUpdatesUpToDateBody": "Bu Chatterbox'ning eng so'nggi versiyasi.",
+      "checkUpdatesAvailableTitle": "Yangilanish mavjud",
+      "checkUpdatesAvailableBody": "{{version}} versiyasi chatterbox.app'da mavjud.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app'ni ochish",
+      "checkUpdatesFailedTitle": "Yangilanishlarni tekshirib bo'lmadi",
+      "checkUpdatesFailedBody": "Ulanishingizni tekshiring va qayta urinib ko'ring.",
       "voiceRecordFailed": "Yozib olishni boshlash amalga oshmadi.",
       "voiceStatusTitle": "Ovoz holati",
       "voiceStatusBody": "Ovozli kundaligingiz o'rnatildi! U 24 soatdan keyin muddati tugaydi.",

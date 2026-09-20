@@ -285,7 +285,10 @@
       "deletePartial": "თქვენი ანგარიში წაიშალა, მაგრამ ზოგიერთი მონაცემის მოცილება ვერ მოხერხდა. დაუკავშირდით მხარდაჭერას.",
       "downloadDataTitle": "ჩემი მონაცემების ჩამოტვირთვა",
       "downloadDataDesc": "მიიღეთ თქვენი პროფილისა და მიმოწერების ასლი უბრალო ტექსტური ფაილის სახით, რომელიც შეგიძლიათ შეინახოთ ან შეამოწმოთ — განსხვავებით ქვემოთ მოცემული ექსპორტის სარეზერვო ასლისგან, რომელიც ქმნის დაშიფრულ ფაილს თქვენი ანგარიშის ახალ მოწყობილობაზე გადასატანად.",
-      "downloadDataButton": "ჩამოტვირთვა"
+      "downloadDataButton": "ჩამოტვირთვა",
+      "checkUpdatesTitle": "განახლებების შემოწმება",
+      "checkUpdatesDesc": "Chatterbox არ არის Google Play-ზე, ამიტომ ის ფონურ რეჟიმში არ განახლდება. ახალი ვერსიისთვის შეამოწმეთ chatterbox.app.",
+      "checkUpdatesButton": "შემოწმება ახლავე"
     },
     "modals": {
       "feedbackTitle": "გამოხმაურება",
@@ -313,6 +316,13 @@
       "signOutFailed": "გასვლა ვერ მოხერხდა",
       "downloadDataFailedTitle": "შეცდომა",
       "downloadDataFailedBody": "თქვენი მონაცემების მომზადება ვერ მოხერხდა. სცადეთ ხელახლა.",
+      "checkUpdatesUpToDateTitle": "თქვენ გაქვთ უახლესი ვერსია",
+      "checkUpdatesUpToDateBody": "ეს არის Chatterbox-ის უახლესი ვერსია.",
+      "checkUpdatesAvailableTitle": "ხელმისაწვდომია განახლება",
+      "checkUpdatesAvailableBody": "ვერსია {{version}} ხელმისაწვდომია chatterbox.app-ზე.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app-ის გახსნა",
+      "checkUpdatesFailedTitle": "განახლებების შემოწმება ვერ მოხერხდა",
+      "checkUpdatesFailedBody": "შეამოწმეთ თქვენი კავშირი და სცადეთ ხელახლა.",
       "voiceRecordFailed": "ჩაწერის დაწყება ვერ მოხერხდა.",
       "voiceStatusTitle": "ხმოვანი სტატუსი",
       "voiceStatusBody": "თქვენი ხმოვანი დღიური დაყენებულია! ის ვადა ამოეწურება 24 საათში.",

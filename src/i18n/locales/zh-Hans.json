@@ -239,7 +239,10 @@
       "deletePartial": "账号已删除，但部分数据未能清除，请联系客服。",
       "downloadDataTitle": "下载我的数据",
       "downloadDataDesc": "获取你的个人资料和对话的纯文本副本，可自行保存或查看——与下面的「导出备份」不同，那个生成的是用于把账号迁移到新设备的加密文件。",
-      "downloadDataButton": "下载"
+      "downloadDataButton": "下载",
+      "checkUpdatesTitle": "检查更新",
+      "checkUpdatesDesc": "Chatterbox 并未上架 Google Play，因此不会在后台自动更新。请前往 chatterbox.app 查看是否有新版本。",
+      "checkUpdatesButton": "立即检查"
     },
     "modals": {
       "feedbackTitle": "反馈",
@@ -267,6 +270,13 @@
       "signOutFailed": "退出登录失败",
       "downloadDataFailedTitle": "错误",
       "downloadDataFailedBody": "无法准备你的数据，请重试。",
+      "checkUpdatesUpToDateTitle": "已是最新版本",
+      "checkUpdatesUpToDateBody": "这已经是 Chatterbox 的最新版本。",
+      "checkUpdatesAvailableTitle": "有可用更新",
+      "checkUpdatesAvailableBody": "版本 {{version}} 已在 chatterbox.app 上线。",
+      "checkUpdatesAvailableOpenButton": "打开 chatterbox.app",
+      "checkUpdatesFailedTitle": "无法检查更新",
+      "checkUpdatesFailedBody": "请检查网络连接后重试。",
       "voiceRecordFailed": "开始录音失败。",
       "voiceStatusTitle": "语音状态",
       "voiceStatusBody": "你的语音日记已设置！24 小时后过期。",

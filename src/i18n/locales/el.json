@@ -285,7 +285,10 @@
       "deletePartial": "Ο λογαριασμός σας διαγράφηκε, αλλά ορισμένα δεδομένα δεν ήταν δυνατό να αφαιρεθούν. Επικοινωνήστε με την υποστήριξη.",
       "downloadDataTitle": "Λήψη των δεδομένων μου",
       "downloadDataDesc": "Λάβετε αντίγραφο του προφίλ και των συνομιλιών σας ως αρχείο απλού κειμένου που μπορείτε να κρατήσετε ή να επιθεωρήσετε — διαφορετικό από το αντίγραφο ασφαλείας εξαγωγής παρακάτω, το οποίο δημιουργεί ένα κρυπτογραφημένο αρχείο για τη μεταφορά του λογαριασμού σας σε νέα συσκευή.",
-      "downloadDataButton": "Λήψη"
+      "downloadDataButton": "Λήψη",
+      "checkUpdatesTitle": "Έλεγχος για ενημερώσεις",
+      "checkUpdatesDesc": "Το Chatterbox δεν διατίθεται στο Google Play, οπότε τίποτα δεν το ενημερώνει στο παρασκήνιο. Ελέγξτε το chatterbox.app για νεότερη έκδοση.",
+      "checkUpdatesButton": "Έλεγχος τώρα"
     },
     "modals": {
       "feedbackTitle": "Σχόλια",
@@ -313,6 +316,13 @@
       "signOutFailed": "Η αποσύνδεση απέτυχε",
       "downloadDataFailedTitle": "Σφάλμα",
       "downloadDataFailedBody": "Δεν ήταν δυνατή η προετοιμασία των δεδομένων σας. Δοκιμάστε ξανά.",
+      "checkUpdatesUpToDateTitle": "Είστε ενημερωμένοι",
+      "checkUpdatesUpToDateBody": "Αυτή είναι η τελευταία έκδοση του Chatterbox.",
+      "checkUpdatesAvailableTitle": "Διαθέσιμη ενημέρωση",
+      "checkUpdatesAvailableBody": "Η έκδοση {{version}} είναι διαθέσιμη στο chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Άνοιγμα chatterbox.app",
+      "checkUpdatesFailedTitle": "Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις",
+      "checkUpdatesFailedBody": "Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.",
       "voiceRecordFailed": "Η έναρξη ηχογράφησης απέτυχε.",
       "voiceStatusTitle": "Φωνητική Κατάσταση",
       "voiceStatusBody": "Το φωνητικό σας ημερολόγιο ορίστηκε! Θα λήξει σε 24 ώρες.",

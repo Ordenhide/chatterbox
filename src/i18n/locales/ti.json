@@ -285,7 +285,10 @@
       "deletePartial": "ሕሳብካ ተደምሲሱ፡ ግን ገለ ሓበሬታ ክድምሰስ ኣይተኻእለን። በጃኻ ደገፍ ተወከስ።",
       "downloadDataTitle": "ሓበሬታይ ኣውርድ",
       "downloadDataDesc": "ናይ መግለጺኻን ዝርርባትካን ቅዳሕ ከም ንጹር ጽሑፍ ፋይል ኣምጽእ፡ ክትዕቅቦ ወይ ክትምርምሮ እትኽእል — ካብቲ ኣብ ታሕቲ ዘሎ ናይ ምድጋፍ ወጽኢት ዝፍለ፡ እቲ ሕሳብካ ናብ ሓድሽ መሳርሒ ንምስጋር ዝተመስጠረ ፋይል ዝፈጥር።",
-      "downloadDataButton": "ኣውርድ"
+      "downloadDataButton": "ኣውርድ",
+      "checkUpdatesTitle": "ዘመናውነት ፈትሽ",
+      "checkUpdatesDesc": "Chatterbox ኣብ Google Play የለን፣ ስለዚ ኣብ ድሕሪት ዝሓድሶ የለን። ንዝሓደሰ ስሪት chatterbox.app ፈትሽ።",
+      "checkUpdatesButton": "ሕጂ ፈትሽ"
     },
     "modals": {
       "feedbackTitle": "ርእይቶ",
@@ -313,6 +316,13 @@
       "signOutFailed": "ምውጻእ ኣይተኻእለን",
       "downloadDataFailedTitle": "ጌጋ",
       "downloadDataFailedBody": "ሓበሬታኻ ምድላው ኣይተኻእለን። በጃኻ ደጊምካ ፈትን።",
+      "checkUpdatesUpToDateTitle": "እቲ ናይ መወዳእታ ስሪት ኣለካ",
+      "checkUpdatesUpToDateBody": "እዚ እቲ ናይ መወዳእታ ስሪት Chatterbox እዩ።",
+      "checkUpdatesAvailableTitle": "ዘመናውነት ኣሎ",
+      "checkUpdatesAvailableBody": "ስሪት {{version}} ኣብ chatterbox.app ኣሎ።",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app ክፈት",
+      "checkUpdatesFailedTitle": "ዘመናውነት ምፍታሽ ኣይተኻእለን",
+      "checkUpdatesFailedBody": "ርክብካ ፈትሽ እሞ ደጊምካ ፈትን።",
       "voiceRecordFailed": "ቅዳሕ ምጅማር ኣይተኻእለን።",
       "voiceStatusTitle": "ናይ ድምጺ ኩነታት",
       "voiceStatusBody": "ናይ ድምጺ መዘክርካ ተዳልዩ! ኣብ ውሽጢ 24 ሰዓታት ክውዳእ እዩ።",

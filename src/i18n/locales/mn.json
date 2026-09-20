@@ -285,7 +285,10 @@
       "deletePartial": "Таны данс устгагдсан ч зарим мэдээллийг хасах боломжгүй байсан. Дэмжлэгтэй холбогдоно уу.",
       "downloadDataTitle": "Мэдээллээ татах",
       "downloadDataDesc": "Профайл болон харилцааныхаа хуулбарыг энгийн текст файл хэлбэрээр авч, хадгалах эсвэл шалгах боломжтой — доорх Экспорт нөөцлөлтөөс ялгаатай нь энэ нь таны дансыг шинэ төхөөрөмж рүү шилжүүлэхэд зориулсан шифрлэгдсэн файл биш юм.",
-      "downloadDataButton": "Татах"
+      "downloadDataButton": "Татах",
+      "checkUpdatesTitle": "Шинэчлэлт шалгах",
+      "checkUpdatesDesc": "Chatterbox Google Play дээр байхгүй тул үүнийг арын дэвсгэрт шинэчлэх зүйл байхгүй. Илүү шинэ хувилбарын хувьд chatterbox.app-г шалгана уу.",
+      "checkUpdatesButton": "Одоо шалгах"
     },
     "modals": {
       "feedbackTitle": "Санал хүсэлт",
@@ -313,6 +316,13 @@
       "signOutFailed": "Гарч чадсангүй",
       "downloadDataFailedTitle": "Алдаа",
       "downloadDataFailedBody": "Таны мэдээллийг бэлтгэж чадсангүй. Дахин оролдоно уу.",
+      "checkUpdatesUpToDateTitle": "Та хамгийн сүүлийн хувилбартай байна",
+      "checkUpdatesUpToDateBody": "Энэ бол Chatterbox-ийн хамгийн сүүлийн хувилбар юм.",
+      "checkUpdatesAvailableTitle": "Шинэчлэлт бэлэн байна",
+      "checkUpdatesAvailableBody": "Хувилбар {{version}} нь chatterbox.app дээр бэлэн байна.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app нээх",
+      "checkUpdatesFailedTitle": "Шинэчлэлтийг шалгаж чадсангүй",
+      "checkUpdatesFailedBody": "Холболтоо шалгаад дахин оролдоно уу.",
       "voiceRecordFailed": "Бичлэг эхлүүлж чадсангүй.",
       "voiceStatusTitle": "Дуут статус",
       "voiceStatusBody": "Таны дуут өдрийн тэмдэглэл тохируулагдлаа! Энэ нь 24 цагийн дараа дуусна.",

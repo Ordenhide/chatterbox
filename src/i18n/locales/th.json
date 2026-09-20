@@ -285,7 +285,10 @@
       "deletePartial": "บัญชีของคุณถูกลบแล้ว แต่ข้อมูลบางส่วนไม่สามารถลบออกได้ โปรดติดต่อฝ่ายสนับสนุน",
       "downloadDataTitle": "ดาวน์โหลดข้อมูลของฉัน",
       "downloadDataDesc": "รับสำเนาโปรไฟล์และการสนทนาของคุณเป็นไฟล์ข้อความธรรมดาที่คุณสามารถเก็บหรือตรวจสอบได้ — แตกต่างจาก 'ส่งออกข้อมูลสำรอง' ด้านล่าง ซึ่งสร้างไฟล์ที่เข้ารหัสสำหรับย้ายบัญชีของคุณไปยังอุปกรณ์ใหม่",
-      "downloadDataButton": "ดาวน์โหลด"
+      "downloadDataButton": "ดาวน์โหลด",
+      "checkUpdatesTitle": "ตรวจสอบการอัปเดต",
+      "checkUpdatesDesc": "Chatterbox ไม่มีอยู่บน Google Play ดังนั้นจึงไม่มีการอัปเดตแบบอัตโนมัติในเบื้องหลัง โปรดตรวจสอบ chatterbox.app เพื่อดูเวอร์ชันใหม่กว่า",
+      "checkUpdatesButton": "ตรวจสอบตอนนี้"
     },
     "modals": {
       "feedbackTitle": "ความคิดเห็น",
@@ -313,6 +316,13 @@
       "signOutFailed": "ออกจากระบบล้มเหลว",
       "downloadDataFailedTitle": "ข้อผิดพลาด",
       "downloadDataFailedBody": "ไม่สามารถเตรียมข้อมูลของคุณได้ โปรดลองอีกครั้ง",
+      "checkUpdatesUpToDateTitle": "คุณใช้เวอร์ชันล่าสุดแล้ว",
+      "checkUpdatesUpToDateBody": "นี่คือเวอร์ชันล่าสุดของ Chatterbox",
+      "checkUpdatesAvailableTitle": "มีการอัปเดต",
+      "checkUpdatesAvailableBody": "เวอร์ชัน {{version}} พร้อมใช้งานที่ chatterbox.app",
+      "checkUpdatesAvailableOpenButton": "เปิด chatterbox.app",
+      "checkUpdatesFailedTitle": "ไม่สามารถตรวจสอบการอัปเดตได้",
+      "checkUpdatesFailedBody": "โปรดตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
       "voiceRecordFailed": "เริ่มการบันทึกล้มเหลว",
       "voiceStatusTitle": "สถานะเสียง",
       "voiceStatusBody": "ตั้งค่าไดอารี่เสียงของคุณแล้ว! จะหมดอายุใน 24 ชั่วโมง",

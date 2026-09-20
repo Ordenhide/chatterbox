@@ -285,7 +285,10 @@
       "deletePartial": "သင့်အကောင့်ကို ဖျက်ပြီးပါပြီ၊ သို့သော် ဒေတာအချို့ကို ဖယ်ရှား၍မရပါ။ ကျေးဇူးပြု၍ ပံ့ပိုးမှုကို ဆက်သွယ်ပါ။",
       "downloadDataTitle": "ကျွန်ုပ်ဒေတာကို ဒေါင်းလုဒ်လုပ်ရန်",
       "downloadDataDesc": "သင်သိမ်းထားနိုင် သို့မဟုတ် စစ်ဆေးနိုင်သော ရိုးရိုးစာသားဖိုင်အဖြစ် သင့်ပရိုဖိုင်နှင့် စကားပြောများ၏မိတ္တူတစ်ခု ရယူပါ — အောက်ပါ Export Backup နှင့် မတူပါ၊ ၎င်းသည် သင့်အကောင့်ကို စက်အသစ်သို့ ရွှေ့ရန် ကုဒ်ဝှက်ထားသောဖိုင်တစ်ခု ဖန်တီးသည်။",
-      "downloadDataButton": "ဒေါင်းလုဒ်လုပ်ရန်"
+      "downloadDataButton": "ဒေါင်းလုဒ်လုပ်ရန်",
+      "checkUpdatesTitle": "အပ်ဒိတ်များကို စစ်ဆေးရန်",
+      "checkUpdatesDesc": "Chatterbox သည် Google Play တွင် မရှိသောကြောင့် နောက်ခံတွင် မည်သည့်အရာမျှ ၎င်းကို အပ်ဒိတ်မလုပ်ပါ။ ပိုမိုအသစ်သော ဗားရှင်းအတွက် chatterbox.app ကို စစ်ဆေးပါ။",
+      "checkUpdatesButton": "ယခုစစ်ဆေးရန်"
     },
     "modals": {
       "feedbackTitle": "တုံ့ပြန်ချက်",
@@ -313,6 +316,13 @@
       "signOutFailed": "ထွက်ခြင်း မအောင်မြင်ပါ",
       "downloadDataFailedTitle": "အမှား",
       "downloadDataFailedBody": "သင့်ဒေတာကို ပြင်ဆင်၍မရပါ။ ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။",
+      "checkUpdatesUpToDateTitle": "သင့်တွင် နောက်ဆုံးဗားရှင်းရှိပါသည်",
+      "checkUpdatesUpToDateBody": "ဤသည်မှာ Chatterbox ၏ နောက်ဆုံးဗားရှင်းဖြစ်သည်။",
+      "checkUpdatesAvailableTitle": "အပ်ဒိတ်ရရှိနိုင်ပါသည်",
+      "checkUpdatesAvailableBody": "ဗားရှင်း {{version}} ကို chatterbox.app တွင် ရရှိနိုင်ပါသည်။",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app ကိုဖွင့်ရန်",
+      "checkUpdatesFailedTitle": "အပ်ဒိတ်များကို စစ်ဆေး၍မရပါ",
+      "checkUpdatesFailedBody": "သင့်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်ကြိုးစားပါ။",
       "voiceRecordFailed": "မှတ်တမ်းတင်ခြင်း မစတင်နိုင်ပါ။",
       "voiceStatusTitle": "အသံအခြေအနေ",
       "voiceStatusBody": "သင့်အသံမှတ်တမ်းကို သတ်မှတ်ပြီးပါပြီ! ၎င်းသည် ၂၄ နာရီအတွင်း သက်တမ်းကုန်ပါမည်။",

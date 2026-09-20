@@ -19,6 +19,7 @@
  * nothing is written to the message — the transcript is unchanged by looking
  * something up.
  */
+import {APP_VERSION_NAME} from '../config/appVersion';
 import {wikipediaSubdomain} from './wikipediaLookup';
 
 export type WikipediaSummary = {
@@ -59,7 +60,7 @@ const TIMEOUT_MS = 8000;
  * an empty box where the picture should be.
  */
 export const WIKIPEDIA_USER_AGENT =
-  'Chatterbox/1.1 (https://chatterbox.app; privacy@chatterbox.app)';
+  `Chatterbox/${APP_VERSION_NAME} (https://chatterbox.app; privacy@chatterbox.app)`;
 
 type Json = {status: number; data: any};
 

@@ -285,7 +285,10 @@
       "deletePartial": "Je account is verwijderd, maar sommige gegevens konden niet worden verwijderd. Neem contact op met ondersteuning.",
       "downloadDataTitle": "Mijn gegevens downloaden",
       "downloadDataDesc": "Krijg een kopie van je profiel en gesprekken als een platte-tekstbestand dat je kunt bewaren of inspecteren — anders dan de exportback-up hieronder, die een versleuteld bestand maakt om je account naar een nieuw apparaat te verplaatsen.",
-      "downloadDataButton": "Downloaden"
+      "downloadDataButton": "Downloaden",
+      "checkUpdatesTitle": "Controleren op updates",
+      "checkUpdatesDesc": "Chatterbox staat niet in de Google Play Store, dus niets werkt de app op de achtergrond bij. Kijk op chatterbox.app voor een nieuwere versie.",
+      "checkUpdatesButton": "Nu controleren"
     },
     "modals": {
       "feedbackTitle": "Feedback",
@@ -313,6 +316,13 @@
       "signOutFailed": "Uitloggen mislukt",
       "downloadDataFailedTitle": "Fout",
       "downloadDataFailedBody": "Kan je gegevens niet voorbereiden. Probeer het opnieuw.",
+      "checkUpdatesUpToDateTitle": "Je hebt de nieuwste versie",
+      "checkUpdatesUpToDateBody": "Dit is de nieuwste versie van Chatterbox.",
+      "checkUpdatesAvailableTitle": "Update beschikbaar",
+      "checkUpdatesAvailableBody": "Versie {{version}} is beschikbaar op chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app openen",
+      "checkUpdatesFailedTitle": "Kan niet controleren op updates",
+      "checkUpdatesFailedBody": "Controleer je verbinding en probeer het opnieuw.",
       "voiceRecordFailed": "Opname starten mislukt.",
       "voiceStatusTitle": "Spraakstatus",
       "voiceStatusBody": "Je spraakdagboek is ingesteld! Het verloopt over 24 uur.",

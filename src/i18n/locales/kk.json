@@ -285,7 +285,10 @@
       "deletePartial": "Есептік жазбаңыз жойылды, бірақ кейбір деректерді алып тастау мүмкін болмады. Қолдау қызметіне хабарласыңыз.",
       "downloadDataTitle": "Деректерімді жүктеп алу",
       "downloadDataDesc": "Сақтауға немесе тексеруге болатын қарапайым мәтін файлы ретінде профиліңіз бен әңгімелеріңіздің көшірмесін алыңыз — төмендегі экспорт сақтық көшірмесінен өзгеше, ол есептік жазбаңызды жаңа құрылғыға көшіру үшін шифрланған файл жасайды.",
-      "downloadDataButton": "Жүктеп алу"
+      "downloadDataButton": "Жүктеп алу",
+      "checkUpdatesTitle": "Жаңартуларды тексеру",
+      "checkUpdatesDesc": "Chatterbox Google Play-де жоқ, сондықтан оны фондық режимде ешнәрсе жаңартпайды. Жаңа нұсқа үшін chatterbox.app сайтын тексеріңіз.",
+      "checkUpdatesButton": "Қазір тексеру"
     },
     "modals": {
       "feedbackTitle": "Пікір",
@@ -313,6 +316,13 @@
       "signOutFailed": "Шығу сәтсіз аяқталды",
       "downloadDataFailedTitle": "Қате",
       "downloadDataFailedBody": "Деректеріңізді дайындау мүмкін болмады. Қайталап көріңіз.",
+      "checkUpdatesUpToDateTitle": "Сізде соңғы нұсқа бар",
+      "checkUpdatesUpToDateBody": "Бұл Chatterbox-тың соңғы нұсқасы.",
+      "checkUpdatesAvailableTitle": "Жаңарту қолжетімді",
+      "checkUpdatesAvailableBody": "{{version}} нұсқасы chatterbox.app сайтында қолжетімді.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app ашу",
+      "checkUpdatesFailedTitle": "Жаңартуларды тексеру мүмкін болмады",
+      "checkUpdatesFailedBody": "Байланысыңызды тексеріп, қайталап көріңіз.",
       "voiceRecordFailed": "Жазуды бастау сәтсіз аяқталды.",
       "voiceStatusTitle": "Дауыс мәртебесі",
       "voiceStatusBody": "Дауыстық күнделігіңіз орнатылды! Ол 24 сағаттан кейін мерзімі бітеді.",

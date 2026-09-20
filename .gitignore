@@ -116,6 +116,10 @@ android/gradle/gradle-daemon-jvm.properties
 # Produced by `npm --prefix web run build:site`; never edited by hand.
 website/app/
 
+# The signed APK and its version manifest, published here by
+# release-apk.yml on every tagged release; never committed.
+website/downloads/
+
 # IntelliJ writes inspection reports here on "Analyze → Inspect Code". 198 of
 # them were committed once; they are IDE output, not project files.
 android/xml/

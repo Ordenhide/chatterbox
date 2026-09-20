@@ -285,7 +285,10 @@
       "deletePartial": "तपाईंको खाता मेटाइयो, तर केही डाटा हटाउन सकिएन। कृपया समर्थनसँग सम्पर्क गर्नुहोस्।",
       "downloadDataTitle": "मेरो डाटा डाउनलोड गर्नुहोस्",
       "downloadDataDesc": "तपाईंको प्रोफाइल र कुराकानीहरूको प्रतिलिपि साधारण-टेक्स्ट फाइलको रूपमा प्राप्त गर्नुहोस् जुन तपाईंले राख्न वा जाँच्न सक्नुहुन्छ — तलको निर्यात ब्याकअपभन्दा फरक, जसले तपाईंको खातालाई नयाँ यन्त्रमा सार्न इन्क्रिप्टेड फाइल सिर्जना गर्छ।",
-      "downloadDataButton": "डाउनलोड गर्नुहोस्"
+      "downloadDataButton": "डाउनलोड गर्नुहोस्",
+      "checkUpdatesTitle": "अद्यावधिकहरू जाँच गर्नुहोस्",
+      "checkUpdatesDesc": "Chatterbox Google Play मा छैन, त्यसैले पृष्ठभूमिमा यसलाई केहीले पनि अद्यावधिक गर्दैन। नयाँ संस्करणको लागि chatterbox.app जाँच गर्नुहोस्।",
+      "checkUpdatesButton": "अहिले जाँच गर्नुहोस्"
     },
     "modals": {
       "feedbackTitle": "प्रतिक्रिया",
@@ -313,6 +316,13 @@
       "signOutFailed": "साइन आउट गर्न असफल",
       "downloadDataFailedTitle": "त्रुटि",
       "downloadDataFailedBody": "तपाईंको डाटा तयार गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+      "checkUpdatesUpToDateTitle": "तपाईंसँग नवीनतम संस्करण छ",
+      "checkUpdatesUpToDateBody": "यो Chatterbox को नवीनतम संस्करण हो।",
+      "checkUpdatesAvailableTitle": "अद्यावधिक उपलब्ध छ",
+      "checkUpdatesAvailableBody": "संस्करण {{version}} chatterbox.app मा उपलब्ध छ।",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app खोल्नुहोस्",
+      "checkUpdatesFailedTitle": "अद्यावधिक जाँच गर्न सकिएन",
+      "checkUpdatesFailedBody": "आफ्नो जडान जाँच गर्नुहोस् र फेरि प्रयास गर्नुहोस्।",
       "voiceRecordFailed": "रेकर्डिङ सुरु गर्न असफल।",
       "voiceStatusTitle": "आवाज स्थिति",
       "voiceStatusBody": "तपाईंको आवाज डायरी सेट गरियो! यो 24 घण्टामा म्याद सकिनेछ।",

@@ -285,7 +285,10 @@
       "deletePartial": "Ваш обліковий запис видалено, але деякі дані не вдалося прибрати. Зверніться до підтримки.",
       "downloadDataTitle": "Завантажити мої дані",
       "downloadDataDesc": "Отримайте копію вашого профілю та розмов у вигляді звичайного текстового файлу, який можна зберегти або переглянути — це відрізняється від «Експорту резервної копії» нижче, який створює зашифрований файл для перенесення вашого облікового запису на новий пристрій.",
-      "downloadDataButton": "Завантажити"
+      "downloadDataButton": "Завантажити",
+      "checkUpdatesTitle": "Перевірити оновлення",
+      "checkUpdatesDesc": "Chatterbox відсутній у Google Play, тому ніщо не оновлює його у фоновому режимі. Перевірте chatterbox.app на наявність новішої версії.",
+      "checkUpdatesButton": "Перевірити зараз"
     },
     "modals": {
       "feedbackTitle": "Відгук",
@@ -313,6 +316,13 @@
       "signOutFailed": "Вихід не вдався",
       "downloadDataFailedTitle": "Помилка",
       "downloadDataFailedBody": "Не вдалося підготувати ваші дані. Спробуйте ще раз.",
+      "checkUpdatesUpToDateTitle": "У вас найновіша версія",
+      "checkUpdatesUpToDateBody": "Це найновіша версія Chatterbox.",
+      "checkUpdatesAvailableTitle": "Доступне оновлення",
+      "checkUpdatesAvailableBody": "Версія {{version}} доступна на chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Відкрити chatterbox.app",
+      "checkUpdatesFailedTitle": "Не вдалося перевірити оновлення",
+      "checkUpdatesFailedBody": "Перевірте з'єднання та спробуйте ще раз.",
       "voiceRecordFailed": "Не вдалося почати запис.",
       "voiceStatusTitle": "Голосовий статус",
       "voiceStatusBody": "Ваш голосовий щоденник встановлено! Він закінчиться через 24 години.",

@@ -285,7 +285,10 @@
       "deletePartial": "መለያዎ ተሰርዟል፣ ነገር ግን የተወሰነ ውሂብ ማስወገድ አልተቻለም። እባክዎ ድጋፍን ያግኙ።",
       "downloadDataTitle": "ውሂቤን አውርድ",
       "downloadDataDesc": "ማቆየት ወይም መመልከት የሚችሉት ንፁህ-ጽሑፍ ፋይል ሆኖ የመገለጫዎን እና የውይይቶችዎን ቅጂ ያግኙ — ከዚህ በታች ካለው የመላክ ምትኬ የተለየ፣ ይህም መለያዎን ወደ አዲስ መሣሪያ ለማዛወር የተመሰጠረ ፋይል ይፈጥራል።",
-      "downloadDataButton": "አውርድ"
+      "downloadDataButton": "አውርድ",
+      "checkUpdatesTitle": "ዝማኔዎችን ይፈትሹ",
+      "checkUpdatesDesc": "Chatterbox በGoogle Play ላይ የለም፣ ስለዚህ በጀርባ የሚያዘምነው ነገር የለም። አዲስ ስሪት ለማግኘት chatterbox.app ይመልከቱ።",
+      "checkUpdatesButton": "አሁን ይፈትሹ"
     },
     "modals": {
       "feedbackTitle": "ግብረመልስ",
@@ -313,6 +316,13 @@
       "signOutFailed": "መውጣት አልተሳካም",
       "downloadDataFailedTitle": "ስህተት",
       "downloadDataFailedBody": "ውሂብዎን ማዘጋጀት አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
+      "checkUpdatesUpToDateTitle": "የቅርብ ጊዜ ስሪት ነው",
+      "checkUpdatesUpToDateBody": "ይህ የChatterbox የቅርብ ጊዜ ስሪት ነው።",
+      "checkUpdatesAvailableTitle": "ዝማኔ ይገኛል",
+      "checkUpdatesAvailableBody": "ስሪት {{version}} በ chatterbox.app ላይ ይገኛል።",
+      "checkUpdatesAvailableOpenButton": "chatterbox.app ይክፈቱ",
+      "checkUpdatesFailedTitle": "ዝማኔ ማረጋገጥ አልተቻለም",
+      "checkUpdatesFailedBody": "ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
       "voiceRecordFailed": "ቀረጻ መጀመር አልተሳካም።",
       "voiceStatusTitle": "የድምጽ ሁኔታ",
       "voiceStatusBody": "የድምጽ ማስታወሻዎ ተዘጋጅቷል! በ24 ሰዓታት ውስጥ ጊዜው ያልፋል።",

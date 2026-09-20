@@ -285,7 +285,10 @@
       "deletePartial": "Natanggal ang iyong account, pero may hindi natanggal na data. Makipag-ugnayan sa support.",
       "downloadDataTitle": "I-download ang aking data",
       "downloadDataDesc": "Kumuha ng kopya ng iyong profile at mga usapan bilang plain-text file na maaari mong itago o suriin — iba ito sa Export Backup sa ibaba, na gumagawa ng encrypted file para ilipat ang iyong account sa bagong device.",
-      "downloadDataButton": "I-download"
+      "downloadDataButton": "I-download",
+      "checkUpdatesTitle": "Tingnan kung may update",
+      "checkUpdatesDesc": "Wala ang Chatterbox sa Google Play, kaya walang nag-a-update nito sa background. Tingnan ang chatterbox.app para sa mas bagong bersyon.",
+      "checkUpdatesButton": "Tingnan ngayon"
     },
     "modals": {
       "feedbackTitle": "Feedback",
@@ -313,6 +316,13 @@
       "signOutFailed": "Nabigong mag-sign out",
       "downloadDataFailedTitle": "Error",
       "downloadDataFailedBody": "Hindi maihanda ang iyong data. Pakisubukan muli.",
+      "checkUpdatesUpToDateTitle": "Updated ka na",
+      "checkUpdatesUpToDateBody": "Ito ang pinakabagong bersyon ng Chatterbox.",
+      "checkUpdatesAvailableTitle": "May available na update",
+      "checkUpdatesAvailableBody": "Available ang bersyon {{version}} sa chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Buksan ang chatterbox.app",
+      "checkUpdatesFailedTitle": "Hindi natingnan kung may update",
+      "checkUpdatesFailedBody": "Tingnan ang iyong koneksyon at subukan muli.",
       "voiceRecordFailed": "Nabigong simulan ang pag-record.",
       "voiceStatusTitle": "Katayuan ng Boses",
       "voiceStatusBody": "Naitakda na ang iyong voice diary! Mag-e-expire ito sa loob ng 24 oras.",

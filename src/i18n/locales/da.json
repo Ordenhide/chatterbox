@@ -285,7 +285,10 @@
       "deletePartial": "Din konto blev slettet, men nogle data kunne ikke fjernes. Kontakt support.",
       "downloadDataTitle": "Download mine data",
       "downloadDataDesc": "Få en kopi af din profil og samtaler som en klartekstfil, du kan beholde eller inspicere — anderledes end eksportbackuppen nedenfor, som opretter en krypteret fil til at flytte din konto til en ny enhed.",
-      "downloadDataButton": "Download"
+      "downloadDataButton": "Download",
+      "checkUpdatesTitle": "Søg efter opdateringer",
+      "checkUpdatesDesc": "Chatterbox er ikke på Google Play, så intet opdaterer den i baggrunden. Tjek chatterbox.app for en nyere version.",
+      "checkUpdatesButton": "Tjek nu"
     },
     "modals": {
       "feedbackTitle": "Feedback",
@@ -313,6 +316,13 @@
       "signOutFailed": "Kunne ikke logge ud",
       "downloadDataFailedTitle": "Fejl",
       "downloadDataFailedBody": "Kunne ikke forberede dine data. Prøv igen.",
+      "checkUpdatesUpToDateTitle": "Du har den nyeste version",
+      "checkUpdatesUpToDateBody": "Dette er den nyeste version af Chatterbox.",
+      "checkUpdatesAvailableTitle": "Opdatering tilgængelig",
+      "checkUpdatesAvailableBody": "Version {{version}} er tilgængelig på chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Åbn chatterbox.app",
+      "checkUpdatesFailedTitle": "Kunne ikke tjekke for opdateringer",
+      "checkUpdatesFailedBody": "Tjek din forbindelse, og prøv igen.",
       "voiceRecordFailed": "Kunne ikke starte optagelse.",
       "voiceStatusTitle": "Stemmestatus",
       "voiceStatusBody": "Din stemmedagbog er indstillet! Den udløber om 24 timer.",

@@ -285,7 +285,10 @@
       "deletePartial": "Twoje konto zostało usunięte, ale niektórych danych nie udało się usunąć. Skontaktuj się z pomocą techniczną.",
       "downloadDataTitle": "Pobierz moje dane",
       "downloadDataDesc": "Uzyskaj kopię swojego profilu i rozmów jako zwykły plik tekstowy, który możesz zachować lub sprawdzić — różni się od Eksportu kopii zapasowej poniżej, który tworzy zaszyfrowany plik do przenoszenia konta na nowe urządzenie.",
-      "downloadDataButton": "Pobierz"
+      "downloadDataButton": "Pobierz",
+      "checkUpdatesTitle": "Sprawdź aktualizacje",
+      "checkUpdatesDesc": "Chatterbox nie jest dostępny w Google Play, więc nic nie aktualizuje go w tle. Sprawdź na chatterbox.app, czy jest nowsza wersja.",
+      "checkUpdatesButton": "Sprawdź teraz"
     },
     "modals": {
       "feedbackTitle": "Opinia",
@@ -313,6 +316,13 @@
       "signOutFailed": "Wylogowanie nie powiodło się",
       "downloadDataFailedTitle": "Błąd",
       "downloadDataFailedBody": "Nie udało się przygotować Twoich danych. Spróbuj ponownie.",
+      "checkUpdatesUpToDateTitle": "Masz najnowszą wersję",
+      "checkUpdatesUpToDateBody": "To jest najnowsza wersja Chatterboxa.",
+      "checkUpdatesAvailableTitle": "Dostępna aktualizacja",
+      "checkUpdatesAvailableBody": "Wersja {{version}} jest dostępna na chatterbox.app.",
+      "checkUpdatesAvailableOpenButton": "Otwórz chatterbox.app",
+      "checkUpdatesFailedTitle": "Nie udało się sprawdzić aktualizacji",
+      "checkUpdatesFailedBody": "Sprawdź połączenie i spróbuj ponownie.",
       "voiceRecordFailed": "Nie udało się rozpocząć nagrywania.",
       "voiceStatusTitle": "Status głosowy",
       "voiceStatusBody": "Twój dziennik głosowy został ustawiony! Wygaśnie za 24 godziny.",

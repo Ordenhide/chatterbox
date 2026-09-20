@@ -2,7 +2,9 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -36,6 +38,7 @@ import {
   type AccountActionError,
 } from '../services/account';
 import {exportUserData} from '../services/dataExport';
+import {checkForUpdate} from '../services/updateCheck';
 import {grantAiConsent, hasAiConsent, revokeAiConsent} from '../services/aiConsent';
 import {isLinkPreviewEnabled, setLinkPreviewEnabled} from '../services/privacyGuard';
 import {
@@ -72,6 +75,7 @@ export default function ProfileScreen() {
   const [biometricsOn, setBiometricsOn] = useState(() => isBiometricsEnabled());
   const [biometricsUsable, setBiometricsUsable] = useState(false);
   const [exportDataError, setExportDataError] = useState<string | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
   // Per device, so this reflects the phone in your hand.
   const [aiAllowed, setAiAllowed] = useState(false);
   // MMKV-backed and synchronous, unlike AI consent — no effect needed.
@@ -347,6 +351,37 @@ export default function ProfileScreen() {
     }
   }, [t, user?.uid]);
 
+  // Android only: this app isn't on Google Play, so nothing updates it in the
+  // background — the one request this sends happens because this button was
+  // tapped, never on a timer or at launch. See src/services/updateCheck.ts.
+  const handleCheckForUpdate = useCallback(async () => {
+    setCheckingUpdate(true);
+    try {
+      const result = await checkForUpdate();
+      if (result.status === 'update-available') {
+        Alert.alert(
+          t('profile.alerts.checkUpdatesAvailableTitle'),
+          t('profile.alerts.checkUpdatesAvailableBody', {version: result.versionName}),
+          [
+            {text: t('common.cancel'), style: 'cancel'},
+            {
+              text: t('profile.alerts.checkUpdatesAvailableOpenButton'),
+              onPress: () => {
+                Linking.openURL('https://chatterbox.app/#download').catch(() => {});
+              },
+            },
+          ],
+        );
+      } else if (result.status === 'up-to-date') {
+        Alert.alert(t('profile.alerts.checkUpdatesUpToDateTitle'), t('profile.alerts.checkUpdatesUpToDateBody'));
+      } else {
+        Alert.alert(t('profile.alerts.checkUpdatesFailedTitle'), t('profile.alerts.checkUpdatesFailedBody'));
+      }
+    } finally {
+      setCheckingUpdate(false);
+    }
+  }, [t]);
+
   const openFeedback = useCallback(() => {
     setFeedbackVisible(true);
   }, []);
@@ -556,6 +591,28 @@ export default function ProfileScreen() {
             <Text style={{color: colors.danger, fontSize: 12.5, marginTop: 8}}>{exportDataError}</Text>
           ) : null}
         </GlassView>
+        {Platform.OS === 'android' ? (
+          <GlassView style={[styles.visibilityCard, {borderColor: colors.glassBorder}]}>
+            <Text style={[styles.visibilityTitle, {color: colors.text}]}>
+              {t('profile.account.checkUpdatesTitle')}
+            </Text>
+            <Text style={[styles.visibilityDescription, {color: colors.textSecondary}]}>
+              {t('profile.account.checkUpdatesDesc')}
+            </Text>
+            <TouchableOpacity
+              style={[styles.focusBtn, {backgroundColor: colors.primary}, checkingUpdate && {opacity: 0.5}]}
+              disabled={checkingUpdate}
+              onPress={handleCheckForUpdate}>
+              {checkingUpdate ? (
+                <ActivityIndicator color={colors.textOnPrimary} />
+              ) : (
+                <Text style={[styles.focusBtnText, {color: colors.textOnPrimary}]}>
+                  {t('profile.account.checkUpdatesButton')}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </GlassView>
+        ) : null}
         <TouchableOpacity
           style={[styles.buttonSecondary, {backgroundColor: lockEnabled ? colors.surface : colors.primary}]}
           onPress={() => (lockEnabled ? removeLock() : setLockModalVisible(true))}>
