@@ -223,8 +223,17 @@ describe('resolveSealedMedia', () => {
     const path = await resolveSealedMedia('m6', 'image', 'https://example/x', info);
     expect([...mockState.files.keys()]).toEqual([path]);
 
-    mockState.body = Buffer.from('garbage');
-    await expect(resolveSealedMedia('m7', 'image', 'https://example/x', info)).rejects.toThrow();
+    // Full length, but tampered — a genuine authentication failure, not an
+    // incomplete download. Those two now leave the world in deliberately
+    // different states (see mediaFiles.test.ts's "downloadAndDecrypt
+    // resuming" suite): a short response is kept as a resumable partial,
+    // but a fully-assembled object that fails to authenticate never is —
+    // resuming onto something already known to be corrupt could not help.
+    const tamperedInfo = await publish(pattern(3000));
+    mockState.body[10] ^= 0xff;
+    await expect(
+      resolveSealedMedia('m7', 'image', 'https://example/x', tamperedInfo),
+    ).rejects.toThrow(MediaIntegrityError);
     expect([...mockState.files.keys()]).toEqual([path]);
   });
 });

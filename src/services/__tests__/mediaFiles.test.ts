@@ -12,10 +12,27 @@
  * temporal dead zone. (That is what "Cannot read properties of undefined"
  * means when it comes from a hoisted jest mock.)
  */
+/**
+ * A single canned `{status, body}` covers most tests. `responses`, when set,
+ * is a queue consumed one entry per `fetch()` call instead — what the
+ * resumable-download tests use to make the first call behave differently
+ * from the second (e.g. drop the connection, then honor a Range request).
+ */
+type MockResponse =
+  | {status: number; body: Buffer}
+  // A rejected fetch, optionally having streamed some bytes to the
+  // destination path before the connection dropped — real behavior, since
+  // blob-util writes to disk as the response arrives rather than buffering
+  // it all in memory first.
+  | {networkError: true; streamedBeforeDrop?: Buffer};
+
 const mockState = {
   files: new Map<string, Buffer>(),
   status: 200,
   body: Buffer.alloc(0),
+  responses: null as MockResponse[] | null,
+  /** Headers passed to each fetch() call, in order — asserted against for Range. */
+  requestHeaders: [] as Array<Record<string, string> | undefined>,
 };
 
 function mockNormalize(path: string): string {
@@ -60,9 +77,18 @@ jest.mock('react-native-blob-util', () => ({
       },
     },
     config: (options: {path: string}) => ({
-      async fetch() {
-        mockState.files.set(mockNormalize(options.path), Buffer.from(mockState.body));
-        return {info: () => ({status: mockState.status})};
+      async fetch(_method: string, _url: string, headers?: Record<string, string>) {
+        mockState.requestHeaders.push(headers);
+        const next = mockState.responses?.shift();
+        if (next && 'networkError' in next) {
+          if (next.streamedBeforeDrop) {
+            mockState.files.set(mockNormalize(options.path), Buffer.from(next.streamedBeforeDrop));
+          }
+          throw new Error('network error');
+        }
+        const {status, body} = next ?? {status: mockState.status, body: mockState.body};
+        mockState.files.set(mockNormalize(options.path), Buffer.from(body));
+        return {info: () => ({status})};
       },
     }),
   },
@@ -75,6 +101,7 @@ import {
   encryptToScratch,
   fileSink,
   fileSource,
+  resumeCachePath,
   scratchPath,
   toPath,
 } from '../mediaFiles';
@@ -94,6 +121,8 @@ beforeEach(() => {
   mockState.files.clear();
   mockState.status = 200;
   mockState.body = Buffer.alloc(0);
+  mockState.responses = null;
+  mockState.requestHeaders = [];
 });
 
 describe('toPath', () => {
@@ -215,6 +244,102 @@ describe('downloadAndDecrypt', () => {
     mockState.status = 500;
     await expect(downloadAndDecrypt('https://example/x', info, '/plain')).rejects.toThrow();
     expect(leaked()).toEqual([]);
+  });
+});
+
+describe('downloadAndDecrypt resuming', () => {
+  async function publish(data: Buffer) {
+    const sink = collectingSink();
+    const info = await encryptMedia(bytesSource(new Uint8Array(data)), sink, {});
+    mockState.body = Buffer.from(sink.result());
+    return info;
+  }
+
+  it('resumes from an existing partial cache via a Range request', async () => {
+    const data = pattern(4096);
+    const info = await publish(data);
+    const full = mockState.body;
+    const key = 'msg1:image';
+    const splitAt = Math.floor(full.length / 2);
+    mockState.files.set(resumeCachePath(key), full.subarray(0, splitAt));
+    mockState.responses = [{status: 206, body: full.subarray(splitAt)}];
+
+    const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+
+    expect(out).toBe('/plain');
+    expect(mockState.files.get('/plain')).toEqual(data);
+    expect(mockState.requestHeaders[0]).toEqual({Range: `bytes=${splitAt}-`});
+    // Consumed on success, same as a one-shot download — nothing left keyed
+    // for a resume that no longer has anything to resume.
+    expect(leaked('/plain')).toEqual([]);
+  });
+
+  it('keeps a partial after a dropped connection and resumes it on the next attempt', async () => {
+    const data = pattern(4096);
+    const info = await publish(data);
+    const full = mockState.body;
+    const key = 'msg2:video';
+    const splitAt = 777;
+
+    mockState.responses = [{networkError: true, streamedBeforeDrop: full.subarray(0, splitAt)}];
+    await expect(
+      downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key}),
+    ).rejects.toThrow('network error');
+    expect(mockState.files.get(resumeCachePath(key))).toEqual(full.subarray(0, splitAt));
+
+    mockState.responses = [{status: 206, body: full.subarray(splitAt)}];
+    const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+
+    expect(out).toBe('/plain');
+    expect(mockState.files.get('/plain')).toEqual(data);
+    expect(mockState.requestHeaders[1]).toEqual({Range: `bytes=${splitAt}-`});
+    expect(leaked('/plain')).toEqual([]);
+  });
+
+  it('leaves nothing behind after a dropped connection when there is no resumeKey', async () => {
+    // The opt-in design: without a key identifying the attachment, there is
+    // nowhere safe to resume from later, so this must fall back to exactly
+    // today's one-shot behavior rather than leaking a scratch file no caller
+    // knows how to find again.
+    const info = await publish(pattern(4096));
+    const full = mockState.body;
+    mockState.responses = [{networkError: true, streamedBeforeDrop: full.subarray(0, 777)}];
+    await expect(downloadAndDecrypt('https://example/x', info, '/plain')).rejects.toThrow(
+      'network error',
+    );
+    expect(leaked()).toEqual([]);
+  });
+
+  it('replaces rather than appends when the server ignores Range and resends the whole object', async () => {
+    // Naively appending this response onto the existing partial would double
+    // the prefix and corrupt the object; only the correct branch decrypts
+    // cleanly, so a wrong implementation fails this test via MediaIntegrityError.
+    const data = pattern(4096);
+    const info = await publish(data);
+    const full = mockState.body;
+    const key = 'msg4:file';
+    mockState.files.set(resumeCachePath(key), full.subarray(0, Math.floor(full.length / 2)));
+    mockState.responses = [{status: 200, body: full}];
+
+    const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+    expect(mockState.files.get('/plain')).toEqual(data);
+    expect(leaked('/plain')).toEqual([]);
+  });
+
+  it('discards an oversized leftover and restarts rather than trusting it', async () => {
+    const data = pattern(4096);
+    const info = await publish(data);
+    const full = mockState.body;
+    const key = 'msg5:image';
+    // Bigger than the object could ever be — not a valid prefix of anything.
+    mockState.files.set(resumeCachePath(key), Buffer.concat([full, Buffer.from('extra')]));
+    mockState.responses = [{status: 200, body: full}];
+
+    const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+    expect(mockState.files.get('/plain')).toEqual(data);
+    // Started fresh — no Range header, since the leftover was discarded first.
+    expect(mockState.requestHeaders[0]).toBeUndefined();
+    expect(leaked('/plain')).toEqual([]);
   });
 });
 

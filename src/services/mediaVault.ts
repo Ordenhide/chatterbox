@@ -116,7 +116,7 @@ export async function resolveSealedMedia(
     // where the check above would later accept it.
     const staging = scratchPath('media');
     try {
-      await downloadAndDecrypt(url, info, staging);
+      await downloadAndDecrypt(url, info, staging, {resumeKey: key});
       await fs.mv(staging, destination);
       return destination;
     } catch (error) {

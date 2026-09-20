@@ -27,6 +27,7 @@ import {
   type ByteSource,
   type MediaKeyInfo,
   type ProgressFn,
+  ciphertextLength,
   decryptMedia,
   encryptMedia,
 } from './mediaCrypto';
@@ -96,6 +97,103 @@ export async function fileSink(path: string): Promise<ByteSink> {
   };
 }
 
+/** Appends a whole file's contents onto another, in one base64 round trip. */
+async function appendFileTo(target: string, sourcePath: string): Promise<void> {
+  const base64 = await fs.readFile(toPath(sourcePath), 'base64');
+  await fs.appendFile(toPath(target), base64, 'base64');
+}
+
+/**
+ * Where a resumable download's ciphertext is cached between attempts.
+ *
+ * Independent of {@link ./mediaVault}'s own cache-path naming rather than
+ * imported from it — that module imports from this one, not the other way.
+ * Exported so a future cache sweep (e.g. on sign-out, alongside
+ * `clearMediaCache`) has something to enumerate; nothing calls it yet.
+ */
+export function resumeCachePath(key: string): string {
+  return `${fs.dirs.CacheDir}/cbxdl_${key.replace(/[^a-zA-Z0-9_-]/g, '_')}.bin`;
+}
+
+async function fetchToFile(
+  url: string,
+  path: string,
+  headers?: Record<string, string>,
+): Promise<number> {
+  const response = await ReactNativeBlobUtil.config({
+    path: toPath(path),
+    // Without this an HTTP error page is written to the file and then fails
+    // to decrypt, reporting tampering for what is really a 403.
+    followRedirect: true,
+  }).fetch('GET', url, headers);
+  return response.info().status;
+}
+
+/**
+ * Fetches the ciphertext bytes from `haveBytes` onward into `cipherPath`.
+ *
+ * For a fresh download (`haveBytes === 0`) this streams straight into
+ * `cipherPath`, same as before resumability existed: if the connection drops
+ * mid-stream, whatever already reached disk simply stays there, and it's the
+ * caller's job to decide whether that's worth keeping.
+ *
+ * For a resume, blob-util has no append mode — a response always overwrites
+ * whatever is at its `path` — so the new range is fetched to a temp file
+ * first and appended onto `cipherPath` with {@link appendFileTo}. If *that*
+ * request fails outright, whatever streamed to the temp file before it did
+ * is still salvaged onto `cipherPath` rather than thrown away: this is never
+ * a correctness risk, since `decryptMedia` refuses to run until the total
+ * length matches exactly and every chunk authenticates independently, so a
+ * bad or short salvage only ever costs a wasted round trip on the next
+ * attempt, never a wrong result.
+ */
+async function fetchInto(url: string, cipherPath: string, haveBytes: number): Promise<void> {
+  if (haveBytes === 0) {
+    const status = await fetchToFile(url, cipherPath);
+    if (status !== 200) {
+      // Whatever a non-2xx status wrote is an error page, not ciphertext —
+      // must not be mistaken for resumable progress by the caller.
+      await discard(cipherPath);
+      throw new Error(`mediaFiles: download failed with HTTP ${status}`);
+    }
+    return;
+  }
+
+  const partial = scratchPath('dlpart');
+  let status: number;
+  try {
+    status = await fetchToFile(url, partial, {Range: `bytes=${haveBytes}-`});
+  } catch (error) {
+    // The request rejected outright (a dropped connection, not a resolved
+    // response) — but the native side may still have streamed some bytes to
+    // `partial` first. Salvage them onto cipherPath before giving up this
+    // attempt: still not ciphertext we've validated, but a strictly better
+    // starting point for the next one than what we had before.
+    await appendFileTo(cipherPath, partial).catch(() => undefined);
+    await discard(partial);
+    throw error;
+  }
+
+  try {
+    if (status === 206) {
+      await appendFileTo(cipherPath, partial);
+    } else if (status === 200) {
+      // The server ignored the Range header and sent the whole object again
+      // — this is the complete object, not a suffix to append onto whatever
+      // was already cached.
+      await fs.writeFile(toPath(cipherPath), '', 'base64');
+      await appendFileTo(cipherPath, partial);
+    } else {
+      // A resolved but non-2xx response is an error page, not ciphertext —
+      // it lives only in `partial`, so cipherPath (still just `haveBytes`
+      // worth of previously-confirmed bytes) is untouched and safe to keep.
+      throw new Error(`mediaFiles: download failed with HTTP ${status}`);
+    }
+  } finally {
+    await discard(partial);
+  }
+}
+
 export type EncryptedUpload = {
   /** Path to the ciphertext, ready to hand to Storage. Caller deletes it. */
   path: string;
@@ -130,35 +228,72 @@ export async function encryptToScratch(
  * Returns the plaintext path. Throws {@link MediaIntegrityError} if the object
  * does not authenticate under `info` — callers must treat that as "do not
  * display this", not as a transient failure to retry.
+ *
+ * With `resumeKey`, a network failure mid-download (not a bad HTTP status,
+ * not a failed decrypt — those still always clean up, exactly as before)
+ * leaves the ciphertext fetched so far cached under that key, and the next
+ * call with the same key resumes from there via an HTTP Range request
+ * instead of starting over. The key should identify the specific attachment
+ * (message id + slot, not the download URL — the URL carries a bearer token
+ * and is itself sealed inside the message, so it makes a poor and sensitive
+ * cache key). Only the network transfer is resumable; decryption still
+ * refuses to run until the full expected ciphertext length is on disk, so
+ * this changes nothing about the integrity guarantee below.
  */
 export async function downloadAndDecrypt(
   url: string,
   info: MediaKeyInfo,
   destination: string,
-  onProgress?: ProgressFn,
+  options: {onProgress?: ProgressFn; resumeKey?: string} = {},
 ): Promise<string> {
-  const cipherPath = scratchPath('dl');
-  try {
-    const response = await ReactNativeBlobUtil.config({
-      path: cipherPath,
-      // Without this an HTTP error page is written to the file and then fails
-      // to decrypt, reporting tampering for what is really a 403.
-      followRedirect: true,
-    }).fetch('GET', url);
+  const expected = ciphertextLength(info.plaintextBytes, info.chunkBytes);
+  const cipherPath = options.resumeKey ? resumeCachePath(options.resumeKey) : scratchPath('dl');
+  let keepCipherCache = false;
 
-    const status = response.info().status;
-    if (status < 200 || status >= 300) {
-      throw new Error(`mediaFiles: download failed with HTTP ${status}`);
+  try {
+    let haveBytes = 0;
+    const existing = await fs.stat(toPath(cipherPath)).catch(() => null);
+    if (existing) {
+      const size = Number(existing.size);
+      if (Number.isFinite(size) && size > 0 && size <= expected) {
+        haveBytes = size;
+      } else {
+        // Bigger than the object could ever be, or unreadable — not a valid
+        // prefix of anything. Don't trust it.
+        await discard(cipherPath);
+      }
+    }
+
+    if (haveBytes < expected) {
+      await fetchInto(url, cipherPath, haveBytes);
     }
 
     const source = await fileSource(cipherPath);
+    if (source.size !== expected) {
+      throw new Error(`mediaFiles: download incomplete (${source.size}/${expected} bytes)`);
+    }
+
     const sink = await fileSink(destination);
-    await decryptMedia(source, sink, info, {onProgress});
+    await decryptMedia(source, sink, info, {onProgress: options.onProgress});
     return destination;
   } catch (error) {
     await discard(destination);
+    if (options.resumeKey) {
+      // Whatever is on disk right now — untouched previous bytes, newly
+      // appended ones, or bytes a dropped connection streamed before
+      // rejecting — is worth keeping for the next attempt as long as it's a
+      // plausible partial object. This one check is enough to tell that
+      // apart from the other ways this can fail: a bad HTTP status never
+      // writes to cipherPath (fetchInto only touches its own temp file, or
+      // discards cipherPath outright on a fresh attempt), and a failed
+      // decrypt only ever happens once cipherPath already holds exactly
+      // `expected` bytes — neither leaves it at a partial size.
+      const stat = await fs.stat(toPath(cipherPath)).catch(() => null);
+      const size = stat ? Number(stat.size) : 0;
+      keepCipherCache = Number.isFinite(size) && size > 0 && size < expected;
+    }
     throw error;
   } finally {
-    await discard(cipherPath);
+    if (!keepCipherCache) await discard(cipherPath);
   }
 }

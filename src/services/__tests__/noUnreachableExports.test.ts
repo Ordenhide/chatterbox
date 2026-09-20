@@ -35,7 +35,6 @@ const ROOT = join(__dirname, '..', '..', '..');
 const ALLOWED: Record<string, string> = {
   // Cryptographic primitives and library surface, exercised by their own tests.
   bytesSource: 'mediaCrypto ByteSource helper; the app supplies file- and blob-backed sources instead.',
-  ciphertextLength: 'Size arithmetic for callers that need to budget before encrypting. Tested directly.',
   isStructuredBody: 'messageBody predicate, kept for tests and logs — decodeBody handles both shapes.',
   sealedField: 'e2eeArtifacts helper for a shape the artifact tests construct.',
   sessionAssociatedData: 'X3DH AD derivation, verified against its own vectors.',
