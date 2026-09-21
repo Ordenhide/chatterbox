@@ -475,6 +475,33 @@ export default function ChatScreen() {
     }, 400);
   }, [chatId, user]);
 
+  /**
+   * Drops the stored draft, for when its text has left as a message.
+   *
+   * Clearing the composer was not enough, and could not be. The draft is
+   * written by a debounced timer that reads inputTextRef when it *fires*, so
+   * text typed and left alone for 400ms is already in storage by the time Send
+   * is pressed — and sending does not type anything, so nothing schedules
+   * another save to overwrite it. The message went out, the field emptied, and
+   * reopening the chat put the sent text straight back in the composer.
+   *
+   * Cancelling the pending timer is part of the fix rather than tidiness: one
+   * still in flight would fire after this and write again. It reads
+   * inputTextRef (empty by now), so what it writes is harmless — but only by
+   * accident, and only while sending happens to clear the field first.
+   */
+  const discardDraft = useCallback(() => {
+    if (!chatId || !user) return;
+    if (draftSaveTimeoutRef.current) {
+      clearTimeout(draftSaveTimeoutRef.current);
+      draftSaveTimeoutRef.current = null;
+    }
+    lastDraftRef.current = '';
+    // Empty text deletes the entry rather than storing a blank one — see
+    // services/drafts.ts.
+    setDraft(user.uid, chatId, '').catch(error => reportError(error, 'discard_draft'));
+  }, [chatId, user]);
+
   const scheduleTypingPing = useCallback(() => {
     if (!chatId || !user) return;
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
@@ -2366,9 +2393,10 @@ export default function ChatScreen() {
       return;
     }
     setComposerText('');
+    discardDraft();
     setSchedulePickerVisible(false);
     Alert.alert(t('chat.scheduledTitle'), t('chat.scheduledBody', {count: mins}));
-  }, [chatId, t, user, scheduleMinutes, setComposerText, encryptOutgoingMessage]);
+  }, [chatId, t, user, scheduleMinutes, setComposerText, discardDraft, encryptOutgoingMessage]);
 
   const handleSetReminder = useCallback(
     (message: IMessage, minutes: number) => {
@@ -2774,6 +2802,9 @@ export default function ChatScreen() {
       setMessages(prev => GiftedChat.append(prev, [pendingMessage]));
       setReplyTo(null);
       setComposerText('');
+      // Safe this early even on the offline branch below, which queues the
+      // text to the outbox — either way it is no longer only in the composer.
+      discardDraft();
       haptic('commit');
 
       if (!isOnline) {
@@ -2798,6 +2829,10 @@ export default function ChatScreen() {
           removePendingMessage(String(messageData._id));
           setMessages(prev => prev.filter(m => String(m._id) !== String(messageData._id)));
           setComposerText(message.text || '');
+          // The text is back in the composer and nowhere else, so it needs to
+          // be a draft again — discardDraft above deleted the one it came
+          // from, and putting text in the field does not schedule a save.
+          scheduleDraftSave();
           Alert.alert(t('chat.recipientDeleted'), t('chat.recipientDeletedComposer'));
           return;
         }
@@ -2829,6 +2864,8 @@ export default function ChatScreen() {
       addLinkPreview,
       burnMode,
       burnDuration,
+      discardDraft,
+      scheduleDraftSave,
       encryptOutgoingMessage,
       t,
       // Both feed the fan-out bloom. otherUserIds.length in particular has to
