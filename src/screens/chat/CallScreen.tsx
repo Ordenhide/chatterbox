@@ -138,11 +138,18 @@ export default function CallScreen() {
 
       // Awaited before the peer connection exists: ICE servers can only be
       // supplied at construction, so a list that arrived later would not apply
-      // to this call. Resolves from Remote Config's local cache after the
-      // first fetch, and falls back to STUN rather than rejecting.
+      // to this call. Mints a short-lived TURN credential through the
+      // getTurnCredentials Cloud Function, and falls back to STUN rather than
+      // rejecting when that is unavailable or unconfigured.
       const ice = await describeIceServers();
       if (!isMounted) return;
       // Recorded per call because a missing TURN relay is otherwise invisible:
+      // the call simply fails to connect between two symmetric NATs, which
+      // looks exactly like the other person having bad signal. See
+      // config/rtc.ts and CALLING.md.
+      if (ice.status === 'stun-only') {
+        reportError(new Error('starting a call with no TURN relay'), 'call_ice_stun_only');
+      }
       const pc = new RTCPeerConnection({iceServers: ice.servers});
       pcRef.current = pc;
 
