@@ -17,6 +17,9 @@
  */
 export function registerBackgroundMessageHandler(): void {}
 
+/** Nothing to reveal: no notification was ever posted. See above. */
+export async function revealNotificationsAfterUnlock(_userId: string): Promise<void> {}
+
 /* Foreground messaging: unavailable, for the same reason as above. These exist
  * so the import in App.tsx resolves; the code calling them is gated to
  * `Platform.OS === 'android'` and never reaches HarmonyOS. */

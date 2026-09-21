@@ -18,8 +18,10 @@ import {
   getToken,
   onTokenRefresh,
   requestPermission,
+  revealNotificationsAfterUnlock,
 } from './src/services/firebase/push';
 import {setUserFcmToken} from './src/services/firebaseChat';
+import {reportError} from './src/services/errorLog';
 import {initFeatureFlags} from './src/services/featureFlags';
 import {warmSecureStorage} from './src/services/storageMMKV';
 import LiquidGlassBackground from './src/components/LiquidGlassBackground';
@@ -86,6 +88,29 @@ function AppContent() {
   useEffect(() => {
     if (user && !hasSeenTutorial()) setTutorialVisible(true);
     const sub = DeviceEventEmitter.addListener(TUTORIAL_EVENT, () => setTutorialVisible(true));
+    return () => sub.remove();
+  }, [user]);
+
+  /**
+   * A message that arrived while the phone was locked shows only that
+   * something arrived; reaching the foreground is what proves the device has
+   * since been unlocked, so that is when the real text replaces it.
+   *
+   * Runs on mount too, not just on the transition: a notification tapped from
+   * the lock screen unlocks and opens the app in one gesture, which on a cold
+   * start means there was no background→active change to observe.
+   */
+  useEffect(() => {
+    if (!user) return;
+    const uid = user.uid;
+    const reveal = () =>
+      revealNotificationsAfterUnlock(uid).catch(error =>
+        reportError(error, 'reveal_notifications'),
+      );
+    reveal();
+    const sub = AppState.addEventListener('change', next => {
+      if (next === 'active') reveal();
+    });
     return () => sub.remove();
   }, [user]);
 

@@ -844,5 +844,9 @@
     "saveTitle": "Tiklash iborangizni saqlang",
     "savedIt": "Men uni saqladim",
     "copiedBody": "Tiklash iborasi vaqtinchalik xotiraga nusxalandi."
+  },
+  "push": {
+    "newMessage": "Yangi xabar",
+    "sentYouAMessage": "Sizga xabar yubordi"
   }
 }

@@ -860,5 +860,9 @@
     "saveTitle": "Sichere deine Wiederherstellungsphrase",
     "savedIt": "Ich habe sie gesichert",
     "copiedBody": "Wiederherstellungsphrase in die Zwischenablage kopiert."
+  },
+  "push": {
+    "newMessage": "Neue Nachricht",
+    "sentYouAMessage": "Hat dir eine Nachricht gesendet"
   }
 }

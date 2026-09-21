@@ -844,5 +844,9 @@
     "saveTitle": "ናይ ምምላስ ሓረግካ ዓቅብ",
     "savedIt": "ዓቂበዮ ኣለኹ",
     "copiedBody": "ናይ ምምላስ ሓረግ ናብ ክሊፕቦርድ ተቐዲሑ።"
+  },
+  "push": {
+    "newMessage": "ሓድሽ መልእኽቲ",
+    "sentYouAMessage": "መልእኽቲ ሰዲዱልካ"
   }
 }

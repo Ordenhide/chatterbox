@@ -844,5 +844,9 @@
     "saveTitle": "Mentsd el a helyreállítási kifejezésedet",
     "savedIt": "Elmentettem",
     "copiedBody": "A helyreállítási kifejezés a vágólapra másolva."
+  },
+  "push": {
+    "newMessage": "Új üzenet",
+    "sentYouAMessage": "Üzenetet küldött neked"
   }
 }

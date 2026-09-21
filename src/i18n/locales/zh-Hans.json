@@ -860,5 +860,9 @@
     "saveTitle": "保存你的助记词",
     "savedIt": "我已保存",
     "copiedBody": "助记词已复制到剪贴板。"
+  },
+  "push": {
+    "newMessage": "新消息",
+    "sentYouAMessage": "收到了一条消息"
   }
 }

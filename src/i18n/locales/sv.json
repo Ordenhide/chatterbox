@@ -844,5 +844,9 @@
     "saveTitle": "Spara din återställningsfras",
     "savedIt": "Jag har sparat den",
     "copiedBody": "Återställningsfrasen har kopierats till urklipp."
+  },
+  "push": {
+    "newMessage": "Nytt meddelande",
+    "sentYouAMessage": "Skickade ett meddelande till dig"
   }
 }

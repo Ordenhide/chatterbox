@@ -844,5 +844,9 @@
     "saveTitle": "Hifadhi kifungu chako cha kurejesha",
     "savedIt": "Nimekihifadhi",
     "copiedBody": "Kifungu cha kurejesha kimenakiliwa kwenye ubao wa kunakili."
+  },
+  "push": {
+    "newMessage": "Ujumbe mpya",
+    "sentYouAMessage": "Amekutumia ujumbe"
   }
 }

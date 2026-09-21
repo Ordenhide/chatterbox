@@ -860,5 +860,9 @@
     "saveTitle": "Guarda tu frase de recuperación",
     "savedIt": "Ya la guardé",
     "copiedBody": "Frase de recuperación copiada al portapapeles."
+  },
+  "push": {
+    "newMessage": "Mensaje nuevo",
+    "sentYouAMessage": "Te envió un mensaje"
   }
 }

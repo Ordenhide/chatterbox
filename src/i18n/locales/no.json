@@ -844,5 +844,9 @@
     "saveTitle": "Lagre gjenopprettingsfrasen din",
     "savedIt": "Jeg har lagret den",
     "copiedBody": "Gjenopprettingsfrasen er kopiert til utklippstavlen."
+  },
+  "push": {
+    "newMessage": "Ny melding",
+    "sentYouAMessage": "Sendte deg en melding"
   }
 }

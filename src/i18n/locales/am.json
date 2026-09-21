@@ -844,5 +844,9 @@
     "saveTitle": "የመልሶ ማግኛ ሐረግዎን ያስቀምጡ",
     "savedIt": "አስቀምጫለሁ",
     "copiedBody": "የመልሶ ማግኛ ሐረግ ወደ ቅንጥብ ሰሌዳ ተቀድቷል።"
+  },
+  "push": {
+    "newMessage": "አዲስ መልእክት",
+    "sentYouAMessage": "መልእክት ልኮልዎታል"
   }
 }

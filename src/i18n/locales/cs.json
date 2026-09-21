@@ -844,5 +844,9 @@
     "saveTitle": "Uložte si svou obnovovací frázi",
     "savedIt": "Uložil jsem si ji",
     "copiedBody": "Obnovovací fráze zkopírována do schránky."
+  },
+  "push": {
+    "newMessage": "Nová zpráva",
+    "sentYouAMessage": "Poslal vám zprávu"
   }
 }

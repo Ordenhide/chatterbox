@@ -844,5 +844,9 @@
     "saveTitle": "Ajiye jimlar dawo da kai",
     "savedIt": "Na ajiye ta",
     "copiedBody": "An kwafi jimlar dawowa zuwa allon kwafi."
+  },
+  "push": {
+    "newMessage": "Sabon saƙo",
+    "sentYouAMessage": "Ya aiko muku da saƙo"
   }
 }

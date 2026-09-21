@@ -844,5 +844,9 @@
     "saveTitle": "Bewaar je herstelzin",
     "savedIt": "Ik heb hem bewaard",
     "copiedBody": "Herstelzin gekopieerd naar het klembord."
+  },
+  "push": {
+    "newMessage": "Nieuw bericht",
+    "sentYouAMessage": "Heeft je een bericht gestuurd"
   }
 }

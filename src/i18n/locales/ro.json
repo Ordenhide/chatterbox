@@ -844,5 +844,9 @@
     "saveTitle": "Salvați fraza dvs. de recuperare",
     "savedIt": "Am salvat-o",
     "copiedBody": "Fraza de recuperare a fost copiată în clipboard."
+  },
+  "push": {
+    "newMessage": "Mesaj nou",
+    "sentYouAMessage": "Ți-a trimis un mesaj"
   }
 }

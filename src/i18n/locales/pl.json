@@ -844,5 +844,9 @@
     "saveTitle": "Zapisz swoją frazę odzyskiwania",
     "savedIt": "Zapisałem ją",
     "copiedBody": "Fraza odzyskiwania skopiowana do schowka."
+  },
+  "push": {
+    "newMessage": "Nowa wiadomość",
+    "sentYouAMessage": "Wysłał Ci wiadomość"
   }
 }

@@ -844,5 +844,9 @@
     "saveTitle": "Simpan frasa pemulihan anda",
     "savedIt": "Saya telah menyimpannya",
     "copiedBody": "Frasa pemulihan disalin ke papan keratan."
+  },
+  "push": {
+    "newMessage": "Mesej baharu",
+    "sentYouAMessage": "Menghantar mesej kepada anda"
   }
 }

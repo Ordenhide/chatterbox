@@ -860,5 +860,9 @@
     "saveTitle": "Save your recovery phrase",
     "savedIt": "I've saved it",
     "copiedBody": "Recovery phrase copied to clipboard."
+  },
+  "push": {
+    "newMessage": "New message",
+    "sentYouAMessage": "Sent you a message"
   }
 }

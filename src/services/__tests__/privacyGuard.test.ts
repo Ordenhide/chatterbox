@@ -5,9 +5,13 @@
  * it did not apply".
  */
 const mockSetSecureFlag = jest.fn();
+const mockIsLocked = jest.fn();
 const mockReportHandled = jest.fn();
 let mockPlatformOS = 'android';
-let mockNativeModules: Record<string, unknown> = {ScreenshotGuard: {setSecureFlag: mockSetSecureFlag}};
+let mockNativeModules: Record<string, unknown> = {
+  ScreenshotGuard: {setSecureFlag: mockSetSecureFlag},
+  ScreenLock: {isLocked: mockIsLocked},
+};
 
 jest.mock('react-native', () => ({
   get Platform() {
@@ -25,13 +29,17 @@ jest.mock('../firebase/firestore', () => ({
 }));
 jest.mock('../errorLog', () => ({reportHandled: (...a: unknown[]) => mockReportHandled(...a)}));
 
-import {applyScreenshotProtection} from '../privacyGuard';
+import {applyScreenshotProtection, isScreenLocked} from '../privacyGuard';
 
 beforeEach(() => {
   mockSetSecureFlag.mockReset();
+  mockIsLocked.mockReset().mockResolvedValue(false);
   mockReportHandled.mockReset();
   mockPlatformOS = 'android';
-  mockNativeModules = {ScreenshotGuard: {setSecureFlag: mockSetSecureFlag}};
+  mockNativeModules = {
+    ScreenshotGuard: {setSecureFlag: mockSetSecureFlag},
+    ScreenLock: {isLocked: mockIsLocked},
+  };
 });
 
 describe('applyScreenshotProtection', () => {
@@ -74,5 +82,48 @@ describe('applyScreenshotProtection', () => {
     mockPlatformOS = 'ios';
     expect(applyScreenshotProtection(true)).toBe(false);
     expect(mockSetSecureFlag).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * This one decides whether a message's plaintext goes on the lock screen, so
+ * the property under test is the direction it fails in. Unlike the screenshot
+ * flag above — where the safe answer is "I did not protect anything" — an
+ * unanswerable question here has to come back as *locked*, because the other
+ * answer is the one that displays the message.
+ */
+describe('isScreenLocked', () => {
+  it('reports the keyguard state the native module gives', async () => {
+    mockIsLocked.mockResolvedValue(true);
+    expect(await isScreenLocked()).toBe(true);
+    mockIsLocked.mockResolvedValue(false);
+    expect(await isScreenLocked()).toBe(false);
+  });
+
+  it('answers locked when the native module is missing', async () => {
+    mockNativeModules = {};
+    expect(await isScreenLocked()).toBe(true);
+    expect(mockReportHandled).toHaveBeenCalled();
+  });
+
+  it('answers locked when the module is there but the method is not', async () => {
+    mockNativeModules = {ScreenLock: {}};
+    expect(await isScreenLocked()).toBe(true);
+    expect(mockReportHandled).toHaveBeenCalled();
+  });
+
+  it('answers locked when the call rejects', async () => {
+    mockIsLocked.mockRejectedValue(new Error('no keyguard service'));
+    expect(await isScreenLocked()).toBe(true);
+    expect(mockReportHandled).toHaveBeenCalled();
+  });
+
+  // iOS implements reveal-on-unlock itself, from the user's own Show Previews
+  // setting. Answering "locked" there would override that with a permanent
+  // redaction the user never asked for.
+  it('defers to the OS on iOS', async () => {
+    mockPlatformOS = 'ios';
+    expect(await isScreenLocked()).toBe(false);
+    expect(mockIsLocked).not.toHaveBeenCalled();
   });
 });

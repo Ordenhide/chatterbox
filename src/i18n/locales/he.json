@@ -844,5 +844,9 @@
     "saveTitle": "שמרו את ביטוי השחזור שלכם",
     "savedIt": "שמרתי אותו",
     "copiedBody": "ביטוי השחזור הועתק ללוח."
+  },
+  "push": {
+    "newMessage": "הודעה חדשה",
+    "sentYouAMessage": "שלח לך הודעה"
   }
 }

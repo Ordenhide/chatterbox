@@ -860,5 +860,9 @@
     "saveTitle": "Enregistrez votre phrase de récupération",
     "savedIt": "Je l’ai enregistrée",
     "copiedBody": "Phrase de récupération copiée dans le presse-papiers."
+  },
+  "push": {
+    "newMessage": "Nouveau message",
+    "sentYouAMessage": "Vous a envoyé un message"
   }
 }

@@ -147,6 +147,38 @@ export function isNotificationContentHidden(): boolean {
   return mmkvStorage.getBoolean('hide_notification_content') ?? false;
 }
 
+/**
+ * Whether the lock screen is up right now.
+ *
+ * Asked before a notification's body is chosen, so a message's plaintext only
+ * reaches the screen once the phone is unlocked. Android's own mechanism for
+ * this — VISIBILITY_PRIVATE — is not enough on its own: the platform redacts
+ * only when the user has turned on "hide sensitive notifications", which is
+ * off by default, so the body was being displayed in full on the lock screen.
+ *
+ * Answers true on any failure, and on a platform with no answer to give.
+ * Unlike the screenshot flag above, the safe default here is not "off": the
+ * fallback decides whether plaintext is shown, so an unanswerable question has
+ * to resolve the private way. iOS is the exception — it implements
+ * reveal-on-unlock at the OS level, and its own setting should govern rather
+ * than being second-guessed from here.
+ */
+export async function isScreenLocked(): Promise<boolean> {
+  if (Platform.OS !== 'android') return false;
+  try {
+    const {NativeModules} = require('react-native');
+    const lock = NativeModules.ScreenLock;
+    if (typeof lock?.isLocked !== 'function') {
+      reportHandled(new Error('ScreenLock native module unavailable'), 'screen_lock_state');
+      return true;
+    }
+    return !!(await lock.isLocked());
+  } catch (error) {
+    reportHandled(error, 'screen_lock_state_failed');
+    return true;
+  }
+}
+
 export function setNotificationContentHidden(enabled: boolean): void {
   mmkvStorage.setBoolean('hide_notification_content', enabled);
 }

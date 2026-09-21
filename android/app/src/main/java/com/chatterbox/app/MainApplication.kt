@@ -20,6 +20,7 @@ class MainApplication : Application(), ReactApplication {
           val packages = PackageList(this).packages.toMutableList()
           packages.add(ScreenshotGuardPackage())
           packages.add(KeyBackupPackage())
+          packages.add(ScreenLockPackage())
           return packages
         }
 

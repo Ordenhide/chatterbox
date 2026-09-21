@@ -844,5 +844,9 @@
     "saveTitle": "I-save ang iyong recovery phrase",
     "savedIt": "Na-save ko na ito",
     "copiedBody": "Nakopya ang recovery phrase sa clipboard."
+  },
+  "push": {
+    "newMessage": "Bagong mensahe",
+    "sentYouAMessage": "Nagpadala sa iyo ng mensahe"
   }
 }

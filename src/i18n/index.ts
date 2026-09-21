@@ -175,7 +175,19 @@ const languageDetector = {
 const _codesAgree: Record<LanguageCode, unknown> = resources;
 void _codesAgree;
 
-i18n
+/**
+ * Resolves once the detector has settled and `t` speaks the user's language.
+ *
+ * Exported because the language detector is asynchronous, and one caller runs
+ * outside React: the background push handler builds a notification the moment
+ * a message arrives, which on a cold start the notification itself triggered
+ * can be before detection has finished. Calling `t` then returns the English
+ * fallback — the whole notification, in English, on a phone set to something
+ * else. React callers never see this, since every screen re-renders on
+ * 'languageChanged'; a one-shot caller has nothing to re-render and has to
+ * wait instead.
+ */
+export const i18nReady: Promise<unknown> = i18n
   .use(languageDetector)
   .use(initReactI18next)
   .init({

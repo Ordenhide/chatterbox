@@ -844,5 +844,9 @@
     "saveTitle": "Gem din gendannelsessætning",
     "savedIt": "Jeg har gemt den",
     "copiedBody": "Gendannelsessætning kopieret til udklipsholderen."
+  },
+  "push": {
+    "newMessage": "Ny besked",
+    "sentYouAMessage": "Sendte dig en besked"
   }
 }
