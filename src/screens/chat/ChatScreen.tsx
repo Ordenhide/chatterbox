@@ -115,7 +115,12 @@ import {
   openGroupEnvelope,
   sealGroupText,
 } from '../../services/groupRatchetMessages';
-import {messageProtection, sealedKeyCount, sendTextMessage} from '../../services/e2eeMessages';
+import {
+  messageProtection,
+  rememberSentBody,
+  sealedKeyCount,
+  sendTextMessage,
+} from '../../services/e2eeMessages';
 import ChatPickerModal from '../../components/ChatPickerModal';
 import WikipediaCardModal from '../../components/WikipediaCardModal';
 import {bodyWeight, fonts, terminal} from '../../theme/typography';
@@ -625,10 +630,41 @@ export default function ChatScreen() {
           !data.mediaSealed && !!(data.image || data.video || data.audio || data.file);
         const bodyOnly = !!body && !hasUnsealedMedia;
 
+        /**
+         * This device's own copy of the body it is about to seal.
+         *
+         * Called on every sealed path below, because a sealed message's own
+         * sender has no other way back to it: the forward-secret paths advance
+         * a chain as they encrypt, so the envelope will not open here even
+         * once. Without this, the composer's optimistic bubble was the only
+         * copy, and the next Firestore snapshot replaced it with "🔒 Unable to
+         * decrypt" — so a thread showed only the other person's half.
+         *
+         * Both halves are needed. The store is what survives a restart, and
+         * the in-memory caches are what this session reads: the snapshot
+         * listener seeds them once per chat open, so a message sent afterwards
+         * would not be in them, and the snapshot carrying it would cache a
+         * padlock over text that was already safely on disk.
+         *
+         * Mirrors acceptBody in the receive path deliberately — same encoded
+         * body to the store, same decoded text to the cache, same media keys
+         * registered — so a photo the sender sent renders from its content key
+         * exactly like one they received.
+         */
+        const keepOwnCopy = async () => {
+          const id = String(data._id ?? '');
+          if (!id) return;
+          const decoded = decodeBody(body);
+          decryptedTextRef.current.set(id, decoded.text);
+          if (decoded.media) pendingMediaRef.current.set(id, decoded.media);
+          await rememberSentBody(user.uid, chatId, id, body);
+        };
+
         if (allowRatchet && bodyOnly && otherUserIds.length === 1) {
           const outcome = await sealText(user.uid, chatId, otherUserIds[0], body);
           if (outcome.protection === 'ratchet') {
             if (outcome.identityStatus === 'changed') setPeerSessionReset(true);
+            await keepOwnCopy();
             return {...data, text: '', mediaKeys: undefined, encrypted: outcome.envelope} as ChatMessage;
           }
           // 'unavailable' — peer runs an older client. Fall through to fan-out.
@@ -644,6 +680,7 @@ export default function ChatScreen() {
             body,
           );
           if (outcome.protection === 'sender-key') {
+            await keepOwnCopy();
             return {...data, text: '', mediaKeys: undefined, encrypted: outcome.envelope} as ChatMessage;
           }
         }
@@ -680,6 +717,7 @@ export default function ChatScreen() {
         if (body) {
           next.encrypted = seal(body);
           next.text = '';
+          await keepOwnCopy();
         }
         // Only pointers to *unencrypted* objects need sealing. When the bytes
         // are encrypted the URL stays in the clear on purpose: it reveals that

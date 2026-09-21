@@ -414,3 +414,39 @@ describe('resolveMessageText records what it opened', () => {
     expect(mockSaveBodies).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * The sender's own copy has to be stored at send time, because nothing can
+ * reconstruct it afterwards.
+ *
+ * A forward-secret message is sealed to the *recipient* and advances the
+ * sender's chain as it is encrypted, so the sender cannot open what they just
+ * sent — not once, not ever. The composer's optimistic bubble hid this: it
+ * showed the text until the Firestore snapshot replaced it with the stored
+ * document, whose `text` is blank and whose envelope will not open here. Every
+ * message this device sent then rendered "🔒 Unable to decrypt", and reopening
+ * the chat showed a thread where only the other person's half was readable.
+ */
+describe('the sender keeps a readable copy of what they sent', () => {
+  const ratchetEnvelope = {
+    alg: 'chatterbox-ratchet-envelope-v1',
+    from: ME,
+    message: {alg: 'chatterbox-double-ratchet-v1', header: {dh: 'x', pn: 0, n: 0}, body: 'ct'},
+  };
+
+  beforeEach(() => {
+    mockSaveBodies.mockReset().mockResolvedValue(undefined);
+  });
+
+  it('stores the body it sealed under the ratchet, keyed by message id', async () => {
+    mockSealText.mockResolvedValue({protection: 'ratchet', envelope: ratchetEnvelope});
+    await sendTextMessage(CHAT, msg('the nuclear codes'), ME, ['bob']);
+    expect(mockSaveBodies).toHaveBeenCalledWith(ME, CHAT, new Map([['m1', 'the nuclear codes']]));
+  });
+
+  it('stores nothing for a message that went out in the clear', async () => {
+    mockFetchPeerPublicKeyChecked.mockResolvedValue({key: null, status: 'unenrolled'});
+    await sendTextMessage(CHAT, msg('in the clear'), ME, ['bob']);
+    expect(mockSaveBodies).not.toHaveBeenCalled();
+  });
+});

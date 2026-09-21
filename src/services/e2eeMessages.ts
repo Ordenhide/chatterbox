@@ -82,6 +82,35 @@ async function collectRecipients(uids: string[]): Promise<EnvelopeRecipient[] | 
 }
 
 /**
+ * Keeps this device's own copy of a body it just sealed and sent.
+ *
+ * Nothing can reconstruct it afterwards. A forward-secret message is sealed to
+ * the *recipient* and advances the sender's own chain as it encrypts, so the
+ * sender cannot open what they just sent — not once, not ever. Only the
+ * composer's optimistic bubble held the text, and it is dropped as soon as the
+ * message lands, which left every sent message reading "🔒 Unable to decrypt"
+ * from the next snapshot onwards.
+ *
+ * `body` is the *encoded* body, not the text, matching what the receive side
+ * stores: a message carrying an attachment keeps its content keys, so the
+ * sender's own photos stay openable too (see services/messageBody.ts).
+ *
+ * Applied to every sealed path, not just the forward-secret ones. A static-DH
+ * envelope happens to be re-openable by its sender today, but only for as long
+ * as that device keypair survives — making readability of your own history
+ * depend on never rotating a key is not a property worth keeping.
+ */
+export async function rememberSentBody(
+  myUserId: string,
+  chatId: string,
+  messageId: string,
+  body: string,
+): Promise<void> {
+  if (!messageId) return;
+  await saveBodies(myUserId, chatId, new Map([[messageId, body]]));
+}
+
+/**
  * Sends `message`, sealing its text when every recipient has published a key.
  *
  * `recipientUids` is everyone in the chat except the sender. The sender is
@@ -107,6 +136,7 @@ export async function sendTextMessage(
       const outcome = await sealText(myUserId, chatId, recipientUids[0], message.text);
       if (outcome.protection === 'ratchet') {
         await sendMessage(chatId, {...message, text: '', encrypted: outcome.envelope});
+        await rememberSentBody(myUserId, chatId, String(message._id ?? ''), message.text);
         return {encrypted: true, protection: 'ratchet'};
       }
       // Peer has published no bundle — an older client. Fall through to the
@@ -126,6 +156,7 @@ export async function sendTextMessage(
     // derives lastMessage.text from it, so the chat-list preview becomes empty
     // rather than leaking the body — a placeholder belongs in the UI layer.
     await sendMessage(chatId, {...message, text: '', encrypted: envelope});
+    await rememberSentBody(myUserId, chatId, String(message._id ?? ''), message.text);
     return {encrypted: true, protection: 'static'};
   } catch (error) {
     // Never silently downgrade to plaintext on a crypto failure: the caller
