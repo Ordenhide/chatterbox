@@ -49,6 +49,22 @@ export function scratchPath(label: string, extension = 'bin'): string {
   return `${fs.dirs.CacheDir}/${label}_${uniqueSuffix()}.${extension}`;
 }
 
+/**
+ * Whether a local file is still there.
+ *
+ * Exists to tell a retryable failure from a permanent one. A queued upload
+ * whose bytes have been reclaimed can never succeed, so retrying it on every
+ * chat open would flash an upload it cannot finish, forever — see
+ * services/mediaUploads.ts.
+ */
+export async function fileExists(path: string): Promise<boolean> {
+  try {
+    return await fs.exists(toPath(path));
+  } catch {
+    return false;
+  }
+}
+
 /** Best-effort delete. Never throws — callers use it in `finally`. */
 export async function discard(path: string | null | undefined): Promise<void> {
   if (!path) return;

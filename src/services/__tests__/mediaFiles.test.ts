@@ -99,6 +99,7 @@ import {
   discard,
   downloadAndDecrypt,
   encryptToScratch,
+  fileExists,
   fileSink,
   fileSource,
   resumeCachePath,
@@ -351,5 +352,38 @@ describe('discard', () => {
   it('ignores null and undefined', async () => {
     await expect(discard(null)).resolves.toBeUndefined();
     await expect(discard(undefined)).resolves.toBeUndefined();
+  });
+});
+
+/**
+ * Used to decide whether a queued upload can ever succeed, so the direction it
+ * fails in is the property: an unanswerable question has to read as "gone", or
+ * an upload that can never finish stays queued and is retried on every chat
+ * open forever.
+ */
+describe('fileExists', () => {
+  it('is true for a file that is there and false for one that is not', async () => {
+    mockState.files.set('/present', Buffer.from([1]));
+    expect(await fileExists('/present')).toBe(true);
+    expect(await fileExists('/absent')).toBe(false);
+  });
+
+  it('strips a file:// scheme like the rest of this module', async () => {
+    mockState.files.set('/with scheme', Buffer.from([1]));
+    expect(await fileExists('file:///with%20scheme')).toBe(true);
+  });
+
+  it('answers false rather than throwing when the check itself fails', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const {fs} = require('react-native-blob-util').default;
+    const real = fs.exists;
+    fs.exists = async () => {
+      throw new Error('storage unavailable');
+    };
+    try {
+      expect(await fileExists('/present')).toBe(false);
+    } finally {
+      fs.exists = real;
+    }
   });
 });

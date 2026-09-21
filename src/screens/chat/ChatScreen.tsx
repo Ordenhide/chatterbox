@@ -78,7 +78,9 @@ import {
   getOutboxMessages,
   removeOutboxMessage,
   setCachedMessages,
+  type OutboxItem,
 } from '../../services/offlineCache';
+import {applyUploadedUrl} from '../../services/mediaUploads';
 import {loadBodies, saveBodies} from '../../services/messageBodyStore';
 import {useNetworkStatus} from '../../hooks/useNetworkStatus';
 import {prefetchMessageImages} from '../../services/imageCache';
@@ -99,6 +101,7 @@ import {
   toggleReaction,
   updateMessage,
   uploadFile,
+  uploadFileResumable,
   updateCall,
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
@@ -144,7 +147,7 @@ import {
   peersSupportEncryptedMedia,
 } from '../../services/e2eeKeys';
 import {type MediaKeyInfo} from '../../services/mediaCrypto';
-import {discard, encryptToScratch} from '../../services/mediaFiles';
+import {discard, encryptToScratch, fileExists} from '../../services/mediaFiles';
 import {resolveSealedMedia} from '../../services/mediaVault';
 import {markViewOnceViewed} from '../../services/viewOnce';
 import {MEDIA_SLOTS, decodeBody, encodeBody, type MediaSlot} from '../../services/messageBody';
@@ -1772,43 +1775,6 @@ export default function ChatScreen() {
     loadDraft();
   }, [chatId, user, setComposerText]);
 
-  useEffect(() => {
-    if (!chatId || !user || !isOnline) return;
-    let active = true;
-    const flushOutbox = async () => {
-      const queued = await getOutboxMessages(user.uid);
-      const forChat = queued.filter(item => item.chatId === chatId);
-      for (const item of forChat) {
-        if (!active) return;
-        try {
-          // Encrypts here, not at enqueue time: fetching the peer's key needs
-          // network, which is exactly what wasn't available when this was
-          // queued. This used to send `item.message` — the original plaintext
-          // — outright, so anything sent while offline permanently skipped
-          // E2EE even when the peer had a key.
-          const outgoing = await encryptOutgoingMessage(item.message);
-          await sendMessage(chatId, outgoing);
-          await removeOutboxMessage(user.uid, item.id);
-          setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
-          setMessages(prev => prev.filter(m => !(String(m._id) === item.id && (m as any).pending)));
-        } catch (error) {
-          // Keep in outbox if it still fails — unless the recipient deleted
-          // their account, which no amount of retrying will fix. Left queued,
-          // it would be re-attempted on every launch and stay stuck on screen
-          // as a pending message that never resolves.
-          if (isRecipientUnreachable(error)) {
-            await removeOutboxMessage(user.uid, item.id);
-            setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
-            setMessages(prev => prev.filter(m => String(m._id) !== item.id));
-          }
-        }
-      }
-    };
-    flushOutbox();
-    return () => {
-      active = false;
-    };
-  }, [chatId, user, isOnline, encryptOutgoingMessage]);
 
   // Proactively checks the peer's key when the chat opens, not just when this
   // device sends something — encryptOutgoingMessage's check would otherwise
@@ -2284,6 +2250,17 @@ export default function ChatScreen() {
    * under its own filename would publish the title to anyone who can list the
    * bucket, which is most of what encrypting the bytes was for.
    */
+  /**
+   * One-shot upload, for an attachment whose URL a caller embeds itself rather
+   * than handing to a message.
+   *
+   * Only `prepareAudioForSend` uses this, and deliberately stays outside the
+   * durable queue below: a voice note is embedded in the message document
+   * whenever it fits, so this runs only for a clip too large to inline, and
+   * the recording it would lose is seconds old and still on disk. Inverting
+   * that flow to build its message first would restructure the whole voice
+   * path for a window that small.
+   */
   const uploadAttachment = useCallback(
     async (
       label: string,
@@ -2308,6 +2285,198 @@ export default function ChatScreen() {
     },
     [chatId, otherUserIds, runUpload],
   );
+
+  /**
+   * Uploads a queued item's attachment, fills its URL in, and sends it.
+   *
+   * The one place an attachment send completes, whether it was queued a moment
+   * ago or by a run of the app that no longer exists. Order matters on the way
+   * out too: the queue entry goes away only once the message is in Firestore,
+   * so a failure anywhere in here leaves something to retry rather than a
+   * message that was neither sent nor kept.
+   */
+  const finishQueuedUpload = useCallback(
+    async (item: OutboxItem, label: string): Promise<void> => {
+      if (!chatId || !user || !item.pendingUpload) return;
+      const pending = item.pendingUpload;
+      const {path, objectName, slot, ownsPath, mime, sessionUrl} = pending;
+      // Bytes that are gone can never be uploaded, so this is the one failure
+      // here that must not be left queued: retried on every chat open it would
+      // flash an upload that cannot finish, forever. Reachable when the OS
+      // reclaims a picker's temp copy out from under an unencrypted send.
+      if (!(await fileExists(path))) {
+        await removeOutboxMessage(user.uid, item.id);
+        throw new Error('mediaUploads: the attachment is no longer on this device');
+      }
+
+      const url = await runUpload(label, onProgress =>
+        uploadFileResumable(chatId, path, objectName, {
+          mime,
+          // Present only for an upload a previous run of the app started. The
+          // server is then asked how much of it arrived, and only the rest is
+          // sent — this is what keeps the transferred bytes.
+          sessionUrl,
+          /**
+           * Written down before a single byte moves.
+           *
+           * A session URL is the only thing that makes those bytes findable
+           * again, so holding it in memory would lose it to exactly the crash
+           * it exists to survive. Persisted onto the queue entry the instant
+           * the session opens, and onto the in-memory copy too, so a retry
+           * inside this same run resumes rather than starting over.
+           */
+          onSession: async opened => {
+            pending.sessionUrl = opened;
+            await enqueueOutboxMessage(user.uid, item);
+          },
+          onProgress,
+        }),
+      );
+
+      const outgoing = await encryptOutgoingMessage(applyUploadedUrl(item.message, slot, url));
+      await sendMessage(chatId, outgoing);
+      await removeOutboxMessage(user.uid, item.id);
+      // The ciphertext is in Storage now; the local copy is dead weight in a
+      // directory the OS will not necessarily reclaim promptly. Only ours to
+      // delete when we made it — see PendingUpload.ownsPath.
+      if (ownsPath) await discard(path);
+    },
+    [chatId, user, runUpload, encryptOutgoingMessage],
+  );
+
+  /**
+   * Sends a message whose attachment is still only on this device.
+   *
+   * Encrypts the bytes whenever every recipient can read them
+   * (services/mediaCrypto.ts). The capability check is all-or-nothing and
+   * deliberately fails closed: if a recipient's capabilities cannot be read,
+   * `peersSupportEncryptedMedia` throws rather than guessing, and the caller
+   * reports a failed send. The alternative — treating "I could not find out"
+   * as "send it unencrypted" — is the same silent-downgrade shape this
+   * codebase has already had to fix twice, and it would be invisible to both
+   * ends.
+   *
+   * The message is recorded in the outbox *before* the upload starts. That
+   * ordering is the whole point: it is what makes an app killed mid-transfer
+   * recoverable, since the queue entry and the encrypted file both outlive the
+   * process. See services/mediaUploads.ts.
+   *
+   * Throws on failure, after taking the entry back out of the queue — so each
+   * caller's own error handling (the photo path's inline fallback, the
+   * others' alerts) behaves exactly as it did. Durability here buys back the
+   * interrupted case, and deliberately does not turn a *failed* upload into a
+   * silent background retry that would race those fallbacks into sending the
+   * same attachment twice.
+   */
+  const sendQueuedAttachment = useCallback(
+    async (
+      label: string,
+      message: ChatMessage,
+      slot: MediaSlot,
+      localUri: string,
+      fileName: string,
+      mime: string | undefined,
+    ): Promise<void> => {
+      if (!chatId || !user) throw new Error('chat not ready');
+
+      let path = localUri;
+      let ownsPath = false;
+      let key: MediaKeyInfo | undefined;
+      if (await peersSupportEncryptedMedia(otherUserIds)) {
+        const encrypted = await encryptToScratch(localUri, {mime});
+        path = encrypted.path;
+        ownsPath = true;
+        key = encrypted.info;
+      }
+
+      const item: OutboxItem = {
+        id: String(message._id),
+        chatId,
+        // `mediaSealed` and `mediaKeys` are set together, always: the first
+        // tells every reader the URL points at ciphertext and the second is
+        // what encryptOutgoingMessage folds into the sealed body. A message
+        // with one and not the other is either unreadable or leaks the object.
+        message: key ? {...message, mediaSealed: true, mediaKeys: {[slot]: key}} : message,
+        createdAt: Date.now(),
+        pendingUpload: {
+          path,
+          objectName: key
+            ? // A random name when encrypted: uploading a document under its
+              // own filename would publish the title to anyone who can list
+              // the bucket, which is most of what encrypting the bytes was for.
+              `enc_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+            : fileName,
+          slot,
+          ownsPath,
+          // The *uploaded* object's type, which is not the picked file's once
+          // the bytes are encrypted: what goes up is then ciphertext, and
+          // describing it as image/jpeg would be a lie the CDN acts on.
+          mime: key ? 'application/octet-stream' : mime || 'application/octet-stream',
+        },
+      };
+
+      await enqueueOutboxMessage(user.uid, item);
+      try {
+        await finishQueuedUpload(item, label);
+      } catch (error) {
+        await removeOutboxMessage(user.uid, item.id);
+        if (ownsPath) await discard(path);
+        throw error;
+      }
+    },
+    [chatId, user, otherUserIds, finishQueuedUpload],
+  );
+
+  useEffect(() => {
+    if (!chatId || !user || !isOnline) return;
+    let active = true;
+    const flushOutbox = async () => {
+      const queued = await getOutboxMessages(user.uid);
+      const forChat = queued.filter(item => item.chatId === chatId);
+      for (const item of forChat) {
+        if (!active) return;
+        try {
+          if (item.pendingUpload) {
+            // An attachment send that a previous run of the app did not finish
+            // — almost always because it was killed mid-transfer. The bytes
+            // are still on disk and the message is still here, so this picks
+            // the send up rather than losing both. The transfer itself starts
+            // over; see services/mediaUploads.ts on why that is as far as
+            // putFile can be taken.
+            await finishQueuedUpload(item, t('chat.uploadingFile'));
+          } else {
+            // Encrypts here, not at enqueue time: fetching the peer's key needs
+            // network, which is exactly what wasn't available when this was
+            // queued. This used to send `item.message` — the original plaintext
+            // — outright, so anything sent while offline permanently skipped
+            // E2EE even when the peer had a key.
+            const outgoing = await encryptOutgoingMessage(item.message);
+            await sendMessage(chatId, outgoing);
+            await removeOutboxMessage(user.uid, item.id);
+          }
+          setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
+          setMessages(prev => prev.filter(m => !(String(m._id) === item.id && (m as any).pending)));
+        } catch (error) {
+          // Keep in outbox if it still fails — unless the recipient deleted
+          // their account, which no amount of retrying will fix. Left queued,
+          // it would be re-attempted on every launch and stay stuck on screen
+          // as a pending message that never resolves.
+          if (isRecipientUnreachable(error)) {
+            await removeOutboxMessage(user.uid, item.id);
+            // Dropping the entry has to drop its bytes too, or the encrypted
+            // scratch copy outlives the only record that referenced it.
+            if (item.pendingUpload?.ownsPath) await discard(item.pendingUpload.path);
+            setPendingMessages(prev => prev.filter(m => String(m._id) !== item.id));
+            setMessages(prev => prev.filter(m => String(m._id) !== item.id));
+          }
+        }
+      }
+    };
+    flushOutbox();
+    return () => {
+      active = false;
+    };
+  }, [chatId, user, isOnline, encryptOutgoingMessage, finishQueuedUpload, t]);
 
   /**
    * Resolves a locally recorded file into something the *recipient* can play.
@@ -2927,14 +3096,51 @@ export default function ChatScreen() {
     }
     let fileName = asset.fileName || `media_${Date.now()}`;
     let uploadUri = asset.uri;
-    let mediaUrl: string | null = null;
-    let mediaKey: MediaKeyInfo | undefined;
+
+    /**
+     * Built before the upload rather than from its result.
+     *
+     * That ordering is what makes an interrupted transfer recoverable: the
+     * message is queued first, so closing the app mid-upload no longer takes
+     * it down with the transfer. The media URL arrives via applyUploadedUrl,
+     * and `mediaSealed`/`mediaKeys` are set by sendQueuedAttachment once it
+     * knows whether the bytes went up encrypted.
+     */
+    const messageData: ChatMessage = {
+      _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+      text: '',
+      createdAt: new Date(),
+      videoDuration: isVideo ? asset.duration : undefined,
+      viewOnce: viewOnceMode || undefined,
+      replyTo: replyTo
+        ? {
+            _id: replyTo._id,
+            text: replyTo.text,
+            image: (replyTo as any).image,
+            video: (replyTo as any).video,
+            user: {
+              _id: replyTo.user?._id || '',
+              name: replyTo.user?.name,
+            },
+          }
+        : undefined,
+      user: {
+        _id: user.uid,
+        name: senderName(user),
+        avatar: user.photoURL,
+      },
+    };
 
     if (isVideo) {
       try {
-        const uploaded = await uploadAttachment(t('chat.uploadingVideo'), uploadUri, fileName, asset.type);
-        mediaUrl = uploaded.url;
-        mediaKey = uploaded.key;
+        await sendQueuedAttachment(
+          t('chat.uploadingVideo'),
+          messageData,
+          'video',
+          uploadUri,
+          fileName,
+          asset.type,
+        );
       } catch (error) {
         // The cause is not knowable from here — a missing bucket, a rules
         // rejection and a dropped connection all land in this catch — so
@@ -2969,16 +3175,16 @@ export default function ChatScreen() {
             console.warn('Image resize failed, uploading original.', resizeError);
           }
         }
-        const uploaded = await uploadAttachment(
+        await sendQueuedAttachment(
           t('chat.uploadingImage'),
+          messageData,
+          'image',
           uploadUri,
           fileName,
           // The resize above rewrites to JPEG, so the asset's own type would
           // be wrong for anything that started as PNG or HEIC.
           uploadUri === asset.uri ? asset.type : 'image/jpeg',
         );
-        mediaUrl = uploaded.url;
-        mediaKey = uploaded.key;
       } catch (error) {
         // Falling back to an inline copy, which encryptOutgoingMessage still
         // seals field-by-field — so this is a downgrade in *transport*, not in
@@ -2992,45 +3198,28 @@ export default function ChatScreen() {
           return;
         }
         const mime = asset.type || 'image/jpeg';
-        mediaUrl = `data:${mime};base64,${base64}`;
+        // Reuses the same message id, which is free: a failed
+        // sendQueuedAttachment takes its own queue entry back out, so nothing
+        // is left behind to send this a second time. No content key and no
+        // mediaSealed either — an inline copy lives inside the message
+        // document, so it is sealed as a field rather than as an object.
+        const inline = {...messageData, image: `data:${mime};base64,${base64}`};
+        if (!(await sendEncrypted(inline))) return;
       }
     }
-    const messageData: ChatMessage = {
-      _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      text: '',
-      createdAt: new Date(),
-      image: isVideo ? undefined : mediaUrl || undefined,
-      video: isVideo ? mediaUrl || undefined : undefined,
-      videoDuration: isVideo ? asset.duration : undefined,
-      // Set together, always: `mediaSealed` tells every reader the URL points
-      // at ciphertext, and `mediaKeys` is what encryptOutgoingMessage folds
-      // into the sealed body. A message with one and not the other is either
-      // unreadable or leaks the object, so they are never assigned apart.
-      mediaSealed: mediaKey ? true : undefined,
-      mediaKeys: mediaKey ? {[isVideo ? 'video' : 'image']: mediaKey} : undefined,
-      viewOnce: viewOnceMode || undefined,
-      replyTo: replyTo
-        ? {
-            _id: replyTo._id,
-            text: replyTo.text,
-            image: (replyTo as any).image,
-            video: (replyTo as any).video,
-            user: {
-              _id: replyTo.user?._id || '',
-              name: replyTo.user?.name,
-            },
-          }
-        : undefined,
-      user: {
-        _id: user.uid,
-        name: senderName(user),
-        avatar: user.photoURL,
-      },
-    };
 
     if (viewOnceMode) setViewOnceMode(false);
-    if (await sendEncrypted(messageData)) setReplyTo(null);
-  }, [chatId, user, replyTo, isOnline, viewOnceMode, sendEncrypted, t]);
+    setReplyTo(null);
+  }, [
+    chatId,
+    user,
+    replyTo,
+    isOnline,
+    viewOnceMode,
+    sendEncrypted,
+    sendQueuedAttachment,
+    t,
+  ]);
 
   const handlePickFile = useCallback(async () => {
     if (!chatId || !user) return;
@@ -3051,42 +3240,20 @@ export default function ChatScreen() {
         return;
       }
       const pickedUri = file.fileCopyUri ?? file.uri;
-      let remoteUrl: string | null = null;
-      let fileKey: MediaKeyInfo | undefined;
-      try {
-        const uploaded = await uploadAttachment(
-          t('chat.uploadingFile'),
-          pickedUri,
-          file.name || `file_${Date.now()}`,
-          file.type ?? undefined,
-        );
-        remoteUrl = uploaded.url;
-        fileKey = uploaded.key;
-      } catch (error) {
-        // Unlike images there is no inline fallback for files, so this is the
-        // end of the send. See the video catch for why the cause is recorded
-        // rather than named.
-        reportError(error, 'file_upload_failed');
-        Alert.alert(t('chat.fileSendFailedTitle'), t('chat.uploadUnfinishedBody'));
-        return;
-      } finally {
-        // Only the copy copyTo made is ours to delete; file.uri belongs to the
-        // document provider. Same reasoning as uploadAttachment's own finally.
-        if (file.fileCopyUri) await discard(file.fileCopyUri);
-      }
-
       const messageData: ChatMessage = {
         _id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         text: '',
         createdAt: new Date(),
         file: {
-          uri: remoteUrl,
+          // Filled in once the object lands — see applyUploadedUrl. Built
+          // before the upload rather than from its result, which is what lets
+          // an interrupted transfer be finished later instead of taking this
+          // message with it.
+          uri: '',
           name: file.name ?? undefined,
           type: file.type ?? undefined,
           size: file.size ?? undefined,
         },
-        mediaSealed: fileKey ? true : undefined,
-        mediaKeys: fileKey ? {file: fileKey} : undefined,
         replyTo: replyTo
           ? {
               _id: replyTo._id,
@@ -3106,19 +3273,37 @@ export default function ChatScreen() {
         },
       };
 
-      // sendEncrypted reports its own failures, and reports them accurately —
-      // reaching the catch below would have blamed the file picker for what is
-      // actually a send failure.
-      if (await sendEncrypted(messageData)) {
+      try {
+        await sendQueuedAttachment(
+          t('chat.uploadingFile'),
+          messageData,
+          'file',
+          pickedUri,
+          file.name || `file_${Date.now()}`,
+          file.type ?? undefined,
+        );
         setReplyTo(null);
         haptic('commit');
+      } catch (error) {
+        // Unlike images there is no inline fallback for files, so this is the
+        // end of the send. See the video catch for why the cause is recorded
+        // rather than named.
+        reportError(error, 'file_upload_failed');
+        Alert.alert(t('chat.fileSendFailedTitle'), t('chat.uploadUnfinishedBody'));
+        return;
+      } finally {
+        // Only the copy copyTo made is ours to delete; file.uri belongs to the
+        // document provider. Safe even for an unencrypted upload, whose
+        // pendingUpload points at this same path: the send either finished, or
+        // failed and took its queue entry with it.
+        if (file.fileCopyUri) await discard(file.fileCopyUri);
       }
     } catch (error: any) {
       if (!DocumentPicker.isCancel(error)) {
         Alert.alert(t('common.error'), t('chat.filePickFailed'));
       }
     }
-  }, [chatId, user, replyTo, isOnline, sendEncrypted, t]);
+  }, [chatId, user, replyTo, isOnline, sendQueuedAttachment, t]);
 
   const startRecording = async () => {
     try {

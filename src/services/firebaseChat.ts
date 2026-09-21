@@ -21,6 +21,9 @@ import {
   writeBatch,
 } from './firebase/firestore';
 import {getStorage, getDownloadURL, ref, deleteObject, uploadFileFromUri} from './firebase/storage';
+import {getAuth} from './firebase/auth';
+import {firebaseConfig} from '../firebaseConfig';
+import {uploadResumable} from './resumableUpload';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
 import {reportError} from './errorLog';
 import {
@@ -911,6 +914,51 @@ export async function uploadFile(
 ): Promise<string> {
   const storageRef = ref(storage, `chats/${chatId}/${path}`);
   return uploadFileFromUri(storageRef, uri, onProgress);
+}
+
+/**
+ * Uploads an attachment over Cloud Storage's resumable protocol, so an
+ * interrupted transfer can be continued instead of restarted.
+ *
+ * Same object path as {@link uploadFile} and the same return — a download URL
+ * — so the two are interchangeable from a caller's point of view. What differs
+ * is that a session survives the process: pass the `sessionUrl` this reported
+ * through `onSession` and the upload resumes from whatever the server already
+ * holds. See ./resumableUpload for the protocol and ./mediaUploads for who
+ * persists that URL.
+ *
+ * The download URL still comes from the SDK rather than being assembled here,
+ * because it carries a download token that only the object's own metadata has.
+ */
+export async function uploadFileResumable(
+  chatId: string,
+  uri: string,
+  path: string,
+  options: {
+    mime: string;
+    sessionUrl?: string;
+    onSession?: (url: string) => void | Promise<void>;
+    onProgress?: (percent: number) => void;
+  },
+): Promise<string> {
+  const objectPath = `chats/${chatId}/${path}`;
+  // The REST protocol needs a bearer token of its own; putFile got one from
+  // the native SDK internally.
+  const idToken = await getAuth().currentUser?.getIdToken();
+  if (!idToken) {
+    throw new Error('firebaseChat: cannot upload without a signed-in user');
+  }
+  await uploadResumable({
+    bucket: firebaseConfig.storageBucket,
+    objectPath,
+    path: uri,
+    mime: options.mime,
+    idToken,
+    sessionUrl: options.sessionUrl,
+    onSession: options.onSession,
+    onProgress: options.onProgress,
+  });
+  return getDownloadURL(ref(storage, objectPath));
 }
 
 /**

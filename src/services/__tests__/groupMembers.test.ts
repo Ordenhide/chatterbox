@@ -28,6 +28,10 @@ jest.mock('../firebase/firestore', () => ({
   where: jest.fn(),
   writeBatch: jest.fn(),
 }));
+jest.mock('../firebase/auth', () => ({
+  getAuth: () => ({currentUser: {getIdToken: async () => 'test-id-token'}}),
+}));
+jest.mock('../resumableUpload', () => ({uploadResumable: jest.fn()}));
 jest.mock('../firebase/storage', () => ({
   getStorage: () => ({}),
   getDownloadURL: jest.fn(),

@@ -1,5 +1,6 @@
 import mmkvStorage from './storageMMKV';
 import {IMessage} from 'react-native-gifted-chat';
+import type {PendingUpload} from './mediaUploads';
 
 const CHATS_KEY = '@chatterbox:cachedChats';
 const MESSAGES_KEY = '@chatterbox:cachedMessages';
@@ -7,11 +8,18 @@ const OUTBOX_KEY = '@chatterbox:outbox';
 
 type CachedChat = Record<string, any>;
 
-type OutboxItem = {
+export type OutboxItem = {
   id: string;
   chatId: string;
   message: any;
   createdAt: number;
+  /**
+   * Set when the message is waiting on an attachment that is still only on
+   * this device. Queued before the upload starts rather than after it
+   * finishes, which is what lets an interrupted transfer be picked up again
+   * instead of taking the message down with it — see services/mediaUploads.ts.
+   */
+  pendingUpload?: PendingUpload;
 };
 
 function toMillis(value: any): number | null {
