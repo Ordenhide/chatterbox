@@ -57,21 +57,25 @@ export default function CallScreen() {
   const restartingIceRef = useRef(false);
   const makingOfferRef = useRef(false);
 
-  const localVideoTrack = useMemo(() => {
-    if (!localStream) return null;
-    return localStream.getVideoTracks()?.[0] || null;
-  }, [localStream]);
+  /**
+   * State rather than derived from localStream, because a MediaStream is
+   * mutated in place: toggleVideo adds a track to the existing stream and
+   * hands the same object back to setLocalStream, so React's Object.is bail-out
+   * means a value memoised on [localStream] never recomputes. Deriving the
+   * track that way left the self-view permanently absent after turning the
+   * camera on mid-call.
+   */
+  const [localVideoTrack, setLocalVideoTrack] = useState<any>(null);
 
   const localAudioTrack = useMemo(() => {
     if (!localStream) return null;
     return localStream.getAudioTracks()?.[0] || null;
   }, [localStream]);
 
-  const hasLocalVideo = useMemo(() => {
-    if (!localStream) return false;
-    const track = localStream.getVideoTracks()?.[0];
-    return !!track && track.enabled;
-  }, [localStream]);
+  // isVideoEnabled, not track.enabled: the latter is mutated by toggleVideo
+  // without changing any dependency, so reading it from a memo showed whatever
+  // the camera was doing when the call started and never updated again.
+  const hasLocalVideo = !!localVideoTrack && isVideoEnabled;
 
   const hasRemoteVideo = useMemo(() => {
     if (!remoteStream) return false;
@@ -114,7 +118,10 @@ export default function CallScreen() {
 
       const stream = await mediaDevices.getUserMedia({
         audio: audioConstraints,
-        video: callType === 'video',
+        // Explicitly the front camera. `video: true` leaves the choice to the
+        // platform, and a video call opening on the rear camera is never what
+        // was meant.
+        video: callType === 'video' ? {facingMode: 'user'} : false,
       });
       if (!isMounted) return;
       // Apply the answer-screen camera choice before the track is attached to
@@ -127,6 +134,7 @@ export default function CallScreen() {
       }
       localStreamRef.current = stream;
       setLocalStream(stream);
+      setLocalVideoTrack(stream.getVideoTracks()?.[0] || null);
       InCallManager.start({media: callType === 'video' ? 'video' : 'audio'});
       if (typeof (InCallManager as any).setAudioSessionMode === 'function') {
         (InCallManager as any).setAudioSessionMode(callType === 'video' ? 'videoChat' : 'voiceChat');
@@ -411,12 +419,16 @@ export default function CallScreen() {
       return;
     }
     try {
-      const videoStream = await mediaDevices.getUserMedia({video: true, audio: false});
+      const videoStream = await mediaDevices.getUserMedia({
+        video: {facingMode: 'user'},
+        audio: false,
+      });
       const track = videoStream.getVideoTracks()?.[0];
       if (track && currentStream) {
         currentStream.addTrack(track);
         pcRef.current.addTrack(track, currentStream);
         setLocalStream(currentStream);
+        setLocalVideoTrack(track);
         setIsVideoEnabled(true);
         if (isCaller) {
           await updateCall(chatId, callId, {status: 'ringing'});
@@ -446,7 +458,7 @@ export default function CallScreen() {
       </Text>
 
       {hasRemoteVideo && remoteStream ? (
-        <RTCView streamURL={remoteStream.toURL()} style={styles.remoteVideo} />
+        <RTCView streamURL={remoteStream.toURL()} style={styles.remoteVideo} zOrder={0} />
       ) : (
         <View style={[styles.remotePlaceholder, {backgroundColor: colors.surface}]}>
           <Text style={{color: colors.textSecondary}}>
@@ -455,8 +467,25 @@ export default function CallScreen() {
         </View>
       )}
 
+      {/*
+        zOrder puts this above the remote view. On Android both are backed by
+        SurfaceViewRenderer, which composites outside the normal view hierarchy
+        — so absolute positioning alone is not enough, and the self-view sat
+        invisible behind the full-screen remote one. 0/1 is the split the
+        library's own docs recommend for exactly this layout.
+
+        mirror because this is the user looking at themselves through the
+        front camera, which everyone expects to behave like a mirror. It is
+        local-only: what the other side receives is unmirrored.
+      */}
       {hasLocalVideo && localStream ? (
-        <RTCView streamURL={localStream.toURL()} style={styles.localVideo} />
+        <RTCView
+          streamURL={localStream.toURL()}
+          style={styles.localVideo}
+          zOrder={1}
+          mirror
+          objectFit="cover"
+        />
       ) : null}
 
       <View style={styles.controls}>
