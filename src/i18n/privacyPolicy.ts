@@ -109,6 +109,7 @@ The private key that decrypts your messages never leaves your device, except as 
       body: `We do not sell, trade or rent your personal information. Data reaches:
 
 • Google Firebase — our hosting provider, as described above.
+• Cloudflare Realtime — the audio and video of a call, when your device and the other person's cannot reach each other directly.
 • The Wikimedia Foundation — one name, when you tap it to look it up on Wikipedia.
 • Google Cloud Speech-to-Text — the audio of one voice message, when you ask for a transcript.
 • Google Cloud Translation — the text of one message, when you ask for a translation.
@@ -117,6 +118,8 @@ The private key that decrypts your messages never leaves your device, except as 
 The last three are switched off in this release. There is no control anywhere in the app that turns transcription, translation or summaries on, so nothing reaches those three services. They are listed rather than deleted because the code is still here and the features are meant to return — and when they do, they return with this disclosure and with a prompt before the first use. What would be sent then is sent to produce your result, not to train anything; neither a transcript nor a translation is stored on our servers.
 
 The Wikipedia lookup has no switch because there is nothing standing to switch off: it runs on the tap and not otherwise. Wikipedia receives that one name and your IP address, the same as if you had typed it into their search box — no account, no message, no conversation. What comes back is shown and not saved, and nothing about it is written to the conversation.
+
+Cloudflare Realtime has no switch either. Most calls do not need it: two devices that can reach each other directly — most calls on the same network — connect without it, and nothing is relayed. When they cannot, commonly because the two of you are on different mobile networks, the already-encrypted call is relayed rather than left unable to connect. What Cloudflare sees is both IP addresses, the call's timing, and roughly how much data moved; the audio and video stay under the same DTLS-SRTP encryption described in section 2, so relaying does not decrypt them.
 
 We may disclose what we hold if the law requires it. What we hold is the list in section 2. We cannot produce message contents, because we cannot read them.`,
     },
@@ -236,6 +239,7 @@ If you install the update, it replaces the app in place using the same signing k
       body: `我们不出售、不交易、不出租你的个人信息。数据会到达：
 
 • Google Firebase——我们的托管服务商，如上所述。
+• Cloudflare Realtime——当你的设备和对方的设备无法直接互联时，用于中继通话的音视频。
 • 维基媒体基金会——当你点击某个名字去维基百科查它时，那一个名字。
 • Google Cloud Speech-to-Text——当你请求转写时，一条语音消息的音频。
 • Google Cloud Translation——当你请求翻译时，一条消息的文字。
@@ -244,6 +248,8 @@ If you install the update, it replaces the app in place using the same signing k
 后三者在本次发行中是关闭的。应用里没有任何开关可以打开转写、翻译或摘要，所以没有任何内容会到达这三个服务。之所以列出而不是删掉，是因为代码还在、这些功能还打算回来——它们回来的时候，会连同这段披露和首次使用前的询问一起回来。到那时发出去的东西，是为了产出你要的结果，不用于训练任何模型；转写和翻译都不会保存在我们的服务器上。
 
 维基百科查询没有开关，因为没有什么常驻的东西可关：它只在你点的那一下运行，此外不运行。维基百科收到的是那一个名字和你的 IP 地址，跟你自己在它的搜索框里输入一样——没有账号，没有消息，没有对话。返回的内容只是显示出来，不保存，也不会写进对话里。
+
+Cloudflare Realtime 同样没有开关。大多数通话不需要它：两台能够直接互联的设备——同一网络下的大多数通话——不经过它就能连上，不会被中继。当无法直连时——常见于双方处于不同的移动网络——已经加密的通话会被中继，而不是直接连不上。Cloudflare 能看到的是双方的 IP 地址、通话的时间，以及大致的数据量；音视频内容仍然受第2节所述的同一套 DTLS-SRTP 加密保护，中继并不会解密它们。
 
 如果法律要求，我们可能披露我们持有的内容。我们持有的就是第 2 节那份清单。我们拿不出消息内容，因为我们读不了。`,
     },
@@ -362,6 +368,7 @@ Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Ger
       body: `Wir verkaufen, tauschen oder vermieten deine personenbezogenen Daten nicht. Daten erreichen:
 
 • Google Firebase — unseren Hosting-Anbieter, wie oben beschrieben.
+• Cloudflare Realtime — Audio und Video eines Anrufs, wenn dein Gerät und das der anderen Person sich nicht direkt erreichen können.
 • Die Wikimedia Foundation — ein einzelner Name, wenn du ihn antippst, um ihn auf Wikipedia nachzuschlagen.
 • Google Cloud Speech-to-Text — die Audioaufnahme einer Sprachnachricht, wenn du ein Transkript anforderst.
 • Google Cloud Translation — den Text einer Nachricht, wenn du eine Übersetzung anforderst.
@@ -370,6 +377,8 @@ Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Ger
 Die letzten drei sind in dieser Version abgeschaltet. Es gibt in der App keine Einstellung, die Transkription, Übersetzung oder Zusammenfassungen einschaltet, also erreicht diese drei Dienste nichts. Sie stehen hier, statt gelöscht zu sein, weil der Code noch da ist und die Funktionen zurückkommen sollen — und wenn sie das tun, kommen sie mit dieser Offenlegung und mit einer Nachfrage vor dem ersten Mal zurück. Was dann gesendet würde, wird gesendet, um dein Ergebnis zu erzeugen, nicht um etwas zu trainieren; weder ein Transkript noch eine Übersetzung wird auf unseren Servern gespeichert.
 
 Das Nachschlagen hat keinen Schalter, weil es nichts Dauerhaftes abzuschalten gibt: Es läuft beim Antippen und sonst nicht. Wikipedia erhält diesen Namen und deine IP-Adresse, genau wie wenn du ihn selbst in das Suchfeld getippt hättest — kein Konto, keine Nachricht, kein Gespräch. Was zurückkommt, wird angezeigt und nicht gespeichert, und nichts davon wird in das Gespräch geschrieben.
+
+Cloudflare Realtime hat ebenfalls keinen Schalter. Die meisten Anrufe brauchen es nicht: Zwei Geräte, die sich direkt erreichen können — die meisten Anrufe im selben Netzwerk —, verbinden sich ohne es, und nichts wird weitergeleitet. Wenn das nicht möglich ist, häufig weil ihr in unterschiedlichen Mobilfunknetzen seid, wird der bereits verschlüsselte Anruf weitergeleitet, statt gar keine Verbindung zuzulassen. Was Cloudflare sieht, sind beide IP-Adressen, der Zeitpunkt des Anrufs und ungefähr, wie viele Daten übertragen wurden; Audio und Video bleiben unter derselben in Abschnitt 2 beschriebenen DTLS-SRTP-Verschlüsselung, sodass die Weiterleitung sie nicht entschlüsselt.
 
 Wir können offenlegen, was wir haben, wenn das Gesetz es verlangt. Was wir haben, ist die Liste aus Abschnitt 2. Nachrichteninhalte können wir nicht herausgeben, weil wir sie nicht lesen können.`,
     },
@@ -488,6 +497,7 @@ La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo c
       body: `No vendemos, intercambiamos ni alquilamos tu información personal. Los datos llegan a:
 
 • Google Firebase, nuestro proveedor de alojamiento, como se describe arriba.
+• Cloudflare Realtime — el audio y el vídeo de una llamada, cuando tu dispositivo y el de la otra persona no pueden conectarse directamente.
 • La Fundación Wikimedia: un solo nombre, cuando lo tocas para buscarlo en Wikipedia.
 • Google Cloud Speech-to-Text: el audio de un mensaje de voz, cuando pides una transcripción.
 • Google Cloud Translation: el texto de un mensaje, cuando pides una traducción.
@@ -496,6 +506,8 @@ La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo c
 Los tres últimos están apagados en esta versión. No hay ningún control en la aplicación que encienda la transcripción, la traducción o los resúmenes, así que nada llega a esos tres servicios. Están en la lista en vez de borrados porque el código sigue aquí y las funciones han de volver: cuando vuelvan, volverán con esta declaración y con una pregunta antes del primer uso. Lo que se enviaría entonces se envía para producir tu resultado, no para entrenar nada; ni una transcripción ni una traducción se guardan en nuestros servidores.
 
 La búsqueda en Wikipedia no tiene interruptor porque no hay nada permanente que apagar: se ejecuta con el toque y no de otro modo. Wikipedia recibe ese nombre y tu dirección IP, igual que si lo hubieras escrito en su buscador; ninguna cuenta, ningún mensaje, ninguna conversación. Lo que vuelve se muestra y no se guarda, y nada de ello se escribe en la conversación.
+
+Cloudflare Realtime tampoco tiene interruptor. La mayoría de las llamadas no lo necesitan: dos dispositivos que pueden conectarse directamente —la mayoría de las llamadas en la misma red— se conectan sin él, y nada se retransmite. Cuando no pueden, normalmente porque estáis en redes móviles distintas, la llamada ya cifrada se retransmite en lugar de quedar sin poder conectar. Lo que ve Cloudflare son ambas direcciones IP, el momento de la llamada y aproximadamente cuántos datos se movieron; el audio y el vídeo permanecen bajo el mismo cifrado DTLS-SRTP descrito en la sección 2, así que la retransmisión no los descifra.
 
 Podemos revelar lo que tenemos si la ley lo exige. Lo que tenemos es la lista de la sección 2. No podemos entregar el contenido de los mensajes, porque no podemos leerlo.`,
     },
@@ -614,6 +626,7 @@ La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sau
       body: `Nous ne vendons, n'échangeons ni ne louons vos informations personnelles. Des données parviennent à :
 
 • Google Firebase — notre hébergeur, comme décrit ci-dessus.
+• Cloudflare Realtime — l'audio et la vidéo d'un appel, lorsque votre appareil et celui de l'autre personne ne peuvent pas se joindre directement.
 • La Fondation Wikimedia — un seul nom, lorsque vous le touchez pour le chercher sur Wikipédia.
 • Google Cloud Speech-to-Text — l’audio d’un message vocal, lorsque vous demandez une transcription.
 • Google Cloud Translation — le texte d’un message, lorsque vous demandez une traduction.
@@ -622,6 +635,8 @@ La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sau
 Les trois derniers sont désactivés dans cette version. Aucune commande de l’application n’active la transcription, la traduction ou les résumés, donc rien ne parvient à ces trois services. Ils sont listés plutôt que supprimés parce que le code est toujours là et que ces fonctions sont censées revenir — et quand elles reviendront, elles reviendront avec cette déclaration et avec une demande avant la première utilisation. Ce qui serait alors envoyé l’est pour produire votre résultat, pas pour entraîner quoi que ce soit ; ni une transcription ni une traduction ne sont conservées sur nos serveurs.
 
 Cette recherche n’a pas d’interrupteur, parce qu’il n’y a rien de permanent à éteindre : elle s’exécute au moment du geste et pas autrement. Wikipédia reçoit ce nom et votre adresse IP, exactement comme si vous l’aviez tapé dans sa barre de recherche — aucun compte, aucun message, aucune conversation. Ce qui revient est affiché et non conservé, et rien n’en est écrit dans la conversation.
+
+Cloudflare Realtime n'a pas d'interrupteur non plus. La plupart des appels n'en ont pas besoin : deux appareils qui peuvent se joindre directement — la plupart des appels sur le même réseau — se connectent sans lui, et rien n'est relayé. Lorsque ce n'est pas possible, souvent parce que vous êtes sur des réseaux mobiles différents, l'appel déjà chiffré est relayé plutôt que de rester sans connexion. Ce que Cloudflare voit, ce sont les deux adresses IP, l'heure de l'appel et approximativement la quantité de données échangées ; l'audio et la vidéo restent sous le même chiffrement DTLS-SRTP décrit à la section 2, donc le relais ne les déchiffre pas.
 
 Nous pouvons divulguer ce que nous détenons si la loi l'exige. Ce que nous détenons, c'est la liste de la section 2. Nous ne pouvons pas produire le contenu des messages, puisque nous ne pouvons pas le lire.`,
     },
@@ -740,6 +755,7 @@ La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo,
       body: `Non vendiamo, scambiamo né noleggiamo le tue informazioni personali. I dati arrivano a:
 
 • Google Firebase — il nostro fornitore di hosting, come descritto sopra.
+• Cloudflare Realtime — l'audio e il video di una chiamata, quando il tuo dispositivo e quello dell'altra persona non riescono a raggiungersi direttamente.
 • La Wikimedia Foundation — un solo nome, quando lo tocchi per cercarlo su Wikipedia.
 • Google Cloud Speech-to-Text — l’audio di un messaggio vocale, quando chiedi una trascrizione.
 • Google Cloud Translation — il testo di un messaggio, quando chiedi una traduzione.
@@ -748,6 +764,8 @@ La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo,
 Gli ultimi tre sono spenti in questa versione. Nell'app non c'è alcun comando che accenda trascrizione, traduzione o riassunti, quindi a quei tre servizi non arriva nulla. Sono elencati anziché cancellati perché il codice è ancora qui e le funzioni devono tornare: quando torneranno, torneranno con questa informativa e con una richiesta prima del primo uso. Ciò che verrebbe inviato allora è inviato per produrre il tuo risultato, non per addestrare nulla; né una trascrizione né una traduzione vengono conservate sui nostri server.
 
 Questa ricerca non ha un interruttore perché non c’è nulla di permanente da spegnere: parte con il tocco e non altrimenti. Wikipedia riceve quel nome e il tuo indirizzo IP, esattamente come se lo avessi digitato nella sua casella di ricerca — nessun account, nessun messaggio, nessuna conversazione. Ciò che torna viene mostrato e non salvato, e nulla di tutto questo viene scritto nella conversazione.
+
+Anche Cloudflare Realtime non ha un interruttore. La maggior parte delle chiamate non ne ha bisogno: due dispositivi che possono raggiungersi direttamente — la maggior parte delle chiamate sulla stessa rete — si collegano senza di esso, e nulla viene inoltrato. Quando non possono, spesso perché siete su reti mobili diverse, la chiamata già cifrata viene inoltrata invece di restare senza connessione. Ciò che Cloudflare vede sono entrambi gli indirizzi IP, l'orario della chiamata e approssimativamente quanti dati sono stati trasferiti; l'audio e il video restano sotto la stessa cifratura DTLS-SRTP descritta nella sezione 2, quindi l'inoltro non li decifra.
 
 Possiamo divulgare ciò che deteniamo se la legge lo impone. Ciò che deteniamo è l'elenco della sezione 2. Non possiamo produrre il contenuto dei messaggi, perché non riusciamo a leggerlo.`,
     },
@@ -866,6 +884,7 @@ A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo, exce
       body: `Não vendemos, trocamos nem alugamos as tuas informações pessoais. Os dados chegam a:
 
 • Google Firebase — o nosso fornecedor de alojamento, como descrito acima.
+• Cloudflare Realtime — o áudio e o vídeo de uma chamada, quando o teu dispositivo e o da outra pessoa não conseguem alcançar-se diretamente.
 • A Wikimedia Foundation — um único nome, quando lhe tocas para o procurar na Wikipédia.
 • Google Cloud Speech-to-Text — o áudio de uma mensagem de voz, quando pedes uma transcrição.
 • Google Cloud Translation — o texto de uma mensagem, quando pedes uma tradução.
@@ -874,6 +893,8 @@ A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo, exce
 Os últimos três estão desligados nesta versão. Não há na aplicação qualquer controlo que ligue a transcrição, a tradução ou os resumos, por isso nada chega a esses três serviços. Estão listados em vez de apagados porque o código continua aqui e as funcionalidades hão de voltar — e quando voltarem, voltam com esta divulgação e com uma pergunta antes da primeira utilização. O que seria enviado então é enviado para produzir o teu resultado, não para treinar nada; nem uma transcrição nem uma tradução ficam guardadas nos nossos servidores.
 
 Esta procura não tem interruptor porque não há nada permanente para desligar: corre no toque e não de outra forma. A Wikipédia recebe esse nome e o teu endereço IP, tal como se o tivesses escrito na caixa de pesquisa dela — nenhuma conta, nenhuma mensagem, nenhuma conversa. O que volta é mostrado e não guardado, e nada disso é escrito na conversa.
+
+A Cloudflare Realtime também não tem interruptor. A maioria das chamadas não precisa dela: dois dispositivos que conseguem alcançar-se diretamente — a maioria das chamadas na mesma rede — ligam-se sem ela, e nada é retransmitido. Quando não conseguem, normalmente porque estão em redes móveis diferentes, a chamada já cifrada é retransmitida em vez de ficar sem ligação. O que a Cloudflare vê são os dois endereços IP, o momento da chamada e aproximadamente quantos dados foram movidos; o áudio e o vídeo permanecem sob a mesma cifra DTLS-SRTP descrita na secção 2, pelo que a retransmissão não os decifra.
 
 Podemos divulgar o que temos se a lei o exigir. O que temos é a lista da secção 2. Não conseguimos entregar o conteúdo das mensagens, porque não o conseguimos ler.`,
     },
@@ -992,6 +1013,7 @@ Se instalares a atualização, esta substitui a app no mesmo lugar usando a mesm
       body: `Мы не продаём, не обмениваем и не сдаём в аренду вашу личную информацию. Данные попадают:
 
 • В Google Firebase — нашему хостинг-провайдеру, как описано выше.
+• Cloudflare Realtime — аудио и видео звонка, когда ваше устройство и устройство собеседника не могут связаться напрямую.
 • В Фонд Викимедиа — одно имя, когда вы нажимаете на него, чтобы найти его в Википедии.
 • В Google Cloud Speech-to-Text — аудио одного голосового сообщения, когда вы просите расшифровку.
 • В Google Cloud Translation — текст одного сообщения, когда вы просите перевод.
@@ -1000,6 +1022,8 @@ Se instalares a atualização, esta substitui a app no mesmo lugar usando a mesm
 Последние три в этом выпуске выключены. В приложении нет ничего, что включает расшифровку, перевод или пересказ, поэтому в эти три службы ничего не уходит. Они перечислены, а не удалены, потому что код на месте и эти функции должны вернуться — а когда вернутся, вернутся вместе с этим раскрытием и с вопросом перед первым использованием. То, что тогда будет отправлено, отправляется, чтобы получить ваш результат, а не чтобы что-то обучать; ни расшифровка, ни перевод не хранятся на наших серверах.
 
 У этого поиска нет переключателя, потому что нечего постоянно выключать: он срабатывает по нажатию и никак иначе. Википедия получает это имя и ваш IP-адрес — ровно так же, как если бы вы сами набрали его в её строке поиска: ни аккаунта, ни сообщения, ни переписки. То, что возвращается, показывается и не сохраняется, и ничего из этого не записывается в переписку.
+
+У Cloudflare Realtime тоже нет переключателя. Большинству звонков он не нужен: два устройства, которые могут связаться напрямую — большинство звонков в одной сети, — соединяются без него, и ничего не ретранслируется. Когда напрямую связаться не удаётся — обычно потому что вы находитесь в разных мобильных сетях, — уже зашифрованный звонок ретранслируется, а не остаётся без соединения. Cloudflare видит оба IP-адреса, время звонка и приблизительный объём переданных данных; аудио и видео остаются под тем же шифрованием DTLS-SRTP, описанным в разделе 2, поэтому ретрансляция их не расшифровывает.
 
 Мы можем раскрыть то, чем располагаем, если этого требует закон. Располагаем мы списком из раздела 2. Содержимое сообщений мы предоставить не можем, потому что прочитать его не в состоянии.`,
     },
@@ -1118,6 +1142,7 @@ Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazm
       body: `Kişisel bilgilerini satmayız, takas etmeyiz, kiralamayız. Veri şuralara ulaşır:
 
 • Google Firebase — yukarıda anlatıldığı gibi barındırma sağlayıcımız.
+• Cloudflare Realtime — cihazın ve karşındaki kişinin cihazı birbirine doğrudan ulaşamadığında, aramanın sesini ve görüntüsünü aktarır.
 • Wikimedia Vakfı — Vikipedi'de aramak için dokunduğun tek bir ad.
 • Google Cloud Speech-to-Text — bir yazıya dökme istediğinde, tek bir sesli mesajın ses kaydı.
 • Google Cloud Translation — bir çeviri istediğinde, tek bir mesajın metni.
@@ -1126,6 +1151,8 @@ Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazm
 Son üçü bu sürümde kapalı. Uygulamada yazıya dökmeyi, çeviriyi ya da özetleri açan hiçbir denetim yok, dolayısıyla bu üç hizmete hiçbir şey ulaşmıyor. Silinmek yerine burada duruyorlar çünkü kod hâlâ burada ve bu özelliklerin geri gelmesi planlanıyor — geri geldiklerinde bu açıklamayla ve ilk kullanımdan önce sorulan soruyla birlikte gelecekler. O zaman gönderilecek olan şey senin sonucunu üretmek içindir, bir şeyi eğitmek için değil; ne bir döküm ne de bir çeviri sunucularımızda saklanır.
 
 Bu aramanın anahtarı yok, çünkü kapatılacak kalıcı bir şey yok: dokunduğun anda çalışır, başka zaman çalışmaz. Vikipedi o adı ve IP adresini alır; tıpkı arama kutusuna kendin yazmış olsaydın olacağı gibi — hesap yok, mesaj yok, konuşma yok. Dönen şey gösterilir, saklanmaz ve hiçbiri konuşmaya yazılmaz.
+
+Cloudflare Realtime'ın da bir anahtarı yok. Aramaların çoğunun buna ihtiyacı yok: birbirine doğrudan ulaşabilen iki cihaz — aynı ağdaki çoğu arama — onsuz bağlanır ve hiçbir şey aktarılmaz. Bağlanamadıklarında, genellikle farklı mobil ağlarda olduğunuz için, zaten şifrelenmiş olan arama, bağlantısız kalmak yerine aktarılır. Cloudflare'ın gördüğü şey her iki IP adresi, aramanın zamanı ve yaklaşık ne kadar veri taşındığıdır; ses ve görüntü, 2. bölümde açıklanan aynı DTLS-SRTP şifrelemesi altında kalır, bu yüzden aktarma onları çözmez.
 
 Yasa gerektirirse elimizdekileri açıklayabiliriz. Elimizdeki, 2. bölümdeki listedir. Mesaj içeriğini veremeyiz, çünkü onu okuyamıyoruz.`,
     },
@@ -1244,6 +1271,7 @@ Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rờ
       body: `Chúng tôi không bán, trao đổi hay cho thuê thông tin cá nhân của bạn. Dữ liệu đi tới:
 
 • Google Firebase — nhà cung cấp hạ tầng của chúng tôi, như mô tả ở trên.
+• Cloudflare Realtime — âm thanh và video của cuộc gọi, khi thiết bị của bạn và của người kia không thể kết nối trực tiếp với nhau.
 • Wikimedia Foundation — một cái tên duy nhất, khi bạn chạm vào nó để tra trên Wikipedia.
 • Google Cloud Speech-to-Text — phần âm thanh của một tin nhắn thoại, khi bạn yêu cầu chuyển thành văn bản.
 • Google Cloud Translation — phần chữ của một tin nhắn, khi bạn yêu cầu dịch.
@@ -1252,6 +1280,8 @@ Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rờ
 Ba mục cuối đã tắt trong bản này. Trong ứng dụng không có nút nào bật chép lời, dịch hay tóm tắt lên, nên chẳng có gì đến được ba dịch vụ đó. Chúng được liệt kê thay vì xoá đi vì mã nguồn vẫn còn và các tính năng này dự kiến sẽ quay lại — và khi quay lại, chúng quay lại kèm phần công bố này và một lời hỏi trước lần dùng đầu tiên. Thứ sẽ được gửi khi đó là để tạo ra kết quả cho bạn, không phải để huấn luyện bất cứ thứ gì; cả bản chép lời lẫn bản dịch đều không được lưu trên máy chủ của chúng tôi.
 
 Việc tra cứu này không có công tắc, vì không có gì thường trực để tắt: nó chạy đúng lúc bạn chạm và không lúc nào khác. Wikipedia nhận cái tên đó và địa chỉ IP của bạn, giống hệt như khi bạn tự gõ vào ô tìm kiếm của họ — không tài khoản, không tin nhắn, không cuộc trò chuyện. Thứ trả về được hiển thị chứ không lưu, và không có gì trong đó được ghi vào cuộc trò chuyện.
+
+Cloudflare Realtime cũng không có công tắc. Hầu hết các cuộc gọi không cần đến nó: hai thiết bị có thể kết nối trực tiếp — hầu hết các cuộc gọi trong cùng mạng — kết nối mà không cần nó, và không có gì được chuyển tiếp. Khi không thể kết nối trực tiếp, thường là vì hai bạn đang ở các mạng di động khác nhau, cuộc gọi đã được mã hóa sẽ được chuyển tiếp thay vì không thể kết nối. Những gì Cloudflare thấy là địa chỉ IP của cả hai bên, thời gian cuộc gọi, và ước tính lượng dữ liệu đã truyền; âm thanh và video vẫn nằm dưới cùng lớp mã hóa DTLS-SRTP được mô tả ở mục 2, vì vậy việc chuyển tiếp không giải mã chúng.
 
 Chúng tôi có thể tiết lộ những gì mình đang giữ nếu pháp luật yêu cầu. Những gì chúng tôi giữ chính là danh sách ở mục 2. Chúng tôi không thể đưa ra nội dung tin nhắn, vì chúng tôi không đọc được.`,
     },
@@ -1370,6 +1400,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `あなたの個人情報を販売・交換・貸与することはありません。情報が届く先は:
 
 • Google Firebase — 上記のとおり、当社のホスティング事業者。
+• Cloudflare Realtime——あなたの端末と相手の端末が直接接続できない場合に、通話の音声と映像を中継します。
 • ウィキメディア財団 — 名前をタップして Wikipedia で調べたとき、その名前ひとつ。
 • Google Cloud Speech-to-Text — 文字起こしを求めたとき、そのボイスメッセージ 1 件の音声。
 • Google Cloud Translation — 翻訳を求めたとき、そのメッセージ 1 件の本文。
@@ -1378,6 +1409,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 後ろの 3 つは、本リリースでは無効です。文字起こし・翻訳・要約を有効にする操作はアプリのどこにもないので、この 3 つのサービスには何も届きません。削除せずに残してあるのは、コードがまだあり、これらの機能を戻す予定だからです。戻すときは、この開示と初回前の確認をともなって戻します。そのとき送られるものは、あなたの結果を作るためであって、何かを学習させるためではありません。文字起こしも翻訳も当社のサーバーには保存しません。
 
 この検索にスイッチはありません。切るべき常駐のものが何もないからです。タップしたその一回だけ動き、それ以外では動きません。Wikipedia が受け取るのはその名前とあなたの IP アドレスだけで、検索窓に自分で入力した場合と同じです。アカウントもメッセージも会話も送りません。返ってきたものは表示するだけで保存せず、会話にも何も書き込みません。
+
+Cloudflare Realtimeにもオン・オフの切り替えはありません。ほとんどの通話ではこれは不要です。直接接続できる2台の端末——同じネットワーク上のほとんどの通話——はこれを使わずに接続され、何も中継されません。直接接続できない場合（多くは双方が異なるモバイルネットワークにいるとき）、すでに暗号化されている通話は、接続できないままにするのではなく中継されます。Cloudflareが見るのは両者のIPアドレス、通話の時刻、およそのデータ量であり、音声と映像は第2節で説明したものと同じDTLS-SRTP暗号化のままなので、中継によって復号されることはありません。
 
 法律が要求する場合、保持しているものを開示することがあります。保持しているものは第 2 節の一覧です。メッセージの中身は提出できません。読めないからです。`,
     },
@@ -1496,6 +1529,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `우리는 당신의 개인정보를 팔거나 교환하거나 대여하지 않습니다. 데이터가 가는 곳은:
 
 • Google Firebase — 위에서 설명한 우리의 호스팅 제공자.
+• Cloudflare Realtime——당신의 기기와 상대방의 기기가 직접 연결될 수 없을 때 통화의 음성과 영상을 중계합니다.
 • 위키미디어 재단 — 이름을 눌러 위키백과에서 찾아볼 때, 그 이름 하나.
 • Google Cloud Speech-to-Text — 전사를 요청할 때, 음성 메시지 하나의 오디오.
 • Google Cloud Translation — 번역을 요청할 때, 메시지 하나의 텍스트.
@@ -1504,6 +1538,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 뒤의 셋은 이번 릴리스에서 꺼져 있습니다. 전사·번역·요약을 켜는 설정이 앱 어디에도 없으므로 그 세 서비스에는 아무것도 도달하지 않습니다. 지우지 않고 남겨 둔 것은 코드가 아직 있고 이 기능들을 되돌릴 계획이기 때문입니다. 되돌릴 때는 이 고지와 첫 사용 전 확인을 함께 되돌립니다. 그때 보내지는 것은 당신의 결과를 만들기 위한 것이지 무언가를 학습시키기 위한 것이 아니며, 전사도 번역도 저희 서버에 저장되지 않습니다.
 
 이 찾아보기에는 스위치가 없습니다. 꺼야 할 상시 동작이 없기 때문입니다. 누른 그 순간에만 실행되고 그 외에는 실행되지 않습니다. 위키백과가 받는 것은 그 이름과 당신의 IP 주소뿐이며, 검색창에 직접 입력한 것과 같습니다. 계정도, 메시지도, 대화도 함께 가지 않습니다. 돌아온 내용은 보여줄 뿐 저장하지 않고, 대화에도 아무것도 기록하지 않습니다.
+
+Cloudflare Realtime에도 스위치가 없습니다. 대부분의 통화는 이것이 필요하지 않습니다. 직접 연결할 수 있는 두 기기—같은 네트워크에서의 대부분의 통화—는 이것 없이 연결되며, 아무것도 중계되지 않습니다. 직접 연결할 수 없을 때—흔히 서로 다른 모바일 네트워크에 있을 때—이미 암호화된 통화가 연결 불가 상태로 남는 대신 중계됩니다. Cloudflare가 보는 것은 양쪽의 IP 주소, 통화 시각, 대략적인 데이터 이동량이며, 음성과 영상은 2절에서 설명한 것과 동일한 DTLS-SRTP 암호화 상태를 유지하므로 중계한다고 해서 복호화되지 않습니다.
 
 법이 요구하면 우리가 가진 것을 공개할 수 있습니다. 우리가 가진 것은 2절의 목록입니다. 메시지 내용은 내놓을 수 없습니다. 읽을 수 없기 때문입니다.`,
     },
@@ -1622,6 +1658,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `我們不出售、不交易、不出租你的個人資訊。資料會到達：
 
 • Google Firebase——我們的託管服務商，如上所述。
+• Cloudflare Realtime——當你的裝置和對方的裝置無法直接互聯時，用於中繼通話的音訊和視訊。
 • 維基媒體基金會——當你點擊某個名字去維基百科查它時，那一個名字。
 • Google Cloud Speech-to-Text——當你要求轉寫時，一則語音訊息的音訊。
 • Google Cloud Translation——當你要求翻譯時，一則訊息的文字。
@@ -1630,6 +1667,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 後三者在本次發行中是關閉的。應用程式裡沒有任何開關可以打開轉寫、翻譯或摘要，所以沒有任何內容會到達這三個服務。之所以列出而不是刪掉，是因為程式碼還在、這些功能還打算回來——它們回來的時候，會連同這段揭露和首次使用前的詢問一起回來。到那時送出去的東西，是為了產出你要的結果，不用於訓練任何模型；轉寫和翻譯都不會留在我們的伺服器上。
 
 維基百科查詢沒有開關，因為沒有什麼常駐的東西可關：它只在你點的那一下運作，此外不運作。維基百科收到的是那一個名字和你的 IP 位址，跟你自己在它的搜尋框裡輸入一樣——沒有帳號，沒有訊息，沒有對話。回傳的內容只是顯示出來，不保存，也不會寫進對話裡。
+
+Cloudflare Realtime 同樣沒有開關。大多數通話不需要它：兩台能夠直接互聯的裝置——同一網路下的大多數通話——不經過它就能連上，不會被中繼。當無法直連時——常見於雙方處於不同的行動網路——已經加密的通話會被中繼，而不是直接連不上。Cloudflare 能看到的是雙方的 IP 位址、通話的時間，以及大致的資料量；音訊和視訊內容仍然受第2節所述的同一套 DTLS-SRTP 加密保護，中繼並不會解密它們。
 
 如果法律要求，我們可能揭露我們持有的內容。我們持有的就是第 2 節那份清單。我們拿不出訊息內容，因為我們讀不了。`,
     },
@@ -1748,6 +1787,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `لا نبيع معلوماتك الشخصية ولا نقايضها ولا نؤجّرها. تصل البيانات إلى:
 
 • Google Firebase — مزوّد الاستضافة لدينا، كما ورد أعلاه.
+• Cloudflare Realtime — صوت وفيديو المكالمة، عندما لا يستطيع جهازك وجهاز الشخص الآخر الوصول إلى بعضهما مباشرة.
 • مؤسسة ويكيميديا — اسم واحد، حين تضغط عليه للبحث عنه في ويكيبيديا.
 • Google Cloud Speech-to-Text — الصوت الخاص برسالة صوتية واحدة، حين تطلب تفريغها نصًّا.
 • Google Cloud Translation — نص رسالة واحدة، حين تطلب ترجمتها.
@@ -1756,6 +1796,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 الثلاثة الأخيرة معطَّلة في هذا الإصدار. لا توجد في التطبيق أي أداة تشغّل التفريغ أو الترجمة أو التلخيص، ومن ثمّ لا يصل إلى تلك الخدمات الثلاث شيء. وهي مذكورة بدل أن تُحذف لأن الشيفرة ما زالت هنا ولأن هذه الميزات يُفترض أن تعود — وحين تعود، تعود مع هذا الإفصاح ومع سؤال قبل الاستخدام الأول. وما سيُرسَل حينها يُرسَل لإنتاج نتيجتك، لا لتدريب أي شيء؛ ولا يُحفَظ على خوادمنا نصّ مفرَّغ ولا ترجمة.
 
 لا يوجد مفتاح لهذا البحث لأنه لا يوجد شيء دائم يُطفأ: فهو يعمل عند الضغط ولا يعمل في غير ذلك. تتلقّى ويكيبيديا ذلك الاسم وعنوان IP الخاص بك، تمامًا كما لو كتبته بنفسك في مربّع البحث لديها — بلا حساب ولا رسالة ولا محادثة. وما يعود يُعرض ولا يُحفظ، ولا يُكتب منه شيء في المحادثة.
+
+لا يوجد لدى Cloudflare Realtime مفتاح تشغيل أيضًا. معظم المكالمات لا تحتاج إليه: جهازان يمكنهما الوصول إلى بعضهما مباشرة — معظم المكالمات على نفس الشبكة — يتصلان بدونه، ولا يُعاد توجيه أي شيء. عندما لا يستطيعان ذلك — غالبًا لأنكما على شبكتي هاتف مختلفتين — تُعاد المكالمة المشفرة بالفعل عبر تتابع بدلاً من أن تبقى غير قادرة على الاتصال. ما تراه Cloudflare هو عنوانا IP لكليكما، وتوقيت المكالمة، وكمية البيانات المنقولة تقريبًا؛ يبقى الصوت والفيديو تحت نفس تشفير DTLS-SRTP الموضح في القسم 2، لذا فإن إعادة التوجيه لا تفك تشفيرهما.
 
 قد نُفصح عمّا بحوزتنا إن اقتضى القانون. وما بحوزتنا هو قائمة القسم 2. لا نستطيع تقديم محتوى الرسائل، لأننا لا نستطيع قراءته.`,
     },
@@ -1874,6 +1916,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `हम आपकी निजी जानकारी न बेचते हैं, न उसका व्यापार करते हैं, न किराए पर देते हैं। डेटा यहाँ पहुँचता है:
 
 • Google Firebase — हमारा होस्टिंग प्रदाता, जैसा ऊपर बताया गया।
+• Cloudflare Realtime — कॉल की ऑडियो और वीडियो, जब आपका डिवाइस और दूसरे व्यक्ति का डिवाइस सीधे एक-दूसरे तक नहीं पहुँच पाते।
 • विकिमीडिया फ़ाउंडेशन — एक नाम, जब आप उसे विकिपीडिया पर देखने के लिए दबाते हैं।
 • Google Cloud Speech-to-Text — जब आप लिप्यंतरण माँगते हैं, तो एक वॉइस संदेश का ऑडियो।
 • Google Cloud Translation — जब आप अनुवाद माँगते हैं, तो एक संदेश का पाठ।
@@ -1882,6 +1925,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 आख़िरी तीन इस रिलीज़ में बंद हैं। ऐप में कहीं भी ऐसा कोई नियंत्रण नहीं है जो लिप्यंतरण, अनुवाद या सारांश चालू करे, इसलिए उन तीन सेवाओं तक कुछ भी नहीं पहुँचता। इन्हें हटाने के बजाय सूचीबद्ध रखा गया है क्योंकि कोड अब भी यहीं है और ये सुविधाएँ लौटनी हैं — और जब लौटेंगी, तो इसी घोषणा और पहली बार से पहले पूछे जाने वाले सवाल के साथ लौटेंगी। तब जो भेजा जाएगा वह आपका नतीजा बनाने के लिए भेजा जाएगा, किसी चीज़ को प्रशिक्षित करने के लिए नहीं; न लिप्यंतरण हमारे सर्वरों पर रखा जाता है और न अनुवाद।
 
 इस खोज के लिए कोई स्विच नहीं है, क्योंकि बंद करने लायक कुछ स्थायी है ही नहीं: यह उसी दबाने पर चलती है, और कभी नहीं। विकिपीडिया को वह नाम और आपका IP पता मिलता है — ठीक वैसे ही जैसे आपने उसके खोज बॉक्स में स्वयं लिखा हो; न कोई खाता, न कोई संदेश, न कोई बातचीत। जो लौटता है वह दिखाया जाता है, सहेजा नहीं जाता, और उसमें से कुछ भी बातचीत में नहीं लिखा जाता।
+
+Cloudflare Realtime का भी कोई स्विच नहीं है। ज़्यादातर कॉल को इसकी ज़रूरत नहीं होती: दो डिवाइस जो सीधे एक-दूसरे तक पहुँच सकते हैं — एक ही नेटवर्क पर ज़्यादातर कॉल — इसके बिना ही जुड़ जाते हैं, और कुछ भी रिले नहीं होता। जब वे नहीं पहुँच पाते — आमतौर पर इसलिए क्योंकि आप दोनों अलग-अलग मोबाइल नेटवर्क पर हैं — पहले से एन्क्रिप्टेड कॉल को कनेक्ट न हो पाने देने के बजाय रिले किया जाता है। Cloudflare जो देखता है वह है दोनों के IP पते, कॉल का समय, और लगभग कितना डेटा स्थानांतरित हुआ; ऑडियो और वीडियो सेक्शन 2 में बताई गई उसी DTLS-SRTP एन्क्रिप्शन के अंदर ही रहते हैं, इसलिए रिले करने से वे डिक्रिप्ट नहीं होते।
 
 क़ानून की माँग पर हम जो हमारे पास है उसे बता सकते हैं। हमारे पास खंड 2 की सूची है। संदेशों की सामग्री हम पेश नहीं कर सकते, क्योंकि हम उसे पढ़ नहीं सकते।`,
     },
@@ -2001,6 +2046,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `ما اطلاعات شخصی شما را نمی‌فروشیم، معامله نمی‌کنیم و اجاره نمی‌دهیم. داده به این‌ها می‌رسد:
 
 • Google Firebase — ارائه‌دهندهٔ میزبانی ما، همان‌طور که بالا گفته شد.
+• Cloudflare Realtime — صدا و تصویر یک تماس، وقتی دستگاه شما و دستگاه طرف مقابل نتوانند مستقیماً به هم برسند.
 • بنیاد ویکی‌مدیا — یک نام، وقتی روی آن ضربه می‌زنید تا در ویکی‌پدیا جستجویش کنید.
 • Google Cloud Speech-to-Text — صدای یک پیام صوتی، وقتی متن پیاده‌شده می‌خواهید.
 • Google Cloud Translation — متن یک پیام، وقتی ترجمه می‌خواهید.
@@ -2009,6 +2055,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 سه مورد آخر در این نسخه خاموش‌اند. هیچ کنترلی در هیچ‌جای برنامه نیست که پیاده‌سازی متن، ترجمه یا خلاصه‌سازی را روشن کند، پس چیزی به این سه سرویس نمی‌رسد. آن‌ها به‌جای حذف‌شدن فهرست شده‌اند چون کد هنوز اینجاست و قرار است این ویژگی‌ها بازگردند — و وقتی بازگردند، همراه با همین افشاگری و درخواستی پیش از نخستین استفاده بازمی‌گردند. آنچه در آن زمان فرستاده شود برای تولید نتیجهٔ شماست، نه برای آموزش چیزی؛ نه متن پیاده‌شده و نه ترجمه روی سرورهای ما ذخیره نمی‌شود.
 
 جستجوی ویکی‌پدیا کلیدی ندارد چون چیز پایداری برای خاموش‌کردن نیست: فقط با همان ضربه اجرا می‌شود و جز آن اجرا نمی‌شود. ویکی‌پدیا همان یک نام و آدرس IP شما را دریافت می‌کند، درست مثل اینکه خودتان در کادر جستجوی آن تایپش کرده باشید — بدون حساب، بدون پیام، بدون گفتگو. آنچه برمی‌گردد فقط نمایش داده می‌شود و ذخیره نمی‌شود، و چیزی از آن در گفتگو نوشته نمی‌شود.
+
+Cloudflare Realtime هم کلیدی ندارد. بیشتر تماس‌ها به آن نیاز ندارند: دو دستگاهی که می‌توانند مستقیماً به هم برسند — بیشتر تماس‌ها در یک شبکه — بدون آن متصل می‌شوند و چیزی رله نمی‌شود. وقتی نتوانند — معمولاً به این دلیل که هرکدام در یک شبکهٔ موبایل متفاوت هستید — تماسی که از قبل رمزگذاری شده، به‌جای باقی ماندن بدون اتصال، رله می‌شود. آنچه Cloudflare می‌بیند هر دو آدرس IP، زمان تماس، و تقریباً میزان داده‌ی جابه‌جاشده است؛ صدا و تصویر همچنان تحت همان رمزگذاری DTLS-SRTP توضیح داده‌شده در بخش ۲ باقی می‌مانند، پس رله کردن آن‌ها را رمزگشایی نمی‌کند.
 
 اگر قانون ایجاب کند، ممکن است آنچه را داریم افشا کنیم. آنچه داریم همان فهرست بخش ۲ است. ما نمی‌توانیم محتوای پیام‌ها را ارائه کنیم، چون نمی‌توانیم آن‌ها را بخوانیم.`,
     },
@@ -2128,6 +2176,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `אנחנו לא מוכרים, סוחרים או משכירים את המידע האישי שלכם. נתונים מגיעים אל:
 
 • Google Firebase — ספק האחסון שלנו, כמתואר לעיל.
+• Cloudflare Realtime — השמע והווידאו של שיחה, כאשר המכשיר שלכם והמכשיר של הצד השני אינם יכולים להגיע זה לזה ישירות.
 • קרן ויקימדיה — שם אחד, כשאתם מקישים עליו כדי לחפש אותו בוויקיפדיה.
 • Google Cloud Speech-to-Text — השמע של הודעה קולית אחת, כשאתם מבקשים תמלול.
 • Google Cloud Translation — הטקסט של הודעה אחת, כשאתם מבקשים תרגום.
@@ -2136,6 +2185,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 שלושת האחרונים כבויים בגרסה זו. אין שום פקד בשום מקום באפליקציה שמפעיל תמלול, תרגום או סיכומים, כך ששום דבר לא מגיע לשלושת השירותים האלה. הם מופיעים ברשימה במקום להימחק כי הקוד עדיין כאן והתכונות אמורות לחזור — וכשהן יחזרו, הן יחזרו עם הגילוי הזה ועם בקשת אישור לפני השימוש הראשון. מה שיישלח אז נשלח כדי לייצר עבורכם תוצאה, לא כדי לאמן דבר; לא תמלול ולא תרגום נשמרים בשרתים שלנו.
 
 לחיפוש בוויקיפדיה אין פקד כי אין מה לכבות באופן קבוע: הוא רץ רק בעת ההקשה ולא אחרת. ויקיפדיה מקבלת את השם הזה בלבד ואת כתובת ה-IP שלכם, בדיוק כאילו הקלדתם אותו בעצמכם בתיבת החיפוש שלה — ללא חשבון, ללא הודעה, ללא שיחה. מה שחוזר מוצג ולא נשמר, ושום דבר ממנו לא נכתב לשיחה.
+
+גם ל-Cloudflare Realtime אין מתג. רוב השיחות לא זקוקות לו: שני מכשירים שיכולים להגיע זה לזה ישירות — רוב השיחות באותה רשת — מתחברים בלעדיו, ושום דבר לא ממותב. כשהם לא יכולים — לרוב כי שניכם ברשתות סלולריות שונות — השיחה המוצפנת כבר עוברת ניתוב במקום להישאר ללא חיבור. מה ש-Cloudflare רואה הן שתי כתובות ה-IP, עיתוי השיחה, וכמות הנתונים שעברו בקירוב; השמע והווידאו נשארים תחת אותה הצפנת DTLS-SRTP המתוארת בסעיף 2, כך שהניתוב לא מפענח אותם.
 
 אנו עשויים לחשוף את מה שאנחנו מחזיקים אם החוק מחייב זאת. מה שאנחנו מחזיקים הוא הרשימה שבסעיף 2. אנחנו לא יכולים למסור תוכן הודעות, כי אנחנו לא יכולים לקרוא אותן.`,
     },
@@ -2255,6 +2306,7 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
       body: `ہم آپ کی ذاتی معلومات فروخت، تجارت یا کرائے پر نہیں دیتے۔ ڈیٹا ان تک پہنچتا ہے:
 
 • Google Firebase — ہمارا ہوسٹنگ فراہم کنندہ، جیسا کہ اوپر بیان کیا گیا۔
+• Cloudflare Realtime — کال کی آواز اور ویڈیو، جب آپ کا ڈیوائس اور دوسرے شخص کا ڈیوائس براہ راست ایک دوسرے تک نہ پہنچ سکیں۔
 • ویکی میڈیا فاؤنڈیشن — ایک نام، جب آپ اسے ویکیپیڈیا پر تلاش کرنے کے لیے تھپتھپاتے ہیں۔
 • Google Cloud Speech-to-Text — ایک صوتی پیغام کی آواز، جب آپ متن میں تبدیلی مانگتے ہیں۔
 • Google Cloud Translation — ایک پیغام کا متن، جب آپ ترجمہ مانگتے ہیں۔
@@ -2263,6 +2315,8 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 آخری تین اس ریلیز میں بند ہیں۔ ایپ میں کہیں بھی کوئی کنٹرول نہیں جو متن میں تبدیلی، ترجمہ یا خلاصے کو آن کرے، اس لیے ان تینوں خدمات تک کچھ نہیں پہنچتا۔ انہیں حذف کرنے کے بجائے فہرست میں رکھا گیا ہے کیونکہ کوڈ ابھی بھی یہاں ہے اور یہ خصوصیات واپس آنے والی ہیں — اور جب وہ واپس آئیں گی، تو وہ اس انکشاف اور پہلے استعمال سے پہلے ایک اشارے کے ساتھ واپس آئیں گی۔ اس وقت جو بھیجا جائے گا وہ آپ کا نتیجہ تیار کرنے کے لیے بھیجا جائے گا، کسی چیز کی تربیت کے لیے نہیں؛ نہ تحریری متن اور نہ ترجمہ ہمارے سرورز پر محفوظ کیا جاتا ہے۔
 
 ویکیپیڈیا کی تلاش کا کوئی سوئچ نہیں ہے کیونکہ بند کرنے کے لیے کوئی مستقل چیز نہیں ہے: یہ صرف تھپتھپاہٹ پر چلتی ہے ورنہ نہیں۔ ویکیپیڈیا صرف وہ ایک نام اور آپ کا IP ایڈریس وصول کرتا ہے، بالکل ویسے ہی جیسے آپ نے خود اسے اس کے سرچ باکس میں ٹائپ کیا ہو — کوئی اکاؤنٹ نہیں، کوئی پیغام نہیں، کوئی گفتگو نہیں۔ جو واپس آتا ہے وہ صرف دکھایا جاتا ہے اور محفوظ نہیں کیا جاتا، اور اس کے بارے میں کچھ بھی گفتگو میں نہیں لکھا جاتا۔
+
+Cloudflare Realtime کا بھی کوئی سوئچ نہیں ہے۔ زیادہ تر کالز کو اس کی ضرورت نہیں ہوتی: دو ڈیوائسز جو براہ راست ایک دوسرے تک پہنچ سکتے ہیں — ایک ہی نیٹ ورک پر زیادہ تر کالز — اس کے بغیر جڑ جاتی ہیں، اور کچھ بھی ری لے نہیں ہوتا۔ جب وہ نہیں پہنچ سکتے — عام طور پر اس لیے کہ آپ دونوں مختلف موبائل نیٹ ورکس پر ہیں — پہلے سے مرموز کال کو رابطہ نہ ہونے کے بجائے ری لے کیا جاتا ہے۔ Cloudflare جو دیکھتا ہے وہ دونوں کے IP پتے، کال کا وقت، اور تقریباً کتنا ڈیٹا منتقل ہوا ہے؛ آواز اور ویڈیو سیکشن 2 میں بیان کردہ اسی DTLS-SRTP خفیہ کاری کے تحت رہتے ہیں، اس لیے ری لے کرنے سے وہ ڈی کرپٹ نہیں ہوتے۔
 
 اگر قانون تقاضا کرے تو ہم اپنے پاس موجود چیز ظاہر کر سکتے ہیں۔ ہمارے پاس جو ہے وہ سیکشن 2 کی فہرست ہے۔ ہم پیغام کا مواد پیش نہیں کر سکتے، کیونکہ ہم انہیں پڑھ نہیں سکتے۔`,
     },
@@ -2382,6 +2436,7 @@ Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojeg
       body: `Nie sprzedajemy, nie wymieniamy ani nie wynajmujemy Twoich danych osobowych. Dane docierają do:
 
 • Google Firebase — naszego dostawcy hostingu, jak opisano powyżej.
+• Cloudflare Realtime — dźwięk i obraz rozmowy, gdy Twoje urządzenie i urządzenie drugiej osoby nie mogą połączyć się bezpośrednio.
 • Fundacji Wikimedia — jedno imię, gdy dotkniesz go, aby wyszukać w Wikipedii.
 • Google Cloud Speech-to-Text — dźwięk jednej wiadomości głosowej, gdy prosisz o transkrypcję.
 • Google Cloud Translation — tekst jednej wiadomości, gdy prosisz o tłumaczenie.
@@ -2390,6 +2445,8 @@ Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojeg
 Ostatnie trzy są wyłączone w tej wersji. Nie ma żadnej kontroli w żadnym miejscu aplikacji, która włączałaby transkrypcję, tłumaczenie czy podsumowania, więc nic nie dociera do tych trzech usług. Są wymienione, a nie usunięte, ponieważ kod nadal tu jest, a te funkcje mają wrócić — a kiedy wrócą, wrócą z tym ujawnieniem i z monitem przed pierwszym użyciem. To, co zostanie wtedy wysłane, jest wysyłane, aby wygenerować Twój wynik, a nie by cokolwiek trenować; ani transkrypcja, ani tłumaczenie nie są przechowywane na naszych serwerach.
 
 Wyszukiwanie w Wikipedii nie ma przełącznika, ponieważ nie ma nic trwałego do wyłączenia: działa tylko po dotknięciu i w innym przypadku nie. Wikipedia otrzymuje tylko tę jedną nazwę i Twój adres IP, dokładnie tak, jakbyś sam wpisał ją w polu wyszukiwania — bez konta, bez wiadomości, bez rozmowy. To, co wraca, jest wyświetlane i nie zapisywane, i nic z tego nie jest zapisywane w rozmowie.
+
+Cloudflare Realtime również nie ma przełącznika. Większość połączeń go nie potrzebuje: dwa urządzenia, które mogą połączyć się bezpośrednio — większość połączeń w tej samej sieci — łączą się bez niego, i nic nie jest przekazywane. Gdy nie mogą — zwykle dlatego, że oboje jesteście w różnych sieciach komórkowych — już zaszyfrowana rozmowa jest przekazywana zamiast pozostać bez połączenia. To, co widzi Cloudflare, to oba adresy IP, czas rozmowy i w przybliżeniu ilość przesłanych danych; dźwięk i obraz pozostają pod tym samym szyfrowaniem DTLS-SRTP opisanym w sekcji 2, więc przekazywanie ich nie odszyfrowuje.
 
 Możemy ujawnić to, co przechowujemy, jeśli wymaga tego prawo. To, co przechowujemy, to lista z sekcji 2. Nie możemy udostępnić treści wiadomości, ponieważ nie możemy ich odczytać.`,
     },
@@ -2509,6 +2566,7 @@ Jeśli zainstalujesz aktualizację, zastąpi ona aplikację w tym samym miejscu,
       body: `Ми не продаємо, не обмінюємо й не здаємо в оренду вашу особисту інформацію. Дані потрапляють до:
 
 • Google Firebase — нашого постачальника хостингу, як описано вище.
+• Cloudflare Realtime — аудіо та відео дзвінка, коли ваш пристрій і пристрій співрозмовника не можуть з'єднатися напряму.
 • Фонду Вікімедіа — одне ім'я, коли ви торкаєтеся його, щоб знайти у Вікіпедії.
 • Google Cloud Speech-to-Text — аудіо одного голосового повідомлення, коли ви просите транскрипцію.
 • Google Cloud Translation — текст одного повідомлення, коли ви просите переклад.
@@ -2517,6 +2575,8 @@ Jeśli zainstalujesz aktualizację, zastąpi ona aplikację w tym samym miejscu,
 Останні три вимкнені в цій версії. У жодному місці застосунку немає елемента керування, який би вмикав транскрипцію, переклад чи підсумки, тож нічого не потрапляє до цих трьох служб. Вони перелічені, а не видалені, тому що код усе ще тут, а ці функції мають повернутися — і коли вони повернуться, вони повернуться з цим розкриттям інформації та підказкою перед першим використанням. Те, що буде надіслано тоді, надсилається, щоб створити ваш результат, а не щоб щось навчати; ані транскрипція, ані переклад не зберігаються на наших серверах.
 
 У пошуку Вікіпедії немає перемикача, тому що немає нічого постійного, щоб вимкнути: він виконується лише за дотиком і в іншому разі — ні. Вікіпедія отримує лише те одне ім'я та вашу IP-адресу, точно так, ніби ви самі ввели його в поле пошуку — без облікового запису, без повідомлення, без розмови. Те, що повертається, лише показується й не зберігається, і нічого з цього не записується в розмову.
+
+У Cloudflare Realtime також немає перемикача. Більшості дзвінків він не потрібен: два пристрої, які можуть з'єднатися напряму — більшість дзвінків в одній мережі — з'єднуються без нього, і нічого не ретранслюється. Коли це неможливо — зазвичай тому, що ви перебуваєте в різних мобільних мережах — уже зашифрований дзвінок ретранслюється, а не залишається без з'єднання. Cloudflare бачить обидві IP-адреси, час дзвінка та приблизний обсяг переданих даних; аудіо та відео залишаються під тим самим шифруванням DTLS-SRTP, описаним у розділі 2, тож ретрансляція їх не розшифровує.
 
 Ми можемо розкрити те, що ми зберігаємо, якщо цього вимагає закон. Те, що ми зберігаємо, — це список із розділу 2. Ми не можемо надати вміст повідомлень, тому що ми не можемо їх прочитати.`,
     },
@@ -2636,6 +2696,7 @@ Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat And
       body: `Kami tidak menjual, memperdagangkan, atau menyewakan informasi pribadi Anda. Data mencapai:
 
 • Google Firebase — penyedia hosting kami, seperti dijelaskan di atas.
+• Cloudflare Realtime — audio dan video panggilan, ketika perangkat Anda dan perangkat orang lain tidak dapat saling menjangkau secara langsung.
 • Wikimedia Foundation — satu nama, ketika Anda mengetuknya untuk mencarinya di Wikipedia.
 • Google Cloud Speech-to-Text — audio dari satu pesan suara, ketika Anda meminta transkrip.
 • Google Cloud Translation — teks dari satu pesan, ketika Anda meminta terjemahan.
@@ -2644,6 +2705,8 @@ Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat And
 Tiga yang terakhir dimatikan pada rilis ini. Tidak ada kontrol di mana pun dalam aplikasi yang menyalakan transkripsi, terjemahan, atau ringkasan, sehingga tidak ada yang mencapai tiga layanan itu. Layanan itu terdaftar alih-alih dihapus karena kodenya masih ada di sini dan fitur-fitur ini dimaksudkan untuk kembali — dan saat kembali, mereka akan kembali dengan pengungkapan ini dan permintaan sebelum penggunaan pertama. Apa yang akan dikirim saat itu dikirim untuk menghasilkan hasil Anda, bukan untuk melatih apa pun; baik transkrip maupun terjemahan tidak disimpan di server kami.
 
 Pencarian Wikipedia tidak memiliki sakelar karena tidak ada yang bersifat tetap untuk dimatikan: itu hanya berjalan saat diketuk dan tidak dengan cara lain. Wikipedia menerima hanya nama itu dan alamat IP Anda, persis seperti jika Anda sendiri mengetiknya di kotak pencariannya — tanpa akun, tanpa pesan, tanpa percakapan. Apa yang dikembalikan hanya ditampilkan dan tidak disimpan, dan tidak ada apa pun tentangnya yang dituliskan ke percakapan.
+
+Cloudflare Realtime juga tidak memiliki sakelar. Sebagian besar panggilan tidak memerlukannya: dua perangkat yang dapat saling menjangkau secara langsung — sebagian besar panggilan di jaringan yang sama — terhubung tanpanya, dan tidak ada yang diteruskan. Ketika tidak bisa — biasanya karena Anda berdua berada di jaringan seluler yang berbeda — panggilan yang sudah terenkripsi diteruskan alih-alih dibiarkan tidak dapat terhubung. Yang dilihat Cloudflare adalah kedua alamat IP, waktu panggilan, dan perkiraan jumlah data yang berpindah; audio dan video tetap berada dalam enkripsi DTLS-SRTP yang sama seperti dijelaskan di bagian 2, jadi penerusan tidak mendekripsinya.
 
 Kami dapat mengungkapkan apa yang kami simpan jika hukum mengharuskannya. Apa yang kami simpan adalah daftar pada bagian 2. Kami tidak dapat memberikan isi pesan, karena kami tidak dapat membacanya.`,
     },
@@ -2763,6 +2826,7 @@ Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggun
       body: `আমরা আপনার ব্যক্তিগত তথ্য বিক্রি, বিনিময় বা ভাড়া দিই না। তথ্য পৌঁছায়:
 
 • Google Firebase — উপরে বর্ণিত আমাদের হোস্টিং প্রদানকারী।
+• Cloudflare Realtime — কলের অডিও এবং ভিডিও, যখন আপনার ডিভাইস এবং অন্য ব্যক্তির ডিভাইস সরাসরি একে অপরের কাছে পৌঁছাতে পারে না।
 • উইকিমিডিয়া ফাউন্ডেশন — একটি নাম, যখন আপনি এটি উইকিপিডিয়ায় খুঁজতে ট্যাপ করেন।
 • Google Cloud Speech-to-Text — একটি ভয়েস বার্তার অডিও, যখন আপনি প্রতিলিপি অনুরোধ করেন।
 • Google Cloud Translation — একটি বার্তার লেখা, যখন আপনি অনুবাদ অনুরোধ করেন।
@@ -2771,6 +2835,8 @@ Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggun
 শেষ তিনটি এই সংস্করণে বন্ধ আছে। অ্যাপের কোথাও এমন কোনো নিয়ন্ত্রণ নেই যা প্রতিলিপি, অনুবাদ বা সারাংশ চালু করে, তাই এই তিনটি পরিষেবার কাছে কিছুই পৌঁছায় না। এগুলো মুছে ফেলার বদলে তালিকাভুক্ত করা আছে কারণ কোডটি এখনো এখানে আছে এবং এই ফিচারগুলো ফিরে আসার কথা — এবং যখন ফিরবে, তারা এই প্রকাশনার সাথে এবং প্রথম ব্যবহারের আগে একটি প্রম্পট সহ ফিরবে। তখন যা পাঠানো হবে তা আপনার ফলাফল তৈরি করার জন্য পাঠানো হয়, কিছু প্রশিক্ষণের জন্য নয়; প্রতিলিপি বা অনুবাদ কোনোটিই আমাদের সার্ভারে সংরক্ষিত হয় না।
 
 উইকিপিডিয়া অনুসন্ধানের কোনো সুইচ নেই কারণ বন্ধ করার মতো স্থায়ী কিছু নেই: এটি শুধু ট্যাপের সময় চলে, অন্যথায় নয়। উইকিপিডিয়া শুধু সেই একটি নাম এবং আপনার IP ঠিকানা পায়, ঠিক যেমন আপনি নিজে এটি তাদের অনুসন্ধান বক্সে টাইপ করলে পেত — কোনো অ্যাকাউন্ট নেই, কোনো বার্তা নেই, কোনো কথোপকথন নেই। যা ফিরে আসে তা শুধু দেখানো হয় এবং সংরক্ষিত হয় না, এবং এ সম্পর্কে কিছুই কথোপকথনে লেখা হয় না।
+
+Cloudflare Realtime-এরও কোনো সুইচ নেই। বেশিরভাগ কলের এটির প্রয়োজন হয় না: দুটি ডিভাইস যারা সরাসরি একে অপরের কাছে পৌঁছাতে পারে — একই নেটওয়ার্কে বেশিরভাগ কল — এটি ছাড়াই সংযুক্ত হয়, এবং কিছুই রিলে হয় না। যখন তারা পারে না — সাধারণত কারণ আপনারা দুজন ভিন্ন ভিন্ন মোবাইল নেটওয়ার্কে আছেন — ইতিমধ্যে এনক্রিপ্ট করা কলটি সংযোগবিহীন থাকার পরিবর্তে রিলে করা হয়। Cloudflare যা দেখে তা হলো উভয়ের IP ঠিকানা, কলের সময়, এবং আনুমানিক কত ডেটা স্থানান্তরিত হয়েছে; অডিও এবং ভিডিও বিভাগ ২-এ বর্ণিত একই DTLS-SRTP এনক্রিপশনের অধীনে থাকে, তাই রিলে করা সেগুলি ডিক্রিপ্ট করে না।
 
 আইন প্রয়োজন হলে আমরা আমাদের কাছে থাকা তথ্য প্রকাশ করতে পারি। আমাদের কাছে যা আছে তা ধারা ২-এর তালিকা। আমরা বার্তার বিষয়বস্তু দিতে পারি না, কারণ আমরা সেগুলো পড়তে পারি না।`,
     },
@@ -2890,6 +2956,7 @@ Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggun
       body: `เราไม่ขาย แลกเปลี่ยน หรือให้เช่าข้อมูลส่วนบุคคลของคุณ ข้อมูลไปถึง:
 
 • Google Firebase — ผู้ให้บริการโฮสติ้งของเรา ตามที่อธิบายไว้ข้างต้น
+• Cloudflare Realtime — เสียงและวิดีโอของการโทร เมื่ออุปกรณ์ของคุณและอุปกรณ์ของอีกฝ่ายไม่สามารถเชื่อมต่อถึงกันโดยตรงได้
 • มูลนิธิวิกิมีเดีย — หนึ่งชื่อ เมื่อคุณแตะเพื่อค้นหาในวิกิพีเดีย
 • Google Cloud Speech-to-Text — เสียงของข้อความเสียงหนึ่งข้อความ เมื่อคุณขอการถอดความ
 • Google Cloud Translation — ข้อความของข้อความหนึ่งข้อความ เมื่อคุณขอการแปล
@@ -2898,6 +2965,8 @@ Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggun
 สามรายการสุดท้ายปิดอยู่ในรุ่นนี้ ไม่มีการควบคุมใดๆ ในแอปที่จะเปิดการถอดความ การแปล หรือการสรุป ดังนั้นจึงไม่มีอะไรไปถึงบริการทั้งสามนี้เลย รายการเหล่านี้ถูกระบุไว้แทนที่จะลบออก เพราะโค้ดยังคงอยู่ที่นี่และฟีเจอร์เหล่านี้ตั้งใจจะกลับมา — และเมื่อกลับมา จะมาพร้อมกับการเปิดเผยนี้และการแจ้งเตือนก่อนการใช้งานครั้งแรก สิ่งที่จะถูกส่งในตอนนั้นถูกส่งเพื่อสร้างผลลัพธ์ของคุณ ไม่ใช่เพื่อฝึกฝนสิ่งใด ทั้งการถอดความและการแปลจะไม่ถูกเก็บไว้บนเซิร์ฟเวอร์ของเรา
 
 การค้นหาวิกิพีเดียไม่มีสวิตช์เพราะไม่มีอะไรถาวรให้ปิด: มันทำงานเฉพาะเมื่อแตะเท่านั้น ไม่ใช่วิธีอื่น วิกิพีเดียได้รับเพียงชื่อนั้นและที่อยู่ IP ของคุณ เหมือนกับที่คุณพิมพ์มันเองในกล่องค้นหาของพวกเขา — ไม่มีบัญชี ไม่มีข้อความ ไม่มีการสนทนา สิ่งที่ส่งกลับมาเพียงแสดงผลและไม่ถูกบันทึก และไม่มีอะไรเกี่ยวกับมันถูกเขียนลงในการสนทนา
+
+Cloudflare Realtime ก็ไม่มีสวิตช์เช่นกัน การโทรส่วนใหญ่ไม่ต้องการมัน อุปกรณ์สองเครื่องที่สามารถเชื่อมต่อถึงกันโดยตรง — การโทรส่วนใหญ่ในเครือข่ายเดียวกัน — จะเชื่อมต่อกันโดยไม่ต้องใช้มัน และไม่มีอะไรถูกส่งต่อ เมื่อเชื่อมต่อโดยตรงไม่ได้ — โดยทั่วไปเพราะทั้งสองฝ่ายอยู่คนละเครือข่ายมือถือ — การโทรที่เข้ารหัสไว้แล้วจะถูกส่งต่อแทนที่จะเชื่อมต่อไม่ได้ สิ่งที่ Cloudflare เห็นคือที่อยู่ IP ของทั้งสองฝ่าย เวลาของการโทร และปริมาณข้อมูลโดยประมาณที่ถูกส่ง เสียงและวิดีโอยังคงอยู่ภายใต้การเข้ารหัส DTLS-SRTP แบบเดียวกับที่อธิบายไว้ในหมวด 2 ดังนั้นการส่งต่อจึงไม่ได้ถอดรหัสมัน
 
 เราอาจเปิดเผยสิ่งที่เราเก็บไว้หากกฎหมายกำหนด สิ่งที่เราเก็บไว้คือรายการในส่วนที่ 2 เราไม่สามารถให้เนื้อหาข้อความได้ เพราะเราไม่สามารถอ่านได้`,
     },
@@ -3017,6 +3086,7 @@ Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay hindi kailanman umaal
       body: `Hindi namin ibinebenta, ipinagpapalit, o inuupahan ang iyong personal na impormasyon. Ang data ay nakakarating sa:
 
 • Google Firebase — ang aming provider ng hosting, gaya ng inilarawan sa itaas.
+• Cloudflare Realtime — ang audio at video ng isang tawag, kapag hindi direktang maaabot ng iyong device at ng device ng ibang tao ang isa't isa.
 • Wikimedia Foundation — isang pangalan, kapag na-tap mo ito para hanapin sa Wikipedia.
 • Google Cloud Speech-to-Text — ang audio ng isang voice message, kapag humihiling ka ng transcript.
 • Google Cloud Translation — ang teksto ng isang mensahe, kapag humihiling ka ng pagsasalin.
@@ -3025,6 +3095,8 @@ Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay hindi kailanman umaal
 Ang huling tatlo ay naka-off sa release na ito. Walang kontrol kahit saan sa app na magbubukas sa transcription, translation, o mga buod, kaya walang nakakarating sa tatlong serbisyong iyon. Nakalista ang mga ito sa halip na tanggalin dahil narito pa rin ang code at ang mga feature ay nilalayong bumalik — at kapag bumalik ang mga ito, babalik ito kasama ang paglalantad na ito at isang prompt bago ang unang paggamit. Anumang ipapadala sa oras na iyon ay ipapadala upang makagawa ng iyong resulta, hindi upang magsanay ng anuman; walang transcript o pagsasalin na naiimbak sa aming mga server.
 
 Ang paghahanap sa Wikipedia ay walang switch dahil walang anumang kailangang i-off: tumatakbo lang ito sa tap at wala nang iba. Ang Wikipedia ay tumatanggap ng isang pangalang iyon at ng iyong IP address, kapareho ng kung na-type mo ito sa kanilang search box — walang account, walang mensahe, walang pag-uusap. Ang ibinabalik ay ipinapakita at hindi naiimbak, at walang anumang tungkol dito ang naisusulat sa pag-uusap.
+
+Wala ring switch ang Cloudflare Realtime. Karamihan sa mga tawag ay hindi ito kailangan: dalawang device na maaaring direktang maabot ang isa't isa — karamihan sa mga tawag sa parehong network — ay kumokonekta nang wala ito, at walang ni-relay. Kapag hindi nila kaya — kadalasan dahil kayong dalawa ay nasa magkaibang mobile network — ang naka-encrypt na nang tawag ay ni-relay sa halip na iwang hindi makakonekta. Ang nakikita ng Cloudflare ay ang parehong IP address, ang oras ng tawag, at humigit-kumulang kung gaano karaming data ang gumalaw; ang audio at video ay nananatili sa ilalim ng parehong DTLS-SRTP encryption na inilarawan sa seksyon 2, kaya hindi ito ma-decrypt ng pag-relay.
 
 Maaari naming ilantad ang aming hawak kung ito ay hinihiling ng batas. Ang aming hawak ay ang listahan sa seksyon 2. Hindi namin maibibigay ang laman ng mensahe, dahil hindi namin ito mababasa.`,
     },
@@ -3144,6 +3216,7 @@ Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti and
       body: `Kami tidak menjual, berdagang atau menyewakan maklumat peribadi anda. Data sampai kepada:
 
 • Google Firebase — pembekal pengehosan kami, seperti yang diterangkan di atas.
+• Cloudflare Realtime — audio dan video panggilan, apabila peranti anda dan peranti orang lain tidak dapat menghubungi satu sama lain secara langsung.
 • Wikimedia Foundation — satu nama, apabila anda mengetik untuk mencarinya di Wikipedia.
 • Google Cloud Speech-to-Text — audio satu mesej suara, apabila anda meminta transkrip.
 • Google Cloud Translation — teks satu mesej, apabila anda meminta terjemahan.
@@ -3152,6 +3225,8 @@ Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti and
 Tiga yang terakhir dimatikan dalam keluaran ini. Tiada kawalan di mana-mana dalam apl untuk menghidupkan transkripsi, terjemahan atau ringkasan, jadi tiada apa sampai ke tiga perkhidmatan itu. Ia disenaraikan berbanding dipadam kerana kod masih ada di sini dan ciri-ciri itu dimaksudkan untuk kembali — dan apabila ia kembali, ia kembali dengan pendedahan ini dan gesaan sebelum penggunaan pertama. Apa yang akan dihantar pada masa itu dihantar untuk menghasilkan keputusan anda, bukan untuk melatih apa-apa; tiada transkrip atau terjemahan yang disimpan pada pelayan kami.
 
 Carian Wikipedia tiada suis kerana tiada apa untuk dimatikan: ia berjalan hanya semasa ketikan dan tidak sebaliknya. Wikipedia menerima nama itu sahaja dan alamat IP anda, sama seperti jika anda menaipnya sendiri dalam kotak carian mereka — tiada akaun, tiada mesej, tiada perbualan. Apa yang dikembalikan dipaparkan dan tidak disimpan, dan tiada apa mengenainya ditulis ke dalam perbualan.
+
+Cloudflare Realtime juga tiada suis. Kebanyakan panggilan tidak memerlukannya: dua peranti yang boleh menghubungi satu sama lain secara langsung — kebanyakan panggilan pada rangkaian yang sama — menyambung tanpanya, dan tiada apa yang direlai. Apabila mereka tidak boleh — biasanya kerana anda berdua berada pada rangkaian mudah alih yang berbeza — panggilan yang sudah disulitkan itu direlai berbanding dibiarkan tidak dapat menyambung. Apa yang Cloudflare lihat ialah kedua-dua alamat IP, masa panggilan, dan anggaran berapa banyak data yang dipindahkan; audio dan video kekal di bawah penyulitan DTLS-SRTP yang sama seperti yang diterangkan dalam seksyen 2, jadi merelai tidak menyahsulitkannya.
 
 Kami mungkin mendedahkan apa yang kami pegang jika undang-undang memerlukannya. Apa yang kami pegang ialah senarai dalam bahagian 2. Kami tidak boleh menghasilkan kandungan mesej, kerana kami tidak boleh membacanya.`,
     },
@@ -3271,6 +3346,7 @@ Typing indicators နှင့် read receipts များသည် သင်�
       body: `ကျွန်ုပ်တို့သည် သင့်ကိုယ်ရေးအချက်အလက်ကို မရောင်း၊ မလဲလှယ်၊ မငှားရမ်းပါ။ ဒေတာ ရောက်ရှိသည့်နေရာများ—
 
 • Google Firebase — အထက်တွင်ဖော်ပြထားသည့်အတိုင်း ကျွန်ုပ်တို့၏ hosting provider။
+• Cloudflare Realtime — သင့်စက်နှင့် အခြားသူ၏စက်တို့ တိုက်ရိုက်ချိတ်ဆက်၍မရသောအခါ ခေါ်ဆိုမှု၏အသံနှင့်ဗီဒီယိုကို ပို့ဆောင်ပေးသည်။
 • Wikimedia Foundation — Wikipedia တွင်ရှာဖွေရန် တို့နှိပ်သောအခါ အမည်တစ်ခု။
 • Google Cloud Speech-to-Text — transcript တောင်းဆိုသောအခါ voice message တစ်ခု၏ အသံ။
 • Google Cloud Translation — ဘာသာပြန်ဆိုမှုတောင်းဆိုသောအခါ စာတစ်စောင်၏ စာသား။
@@ -3279,6 +3355,8 @@ Typing indicators နှင့် read receipts များသည် သင်�
 နောက်ဆုံးသုံးခုကို ဤဗားရှင်းတွင် ပိတ်ထားသည်။ transcription၊ translation (သို့) summaries များကို ဖွင့်ရန် app တွင် ထိန်းချုပ်မှုမရှိသဖြင့် ထိုဝန်ဆောင်မှုသုံးခုသို့ မည်သည့်အရာမျှ မရောက်ရှိပါ။ code သည် ယခုတိုင်ရှိနေဆဲဖြစ်ပြီး feature များ ပြန်လာရန်ရည်ရွယ်ထားသောကြောင့် ၎င်းတို့ကို ဖျက်မည့်အစား စာရင်းသွင်းထားခြင်းဖြစ်သည် — ၎င်းတို့ပြန်လာသောအခါ ဤဖော်ပြချက်နှင့်အတူ ပထမဆုံးအသုံးပြုမီ prompt တစ်ခုနှင့်အတူ ပြန်လာမည်ဖြစ်သည်။ ထိုအချိန်တွင် ပို့မည့်အရာသည် သင့်ရလဒ်ထုတ်လုပ်ရန်အတွက်သာဖြစ်ပြီး မည်သည့်အရာမျှ လေ့ကျင့်ရန်မဟုတ်ပါ; transcript (သို့) translation မည်သည့်တစ်ခုမျှ ကျွန်ုပ်တို့ ဆာဗာများတွင် သိမ်းဆည်းမထားပါ။
 
 Wikipedia ရှာဖွေမှုတွင် switch မရှိပါ၊ အကြောင်းမှာ ပိတ်ရန် မည်သည့်အရာမျှ မရှိသောကြောင့်ဖြစ်သည်— ၎င်းသည် tap ချိန်တွင်သာ အလုပ်လုပ်ပြီး အခြားနည်းဖြင့် မဟုတ်ပါ။ Wikipedia သည် ထိုအမည်တစ်ခုတည်းနှင့် သင့် IP လိပ်စာကို ရရှိသည်၊ ၎င်းတို့၏ ရှာဖွေရေးဘောက်စ်တွင် သင်ကိုယ်တိုင်ရိုက်ထည့်သကဲ့သို့ပင် — account, message, conversation မရှိပါ။ ပြန်ရလာသည်များကို ပြသပြီး သိမ်းမထားပါ၊ ၎င်းနှင့်ပတ်သက်၍ မည်သည့်အရာမျှ စကားဝိုင်းထဲသို့ ရေးမထားပါ။
+
+Cloudflare Realtime တွင်လည်း ခလုတ်မရှိပါ။ ခေါ်ဆိုမှုအများစုတွင် ၎င်းမလိုအပ်ပါ— တစ်ခုနှင့်တစ်ခု တိုက်ရိုက်ချိတ်ဆက်နိုင်သော စက်နှစ်ခု၊ တူညီသောကွန်ရက်ပေါ်ရှိ ခေါ်ဆိုမှုအများစု၊ သည် ၎င်းမပါဘဲ ချိတ်ဆက်ပြီး မည်သည့်အရာမျှ ပို့ဆောင်ခြင်းမရှိပါ။ တိုက်ရိုက်ချိတ်ဆက်၍မရသောအခါ—များသောအားဖြင့် နှစ်ဦးစလုံး မတူညီသော မိုဘိုင်းကွန်ရက်များပေါ်တွင်ရှိနေသောကြောင့်—ရှိပြီးသား စာဝှက်ထားသော ခေါ်ဆိုမှုကို ချိတ်ဆက်၍မရအောင် ထားမည့်အစား ပို့ဆောင်ပေးသည်။ Cloudflare မြင်ရသည်မှာ နှစ်ဦးစလုံး၏ IP လိပ်စာများ၊ ခေါ်ဆိုမှု၏အချိန်၊ နှင့် ဒေတာမည်မျှ ရွှေ့ပြောင်းခဲ့သည်ကို ခန့်မှန်းခြင်းတို့သာဖြစ်ပြီး၊ အသံနှင့်ဗီဒီယိုသည် အပိုင်း ၂ တွင်ဖော်ပြထားသော DTLS-SRTP စာဝှက်စနစ်အောက်တွင်ပင် ဆက်လက်ရှိနေသောကြောင့် ပို့ဆောင်ခြင်းက ၎င်းတို့ကို စာဝှက်ဖြည်ခြင်းမပြုနိုင်ပါ။
 
 ဥပဒေကတောင်းဆိုပါက ကျွန်ုပ်တို့ကိုင်ဆောင်ထားသည်များကို ဖော်ပြပေးနိုင်ပါသည်။ ကျွန်ုပ်တို့ကိုင်ဆောင်ထားသည်မှာ အပိုင်း ၂ ရှိစာရင်းဖြစ်သည်။ ကျွန်ုပ်တို့သည် message contents များကို မဖတ်နိုင်သောကြောင့် ၎င်းတို့ကို ထုတ်ပေးနိုင်မည်မဟုတ်ပါ။`,
     },
@@ -3398,6 +3476,7 @@ Notifications များတွင် message စာသား မပါဝင�
       body: `យើងមិនលក់ ដោះដូរ ឬឱ្យជួលព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកឡើយ។ ទិន្នន័យទៅដល់៖
 
 • Google Firebase — អ្នកផ្តល់សេវាបង្ហោះរបស់យើង ដូចបានពិពណ៌នាខាងលើ។
+• Cloudflare Realtime — សំឡេង និងវីដេអូនៃការហៅទូរស័ព្ទ នៅពេលឧបករណ៍របស់អ្នក និងឧបករណ៍របស់អ្នកម្នាក់ទៀត មិនអាចទាក់ទងគ្នាដោយផ្ទាល់បាន។
 • មូលនិធិវិគីមេឌា — ឈ្មោះមួយ នៅពេលអ្នកចុចដើម្បីស្វែងរកនៅលើវិគីភីឌា។
 • Google Cloud Speech-to-Text — សំឡេងនៃសារសំឡេងមួយ នៅពេលអ្នកស្នើសុំអត្ថបទចម្លង។
 • Google Cloud Translation — អត្ថបទនៃសារមួយ នៅពេលអ្នកស្នើសុំការបកប្រែ។
@@ -3406,6 +3485,8 @@ Notifications များတွင် message စာသား မပါဝင�
 បីចុងក្រោយត្រូវបានបិទក្នុងកំណែនេះ។ គ្មានការគ្រប់គ្រងណាមួយក្នុងកម្មវិធីដែលបើកការសរសេរតាមសំឡេង ការបកប្រែ ឬសេចក្តីសង្ខេប ដូច្នេះគ្មានអ្វីទៅដល់សេវាទាំងបីនោះទេ។ ពួកវាត្រូវបានរាយបញ្ជីជំនួសឱ្យលុប ពីព្រោះកូដនៅតែមាននៅទីនេះ ហើយលក្ខណៈពិសេសទាំងនោះមានបំណងនឹងត្រឡប់មកវិញ — ហើយនៅពេលពួកវាត្រឡប់មកវិញ ពួកវានឹងត្រឡប់មកជាមួយការបង្ហាញនេះ និងសារជូនដំណឹងមុនពេលប្រើប្រាស់លើកដំបូង។ អ្វីដែលនឹងត្រូវផ្ញើនៅពេលនោះត្រូវបានផ្ញើដើម្បីបង្កើតលទ្ធផលរបស់អ្នក មិនមែនដើម្បីបណ្តុះបណ្តាលអ្វីទេ; គ្មានអត្ថបទចម្លង ឬការបកប្រែណាមួយត្រូវបានរក្សាទុកនៅលើម៉ាស៊ីនមេរបស់យើងឡើយ។
 
 ការស្វែងរកលើវិគីភីឌាគ្មានកុងតាក់ទេ ពីព្រោះគ្មានអ្វីត្រូវបិទឡើយ៖ វាដំណើរការតែពេលចុចប៉ុណ្ណោះ មិនមែនតាមវិធីផ្សេង។ វិគីភីឌាទទួលបានឈ្មោះនោះតែមួយ និងអាសយដ្ឋាន IP របស់អ្នក ដូចជាអ្នកបានវាយវាចូលក្នុងប្រអប់ស្វែងរករបស់ពួកគេផ្ទាល់ — គ្មានគណនី គ្មានសារ គ្មានការសន្ទនា។ អ្វីដែលត្រឡប់មកវិញត្រូវបានបង្ហាញ ហើយមិនត្រូវបានរក្សាទុក ហើយគ្មានអ្វីអំពីវាត្រូវបានសរសេរទៅក្នុងការសន្ទនាឡើយ។
+
+Cloudflare Realtime ក៏មិនមានកុងតាក់ដែរ។ ការហៅទូរស័ព្ទភាគច្រើនមិនត្រូវការវាទេ៖ ឧបករណ៍ពីរដែលអាចទាក់ទងគ្នាដោយផ្ទាល់—ការហៅទូរស័ព្ទភាគច្រើននៅលើបណ្តាញតែមួយ—ភ្ជាប់គ្នាដោយមិនចាំបាច់ប្រើវា ហើយគ្មានអ្វីត្រូវបានបញ្ជូនបន្តទេ។ នៅពេលពួកគេមិនអាចធ្វើបាន—ជាទូទៅដោយសារអ្នកទាំងពីរនៅលើបណ្តាញទូរស័ព្ទចល័តខុសគ្នា—ការហៅទូរស័ព្ទដែលបានអ៊ិនគ្រីបរួចហើយនឹងត្រូវបានបញ្ជូនបន្ត ជំនួសឱ្យការទុកឱ្យវានៅតែមិនអាចភ្ជាប់បាន។ អ្វីដែល Cloudflare ឃើញគឺអាសយដ្ឋាន IP ទាំងពីរ ពេលវេលានៃការហៅទូរស័ព្ទ និងបរិមាណទិន្នន័យប្រហែលដែលបានផ្លាស់ទី។ សំឡេង និងវីដេអូនៅតែស្ថិតនៅក្រោមការអ៊ិនគ្រីប DTLS-SRTP ដូចគ្នានឹងបានពិពណ៌នានៅផ្នែកទី ២ ដូច្នេះការបញ្ជូនបន្តមិនឌិគ្រីបពួកវាឡើយ។
 
 យើងអាចបង្ហាញអ្វីដែលយើងកាន់កាប់ប្រសិនបើច្បាប់តម្រូវ។ អ្វីដែលយើងកាន់កាប់គឺជាបញ្ជីនៅផ្នែកទី ២។ យើងមិនអាចផលិតមាតិកាសារបានទេ ពីព្រោះយើងមិនអាចអានវាបាន។`,
     },
@@ -3525,6 +3606,7 @@ Notifications များတွင် message စာသား မပါဝင�
       body: `ພວກເຮົາບໍ່ຂາຍ, ແລກປ່ຽນ ຫຼືໃຫ້ເຊົ່າຂໍ້ມູນສ່ວນຕົວຂອງທ່ານ. ຂໍ້ມູນໄປຮອດ:
 
 • Google Firebase — ຜູ້ໃຫ້ບໍລິການໂຮດສະຕິງຂອງພວກເຮົາ, ຕາມທີ່ອະທິບາຍຂ້າງເທິງ.
+• Cloudflare Realtime — ສຽງ ແລະ ວິດີໂອຂອງການໂທ, ເມື່ອອຸປະກອນຂອງທ່ານ ແລະ ອຸປະກອນຂອງອີກຝ່າຍບໍ່ສາມາດເຊື່ອມຕໍ່ກັນໂດຍກົງໄດ້.
 • ມູນນິທິວິກິມີເດຍ — ຊື່ໜຶ່ງ, ເມື່ອທ່ານແຕະເພື່ອຄົ້ນຫາໃນວິກິພີເດຍ.
 • Google Cloud Speech-to-Text — ສຽງຂອງຂໍ້ຄວາມສຽງໜຶ່ງ, ເມື່ອທ່ານຂໍການຖອດຂໍ້ຄວາມ.
 • Google Cloud Translation — ຂໍ້ຄວາມຂອງຂໍ້ຄວາມໜຶ່ງ, ເມື່ອທ່ານຂໍການແປ.
@@ -3533,6 +3615,8 @@ Notifications များတွင် message စာသား မပါဝင�
 ສາມອັນສຸດທ້າຍປິດຢູ່ໃນລຸ້ນນີ້. ບໍ່ມີການຄວບຄຸມໃດໆໃນແອັບທີ່ຈະເປີດການຖອດຂໍ້ຄວາມ, ການແປ ຫຼືການສະຫຼຸບ, ດັ່ງນັ້ນຈຶ່ງບໍ່ມີຫຍັງໄປຮອດສາມບໍລິການນັ້ນ. ພວກມັນຖືກລະບຸໄວ້ແທນທີ່ຈະຖືກລຶບ ເພາະໂຄ້ດຍັງຢູ່ທີ່ນີ້ ແລະ ຄຸນສົມບັດເຫຼົ່ານັ້ນຕັ້ງໃຈຈະກັບຄືນມາ — ແລະ ເມື່ອພວກມັນກັບຄືນມາ, ພວກມັນຈະກັບຄືນມາພ້ອມກັບການເປີດເຜີຍນີ້ ແລະ ຄຳເຕືອນກ່ອນການໃຊ້ງານຄັ້ງທຳອິດ. ສິ່ງທີ່ຈະຖືກສົ່ງໃນຕອນນັ້ນຖືກສົ່ງເພື່ອສ້າງຜົນລັບຂອງທ່ານ, ບໍ່ແມ່ນເພື່ອຝຶກຝົນສິ່ງໃດ; ບໍ່ມີການຖອດຂໍ້ຄວາມ ຫຼືການແປໃດຖືກເກັບໄວ້ໃນເຊີບເວີຂອງພວກເຮົາ.
 
 ການຄົ້ນຫາວິກິພີເດຍບໍ່ມີສະວິດ ເພາະບໍ່ມີຫຍັງໃຫ້ປິດ: ມັນເຮັດວຽກເມື່ອແຕະເທົ່ານັ້ນ ບໍ່ແມ່ນວິທີອື່ນ. ວິກິພີເດຍໄດ້ຮັບຊື່ນັ້ນອັນດຽວ ແລະ ທີ່ຢູ່ IP ຂອງທ່ານ, ຄືກັນກັບວ່າທ່ານໄດ້ພິມມັນເອງໃສ່ກ່ອງຄົ້ນຫາຂອງພວກເຂົາ — ບໍ່ມີບັນຊີ, ບໍ່ມີຂໍ້ຄວາມ, ບໍ່ມີການສົນທະນາ. ສິ່ງທີ່ກັບຄືນມາຖືກສະແດງ ແລະ ບໍ່ຖືກບັນທຶກ, ແລະ ບໍ່ມີຫຍັງກ່ຽວກັບມັນຖືກຂຽນລົງໃນການສົນທະນາ.
+
+Cloudflare Realtime ກໍ່ບໍ່ມີສະວິດເຊັ່ນກັນ. ການໂທສ່ວນໃຫຍ່ບໍ່ຕ້ອງການມັນ: ອຸປະກອນສອງເຄື່ອງທີ່ສາມາດເຊື່ອມຕໍ່ກັນໂດຍກົງ — ການໂທສ່ວນໃຫຍ່ໃນເຄືອຂ່າຍດຽວກັນ — ເຊື່ອມຕໍ່ກັນໂດຍບໍ່ຕ້ອງໃຊ້ມັນ, ແລະ ບໍ່ມີຫຍັງຖືກສົ່ງຕໍ່. ເມື່ອບໍ່ສາມາດເຊື່ອມຕໍ່ໄດ້ — ໂດຍທົ່ວໄປແມ່ນຍ້ອນທັງສອງຄົນຢູ່ຄົນລະເຄືອຂ່າຍມືຖື — ການໂທທີ່ຖືກເຂົ້າລະຫັດແລ້ວຈະຖືກສົ່ງຕໍ່ແທນທີ່ຈະປະໄວ້ໂດຍບໍ່ສາມາດເຊື່ອມຕໍ່ໄດ້. ສິ່ງທີ່ Cloudflare ເຫັນແມ່ນທີ່ຢູ່ IP ຂອງທັງສອງຝ່າຍ, ເວລາຂອງການໂທ, ແລະ ປະລິມານຂໍ້ມູນໂດຍປະມານທີ່ຖືກສົ່ງ; ສຽງ ແລະ ວິດີໂອຍັງຄົງຢູ່ພາຍໃຕ້ການເຂົ້າລະຫັດ DTLS-SRTP ດຽວກັນທີ່ອະທິບາຍໄວ້ໃນພາກທີ 2, ສະນັ້ນການສົ່ງຕໍ່ຈຶ່ງບໍ່ໄດ້ຖອດລະຫັດພວກມັນ.
 
 ພວກເຮົາອາດເປີດເຜີຍສິ່ງທີ່ພວກເຮົາຖືໄວ້ຖ້າກົດໝາຍຮຽກຮ້ອງ. ສິ່ງທີ່ພວກເຮົາຖືໄວ້ແມ່ນລາຍການໃນພາກທີ 2. ພວກເຮົາບໍ່ສາມາດຜະລິດເນື້ອຫາຂໍ້ຄວາມໄດ້, ເພາະພວກເຮົາບໍ່ສາມາດອ່ານມັນໄດ້.`,
     },
@@ -3652,6 +3736,7 @@ Notifications များတွင် message စာသား မပါဝင�
       body: `நாங்கள் உங்கள் தனிப்பட்ட தகவலை விற்கவோ, மாற்றவோ, வாடகைக்கு விடவோ மாட்டோம். தரவு அடைகிறது:
 
 • Google Firebase — மேலே விவரிக்கப்பட்டுள்ளபடி, எங்கள் ஹோஸ்டிங் வழங்குநர்.
+• Cloudflare Realtime — உங்கள் சாதனமும் மற்றவரின் சாதனமும் நேரடியாக ஒன்றையொன்று அடைய முடியாதபோது, அழைப்பின் ஒலி மற்றும் வீடியோ.
 • விக்கிமீடியா அறக்கட்டளை — விக்கிபீடியாவில் தேட நீங்கள் தட்டும்போது ஒரு பெயர்.
 • Google Cloud Speech-to-Text — நீங்கள் ஒரு டிரான்ஸ்கிரிப்ட் கேட்கும்போது ஒரு குரல் செய்தியின் ஆடியோ.
 • Google Cloud Translation — நீங்கள் ஒரு மொழிபெயர்ப்பு கேட்கும்போது ஒரு செய்தியின் உரை.
@@ -3660,6 +3745,8 @@ Notifications များတွင် message စာသား မပါဝင�
 கடைசி மூன்றும் இந்த வெளியீட்டில் அணைக்கப்பட்டுள்ளன. படியெடுத்தல், மொழிபெயர்ப்பு அல்லது சுருக்கங்களை இயக்கும் எந்த கட்டுப்பாடும் ஆப்பில் எங்கும் இல்லை, எனவே அந்த மூன்று சேவைகளுக்கும் எதுவும் அடையாது. அவை நீக்கப்படுவதற்கு பதிலாக பட்டியலிடப்பட்டுள்ளன, ஏனெனில் குறியீடு இன்னும் இங்கே உள்ளது மற்றும் அம்சங்கள் திரும்ப வர வேண்டும் என்று உத்தேசிக்கப்பட்டுள்ளது — அவை திரும்பும்போது, அவை இந்த வெளிப்படுத்தலுடனும் முதல் பயன்பாட்டிற்கு முன் ஒரு அறிவிப்புடனும் திரும்பும். அப்போது அனுப்பப்படுவது உங்கள் முடிவை உருவாக்க அனுப்பப்படுகிறது, எதையும் பயிற்றுவிக்க அல்ல; எங்கள் சர்வர்களில் டிரான்ஸ்கிரிப்ட் அல்லது மொழிபெயர்ப்பு சேமிக்கப்படவில்லை.
 
 விக்கிபீடியா தேடலுக்கு சுவிட்ச் இல்லை, ஏனெனில் அணைக்க எதுவும் நிற்கவில்லை: அது தட்டும்போது மட்டுமே இயங்குகிறது வேறு வழியில் அல்ல. விக்கிபீடியா அந்த ஒரு பெயரையும் உங்கள் IP முகவரியையும் பெறுகிறது, அவர்களின் தேடல் பெட்டியில் நீங்கள் அதை தட்டச்சு செய்ததைப் போல — கணக்கு இல்லை, செய்தி இல்லை, உரையாடல் இல்லை. திரும்பி வருவது காட்டப்பட்டு சேமிக்கப்படவில்லை, அதைப் பற்றி எதுவும் உரையாடலில் எழுதப்படவில்லை.
+
+Cloudflare Realtime-க்கும் சுவிட்ச் இல்லை. பெரும்பாலான அழைப்புகளுக்கு இது தேவையில்லை: நேரடியாக ஒன்றையொன்று அடையக்கூடிய இரண்டு சாதனங்கள்—ஒரே நெட்வொர்க்கில் உள்ள பெரும்பாலான அழைப்புகள்—இது இல்லாமலேயே இணைகின்றன, எதுவும் அனுப்பப்படுவதில்லை. அவற்றால் முடியாதபோது—பொதுவாக நீங்கள் இருவரும் வெவ்வேறு மொபைல் நெட்வொர்க்குகளில் இருப்பதால்—ஏற்கனவே குறியாக்கம் செய்யப்பட்ட அழைப்பு, இணைக்க முடியாமல் இருப்பதற்குப் பதிலாக அனுப்பப்படுகிறது. Cloudflare பார்ப்பது இரு தரப்பினரின் IP முகவரிகள், அழைப்பின் நேரம், மற்றும் தோராயமாக எவ்வளவு தரவு நகர்ந்தது என்பதே; ஒலியும் வீடியோவும் பிரிவு 2-இல் விவரிக்கப்பட்ட அதே DTLS-SRTP குறியாக்கத்தின் கீழேயே இருக்கும், எனவே அனுப்புவது அவற்றை மறைகுறியாக்கம் நீக்காது.
 
 சட்டம் தேவைப்பட்டால் நாங்கள் வைத்திருப்பதை வெளிப்படுத்தலாம். நாங்கள் வைத்திருப்பது பிரிவு 2 இல் உள்ள பட்டியல். எங்களால் செய்தி உள்ளடக்கத்தை உருவாக்க முடியாது, ஏனெனில் எங்களால் அதைப் படிக்க முடியாது.`,
     },
@@ -3779,6 +3866,7 @@ Notifications များတွင် message စာသား မပါဝင�
       body: `మేము మీ వ్యక్తిగత సమాచారాన్ని విక్రయించము, వర్తకం చేయము లేదా అద్దెకు ఇవ్వము. డేటా చేరేది:
 
 • Google Firebase — పైన వివరించినట్లు, మా హోస్టింగ్ ప్రొవైడర్.
+• Cloudflare Realtime — మీ పరికరం మరియు మరొక వ్యక్తి పరికరం నేరుగా ఒకదానికొకటి చేరుకోలేనప్పుడు, కాల్ యొక్క ఆడియో మరియు వీడియో.
 • వికీమీడియా ఫౌండేషన్ — వికీపీడియాలో వెతకడానికి మీరు నొక్కినప్పుడు ఒక పేరు.
 • Google Cloud Speech-to-Text — మీరు ట్రాన్స్క్రిప్ట్ కోసం అడిగినప్పుడు ఒక వాయిస్ మెసేజ్ యొక్క ఆడియో.
 • Google Cloud Translation — మీరు అనువాదం కోసం అడిగినప్పుడు ఒక సందేశం యొక్క వచనం.
@@ -3787,6 +3875,8 @@ Notifications များတွင် message စာသား မပါဝင�
 చివరి మూడు ఈ విడుదలలో ఆఫ్ చేయబడ్డాయి. లిప్యంతరీకరణ, అనువాదం లేదా సారాంశాలను ఆన్ చేసే నియంత్రణ యాప్‌లో ఎక్కడా లేదు, కాబట్టి ఆ మూడు సేవలకు ఏమీ చేరదు. కోడ్ ఇప్పటికీ ఇక్కడ ఉన్నందున మరియు ఆ ఫీచర్లు తిరిగి రావాలని ఉద్దేశించినందున అవి తొలగించబడటానికి బదులుగా జాబితా చేయబడ్డాయి — అవి తిరిగి వచ్చినప్పుడు, అవి ఈ బహిర్గతంతో మరియు మొదటి ఉపయోగానికి ముందు ప్రాంప్ట్‌తో తిరిగి వస్తాయి. అప్పుడు పంపేది మీ ఫలితాన్ని ఉత్పత్తి చేయడానికి పంపబడుతుంది, దేనినైనా శిక్షణ ఇవ్వడానికి కాదు; మా సర్వర్లలో ట్రాన్స్క్రిప్ట్ లేదా అనువాదం నిల్వ చేయబడదు.
 
 వికీపీడియా శోధనకు స్విచ్ లేదు ఎందుకంటే ఆఫ్ చేయడానికి ఏమీ నిలబడి లేదు: ఇది టాప్‌లో మాత్రమే నడుస్తుంది కాకుండా కాదు. వికీపీడియా ఆ ఒక్క పేరును మరియు మీ IP చిరునామాను స్వీకరిస్తుంది, మీరు దానిని వారి శోధన పెట్టెలో టైప్ చేసినట్లే — ఖాతా లేదు, సందేశం లేదు, సంభాషణ లేదు. తిరిగి వచ్చేది చూపబడుతుంది మరియు సేవ్ చేయబడదు, మరియు దాని గురించి ఏదీ సంభాషణలో వ్రాయబడదు.
+
+Cloudflare Realtime‌కు కూడా స్విచ్ లేదు. చాలా కాల్‌లకు ఇది అవసరం లేదు: నేరుగా ఒకదానికొకటి చేరుకోగల రెండు పరికరాలు—ఒకే నెట్‌వర్క్‌లో చాలా కాల్‌లు—దీని లేకుండానే కనెక్ట్ అవుతాయి, మరియు ఏదీ రిలే చేయబడదు. అవి చేరుకోలేనప్పుడు—సాధారణంగా మీరిద్దరూ వేర్వేరు మొబైల్ నెట్‌వర్క్‌లలో ఉన్నందున—ఇప్పటికే గుప్తీకరించిన కాల్ కనెక్ట్ కాకుండా ఉండటానికి బదులుగా రిలే చేయబడుతుంది. Cloudflare చూసేది రెండు IP చిరునామాలు, కాల్ సమయం, మరియు సుమారుగా ఎంత డేటా తరలింది అనేదే; ఆడియో మరియు వీడియో సెక్షన్ 2లో వివరించిన అదే DTLS-SRTP గుప్తీకరణలోనే ఉంటాయి, కాబట్టి రిలే చేయడం వాటిని డిక్రిప్ట్ చేయదు.
 
 చట్టం అవసరమైతే మేము కలిగి ఉన్నదాన్ని బహిర్గతం చేయవచ్చు. మేము కలిగి ఉన్నది విభాగం 2లోని జాబితా. మేము సందేశ కంటెంట్‌లను ఉత్పత్తి చేయలేము, ఎందుకంటే మేము వాటిని చదవలేము.`,
     },
@@ -3906,6 +3996,7 @@ Notifications များတွင် message စာသား မပါဝင�
       body: `आम्ही तुमची वैयक्तिक माहिती विकत नाही, व्यापार करत नाही, किंवा भाड्याने देत नाही. डेटा येथे पोहोचतो:
 
 • Google Firebase — वर वर्णन केल्याप्रमाणे, आमचा होस्टिंग प्रदाता.
+• Cloudflare Realtime — तुमचे डिव्हाइस आणि दुसऱ्या व्यक्तीचे डिव्हाइस थेट एकमेकांपर्यंत पोहोचू शकत नाहीत तेव्हा कॉलचा ऑडिओ आणि व्हिडिओ.
 • विकिमीडिया फाउंडेशन — जेव्हा तुम्ही Wikipedia वर शोधण्यासाठी टॅप करता तेव्हा एक नाव.
 • Google Cloud Speech-to-Text — जेव्हा तुम्ही ट्रान्सक्रिप्टची विनंती करता तेव्हा एका व्हॉइस मेसेजचा ऑडिओ.
 • Google Cloud Translation — जेव्हा तुम्ही भाषांतराची विनंती करता तेव्हा एका संदेशाचा मजकूर.
@@ -3914,6 +4005,8 @@ Notifications များတွင် message စာသား မပါဝင�
 शेवटचे तीन या रिलीजमध्ये बंद केलेले आहेत. लिप्यंतरण, भाषांतर किंवा सारांश चालू करणारे कोणतेही नियंत्रण अॅपमध्ये कोठेही नाही, त्यामुळे त्या तीन सेवांपर्यंत काहीही पोहोचत नाही. ते काढून टाकण्याऐवजी सूचीबद्ध केले आहेत कारण कोड अजूनही येथे आहे आणि ती वैशिष्ट्ये परत येण्याचा हेतू आहे — आणि जेव्हा ती परत येतात, तेव्हा ती या प्रकटीकरणासह आणि पहिल्या वापरापूर्वी प्रॉम्प्टसह परत येतात. तेव्हा जे पाठवले जाईल ते तुमचा निकाल तयार करण्यासाठी पाठवले जाईल, काहीही प्रशिक्षित करण्यासाठी नाही; आमच्या सर्व्हरवर कोणताही ट्रान्सक्रिप्ट किंवा भाषांतर साठवले जात नाही.
 
 Wikipedia शोधासाठी स्विच नाही कारण बंद करण्यासाठी काहीही उभे नाही: ते फक्त टॅपवर चालते अन्यथा नाही. Wikipedia ला फक्त ते एक नाव आणि तुमचा IP पत्ता मिळतो, जणू तुम्ही तो त्यांच्या शोध बॉक्समध्ये स्वतः टाइप केला आहे — खाते नाही, संदेश नाही, संभाषण नाही. जे परत येते ते दाखवले जाते आणि जतन केले जात नाही, आणि त्याबद्दल काहीही संभाषणात लिहिले जात नाही.
+
+Cloudflare Realtime लाही स्विच नाही. बहुतेक कॉल्सना याची गरज नसते: थेट एकमेकांपर्यंत पोहोचू शकणारी दोन डिव्हाइसेस—एकाच नेटवर्कवरील बहुतेक कॉल्स—याशिवायच कनेक्ट होतात, आणि काहीही रिले होत नाही. जेव्हा ते पोहोचू शकत नाहीत—सहसा तुम्ही दोघे वेगवेगळ्या मोबाइल नेटवर्कवर असल्यामुळे—आधीच एन्क्रिप्ट केलेला कॉल कनेक्ट न होता राहण्याऐवजी रिले केला जातो. Cloudflare जे पाहते ते म्हणजे दोघांचे IP पत्ते, कॉलची वेळ, आणि साधारण किती डेटा हलला; ऑडिओ आणि व्हिडिओ विभाग २ मध्ये वर्णन केलेल्या त्याच DTLS-SRTP एन्क्रिप्शनखालीच राहतात, त्यामुळे रिले केल्याने ते डिक्रिप्ट होत नाहीत.
 
 कायद्याने आवश्यक असल्यास आम्ही आमच्याकडे असलेले उघड करू शकतो. आमच्याकडे जे आहे ते विभाग 2 मधील यादी आहे. आम्ही संदेश सामग्री देऊ शकत नाही, कारण आम्ही ती वाचू शकत नाही.`,
     },
@@ -4033,6 +4126,7 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
       body: `ਅਸੀਂ ਤੁਹਾਡੀ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਵੇਚਦੇ, ਵਪਾਰ ਕਰਦੇ ਜਾਂ ਕਿਰਾਏ ਉੱਤੇ ਨਹੀਂ ਦਿੰਦੇ। ਡਾਟਾ ਇੱਥੇ ਪਹੁੰਚਦਾ ਹੈ:
 
 • Google Firebase — ਉੱਪਰ ਦੱਸੇ ਅਨੁਸਾਰ, ਸਾਡਾ ਹੋਸਟਿੰਗ ਪ੍ਰਦਾਤਾ।
+• Cloudflare Realtime — ਕਾਲ ਦੀ ਆਡੀਓ ਅਤੇ ਵੀਡੀਓ, ਜਦੋਂ ਤੁਹਾਡਾ ਡਿਵਾਈਸ ਅਤੇ ਦੂਜੇ ਵਿਅਕਤੀ ਦਾ ਡਿਵਾਈਸ ਸਿੱਧੇ ਇੱਕ ਦੂਜੇ ਤੱਕ ਨਹੀਂ ਪਹੁੰਚ ਸਕਦੇ।
 • ਵਿਕੀਮੀਡੀਆ ਫਾਊਂਡੇਸ਼ਨ — ਇੱਕ ਨਾਮ, ਜਦੋਂ ਤੁਸੀਂ ਵਿਕੀਪੀਡੀਆ ਉੱਤੇ ਲੱਭਣ ਲਈ ਟੈਪ ਕਰਦੇ ਹੋ।
 • Google Cloud Speech-to-Text — ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਦਾ ਆਡੀਓ, ਜਦੋਂ ਤੁਸੀਂ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਦੀ ਬੇਨਤੀ ਕਰਦੇ ਹੋ।
 • Google Cloud Translation — ਇੱਕ ਸੁਨੇਹੇ ਦਾ ਟੈਕਸਟ, ਜਦੋਂ ਤੁਸੀਂ ਅਨੁਵਾਦ ਦੀ ਬੇਨਤੀ ਕਰਦੇ ਹੋ।
@@ -4041,6 +4135,8 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
 ਆਖਰੀ ਤਿੰਨ ਇਸ ਰੀਲੀਜ਼ ਵਿੱਚ ਬੰਦ ਹਨ। ਟ੍ਰਾਂਸਕ੍ਰਿਪਸ਼ਨ, ਅਨੁਵਾਦ ਜਾਂ ਸੰਖੇਪਾਂ ਨੂੰ ਚਾਲੂ ਕਰਨ ਵਾਲਾ ਐਪ ਵਿੱਚ ਕਿਤੇ ਵੀ ਕੋਈ ਕੰਟਰੋਲ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਉਹਨਾਂ ਤਿੰਨ ਸੇਵਾਵਾਂ ਤੱਕ ਕੁਝ ਵੀ ਨਹੀਂ ਪਹੁੰਚਦਾ। ਇਹ ਹਟਾਏ ਜਾਣ ਦੀ ਬਜਾਏ ਸੂਚੀਬੱਧ ਹਨ ਕਿਉਂਕਿ ਕੋਡ ਅਜੇ ਵੀ ਇੱਥੇ ਹੈ ਅਤੇ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵਾਪਸ ਆਉਣ ਦਾ ਇਰਾਦਾ ਹੈ — ਅਤੇ ਜਦੋਂ ਇਹ ਵਾਪਸ ਆਉਣਗੀਆਂ, ਇਹ ਇਸ ਖੁਲਾਸੇ ਅਤੇ ਪਹਿਲੀ ਵਰਤੋਂ ਤੋਂ ਪਹਿਲਾਂ ਇੱਕ ਪ੍ਰੋਂਪਟ ਨਾਲ ਵਾਪਸ ਆਉਣਗੀਆਂ। ਜੋ ਉਸ ਵੇਲੇ ਭੇਜਿਆ ਜਾਵੇਗਾ ਉਹ ਤੁਹਾਡਾ ਨਤੀਜਾ ਪੈਦਾ ਕਰਨ ਲਈ ਭੇਜਿਆ ਜਾਂਦਾ ਹੈ, ਕਿਸੇ ਚੀਜ਼ ਨੂੰ ਸਿਖਲਾਈ ਦੇਣ ਲਈ ਨਹੀਂ; ਸਾਡੇ ਸਰਵਰਾਂ ਉੱਤੇ ਕੋਈ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਜਾਂ ਅਨੁਵਾਦ ਸਟੋਰ ਨਹੀਂ ਹੁੰਦਾ।
 
 ਵਿਕੀਪੀਡੀਆ ਖੋਜ ਦਾ ਕੋਈ ਸਵਿੱਚ ਨਹੀਂ ਹੈ ਕਿਉਂਕਿ ਬੰਦ ਕਰਨ ਲਈ ਕੁਝ ਵੀ ਖੜ੍ਹਾ ਨਹੀਂ ਹੈ: ਇਹ ਟੈਪ ਉੱਤੇ ਹੀ ਚੱਲਦਾ ਹੈ ਨਹੀਂ ਤਾਂ ਨਹੀਂ। ਵਿਕੀਪੀਡੀਆ ਉਹ ਇੱਕ ਨਾਮ ਅਤੇ ਤੁਹਾਡਾ IP ਪਤਾ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ, ਜਿਵੇਂ ਤੁਸੀਂ ਇਸਨੂੰ ਆਪਣੇ ਖੋਜ ਬਾਕਸ ਵਿੱਚ ਟਾਈਪ ਕੀਤਾ ਹੋਵੇ — ਕੋਈ ਖਾਤਾ ਨਹੀਂ, ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ, ਕੋਈ ਗੱਲਬਾਤ ਨਹੀਂ। ਜੋ ਵਾਪਸ ਆਉਂਦਾ ਹੈ ਉਹ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ ਅਤੇ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ, ਅਤੇ ਇਸ ਬਾਰੇ ਕੁਝ ਵੀ ਗੱਲਬਾਤ ਵਿੱਚ ਨਹੀਂ ਲਿਖਿਆ ਜਾਂਦਾ।
+
+Cloudflare Realtime ਦਾ ਵੀ ਕੋਈ ਸਵਿੱਚ ਨਹੀਂ ਹੈ। ਜ਼ਿਆਦਾਤਰ ਕਾਲਾਂ ਨੂੰ ਇਸਦੀ ਲੋੜ ਨਹੀਂ ਹੁੰਦੀ: ਦੋ ਡਿਵਾਈਸ ਜੋ ਸਿੱਧੇ ਇੱਕ ਦੂਜੇ ਤੱਕ ਪਹੁੰਚ ਸਕਦੇ ਹਨ — ਇੱਕੋ ਨੈੱਟਵਰਕ 'ਤੇ ਜ਼ਿਆਦਾਤਰ ਕਾਲਾਂ — ਇਸ ਤੋਂ ਬਿਨਾਂ ਹੀ ਜੁੜ ਜਾਂਦੇ ਹਨ, ਅਤੇ ਕੁਝ ਵੀ ਰੀਲੇ ਨਹੀਂ ਹੁੰਦਾ। ਜਦੋਂ ਉਹ ਨਹੀਂ ਪਹੁੰਚ ਸਕਦੇ — ਆਮ ਤੌਰ 'ਤੇ ਕਿਉਂਕਿ ਤੁਸੀਂ ਦੋਵੇਂ ਵੱਖ-ਵੱਖ ਮੋਬਾਈਲ ਨੈੱਟਵਰਕਾਂ 'ਤੇ ਹੋ — ਪਹਿਲਾਂ ਤੋਂ ਹੀ ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਕਾਲ ਨੂੰ ਜੁੜਨ ਤੋਂ ਅਸਮਰੱਥ ਰਹਿਣ ਦੀ ਬਜਾਏ ਰੀਲੇ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। Cloudflare ਜੋ ਦੇਖਦਾ ਹੈ ਉਹ ਹਨ ਦੋਵਾਂ ਦੇ IP ਪਤੇ, ਕਾਲ ਦਾ ਸਮਾਂ, ਅਤੇ ਲਗਭਗ ਕਿੰਨਾ ਡਾਟਾ ਹਿੱਲਿਆ; ਆਡੀਓ ਅਤੇ ਵੀਡੀਓ ਸੈਕਸ਼ਨ 2 ਵਿੱਚ ਦੱਸੇ ਗਏ ਉਸੇ DTLS-SRTP ਇਨਕ੍ਰਿਪਸ਼ਨ ਅਧੀਨ ਹੀ ਰਹਿੰਦੇ ਹਨ, ਇਸ ਲਈ ਰੀਲੇ ਕਰਨ ਨਾਲ ਉਹ ਡੀਕ੍ਰਿਪਟ ਨਹੀਂ ਹੁੰਦੇ।
 
 ਅਸੀਂ ਜੋ ਰੱਖਦੇ ਹਾਂ ਉਸਨੂੰ ਪ੍ਰਗਟ ਕਰ ਸਕਦੇ ਹਾਂ ਜੇ ਕਾਨੂੰਨ ਇਸਦੀ ਲੋੜ ਹੈ। ਜੋ ਅਸੀਂ ਰੱਖਦੇ ਹਾਂ ਉਹ ਭਾਗ 2 ਵਿੱਚ ਸੂਚੀ ਹੈ। ਅਸੀਂ ਸੁਨੇਹਾ ਸਮੱਗਰੀ ਪੈਦਾ ਨਹੀਂ ਕਰ ਸਕਦੇ, ਕਿਉਂਕਿ ਅਸੀਂ ਇਸਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਸਕਦੇ।`,
     },
@@ -4160,6 +4256,7 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
       body: `हामी तपाईंको व्यक्तिगत जानकारी बेच्दैनौं, व्यापार गर्दैनौं, वा भाडामा दिँदैनौं। डेटा यहाँ पुग्छ:
 
 • Google Firebase — माथि वर्णन गरिए अनुसार, हाम्रो होस्टिङ प्रदायक।
+• Cloudflare Realtime — कलको अडियो र भिडियो, जब तपाईंको डिभाइस र अर्को व्यक्तिको डिभाइस सिधै एकअर्कासम्म पुग्न सक्दैनन्।
 • विकिमिडिया प्रतिष्ठान — विकिपिडियामा खोज्न ट्याप गर्दा एउटा नाम।
 • Google Cloud Speech-to-Text — तपाईंले ट्रान्सक्रिप्ट अनुरोध गर्दा एउटा आवाज सन्देशको अडियो।
 • Google Cloud Translation — तपाईंले अनुवाद अनुरोध गर्दा एउटा सन्देशको पाठ।
@@ -4168,6 +4265,8 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
 अन्तिम तीन यो संस्करणमा बन्द छन्। ट्रान्सक्रिप्सन, अनुवाद वा सारांशहरू खोल्ने एपमा कतै कुनै नियन्त्रण छैन, त्यसैले ती तीन सेवाहरूमा केही पुग्दैन। तिनीहरू हटाइनुको सट्टा सूचीबद्ध गरिएका छन् किनभने कोड अझै यहाँ छ र सुविधाहरू फर्कने उद्देश्य छ — र जब तिनीहरू फर्कन्छन्, तिनीहरू यो खुलासा र पहिलो प्रयोग अघि सूचनासहित फर्कन्छन्। त्यतिबेला के पठाइनेछ त्यो तपाईंको नतिजा उत्पादन गर्न पठाइन्छ, केही तालिम दिन होइन; हाम्रो सर्भरमा कुनै ट्रान्सक्रिप्ट वा अनुवाद भण्डारण गरिँदैन।
 
 विकिपिडिया खोजमा स्विच छैन किनभने बन्द गर्न केही उभिएको छैन: यो ट्यापमा मात्र चल्छ अन्यथा होइन। विकिपिडियाले त्यो एउटा नाम र तपाईंको IP ठेगाना पाउँछ, जस्तै तपाईंले यसलाई आफैं तिनीहरूको खोज बक्समा टाइप गर्नुभएको भए — कुनै खाता छैन, कुनै सन्देश छैन, कुनै कुराकानी छैन। फर्केर आउने कुरा देखाइन्छ र भण्डारण गरिँदैन, र यसको बारेमा केही पनि कुराकानीमा लेखिँदैन।
+
+Cloudflare Realtime को पनि कुनै स्विच छैन। धेरैजसो कलहरूलाई यो आवश्यक पर्दैन: सिधै एकअर्कासम्म पुग्न सक्ने दुई डिभाइस—एउटै नेटवर्कमा भएका धेरैजसो कलहरू—यो बिना नै जोडिन्छन्, र केही पनि रिले हुँदैन। जब तिनीहरू पुग्न सक्दैनन्—प्रायः तपाईं दुवै फरक-फरक मोबाइल नेटवर्कमा हुनुहुन्छ भन्दा—पहिले नै एन्क्रिप्ट गरिएको कल जडान हुन नसकी रहनुको सट्टा रिले गरिन्छ। Cloudflare ले देख्ने कुरा दुवैको IP ठेगाना, कलको समय, र लगभग कति डेटा सारियो भन्ने हो; अडियो र भिडियो खण्ड २ मा वर्णन गरिएको उही DTLS-SRTP एन्क्रिप्सनमुनि नै रहन्छन्, त्यसैले रिले गर्नाले तिनीहरूलाई डिक्रिप्ट गर्दैन।
 
 कानूनले आवश्यक भएमा हामीले राखेको कुरा प्रकट गर्न सक्छौं। हामीले राखेको कुरा खण्ड २ मा भएको सूची हो। हामी सन्देश सामग्री उत्पादन गर्न सक्दैनौं, किनभने हामी यसलाई पढ्न सक्दैनौं।`,
     },
@@ -4287,6 +4386,7 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
       body: `අප ඔබේ පුද්ගලික තොරතුරු විකුණන්නේ, හුවමාරු කරන්නේ හෝ කුලියට දෙන්නේ නැත. දත්ත ළඟා වන්නේ:
 
 • Google Firebase — ඉහත විස්තර කර ඇති පරිදි, අපගේ සත්කාරක සපයන්නා.
+• Cloudflare Realtime — ඔබේ උපාංගයට සහ අනෙක් පුද්ගලයාගේ උපාංගයට කෙලින්ම එකිනෙකා වෙත ළඟාවිය නොහැකි විට, ඇමතුමේ ශබ්දය සහ දෘශ්‍යය.
 • විකිමීඩියා පදනම — ඔබ විකිපීඩියාවේ සෙවීමට තට්ටු කරන විට එක් නමක්.
 • Google Cloud Speech-to-Text — ඔබ ලේඛනයක් ඉල්ලා සිටින විට එක් හඬ පණිවිඩයක ශ්‍රව්‍යය.
 • Google Cloud Translation — ඔබ පරිවර්තනයක් ඉල්ලා සිටින විට එක් පණිවිඩයක පෙළ.
@@ -4295,6 +4395,8 @@ Wikipedia शोधासाठी स्विच नाही कारण ब
 අවසාන තුන මෙම නිකුතුවේ අක්‍රිය කර ඇත. පිටපත් කිරීම, පරිවර්තනය හෝ සාරාංශ සක්‍රිය කරන පාලනයක් යෙදුමේ කොහේවත් නොමැති බැවින්, එම සේවා තුනට කිසිවක් ළඟා නොවේ. කේතය තවමත් මෙහි ඇති අතර ලක්ෂණ ආපසු පැමිණීමට අදහස් කර ඇති බැවින් ඒවා මකා දැමීමට වඩා ලැයිස්තුගත කර ඇත — ඒවා ආපසු පැමිණෙන විට, ඒවා මෙම හෙළිදරව්ව සමඟත් පළමු භාවිතයට පෙර ඉඟියක් සමඟත් ආපසු පැමිණේ. එවිට යවනු ලබන දේ ඔබේ ප්‍රතිඵලය නිෂ්පාදනය කිරීමට යවනු ලැබේ, කිසිවක් පුහුණු කිරීමට නොවේ; ලේඛනයක් හෝ පරිවර්තනයක් අපගේ සේවාදායකවල ගබඩා කර නොමැත.
 
 විකිපීඩියා සෙවීමට ස්විචයක් නොමැත්තේ අක්‍රිය කිරීමට කිසිවක් නොපවතින බැවිනි: එය තට්ටු කිරීමේදී පමණක් ක්‍රියාත්මක වේ වෙනත් ආකාරයකින් නොවේ. විකිපීඩියාව එම එක් නම සහ ඔබේ IP ලිපිනය ලබා ගනී, ඔබ එය ඔවුන්ගේ සෙවුම් පෙට්ටියේ ටයිප් කළාක් මෙනි — ගිණුමක් නැත, පණිවිඩයක් නැත, සංවාදයක් නැත. ආපසු පැමිණෙන දේ පෙන්වන අතර ගබඩා කර නොමැත, එය ගැන කිසිවක් සංවාදයට ලියා නොමැත.
+
+Cloudflare Realtime හටද ස්විචයක් නැත. බොහෝ ඇමතුම්වලට එය අවශ්‍ය නොවේ: කෙලින්ම එකිනෙකා වෙත ළඟාවිය හැකි උපාංග දෙකක්—එකම ජාලයක ඇති බොහෝ ඇමතුම්—එය නොමැතිවම සම්බන්ධ වන අතර, කිසිවක් රිලේ නොවේ. ඔවුන්ට ළඟාවිය නොහැකි විට—සාමාන්‍යයෙන් ඔබ දෙදෙනාම වෙනස් ජංගම ජාල මත සිටින බැවින්—දැනටමත් සංකේතනය කර ඇති ඇමතුම සම්බන්ධ විය නොහැකිව තැබීම වෙනුවට රිලේ කරනු ලැබේ. Cloudflare දකින්නේ දෙපාර්ශ්වයේම IP ලිපින, ඇමතුමේ කාලය, සහ දළ වශයෙන් චලනය වූ දත්ත ප්‍රමාණයයි; ශබ්දය සහ දෘශ්‍යය කොටස 2 හි විස්තර කර ඇති එකම DTLS-SRTP සංකේතනය යටතේම පවතින බැවින්, රිලේ කිරීම ඒවා විසංකේතනය නොකරයි.
 
 නීතිය අවශ්‍ය කරන්නේ නම් අප තබාගෙන ඇති දේ අප හෙළි කළ හැක. අප තබාගෙන ඇත්තේ කොටස 2 හි ලැයිස්තුවයි. අපට පණිවිඩ අන්තර්ගතය නිෂ්පාදනය කළ නොහැක, මන්ද අපට එය කියවිය නොහැකි බැවිනි.`,
     },
@@ -4414,6 +4516,7 @@ Ufunguo wa faragha unaofungua ujumbe wako haondoki kamwe kwenye kifaa chako, isi
       body: `Hatuuzi, kubadilishana au kukodisha taarifa zako binafsi. Data inafikia:
 
 • Google Firebase — mtoa huduma wetu wa uwekaji mwenyeji, kama ilivyoelezwa hapo juu.
+• Cloudflare Realtime — sauti na video ya simu, wakati kifaa chako na kifaa cha mtu mwingine haviwezi kufikiana moja kwa moja.
 • Wikimedia Foundation — jina moja, unapogusa kutafuta kwenye Wikipedia.
 • Google Cloud Speech-to-Text — sauti ya ujumbe mmoja wa sauti, unapoomba nakala ya maandishi.
 • Google Cloud Translation — maandishi ya ujumbe mmoja, unapoomba tafsiri.
@@ -4422,6 +4525,8 @@ Ufunguo wa faragha unaofungua ujumbe wako haondoki kamwe kwenye kifaa chako, isi
 Tatu za mwisho zimezimwa katika toleo hili. Hakuna udhibiti wowote popote katika programu unaowasha uandishi, tafsiri au muhtasari, hivyo hakuna kinachofika huduma hizo tatu. Zimeorodheshwa badala ya kufutwa kwa sababu msimbo bado uko hapa na vipengele hivyo vinakusudiwa kurudi — na vinaporudi, vinarudi na ufunuo huu na ujumbe kabla ya matumizi ya kwanza. Kitakachotumwa wakati huo kinatumwa kutoa matokeo yako, si kufundisha chochote; hakuna nakala ya maandishi wala tafsiri inayohifadhiwa kwenye seva zetu.
 
 Utafutaji wa Wikipedia hauna swichi kwa sababu hakuna kinachosimama kuzimwa: unaendesha wakati wa kugusa tu si vinginevyo. Wikipedia inapokea jina hilo moja na anwani yako ya IP, sawa na ungeliandika mwenyewe kwenye kisanduku chao cha utafutaji — hakuna akaunti, hakuna ujumbe, hakuna mazungumzo. Kinachorudi kinaonyeshwa na hakihifadhiwi, na hakuna chochote kuhusu hicho kinachoandikwa kwenye mazungumzo.
+
+Cloudflare Realtime pia haina swichi. Simu nyingi hazihitaji: vifaa viwili vinavyoweza kufikiana moja kwa moja — simu nyingi kwenye mtandao ule ule — huunganishwa bila hicho, na hakuna kinachopitishwa. Vinaposhindwa kufikiana — mara nyingi kwa sababu ninyi wawili mko kwenye mitandao tofauti ya simu — mazungumzo yaliyosimbwa tayari yanapitishwa badala ya kubaki bila kuunganika. Kile Cloudflare kinachokiona ni anwani za IP za pande zote mbili, muda wa simu, na kiasi cha data kilichohamishwa; sauti na video hubaki chini ya usimbaji uleule wa DTLS-SRTP ulioelezwa katika sehemu ya 2, hivyo kupitisha hakuvunji usimbaji wake.
 
 Tunaweza kufichua tunachoshikilia iwapo sheria inahitaji. Tunachoshikilia ni orodha katika sehemu ya 2. Hatuwezi kutoa maudhui ya ujumbe, kwa sababu hatuwezi kuyasoma.`,
     },
@@ -4541,6 +4646,7 @@ Mabudin sirri da ke buɗe saƙonninka ba ya taɓa barin na'urarka, sai dai a mat
       body: `Ba ma sayar, canzawa, ko yin hayar bayananka na sirri. Bayanai suna kaiwa:
 
 • Google Firebase — mai bayar da mu na karɓar baƙunci, kamar yadda aka bayyana a sama.
+• Cloudflare Realtime — sauti da bidiyon kira, lokacin da na'urarka da ta wancan mutumin ba za su iya kaiwa juna kai tsaye ba.
 • Gidauniyar Wikimedia — suna ɗaya, lokacin da ka danna don nema a Wikipedia.
 • Google Cloud Speech-to-Text — sautin saƙon murya ɗaya, lokacin da ka nemi rubutu.
 • Google Cloud Translation — rubutun saƙo ɗaya, lokacin da ka nemi fassara.
@@ -4549,6 +4655,8 @@ Mabudin sirri da ke buɗe saƙonninka ba ya taɓa barin na'urarka, sai dai a mat
 Ukun na ƙarshe an kashe su a wannan sakin. Babu wani sarrafawa a ko'ina a cikin manhaja da zai kunna rubutun magana, fassara ko taƙaitawa, don haka babu abin da ke kaiwa waɗannan sabis guda uku. An lissafta su maimakon a share su domin lambar tana nan har yanzu kuma an nufi fasalulluka su dawo — kuma lokacin da suka dawo, za su dawo tare da wannan bayyanawa da tambaya kafin amfani na farko. Abin da za a aika a lokacin ana aika shi ne don samar da sakamakonka, ba don horar da wani abu ba; ba a ajiye rubutu ko fassara a sabobinmu.
 
 Neman Wikipedia ba shi da maɓalli saboda babu abin da ya tsaya don kashewa: yana aiki ne kawai a lokacin danna kuma ba wata hanya ba. Wikipedia na karɓar sunan ɗaya kawai da adireshin IP ɗinka, kamar dai ka buga shi da kanka a cikin akwatin binciken su — babu asusu, babu saƙo, babu tattaunawa. Abin da ya dawo ana nuna shi kuma ba a ajiye shi ba, kuma babu abin da ke game da shi da aka rubuta a cikin tattaunawar.
+
+Cloudflare Realtime ma ba shi da sauyawa. Yawancin kiraye-kiraye ba sa bukatarsa: na'urori biyu da za su iya kaiwa juna kai tsaye — yawancin kiraye-kiraye a hanyar sadarwa iri ɗaya — suna haɗuwa ba tare da shi ba, kuma babu wani abu da ake tantancewa. Idan ba za su iya ba — yawanci saboda ku biyu kuna kan hanyoyin sadarwar waya daban-daban — ana tantance kiran da aka riga aka sa masa ɓoyayyiya maimakon a bar shi ba tare da haɗi ba. Abin da Cloudflare ke gani shi ne adireshin IP na ku biyu, lokacin kiran, da kimanin adadin bayanan da aka motsa; sauti da bidiyo suna ci gaba da kasancewa a ƙarƙashin ɓoyayyiyar DTLS-SRTP iri ɗaya da aka bayyana a sashe na 2, don haka tantancewa ba ya buɗe ɓoyayyiyarsu.
 
 Za mu iya bayyana abin da muke riƙe idan doka ta buƙaci. Abin da muke riƙe shi ne jerin da ke sashe na 2. Ba za mu iya samar da abin cikin saƙo ba, domin ba za mu iya karanta shi ba.`,
     },
@@ -4668,6 +4776,7 @@ Idan ka shigar da sabuntawar, zai maye gurbin app a wurinsa ta amfani da maɓall
       body: `የግል መረጃዎን አንሸጥም፣ አንለዋወጥም ወይም አናከራይም። ውሂብ የሚደርሰው፦
 
 • Google Firebase — ከላይ እንደተገለጸው፣ የእኛ የማስተናገጃ አቅራቢ።
+• Cloudflare Realtime — የእርስዎ መሣሪያ እና የሌላው ሰው መሣሪያ በቀጥታ ወደ አንዱ ሌላው መድረስ ሳይችሉ ሲቀሩ የጥሪው ድምጽ እና ቪዲዮ።
 • የዊኪሚዲያ ፋውንዴሽን — በዊኪፔዲያ ላይ ለመፈለግ ሲነኩ አንድ ስም።
 • Google Cloud Speech-to-Text — ግልባጭ ሲጠይቁ የአንድ የድምጽ መልዕክት ድምጽ።
 • Google Cloud Translation — ትርጉም ሲጠይቁ የአንድ መልዕክት ጽሑፍ።
@@ -4676,6 +4785,8 @@ Idan ka shigar da sabuntawar, zai maye gurbin app a wurinsa ta amfani da maɓall
 የመጨረሻዎቹ ሦስቱ በዚህ ስሪት ውስጥ ጠፍተዋል። ግልባጭ ማድረግን፣ ትርጉምን ወይም ማጠቃለያዎችን የሚያበራ ቁጥጥር በመተግበሪያው ውስጥ የትም የለም፣ ስለዚህ ለእነዚያ ሦስት አገልግሎቶች ምንም አይደርስም። ኮዱ አሁንም እዚህ ስላለ እና ባህሪያቱ እንዲመለሱ ስለታሰቡ ከመሰረዝ ይልቅ ተዘርዝረዋል — እና ሲመለሱ፣ በዚህ ይፋ ማድረግ እና ከመጀመሪያው አጠቃቀም በፊት በሚደረግ ማሳሰቢያ ይመለሳሉ። በዚያ ጊዜ የሚላከው ውጤትዎን ለማምረት ነው የሚላከው፣ ምንም ነገር ለማሰልጠን አይደለም፤ ግልባጭም ሆነ ትርጉም በአገልጋዮቻችን ላይ አይቀመጥም።
 
 የዊኪፔዲያ ፍለጋ መቀየሪያ የለውም ምክንያቱም ለማጥፋት የቆመ ምንም ነገር የለም፦ የሚሠራው በንኪያ ጊዜ ብቻ ነው ካልሆነ በስተቀር። ዊኪፔዲያ ያንን አንድ ስም እና የIP አድራሻዎን ይቀበላል፣ እርስዎ በራሳቸው የፍለጋ ሳጥን ውስጥ እንደተየቡት ያህል — መለያ የለም፣ መልዕክት የለም፣ ውይይት የለም። የሚመለሰው ይታያል እና አይቀመጥም፣ እና ስለእሱ ምንም ነገር ወደ ውይይቱ አይጻፍም።
+
+Cloudflare Realtime እንዲሁ መቀየሪያ የለውም። አብዛኞቹ ጥሪዎች አያስፈልጉትም፦ በቀጥታ ወደ አንዱ ሌላው መድረስ የሚችሉ ሁለት መሣሪያዎች—በአንድ አውታረ መረብ ላይ ያሉ አብዛኞቹ ጥሪዎች—ያለ እሱ ይገናኛሉ፣ ምንም ነገርም አይተላለፍም። መድረስ ሳይችሉ ሲቀሩ—ብዙውን ጊዜ ሁለታችሁም በተለያዩ የሞባይል አውታረ መረቦች ስለምትገኙ—ቀድሞውኑ የተመሰጠረው ጥሪ ሳይገናኝ ከመቅረት ይልቅ ይተላለፋል። Cloudflare የሚያየው የሁለቱንም IP አድራሻ፣ የጥሪውን ጊዜ፣ እና በግምት ምን ያህል ውሂብ እንደተንቀሳቀሰ ብቻ ነው፤ ድምጽ እና ቪዲዮ በክፍል 2 ውስጥ በተገለጸው ተመሳሳይ DTLS-SRTP ምስጠራ ስር ስለሚቆዩ፣ ማስተላለፍ አይፈታውም።
 
 ህግ የሚጠይቅ ከሆነ የያዝነውን ልናጋልጥ እንችላለን። የያዝነው በክፍል 2 ውስጥ ያለው ዝርዝር ነው። የመልዕክት ይዘቶችን ልናቀርብ አንችልም፣ ምክንያቱም ልናነባቸው ስለማንችል።`,
     },
@@ -4795,6 +4906,7 @@ De privésleutel die je berichten ontsleutelt, verlaat je apparaat nooit, behalv
       body: `We verkopen, verhandelen of verhuren je persoonlijke informatie niet. Gegevens bereiken:
 
 • Google Firebase — onze hostingprovider, zoals hierboven beschreven.
+• Cloudflare Realtime — de audio en video van een gesprek, wanneer jouw apparaat en dat van de ander elkaar niet rechtstreeks kunnen bereiken.
 • De Wikimedia Foundation — één naam, wanneer je erop tikt om op Wikipedia op te zoeken.
 • Google Cloud Speech-to-Text — het audio van één spraakbericht, wanneer je om een transcript vraagt.
 • Google Cloud Translation — de tekst van één bericht, wanneer je om een vertaling vraagt.
@@ -4803,6 +4915,8 @@ De privésleutel die je berichten ontsleutelt, verlaat je apparaat nooit, behalv
 De laatste drie zijn in deze release uitgeschakeld. Er is nergens in de app een bediening die transcriptie, vertaling of samenvattingen inschakelt, dus er bereikt niets die drie diensten. Ze staan vermeld in plaats van verwijderd omdat de code hier nog is en de functies bedoeld zijn om terug te keren — en wanneer ze terugkeren, doen ze dat met deze openbaarmaking en een prompt vóór het eerste gebruik. Wat dan wordt verzonden, wordt verzonden om je resultaat te produceren, niet om iets te trainen; geen transcript of vertaling wordt op onze servers opgeslagen.
 
 De Wikipedia-opzoeking heeft geen schakelaar omdat er niets is om uit te schakelen: het loopt alleen bij de tik en niet anders. Wikipedia ontvangt die ene naam en je IP-adres, net zoals wanneer je het zelf in hun zoekvak had getypt — geen account, geen bericht, geen gesprek. Wat terugkomt wordt getoond en niet opgeslagen, en niets erover wordt in het gesprek geschreven.
+
+Cloudflare Realtime heeft ook geen schakelaar. De meeste gesprekken hebben het niet nodig: twee apparaten die elkaar rechtstreeks kunnen bereiken — de meeste gesprekken op hetzelfde netwerk — verbinden zonder het, en er wordt niets doorgestuurd. Wanneer dat niet lukt — meestal omdat jullie op verschillende mobiele netwerken zitten — wordt het al versleutelde gesprek doorgestuurd in plaats van geen verbinding te kunnen maken. Wat Cloudflare ziet zijn beide IP-adressen, het tijdstip van het gesprek, en ongeveer hoeveel data er is verplaatst; audio en video blijven onder dezelfde DTLS-SRTP-versleuteling die in sectie 2 wordt beschreven, dus het doorsturen ontsleutelt ze niet.
 
 We kunnen onthullen wat we bewaren als de wet dat vereist. Wat we bewaren is de lijst in sectie 2. We kunnen geen berichtinhoud produceren, omdat we die niet kunnen lezen.`,
     },
@@ -4922,6 +5036,7 @@ Als je de update installeert, vervangt die de app ter plekke met dezelfde ondert
       body: `Δεν πουλάμε, ανταλλάσσουμε ή ενοικιάζουμε τις προσωπικές σας πληροφορίες. Τα δεδομένα φτάνουν σε:
 
 • Google Firebase — ο πάροχος φιλοξενίας μας, όπως περιγράφηκε παραπάνω.
+• Cloudflare Realtime — ο ήχος και το βίντεο μιας κλήσης, όταν η συσκευή σας και η συσκευή του άλλου ατόμου δεν μπορούν να επικοινωνήσουν απευθείας.
 • Wikimedia Foundation — ένα όνομα, όταν το πατάτε για να το αναζητήσετε στη Wikipedia.
 • Google Cloud Speech-to-Text — ο ήχος ενός φωνητικού μηνύματος, όταν ζητάτε απομαγνητοφώνηση.
 • Google Cloud Translation — το κείμενο ενός μηνύματος, όταν ζητάτε μετάφραση.
@@ -4930,6 +5045,8 @@ Als je de update installeert, vervangt die de app ter plekke met dezelfde ondert
 Οι τρεις τελευταίες είναι απενεργοποιημένες σε αυτή την έκδοση. Δεν υπάρχει πουθενά στην εφαρμογή χειριστήριο που να ενεργοποιεί την απομαγνητοφώνηση, τη μετάφραση ή τις συνόψεις, οπότε τίποτα δεν φτάνει σε αυτές τις τρεις υπηρεσίες. Αναφέρονται αντί να διαγραφούν επειδή ο κώδικας εξακολουθεί να είναι εδώ και οι λειτουργίες προορίζονται να επιστρέψουν — και όταν επιστρέψουν, επιστρέφουν με αυτή τη γνωστοποίηση και μια προτροπή πριν από την πρώτη χρήση. Ό,τι θα σταλεί τότε στέλνεται για να παράγει το αποτέλεσμά σας, όχι για να εκπαιδεύσει οτιδήποτε· καμία απομαγνητοφώνηση ή μετάφραση δεν αποθηκεύεται στους διακομιστές μας.
 
 Η αναζήτηση στη Wikipedia δεν έχει διακόπτη επειδή δεν υπάρχει τίποτα να απενεργοποιηθεί: εκτελείται μόνο με το πάτημα και όχι διαφορετικά. Η Wikipedia λαμβάνει εκείνο το ένα όνομα και τη διεύθυνση IP σας, ακριβώς όπως αν το είχατε πληκτρολογήσει εσείς στο πλαίσιο αναζήτησής τους — κανένας λογαριασμός, κανένα μήνυμα, καμία συνομιλία. Ό,τι επιστρέφει εμφανίζεται και δεν αποθηκεύεται, και τίποτα σχετικά με αυτό δεν γράφεται στη συνομιλία.
+
+Το Cloudflare Realtime δεν έχει επίσης διακόπτη. Οι περισσότερες κλήσεις δεν το χρειάζονται: δύο συσκευές που μπορούν να επικοινωνήσουν απευθείας — οι περισσότερες κλήσεις στο ίδιο δίκτυο — συνδέονται χωρίς αυτό, και τίποτα δεν αναμεταδίδεται. Όταν δεν μπορούν — συνήθως επειδή βρίσκεστε και οι δύο σε διαφορετικά δίκτυα κινητής τηλεφωνίας — η ήδη κρυπτογραφημένη κλήση αναμεταδίδεται αντί να παραμείνει χωρίς σύνδεση. Αυτό που βλέπει η Cloudflare είναι και οι δύο διευθύνσεις IP, η ώρα της κλήσης, και κατά προσέγγιση πόσα δεδομένα μετακινήθηκαν· ο ήχος και το βίντεο παραμένουν υπό την ίδια κρυπτογράφηση DTLS-SRTP που περιγράφεται στην ενότητα 2, οπότε η αναμετάδοση δεν τα αποκρυπτογραφεί.
 
 Μπορεί να αποκαλύψουμε αυτό που κατέχουμε αν το απαιτεί ο νόμος. Αυτό που κατέχουμε είναι η λίστα στην ενότητα 2. Δεν μπορούμε να παράγουμε το περιεχόμενο μηνυμάτων, επειδή δεν μπορούμε να το διαβάσουμε.`,
     },
@@ -5049,6 +5166,7 @@ Den privata nyckeln som dekrypterar dina meddelanden lämnar aldrig din enhet, f
       body: `Vi säljer, byter eller hyr inte ut din personliga information. Data når:
 
 • Google Firebase — vår värdleverantör, som beskrivits ovan.
+• Cloudflare Realtime — ljudet och videon i ett samtal, när din enhet och den andra personens enhet inte kan nå varandra direkt.
 • Wikimedia Foundation — ett namn, när du trycker för att slå upp det på Wikipedia.
 • Google Cloud Speech-to-Text — ljudet av ett röstmeddelande, när du ber om en transkription.
 • Google Cloud Translation — texten i ett meddelande, när du ber om en översättning.
@@ -5057,6 +5175,8 @@ Den privata nyckeln som dekrypterar dina meddelanden lämnar aldrig din enhet, f
 De sista tre är avstängda i denna version. Det finns ingen kontroll någonstans i appen som slår på transkribering, översättning eller sammanfattningar, så inget når dessa tre tjänster. De listas snarare än raderas eftersom koden fortfarande finns här och funktionerna är avsedda att återkomma — och när de gör det, återkommer de med detta avslöjande och en uppmaning före första användning. Vad som då skulle skickas skickas för att producera ditt resultat, inte för att träna något; varken en transkription eller översättning lagras på våra servrar.
 
 Wikipedia-uppslagningen har ingen brytare eftersom det inte finns något att stänga av: den körs vid tryckningen och inte annars. Wikipedia tar emot det ena namnet och din IP-adress, precis som om du hade skrivit in det i deras sökruta — inget konto, inget meddelande, ingen konversation. Det som kommer tillbaka visas och sparas inte, och inget om det skrivs in i konversationen.
+
+Cloudflare Realtime har inte heller någon brytare. De flesta samtal behöver det inte: två enheter som kan nå varandra direkt — de flesta samtal på samma nätverk — ansluter utan det, och inget reläas. När de inte kan — vanligtvis för att ni befinner er på olika mobilnät — reläas det redan krypterade samtalet i stället för att lämnas utan anslutning. Det Cloudflare ser är båda IP-adresserna, samtalets tidpunkt och ungefär hur mycket data som flyttades; ljud och video förblir under samma DTLS-SRTP-kryptering som beskrivs i avsnitt 2, så reläning dekrypterar dem inte.
 
 Vi kan avslöja vad vi håller om lagen kräver det. Vad vi håller är listan i avsnitt 2. Vi kan inte lämna ut meddelandeinnehåll, eftersom vi inte kan läsa det.`,
     },
@@ -5176,6 +5296,7 @@ Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed, un
       body: `Vi sælger, handler eller udlejer ikke dine personlige oplysninger. Data når:
 
 • Google Firebase — vores hostingudbyder, som beskrevet ovenfor.
+• Cloudflare Realtime — lyden og videoen fra et opkald, når din enhed og den anden persons enhed ikke kan nå hinanden direkte.
 • Wikimedia Foundation — ét navn, når du trykker for at slå det op på Wikipedia.
 • Google Cloud Speech-to-Text — lyden af én talebesked, når du beder om en transskription.
 • Google Cloud Translation — teksten i én besked, når du beder om en oversættelse.
@@ -5184,6 +5305,8 @@ Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed, un
 De sidste tre er slået fra i denne udgivelse. Der er ingen kontrol nogen steder i appen, der slår transskription, oversættelse eller resuméer til, så intet når disse tre tjenester. De er listet i stedet for slettet, fordi koden stadig er her, og funktionerne er beregnet til at vende tilbage — og når de gør, vender de tilbage med denne oplysning og en prompt før første brug. Det, der så ville blive sendt, sendes for at producere dit resultat, ikke for at træne noget; hverken en transskription eller oversættelse gemmes på vores servere.
 
 Wikipedia-opslaget har ingen kontakt, fordi der intet er at slå fra: det kører kun ved tryk og ikke ellers. Wikipedia modtager det ene navn og din IP-adresse, ligesom hvis du selv havde skrevet det i deres søgefelt — ingen konto, ingen besked, ingen samtale. Det, der kommer tilbage, vises og gemmes ikke, og intet om det skrives ind i samtalen.
+
+Cloudflare Realtime har heller ingen kontakt. De fleste opkald har ikke brug for det: to enheder, der kan nå hinanden direkte — de fleste opkald på samme netværk — forbindes uden det, og intet videresendes. Når de ikke kan — typisk fordi I begge er på forskellige mobilnetværk — bliver det allerede krypterede opkald videresendt i stedet for at blive ude af stand til at forbinde. Det, Cloudflare ser, er begge IP-adresser, opkaldets tidspunkt og cirka hvor meget data der blev flyttet; lyd og video forbliver under den samme DTLS-SRTP-kryptering, der er beskrevet i afsnit 2, så videresendelse dekrypterer dem ikke.
 
 Vi kan afsløre, hvad vi opbevarer, hvis loven kræver det. Hvad vi opbevarer, er listen i afsnit 2. Vi kan ikke fremskaffe beskedindhold, fordi vi ikke kan læse det.`,
     },
@@ -5303,6 +5426,7 @@ Den private nøkkelen som dekrypterer meldingene dine, forlater aldri enheten di
       body: `Vi selger, bytter eller leier ikke ut din personlige informasjon. Data når:
 
 • Google Firebase — vår hostingleverandør, som beskrevet ovenfor.
+• Cloudflare Realtime — lyden og videoen i en samtale, når enheten din og den andre personens enhet ikke kan nå hverandre direkte.
 • Wikimedia Foundation — ett navn, når du trykker for å slå det opp på Wikipedia.
 • Google Cloud Speech-to-Text — lyden av én talemelding, når du ber om en transkripsjon.
 • Google Cloud Translation — teksten i én melding, når du ber om en oversettelse.
@@ -5311,6 +5435,8 @@ Den private nøkkelen som dekrypterer meldingene dine, forlater aldri enheten di
 De siste tre er slått av i denne utgivelsen. Det finnes ingen kontroll noe sted i appen som slår på transkripsjon, oversettelse eller sammendrag, så ingenting når disse tre tjenestene. De er listet opp i stedet for slettet fordi koden fortsatt er her og funksjonene er ment å komme tilbake — og når de gjør det, kommer de tilbake med denne opplysningen og en melding før første bruk. Det som da ville bli sendt, sendes for å produsere resultatet ditt, ikke for å trene noe; verken en transkripsjon eller oversettelse lagres på våre servere.
 
 Wikipedia-oppslaget har ingen bryter fordi det ikke finnes noe å slå av: det kjører bare ved trykk og ikke ellers. Wikipedia mottar det ene navnet og IP-adressen din, akkurat som om du hadde skrevet det selv i søkeboksen deres — ingen konto, ingen melding, ingen samtale. Det som kommer tilbake vises og lagres ikke, og ingenting om det skrives inn i samtalen.
+
+Cloudflare Realtime har heller ingen bryter. De fleste samtaler trenger det ikke: to enheter som kan nå hverandre direkte — de fleste samtaler på samme nettverk — kobler til uten det, og ingenting videresendes. Når de ikke kan — vanligvis fordi dere begge er på forskjellige mobilnett — blir den allerede krypterte samtalen videresendt i stedet for å bli stående uten forbindelse. Det Cloudflare ser er begge IP-adressene, tidspunktet for samtalen, og omtrent hvor mye data som ble flyttet; lyd og video forblir under den samme DTLS-SRTP-krypteringen som beskrevet i avsnitt 2, så videresending dekrypterer dem ikke.
 
 Vi kan avsløre hva vi oppbevarer hvis loven krever det. Hva vi oppbevarer er listen i del 2. Vi kan ikke fremskaffe meldingsinnhold, fordi vi ikke kan lese det.`,
     },
@@ -5430,6 +5556,7 @@ Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zaříz
       body: `Vaše osobní údaje neprodáváme, neobchodujeme s nimi ani je nepronajímáme. Data se dostávají k:
 
 • Google Firebase — náš poskytovatel hostingu, jak je popsáno výše.
+• Cloudflare Realtime — zvuk a obraz hovoru, když se vaše zařízení a zařízení druhé osoby nemohou spojit přímo.
 • Wikimedia Foundation — jedno jméno, když na něj klepnete pro vyhledání na Wikipedii.
 • Google Cloud Speech-to-Text — zvuk jedné hlasové zprávy, když požádáte o přepis.
 • Google Cloud Translation — text jedné zprávy, když požádáte o překlad.
@@ -5438,6 +5565,8 @@ Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zaříz
 Poslední tři jsou v tomto vydání vypnuty. Nikde v aplikaci není žádné ovládání, které by zapínalo přepis, překlad nebo shrnutí, takže k těmto třem službám nic nedosáhne. Jsou uvedeny místo smazány, protože kód je stále zde a funkce mají v úmyslu se vrátit — a když se vrátí, vrátí se s tímto zveřejněním a výzvou před prvním použitím. Co by se tehdy odesílalo, je odesíláno k vytvoření vašeho výsledku, ne k trénování čehokoli; na našich serverech se neukládá ani přepis, ani překlad.
 
 Vyhledávání na Wikipedii nemá přepínač, protože není co vypnout: běží pouze při klepnutí a jinak ne. Wikipedie dostane pouze toto jedno jméno a vaši IP adresu, stejně jako kdybyste ho sami napsali do jejich vyhledávacího pole — žádný účet, žádná zpráva, žádná konverzace. Co se vrátí, je zobrazeno a neuloženo, a nic o tom se nezapíše do konverzace.
+
+Cloudflare Realtime také nemá přepínač. Většina hovorů to nepotřebuje: dvě zařízení, která se mohou spojit přímo — většina hovorů ve stejné síti — se připojí bez toho a nic se nepřeposílá. Když nemohou — obvykle proto, že jste oba v různých mobilních sítích — již zašifrovaný hovor je přeposlán, místo aby zůstal bez spojení. Co Cloudflare vidí, jsou obě IP adresy, čas hovoru a přibližně kolik dat se přesunulo; zvuk a obraz zůstávají pod stejným šifrováním DTLS-SRTP popsaným v části 2, takže přeposílání je nedešifruje.
 
 Můžeme odhalit, co držíme, pokud to vyžaduje zákon. Co držíme, je seznam v oddílu 2. Nemůžeme poskytnout obsah zpráv, protože ho nemůžeme přečíst.`,
     },
@@ -5556,6 +5685,7 @@ Cheia privată care decriptează mesajele tale nu părăsește niciodată dispoz
       body: `Nu vindem, nu comercializăm și nu închiriem informațiile tale personale. Datele ajung la:
 
 • Google Firebase — furnizorul nostru de găzduire, așa cum este descris mai sus.
+• Cloudflare Realtime — sunetul și imaginea unui apel, atunci când dispozitivul dvs. și cel al celeilalte persoane nu se pot conecta direct.
 • Wikimedia Foundation — un singur nume, când apeși pentru a-l căuta pe Wikipedia.
 • Google Cloud Speech-to-Text — audio-ul unui singur mesaj vocal, când soliciți o transcriere.
 • Google Cloud Translation — textul unui singur mesaj, când soliciți o traducere.
@@ -5564,6 +5694,8 @@ Cheia privată care decriptează mesajele tale nu părăsește niciodată dispoz
 Ultimele trei sunt dezactivate în această versiune. Nu există niciun control nicăieri în aplicație care să activeze transcrierea, traducerea sau rezumarea, deci nimic nu ajunge la aceste trei servicii. Sunt listate în loc de șterse pentru că respectivul cod este încă aici și funcțiile sunt menite să revină — și când o vor face, vor reveni cu această dezvăluire și o solicitare înainte de prima utilizare. Ce s-ar trimite atunci este trimis pentru a produce rezultatul tău, nu pentru a antrena ceva; nici transcrierea, nici traducerea nu sunt stocate pe serverele noastre.
 
 Căutarea pe Wikipedia nu are un comutator, pentru că nu este nimic de dezactivat: rulează doar la apăsare și altfel deloc. Wikipedia primește doar acel nume și adresa ta IP, exact ca și cum l-ai fi tastat tu însuți în propriul lor câmp de căutare — niciun cont, niciun mesaj, nicio conversație. Ce se întoarce este afișat și nu stocat, și nimic despre asta nu este scris în conversație.
+
+Nici Cloudflare Realtime nu are un întrerupător. Majoritatea apelurilor nu au nevoie de el: două dispozitive care se pot conecta direct — majoritatea apelurilor pe aceeași rețea — se conectează fără el, și nimic nu este redirecționat. Când nu pot — de obicei pentru că amândoi sunteți pe rețele mobile diferite — apelul deja criptat este redirecționat în loc să rămână neconectat. Ceea ce vede Cloudflare sunt ambele adrese IP, momentul apelului și aproximativ cât de multe date au fost transferate; sunetul și imaginea rămân sub aceeași criptare DTLS-SRTP descrisă în secțiunea 2, deci redirecționarea nu le decriptează.
 
 Putem dezvălui ce deținem dacă legea o cere. Ce deținem este lista din secțiunea 2. Nu putem produce conținutul mesajelor, pentru că nu îl putem citi.`,
     },
@@ -5682,6 +5814,7 @@ A magánkulcs, amely dekódolja üzeneteidet, soha nem hagyja el a készüléked
       body: `Nem adjuk el, nem cseréljük és nem béreljük ki a személyes adataidat. Az adatok eljutnak:
 
 • A Google Firebase-hez — a fent leírt hosztolási szolgáltatónkhoz.
+• Cloudflare Realtime — egy hívás hangja és videója, amikor a te eszközöd és a másik személy eszköze nem tudja közvetlenül elérni egymást.
 • A Wikimedia Foundationhöz — egyetlen névhez, amikor rákoppintasz a Wikipédián való kereséshez.
 • A Google Cloud Speech-to-Texthez — egyetlen hangüzenet hangjához, amikor átiratot kérsz.
 • A Google Cloud Translationhöz — egyetlen üzenet szövegéhez, amikor fordítást kérsz.
@@ -5690,6 +5823,8 @@ A magánkulcs, amely dekódolja üzeneteidet, soha nem hagyja el a készüléked
 Az utolsó három ebben a kiadásban ki van kapcsolva. Az alkalmazásban sehol nincs olyan vezérlő, amely bekapcsolná az átiratkészítést, a fordítást vagy az összefoglalást, így semmi nem jut el ehhez a három szolgáltatáshoz. Azért vannak felsorolva, nem törölve, mert a kód még mindig itt van, és a funkciók célja a visszatérés — és amikor visszatérnek, ezzel a nyilatkozattal és egy, az első használat előtti felszólítással térnek vissza. Amit akkor küldenénk, azt az eredményed előállítására küldenénk, nem bármi betanítására; sem az átirat, sem a fordítás nincs tárolva a szervereinken.
 
 A Wikipédia-keresésnek nincs kapcsolója, mert nincs mit kikapcsolni: csak koppintásra fut, egyébként nem. A Wikipédia csak azt az egy nevet és az IP-címedet kapja meg, pontosan úgy, mintha te magad gépelted volna be a saját keresőmezőjükbe — nincs fiók, nincs üzenet, nincs beszélgetés. Ami visszajön, az megjelenik és nincs tárolva, és semmi nem kerül belőle a beszélgetésbe.
+
+A Cloudflare Realtime-nak sincs kapcsolója. A legtöbb hívásnak nincs is rá szüksége: két eszköz, amely közvetlenül eléri egymást — a legtöbb hívás ugyanazon a hálózaton — enélkül is kapcsolódik, és semmi sem kerül továbbításra. Amikor nem tudják — jellemzően azért, mert mindketten különböző mobilhálózaton vagytok —, a már titkosított hívás továbbításra kerül ahelyett, hogy kapcsolat nélkül maradna. Amit a Cloudflare lát, az mindkét fél IP-címe, a hívás időpontja, és hozzávetőlegesen mennyi adat mozgott; a hang és a videó ugyanazon, a 2. szakaszban leírt DTLS-SRTP titkosítás alatt marad, így a továbbítás nem fejti vissza őket.
 
 Felfedhetjük, amit tartunk, ha a törvény ezt megköveteli. Amit tartunk, az a 2. szakaszban lévő lista. Az üzenetek tartalmát nem tudjuk kiadni, mert nem tudjuk elolvasni.`,
     },
@@ -5808,6 +5943,7 @@ Ha telepíted a frissítést, az ugyanazzal az aláírási kulccsal cseréli le 
       body: `Біз сіздің жеке ақпаратыңызды сатпаймыз, саудаламаймыз және жалдамаймыз. Деректер мыналарға жетеді:
 
 • Google Firebase — жоғарыда сипатталғандай біздің хостинг провайдеріміз.
+• Cloudflare Realtime — құрылғыңыз бен әңгімелесушінің құрылғысы бір-біріне тікелей жете алмаған кездегі қоңыраудың аудио және видеосы.
 • Wikimedia Foundation — Википедиядан іздеу үшін түрткенде бір ат.
 • Google Cloud Speech-to-Text — мәтінге түсіруді сұрағанда бір дауыстық хабарламаның аудиосы.
 • Google Cloud Translation — аударманы сұрағанда бір хабарламаның мәтіні.
@@ -5816,6 +5952,8 @@ Ha telepíted a frissítést, az ugyanazzal az aláírási kulccsal cseréli le 
 Соңғы үшеуі осы шығарылымда өшірулі. Қолданбада мәтінге түсіруді, аударманы немесе қысқаша мазмұндауды қосатын ешбір басқару элементі жоқ, сондықтан осы үш қызметке ештеңе жетпейді. Олар жойылған емес, тізімделген, себебі код әлі осында және мүмкіндіктер қайта оралуға тиіс — және олар қайтқанда, осы ашумен және алғаш пайдаланар алдында сұраумен қайтады. Сол кезде жіберілетін нәрсе кез келгенді үйрету үшін емес, нәтижеңізді шығару үшін жіберіледі; не транскрипт, не аударма біздің серверлерімізде сақталмайды.
 
 Википедия іздеуінің қосқышы жоқ, себебі өшіретін ештеңе жоқ: ол тек түртілгенде іске қосылады және басқаша жоқ. Википедия тек сол бір атты және сіздің IP мекенжайыңызды алады, дәл сіз оны олардың өз іздеу өрісіне өзіңіз теріп жазғандай — аккаунт жоқ, хабарлама жоқ, әңгіме жоқ. Қайтарылған нәрсе көрсетіледі және сақталмайды, және ол туралы ештеңе әңгімеге жазылмайды.
+
+Cloudflare Realtime-де де ауыстырып-қосқыш жоқ. Қоңыраулардың көпшілігіне бұл қажет емес: бір-біріне тікелей жете алатын екі құрылғы — бір желідегі қоңыраулардың көпшілігі — онсыз қосылады, және ешнәрсе ретрансляцияланбайды. Олар жете алмаған кезде — әдетте екеуіңіз де әртүрлі мобильді желіде болғандықтан — қазірдің өзінде шифрланған қоңырау байланыссыз қалудың орнына ретрансляцияланады. Cloudflare көретіні — екі жақтың да IP мекенжайлары, қоңырау уақыты және шамамен қанша дерек жылжығаны; аудио мен видео 2-бөлімде сипатталған сол DTLS-SRTP шифрлауының астында қалады, сондықтан ретрансляциялау оларды дешифрламайды.
 
 Заң талап етсе, біз ұстап тұрған нәрсені аша аламыз. Біз ұстап тұрғаны — 2-бөлімдегі тізім. Хабарлама мазмұнын бере алмаймыз, себебі оны оқи алмаймыз.`,
     },
@@ -5934,6 +6072,7 @@ Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit siz yozib qo'yishni tanlagan
       body: `Biz shaxsiy ma'lumotlaringizni sotmaymiz, savdo qilmaymiz va ijaraga bermaymiz. Ma'lumotlar quyidagilarga yetib boradi:
 
 • Google Firebase — yuqorida tavsiflangan bizning xosting provayderimiz.
+• Cloudflare Realtime — qurilmangiz va suhbatdoshingiz qurilmasi bir-biriga to'g'ridan-to'g'ri ulana olmaganda, qo'ng'iroqning audio va videosi.
 • Wikimedia Foundation — Vikipediyada qidirish uchun bosganingizda bitta ism.
 • Google Cloud Speech-to-Text — matnga aylantirishni so'raganingizda bitta ovozli xabarning audiosi.
 • Google Cloud Translation — tarjima so'raganingizda bitta xabarning matni.
@@ -5942,6 +6081,8 @@ Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit siz yozib qo'yishni tanlagan
 Oxirgi uchtasi ushbu versiyada o'chirilgan. Ilovada matnga aylantirish, tarjima yoki qisqacha bayon qilishni yoqadigan hech qanday boshqaruv yo'q, shuning uchun bu uchta xizmatga hech narsa yetib bormaydi. Ular o'chirilmagan, ro'yxatga kiritilgan, chunki kod hali ham shu yerda va funksiyalar qaytishi kerak — va ular qaytganda, ushbu oshkoralik va birinchi foydalanishdan oldingi so'rov bilan qaytadi. O'shanda yuboriladigan narsa har qanday narsani o'rgatish uchun emas, natijangizni yaratish uchun yuboriladi; na transkript, na tarjima serverlarimizda saqlanmaydi.
 
 Vikipediya qidiruvining kalit-o'chirgichi yo'q, chunki o'chiradigan hech narsa yo'q: u faqat bosilganda ishlaydi va boshqacha yo'q. Vikipediya faqat o'sha bitta ismni va IP manzilingizni oladi, xuddi siz uni ularning o'z qidiruv maydoniga o'zingiz kiritgandek — akkaunt yo'q, xabar yo'q, suhbat yo'q. Qaytib kelgan narsa ko'rsatiladi va saqlanmaydi, va u haqida hech narsa suhbatga yozilmaydi.
+
+Cloudflare Realtime'da ham kalitcha yo'q. Qo'ng'iroqlarning aksariyati bunga muhtoj emas: bir-biriga to'g'ridan-to'g'ri ulana oladigan ikkita qurilma — bir xil tarmoqdagi aksariyat qo'ng'iroqlar — usiz ulanadi va hech narsa uzatilmaydi. Ular ulana olmaganda — odatda ikkalangiz turli mobil tarmoqlarda bo'lganingiz uchun — allaqachon shifrlangan qo'ng'iroq ulanmay qolish o'rniga uzatiladi. Cloudflare ko'radigan narsa — ikkala IP manzil, qo'ng'iroq vaqti va taxminan qancha ma'lumot ko'chganligi; audio va video 2-bo'limda tasvirlangan xuddi shu DTLS-SRTP shifrlashi ostida qoladi, shuning uchun uzatish ularni deshifrlamaydi.
 
 Qonun talab qilsa, biz saqlayotgan narsani oshkor qila olamiz. Biz saqlayotgan narsa — 2-bo'limdagi ro'yxat. Xabar mazmunini taqdim eta olmaymiz, chunki uni o'qiy olmaymiz.`,
     },
@@ -6060,6 +6201,7 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
       body: `ჩვენ არ ვყიდით, არ ვვაჭრობთ და არ ვქირავებთ თქვენს პირად ინფორმაციას. მონაცემები აღწევს:
 
 • Google Firebase-ს — ჩვენს ჰოსტინგ პროვაიდერს, როგორც ზემოთ არის აღწერილი.
+• Cloudflare Realtime — ზარის აუდიო და ვიდეო, როდესაც თქვენი მოწყობილობა და მეორე პირის მოწყობილობა ვერ უკავშირდებიან ერთმანეთს პირდაპირ.
 • Wikimedia Foundation-ს — ერთი სახელი, როცა შეხებთ ვიკიპედიაზე მის საძებნელად.
 • Google Cloud Speech-to-Text-ს — ერთი ხმოვანი შეტყობინების აუდიო, როცა ტრანსკრიფციას ითხოვთ.
 • Google Cloud Translation-ს — ერთი შეტყობინების ტექსტი, როცა თარგმანს ითხოვთ.
@@ -6068,6 +6210,8 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 ბოლო სამი გამორთულია ამ ვერსიაში. აპლიკაციაში არსად არსებობს მართვის საშუალება, რომელიც ჩართავდა ტრანსკრიფციას, თარგმანს ან შეჯამებას, ასე რომ ამ სამ სერვისს არაფერი აღწევს. ისინი ჩამოთვლილია და არა წაშლილი, რადგან კოდი ჯერ კიდევ აქ არის და ფუნქციები უნდა დაბრუნდნენ — და როცა დაბრუნდებიან, დაბრუნდებიან ამ გამჟღავნებით და მოთხოვნით პირველი გამოყენების წინ. რაც მაშინ გაიგზავნებოდა, იგზავნება თქვენი შედეგის შესაქმნელად და არა რაიმეს გასაწვრთნელად; არც ტრანსკრიფცია და არც თარგმანი არ ინახება ჩვენს სერვერებზე.
 
 ვიკიპედიის ძიებას არ აქვს გადამრთველი, რადგან არაფერია გამორთვის საჭირო: ის მუშაობს მხოლოდ შეხებისას და სხვაგვარად არა. ვიკიპედია იღებს მხოლოდ ერთ ამ სახელს და თქვენს IP მისამართს, ზუსტად ისე, თითქოს თავად აკრიფეთ ის მათივე საძებნელ ველში — არანაირი ანგარიში, არანაირი შეტყობინება, არანაირი საუბარი. რაც უკან მოდის, ნაჩვენებია და არ ინახება, და მის შესახებ არაფერი იწერება საუბარში.
+
+Cloudflare Realtime-საც არ აქვს გადამრთველი. ზარების უმეტესობას ეს არ სჭირდება: ორი მოწყობილობა, რომლებსაც შეუძლიათ ერთმანეთთან პირდაპირი კავშირი — ზარების უმეტესობა ერთსა და იმავე ქსელში — უკავშირდება ამის გარეშეც, და არაფერი გადაიცემა გადამცემით. როცა ვერ ახერხებენ — ჩვეულებრივ, ორივენი სხვადასხვა მობილურ ქსელში ხართ — უკვე დაშიფრული ზარი გადაიცემა გადამცემით, ნაცვლად იმისა, რომ დარჩეს დაუკავშირებელი. რასაც Cloudflare ხედავს, არის ორივე მხარის IP მისამართები, ზარის დრო და დაახლოებით რამდენი მონაცემი გადაადგილდა; აუდიო და ვიდეო რჩება იმავე DTLS-SRTP დაშიფვრის ქვეშ, რომელიც აღწერილია მე-2 ნაწილში, ამიტომ გადაცემა მათ არ ხსნის.
 
 ჩვენ შეგვიძლია გავამჟღავნოთ, რასაც ვინახავთ, თუ კანონი მოითხოვს. რასაც ვინახავთ, არის მე-2 ნაწილში მოცემული სია. ჩვენ ვერ წარმოვადგენთ შეტყობინებების შინაარსს, რადგან ვერ ვკითხულობთ მას.`,
     },
@@ -6186,6 +6330,7 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
       body: `Մենք չենք վաճառում, չենք առևտրում և չենք վարձակալում ձեր անձնական տեղեկությունները։ Տվյալները հասնում են.
 
 • Google Firebase — մեր հոսթինգի մատակարարը, ինչպես նկարագրված է վերևում։
+• Cloudflare Realtime — զանգի ձայնն ու տեսանյութը, երբ ձեր սարքը և մյուս անձի սարքը չեն կարող ուղղակիորեն կապվել միմյանց հետ։
 • Wikimedia Foundation — մեկ անուն, երբ դուք հպում եք այն Վիքիպեդիայում փնտրելու համար։
 • Google Cloud Speech-to-Text — մեկ ձայնային հաղորդագրության աուդիո, երբ դուք խնդրում եք տառադարձություն։
 • Google Cloud Translation — մեկ հաղորդագրության տեքստ, երբ դուք խնդրում եք թարգմանություն։
@@ -6194,6 +6339,8 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 Վերջին երեքն անջատված են այս թողարկման մեջ։ Հավելվածում ոչ մի կառավարման միջոց չկա, որը կմիացներ տառադարձումը, թարգմանությունը կամ ամփոփումը, ուստի այս երեք ծառայություններին ոչինչ չի հասնում։ Դրանք թվարկված են, ոչ թե ջնջված, քանի որ կոդը դեռ այստեղ է, և հատկանիշները նախատեսված են վերադառնալու — և երբ վերադառնան, կվերադառնան այս բացահայտմամբ և հուշումով նախքան առաջին օգտագործումը։ Ինչ կուղարկվեր այդ ժամանակ, ուղարկվում է ձեր արդյունքը ստեղծելու համար, ոչ թե որևէ բան մարզելու; ոչ տառադարձությունը, ոչ թարգմանությունը չեն պահվում մեր սերվերներում։
 
 Վիքիպեդիայի որոնումն անջատիչ չունի, քանի որ ոչինչ չկա անջատելու. այն աշխատում է միայն հպման ժամանակ և այլապես ոչ։ Վիքիպեդիան ստանում է միայն այդ մեկ անունը և ձեր IP հասցեն, ճիշտ այնպես, կարծես դուք ինքներդ մուտքագրած լինեիք այն նրանց սեփական որոնման դաշտում — ոչ մի հաշիվ, ոչ մի հաղորդագրություն, ոչ մի խոսակցություն։ Ինչ վերադառնում է, ցուցադրվում է և չի պահվում, և դրա մասին ոչինչ չի գրվում խոսակցության մեջ։
+
+Cloudflare Realtime-ն էլ անջատիչ չունի։ Զանգերի մեծ մասին դա պետք չէ. երկու սարք, որոնք կարող են ուղղակիորեն կապվել միմյանց հետ՝ նույն ցանցում գտնվող զանգերի մեծամասնությունը, միանում են առանց դրա, և ոչինչ չի փոխանցվում։ Երբ չեն կարողանում՝ սովորաբար քանի որ դուք երկուսդ գտնվում եք տարբեր բջջային ցանցերում, արդեն գաղտնագրված զանգը փոխանցվում է՝ չկապակցված մնալու փոխարեն։ Ինչ Cloudflare-ը տեսնում է, երկուսի IP հասցեներն են, զանգի ժամանակը և մոտավորապես որքան տվյալ է տեղափոխվել. ձայնն ու տեսանյութը մնում են 2-րդ բաժնում նկարագրված նույն DTLS-SRTP գաղտնագրման ներքո, ուստի փոխանցումը դրանք չի ապագաղտնագրում։
 
 Մենք կարող ենք բացահայտել այն, ինչ ունենք, եթե օրենքը դա պահանջում է։ Ինչ ունենք, բաժին 2-ում նշված ցանկն է։ Մենք չենք կարող տրամադրել հաղորդագրությունների բովանդակությունը, քանի որ չենք կարող կարդալ այն։`,
     },
@@ -6312,6 +6459,7 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
       body: `Мы не прадаём, не абменьваем і не здаём у арэнду вашу асабістую інфармацыю. Даныя дасягаюць:
 
 • Google Firebase — нашага пастаўшчыка хостынгу, як апісана вышэй.
+• Cloudflare Realtime — аўдыя і відэа выкліку, калі ваша прылада і прылада іншага чалавека не могуць звязацца напрамую.
 • Wikimedia Foundation — адно імя, калі вы націскаеце на яго, каб знайсці ў Вікіпедыі.
 • Google Cloud Speech-to-Text — аудыё аднаго галасавога паведамлення, калі вы просіце расшыфроўку.
 • Google Cloud Translation — тэкст аднаго паведамлення, калі вы просіце пераклад.
@@ -6320,6 +6468,8 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 Апошнія тры выключаны ў гэтай версіі. У праграме няма ніякага пераключальніка, які б уключыў расшыфроўку, пераклад або рэзюмаванне, таму да гэтых трох сэрвісаў нічога не дасягае. Яны пералічаны, а не выдалены, бо код усё яшчэ тут, і гэтыя функцыі павінны вярнуцца — і калі яны вернуцца, яны вернуцца з гэтым раскрыццём і з запытам перад першым выкарыстаннем. Тое, што было б адпраўлена тады, дасылаецца, каб атрымаць ваш вынік, а не для навучання чагосьці; ні расшыфроўка, ні пераклад не захоўваюцца на нашых серверах.
 
 У пошуку Вікіпедыі няма пераключальніка, бо няма чаго выключаць: ён працуе толькі пры націску і больш ніколі. Вікіпедыя атрымлівае толькі гэтае адно імя і ваш IP-адрас, гэтак жа, як калі б вы самі ўвялі яго ў іх уласнае поле пошуку — ніякага акаунта, ніякага паведамлення, ніякай размовы. Тое, што вяртаецца, паказваецца і не захоўваецца, і нічога пра гэта не запісваецца ў размову.
+
+У Cloudflare Realtime таксама няма пераключальніка. Большасці выклікаў гэта не патрэбна: дзве прылады, якія могуць звязацца напрамую — большасць выклікаў у адной сетцы — злучаюцца без гэтага, і нічога не рэтранслюецца. Калі яны не могуць — звычайна таму, што вы абодва знаходзіцеся ў розных мабільных сетках — ужо зашыфраваны выклік рэтранслюецца, а не застаецца без злучэння. Тое, што бачыць Cloudflare, — гэта абодва IP-адрасы, час выкліку і прыблізна колькі дадзеных перамясцілася; аўдыя і відэа застаюцца пад тым жа шыфраваннем DTLS-SRTP, апісаным у раздзеле 2, так што рэтрансляцыя іх не расшыфроўвае.
 
 Мы можам раскрыць тое, што маем, калі гэтага патрабуе закон. Тое, што мы маем, — гэта спіс з раздзела 2. Мы не можам прадаставіць змест паведамленняў, бо не можам яго прачытаць.`,
     },
@@ -6438,6 +6588,7 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
       body: `ናይ ውልቅኻ ሓበሬታ ኣይንሸይጦን፡ ኣይንልውጦን ኣይነካርን። ሓበሬታ ናብዞም ይበጽሕ፦
 
 • Google Firebase — ልዕል ኢሉ ከምዝተገልጸ፡ ናትና ናይ ኣተኣንግዳ ኣቕራቢ።
+• Cloudflare Realtime — መሳርያኻን መሳርያ እቲ ካልእ ሰብን ብቐጥታ ክራኸቡ ዘይክእሉሉ እዋን፣ ድምጽን ቪድዮን እቲ ጻውዒት።
 • Wikimedia Foundation — ኣብ ዊኪፐዲያ ንምድላዩ ምስ እትጠውቖ ሓደ ስም ጥራይ።
 • Google Cloud Speech-to-Text — ናብ ጽሑፍ ምቕያር ምስ እትሓትት ናይ ሓደ ናይ ድምጺ መልእኽቲ ድምጺ።
 • Google Cloud Translation — ትርጉም ምስ እትሓትት ናይ ሓደ መልእኽቲ ጽሑፍ።
@@ -6446,6 +6597,8 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 ዳሕረወት ሰለስተ ኣብዚ ሕታም ጠፊኦም ኣለዉ። ኣብ መተግበሪ ናብ ጽሑፍ ምቕያር፡ ትርጉም ወይ ጽማቝ ዝኸፍት ዝኾነ መቆጻጸሪ የለን፡ ስለዚ ናብዞም ሰለስተ ኣገልግሎት ዝኾነ ነገር ኣይበጽሕን። ኮድ ጌና ኣብዚ ስለዘሎን እዞም ባህርያት ክምለሱ ስለዝድለዩን ተዘርዚሮም ኣለዉ፡ ኣይተደምሰሱን — ክምለሱ ከለዉ ድማ ምስዚ ምግላጽን ቅድሚ ቀዳማይ ጥቕም ምስ ዝቐርብ ሕቶን ክምለሱ እዮም። ኣብቲ ግዜ እቲ ዝኽለኣኽ ንውጽኢትካ ንምፍራይ ጥራይ ክለኣኽ እዩ፡ ንምስልጣን ዝኾነ ነገር ኣይኰነን፣ ኣብ ሰርቨርታትና ናብ ጽሑፍ ዝተቐየረ ወይ ትርጉም ኣይዕቀብን።
 
 ኣብ ናይ ዊኪፐዲያ ምድላይ መቆጻጸሪ የለን፡ ዝጠፍእ ነገር ስለዘየለ፦ ኣብ ግዜ ምንካፍ ጥራይ ይሰርሕ፡ ካልእ ግዜ ኣይሰርሕን። ዊኪፐዲያ እቲ ሓደ ስምን ናትካ IP ኣድራሻን ጥራይ ይቕበል፡ ልክዕ ብናትካ ኣብ ናቶም ናይ ምድላይ ሳጹን እንተኣቲኻዮ ዝመስል — ሕሳብ የለን፡ መልእኽቲ የለን፡ ዝርርብ የለን። ዝምለስ ነገር ይረአ እሞ ኣይዕቀብን፡ ብዛዕባኡ ዝኾነ ነገር ናብቲ ዝርርብ ኣይጽሓፍን።
+
+Cloudflare Realtime እውን መቐየሪ የብሉን። መብዛሕትኦም ጻውዒታት ኣየድልዮምን እዩ፦ ክልተ መሳርሒታት ብቐጥታ ክራኸቡ ዝኽእሉ—መብዛሕትኡ ጻውዒት ኣብ ሓደ ኔትወርክ—ብዘይዚ ይራኸቡ፣ ዋላ ሓንቲ ኣይመሓላለፍን። ክራኸቡ ዘይክእሉ እንተኾይኖም—መብዛሕትኡ ግዜ ክልቴኹም ኣብ ዝተፈላለየ ሞባይል ኔትወርክ ስለ ዘለኹም—እቲ ኣቐዲሙ ዝተመስጠረ ጻውዒት ከይተራኸበ ካብ ዝተርፍ ይመሓላለፍ። Cloudflare ዝርእዮ ናይ ክልቲኦም IP ኣድራሻ፣ ግዜ እቲ ጻውዒት፣ ከምኡውን ግምታዊ ክንደይ ዳታ ከም እተጓዕዘ እዩ፤ ድምጽን ቪድዮን ኣብቲ ብክፍሊ 2 እተገልጸ ተመሳሳሊ DTLS-SRTP ምስጢራዊነት ይነብር፣ ስለዚ ምምሕልላፍ ኣይፈትሖን።
 
 ሕጊ እንተሓቲቱ ንዘሎና ክንገልጽ ንኽእል። ንሕና ንሓዝ ናይ ክፍሊ 2 ዝርዝር እዩ። ትሕዝቶ መልእኽትታት ከነቕርብ ኣይንኽእልን፡ ክንርድኦ ስለዘይንኽእል።`,
     },
@@ -6564,6 +6717,7 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
       body: `ཁྱེད་ཀྱི་སྒེར་གྱི་གནས་ཚུལ་ང་ཚོས་མི་འཚོང་། མི་བརྗེ། མི་གཡར། གནས་ཚུལ་འདིར་སླེབས།
 
 • Google Firebase — སྟེང་དུ་བཤད་པ་བཞིན། ང་ཚོའི་ཆས་གྲལ་སྤེལ་མཁན།
+• Cloudflare Realtime — ཁྱེད་ཀྱི་སྒྲིག་ཆས་དང་མི་གཞན་གྱི་སྒྲིག་ཆས་གཉིས་ཀ་གཅིག་གིས་གཅིག་ཐད་ཀར་འབྲེལ་མཐུད་བྱེད་མི་ཐུབ་པའི་སྐབས་སུ་ཁ་པར་གྱི་སྒྲ་དང་བརྙན་པར།
 • Wikimedia Foundation — Wikipedia ཐོག་འཚོལ་ཆེད་ནོན་སྐབས་མིང་གཅིག
 • Google Cloud Speech-to-Text — ཁྱེད་ཡིག་སྒྱུར་ཞུས་སྐབས་སྐད་སྒྲའི་འཕྲིན་ཡིག་གཅིག་གི་སྐད་སྒྲ།
 • Google Cloud Translation — ཁྱེད་སྐད་སྒྱུར་ཞུས་སྐབས་འཕྲིན་ཡིག་གཅིག་གི་ཡིག་གེ།
@@ -6572,6 +6726,8 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 མཐའ་མའི་གསུམ་འདི་ཐོན་འདིར་སྒོ་བརྒྱབ་ཡོད། ཆས་གྲལ་ནང་ཡིག་སྒྱུར། སྐད་སྒྱུར་ཡང་ན་བསྡུས་དོན་ཕྱེ་ཐུབ་པའི་སྒྲིག་ཆས་གང་ཡང་མེད་པས། ཞབས་ཞུ་གསུམ་པོ་འདིར་ཅི་ཡང་མི་སླེབས། ཨང་ཀི་ད་དུང་འདིར་ཡོད་ཅིང་ཁྱད་ཆོས་སླར་ཡོང་དགོས་པས་ཐོ་བཀོད་ཡོད། སུབ་མེད། སླར་ཡོང་སྐབས་འདིའི་གསལ་སྟོན་དང་ཐོག་མའི་བེད་སྤྱོད་སྔོན་ཞུ་གནང་མཁན་ཐོག་སླར་ཡོང་ངེས། དེའི་སྐབས་བསྐུར་བར་གྱུར་བ་ཁྱེད་ཀྱི་གྲུབ་འབྲས་ཐོན་ཆེད་ཡིན་ལ། ཅི་ཞིག་སྦྱོང་བརྡར་བྱེད་ཆེད་མིན། ཡིག་སྒྱུར་རམ་སྐད་སྒྱུར་ང་ཚོའི་སར་བར་ཐོག་མི་ཉར།
 
 Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད། སྒོ་རྒྱག་རྒྱུའི་ཅི་ཡང་མེད་པས། ནོན་སྐབས་ཁོ་ན་ལས་སྦྱོར་ཡིན། Wikipedia ཡིས་མིང་གཅིག་དེ་དང་ཁྱེད་ཀྱི་ IP ཁ་བྱང་ཁོ་ན་ཐོབ། ཁོང་ཚོའི་རང་ཉིད་ཀྱི་འཚོལ་ཞིབ་ཁང་ནང་ཁྱེད་རང་ཉིད་ཀྱིས་བཙུགས་པ་བཞིན། ཞིབ་ཡིག་མེད། འཕྲིན་ཡིག་མེད། ཁ་བརྡ་མེད། སླར་ཡོང་བ་སྟོན་ལ་མི་ཉར། དེའི་སྐོར་ཅི་ཡང་ཁ་བརྡར་མི་འབྲི།
+
+Cloudflare Realtime ལའང་ལྡེ་མིག་མེད། ཁ་པར་ཕལ་ཆེར་ལ་འདི་དགོས་མེད། སྒྲིག་ཆས་གཉིས་གཅིག་གིས་གཅིག་ཐད་ཀར་འབྲེལ་མཐུད་བྱེད་ཐུབ་མཁན—ཚང་མ་ནི་ཐོག་མའི་ནེཊི་ཝརཀ་གཅིག་གི་ཐོག་གི་ཁ་པར་ཕལ་ཆེར་ཡིན—དེ་མེད་པར་འབྲེལ་མཐུད་བྱེད་ཐུབ་ལ། གང་ཡང་བརྒྱུད་འགྲེམ་བྱེད་ཀྱི་མེད། ཁོང་ཚོས་འབྲེལ་མཐུད་བྱེད་མི་ཐུབ་པའི་སྐབས—གཙོ་བོ་ཁྱེད་གཉིས་ཀ་ཐོག་མའི་ནེཊི་ཝརཀ་མི་འདྲ་བའི་ཐོག་ཡོད་པའི་རྐྱེན་གྱིས—ད་ལྟ་ཡང་གསང་སྒྲིག་ཟིན་པའི་ཁ་པར་དེ་འབྲེལ་མཐུད་མེད་པར་ལུས་པའི་ཚབ་ཏུ་བརྒྱུད་འགྲེམ་བྱེད་ཀྱི་རེད། Cloudflare གིས་མཐོང་བ་ནི་གཉིས་ཀའི་ IP ཁ་བྱང་། ཁ་པར་གྱི་དུས་ཚོད། དེ་བཞིན་གྲངས་ཀ་ཙམ་གྱི་གནས་ཚུལ་ཚད་གང་འགྱུར་བ་བྱུང་མིན་ཡིན། སྒྲ་དང་བརྙན་པར་ནི་ཡིག་ཆ་ ༢ ནང་བཤད་པའི་ DTLS-SRTP གསང་སྒྲིག་གཅིག་མཚུངས་ཀྱི་འོག་ཏུ་ལུས་ཀྱི་ཡོད་སྟབས། བརྒྱུད་འགྲེམ་བྱེད་པས་དེ་ཚོ་གསང་སྒྲིག་ཕྱེ་ཀྱི་མེད།
 
 ཁྲིམས་ཀྱིས་དགོས་ན་ང་ཚོར་ཡོད་པ་སྟོན་ཐུབ། ང་ཚོར་ཡོད་པ་ཡན་ལག་ ༢ ཡི་ཐོ་ཡིན། འཕྲིན་ཡིག་གི་ནང་དོན་སྟོན་མི་ཐུབ། ང་ཚོས་ཀློག་མི་ཐུབ་པའི་ཕྱིར།`,
     },
@@ -6691,6 +6847,7 @@ Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད�
       body: `Бид таны хувийн мэдээллийг зардаггүй, худалддаггүй, түрээслүүлдэггүй. Мэдээлэл дараах газарт очно:
 
 • Google Firebase — дээр дурдсанчлан манай зочилуулгын үйлчилгээ үзүүлэгч.
+• Cloudflare Realtime — таны төхөөрөмж болон нөгөө хүний төхөөрөмж хоорондоо шууд холбогдож чадахгүй үед дуудлагын дуу болон видеог дамжуулна.
 • Wikimedia Foundation — Википедиагаас хайхын тулд товшсон нэг нэр.
 • Google Cloud Speech-to-Text — текст хөрвүүлэлт хүссэн үед нэг дуут зурвасын дуу.
 • Google Cloud Translation — орчуулга хүссэн үед нэг зурвасын текст.
@@ -6699,6 +6856,8 @@ Wikipedia འཚོལ་ཞིབ་ལ་སྒྲིག་ཆས་མེད�
 Сүүлийн гурав нь энэ хувилбарт унтраалттай. Аппын ямар ч газар текст болгох, орчуулах, эсвэл хураангуйлахыг асаах хяналт байхгүй тул эдгээр гурван үйлчилгээнд юу ч хүрдэггүй. Тэдгээрийг устгаагүй, харин жагсаасан шалтгаан нь код нь одоо ч энд байгаа бөгөөд онцлогууд буцаж ирэх зорилготой — тэдгээр буцаж ирэхэд энэ мэдэгдэл болон анх ашиглахын өмнөх зөвшөөрлийн асуултын хамт буцаж ирнэ. Тэр үед илгээгдэх зүйл нь таны үр дүнг гаргахад зориулагдах бөгөөд юу ч сургахад ашиглагдахгүй; текст хөрвүүлэлт ч, орчуулга ч манай серверт хадгалагддаггүй.
 
 Википедиагаас хайх ажиллагаанд унтраах товч байхгүй, учир нь унтраах ямар ч байнгын зүйл байхгүй: энэ нь товшсон үед л ажиллаж, өөр цагт ажилладаггүй. Википедиа тэр нэг нэр болон таны IP хаягийг хүлээн авдаг — та өөрөө тэдний хайлтын хайрцаг руу бичсэнтэй адил — данс, зурвас, харилцаа хамаагүй. Буцаж ирсэн зүйл харагдаад хадгалагдахгүй, харилцаанд юу ч бичигдэхгүй.
+
+Cloudflare Realtime-д ч мөн унтраах товч байхгүй. Ихэнх дуудлагад энэ хэрэггүй: шууд хоорондоо холбогдож чаддаг хоёр төхөөрөмж — ижил сүлжээн дэх ихэнх дуудлага — үүнгүйгээр холбогддог бөгөөд юу ч дамжуулагддаггүй. Тэд холбогдож чадахгүй үед — ихэвчлэн та хоёулаа өөр өөр гар утасны сүлжээнд байгаа тул — аль хэдийн шифрлэгдсэн дуудлагыг холбогдож чадахгүй байлгахын оронд дамжуулдаг. Cloudflare харж байгаа зүйл бол хоёр талын IP хаяг, дуудлагын хугацаа, мөн ойролцоогоор хэр их дата шилжсэн явдал юм; дуу болон видео нь 2-р хэсэгт дурдсан ижил DTLS-SRTP шифрлэлтийн дор хэвээр байдаг тул дамжуулах нь тэдгээрийг тайлдаггүй.
 
 Хуулиар шаардвал бид эзэмшдэг зүйлээ илчилж болно. Бидний эзэмшдэг зүйл бол 2-р хэсэгт байгаа жагсаалт. Бид зурвасын агуулгыг гаргаж чадахгүй, учир нь бид үүнийг унших боломжгүй.`,
     },

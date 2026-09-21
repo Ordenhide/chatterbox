@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Simu za sauti na video',
-        body: `Simu za moja-kwa-moja kupitia WebRTC, ambayo husimba midia kati ya vifaa viwili kwa chaguo-msingi badala ya kama chaguo.`,
+        body: `Simu huunganishwa moja kwa moja kati ya vifaa viwili kupitia WebRTC inapowezekana, zikisimba sauti na video kwa default badala ya kama chaguo. Zisiposhindwa kufikiana — mara nyingi kwa sababu ya mitandao tofauti — relay iliyosimbwa hubeba simu bila kuweza kuivunja usimbaji.`,
       },
       {
         title: `Mapendekezo ya majibu`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Kinachoonekana kwetu na kwa Google',
+      title: `Kinachoonekana kwetu, Google, na Cloudflare`,
       items: [
         'Kwamba mazungumzo yapo, na akaunti zipi ziko humo',
         'Kila akaunti ilikuwa hai mara ya mwisho lini',
         'Metadata ya kila muunganisho, ikiwa ni pamoja na anwani yako ya IP',
         'Kwamba simu ilipigwa, kwa nani na lini — si sauti au video yake',
+        `Anwani zote mbili za IP, wakati simu inahitaji kupitishwa ili kuunganika — kamwe si sauti au video yake`,
         'Jina la faili, aina na ukubwa wa kila kiambatisho unachotuma',
       ],
     },

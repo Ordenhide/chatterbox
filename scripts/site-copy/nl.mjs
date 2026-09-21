@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Spraak- en video-oproepen',
-        body: `Peer-to-peer bellen via WebRTC, dat de media tussen de twee apparaten standaard versleutelt in plaats van als optie.`,
+        body: `Gesprekken maken indien mogelijk rechtstreeks verbinding tussen de twee apparaten via WebRTC en versleutelen audio en video standaard, niet als optie. Wanneer dat niet lukt — vaak door verschillende netwerken — voert een versleutelde relay het gesprek door zonder het te kunnen ontsleutelen.`,
       },
       {
         title: `Antwoordsuggesties`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Zichtbaar voor ons en voor Google',
+      title: `Zichtbaar voor ons, Google en Cloudflare`,
       items: [
         'Dat een gesprek bestaat, en welke accounts erin zitten',
         'Wanneer elk account het laatst actief was',
         'De metadata van elke verbinding, inclusief je IP-adres',
         'Dat een oproep is geplaatst, aan wie en wanneer — niet de audio of video',
+        `Beide IP-adressen, wanneer een gesprek moet worden doorgestuurd om verbinding te maken — nooit de audio of video ervan`,
         'De bestandsnaam, het type en de grootte van elke bijlage die je verstuurt',
       ],
     },

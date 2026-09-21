@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Hlasové a video hovory',
-        body: `Hovory peer-to-peer přes WebRTC, které šifruje média mezi dvěma zařízeními ve výchozím nastavení, ne jako volbu.`,
+        body: `Hovory se propojují přímo mezi oběma zařízeními přes WebRTC, když je to možné, a šifrují zvuk a obraz standardně, nikoli jako volbu. Když nemohou — často kvůli různým sítím — zašifrovaný přenos přenáší hovor, aniž by ho mohl dešifrovat.`,
       },
       {
         title: `Navrhované odpovědi`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Viditelné pro nás a pro Google',
+      title: `Viditelné pro nás, Google a Cloudflare`,
       items: [
         'Že konverzace existuje a které účty jsou v ní',
         'Kdy byl každý účet naposledy aktivní',
         'Metadata každého připojení, včetně vaší IP adresy',
         'Že hovor byl uskutečněn, komu a kdy — ne jeho zvuk nebo video',
+        `Obě IP adresy, když je hovor potřeba přeposlat kvůli spojení — nikdy jeho zvuk ani obraz`,
         'Název souboru, typ a velikost každé přílohy, kterou pošlete',
       ],
     },

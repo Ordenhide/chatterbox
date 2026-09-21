@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Tale- og videoopkald',
-        body: `Peer-to-peer-opkald over WebRTC, som krypterer medierne mellem de to enheder som standard frem for som en mulighed.`,
+        body: `Opkald forbinder direkte mellem de to enheder via WebRTC, når det er muligt, og krypterer lyd og video som standard i stedet for som en mulighed. Når de ikke kan — ofte på grund af forskellige netværk — bærer en krypteret relæ opkaldet uden at kunne dekryptere det.`,
       },
       {
         title: `Svarforslag`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Synligt for os og for Google',
+      title: `Synligt for os, Google og Cloudflare`,
       items: [
         'At en samtale findes, og hvilke konti der er i den',
         'Hvornår hver konto sidst var aktiv',
         'Metadata for hver forbindelse, inklusive din IP-adresse',
         'At et opkald blev foretaget, til hvem og hvornår — ikke dets lyd eller video',
+        `Begge IP-adresser, når et opkald skal relæes for at forbinde — aldrig dets lyd eller video`,
         'Filnavn, type og størrelse på hver vedhæftet fil du sender',
       ],
     },

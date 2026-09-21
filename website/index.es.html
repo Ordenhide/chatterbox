@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Llamadas de voz y vídeo</h3>
-          <p>Llamadas entre pares sobre WebRTC, que cifra el medio entre los dos dispositivos por defecto y no como opción.</p>
+          <p>Las llamadas se conectan directamente entre los dos dispositivos mediante WebRTC cuando es posible, cifrando el audio y el vídeo por defecto en lugar de como opción. Cuando no pueden —a menudo por estar en redes distintas— un relé cifrado transporta la llamada sin poder descifrarla.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Visible para nosotros y para Google</h3>
+          <h3>Visible para nosotros, Google y Cloudflare</h3>
           <ul>
             <li>Que existe una conversación, y qué cuentas están en ella</li>
             <li>Cuándo estuvo activa cada cuenta por última vez</li>
             <li>Los metadatos de cada conexión, incluida tu dirección IP</li>
             <li>Que hubo una llamada, con quién y cuándo, pero no su audio ni su vídeo</li>
+            <li>Ambas direcciones IP, cuando una llamada necesita retransmisión para conectar — nunca su audio o vídeo</li>
             <li>El nombre, el tipo y el tamaño de cada archivo que adjuntas</li>
           </ul>
         </div>

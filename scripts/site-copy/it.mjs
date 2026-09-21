@@ -90,7 +90,7 @@ export default {
       },
       {
         title: `Chiamate audio e video`,
-        body: `Chiamate peer-to-peer su WebRTC, che cifra il flusso tra i due dispositivi per impostazione predefinita e non come opzione.`,
+        body: `Le chiamate si collegano direttamente tra i due dispositivi tramite WebRTC quando possibile, cifrando audio e video per impostazione predefinita anziché come opzione. Quando non possono — spesso per reti diverse — un relay cifrato inoltra la chiamata senza poterla decifrare.`,
       },
       {
         title: `Risposte suggerite`,
@@ -157,12 +157,13 @@ export default {
       ],
     },
     visible: {
-      title: `Visibile a noi e a Google`,
+      title: `Visibile a noi, Google e Cloudflare`,
       items: [
         `Che una conversazione esiste, e quali account ne fanno parte`,
         `Quando ogni account è stato attivo l'ultima volta`,
         `I metadati di ogni connessione, incluso il tuo indirizzo IP`,
         `Che una chiamata c'è stata, con chi e quando — non il suo audio né il video`,
+        `Entrambi gli indirizzi IP, quando una chiamata deve essere inoltrata per collegarsi — mai il suo audio o video`,
         `Il nome, il tipo e la dimensione di ogni file che alleghi`,
       ],
     },

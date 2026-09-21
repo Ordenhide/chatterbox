@@ -91,7 +91,7 @@ export default {
       },
       {
         title: 'Llamadas de voz y vídeo',
-        body: `Llamadas entre pares sobre WebRTC, que cifra el medio entre los dos dispositivos por defecto y no como opción.`,
+        body: `Las llamadas se conectan directamente entre los dos dispositivos mediante WebRTC cuando es posible, cifrando el audio y el vídeo por defecto en lugar de como opción. Cuando no pueden —a menudo por estar en redes distintas— un relé cifrado transporta la llamada sin poder descifrarla.`,
       },
       {
         title: `Respuestas sugeridas`,
@@ -152,12 +152,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Visible para nosotros y para Google',
+      title: `Visible para nosotros, Google y Cloudflare`,
       items: [
         'Que existe una conversación, y qué cuentas están en ella',
         'Cuándo estuvo activa cada cuenta por última vez',
         'Los metadatos de cada conexión, incluida tu dirección IP',
         'Que hubo una llamada, con quién y cuándo, pero no su audio ni su vídeo',
+        `Ambas direcciones IP, cuando una llamada necesita retransmisión para conectar — nunca su audio o vídeo`,
         'El nombre, el tipo y el tamaño de cada archivo que adjuntas',
       ],
     },

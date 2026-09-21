@@ -90,7 +90,7 @@ export default {
       },
       {
         title: `Sesli ve görüntülü arama`,
-        body: `WebRTC üzerinden uçtan uca bağlantıyla arama; iki cihaz arasındaki akışı seçenek olarak değil, varsayılan olarak şifreler.`,
+        body: `Aramalar mümkün olduğunda WebRTC üzerinden iki cihaz arasında doğrudan bağlanır, sesi ve görüntüyü seçenek olarak değil varsayılan olarak şifreler. Bağlanamadıklarında — genellikle farklı ağlar yüzünden — şifrelenmiş bir aktarıcı, çözemeden aramayı taşır.`,
       },
       {
         title: `Yanıt önerileri`,
@@ -157,12 +157,13 @@ export default {
       ],
     },
     visible: {
-      title: `Bize ve Google'a görünen`,
+      title: `Bize, Google'a ve Cloudflare'a görünür`,
       items: [
         `Bir sohbetin var olduğu ve içinde hangi hesapların bulunduğu`,
         `Her hesabın en son ne zaman etkin olduğu`,
         `Her bağlantının üst verisi, IP adresiniz dahil`,
         `Bir aramanın yapıldığı, kiminle ve ne zaman — sesi ya da görüntüsü değil`,
+        `Bir arama bağlanmak için aktarılması gerektiğinde her iki IP adresi — asla sesi veya görüntüsü değil`,
         `Gönderdiğin her ekin adı, türü ve boyutu`,
       ],
     },

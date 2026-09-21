@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Panggilan suara & video',
-        body: `Panggilan rakan-ke-rakan melalui WebRTC, yang menyulitkan media antara dua peranti secara lalai dan bukan sebagai pilihan.`,
+        body: `Panggilan bersambung terus antara kedua-dua peranti melalui WebRTC apabila boleh, menyulitkan audio dan video secara lalai dan bukan sebagai pilihan. Apabila tidak boleh — selalunya kerana rangkaian berbeza — geganti yang disulitkan membawa panggilan tanpa dapat menyahsulitkannya.`,
       },
       {
         title: `Cadangan balasan`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Kelihatan kepada kami dan kepada Google',
+      title: `Boleh dilihat oleh kami, Google dan Cloudflare`,
       items: [
         'Bahawa perbualan itu wujud, dan akaun mana yang terlibat',
         'Bila setiap akaun terakhir aktif',
         'Metadata setiap sambungan, termasuk alamat IP anda',
         'Bahawa panggilan telah dibuat, kepada siapa dan bila — bukan audio atau videonya',
+        `Kedua-dua alamat IP, apabila panggilan perlu digeganti untuk menyambung — bukan audio atau videonya`,
         'Nama fail, jenis dan saiz setiap lampiran yang anda hantar',
       ],
     },

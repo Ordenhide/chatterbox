@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Apeluri vocale și video</h3>
-          <p>Apeluri peer-to-peer prin WebRTC, care criptează media între cele două dispozitive în mod implicit, nu ca opțiune.</p>
+          <p>Apelurile se conectează direct între cele două dispozitive prin WebRTC atunci când este posibil, criptând sunetul și imaginea în mod implicit, nu ca opțiune. Când nu pot — adesea din cauza rețelelor diferite — un releu criptat transportă apelul fără a-l putea decripta.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Vizibil pentru noi și pentru Google</h3>
+          <h3>Vizibil pentru noi, Google și Cloudflare</h3>
           <ul>
             <li>Că o conversație există și ce conturi sunt în ea</li>
             <li>Când a fost activ ultima dată fiecare cont</li>
             <li>Metadatele fiecărei conexiuni, inclusiv adresa ta IP</li>
             <li>Că un apel a fost efectuat, către cine și când — nu audio sau video-ul său</li>
+            <li>Ambele adrese IP, atunci când un apel trebuie redirecționat pentru a se conecta — niciodată sunetul sau imaginea acestuia</li>
             <li>Numele fișierului, tipul și dimensiunea fiecărui atașament pe care îl trimiți</li>
           </ul>
         </div>

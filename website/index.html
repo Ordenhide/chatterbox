@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Voice &amp; video calls</h3>
-          <p>Peer-to-peer calling over WebRTC, which encrypts the media between the two devices by default rather than as an option.</p>
+          <p>Calls connect directly between the two devices over WebRTC when possible, encrypting audio and video by default rather than as an option. When they can't — often because of different networks — an encrypted relay carries the call without being able to decrypt it.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Visible to us and to Google</h3>
+          <h3>Visible to us, Google and Cloudflare</h3>
           <ul>
             <li>That a conversation exists, and which accounts are in it</li>
             <li>When each account was last active</li>
             <li>The metadata of every connection, including your IP address</li>
             <li>That a call was placed, to whom and when — not its audio or video</li>
+            <li>Both IP addresses, when a call is relayed to connect — never its audio or video</li>
             <li>The file name, type and size of every attachment you send</li>
           </ul>
         </div>

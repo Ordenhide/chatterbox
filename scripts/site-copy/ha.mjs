@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Kirayen murya da bidiyo',
-        body: `Kira kai-da-kai ta hanyar WebRTC, wanda ke sanya lambar sirri ga kafofin watsa labarai tsakanin na'urori biyu ta tsohuwa maimakon a matsayin zaɓi.`,
+        body: `Kiraye-kiraye suna haɗuwa kai tsaye tsakanin na'urori biyu ta hanyar WebRTC idan zai yiwu, suna ɓoye sauti da bidiyo ta tsohuwa maimakon zaɓi. Idan ba za su iya haɗuwa ba — yawanci saboda hanyoyin sadarwa daban-daban — wani mai tantancewa mai ɓoyayyiya yana ɗaukan kiran ba tare da iya buɗe ɓoyayyiyarsa ba.`,
       },
       {
         title: `Shawarwarin amsa`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Bayyane gare mu da ga Google',
+      title: `Ake iya gani daga gare mu, Google, da Cloudflare`,
       items: [
         'Cewa tattaunawa tana wanzuwa, da kuma waɗanne asusu ke ciki',
         'Lokacin ƙarshe da kowane asusu ya yi aiki',
         'Bayanan kowane haɗi, har da adireshin IP ɗinka',
         'Cewa an yi kira, ga wanene da lokacin — ba sautinsa ko bidiyonsa ba',
+        `Adireshin IP na bangarorin biyu, lokacin da ake bukatar tantance kira don haɗuwa — ba sautinsa ko bidiyonsa ba`,
         'Sunan fayil, nau\'i da girman kowane abin haɗawa da kake aikawa',
       ],
     },

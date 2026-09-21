@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Röst- och videosamtal',
-        body: `Peer-to-peer-samtal över WebRTC, som krypterar medierna mellan de två enheterna som standard snarare än som ett tillval.`,
+        body: `Samtal ansluter direkt mellan de två enheterna via WebRTC när det är möjligt, och krypterar ljud och video som standard snarare än som ett alternativ. När de inte kan — ofta på grund av olika nätverk — bär en krypterad relä samtalet utan att kunna dekryptera det.`,
       },
       {
         title: `Svarsförslag`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Synligt för oss och för Google',
+      title: `Synligt för oss, Google och Cloudflare`,
       items: [
         'Att en konversation finns, och vilka konton som är med i den',
         'När varje konto senast var aktivt',
         'Metadata för varje anslutning, inklusive din IP-adress',
         'Att ett samtal ringdes, till vem och när — inte dess ljud eller video',
+        `Båda IP-adresserna, när ett samtal behöver reläas för att ansluta — aldrig dess ljud eller video`,
         'Filnamn, typ och storlek på varje bilaga du skickar',
       ],
     },

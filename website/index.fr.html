@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Appels audio et vidéo</h3>
-          <p>Appels pair-à-pair via WebRTC, qui chiffre le flux entre les deux appareils par défaut et non en option.</p>
+          <p>Les appels se connectent directement entre les deux appareils via WebRTC lorsque c'est possible, en chiffrant l'audio et la vidéo par défaut plutôt qu'en option. Quand ce n'est pas possible — souvent à cause de réseaux différents — un relais chiffré achemine l'appel sans pouvoir le déchiffrer.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Visible pour nous et pour Google</h3>
+          <h3>Visible pour nous, Google et Cloudflare</h3>
           <ul>
             <li>Qu'une conversation existe, et quels comptes en font partie</li>
             <li>La date de dernière activité de chaque compte</li>
             <li>Les métadonnées de chaque connexion, dont votre adresse IP</li>
             <li>Qu’un appel a eu lieu, avec qui et quand — pas son son ni son image</li>
+            <li>Les deux adresses IP, quand un appel doit être relayé pour se connecter — jamais son audio ni sa vidéo</li>
             <li>Le nom, le type et la taille de chaque fichier que vous joignez</li>
           </ul>
         </div>

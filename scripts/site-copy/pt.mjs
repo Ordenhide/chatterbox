@@ -90,7 +90,7 @@ export default {
       },
       {
         title: `Chamadas de voz e vídeo`,
-        body: `Chamadas ponto a ponto por WebRTC, que cifra o fluxo entre os dois dispositivos por omissão e não como opção.`,
+        body: `As chamadas ligam-se diretamente entre os dois dispositivos via WebRTC quando possível, cifrando o áudio e o vídeo por predefinição em vez de como opção. Quando não conseguem — muitas vezes por estarem em redes diferentes — um relay cifrado transporta a chamada sem conseguir decifrá-la.`,
       },
       {
         title: `Respostas sugeridas`,
@@ -157,12 +157,13 @@ export default {
       ],
     },
     visible: {
-      title: `Visível para nós e para a Google`,
+      title: `Visível para nós, a Google e a Cloudflare`,
       items: [
         `Que existe uma conversa, e que contas estão nela`,
         `Quando cada conta esteve ativa pela última vez`,
         `Os metadados de todas as ligações, incluindo o teu endereço IP`,
         `Que houve uma chamada, com quem e quando — não o seu áudio nem o vídeo`,
+        `Os dois endereços IP, quando uma chamada precisa de ser retransmitida para ligar — nunca o seu áudio ou vídeo`,
         `O nome, o tipo e o tamanho de cada ficheiro que anexas`,
       ],
     },

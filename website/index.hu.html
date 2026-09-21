@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Hang- és videohívások</h3>
-          <p>Peer-to-peer hívás WebRTC-n keresztül, amely alapból — és nem opcionálisan — titkosítja a médiát a két készülék között.</p>
+          <p>A hívások közvetlenül kapcsolódnak a két eszköz között WebRTC-n keresztül, amikor lehetséges, és alapértelmezetten titkosítják a hangot és a videót, nem opcióként. Amikor nem tudnak — gyakran eltérő hálózatok miatt — egy titkosított továbbító viszi tovább a hívást anélkül, hogy vissza tudná fejteni.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Számunkra és a Google számára látható</h3>
+          <h3>Látható számunkra, a Google és a Cloudflare számára</h3>
           <ul>
             <li>Hogy egy beszélgetés létezik, és mely fiókok vannak benne</li>
             <li>Mikor volt utoljára aktív az egyes fiókok</li>
             <li>Minden kapcsolat metaadatai, beleértve az IP-címedet</li>
             <li>Hogy hívás történt, kivel és mikor — nem annak hangja vagy videója</li>
+            <li>Mindkét IP-cím, amikor egy hívást a kapcsolódáshoz továbbítani kell — soha nem a hangja vagy videója</li>
             <li>Minden elküldött melléklet fájlneve, típusa és mérete</li>
           </ul>
         </div>

@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Ovozli va video qo\'ng\'iroqlar',
-        body: `WebRTC orqali to'g'ridan-to'g'ri qo'ng'iroq — u ikki qurilma o'rtasidagi mediani tanlov sifatida emas, balki sukut bo'yicha shifrlaydi.`,
+        body: `Qo'ng'iroqlar iloji bo'lganda WebRTC orqali ikki qurilma o'rtasida to'g'ridan-to'g'ri ulanadi, audio va videoni tanlov sifatida emas, balki standart tarzda shifrlaydi. Ular ulana olmaganda — ko'pincha turli tarmoqlar sababli — shifrlangan retranslyator qo'ng'iroqni deshifrlay olmasdan olib boradi.`,
       },
       {
         title: `Javob tavsiyalari`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Bizga va Google\'ga ko\'rinadi',
+      title: `Bizga, Google va Cloudflare'ga ko'rinadi`,
       items: [
         'Suhbat mavjudligi va unda qanday hisoblar borligi',
         'Har bir hisob oxirgi marta qachon faol bo\'lgani',
         'Har bir ulanishning metama\'lumotlari, IP manzilingiz bilan birga',
         'Qo\'ng\'iroq bo\'lgani, kimga va qachon — ovozi yoki videosi emas',
+        `Qo'ng'iroq ulanish uchun retranslyatsiya talab qilganda ikkala IP manzil — hech qachon uning audio yoki videosi emas`,
         'Siz yuboradigan har bir biriktirmaning fayl nomi, turi va hajmi',
       ],
     },

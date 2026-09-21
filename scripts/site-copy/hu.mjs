@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Hang- és videohívások',
-        body: `Peer-to-peer hívás WebRTC-n keresztül, amely alapból — és nem opcionálisan — titkosítja a médiát a két készülék között.`,
+        body: `A hívások közvetlenül kapcsolódnak a két eszköz között WebRTC-n keresztül, amikor lehetséges, és alapértelmezetten titkosítják a hangot és a videót, nem opcióként. Amikor nem tudnak — gyakran eltérő hálózatok miatt — egy titkosított továbbító viszi tovább a hívást anélkül, hogy vissza tudná fejteni.`,
       },
       {
         title: `Válaszjavaslatok`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Számunkra és a Google számára látható',
+      title: `Látható számunkra, a Google és a Cloudflare számára`,
       items: [
         'Hogy egy beszélgetés létezik, és mely fiókok vannak benne',
         'Mikor volt utoljára aktív az egyes fiókok',
         'Minden kapcsolat metaadatai, beleértve az IP-címedet',
         'Hogy hívás történt, kivel és mikor — nem annak hangja vagy videója',
+        `Mindkét IP-cím, amikor egy hívást a kapcsolódáshoz továbbítani kell — soha nem a hangja vagy videója`,
         'Minden elküldött melléklet fájlneve, típusa és mérete',
       ],
     },

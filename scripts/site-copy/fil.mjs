@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Voice at video call',
-        body: `Peer-to-peer na pagtawag sa WebRTC, na nag-e-encrypt sa media sa pagitan ng dalawang device bilang default at hindi bilang opsyon.`,
+        body: `Direktang kumokonekta ang mga tawag sa pagitan ng dalawang device sa pamamagitan ng WebRTC kapag posible, ine-encrypt ang audio at video bilang default sa halip na opsyon. Kapag hindi nila kaya — kadalasan dahil sa magkaibang network — isang naka-encrypt na relay ang nagdadala ng tawag nang hindi ito ma-decrypt.`,
       },
       {
         title: `Mga suhestiyong sagot`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Nakikita namin at ng Google',
+      title: `Nakikita namin, Google, at Cloudflare`,
       items: [
         'Na may umiiral na usapan, at kung anong mga account ang nasa loob nito',
         'Kung kailan huling naging aktibo ang bawat account',
         'Ang metadata ng bawat koneksyon, kasama ang IP address mo',
         'Na may ginawang tawag, kanino at kailan — hindi ang audio o video nito',
+        `Ang parehong IP address, kapag kailangang i-relay ang isang tawag para makakonekta — hindi kailanman ang audio o video nito`,
         'Ang pangalan ng file, uri at laki ng bawat attachment na ipapadala mo',
       ],
     },

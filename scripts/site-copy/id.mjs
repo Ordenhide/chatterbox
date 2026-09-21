@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Panggilan suara & video',
-        body: `Panggilan peer-to-peer melalui WebRTC, yang mengenkripsi media antara dua perangkat secara default, bukan sebagai opsi.`,
+        body: `Panggilan terhubung langsung antara kedua perangkat melalui WebRTC jika memungkinkan, mengenkripsi audio dan video secara default, bukan sebagai pilihan. Ketika tidak bisa — sering karena jaringan berbeda — relai terenkripsi membawa panggilan tanpa bisa mendekripsinya.`,
       },
       {
         title: `Saran balasan`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Terlihat oleh kami dan oleh Google',
+      title: `Terlihat oleh kami, Google, dan Cloudflare`,
       items: [
         'Bahwa sebuah percakapan ada, dan akun mana saja yang terlibat',
         'Kapan setiap akun terakhir aktif',
         'Metadata setiap koneksi, termasuk alamat IP Anda',
         'Bahwa panggilan dilakukan, kepada siapa dan kapan — bukan audio atau videonya',
+        `Kedua alamat IP, ketika panggilan perlu direlai untuk terhubung — tidak pernah audio atau videonya`,
         'Nama file, jenis, dan ukuran setiap lampiran yang Anda kirim',
       ],
     },

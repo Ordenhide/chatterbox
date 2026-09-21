@@ -90,7 +90,7 @@ export default {
       },
       {
         title: `Gọi thoại và gọi video`,
-        body: `Gọi ngang hàng qua WebRTC, vốn mã hoá luồng giữa hai máy theo mặc định chứ không phải như một tuỳ chọn.`,
+        body: `Cuộc gọi kết nối trực tiếp giữa hai thiết bị qua WebRTC khi có thể, mã hóa âm thanh và video theo mặc định thay vì là một tùy chọn. Khi không thể — thường do khác mạng — một bộ chuyển tiếp đã mã hóa sẽ mang cuộc gọi mà không thể giải mã nó.`,
       },
       {
         title: `Gợi ý trả lời`,
@@ -157,12 +157,13 @@ export default {
       ],
     },
     visible: {
-      title: `Chúng tôi và Google nhìn thấy`,
+      title: `Hiển thị với chúng tôi, Google và Cloudflare`,
       items: [
         `Việc một cuộc trò chuyện tồn tại, và những tài khoản nào ở trong đó`,
         `Lần cuối mỗi tài khoản hoạt động`,
         `Siêu dữ liệu của mọi kết nối, kể cả địa chỉ IP của bạn`,
         `Rằng đã có một cuộc gọi, với ai và khi nào — không phải tiếng hay hình của nó`,
+        `Cả hai địa chỉ IP, khi một cuộc gọi cần được chuyển tiếp để kết nối — không bao giờ là âm thanh hay video của nó`,
         `Tên, kiểu và kích thước của mọi tệp bạn đính kèm`,
       ],
     },

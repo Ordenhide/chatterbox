@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>음성·영상 통화</h3>
-          <p>WebRTC 기반 P2P 통화. 두 기기 사이의 미디어를 선택이 아니라 기본으로 암호화합니다.</p>
+          <p>통화는 가능한 경우 WebRTC를 통해 두 기기 간에 직접 연결되며, 옵션이 아닌 기본값으로 음성과 영상을 암호화합니다. 직접 연결할 수 없을 때—흔히 서로 다른 네트워크 때문에—암호화된 중계가 복호화하지 못한 채로 통화를 전달합니다.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>우리와 Google에게 보이는 것</h3>
+          <h3>저희, Google, Cloudflare에게 보이는 것</h3>
           <ul>
             <li>대화가 존재한다는 사실과, 그 안에 어떤 계정이 있는지</li>
             <li>각 계정이 마지막으로 활동한 시각</li>
             <li>모든 연결의 메타데이터, IP 주소 포함</li>
             <li>통화가 있었다는 것, 상대와 시각 — 소리나 영상은 아닙니다</li>
+            <li>통화가 연결을 위해 중계가 필요할 때 양쪽의 IP 주소—음성이나 영상은 절대 아님</li>
             <li>보내는 모든 첨부 파일의 이름, 형식, 크기</li>
           </ul>
         </div>

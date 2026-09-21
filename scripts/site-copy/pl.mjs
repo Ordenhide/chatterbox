@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Połączenia głosowe i wideo',
-        body: `Połączenia peer-to-peer przez WebRTC, które domyślnie, a nie opcjonalnie, szyfrują media między dwoma urządzeniami.`,
+        body: `Połączenia łączą się bezpośrednio między dwoma urządzeniami przez WebRTC, gdy to możliwe, szyfrując dźwięk i obraz domyślnie, a nie opcjonalnie. Gdy nie mogą — często z powodu różnych sieci — zaszyfrowany przekaźnik przenosi połączenie, nie mogąc go odszyfrować.`,
       },
       {
         title: `Sugestie odpowiedzi`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Widoczne dla nas i dla Google',
+      title: `Widoczne dla nas, Google i Cloudflare`,
       items: [
         'Że rozmowa istnieje i jakie konta w niej uczestniczą',
         'Kiedy każde konto było ostatnio aktywne',
         'Metadane każdego połączenia, w tym Twój adres IP',
         'Że wykonano połączenie, do kogo i kiedy — nie jego audio ani wideo',
+        `Oba adresy IP, gdy połączenie wymaga przekazania, aby się połączyć — nigdy jego dźwięk ani obraz`,
         'Nazwę pliku, typ i rozmiar każdego wysyłanego załącznika',
       ],
     },

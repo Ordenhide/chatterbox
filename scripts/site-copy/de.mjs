@@ -91,7 +91,7 @@ export default {
       },
       {
         title: 'Sprach- und Videoanrufe',
-        body: `Peer-to-Peer-Anrufe über WebRTC, das die Medien zwischen den beiden Geräten standardmäßig verschlüsselt und nicht erst auf Wunsch.`,
+        body: `Anrufe verbinden sich über WebRTC direkt zwischen den beiden Geräten, wenn möglich, und verschlüsseln Audio und Video standardmäßig statt optional. Wenn das nicht geht — oft wegen unterschiedlicher Netzwerke — leitet ein verschlüsseltes Relais den Anruf weiter, ohne ihn entschlüsseln zu können.`,
       },
       {
         title: `Antwortvorschläge`,
@@ -158,12 +158,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Für uns und für Google sichtbar',
+      title: `Sichtbar für uns, Google und Cloudflare`,
       items: [
         'Dass ein Gespräch existiert und welche Konten darin sind',
         'Wann jedes Konto zuletzt aktiv war',
         'Die Metadaten jeder Verbindung, einschließlich deiner IP-Adresse',
         'Dass ein Anruf stattfand, mit wem und wann — nicht sein Ton oder Bild',
+        `Beide IP-Adressen, wenn ein Anruf zur Verbindung weitergeleitet werden muss — niemals Audio oder Video`,
         'Name, Typ und Größe jeder Datei, die du anhängst',
       ],
     },

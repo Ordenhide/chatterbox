@@ -90,7 +90,7 @@ export default {
       },
       {
         title: `Appels audio et vidéo`,
-        body: `Appels pair-à-pair via WebRTC, qui chiffre le flux entre les deux appareils par défaut et non en option.`,
+        body: `Les appels se connectent directement entre les deux appareils via WebRTC lorsque c'est possible, en chiffrant l'audio et la vidéo par défaut plutôt qu'en option. Quand ce n'est pas possible — souvent à cause de réseaux différents — un relais chiffré achemine l'appel sans pouvoir le déchiffrer.`,
       },
       {
         title: `Réponses suggérées`,
@@ -157,12 +157,13 @@ export default {
       ],
     },
     visible: {
-      title: `Visible pour nous et pour Google`,
+      title: `Visible pour nous, Google et Cloudflare`,
       items: [
         `Qu'une conversation existe, et quels comptes en font partie`,
         `La date de dernière activité de chaque compte`,
         `Les métadonnées de chaque connexion, dont votre adresse IP`,
         `Qu’un appel a eu lieu, avec qui et quand — pas son son ni son image`,
+        `Les deux adresses IP, quand un appel doit être relayé pour se connecter — jamais son audio ni sa vidéo`,
         `Le nom, le type et la taille de chaque fichier que vous joignez`,
       ],
     },

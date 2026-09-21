@@ -193,7 +193,7 @@
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Hlasové a video hovory</h3>
-          <p>Hovory peer-to-peer přes WebRTC, které šifruje média mezi dvěma zařízeními ve výchozím nastavení, ne jako volbu.</p>
+          <p>Hovory se propojují přímo mezi oběma zařízeními přes WebRTC, když je to možné, a šifrují zvuk a obraz standardně, nikoli jako volbu. Když nemohou — často kvůli různým sítím — zašifrovaný přenos přenáší hovor, aniž by ho mohl dešifrovat.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6L21 9.3l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.9l-5-4.6 6.1-.7L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -277,12 +277,13 @@
           </ul>
         </div>
         <div class="ledger-col ledger-no">
-          <h3>Viditelné pro nás a pro Google</h3>
+          <h3>Viditelné pro nás, Google a Cloudflare</h3>
           <ul>
             <li>Že konverzace existuje a které účty jsou v ní</li>
             <li>Kdy byl každý účet naposledy aktivní</li>
             <li>Metadata každého připojení, včetně vaší IP adresy</li>
             <li>Že hovor byl uskutečněn, komu a kdy — ne jeho zvuk nebo video</li>
+            <li>Obě IP adresy, když je hovor potřeba přeposlat kvůli spojení — nikdy jeho zvuk ani obraz</li>
             <li>Název souboru, typ a velikost každé přílohy, kterou pošlete</li>
           </ul>
         </div>

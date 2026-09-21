@@ -95,7 +95,7 @@ export default {
       },
       {
         title: 'Apeluri vocale și video',
-        body: `Apeluri peer-to-peer prin WebRTC, care criptează media între cele două dispozitive în mod implicit, nu ca opțiune.`,
+        body: `Apelurile se conectează direct între cele două dispozitive prin WebRTC atunci când este posibil, criptând sunetul și imaginea în mod implicit, nu ca opțiune. Când nu pot — adesea din cauza rețelelor diferite — un releu criptat transportă apelul fără a-l putea decripta.`,
       },
       {
         title: `Sugestii de răspuns`,
@@ -156,12 +156,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Vizibil pentru noi și pentru Google',
+      title: `Vizibil pentru noi, Google și Cloudflare`,
       items: [
         'Că o conversație există și ce conturi sunt în ea',
         'Când a fost activ ultima dată fiecare cont',
         'Metadatele fiecărei conexiuni, inclusiv adresa ta IP',
         'Că un apel a fost efectuat, către cine și când — nu audio sau video-ul său',
+        `Ambele adrese IP, atunci când un apel trebuie redirecționat pentru a se conecta — niciodată sunetul sau imaginea acestuia`,
         'Numele fișierului, tipul și dimensiunea fiecărui atașament pe care îl trimiți',
       ],
     },

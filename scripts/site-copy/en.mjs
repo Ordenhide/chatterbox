@@ -99,7 +99,7 @@ export default {
       },
       {
         title: 'Voice & video calls',
-        body: `Peer-to-peer calling over WebRTC, which encrypts the media between the two devices by default rather than as an option.`,
+        body: `Calls connect directly between the two devices over WebRTC when possible, encrypting audio and video by default rather than as an option. When they can't — often because of different networks — an encrypted relay carries the call without being able to decrypt it.`,
       },
       {
         title: `Reply suggestions`,
@@ -160,12 +160,13 @@ export default {
       ],
     },
     visible: {
-      title: 'Visible to us and to Google',
+      title: `Visible to us, Google and Cloudflare`,
       items: [
         'That a conversation exists, and which accounts are in it',
         'When each account was last active',
         'The metadata of every connection, including your IP address',
         'That a call was placed, to whom and when — not its audio or video',
+        `Both IP addresses, when a call is relayed to connect — never its audio or video`,
         'The file name, type and size of every attachment you send',
       ],
     },
