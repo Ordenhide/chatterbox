@@ -1,0 +1,131 @@
+# Why the web client cannot read forward-secret messages
+
+Written for someone who knows this codebase and has just discovered that the
+web client shows a padlock where a message should be. This records a decision
+already taken: the web client is a companion to the phone, not a second full
+client. Multi-device was considered and deliberately not built.
+
+It is here because the answer is not discoverable from the code. It is spread
+across a comment in `ensureRatchetKeysPublished`, the statefulness of the
+double ratchet, and a schema that has no device dimension in it — and anyone
+meeting the padlock for the first time will otherwise re-derive all three.
+
+## The symptom
+
+`web/src/services/e2ee.ts` recognises a forward-secret envelope
+(`isRatchetSealed`) and cannot open one. Its own comment is blunt about it:
+"nothing here will open it". `ChatPane.tsx` substitutes
+
+> 🔒 Forward-secret message. This browser cannot read it — open the chat on
+> your phone.
+
+Since forward secrecy was switched on, that is the common case rather than an
+edge one: mobile uses the ratchet for every 1:1 chat and sender keys for every
+group where all members have published. So the practical shape is
+
+| direction | result |
+| --- | --- |
+| phone → browser | unreadable |
+| browser → phone | fine — the browser sends static-DH fan-out, which mobile opens |
+
+## Why porting the ratchet does not fix it
+
+The cryptography is not the obstacle. `ratchet/doubleRatchet.ts`,
+`ratchet/x3dh.ts` and `ratchet/senderKeys.ts` are ~1150 lines depending only
+on `@noble/*` and four helpers from `crypto.ts`, all of which the web client
+already has. They would port essentially unchanged.
+
+What stops it is the account model, in two independent ways. Either alone is
+fatal.
+
+**1. Two devices would fight over one published identity.** The ratchet
+identity lives at `users/{uid}/publicKeys/ratchet` — one document per
+*account*, with no device dimension anywhere in the schema. Both clients call
+`ensureRatchetKeysPublished` on every sign-in, and it deliberately takes the
+identity over when the published bundle belongs to someone else: "taking the
+identity back is the only way it becomes reachable again". Phone and browser
+would alternate ownership, and every switch would surface a "session changed"
+warning to every peer — the warning that is supposed to mean something.
+
+**2. Sharing one identity does not help either.** A double ratchet is
+*stateful*: every message advances a chain and destroys the message key behind
+it. Two devices advancing the same chain independently desync permanently, by
+design. Session state is local for exactly this reason — `ratchetSessionStore`
+keeps it in MMKV under an OS-key-store key and never uploads it. The static-DH
+path tolerates two devices precisely because it is stateless; the ratchet
+cannot be made to.
+
+Note that the recovery phrase does not paper over this. It is the X25519
+static secret in BIP39 (`e2eeMnemonic.ts`); the ratchet identity is generated
+locally by `getOrCreateRatchetIdentity` and is not derived from it. Restoring
+on a second device recovers readable history and mints a *new* ratchet
+identity, which then takes the published bundle over.
+
+## What real multi-device would have cost
+
+For the record, since "just add devices" sounds cheaper than it is. It needs a
+device registry (`users/{uid}/devices/{deviceId}`) with per-device identities
+and prekeys; sessions keyed by `(peerUid, peerDeviceId)`; and a sender that
+fans out to every device of every recipient **including their own other
+devices**, or the phone cannot read what the browser sent. That last part
+makes every send a fan-out even in a 1:1 chat, and message size then grows
+with total device count — attachment content keys travel inside the body.
+
+It also forces product decisions that are harder to reverse than any of the
+code: what the recovery phrase means (today "new device" means *migration* —
+the old device is displaced; multi-device introduces *linking*, where both stay
+live), how many devices an account may have and who can remove one, and whether
+the safety number is one number over a sorted set of device identities or
+several numbers to compare. The blast radius is 44 key-lookup/seal sites in
+`src/`, 27 in `web/src/`, plus `firestore.rules`, the safety-number UI, the
+restore screen and the privacy policy.
+
+That is a protocol rewrite across both clients. The feature that motivated it —
+the browser reading messages — would have been the smallest part of it.
+
+## What the web client is instead
+
+A companion. It signs in to the same account and does the things that do not
+need the ratchet: sending (static-DH fan-out, which the phone reads),
+reading anything sent before forward secrecy was switched on, reading its own
+sent messages, and the whole non-message surface — contacts, invitations,
+saved items, settings, data export. It also has screen sharing, which mobile
+does not.
+
+Two things follow that are easy to get wrong:
+
+- **Every surface that shows message text has to say so.** A browser that
+  cannot read something must never render that as nothing. See "Known gaps".
+- **The two clients are not equivalent and the product should not imply they
+  are.** Anything describing the web client — the privacy policy, the site
+  copy, the download page — should not promise message history it cannot
+  deliver.
+
+## Known gaps
+
+Recorded, not fixed. A forward-secret message has its `text` blanked at send
+time (`e2eeMessages.ts` says so, and adds that "a placeholder belongs in the
+UI layer"). The UI layer supplies one in only one place.
+
+| surface | shows | |
+| --- | --- | --- |
+| open chat (`ChatPane.tsx:647`) | the padlock placeholder | ok |
+| chat list (`HomeScreen.tsx:205`) | "No messages yet — say hello." | **false** |
+| quick switcher (`QuickSwitcher.tsx:145`) | same | **false** |
+| notifications (`useChatNotifications.ts:80`) | "New messages" | ok |
+| data export (`dataExport.ts`) | `DecryptionStatus: 'failed'` | ok |
+| search (both) | matches nothing, silently | incomplete |
+
+The chat-list one is the worst: an active conversation is described as empty.
+Mobile has the same underlying gap at `ChatListScreen.tsx:132`, where a sealed
+last message renders as an empty string — uninformative, but not a claim that
+the chat is empty.
+
+## If this is ever revisited
+
+Nothing above expires. The two blockers are properties of the design rather
+than bugs, and the staging that would make sense is the same: device registry
+and read path first, fan-out second (a no-op while every account has one
+device, so it can be tested before any client offers linking), device list and
+safety number third, linking ceremony fourth, and the web ratchet last — by
+which point the browser is just another device.
