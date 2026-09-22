@@ -126,7 +126,17 @@ jobs:
         if: always()
         run: rm -f android/app/chatterbox-release.keystore android/app/google-services.json
 
+      # always(), because this step is downstream of the Hosting deploy and
+      # was gated on success by default — so a failure there threw away a
+      # signed APK that had already been built, leaving nothing to download
+      # and nothing to inspect. The APK is the expensive part of this job and
+      # it is worth keeping whatever else went wrong.
+      #
+      # upload-artifact treats a missing path as a warning rather than an
+      # error, so a run where the Gradle build itself failed still ends with
+      # that build's error as the reason, not this step's.
       - name: Upload APK as build artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: chatterbox-release-apk

@@ -66,6 +66,27 @@ failure: every non-scheduled function deploys fine and only the six scheduled
 ones fail, with `cloudscheduler.jobs.update` denied. The run fails, but most of
 what it was asked to do already succeeded.
 
+**Hosting** (`release-apk.yml`, on a `v*` tag only):
+
+| Role | Why |
+|---|---|
+| `Firebase Hosting Admin` | uploads the site version and releases it |
+| `Service Usage Consumer` | same API-enabled precheck as the rules deploy |
+
+**Unlike the two tables above, this one has never been proved by a deploy.**
+The Hosting step was added on 2026-09-20 to self-distribute the APK, it runs
+only on a `v*` tag, and no tag has been pushed since — so the first release is
+also the first time this service account will have been asked to touch
+Hosting. The roles are what the API requires, not what a failure taught us,
+and this note stays until a real tag has gone out.
+
+It matters more than a missing role usually would, because of where the step
+sits: the Hosting deploy runs *before* both the artifact upload and the APK's
+attachment to the GitHub Release. A 403 there fails the job with the signed
+APK built and then discarded — the upload step is gated on success, so there
+is nothing to download and no release published. Grant the role and re-run;
+nothing is left half-published, because neither upload has happened yet.
+
 The project's auto-created `firebase-adminsdk-*` service account has none of
 these by default — its stock `Firebase Admin SDK Administrator Service Agent`
 role covers Admin SDK data access, not deployment.
