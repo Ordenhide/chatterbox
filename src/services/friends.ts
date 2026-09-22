@@ -38,7 +38,6 @@ import {
   query,
   runTransaction,
   serverTimestamp,
-  setDoc,
   where,
 } from './firebase/firestore';
 import {Friend, FriendRequest} from '../types';

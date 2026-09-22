@@ -32,7 +32,6 @@ import {removeCachedChat, removeOutboxForChat} from '../../services/offlineCache
 import {setDraft} from '../../services/drafts';
 import GlassScreen from '../../components/GlassScreen';
 import GlassView from '../../components/GlassView';
-import Icon, {type IconName} from '../../components/Icon';
 import {setChatExpiryPolicy, getExpiryOptions} from '../../services/messageExpiry';
 import {bodyWeight, terminal} from '../../theme/typography';
 

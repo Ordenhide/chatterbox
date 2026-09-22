@@ -63,7 +63,6 @@ type ChatListItemProps = {
   textColor: string;
   textSecondary: string;
   warningColor: string;
-  dangerColor: string;
   cardBackground: string;
   cardBorder: string;
   unreadColor: string;
@@ -92,7 +91,6 @@ const ChatListItem = memo(
     textColor,
     textSecondary,
     warningColor,
-    dangerColor,
     cardBackground,
     cardBorder,
     unreadColor,
@@ -656,7 +654,6 @@ export default function ChatListScreen() {
             textColor={colors.text}
             textSecondary={colors.textSecondary}
             warningColor={colors.warning}
-            dangerColor={colors.danger}
             cardBackground={colors.surface}
             cardBorder={colors.glassBorder}
             unreadColor={colors.primary}

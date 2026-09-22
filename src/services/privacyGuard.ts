@@ -1,9 +1,6 @@
 import {Platform} from 'react-native';
 import {mmkvStorage} from './storageMMKV';
-import {doc, getDoc, getFirestore, setDoc} from './firebase/firestore';
 import {reportHandled} from './errorLog';
-
-const db = getFirestore();
 
 export function isScreenshotProtectionEnabled(): boolean {
   return mmkvStorage.getBoolean('screenshot_protection') ?? false;

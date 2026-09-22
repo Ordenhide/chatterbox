@@ -83,7 +83,6 @@ jest.mock('../e2eeKeys', () => ({
 import {deleteMessages, getUsersByIds, setTyping, upsertUserProfile} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
-const CHAT_ID = 'chat1';
 const KEYPAIR = {secretKey: new Uint8Array([1, 2, 3]), publicKey: new Uint8Array([4, 5, 6])};
 
 beforeEach(() => {

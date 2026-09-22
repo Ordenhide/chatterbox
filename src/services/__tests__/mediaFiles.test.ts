@@ -323,6 +323,11 @@ describe('downloadAndDecrypt resuming', () => {
     mockState.responses = [{status: 200, body: full}];
 
     const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+    // The documented return is the destination path. Asserted rather than
+    // discarded: a caller stages media by this value (mediaVault.ts), so a
+    // function that decrypted correctly and returned something else would
+    // still break every attachment.
+    expect(out).toBe('/plain');
     expect(mockState.files.get('/plain')).toEqual(data);
     expect(leaked('/plain')).toEqual([]);
   });
@@ -337,6 +342,7 @@ describe('downloadAndDecrypt resuming', () => {
     mockState.responses = [{status: 200, body: full}];
 
     const out = await downloadAndDecrypt('https://example/x', info, '/plain', {resumeKey: key});
+    expect(out).toBe('/plain');
     expect(mockState.files.get('/plain')).toEqual(data);
     // Started fresh — no Range header, since the leftover was discarded first.
     expect(mockState.requestHeaders[0]).toBeUndefined();

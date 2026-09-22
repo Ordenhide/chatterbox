@@ -25,7 +25,6 @@ import {getAuth} from './firebase/auth';
 import {firebaseConfig} from '../firebaseConfig';
 import {uploadResumable} from './resumableUpload';
 import {Message, ChatRoom, User, CallSession, CallType} from '../types';
-import {reportError} from './errorLog';
 import {
   isPermissionDenied,
   isUnsyncedEmpty,
