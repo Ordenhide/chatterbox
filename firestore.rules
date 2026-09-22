@@ -685,11 +685,58 @@ service cloud.firestore {
         allow delete: if isChatParticipant(chatId) && resource.data.from == request.auth.uid;
       }
 
+      /**
+       * A call belongs to the two people on it, not to the whole chat.
+       *
+       * This was `allow read, write: if isChatParticipant(chatId)` for both the
+       * call and its candidates — the widest rule left in the file, and the one
+       * place with no notion of an author at all. In a 32-member group every
+       * member could create a call document naming someone else as its caller,
+       * rewrite or delete a call two other people were on, and write ICE
+       * candidates into it attributed to either of them.
+       *
+       * The narrowing mirrors what the messages rule already does: the document
+       * says who made it (`createdBy`, `from`) and the rule holds the writer to
+       * it. Calls are strictly 1:1 here — createCall takes one caller and one
+       * callee and writes `participants: [from, to]` — so "on the call" is a
+       * real, checkable set that is usually much smaller than the chat.
+       *
+       * What this does not claim to protect: the media. That is DTLS-SRTP
+       * between the two devices and never depends on these documents. A
+       * candidate a third party could previously inject would have failed to
+       * connect rather than intercepted anything — the exposure was denial and
+       * forgery of the *record*, which is what a missed-call notice is built
+       * from.
+       */
       match /calls/{callId} {
-        allow read, write: if isChatParticipant(chatId);
+        allow read: if isChatParticipant(chatId);
+        // Only for yourself, and only naming yourself as the caller.
+        allow create: if isChatParticipant(chatId) &&
+          request.resource.data.get('createdBy', '') == request.auth.uid &&
+          request.auth.uid in request.resource.data.get('participants', []);
+        // Answering, ending and status changes belong to the two on the call.
+        // `createdBy` is pinned so an update cannot reassign the call either.
+        allow update: if isChatParticipant(chatId) &&
+          request.auth.uid in resource.data.get('participants', []) &&
+          request.resource.data.get('createdBy', '') == resource.data.get('createdBy', '');
+        allow delete: if isChatParticipant(chatId) &&
+          request.auth.uid in resource.data.get('participants', []);
 
         match /candidates/{candidateId} {
-          allow read, write: if isChatParticipant(chatId);
+          allow read: if isChatParticipant(chatId);
+          // A candidate says who sent it, and only its sender may write it.
+          // Checked against the document's own field rather than by reading
+          // the parent call, so this costs no extra document read on a path
+          // that fires dozens of times per call.
+          allow create: if isChatParticipant(chatId) &&
+            request.resource.data.get('from', '') == request.auth.uid;
+          allow update: if false;
+          // Spent candidates are swept by whoever ends the call, and by
+          // sweepStaleCalls with the Admin SDK. Left at chat-participant
+          // level: deleting a used ICE candidate destroys nothing, and a
+          // narrower rule would strand them when the sweep runs from the
+          // other side.
+          allow delete: if isChatParticipant(chatId);
         }
       }
 

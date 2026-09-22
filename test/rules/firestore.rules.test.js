@@ -1166,19 +1166,15 @@ describe('chat subcollections gated only by isChatParticipant', () => {
   // a message and has its own block above. Leaving it here would have
   // asserted that any participant may write one, which is the forgery that
   // block exists to prevent.
-  const subcollections = ['calls'];
+  //
+  // `calls` left for the same reason, and the list is now empty. A call
+  // document carries `createdBy` and a `participants` pair, so it is held to
+  // the same standard — see "a call belongs to the two people on it" below.
+  // The suite stays for the removed-collection half, which is the part that
+  // fails if a rule is re-added for a feature that no longer exists.
 
   beforeEach(async () => {
     await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob']}));
-  });
-
-  it.each(subcollections)('participant can read/write chats/c1/%s, non-participant cannot', async sub => {
-    const alice = asUser('alice');
-    const mallory = asUser('mallory');
-    await assertSucceeds(setDoc(doc(alice, `chats/c1/${sub}/item1`), {v: 1}));
-    await assertSucceeds(getDoc(doc(alice, `chats/c1/${sub}/item1`)));
-    await assertFails(setDoc(doc(mallory, `chats/c1/${sub}/item2`), {v: 1}));
-    await assertFails(getDoc(doc(mallory, `chats/c1/${sub}/item1`)));
   });
 
   /**
@@ -1195,14 +1191,141 @@ describe('chat subcollections gated only by isChatParticipant', () => {
     },
   );
 
-  it('calls/{callId}/candidates inherits the same participant gate', async () => {
-    await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), {status: 'ringing'}));
+});
+
+/**
+ * A call belongs to the two people on it.
+ *
+ * The rule was `allow read, write: if isChatParticipant(chatId)` for the call
+ * and its candidates — the widest one left in this file, and the only place
+ * with no notion of an author. In a 32-member group every member could open a
+ * call naming someone else as its caller, rewrite or delete a call two other
+ * people were on, and inject ICE candidates attributed to either of them.
+ *
+ * The media was never at risk: that is DTLS-SRTP between the two devices. What
+ * was forgeable is the *record*, which is what a missed-call notice is built
+ * from, and what was destroyable is a call in progress.
+ */
+describe('calls belong to their two participants', () => {
+  // A 3-person chat, so "chat participant" and "call participant" differ.
+  beforeEach(async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1'), {participants: ['alice', 'bob', 'mallory']}));
+  });
+
+  const ringing = (from, to) => ({
+    createdBy: from,
+    participants: [from, to],
+    status: 'ringing',
+    type: 'voice',
+  });
+
+  it('lets the caller open a call and the callee answer it', async () => {
+    // Pinned first: every denial below would pass vacuously if calling itself
+    // were refused, which is how a too-tight rule hides.
+    await assertSucceeds(setDoc(doc(asUser('alice'), 'chats/c1/calls/call1'), ringing('alice', 'bob')));
     await assertSucceeds(
-      setDoc(doc(asUser('bob'), 'chats/c1/calls/call1/candidates/cand1'), {sdp: 'x'}),
+      updateDoc(doc(asUser('bob'), 'chats/c1/calls/call1'), {status: 'active'}),
     );
+    await assertSucceeds(getDoc(doc(asUser('mallory'), 'chats/c1/calls/call1')));
+  });
+
+  it('refuses a call naming somebody else as its caller', async () => {
+    // The forgery that reaches the UI: a call record, and then the missed-call
+    // system message the other rule lets a recipient write for it.
     await assertFails(
-      setDoc(doc(asUser('mallory'), 'chats/c1/calls/call1/candidates/cand2'), {sdp: 'x'}),
+      setDoc(doc(asUser('mallory'), 'chats/c1/calls/call2'), ringing('alice', 'bob')),
     );
+  });
+
+  it('refuses a call the caller is not part of', async () => {
+    await assertFails(
+      setDoc(doc(asUser('mallory'), 'chats/c1/calls/call3'), {
+        createdBy: 'mallory',
+        participants: ['alice', 'bob'],
+        status: 'ringing',
+        type: 'voice',
+      }),
+    );
+  });
+
+  it('denies a third chat member rewriting or ending the call', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), ringing('alice', 'bob')));
+    await assertFails(updateDoc(doc(asUser('mallory'), 'chats/c1/calls/call1'), {status: 'ended'}));
+    await assertFails(deleteDoc(doc(asUser('mallory'), 'chats/c1/calls/call1')));
+  });
+
+  it('denies reassigning the caller on an existing call', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), ringing('alice', 'bob')));
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'chats/c1/calls/call1'), {createdBy: 'bob'}),
+    );
+  });
+
+  it('lets either participant end their own call', async () => {
+    await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), ringing('alice', 'bob')));
+    await assertSucceeds(updateDoc(doc(asUser('bob'), 'chats/c1/calls/call1'), {status: 'ended'}));
+    await assertSucceeds(deleteDoc(doc(asUser('alice'), 'chats/c1/calls/call1')));
+  });
+
+  describe('candidates', () => {
+    beforeEach(async () => {
+      await seed(db => setDoc(doc(db, 'chats/c1/calls/call1'), ringing('alice', 'bob')));
+    });
+
+    it('lets a sender write a candidate attributed to themselves', async () => {
+      await assertSucceeds(
+        setDoc(doc(asUser('bob'), 'chats/c1/calls/call1/candidates/c1'), {
+          from: 'bob',
+          candidate: {candidate: 'x'},
+        }),
+      );
+    });
+
+    it('refuses a candidate attributed to somebody else', async () => {
+      await assertFails(
+        setDoc(doc(asUser('mallory'), 'chats/c1/calls/call1/candidates/c2'), {
+          from: 'alice',
+          candidate: {candidate: 'x'},
+        }),
+      );
+    });
+
+    it('refuses a candidate that says nothing about who sent it', async () => {
+      // The old rule accepted `{sdp: 'x'}` from anyone in the chat.
+      await assertFails(
+        setDoc(doc(asUser('mallory'), 'chats/c1/calls/call1/candidates/c3'), {sdp: 'x'}),
+      );
+    });
+
+    it('never lets a candidate be edited after the fact', async () => {
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/calls/call1/candidates/c4'), {from: 'alice', candidate: {}}),
+      );
+      await assertFails(
+        updateDoc(doc(asUser('alice'), 'chats/c1/calls/call1/candidates/c4'), {candidate: {x: 1}}),
+      );
+    });
+
+    it('lets any participant sweep spent candidates', async () => {
+      // Deliberately wider than the writes: cleanup runs from whichever side
+      // ends the call, and a narrower rule would strand them.
+      await seed(db =>
+        setDoc(doc(db, 'chats/c1/calls/call1/candidates/c5'), {from: 'alice', candidate: {}}),
+      );
+      await assertSucceeds(
+        deleteDoc(doc(asUser('mallory'), 'chats/c1/calls/call1/candidates/c5')),
+      );
+    });
+
+    it('denies a non-participant of the chat entirely', async () => {
+      await assertFails(
+        setDoc(doc(asUser('stranger'), 'chats/c1/calls/call1/candidates/c6'), {
+          from: 'stranger',
+          candidate: {},
+        }),
+      );
+      await assertFails(getDoc(doc(asUser('stranger'), 'chats/c1/calls/call1/candidates/c5')));
+    });
   });
 });
 
