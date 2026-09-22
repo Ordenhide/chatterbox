@@ -101,25 +101,38 @@ Two things follow that are easy to get wrong:
   copy, the download page — should not promise message history it cannot
   deliver.
 
-## Known gaps
+## Every surface that shows message text
 
-Recorded, not fixed. A forward-secret message has its `text` blanked at send
-time (`e2eeMessages.ts` says so, and adds that "a placeholder belongs in the
-UI layer"). The UI layer supplies one in only one place.
+A forward-secret message has its `text` blanked at send time
+(`e2eeMessages.ts` says so, and adds that "a placeholder belongs in the UI
+layer"). This table used to be a list of places the UI layer did not supply
+one. It is now a list of what each surface says, because they were fixed —
+the `sealed` flag on `lastMessage` (`firebaseChat.ts`) is what made it
+possible for a reader to label a message it cannot open without reading the
+sender's words for it.
 
 | surface | shows | |
 | --- | --- | --- |
-| open chat (`ChatPane.tsx:647`) | the padlock placeholder | ok |
-| chat list (`HomeScreen.tsx:205`) | "No messages yet — say hello." | **false** |
-| quick switcher (`QuickSwitcher.tsx:145`) | same | **false** |
-| notifications (`useChatNotifications.ts:80`) | "New messages" | ok |
+| open chat (`ChatPane.tsx:654`) | `chat.forwardSecretElsewhere` | ok |
+| chat list (`HomeScreen.tsx:222`) | `lastMessage.sealed` → padlock label | ok |
+| quick switcher (`QuickSwitcher.tsx:151`) | same | ok |
+| notifications (`useChatNotifications.ts:83`) | `chat.encryptedPreview` | ok |
 | data export (`dataExport.ts`) | `DecryptionStatus: 'failed'` | ok |
-| search (both) | matches nothing, silently | incomplete |
+| in-chat search | skips what it cannot read, and says how many | ok |
+| mobile chat list (`ChatListScreen.tsx:133`) | `sealed` ahead of `text` | ok |
 
-The chat-list one is the worst: an active conversation is described as empty.
-Mobile has the same underlying gap at `ChatListScreen.tsx:132`, where a sealed
-last message renders as an empty string — uninformative, but not a claim that
-the chat is empty.
+Three of these were recorded here as **false** — the chat list and quick
+switcher describing an active conversation as "No messages yet — say hello.",
+and mobile's list rendering a sealed preview as an empty string. All three are
+fixed. The entry for search was wrong in a different way: it claimed search
+"matches nothing, silently", and in fact both clients patch decrypted text
+back into their message state, so search reads plaintext for everything the
+client can open. What was true is the narrower thing now in the table — a
+browser's search cannot see the forward-secret messages, and used to return a
+short answer without saying so.
+
+Keep this table honest. A row that has quietly become false is worse than no
+row: it is read as a live defect and worked around.
 
 ## Why the two cannot even be signed in at once
 
