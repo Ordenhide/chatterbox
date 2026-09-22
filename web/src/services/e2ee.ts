@@ -360,13 +360,53 @@ export function messageProtection(message: {encrypted?: unknown}): MessageProtec
   return 'none';
 }
 
+/**
+ * True for every envelope shape this app produces, whether or not this client
+ * can open it.
+ *
+ * Callers use it to answer "is `text` empty because the body lives
+ * elsewhere?", and the answer has to be yes for the forward-secret shapes too:
+ * excluding one is exactly what makes those messages render as a blank bubble
+ * with no sign that anything is missing.
+ *
+ * Both of them, which is the correction here. `isRatchetSealed` was added for
+ * that reason and `isGroupSealed` was not, so a group message sealed with
+ * sender keys — which mobile uses for every group where all members have
+ * published, meaning most of them — fell through every branch: no placeholder,
+ * no padlock, an empty bubble. `messageProtection` already knew the shape and
+ * answered 'sender-key' for it, which is what made the gap survive review:
+ * the badge was right while the text was missing.
+ *
+ * Anything that goes on to *open* a body must still exclude the forward-secret
+ * shapes first — `openSealed` throws on both — so use `isOpenableHere` for
+ * that question rather than this one.
+ */
 export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
-  // Includes the forward-secret shape, which openSealed cannot open. Callers
-  // use isSealed to answer "is `text` empty because the body lives elsewhere?"
-  // and for a ratchet message the answer is yes — excluding it is exactly what
-  // made those messages render blank. Anything that goes on to *open* a body
-  // must check isRatchetSealed first.
-  return isSealedEnvelope(value) || isEncryptedPayload(value) || isRatchetSealed(value);
+  return (
+    isSealedEnvelope(value) ||
+    isEncryptedPayload(value) ||
+    isRatchetSealed(value) ||
+    isGroupSealed(value)
+  );
+}
+
+/**
+ * True for a forward-secret envelope of either kind — the two shapes this
+ * client recognises and cannot open (MULTIDEVICE.md).
+ *
+ * Its own predicate because the caller that needs it is a *routing* decision
+ * with three outcomes, and writing that as two `isSealed` checks in the wrong
+ * order is how the group case went missing: a reader has to send these to the
+ * "open it on your phone" placeholder, send an openable envelope to
+ * `openSealed`, and leave everything else alone.
+ */
+export function isForwardSecret(value: unknown): boolean {
+  return isRatchetSealed(value) || isGroupSealed(value);
+}
+
+/** True for an envelope `openSealed` can actually open with a key pair. */
+export function isOpenableHere(value: unknown): boolean {
+  return isSealed(value) && !isForwardSecret(value);
 }
 
 /**

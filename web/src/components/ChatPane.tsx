@@ -39,7 +39,8 @@ import {
 import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
 import {
-  isRatchetSealed,
+  isForwardSecret,
+  isOpenableHere,
   isSealed,
   messageProtection,
   openSealed,
@@ -645,14 +646,18 @@ export default function ChatPane({
           }
           const {secretKey} = keypair;
 
-          // Forward-secret bodies sit in a ratchet envelope this client has no
-          // implementation for, so say so. openSealed would throw and land on
-          // "Unable to decrypt", which is true but unhelpful, and before
-          // isSealed knew this shape the message rendered as an empty bubble
-          // with no sign that anything was missing at all.
-          if (isRatchetSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
+          // Forward-secret bodies — a 1:1 ratchet envelope or a group
+          // sender-key one — have no implementation here, so say so. openSealed
+          // would throw and land on "Unable to decrypt", which is true but
+          // unhelpful, and before isSealed knew these shapes the message
+          // rendered as an empty bubble with no sign anything was missing.
+          //
+          // isForwardSecret rather than isRatchetSealed: this branch tested
+          // only the 1:1 shape, so every group message took the blank-bubble
+          // path that the ratchet case had already been fixed for.
+          if (isForwardSecret(m.encrypted) && !decryptedTextRef.current.has(id)) {
             decryptedTextRef.current.set(id, t('chat.forwardSecretElsewhere'));
-          } else if (isSealed(m.encrypted) && !decryptedTextRef.current.has(id)) {
+          } else if (isOpenableHere(m.encrypted) && !decryptedTextRef.current.has(id)) {
             try {
               // Decoded, not used raw. What openSealed hands back is the
               // *encoded* body, and for a message carrying an attachment that
@@ -1511,25 +1516,22 @@ export default function ChatPane({
       toast.error(t('reminder.future'));
       return;
     }
-    // A sealed message contributes no preview. `reminderFor.text` here is the
-    // *decrypted* body (withDecryptedPlaceholders filled it in for display),
-    // and this doc is written to Firestore and read back by the server, which
-    // sends it as a push notification body — so copying it here would put the
-    // plaintext of an end-to-end encrypted message on the server and across
-    // FCM/APNs in clear. The reminder still fires; it just names itself
-    // instead of quoting the message, the same trade the chat notification
-    // already makes on iOS.
-    const sealed = isSealed(reminderFor.encrypted);
-    const raw = sealed
-      ? ''
-      : reminderFor.text || (reminderFor.image ? '[Photo]' : '');
-    const preview = raw ? raw.slice(0, 80) : t('reminder.default');
+    // No preview is stored. There was a `messagePreview` here, blanked for a
+    // sealed message because the server sent it as a push notification body,
+    // and copying decrypted text into a Firestore document would have put the
+    // plaintext of an end-to-end encrypted message on the server.
+    //
+    // The blanking was right and the field was still wrong: a message sent to
+    // a peer with no published key goes in the clear, and for those the
+    // preview was real text — on the server, over FCM, on a lock screen —
+    // against a privacy policy that says notifications carry no message text.
+    // processReminders is data-only now and the phone reads the message
+    // locally, so there is nothing left to blank.
     const reminder: Reminder = {
       id: `${chatId}_${reminderFor._id}_${remindAt}`,
       userId: me.uid,
       chatId,
       messageId: reminderFor._id,
-      messagePreview: preview,
       remindAt,
       createdAt: Date.now(),
       sent: false,

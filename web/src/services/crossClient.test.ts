@@ -220,6 +220,69 @@ describe('both clients classify a message the same way', () => {
     expect(web.isGroupSealed(group)).toBe(true);
   });
 
+  /**
+   * The predicate that decides whether a bubble gets a placeholder, checked
+   * against the phone's on every shape.
+   *
+   * This is the assertion whose absence let the group case ship broken.
+   * `messageProtection` was added with `isGroupSealed` and tested above, and
+   * `isSealed` — older, and the one ChatPane actually routes rendering on —
+   * was left covering three of the four shapes. So the browser labelled a
+   * group message 'sender-key' correctly while rendering it as an empty
+   * bubble: no text, no padlock, nothing to say the body was elsewhere. The
+   * badge being right is what made it survive reading.
+   *
+   * Parameterised over every shape rather than spot-checking the one that
+   * broke, because the next shape added is the next one to be forgotten.
+   */
+  it('agrees on isSealed for every envelope shape, not just the openable ones', () => {
+    const envelope = staticEnvelope();
+    const sender = mobile.generateKeypair();
+    const reader = mobile.generateKeypair();
+    const payload = mobile.encryptMessage('hello', sender.secretKey, reader.publicKey, CHAT);
+
+    for (const [label, value] of [
+      ['ratchet', ratchet],
+      ['group sender-key', group],
+      ['static fan-out', envelope],
+      ['static single payload', payload],
+    ] as const) {
+      expect({label, web: web.isSealed(value), mobile: mobile.isSealed(value)}).toEqual({
+        label,
+        web: true,
+        mobile: true,
+      });
+    }
+
+    // And the negative side, so the assertion above is not "isSealed returns
+    // true for everything".
+    for (const notSealed of [null, undefined, 'plain text', {}, {alg: 'something-else'}]) {
+      expect(web.isSealed(notSealed)).toBe(false);
+      expect(mobile.isSealed(notSealed)).toBe(false);
+    }
+  });
+
+  /**
+   * The browser splits isSealed into "recognised" and "openable", because
+   * conflating them is the other half of the same bug: openSealed throws on
+   * both forward-secret shapes, so a reader that asks only isSealed lands on
+   * "Unable to decrypt" instead of "open this on your phone".
+   */
+  it('separates what it recognises from what it can open', () => {
+    expect(web.isForwardSecret(ratchet)).toBe(true);
+    expect(web.isForwardSecret(group)).toBe(true);
+    expect(web.isOpenableHere(ratchet)).toBe(false);
+    expect(web.isOpenableHere(group)).toBe(false);
+
+    const envelope = staticEnvelope();
+    expect(web.isForwardSecret(envelope)).toBe(false);
+    expect(web.isOpenableHere(envelope)).toBe(true);
+
+    // Nothing unrecognised is openable either — the third outcome.
+    expect(web.isOpenableHere('plain text')).toBe(false);
+    expect(web.isForwardSecret('plain text')).toBe(false);
+  });
+
   it('agrees that a fan-out envelope is static, not forward-secret', () => {
     const envelope = staticEnvelope();
     expect(web.messageProtection({encrypted: envelope})).toBe('static');
