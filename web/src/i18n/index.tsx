@@ -265,6 +265,8 @@ const en = {
   'chat.protectionStaticA11y': "Encrypted, but under a long-lived key: readable later by anyone who obtains that key.",
   'chat.searchPlaceholder': 'Search in this conversation',
   'chat.noMatch': 'No matching messages.',
+  'chat.searchSkipped':
+    '{count} forward-secret messages were not searched — this browser cannot read them. Search this chat on your phone to include them.',
   'chat.forwardSecretElsewhere':
     "\u{1F512} Forward-secret message. This browser cannot read it \u2014 open the chat on your phone.",
   'chat.seen': 'Seen',
@@ -654,6 +656,10 @@ const en = {
   'recovery.warn':
     "These 24 words are the only way to read your encrypted messages again if you clear this browser's data. They are never uploaded — if you lose them, that history is gone permanently. Write them down and keep them somewhere private.",
   'recovery.reveal': 'Reveal phrase',
+  'recovery.remindTitle': 'Write down your recovery phrase',
+  'recovery.remindBody':
+    'Your account is these 24 words and nothing else. If this browser loses its data before you have them written down, the account and its encrypted history are gone for good.',
+  'recovery.remindLater': 'Not now',
   'recovery.restoreIntro':
     "Enter the 24-word phrase from your other device to read this account's encrypted history here. Your current key is only replaced once the phrase checks out.",
   'recovery.errInvalid': 'That is not a valid 24-word recovery phrase. Check for typos or missing words.',
@@ -801,6 +807,8 @@ const zhHans: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "已加密，但用的是长期密钥：将来拿到该密钥的人可以回溯解密。",
   'chat.searchPlaceholder': '在此对话中搜索',
   'chat.noMatch': '没有匹配的消息。',
+  'chat.searchSkipped':
+    '未搜索 {count} 条前向保密消息——此浏览器无法读取它们。在手机上搜索此聊天以包含它们。',
   'chat.forwardSecretElsewhere':
     '\u{1F512} 前向保密消息。浏览器读不了，请在手机上打开这个会话。',
   'chat.seen': '已读',
@@ -1176,6 +1184,10 @@ const zhHans: Partial<Record<Key, string>> = {
   'recovery.warn':
     '如果你清空这个浏览器的数据，这 24 个词是重新读到你加密消息的唯一途径。它们从不上传——一旦弄丢，那段记录就永久没有了。请抄下来，收在私密的地方。',
   'recovery.reveal': '显示助记词',
+  'recovery.remindTitle': '抄下你的助记词',
+  'recovery.remindBody':
+    '你的账号就是这 24 个词，除此之外什么都没有。如果这个浏览器在你抄下它们之前丢失了数据，账号和它的加密历史就永久没了。',
+  'recovery.remindLater': '暂不',
   'recovery.restoreIntro':
     '输入你另一台设备上的 24 个助记词，就能在这里读到这个账号的加密记录。只有在助记词核对通过之后，当前的密钥才会被替换。',
   'recovery.errInvalid': '这不是有效的 24 词助记词。请检查拼写或是否漏词。',
@@ -1318,6 +1330,8 @@ const zhHant: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "已加密，但用的是長期金鑰：將來拿到該金鑰的人可以回溯解密。",
   'chat.searchPlaceholder': '在此對話中搜尋',
   'chat.noMatch': '沒有符合的訊息。',
+  'chat.searchSkipped':
+    '未搜尋 {count} 則前向保密訊息——此瀏覽器無法讀取。請在手機上搜尋此聊天以納入它們。',
   'chat.forwardSecretElsewhere':
     '\u{1F512} 具前向保密性的訊息。這個瀏覽器無法讀取——請在你的手機上開啟此聊天。',
   'chat.seen': '已讀',
@@ -1701,6 +1715,10 @@ const zhHant: Partial<Record<Key, string>> = {
   'recovery.warn':
     '這 24 個字是清除此瀏覽器資料後，重新讀取你加密訊息的唯一方法。它們永遠不會被上傳——一旦遺失，那段紀錄就會永久消失。請抄下來並收在私密的地方。',
   'recovery.reveal': '顯示短語',
+  'recovery.remindTitle': '抄下你的助記詞',
+  'recovery.remindBody':
+    '你的帳號就是這 24 個詞，除此之外什麼都沒有。如果這個瀏覽器在你抄下它們之前遺失資料，帳號和它的加密歷史就永久消失了。',
+  'recovery.remindLater': '暫不',
   'recovery.restoreIntro':
     '輸入你另一台裝置上的 24 詞短語，即可在此讀取該帳號的加密紀錄。只有在短語核對通過後，目前的金鑰才會被取代。',
   'recovery.errInvalid': '這不是有效的 24 詞復原短語，請檢查拼字錯誤或遺漏的字詞。',
@@ -1845,6 +1863,8 @@ const es: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Cifrado, pero con una clave de larga duración: quien la consiga podrá leerlo más adelante.",
   'chat.searchPlaceholder': 'Buscar en esta conversación',
   'chat.noMatch': 'Ningún mensaje coincide.',
+  'chat.searchSkipped':
+    'No se buscaron {count} mensajes con secreto hacia adelante: este navegador no puede leerlos. Busca en este chat desde tu teléfono para incluirlos.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Mensaje con confidencialidad directa. Este navegador no puede leerlo — ábrelo en tu teléfono.',
   'chat.seen': 'Visto',
@@ -2228,6 +2248,10 @@ const es: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Estas 24 palabras son la única forma de volver a leer tus mensajes cifrados si borras los datos de este navegador. Nunca se suben — si las pierdes, ese historial desaparece para siempre. Anótalas y guárdalas en un lugar privado.',
   'recovery.reveal': 'Revelar frase',
+  'recovery.remindTitle': 'Anota tu frase de recuperación',
+  'recovery.remindBody':
+    'Tu cuenta son estas 24 palabras y nada más. Si este navegador pierde sus datos antes de que las tengas anotadas, la cuenta y su historial cifrado desaparecen para siempre.',
+  'recovery.remindLater': 'Ahora no',
   'recovery.restoreIntro':
     'Introduce la frase de 24 palabras de tu otro dispositivo para leer aquí el historial cifrado de esta cuenta. Tu clave actual solo se sustituye una vez que la frase se verifica correctamente.',
   'recovery.errInvalid': 'Esa no es una frase de recuperación válida de 24 palabras. Revisa si hay errores tipográficos o palabras que faltan.',
@@ -2372,6 +2396,8 @@ const fr: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Chiffré, mais avec une clé de longue durée : lisible plus tard par quiconque obtient cette clé.",
   'chat.searchPlaceholder': 'Rechercher dans cette conversation',
   'chat.noMatch': 'Aucun message correspondant.',
+  'chat.searchSkipped':
+    '{count} messages à confidentialité persistante n’ont pas été recherchés — ce navigateur ne peut pas les lire. Recherchez dans cette conversation sur votre téléphone pour les inclure.',
   'chat.forwardSecretElsewhere':
     "\u{1F512} Message à confidentialité persistante. Ce navigateur ne peut pas le lire — ouvrez la discussion sur votre téléphone.",
   'chat.seen': 'Vu',
@@ -2755,6 +2781,10 @@ const fr: Partial<Record<Key, string>> = {
   'recovery.warn':
     "Ces 24 mots sont le seul moyen de relire vos messages chiffrés si vous effacez les données de ce navigateur. Ils ne sont jamais téléversés — si vous les perdez, cet historique disparaît définitivement. Notez-les et conservez-les en lieu sûr.",
   'recovery.reveal': 'Révéler la phrase',
+  'recovery.remindTitle': 'Notez votre phrase de récupération',
+  'recovery.remindBody':
+    'Votre compte, ce sont ces 24 mots et rien d’autre. Si ce navigateur perd ses données avant que vous les ayez notés, le compte et son historique chiffré sont perdus définitivement.',
+  'recovery.remindLater': 'Plus tard',
   'recovery.restoreIntro':
     "Entrez la phrase de 24 mots de votre autre appareil pour relire ici l'historique chiffré de ce compte. Votre clé actuelle n'est remplacée qu'une fois la phrase vérifiée.",
   'recovery.errInvalid': "Ce n'est pas une phrase de récupération valide de 24 mots. Vérifiez les fautes de frappe ou les mots manquants.",
@@ -2899,6 +2929,8 @@ const de: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Verschlüsselt, aber mit einem langlebigen Schlüssel: später lesbar für jeden, der diesen Schlüssel erlangt.",
   'chat.searchPlaceholder': 'In dieser Unterhaltung suchen',
   'chat.noMatch': 'Keine passenden Nachrichten.',
+  'chat.searchSkipped':
+    '{count} Nachrichten mit Forward Secrecy wurden nicht durchsucht – dieser Browser kann sie nicht lesen. Suche auf deinem Telefon in diesem Chat, um sie einzubeziehen.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Nachricht mit Forward Secrecy. Dieser Browser kann sie nicht lesen — öffne den Chat auf deinem Telefon.',
   'chat.seen': 'Gesehen',
@@ -3282,6 +3314,10 @@ const de: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Diese 24 Wörter sind der einzige Weg, deine verschlüsselten Nachrichten wieder zu lesen, wenn du die Daten dieses Browsers löschst. Sie werden nie hochgeladen — verlierst du sie, ist dieser Verlauf für immer verloren. Schreib sie auf und bewahre sie an einem privaten Ort auf.',
   'recovery.reveal': 'Phrase anzeigen',
+  'recovery.remindTitle': 'Schreibe deine Wiederherstellungsphrase auf',
+  'recovery.remindBody':
+    'Dein Konto sind diese 24 Wörter und nichts anderes. Verliert dieser Browser seine Daten, bevor du sie aufgeschrieben hast, sind das Konto und sein verschlüsselter Verlauf endgültig weg.',
+  'recovery.remindLater': 'Jetzt nicht',
   'recovery.restoreIntro':
     'Gib die 24-Wörter-Phrase deines anderen Geräts ein, um hier den verschlüsselten Verlauf dieses Kontos zu lesen. Dein aktueller Schlüssel wird erst ersetzt, wenn die Phrase geprüft wurde.',
   'recovery.errInvalid': 'Das ist keine gültige 24-Wörter-Wiederherstellungsphrase. Prüfe auf Tippfehler oder fehlende Wörter.',
@@ -3426,6 +3462,8 @@ const it: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Cifrato, ma con una chiave di lunga durata: leggibile in seguito da chiunque ottenga quella chiave.",
   'chat.searchPlaceholder': 'Cerca in questa conversazione',
   'chat.noMatch': 'Nessun messaggio corrispondente.',
+  'chat.searchSkipped':
+    '{count} messaggi con forward secrecy non sono stati cercati: questo browser non può leggerli. Cerca in questa chat dal telefono per includerli.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Messaggio a segretezza in avanti. Questo browser non può leggerlo — apri la chat sul tuo telefono.',
   'chat.seen': 'Visto',
@@ -3809,6 +3847,10 @@ const it: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Queste 24 parole sono l\'unico modo per rileggere i tuoi messaggi cifrati se cancelli i dati di questo browser. Non vengono mai caricate — se le perdi, quella cronologia sparisce per sempre. Scrivile e conservale in un luogo privato.',
   'recovery.reveal': 'Rivela frase',
+  'recovery.remindTitle': 'Annota la tua frase di recupero',
+  'recovery.remindBody':
+    'Il tuo account è queste 24 parole e nient’altro. Se questo browser perde i suoi dati prima che tu le abbia annotate, l’account e la sua cronologia cifrata sono persi per sempre.',
+  'recovery.remindLater': 'Non ora',
   'recovery.restoreIntro':
     'Inserisci la frase di 24 parole del tuo altro dispositivo per leggere qui la cronologia cifrata di questo account. La tua chiave attuale viene sostituita solo dopo che la frase è stata verificata.',
   'recovery.errInvalid': 'Questa non è una frase di recupero valida di 24 parole. Controlla eventuali errori di battitura o parole mancanti.',
@@ -3953,6 +3995,8 @@ const pt: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Cifrada, mas com uma chave de longa duração: legível mais tarde por quem obtiver essa chave.",
   'chat.searchPlaceholder': 'Buscar nesta conversa',
   'chat.noMatch': 'Nenhuma mensagem correspondente.',
+  'chat.searchSkipped':
+    '{count} mensagens com sigilo futuro não foram pesquisadas — este navegador não consegue lê-las. Pesquise esta conversa no seu telefone para incluí-las.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Mensagem com sigilo futuro. Este navegador não consegue lê-la — abra a conversa no seu telefone.',
   'chat.seen': 'Visto',
@@ -4336,6 +4380,10 @@ const pt: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Estas 24 palavras são a única forma de ler novamente suas mensagens cifradas se você limpar os dados deste navegador. Elas nunca são enviadas para a nuvem — se você as perder, esse histórico desaparece para sempre. Anote-as e guarde-as em um lugar privado.',
   'recovery.reveal': 'Revelar frase',
+  'recovery.remindTitle': 'Anote a sua frase de recuperação',
+  'recovery.remindBody':
+    'A sua conta são estas 24 palavras e mais nada. Se este navegador perder os dados antes de as ter anotado, a conta e o seu histórico cifrado desaparecem definitivamente.',
+  'recovery.remindLater': 'Agora não',
   'recovery.restoreIntro':
     'Digite a frase de 24 palavras do seu outro dispositivo para ler aqui o histórico cifrado desta conta. Sua chave atual só é substituída depois que a frase é verificada.',
   'recovery.errInvalid': 'Essa não é uma frase de recuperação válida de 24 palavras. Verifique erros de digitação ou palavras faltando.',
@@ -4480,6 +4528,8 @@ const ru: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Зашифровано, но долгоживущим ключом: тот, кто получит этот ключ, сможет прочитать сообщение позже.",
   'chat.searchPlaceholder': 'Поиск в этой беседе',
   'chat.noMatch': 'Совпадающих сообщений нет.',
+  'chat.searchSkipped':
+    '{count} сообщений с прямой секретностью не были найдены — этот браузер не может их прочитать. Выполните поиск в этом чате на телефоне, чтобы включить их.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Сообщение с прямой секретностью. Этот браузер не может его прочитать — откройте чат на телефоне.',
   'chat.seen': 'Прочитано',
@@ -4863,6 +4913,10 @@ const ru: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Эти 24 слова — единственный способ снова прочитать ваши зашифрованные сообщения, если вы очистите данные этого браузера. Они никогда не загружаются на сервер — если вы их потеряете, эта история исчезнет навсегда. Запишите их и храните в надёжном месте.',
   'recovery.reveal': 'Показать фразу',
+  'recovery.remindTitle': 'Запишите свою фразу восстановления',
+  'recovery.remindBody':
+    'Ваша учётная запись — это 24 слова и ничего больше. Если этот браузер потеряет данные до того, как вы их запишете, учётная запись и её зашифрованная история исчезнут навсегда.',
+  'recovery.remindLater': 'Не сейчас',
   'recovery.restoreIntro':
     'Введите фразу из 24 слов с вашего другого устройства, чтобы прочитать здесь зашифрованную историю этого аккаунта. Ваш текущий ключ заменяется только после успешной проверки фразы.',
   'recovery.errInvalid': 'Это не действительная фраза восстановления из 24 слов. Проверьте опечатки или пропущенные слова.',
@@ -5007,6 +5061,8 @@ const tr: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Şifreli, ancak uzun ömürlü bir anahtarla: o anahtarı ele geçiren biri sonradan okuyabilir.",
   'chat.searchPlaceholder': 'Bu konuşmada ara',
   'chat.noMatch': 'Eşleşen mesaj yok.',
+  'chat.searchSkipped':
+    '{count} iletme gizliliğine sahip mesaj aranmadı — bu tarayıcı onları okuyamaz. Bunları dahil etmek için bu sohbeti telefonunda ara.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} İleri gizlilikli mesaj. Bu tarayıcı bunu okuyamaz — sohbeti telefonunuzda açın.',
   'chat.seen': 'Görüldü',
@@ -5390,6 +5446,10 @@ const tr: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Bu 24 kelime, bu tarayıcının verilerini temizlerseniz şifreli mesajlarınızı yeniden okumanın tek yoludur. Asla yüklenmezler — onları kaybederseniz, bu geçmiş sonsuza dek kaybolur. Onları not edin ve özel bir yerde saklayın.',
   'recovery.reveal': 'İfadeyi göster',
+  'recovery.remindTitle': 'Kurtarma ifadeni bir yere yaz',
+  'recovery.remindBody':
+    'Hesabın bu 24 kelimeden ibaret. Bu tarayıcı, sen onları yazmadan verilerini kaybederse hesap ve şifreli geçmişi kalıcı olarak gider.',
+  'recovery.remindLater': 'Şimdi değil',
   'recovery.restoreIntro':
     'Bu hesabın şifreli geçmişini burada okumak için diğer cihazınızdaki 24 kelimelik ifadeyi girin. Mevcut anahtarınız yalnızca ifade doğrulandıktan sonra değiştirilir.',
   'recovery.errInvalid': 'Bu geçerli bir 24 kelimelik kurtarma ifadesi değil. Yazım hatalarını veya eksik kelimeleri kontrol edin.',
@@ -5534,6 +5594,8 @@ const vi: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Đã mã hoá, nhưng bằng một khoá dùng lâu dài: ai có được khoá đó sau này đều đọc được.",
   'chat.searchPlaceholder': 'Tìm kiếm trong cuộc trò chuyện này',
   'chat.noMatch': 'Không có tin nhắn nào khớp.',
+  'chat.searchSkipped':
+    '{count} tin nhắn có tính bí mật chuyển tiếp chưa được tìm kiếm — trình duyệt này không thể đọc chúng. Hãy tìm trong cuộc trò chuyện này trên điện thoại để bao gồm chúng.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Tin nhắn có tính bảo mật tiến. Trình duyệt này không thể đọc được — hãy mở cuộc trò chuyện trên điện thoại của bạn.',
   'chat.seen': 'Đã xem',
@@ -5917,6 +5979,10 @@ const vi: Partial<Record<Key, string>> = {
   'recovery.warn':
     '24 từ này là cách duy nhất để đọc lại tin nhắn được mã hóa của bạn nếu bạn xóa dữ liệu của trình duyệt này. Chúng không bao giờ được tải lên — nếu bạn làm mất chúng, lịch sử đó sẽ biến mất vĩnh viễn. Hãy ghi lại chúng và cất giữ ở nơi riêng tư.',
   'recovery.reveal': 'Hiện cụm từ',
+  'recovery.remindTitle': 'Hãy ghi lại cụm từ khôi phục của bạn',
+  'recovery.remindBody':
+    'Tài khoản của bạn chính là 24 từ này và không có gì khác. Nếu trình duyệt này mất dữ liệu trước khi bạn ghi lại chúng, tài khoản và lịch sử mã hoá của nó sẽ mất vĩnh viễn.',
+  'recovery.remindLater': 'Để sau',
   'recovery.restoreIntro':
     'Nhập cụm từ 24 từ từ thiết bị khác của bạn để đọc lịch sử được mã hóa của tài khoản này tại đây. Khóa hiện tại của bạn chỉ được thay thế sau khi cụm từ được xác minh.',
   'recovery.errInvalid': 'Đó không phải là cụm từ khôi phục 24 từ hợp lệ. Kiểm tra lỗi chính tả hoặc từ bị thiếu.',
@@ -6061,6 +6127,8 @@ const ja: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "暗号化されていますが、長期間使う鍵によるものです。その鍵を入手した人は後から読めます。",
   'chat.searchPlaceholder': 'この会話内を検索',
   'chat.noMatch': '一致するメッセージがありません。',
+  'chat.searchSkipped':
+    '前方秘匿性のあるメッセージ {count} 件は検索されていません。このブラウザでは読み取れません。含めるにはスマートフォンでこのチャットを検索してください。',
   'chat.forwardSecretElsewhere':
     '\u{1F512} 前方秘匿性のあるメッセージです。このブラウザでは読めません — 携帯電話でチャットを開いてください。',
   'chat.seen': '既読',
@@ -6444,6 +6512,10 @@ const ja: Partial<Record<Key, string>> = {
   'recovery.warn':
     'この24個の単語は、このブラウザのデータを消去した場合に暗号化されたメッセージを再び読める唯一の方法です。決してアップロードされません — 失くしてしまうと、その履歴は永遠に失われます。書き留めて、他人に見られない場所に保管してください。',
   'recovery.reveal': 'フレーズを表示',
+  'recovery.remindTitle': 'リカバリーフレーズを書き留めてください',
+  'recovery.remindBody':
+    'あなたのアカウントはこの 24 語だけです。書き留める前にこのブラウザがデータを失うと、アカウントとその暗号化された履歴は永久に失われます。',
+  'recovery.remindLater': '今はしない',
   'recovery.restoreIntro':
     '別のデバイスの24語のフレーズを入力すると、このアカウントの暗号化された履歴をここで読めるようになります。現在の鍵は、フレーズが確認された後にのみ置き換えられます。',
   'recovery.errInvalid': 'これは有効な24語の復元フレーズではありません。誤字や欠落した単語がないか確認してください。',
@@ -6588,6 +6660,8 @@ const ko: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "암호화되었지만 오래 쓰는 키를 사용했습니다. 그 키를 얻은 사람은 나중에 읽을 수 있습니다.",
   'chat.searchPlaceholder': '이 대화에서 검색',
   'chat.noMatch': '일치하는 메시지가 없습니다.',
+  'chat.searchSkipped':
+    '순방향 비밀성 메시지 {count}개는 검색되지 않았습니다. 이 브라우저에서는 읽을 수 없습니다. 포함하려면 휴대폰에서 이 대화를 검색하세요.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} 순방향 비밀성이 적용된 메시지입니다. 이 브라우저에서는 읽을 수 없습니다 — 휴대폰에서 채팅을 여세요.',
   'chat.seen': '읽음',
@@ -6971,6 +7045,10 @@ const ko: Partial<Record<Key, string>> = {
   'recovery.warn':
     '이 24개의 단어는 이 브라우저의 데이터를 지운 경우 암호화된 메시지를 다시 읽을 수 있는 유일한 방법입니다. 절대 업로드되지 않습니다 — 잃어버리면 그 기록은 영원히 사라집니다. 적어 두고 개인적인 장소에 보관하세요.',
   'recovery.reveal': '구문 보기',
+  'recovery.remindTitle': '복구 구문을 적어 두세요',
+  'recovery.remindBody':
+    '계정은 이 24개 단어 그 자체입니다. 적어 두기 전에 이 브라우저가 데이터를 잃으면 계정과 암호화된 기록은 영구히 사라집니다.',
+  'recovery.remindLater': '나중에',
   'recovery.restoreIntro':
     '다른 기기의 24단어 구문을 입력하면 이 계정의 암호화된 기록을 여기서 읽을 수 있습니다. 현재 키는 구문이 확인된 후에만 교체됩니다.',
   'recovery.errInvalid': '유효한 24단어 복구 구문이 아닙니다. 오타나 누락된 단어가 있는지 확인하세요.',
@@ -7115,6 +7193,8 @@ const ar: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "مُعمّاة، لكن بمفتاح طويل الأمد: يستطيع من يحصل على ذلك المفتاح قراءتها لاحقًا.",
   'chat.searchPlaceholder': 'البحث في هذه المحادثة',
   'chat.noMatch': 'لا توجد رسائل مطابقة.',
+  'chat.searchSkipped':
+    'لم يتم البحث في {count} رسالة ذات سرية تامة للأمام — لا يمكن لهذا المتصفح قراءتها. ابحث في هذه المحادثة على هاتفك لتضمينها.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} رسالة بسرّية تامة. لا يستطيع هذا المتصفح قراءتها — افتح المحادثة على هاتفك.',
   'chat.seen': 'تمت المشاهدة',
@@ -7498,6 +7578,10 @@ const ar: Partial<Record<Key, string>> = {
   'recovery.warn':
     'هذه الكلمات الـ24 هي الطريقة الوحيدة لقراءة رسائلك المشفّرة مرة أخرى إذا مسحت بيانات هذا المتصفح. لا يتم رفعها أبدًا — إذا فقدتها، يختفي ذلك السجل إلى الأبد. دوّنها واحتفظ بها في مكان خاص.',
   'recovery.reveal': 'إظهار العبارة',
+  'recovery.remindTitle': 'اكتب عبارة الاستعادة الخاصة بك',
+  'recovery.remindBody':
+    'حسابك هو هذه الكلمات الـ24 ولا شيء غيرها. إذا فقد هذا المتصفح بياناته قبل أن تكتبها، فسيضيع الحساب وسجله المشفَّر إلى الأبد.',
+  'recovery.remindLater': 'ليس الآن',
   'recovery.restoreIntro':
     'أدخل عبارة الـ24 كلمة من جهازك الآخر لقراءة السجل المشفّر لهذا الحساب هنا. لا يُستبدَل مفتاحك الحالي إلا بعد التحقق من العبارة.',
   'recovery.errInvalid': 'هذه ليست عبارة استرداد صالحة من 24 كلمة. تحقّق من الأخطاء الإملائية أو الكلمات الناقصة.',
@@ -7642,6 +7726,8 @@ const hi: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "एन्क्रिप्टेड है, पर एक लंबे समय तक चलने वाली कुंजी से: जिसे वह कुंजी मिल जाए वह बाद में इसे पढ़ सकता है।",
   'chat.searchPlaceholder': 'इस बातचीत में खोजें',
   'chat.noMatch': 'कोई मेल खाता संदेश नहीं है।',
+  'chat.searchSkipped':
+    '{count} फ़ॉरवर्ड-सीक्रेट संदेश खोजे नहीं गए — यह ब्राउज़र उन्हें पढ़ नहीं सकता। उन्हें शामिल करने के लिए अपने फ़ोन पर यह चैट खोजें।',
   'chat.forwardSecretElsewhere':
     '\u{1F512} फॉरवर्ड-सीक्रेट संदेश। यह ब्राउज़र इसे पढ़ नहीं सकता — चैट को अपने फ़ोन पर खोलें।',
   'chat.seen': 'देखा गया',
@@ -8025,6 +8111,10 @@ const hi: Partial<Record<Key, string>> = {
   'recovery.warn':
     'इस ब्राउज़र का डेटा साफ़ करने पर आपके एन्क्रिप्टेड संदेश फिर से पढ़ने का यही एकमात्र तरीका हैं ये 24 शब्द। ये कभी अपलोड नहीं किए जाते — इन्हें खोने पर वह इतिहास हमेशा के लिए चला जाता है। इन्हें लिख लें और किसी निजी जगह पर रखें।',
   'recovery.reveal': 'वाक्यांश दिखाएं',
+  'recovery.remindTitle': 'अपना रिकवरी वाक्यांश लिख लें',
+  'recovery.remindBody':
+    'आपका खाता यही 24 शब्द हैं, इसके अलावा कुछ नहीं। अगर आप इन्हें लिखने से पहले यह ब्राउज़र अपना डेटा खो देता है, तो खाता और उसका एन्क्रिप्टेड इतिहास हमेशा के लिए चला जाएगा।',
+  'recovery.remindLater': 'अभी नहीं',
   'recovery.restoreIntro':
     'इस खाते का एन्क्रिप्टेड इतिहास यहां पढ़ने के लिए अपने अन्य डिवाइस का 24-शब्दों वाला वाक्यांश दर्ज करें। आपकी मौजूदा कुंजी तभी बदली जाती है जब वाक्यांश सत्यापित हो जाता है।',
   'recovery.errInvalid': 'यह एक मान्य 24-शब्दों वाला रिकवरी वाक्यांश नहीं है। टाइपिंग की गलतियां या छूटे हुए शब्द जांचें।',
@@ -8169,6 +8259,8 @@ const fa: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "رمزنگاری‌شده، اما با کلیدی دیرپا: بعداً برای هرکه آن کلید را به‌دست آورد خواندنی است.",
   'chat.searchPlaceholder': 'جستجو در این گفتگو',
   'chat.noMatch': 'هیچ پیام مطابقی نیست.',
+  'chat.searchSkipped':
+    '{count} پیام با محرمانگی پیشرو جست‌وجو نشد — این مرورگر نمی‌تواند آن‌ها را بخواند. برای شامل کردن آن‌ها، این گفتگو را در گوشی خود جست‌وجو کنید.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} پیام با محرمانگی پیش‌رونده. این مرورگر نمی‌تواند آن را بخواند — گفتگو را در تلفن خود باز کنید.',
   'chat.seen': 'دیده شد',
@@ -8552,6 +8644,10 @@ const fa: Partial<Record<Key, string>> = {
   'recovery.warn':
     'این ۲۴ کلمه تنها راه برای خواندن دوبارهٔ پیام‌های رمزگذاری‌شدهٔ شما هستند، اگر داده‌های این مرورگر را پاک کنید. آن‌ها هرگز بارگذاری نمی‌شوند — اگر آن‌ها را گم کنید، آن سابقه برای همیشه از بین می‌رود. آن‌ها را یادداشت کنید و جایی خصوصی نگه دارید.',
   'recovery.reveal': 'نمایش عبارت',
+  'recovery.remindTitle': 'عبارت بازیابی خود را بنویسید',
+  'recovery.remindBody':
+    'حساب شما همین ۲۴ کلمه است و نه چیز دیگری. اگر این مرورگر پیش از آنکه آن‌ها را نوشته باشید داده‌هایش را از دست بدهد، حساب و تاریخچهٔ رمزگذاری‌شده‌اش برای همیشه از بین می‌رود.',
+  'recovery.remindLater': 'حالا نه',
   'recovery.restoreIntro':
     'عبارت ۲۴ کلمه‌ای دستگاه دیگرتان را وارد کنید تا سابقهٔ رمزگذاری‌شدهٔ این حساب را اینجا بخوانید. کلید فعلی شما فقط پس از تأیید عبارت جایگزین می‌شود.',
   'recovery.errInvalid': 'این یک عبارت بازیابی معتبر ۲۴ کلمه‌ای نیست. غلط‌های تایپی یا کلمات جاافتاده را بررسی کنید.',
@@ -8696,6 +8792,8 @@ const he: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "מוצפן, אך תחת מפתח ארוך טווח: קריא מאוחר יותר על ידי כל מי שישיג את המפתח הזה.",
   'chat.searchPlaceholder': 'חיפוש בשיחה הזו',
   'chat.noMatch': 'אין הודעות תואמות.',
+  'chat.searchSkipped':
+    '{count} הודעות עם סודיות קדימה לא נסרקו — הדפדפן הזה לא יכול לקרוא אותן. חפש בצ\'אט הזה בטלפון שלך כדי לכלול אותן.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} הודעה עם סודיות קדימה. הדפדפן הזה לא יכול לקרוא אותה — פתחו את הצ\'אט בטלפון שלכם.',
   'chat.seen': 'נצפה',
@@ -9079,6 +9177,10 @@ const he: Partial<Record<Key, string>> = {
   'recovery.warn':
     '24 המילים האלה הן הדרך היחידה לקרוא שוב את ההודעות המוצפנות שלכם אם תנקו את הנתונים של הדפדפן הזה. הן לעולם לא מועלות — אם תאבדו אותן, ההיסטוריה הזו נעלמת לצמיתות. רשמו אותן ושמרו אותן במקום פרטי.',
   'recovery.reveal': 'חשיפת הביטוי',
+  'recovery.remindTitle': 'כתוב את ביטוי השחזור שלך',
+  'recovery.remindBody':
+    'החשבון שלך הוא 24 המילים האלה ולא שום דבר אחר. אם הדפדפן הזה יאבד את הנתונים שלו לפני שתכתוב אותן, החשבון וההיסטוריה המוצפנת שלו ייעלמו לתמיד.',
+  'recovery.remindLater': 'לא עכשיו',
   'recovery.restoreIntro':
     'הזינו את הביטוי בן 24 המילים מהמכשיר האחר שלכם כדי לקרוא כאן את ההיסטוריה המוצפנת של החשבון הזה. המפתח הנוכחי שלכם מוחלף רק לאחר שהביטוי אומת.',
   'recovery.errInvalid': 'זה אינו ביטוי שחזור תקין בן 24 מילים. בדקו שגיאות כתיב או מילים חסרות.',
@@ -9223,6 +9325,8 @@ const ur: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "خفیہ کردہ، لیکن ایک دیرپا کنجی کے تحت: بعد میں اس کنجی کو حاصل کرنے والا کوئی بھی اسے پڑھ سکتا ہے۔",
   'chat.searchPlaceholder': 'اس گفتگو میں تلاش کریں',
   'chat.noMatch': 'کوئی مماثل پیغام نہیں ہے۔',
+  'chat.searchSkipped':
+    '{count} فارورڈ سیکرٹ پیغامات تلاش نہیں کیے گئے — یہ براؤزر انہیں پڑھ نہیں سکتا۔ انہیں شامل کرنے کے لیے اپنے فون پر یہ چیٹ تلاش کریں۔',
   'chat.forwardSecretElsewhere':
     '\u{1F512} فارورڈ سیکریٹ پیغام۔ یہ براؤزر اسے نہیں پڑھ سکتا — چیٹ اپنے فون پر کھولیں۔',
   'chat.seen': 'دیکھا گیا',
@@ -9606,6 +9710,10 @@ const ur: Partial<Record<Key, string>> = {
   'recovery.warn':
     'یہ 24 الفاظ اگر آپ اس براؤزر کا ڈیٹا صاف کر دیں تو آپ کے خفیہ کردہ پیغامات دوبارہ پڑھنے کا واحد طریقہ ہیں۔ یہ کبھی اپ لوڈ نہیں کیے جاتے — اگر آپ انہیں کھو دیں، تو وہ تاریخ ہمیشہ کے لیے چلی جاتی ہے۔ انہیں لکھ لیں اور کسی نجی جگہ پر رکھیں۔',
   'recovery.reveal': 'فقرہ ظاہر کریں',
+  'recovery.remindTitle': 'اپنا ریکوری فقرہ لکھ لیں',
+  'recovery.remindBody':
+    'آپ کا اکاؤنٹ یہی 24 الفاظ ہیں، اس کے سوا کچھ نہیں۔ اگر آپ انہیں لکھنے سے پہلے یہ براؤزر اپنا ڈیٹا کھو دے، تو اکاؤنٹ اور اس کی مرموز تاریخ ہمیشہ کے لیے ختم ہو جائے گی۔',
+  'recovery.remindLater': 'ابھی نہیں',
   'recovery.restoreIntro':
     'اس اکاؤنٹ کی خفیہ کردہ تاریخ یہاں پڑھنے کے لیے اپنے دوسرے ڈیوائس کا 24 الفاظ کا فقرہ درج کریں۔ آپ کی موجودہ کنجی صرف فقرے کی تصدیق کے بعد تبدیل کی جاتی ہے۔',
   'recovery.errInvalid': 'یہ ایک درست 24 الفاظ کا ریکوری فقرہ نہیں ہے۔ ٹائپنگ کی غلطیاں یا گمشدہ الفاظ چیک کریں۔',
@@ -9750,6 +9858,8 @@ const pl: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Zaszyfrowane, ale za pomocą długotrwałego klucza: czytelne później przez każdego, kto ten klucz uzyska.",
   'chat.searchPlaceholder': 'Szukaj w tej rozmowie',
   'chat.noMatch': 'Brak pasujących wiadomości.',
+  'chat.searchSkipped':
+    'Nie przeszukano {count} wiadomości z utajnianiem z wyprzedzeniem — ta przeglądarka nie może ich odczytać. Poszukaj w tej rozmowie na telefonie, aby je uwzględnić.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Wiadomość z forward secrecy. Ta przeglądarka nie może jej odczytać — otwórz czat na telefonie.',
   'chat.seen': 'Wyświetlone',
@@ -10133,6 +10243,10 @@ const pl: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Te 24 słowa to jedyny sposób na ponowne odczytanie zaszyfrowanych wiadomości, jeśli wyczyścisz dane tej przeglądarki. Nigdy nie są przesyłane na serwer — jeśli je zgubisz, ta historia znika na zawsze. Zapisz je i przechowuj w prywatnym miejscu.',
   'recovery.reveal': 'Odkryj frazę',
+  'recovery.remindTitle': 'Zapisz swoją frazę odzyskiwania',
+  'recovery.remindBody':
+    'Twoje konto to te 24 słowa i nic więcej. Jeśli ta przeglądarka utraci dane, zanim je zapiszesz, konto i jego zaszyfrowana historia przepadną na zawsze.',
+  'recovery.remindLater': 'Nie teraz',
   'recovery.restoreIntro':
     'Wprowadź 24-wyrazową frazę z drugiego urządzenia, aby odczytać tutaj zaszyfrowaną historię tego konta. Twój obecny klucz zostanie zastąpiony dopiero po zweryfikowaniu frazy.',
   'recovery.errInvalid': 'To nie jest prawidłowa 24-wyrazowa fraza odzyskiwania. Sprawdź literówki lub brakujące słowa.',
@@ -10277,6 +10391,8 @@ const uk: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Зашифровано, але довготривалим ключем: пізніше доступне для читання будь-кому, хто отримає цей ключ.",
   'chat.searchPlaceholder': 'Пошук у цій розмові',
   'chat.noMatch': 'Немає відповідних повідомлень.',
+  'chat.searchSkipped':
+    '{count} повідомлень із прямою секретністю не шукали — цей браузер не може їх прочитати. Виконайте пошук у цьому чаті на телефоні, щоб їх включити.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Повідомлення з прямою секретністю. Цей браузер не може його прочитати — відкрийте чат на телефоні.',
   'chat.seen': 'Прочитано',
@@ -10660,6 +10776,10 @@ const uk: Partial<Record<Key, string>> = {
   'recovery.warn':
     'Ці 24 слова — єдиний спосіб знову прочитати ваші зашифровані повідомлення, якщо ви очистите дані цього браузера. Вони ніколи не завантажуються на сервер — якщо ви їх втратите, ця історія зникає назавжди. Запишіть їх і зберігайте в приватному місці.',
   'recovery.reveal': 'Показати фразу',
+  'recovery.remindTitle': 'Запишіть свою фразу відновлення',
+  'recovery.remindBody':
+    'Ваш обліковий запис — це 24 слова й нічого більше. Якщо цей браузер втратить дані, перш ніж ви їх запишете, обліковий запис і його зашифрована історія зникнуть назавжди.',
+  'recovery.remindLater': 'Не зараз',
   'recovery.restoreIntro':
     'Введіть фразу з 24 слів з вашого іншого пристрою, щоб прочитати тут зашифровану історію цього облікового запису. Ваш поточний ключ замінюється лише після перевірки фрази.',
   'recovery.errInvalid': 'Це не дійсна фраза відновлення з 24 слів. Перевірте на друкарські помилки чи пропущені слова.',
@@ -10804,6 +10924,8 @@ const id: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Dienkripsi, tetapi dengan kunci yang berumur panjang: dapat dibaca nanti oleh siapa pun yang mendapatkan kunci itu.",
   'chat.searchPlaceholder': 'Cari dalam percakapan ini',
   'chat.noMatch': 'Tidak ada pesan yang cocok.',
+  'chat.searchSkipped':
+    '{count} pesan dengan forward secrecy tidak dicari — browser ini tidak dapat membacanya. Cari obrolan ini di ponsel Anda untuk menyertakannya.',
   'chat.forwardSecretElsewhere':
     '\u{1F512} Pesan dengan kerahasiaan maju. Peramban ini tidak bisa membacanya — buka obrolan di ponsel Anda.',
   'chat.seen': 'Dilihat',
@@ -11187,6 +11309,10 @@ const id: Partial<Record<Key, string>> = {
   'recovery.warn':
     '24 kata ini adalah satu-satunya cara untuk membaca kembali pesan terenkripsi Anda jika Anda menghapus data peramban ini. Kata-kata ini tidak pernah diunggah — jika hilang, riwayat itu hilang selamanya. Tuliskan dan simpan di tempat pribadi.',
   'recovery.reveal': 'Ungkap frasa',
+  'recovery.remindTitle': 'Catat frasa pemulihan Anda',
+  'recovery.remindBody':
+    'Akun Anda adalah 24 kata ini dan tidak ada yang lain. Jika peramban ini kehilangan datanya sebelum Anda mencatatnya, akun dan riwayat terenkripsinya hilang selamanya.',
+  'recovery.remindLater': 'Nanti saja',
   'recovery.restoreIntro':
     'Masukkan frasa 24 kata dari perangkat lain Anda untuk membaca riwayat terenkripsi akun ini di sini. Kunci Anda saat ini hanya diganti setelah frasa terverifikasi.',
   'recovery.errInvalid': 'Itu bukan frasa pemulihan 24 kata yang valid. Periksa kesalahan ketik atau kata yang hilang.',
@@ -11331,6 +11457,8 @@ const bn: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "এনক্রিপ্টেড, তবে একটি দীর্ঘস্থায়ী চাবি দিয়ে: সেই চাবি পাওয়া যেকারো জন্য পরে পড়া সম্ভব।",
   'chat.searchPlaceholder': 'এই কথোপকথনে খুঁজুন',
   'chat.noMatch': 'মিলে যাওয়া কোনো বার্তা নেই।',
+  'chat.searchSkipped':
+    '{count}টি ফরওয়ার্ড-সিক্রেট বার্তা খোঁজা হয়নি — এই ব্রাউজার সেগুলি পড়তে পারে না। সেগুলি অন্তর্ভুক্ত করতে আপনার ফোনে এই চ্যাটে খুঁজুন।',
   'chat.forwardSecretElsewhere':
     '\u{1F512} ফরওয়ার্ড-সিক্রেট বার্তা। এই ব্রাউজার এটি পড়তে পারে না — আপনার ফোনে চ্যাটটি খুলুন।',
   'chat.seen': 'দেখা হয়েছে',
@@ -11714,6 +11842,10 @@ const bn: Partial<Record<Key, string>> = {
   'recovery.warn':
     'এই ব্রাউজারের ডেটা মুছে ফেললে এই ২৪টি শব্দই আপনার এনক্রিপ্ট করা বার্তা আবার পড়ার একমাত্র উপায়। এগুলো কখনো আপলোড করা হয় না — এগুলো হারিয়ে ফেললে, সেই ইতিহাস চিরতরে চলে যায়। এগুলো লিখে রাখুন এবং একটি ব্যক্তিগত জায়গায় রাখুন।',
   'recovery.reveal': 'বাক্যাংশ প্রকাশ করুন',
+  'recovery.remindTitle': 'আপনার রিকভারি বাক্যাংশ লিখে রাখুন',
+  'recovery.remindBody':
+    'আপনার অ্যাকাউন্ট মানে এই ২৪টি শব্দ, এর বাইরে কিছু নয়। আপনি এগুলি লিখে রাখার আগে এই ব্রাউজার যদি তার ডেটা হারায়, তবে অ্যাকাউন্ট ও তার এনক্রিপ্টেড ইতিহাস চিরতরে হারিয়ে যাবে।',
+  'recovery.remindLater': 'এখন নয়',
   'recovery.restoreIntro':
     'এই অ্যাকাউন্টের এনক্রিপ্ট করা ইতিহাস এখানে পড়তে আপনার অন্য ডিভাইসের ২৪-শব্দের বাক্যাংশ লিখুন। বাক্যাংশটি যাচাই হওয়ার পরেই আপনার বর্তমান চাবি প্রতিস্থাপিত হয়।',
   'recovery.errInvalid': 'এটি একটি বৈধ ২৪-শব্দের পুনরুদ্ধার বাক্যাংশ নয়। বানান ভুল বা অনুপস্থিত শব্দ যাচাই করুন।',
@@ -11858,6 +11990,8 @@ const th: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "เข้ารหัสแล้ว แต่ด้วยกุญแจที่มีอายุยาวนาน: อ่านได้ในภายหลังโดยใครก็ตามที่ได้กุญแจนั้นมา",
   'chat.searchPlaceholder': 'ค้นหาในการสนทนานี้',
   'chat.noMatch': 'ไม่มีข้อความที่ตรงกัน',
+  'chat.searchSkipped':
+    'ไม่ได้ค้นหาข้อความแบบ forward secrecy {count} รายการ — เบราว์เซอร์นี้อ่านไม่ได้ ค้นหาแชทนี้บนโทรศัพท์ของคุณเพื่อรวมข้อความเหล่านั้น',
   'chat.forwardSecretElsewhere':
     '\u{1F512} ข้อความที่มีการรักษาความลับล่วงหน้า เบราว์เซอร์นี้ไม่สามารถอ่านได้ — เปิดแชทบนโทรศัพท์ของคุณ',
   'chat.seen': 'เห็นแล้ว',
@@ -12241,6 +12375,10 @@ const th: Partial<Record<Key, string>> = {
   'recovery.warn':
     '24 คำนี้เป็นวิธีเดียวที่จะอ่านข้อความที่เข้ารหัสของคุณอีกครั้งได้หากคุณล้างข้อมูลของเบราว์เซอร์นี้ คำเหล่านี้จะไม่ถูกอัปโหลดเลย — หากคุณทำหาย ประวัตินั้นจะหายไปตลอดกาล จดคำเหล่านี้ไว้และเก็บไว้ในที่ส่วนตัว',
   'recovery.reveal': 'เปิดเผยวลี',
+  'recovery.remindTitle': 'จดวลีกู้คืนของคุณไว้',
+  'recovery.remindBody':
+    'บัญชีของคุณคือ 24 คำนี้เท่านั้น ไม่มีอย่างอื่น หากเบราว์เซอร์นี้สูญเสียข้อมูลก่อนที่คุณจะจดไว้ บัญชีและประวัติที่เข้ารหัสจะหายไปอย่างถาวร',
+  'recovery.remindLater': 'ไว้ก่อน',
   'recovery.restoreIntro':
     'ป้อนวลี 24 คำจากอุปกรณ์อื่นของคุณเพื่ออ่านประวัติที่เข้ารหัสของบัญชีนี้ที่นี่ คีย์ปัจจุบันของคุณจะถูกแทนที่หลังจากตรวจสอบวลีแล้วเท่านั้น',
   'recovery.errInvalid': 'นี่ไม่ใช่วลีกู้คืน 24 คำที่ถูกต้อง โปรดตรวจสอบการพิมพ์ผิดหรือคำที่หายไป',
@@ -12378,6 +12516,8 @@ const fil: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Naka-encrypt, pero sa ilalim ng pangmatagalang susi: mababasa sa hinaharap ng sinumang makakakuha ng susi iyon.",
   'chat.searchPlaceholder': 'Maghanap sa usapang ito',
   'chat.noMatch': 'Walang tugmang mensahe.',
+  'chat.searchSkipped':
+    'Hindi nahanap ang {count} forward-secret na mensahe — hindi mababasa ng browser na ito. Maghanap sa chat na ito sa telepono mo para maisama ang mga iyon.',
   'chat.forwardSecretElsewhere': '🔒 Mensaheng may forward secrecy. Hindi ito mabasa ng browser na ito — buksan ang chat sa telepono mo.',
   'chat.seen': 'Nakita',
   'chat.typing': 'nagta-type…',
@@ -12735,6 +12875,10 @@ const fil: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'salita salita salita …',
   'recovery.warn': 'Ang 24 na salitang ito ang tanging paraan para mabasa ulit ang naka-encrypt mong mga mensahe kung buburahin mo ang data ng browser na ito. Hindi ito kailanman ina-upload — kapag nawala ang mga ito, tuluyan nang mawawala ang kasaysayang iyon. Isulat ang mga ito at itago sa pribadong lugar.',
   'recovery.reveal': 'Ipakita ang phrase',
+  'recovery.remindTitle': 'Isulat ang recovery phrase mo',
+  'recovery.remindBody':
+    'Ang account mo ay ang 24 salitang ito at wala nang iba. Kung mawala ang data ng browser na ito bago mo maisulat ang mga iyon, tuluyan nang mawawala ang account at ang naka-encrypt na kasaysayan nito.',
+  'recovery.remindLater': 'Hindi muna',
   'recovery.restoreIntro': 'Ilagay ang 24-salitang phrase mula sa kabilang device mo para mabasa rito ang naka-encrypt na kasaysayan ng account na ito. Papalitan lang ang kasalukuyang key mo kapag napatunayang tama ang phrase.',
   'recovery.errInvalid': 'Hindi iyan wastong 24-salitang recovery phrase. Tingnan kung may typo o kulang na salita.',
   'recovery.errMismatch': 'Sa ibang account ang phrase na iyan, kaya wala itong made-decrypt dito. Walang binago.',
@@ -12868,6 +13012,8 @@ const ms: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Disulitkan, tetapi di bawah kunci berjangka panjang: boleh dibaca kemudian oleh sesiapa yang mendapat kunci itu.",
   'chat.searchPlaceholder': 'Cari dalam perbualan ini',
   'chat.noMatch': 'Tiada mesej yang sepadan.',
+  'chat.searchSkipped':
+    '{count} mesej rahsia ke hadapan tidak dicari — pelayar ini tidak dapat membacanya. Cari perbualan ini pada telefon anda untuk memasukkannya.',
   'chat.forwardSecretElsewhere': '🔒 Mesej rahsia-hadapan. Pelayar ini tidak dapat membacanya — buka sembang pada telefon anda.',
   'chat.seen': 'Dilihat',
   'chat.typing': 'sedang menaip…',
@@ -13225,6 +13371,10 @@ const ms: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'perkataan perkataan perkataan …',
   'recovery.warn': '24 perkataan ini ialah satu-satunya cara untuk membaca semula mesej tersulit anda jika anda membersihkan data pelayar ini. Ia tidak pernah dimuat naik — jika anda kehilangannya, sejarah itu hilang selamanya. Tulis dan simpan di tempat peribadi.',
   'recovery.reveal': 'Dedahkan frasa',
+  'recovery.remindTitle': 'Catatkan frasa pemulihan anda',
+  'recovery.remindBody':
+    'Akaun anda ialah 24 perkataan ini dan tiada yang lain. Jika pelayar ini kehilangan datanya sebelum anda mencatatkannya, akaun dan sejarah tersulitnya hilang selama-lamanya.',
+  'recovery.remindLater': 'Bukan sekarang',
   'recovery.restoreIntro': 'Masukkan frasa 24 perkataan daripada peranti anda yang lain untuk membaca sejarah tersulit akaun ini di sini. Kunci semasa anda hanya digantikan setelah frasa itu disahkan.',
   'recovery.errInvalid': 'Itu bukan frasa pemulihan 24 perkataan yang sah. Semak kesilapan ejaan atau perkataan yang tertinggal.',
   'recovery.errMismatch': 'Frasa itu milik akaun lain, jadi ia tidak akan menyahsulit apa-apa di sini. Tiada apa yang diubah.',
@@ -13358,6 +13508,8 @@ const my: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ကုဒ်ဝှက်ထားသော်လည်း ကြာရှည်သော့တစ်ခုအောက်တွင်ဖြစ်သည်: ထိုသော့ကို ရရှိသူ မည်သူမဆို နောက်ပိုင်းတွင် ဖတ်နိုင်သည်။",
   'chat.searchPlaceholder': 'ဤစကားပြောဆိုမှုတွင် ရှာပါ',
   'chat.noMatch': 'ကိုက်ညီသောစာ မရှိပါ။',
+  'chat.searchSkipped':
+    'ရှေ့ဆက်လုံခြုံမှုရှိ မက်ဆေ့ဂျ် {count} စောင်ကို ရှာမရပါ — ဤဘရောက်ဆာသည် ဖတ်နိုင်ခြင်းမရှိပါ။ ထည့်သွင်းရန် သင့်ဖုန်းတွင် ဤစကားဝိုင်းကို ရှာပါ။',
   'chat.forwardSecretElsewhere': '🔒 Forward-secret စာဖြစ်သည်။ ဤဘရောက်ဇာသည် ၎င်းကို ဖတ်နိုင်မည်မဟုတ် — သင့်ဖုန်းတွင် စကားပြောဆိုမှုကို ဖွင့်ပါ။',
   'chat.seen': 'မြင်ပြီး',
   'chat.typing': 'စာရိုက်နေသည်…',
@@ -13715,6 +13867,10 @@ const my: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'စကားလုံး စကားလုံး စကားလုံး …',
   'recovery.warn': 'ဤဘရောက်ဇာ၏ဒေတာကို ရှင်းလင်းပါက သင့်ကုဒ်ဝှက်ထားသောစာများကို ပြန်ဖတ်ရန် ဤစကားလုံး ၂၄ လုံးသည် တစ်ခုတည်းသောနည်းလမ်းဖြစ်သည်။ ၎င်းတို့ကို တစ်ခါမျှ အပ်လုဒ်မတင်ပါ — ဆုံးရှုံးပါက ထိုမှတ်တမ်းသည် အပြီးအပိုင် ပျောက်ဆုံးမည်။ ၎င်းတို့ကို ရေးမှတ်ပြီး လုံခြုံသောနေရာတွင် ထားပါ။',
   'recovery.reveal': 'စကားစုကို ဖော်ပြရန်',
+  'recovery.remindTitle': 'သင့်ပြန်လည်ရယူရေး စကားစုကို ရေးမှတ်ထားပါ',
+  'recovery.remindBody':
+    'သင့်အကောင့်သည် ဤစကားလုံး ၂၄ လုံးသာဖြစ်၍ အခြားမရှိပါ။ ရေးမှတ်မထားမီ ဤဘရောက်ဆာသည် ဒေတာပျောက်ပါက အကောင့်နှင့် ကုဒ်ဖြင့်ဝှက်ထားသည့် မှတ်တမ်းများ အပြီးအပိုင် ဆုံးရှုံးမည်။',
+  'recovery.remindLater': 'ယခုမလုပ်ပါ',
   'recovery.restoreIntro': 'ဤအကောင့်၏ ကုဒ်ဝှက်ထားသောမှတ်တမ်းကို ဤနေရာတွင်ဖတ်ရန် သင့်အခြားစက်မှ စကားလုံး ၂၄ လုံးပါစကားစုကို ထည့်ပါ။ စကားစုစစ်ဆေးမှုအောင်မြင်ပြီးမှသာ သင့်လက်ရှိကီးကို အစားထိုးမည်။',
   'recovery.errInvalid': 'ထိုအရာသည် တိကျမှန်ကန်သော စကားလုံး ၂၄ လုံးပါ ပြန်လည်ရယူရေးစကားစု မဟုတ်ပါ။ စာလုံးပေါင်းအမှား သို့မဟုတ် ကျန်ခဲ့သောစကားလုံးများကို စစ်ဆေးပါ။',
   'recovery.errMismatch': 'ထိုစကားစုသည် အခြားအကောင့်ပိုင်ဖြစ်သဖြင့် ဤနေရာတွင် မည်သည့်အရာမျှ decrypt မည်မဟုတ်ပါ။ မည်သည့်အရာမျှ မပြောင်းလဲပါ။',
@@ -13848,6 +14004,8 @@ const km: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "បានអ៊ិនគ្រីប ប៉ុន្តែនៅក្រោមកូនសោដែលមានអាយុវែង៖ អាចអានបានពេលក្រោយដោយអ្នកណាដែលទទួលបានកូនសោនោះ។",
   'chat.searchPlaceholder': 'ស្វែងរកក្នុងការសន្ទនានេះ',
   'chat.noMatch': 'គ្មានសារដែលត្រូវគ្នាទេ។',
+  'chat.searchSkipped':
+    'មិនបានស្វែងរកសារសម្ងាត់ទៅមុខ {count} ទេ — កម្មវិធីរុករកនេះមិនអាចអានវាបានទេ។ ស្វែងរកការជជែកនេះនៅលើទូរសព្ទរបស់អ្នកដើម្បីបញ្ចូលវា។',
   'chat.forwardSecretElsewhere': '🔒 សារការពារជាមុន។ កម្មវិធីរុករកនេះមិនអាចអានវាបានទេ — បើកការជជែកនៅលើទូរស័ព្ទរបស់អ្នក។',
   'chat.seen': 'បានឃើញ',
   'chat.typing': 'កំពុងសរសេរ…',
@@ -14205,6 +14363,10 @@ const km: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ពាក្យ ពាក្យ ពាក្យ …',
   'recovery.warn': 'ពាក្យ ២៤ នេះគឺជាវិធីតែមួយគត់ដើម្បីអានសារអ៊ិនគ្រីបរបស់អ្នកម្តងទៀត ប្រសិនបើអ្នកសម្អាតទិន្នន័យកម្មវិធីរុករកនេះ។ ពួកវាមិនដែលត្រូវបានបង្ហោះទេ — ប្រសិនបើអ្នកបាត់បង់ពួកវា ប្រវត្តិនោះបាត់ជាអចិន្ត្រៃយ៍។ សរសេរពួកវាចុះ ហើយរក្សាទុកនៅកន្លែងឯកជន។',
   'recovery.reveal': 'បង្ហាញឃ្លា',
+  'recovery.remindTitle': 'សូមសរសេរឃ្លាសង្គ្រោះរបស់អ្នកទុក',
+  'recovery.remindBody':
+    'គណនីរបស់អ្នកគឺពាក្យ ២៤ នេះ ហើយគ្មានអ្វីផ្សេងទេ។ ប្រសិនបើកម្មវិធីរុករកនេះបាត់បង់ទិន្នន័យមុនពេលអ្នកសរសេរវាទុក គណនី និងប្រវត្តិដែលបានអ៊ិនគ្រីបនឹងបាត់បង់ជារៀងរហូត។',
+  'recovery.remindLater': 'មិនទាន់ទេ',
   'recovery.restoreIntro': 'បញ្ចូលឃ្លា ២៤ ពាក្យពីឧបករណ៍ផ្សេងទៀតរបស់អ្នក ដើម្បីអានប្រវត្តិអ៊ិនគ្រីបនៃគណនីនេះនៅទីនេះ។ កូនសោបច្ចុប្បន្នរបស់អ្នកត្រូវបានជំនួសតែពេលឃ្លាបានឆ្លងការត្រួតពិនិត្យ។',
   'recovery.errInvalid': 'នោះមិនមែនជាឃ្លាសង្គ្រោះ ២៤ ពាក្យត្រឹមត្រូវទេ។ ពិនិត្យអក្ខរាវិរុទ្ធខុស ឬពាក្យដែលបាត់។',
   'recovery.errMismatch': 'ឃ្លានោះជាកម្មសិទ្ធិរបស់គណនីផ្សេងទៀត ដូច្នេះវានឹងមិនឌិគ្រីបអ្វីនៅទីនេះទេ។ គ្មានអ្វីត្រូវបានផ្លាស់ប្តូរទេ។',
@@ -14338,6 +14500,8 @@ const lo: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ເຂົ້າລະຫັດແລ້ວ, ແຕ່ພາຍໃຕ້ກະແຈຄົງທີ່: ອ່ານໄດ້ພາຍຫຼັງໂດຍໃຜກໍຕາມທີ່ໄດ້ກະແຈນັ້ນ.",
   'chat.searchPlaceholder': 'ຄົ້ນຫາໃນການສົນທະນານີ້',
   'chat.noMatch': 'ບໍ່ມີຂໍ້ຄວາມທີ່ຕົງກັນ.',
+  'chat.searchSkipped':
+    'ບໍ່ໄດ້ຄົ້ນຫາຂໍ້ຄວາມແບບ forward secrecy {count} ລາຍການ — ໂປຣແກຣມທ່ອງເວັບນີ້ອ່ານບໍ່ໄດ້. ຄົ້ນຫາການສົນທະນານີ້ໃນໂທລະສັບຂອງທ່ານເພື່ອລວມພວກມັນ.',
   'chat.forwardSecretElsewhere': '🔒 ຂໍ້ຄວາມທີ່ມີການປົກປ້ອງລ່ວງໜ້າ. ບຣາວເຊີນີ້ອ່ານມັນບໍ່ໄດ້ — ເປີດແຊັດຢູ່ໂທລະສັບຂອງທ່ານ.',
   'chat.seen': 'ເຫັນແລ້ວ',
   'chat.typing': 'ກຳລັງພິມ…',
@@ -14695,6 +14859,10 @@ const lo: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ຄຳ ຄຳ ຄຳ …',
   'recovery.warn': '24 ຄຳນີ້ແມ່ນວິທີດຽວທີ່ຈະອ່ານຂໍ້ຄວາມທີ່ເຂົ້າລະຫັດຂອງທ່ານໄດ້ອີກ ຖ້າທ່ານລຶບຂໍ້ມູນຂອງບຣາວເຊີນີ້. ພວກມັນບໍ່ເຄີຍຖືກອັບໂຫຼດ — ຖ້າທ່ານເສຍພວກມັນໄປ, ປະຫວັດນັ້ນຈະຫາຍໄປຖາວອນ. ຂຽນພວກມັນລົງ ແລະ ເກັບໄວ້ໃນບ່ອນສ່ວນຕົວ.',
   'recovery.reveal': 'ເປີດເຜີຍວະລີ',
+  'recovery.remindTitle': 'ຈົດວະລີກູ້ຄືນຂອງທ່ານໄວ້',
+  'recovery.remindBody':
+    'ບັນຊີຂອງທ່ານແມ່ນ 24 ຄຳນີ້ ແລະບໍ່ມີອັນອື່ນ. ຫາກໂປຣແກຣມທ່ອງເວັບນີ້ສູນເສຍຂໍ້ມູນກ່ອນທີ່ທ່ານຈະຈົດໄວ້, ບັນຊີແລະປະຫວັດທີ່ເຂົ້າລະຫັດຈະສູນຫາຍຕະຫຼອດໄປ.',
+  'recovery.remindLater': 'ຍັງບໍ່ເອົາ',
   'recovery.restoreIntro': 'ໃສ່ວະລີ 24 ຄຳຈາກອຸປະກອນອື່ນຂອງທ່ານ ເພື່ອອ່ານປະຫວັດທີ່ເຂົ້າລະຫັດຂອງບັນຊີນີ້ຢູ່ທີ່ນີ້. ກະແຈປັດຈຸບັນຂອງທ່ານຈະຖືກປ່ຽນແທນ ພຽງເມື່ອວະລີຜ່ານການກວດສອບແລ້ວ.',
   'recovery.errInvalid': 'ນັ້ນບໍ່ແມ່ນວະລີກູ້ຄືນ 24 ຄຳທີ່ຖືກຕ້ອງ. ກວດເບິ່ງການພິມຜິດ ຫຼືຄຳທີ່ຂາດໄປ.',
   'recovery.errMismatch': 'ວະລີນັ້ນເປັນຂອງບັນຊີອື່ນ, ດັ່ງນັ້ນມັນຈະຖອດລະຫັດຫຍັງຢູ່ທີ່ນີ້ບໍ່ໄດ້. ບໍ່ມີຫຍັງຖືກປ່ຽນແປງ.',
@@ -14828,6 +14996,8 @@ const ta: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "மறைகுறியாக்கப்பட்டது, ஆனால் நீண்டகால விசையின் கீழ்: அந்த விசையைப் பெறும் யாராலும் பின்னர் படிக்கக்கூடியது.",
   'chat.searchPlaceholder': 'இந்த உரையாடலில் தேடு',
   'chat.noMatch': 'பொருந்தும் செய்திகள் இல்லை.',
+  'chat.searchSkipped':
+    '{count} முன்னோக்கு-ரகசிய செய்திகள் தேடப்படவில்லை — இந்த உலாவி அவற்றைப் படிக்க முடியாது. அவற்றைச் சேர்க்க உங்கள் தொலைபேசியில் இந்த அரட்டையில் தேடுங்கள்.',
   'chat.forwardSecretElsewhere': '🔒 முன்னோக்கி-ரகசிய செய்தி. இந்த உலாவியால் இதைப் படிக்க முடியாது — உங்கள் தொலைபேசியில் அரட்டையைத் திறக்கவும்.',
   'chat.seen': 'பார்க்கப்பட்டது',
   'chat.typing': 'தட்டச்சு செய்கிறார்…',
@@ -15185,6 +15355,10 @@ const ta: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'சொல் சொல் சொல் …',
   'recovery.warn': 'இந்த உலாவியின் தரவை அழித்தால் உங்கள் குறியாக்கப்பட்ட செய்திகளை மீண்டும் படிக்க இந்த 24 சொற்கள்தான் ஒரே வழி. அவை ஒருபோதும் பதிவேற்றப்படுவதில்லை — அவற்றை இழந்தால், அந்த வரலாறு நிரந்தரமாகப் போய்விடும். அவற்றை எழுதி வைத்து தனிப்பட்ட இடத்தில் பாதுகாக்கவும்.',
   'recovery.reveal': 'சொற்றொடரைக் காட்டு',
+  'recovery.remindTitle': 'உங்கள் மீட்பு சொற்றொடரை எழுதி வைத்துக்கொள்ளுங்கள்',
+  'recovery.remindBody':
+    'உங்கள் கணக்கு இந்த 24 சொற்களே, வேறு எதுவும் இல்லை. நீங்கள் அவற்றை எழுதி வைப்பதற்கு முன் இந்த உலாவி தன் தரவை இழந்தால், கணக்கும் அதன் மறையாக்கப்பட்ட வரலாறும் நிரந்தரமாகப் போய்விடும்.',
+  'recovery.remindLater': 'இப்போது இல்லை',
   'recovery.restoreIntro': 'இந்தக் கணக்கின் குறியாக்கப்பட்ட வரலாற்றை இங்கு படிக்க உங்கள் மற்ற சாதனத்திலிருந்து 24-சொல் சொற்றொடரை உள்ளிடவும். சொற்றொடர் சரிபார்க்கப்பட்ட பிறகுதான் உங்கள் தற்போதைய திறவுகோல் மாற்றப்படும்.',
   'recovery.errInvalid': 'அது செல்லுபடியாகும் 24-சொல் மீட்பு சொற்றொடர் அல்ல. எழுத்துப் பிழைகள் அல்லது விடுபட்ட சொற்களைச் சரிபார்க்கவும்.',
   'recovery.errMismatch': 'அந்தச் சொற்றொடர் வேறு கணக்கிற்கு உரியது, எனவே அது இங்கு எதையும் மறைகுறியாக்கம் நீக்காது. எதுவும் மாற்றப்படவில்லை.',
@@ -15318,6 +15492,8 @@ const te: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ఎన్‌క్రిప్ట్ చేయబడింది, కానీ దీర్ఘకాలిక కీ కింద: ఆ కీని పొందిన ఎవరైనా తర్వాత చదవగలరు.",
   'chat.searchPlaceholder': 'ఈ సంభాషణలో శోధించండి',
   'chat.noMatch': 'సరిపోలే సందేశాలు లేవు.',
+  'chat.searchSkipped':
+    '{count} ఫార్వర్డ్-సీక్రెట్ సందేశాలను శోధించలేదు — ఈ బ్రౌజర్ వాటిని చదవలేదు. వాటిని చేర్చడానికి మీ ఫోన్‌లో ఈ చాట్‌లో శోధించండి.',
   'chat.forwardSecretElsewhere': '🔒 ఫార్వర్డ్-సీక్రెట్ సందేశం. ఈ బ్రౌజర్ దీన్ని చదవలేదు — మీ ఫోన్‌లో చాట్‌ను తెరవండి.',
   'chat.seen': 'చూశారు',
   'chat.typing': 'టైప్ చేస్తున్నారు…',
@@ -15675,6 +15851,10 @@ const te: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'పదం పదం పదం …',
   'recovery.warn': 'ఈ బ్రౌజర్ డేటాను తొలగిస్తే మీ గుప్తీకరించిన సందేశాలను మళ్లీ చదవడానికి ఈ 24 పదాలే ఏకైక మార్గం. అవి ఎప్పుడూ అప్‌లోడ్ కావు — వాటిని కోల్పోతే ఆ చరిత్ర శాశ్వతంగా పోతుంది. వాటిని రాసుకుని గోప్యమైన చోట ఉంచండి.',
   'recovery.reveal': 'పదబంధాన్ని చూపించు',
+  'recovery.remindTitle': 'మీ రికవరీ పదబంధాన్ని రాసి పెట్టుకోండి',
+  'recovery.remindBody':
+    'మీ ఖాతా అంటే ఈ 24 పదాలే, మరేమీ కాదు. మీరు వాటిని రాసి పెట్టుకునే ముందు ఈ బ్రౌజర్ తన డేటాను కోల్పోతే, ఖాతా మరియు దాని గుప్తీకరించిన చరిత్ర శాశ్వతంగా పోతాయి.',
+  'recovery.remindLater': 'ఇప్పుడు కాదు',
   'recovery.restoreIntro': 'ఈ ఖాతా గుప్తీకరించిన చరిత్రను ఇక్కడ చదవడానికి మీ మరో పరికరం నుండి 24-పదాల పదబంధాన్ని నమోదు చేయండి. పదబంధం సరిపోయిన తర్వాతే మీ ప్రస్తుత కీ భర్తీ చేయబడుతుంది.',
   'recovery.errInvalid': 'అది చెల్లుబాటు అయ్యే 24-పదాల పునరుద్ధరణ పదబంధం కాదు. అక్షర దోషాలు లేదా తప్పిపోయిన పదాలను తనిఖీ చేయండి.',
   'recovery.errMismatch': 'ఆ పదబంధం వేరే ఖాతాకు చెందినది, కాబట్టి ఇక్కడ ఏమీ డిక్రిప్ట్ చేయదు. ఏమీ మార్చబడలేదు.',
@@ -15808,6 +15988,8 @@ const mr: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "एन्क्रिप्ट केलेले, पण दीर्घकालीन किल्लीखाली: ती किल्ली मिळवणारा कोणीही नंतर वाचू शकतो.",
   'chat.searchPlaceholder': 'या संभाषणात शोधा',
   'chat.noMatch': 'जुळणारे संदेश नाहीत.',
+  'chat.searchSkipped':
+    '{count} फॉरवर्ड-सीक्रेट संदेश शोधले गेले नाहीत — हा ब्राउझर ते वाचू शकत नाही. ते समाविष्ट करण्यासाठी तुमच्या फोनवर ही चॅट शोधा.',
   'chat.forwardSecretElsewhere': '🔒 फॉरवर्ड-सिक्रेट संदेश. हा ब्राउझर तो वाचू शकत नाही — तुमच्या फोनवर चॅट उघडा.',
   'chat.seen': 'पाहिले',
   'chat.typing': 'टाइप करत आहे…',
@@ -16165,6 +16347,10 @@ const mr: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'शब्द शब्द शब्द …',
   'recovery.warn': 'तुम्ही या ब्राउझरचा डेटा साफ केल्यास तुमचे एन्क्रिप्टेड संदेश पुन्हा वाचण्याचा हे 24 शब्द हाच एकमेव मार्ग आहे. ते कधीही अपलोड केले जात नाहीत — ते गमावल्यास तो इतिहास कायमचा नाहीसा होतो. ते लिहून ठेवा आणि खासगी ठिकाणी जपा.',
   'recovery.reveal': 'वाक्यांश उघड करा',
+  'recovery.remindTitle': 'तुमचा रिकव्हरी वाक्यांश लिहून ठेवा',
+  'recovery.remindBody':
+    'तुमचे खाते म्हणजे हे २४ शब्द, याशिवाय काहीही नाही. तुम्ही ते लिहून ठेवण्यापूर्वी हा ब्राउझर त्याचा डेटा गमावला, तर खाते आणि त्याचा एन्क्रिप्टेड इतिहास कायमचा नाहीसा होईल.',
+  'recovery.remindLater': 'आता नको',
   'recovery.restoreIntro': 'या खात्याचा एन्क्रिप्टेड इतिहास इथे वाचण्यासाठी तुमच्या दुसऱ्या डिव्हाइसवरील 24-शब्दांचा वाक्यांश प्रविष्ट करा. वाक्यांश तपासून खरा ठरल्यावरच तुमची सध्याची की बदलली जाते.',
   'recovery.errInvalid': 'तो वैध 24-शब्दांचा पुनर्प्राप्ती वाक्यांश नाही. टंकलेखन चुका किंवा गहाळ शब्द तपासा.',
   'recovery.errMismatch': 'तो वाक्यांश दुसऱ्या खात्याचा आहे, त्यामुळे इथे काहीही डिक्रिप्ट होणार नाही. काहीही बदलले नाही.',
@@ -16298,6 +16484,8 @@ const pa: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ਇਨਕ੍ਰਿਪਟਿਡ, ਪਰ ਲੰਬੇ ਸਮੇਂ ਦੀ ਕੁੰਜੀ ਹੇਠ: ਉਹ ਕੁੰਜੀ ਪ੍ਰਾਪਤ ਕਰਨ ਵਾਲਾ ਕੋਈ ਵੀ ਬਾਅਦ ਵਿੱਚ ਪੜ੍ਹ ਸਕਦਾ ਹੈ।",
   'chat.searchPlaceholder': 'ਇਸ ਗੱਲਬਾਤ ਵਿੱਚ ਖੋਜੋ',
   'chat.noMatch': 'ਕੋਈ ਮਿਲਦਾ ਸੁਨੇਹਾ ਨਹੀਂ।',
+  'chat.searchSkipped':
+    '{count} ਫਾਰਵਰਡ-ਸੀਕਰੇਟ ਸੁਨੇਹੇ ਖੋਜੇ ਨਹੀਂ ਗਏ — ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਉਹਨਾਂ ਨੂੰ ਪੜ੍ਹ ਨਹੀਂ ਸਕਦਾ। ਉਹਨਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰਨ ਲਈ ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਇਹ ਚੈਟ ਖੋਜੋ।',
   'chat.forwardSecretElsewhere': '🔒 ਫਾਰਵਰਡ-ਸੀਕਰੇਟ ਸੁਨੇਹਾ। ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਇਸਨੂੰ ਨਹੀਂ ਪੜ੍ਹ ਸਕਦਾ — ਆਪਣੇ ਫ਼ੋਨ ਉੱਤੇ ਚੈਟ ਖੋਲ੍ਹੋ।',
   'chat.seen': 'ਦੇਖਿਆ',
   'chat.typing': 'ਲਿਖ ਰਿਹਾ ਹੈ…',
@@ -16655,6 +16843,10 @@ const pa: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ਸ਼ਬਦ ਸ਼ਬਦ ਸ਼ਬਦ …',
   'recovery.warn': 'ਇਹ 24 ਸ਼ਬਦ ਹੀ ਇੱਕੋ ਤਰੀਕਾ ਹਨ ਜਿਸ ਨਾਲ ਤੁਸੀਂ ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਦਾ ਡਾਟਾ ਸਾਫ਼ ਕਰਨ \'ਤੇ ਆਪਣੇ ਇਨਕ੍ਰਿਪਟਡ ਸੁਨੇਹੇ ਦੁਬਾਰਾ ਪੜ੍ਹ ਸਕਦੇ ਹੋ। ਇਹ ਕਦੇ ਅੱਪਲੋਡ ਨਹੀਂ ਹੁੰਦੇ — ਜੇ ਤੁਸੀਂ ਇਹ ਗੁਆ ਦਿੱਤੇ, ਤਾਂ ਉਹ ਇਤਿਹਾਸ ਪੱਕੇ ਤੌਰ \'ਤੇ ਚਲਾ ਜਾਂਦਾ ਹੈ। ਇਹਨਾਂ ਨੂੰ ਲਿਖ ਕੇ ਕਿਸੇ ਨਿੱਜੀ ਥਾਂ ਰੱਖੋ।',
   'recovery.reveal': 'ਵਾਕੰਸ਼ ਪ੍ਰਗਟ ਕਰੋ',
+  'recovery.remindTitle': 'ਆਪਣਾ ਰਿਕਵਰੀ ਵਾਕ ਲਿਖ ਲਵੋ',
+  'recovery.remindBody':
+    'ਤੁਹਾਡਾ ਖਾਤਾ ਇਹੀ 24 ਸ਼ਬਦ ਹਨ, ਹੋਰ ਕੁਝ ਨਹੀਂ। ਜੇ ਤੁਸੀਂ ਇਹ ਲਿਖਣ ਤੋਂ ਪਹਿਲਾਂ ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਆਪਣਾ ਡਾਟਾ ਗੁਆ ਬੈਠਦਾ ਹੈ, ਤਾਂ ਖਾਤਾ ਅਤੇ ਇਸ ਦਾ ਇਨਕ੍ਰਿਪਟਡ ਇਤਿਹਾਸ ਸਦਾ ਲਈ ਚਲਾ ਜਾਵੇਗਾ।',
+  'recovery.remindLater': 'ਹੁਣ ਨਹੀਂ',
   'recovery.restoreIntro': 'ਇਸ ਖਾਤੇ ਦਾ ਇਨਕ੍ਰਿਪਟਡ ਇਤਿਹਾਸ ਇੱਥੇ ਪੜ੍ਹਨ ਲਈ ਆਪਣੀ ਦੂਜੀ ਡਿਵਾਈਸ ਤੋਂ 24-ਸ਼ਬਦਾਂ ਵਾਲਾ ਵਾਕੰਸ਼ ਦਾਖਲ ਕਰੋ। ਤੁਹਾਡੀ ਮੌਜੂਦਾ ਕੁੰਜੀ ਸਿਰਫ਼ ਵਾਕੰਸ਼ ਦੀ ਜਾਂਚ ਪੂਰੀ ਹੋਣ ਤੋਂ ਬਾਅਦ ਬਦਲੀ ਜਾਂਦੀ ਹੈ।',
   'recovery.errInvalid': 'ਉਹ ਜਾਇਜ਼ 24-ਸ਼ਬਦਾਂ ਵਾਲਾ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਨਹੀਂ ਹੈ। ਸ਼ਬਦ-ਜੋੜ ਦੀਆਂ ਗਲਤੀਆਂ ਜਾਂ ਗੁੰਮ ਸ਼ਬਦ ਜਾਂਚੋ।',
   'recovery.errMismatch': 'ਉਹ ਵਾਕੰਸ਼ ਕਿਸੇ ਹੋਰ ਖਾਤੇ ਦਾ ਹੈ, ਇਸ ਲਈ ਇਹ ਇੱਥੇ ਕੁਝ ਵੀ ਡੀਕ੍ਰਿਪਟ ਨਹੀਂ ਕਰੇਗਾ। ਕੁਝ ਨਹੀਂ ਬਦਲਿਆ ਗਿਆ।',
@@ -16788,6 +16980,8 @@ const ne: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "इन्क्रिप्टेड, तर दीर्घकालीन कुञ्जी अन्तर्गत: त्यो कुञ्जी प्राप्त गर्ने जोसुकैले पछि पढ्न सक्छ।",
   'chat.searchPlaceholder': 'यस कुराकानीमा खोज्नुहोस्',
   'chat.noMatch': 'मिल्दो सन्देश छैन।',
+  'chat.searchSkipped':
+    '{count} फर्वार्ड-गोप्य सन्देश खोजिएका छैनन् — यो ब्राउजरले तिनलाई पढ्न सक्दैन। तिनलाई समावेश गर्न आफ्नो फोनमा यो च्याट खोज्नुहोस्।',
   'chat.forwardSecretElsewhere': '🔒 फर्वार्ड-सिक्रेट सन्देश। यो ब्राउजरले यो पढ्न सक्दैन — आफ्नो फोनमा च्याट खोल्नुहोस्।',
   'chat.seen': 'हेरियो',
   'chat.typing': 'टाइप गर्दै…',
@@ -17145,6 +17339,10 @@ const ne: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'शब्द शब्द शब्द …',
   'recovery.warn': 'तपाईंले यो ब्राउजरको डेटा मेटाउनुभयो भने आफ्ना इन्क्रिप्टेड सन्देशहरू फेरि पढ्ने एउटै उपाय यी २४ शब्द हुन्। तिनीहरू कहिल्यै अपलोड हुँदैनन् — हराए भने त्यो इतिहास सधैंका लागि हराउँछ। तिनलाई लेखेर गोप्य ठाउँमा राख्नुहोस्।',
   'recovery.reveal': 'वाक्यांश देखाउनुहोस्',
+  'recovery.remindTitle': 'आफ्नो रिकभरी वाक्यांश लेखी राख्नुहोस्',
+  'recovery.remindBody':
+    'तपाईंको खाता यही २४ शब्द हुन्, अरू केही होइन। तपाईंले लेखी राख्नु अघि यो ब्राउजरले डेटा गुमाए, खाता र त्यसको इन्क्रिप्टेड इतिहास सदाको लागि जान्छ।',
+  'recovery.remindLater': 'अहिले नहोस्',
   'recovery.restoreIntro': 'यस खाताको इन्क्रिप्टेड इतिहास यहाँ पढ्न आफ्नो अर्को यन्त्रबाट २४-शब्दको वाक्यांश प्रविष्ट गर्नुहोस्। वाक्यांश जाँचमा खरो उत्रेपछि मात्र तपाईंको हालको कुञ्जी बदलिन्छ।',
   'recovery.errInvalid': 'त्यो वैध २४-शब्दको पुनःप्राप्ति वाक्यांश होइन। हिज्जे गल्ती वा छुटेका शब्दहरू जाँच्नुहोस्।',
   'recovery.errMismatch': 'त्यो वाक्यांश अर्को खाताको हो, त्यसैले यहाँ केही डिक्रिप्ट गर्दैन। केही परिवर्तन भएन।',
@@ -17278,6 +17476,8 @@ const si: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "සංකේතාංකනය කර ඇත, නමුත් දිගුකාලීන යතුරක් යටතේ: එම යතුර ලබාගන්නා ඕනෑම කෙනෙකුට පසුව කියවිය හැක.",
   'chat.searchPlaceholder': 'මෙම සංවාදයේ සොයන්න',
   'chat.noMatch': 'ගැළපෙන පණිවිඩ නැත.',
+  'chat.searchSkipped':
+    'ඉදිරි-රහස් පණිවිඩ {count}ක් සොයා නැත — මෙම බ්‍රව්සරයට ඒවා කියවිය නොහැක. ඒවා ඇතුළත් කිරීමට ඔබේ දුරකථනයේ මෙම කතාබහ සොයන්න.',
   'chat.forwardSecretElsewhere': '🔒 ඉදිරි-රහස්‍ය පණිවිඩයකි. මෙම බ්‍රව්සරයට එය කියවිය නොහැක — ඔබේ දුරකථනයේ කතාබස විවෘත කරන්න.',
   'chat.seen': 'දුටුවා',
   'chat.typing': 'ටයිප් කරමින්…',
@@ -17635,6 +17835,10 @@ const si: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'වචනය වචනය වචනය …',
   'recovery.warn': 'ඔබ මෙම බ්‍රව්සරයේ දත්ත මකා දැමුවහොත් ඔබේ සංකේතාංකිත පණිවිඩ නැවත කියවීමට ඇති එකම මාර්ගය මෙම වචන 24 ය. ඒවා කිසිදා උඩුගත නොවේ — ඒවා නැති වුවහොත් එම ඉතිහාසය ස්ථිරවම නැති වේ. ඒවා ලියා පෞද්ගලික තැනක තබාගන්න.',
   'recovery.reveal': 'වාක්‍ය ඛණ්ඩය හෙළි කරන්න',
+  'recovery.remindTitle': 'ඔබේ ප්‍රතිසාධන වාක්‍ය ඛණ්ඩය ලියා තබන්න',
+  'recovery.remindBody':
+    'ඔබේ ගිණුම මේ වචන 24 යි, වෙන කිසිවක් නොවේ. ඔබ ඒවා ලියා තබන්නට පෙර මෙම බ්‍රව්සරයට එහි දත්ත නැති වුවහොත්, ගිණුමත් එහි සංකේතාත්මක ඉතිහාසයත් සදහටම නැති වේ.',
+  'recovery.remindLater': 'දැන් නොවේ',
   'recovery.restoreIntro': 'මෙම ගිණුමේ සංකේතාංකිත ඉතිහාසය මෙහි කියවීමට ඔබේ අනෙක් උපාංගයේ වචන 24 වාක්‍ය ඛණ්ඩය ඇතුළු කරන්න. ඔබේ වත්මන් යතුර ප්‍රතිස්ථාපනය වන්නේ වාක්‍ය ඛණ්ඩය පරීක්ෂාවෙන් සමත් වූ පසුවය.',
   'recovery.errInvalid': 'එය වලංගු වචන 24 නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩයක් නොවේ. අක්ෂර වින්‍යාස දෝෂ හෝ අතුරුදහන් වචන පරීක්ෂා කරන්න.',
   'recovery.errMismatch': 'එම වාක්‍ය ඛණ්ඩය වෙනත් ගිණුමකට අයත් වන බැවින් එය මෙහි කිසිවක් විකේතනය නොකරයි. කිසිවක් වෙනස් නොවිණි.',
@@ -17768,6 +17972,8 @@ const sw: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Imesimbwa, lakini chini ya ufunguo wa muda mrefu: yeyote atakayepata ufunguo huo ataweza kusoma baadaye.",
   'chat.searchPlaceholder': 'Tafuta katika mazungumzo haya',
   'chat.noMatch': 'Hakuna ujumbe unaolingana.',
+  'chat.searchSkipped':
+    'Jumbe {count} zenye usiri wa mbele hazikutafutwa — kivinjari hiki hakiwezi kuzisoma. Tafuta gumzo hili kwenye simu yako ili kuzijumuisha.',
   'chat.forwardSecretElsewhere': '🔒 Ujumbe wenye usiri wa mbele. Kivinjari hiki hakiwezi kuusoma — fungua mazungumzo kwenye simu yako.',
   'chat.seen': 'Imeonekana',
   'chat.typing': 'anaandika…',
@@ -18125,6 +18331,10 @@ const sw: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'neno neno neno …',
   'recovery.warn': 'Maneno haya 24 ndiyo njia pekee ya kusoma tena ujumbe wako uliosimbwa ikiwa utafuta data ya kivinjari hiki. Hayapakiwi kamwe — ukiyapoteza, historia hiyo imepotea milele. Yaandike na uyaweke mahali pa faragha.',
   'recovery.reveal': 'Onyesha kifungu',
+  'recovery.remindTitle': 'Andika nukuu yako ya kurejesha',
+  'recovery.remindBody':
+    'Akaunti yako ni maneno haya 24 na si kingine. Kivinjari hiki kikipoteza data yake kabla uwe umeyaandika, akaunti na historia yake iliyosimbwa hupotea kabisa.',
+  'recovery.remindLater': 'Sio sasa',
   'recovery.restoreIntro': 'Weka kifungu cha maneno 24 kutoka kifaa chako kingine ili kusoma historia iliyosimbwa ya akaunti hii hapa. Ufunguo wako wa sasa hubadilishwa tu baada ya kifungu kuthibitishwa.',
   'recovery.errInvalid': 'Hicho si kifungu halali cha kurejesha cha maneno 24. Angalia makosa ya tahajia au maneno yaliyokosekana.',
   'recovery.errMismatch': 'Kifungu hicho ni cha akaunti nyingine, kwa hivyo hakingefungua chochote hapa. Hakuna kilichobadilishwa.',
@@ -18258,6 +18468,8 @@ const ha: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "An sanya lambar sirri, amma a ƙarƙashin mabudi na dogon lokaci: duk wanda ya sami wannan mabudin zai iya karantawa daga baya.",
   'chat.searchPlaceholder': 'Nema a cikin wannan tattaunawa',
   'chat.noMatch': 'Babu saƙon da ya dace.',
+  'chat.searchSkipped':
+    'Ba a bincika saƙonni {count} masu sirrin gaba ba — wannan burauza ba za ta iya karanta su ba. Nemi wannan hira a wayarka don haɗa su.',
   'chat.forwardSecretElsewhere': '🔒 Saƙo mai sirrin gaba. Wannan burauza ba za ta iya karanta shi ba — buɗe hirar a wayarka.',
   'chat.seen': 'An gani',
   'chat.typing': 'yana rubutu…',
@@ -18615,6 +18827,10 @@ const ha: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'kalma kalma kalma …',
   'recovery.warn': 'Waɗannan kalmomi 24 su ne hanya ɗaya tak ta sake karanta saƙonninka masu lambar sirri idan ka share bayanan wannan burauza. Ba a taɓa loda su ba — idan ka rasa su, wannan tarihin ya ɓace har abada. Rubuta su ka ajiye su a wuri na sirri.',
   'recovery.reveal': 'Bayyana jimlar',
+  'recovery.remindTitle': 'Rubuta kalmomin dawo da asusunka',
+  'recovery.remindBody':
+    'Asusunka shi ne waɗannan kalmomi 24 kuma ba komai. Idan wannan burauza ta rasa bayanansa kafin ka rubuta su, asusun da tarihinsa a ɓoye sun ɓace har abada.',
+  'recovery.remindLater': 'Ba yanzu ba',
   'recovery.restoreIntro': 'Shigar da jimlar kalmomi 24 daga ɗaya na\'urarka don karanta tarihin wannan asusun mai lambar sirri a nan. Ba a maye gurbin mabudinka na yanzu sai an tabbatar da jimlar.',
   'recovery.errInvalid': 'Wannan ba ingantacciyar jimlar dawowa ta kalmomi 24 ba ce. Duba kurakuran rubutu ko kalmomin da suka ɓace.',
   'recovery.errMismatch': 'Wannan jimlar ta wani asusu ce, don haka ba za ta buɗe komai a nan ba. Ba a canza komai ba.',
@@ -18748,6 +18964,8 @@ const am: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ተመስጥሯል፣ ነገር ግን በረጅም ጊዜ ቁልፍ ስር፦ ያንን ቁልፍ የሚያገኝ ማንም ቆይቶ ማንበብ ይችላል።",
   'chat.searchPlaceholder': 'በዚህ ውይይት ውስጥ ፈልግ',
   'chat.noMatch': 'የሚዛመድ መልዕክት የለም።',
+  'chat.searchSkipped':
+    '{count} ወደፊት-ሚስጥራዊ መልዕክቶች አልተፈለጉም — ይህ አሳሽ ማንበብ አይችላቸውም። እነሱን ለማካተት በስልክዎ ላይ ይህን ውይይት ይፈልጉ።',
   'chat.forwardSecretElsewhere': '🔒 ወደፊት-ምስጢራዊ መልዕክት። ይህ አሳሽ ሊያነበው አይችልም — ውይይቱን በስልክዎ ላይ ይክፈቱ።',
   'chat.seen': 'ታይቷል',
   'chat.typing': 'እየተየበ ነው…',
@@ -19105,6 +19323,10 @@ const am: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ቃል ቃል ቃል …',
   'recovery.warn': 'እነዚህ 24 ቃላት የዚህን አሳሽ ውሂብ ካጸዱ የተመሰጠሩ መልዕክቶችዎን እንደገና ለማንበብ ብቸኛው መንገድ ናቸው። በጭራሽ አይሰቀሉም — ካጧቸው ያ ታሪክ ለዘላለም ይጠፋል። ይጻፉዋቸውና በግል ቦታ ያስቀምጧቸው።',
   'recovery.reveal': 'ሐረጉን አሳይ',
+  'recovery.remindTitle': 'የማስመለሻ ሐረግዎን ይጻፉት',
+  'recovery.remindBody':
+    'መለያዎ እነዚህ 24 ቃላት ብቻ ናቸው። እነሱን ከመጻፍዎ በፊት ይህ አሳሽ መረጃውን ካጣ፣ መለያውና የተመሰጠረው ታሪኩ ለዘላለም ይጠፋሉ።',
+  'recovery.remindLater': 'አሁን አይደለም',
   'recovery.restoreIntro': 'የዚህን መለያ የተመሰጠረ ታሪክ እዚህ ለማንበብ ከሌላኛው መሣሪያዎ ያለውን የ24 ቃላት ሐረግ ያስገቡ። የአሁኑ ቁልፍዎ የሚተካው ሐረጉ ከተረጋገጠ በኋላ ብቻ ነው።',
   'recovery.errInvalid': 'ያ ትክክለኛ የ24 ቃላት መልሶ ማግኛ ሐረግ አይደለም። የፊደል ስህተቶችን ወይም የጎደሉ ቃላትን ይፈትሹ።',
   'recovery.errMismatch': 'ያ ሐረግ የሌላ መለያ ነው፣ ስለዚህ እዚህ ምንም አይፈታም። ምንም አልተቀየረም።',
@@ -19238,6 +19460,8 @@ const nl: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Versleuteld, maar onder een langlevende sleutel: later leesbaar door iedereen die die sleutel verkrijgt.",
   'chat.searchPlaceholder': 'Zoek in dit gesprek',
   'chat.noMatch': 'Geen overeenkomende berichten.',
+  'chat.searchSkipped':
+    '{count} berichten met forward secrecy zijn niet gezocht — deze browser kan ze niet lezen. Zoek deze chat op je telefoon om ze mee te nemen.',
   'chat.forwardSecretElsewhere': '🔒 Forward-secret bericht. Deze browser kan het niet lezen — open de chat op je telefoon.',
   'chat.seen': 'Gezien',
   'chat.typing': 'typt…',
@@ -19595,6 +19819,10 @@ const nl: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'woord woord woord …',
   'recovery.warn': 'Deze 24 woorden zijn de enige manier om je versleutelde berichten weer te lezen als je de gegevens van deze browser wist. Ze worden nooit geüpload — als je ze kwijtraakt, is die geschiedenis permanent weg. Schrijf ze op en bewaar ze ergens privé.',
   'recovery.reveal': 'Zin tonen',
+  'recovery.remindTitle': 'Schrijf je herstelzin op',
+  'recovery.remindBody':
+    'Je account is deze 24 woorden en niets anders. Verliest deze browser zijn gegevens voordat je ze hebt opgeschreven, dan zijn het account en de versleutelde geschiedenis definitief weg.',
+  'recovery.remindLater': 'Niet nu',
   'recovery.restoreIntro': 'Voer de zin van 24 woorden van je andere apparaat in om de versleutelde geschiedenis van dit account hier te lezen. Je huidige sleutel wordt pas vervangen zodra de zin klopt.',
   'recovery.errInvalid': 'Dat is geen geldige herstelzin van 24 woorden. Controleer op typefouten of ontbrekende woorden.',
   'recovery.errMismatch': 'Die zin hoort bij een ander account en zou hier niets ontsleutelen. Er is niets gewijzigd.',
@@ -19728,6 +19956,8 @@ const el: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Κρυπτογραφημένο, αλλά κάτω από ένα μακρόβιο κλειδί: αναγνώσιμο αργότερα από όποιον αποκτήσει αυτό το κλειδί.",
   'chat.searchPlaceholder': 'Αναζήτηση σε αυτή τη συνομιλία',
   'chat.noMatch': 'Κανένα μήνυμα δεν ταιριάζει.',
+  'chat.searchSkipped':
+    '{count} μηνύματα με προς τα εμπρός μυστικότητα δεν αναζητήθηκαν — αυτό το πρόγραμμα περιήγησης δεν μπορεί να τα διαβάσει. Αναζητήστε αυτή τη συνομιλία στο τηλέφωνό σας για να τα συμπεριλάβετε.',
   'chat.forwardSecretElsewhere': '🔒 Μήνυμα με forward secrecy. Αυτό το πρόγραμμα περιήγησης δεν μπορεί να το διαβάσει — ανοίξτε τη συνομιλία στο τηλέφωνό σας.',
   'chat.seen': 'Είδατε',
   'chat.typing': 'πληκτρολογεί…',
@@ -20085,6 +20315,10 @@ const el: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'λέξη λέξη λέξη …',
   'recovery.warn': 'Αυτές οι 24 λέξεις είναι ο μόνος τρόπος να διαβάσετε ξανά τα κρυπτογραφημένα μηνύματά σας αν διαγράψετε τα δεδομένα αυτού του προγράμματος περιήγησης. Δεν μεταφορτώνονται ποτέ — αν τις χάσετε, αυτό το ιστορικό χάνεται οριστικά. Σημειώστε τις και φυλάξτε τις κάπου ιδιωτικά.',
   'recovery.reveal': 'Αποκάλυψη φράσης',
+  'recovery.remindTitle': 'Σημείωσε τη φράση ανάκτησής σου',
+  'recovery.remindBody':
+    'Ο λογαριασμός σου είναι αυτές οι 24 λέξεις και τίποτα άλλο. Αν αυτό το πρόγραμμα περιήγησης χάσει τα δεδομένα του πριν τις σημειώσεις, ο λογαριασμός και το κρυπτογραφημένο ιστορικό του χάνονται οριστικά.',
+  'recovery.remindLater': 'Όχι τώρα',
   'recovery.restoreIntro': 'Εισαγάγετε τη φράση των 24 λέξεων από την άλλη σας συσκευή για να διαβάσετε εδώ το κρυπτογραφημένο ιστορικό αυτού του λογαριασμού. Το τρέχον κλειδί σας αντικαθίσταται μόνο αφού επαληθευτεί η φράση.',
   'recovery.errInvalid': 'Αυτή δεν είναι έγκυρη φράση ανάκτησης 24 λέξεων. Ελέγξτε για τυπογραφικά λάθη ή λέξεις που λείπουν.',
   'recovery.errMismatch': 'Αυτή η φράση ανήκει σε διαφορετικό λογαριασμό, οπότε δεν θα αποκρυπτογραφούσε τίποτα εδώ. Τίποτα δεν άλλαξε.',
@@ -20218,6 +20452,8 @@ const sv: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Krypterat, men under en långlivad nyckel: läsbart senare av den som får tag på den nyckeln.",
   'chat.searchPlaceholder': 'Sök i den här konversationen',
   'chat.noMatch': 'Inga matchande meddelanden.',
+  'chat.searchSkipped':
+    '{count} meddelanden med framåtsekretess söktes inte — den här webbläsaren kan inte läsa dem. Sök i den här chatten på telefonen för att inkludera dem.',
   'chat.forwardSecretElsewhere': '🔒 Framåtsekretess-meddelande. Den här webbläsaren kan inte läsa det — öppna chatten på din telefon.',
   'chat.seen': 'Sedd',
   'chat.typing': 'skriver…',
@@ -20575,6 +20811,10 @@ const sv: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ord ord ord …',
   'recovery.warn': 'Dessa 24 ord är det enda sättet att läsa dina krypterade meddelanden igen om du rensar den här webbläsarens data. De laddas aldrig upp — förlorar du dem är den historiken borta för gott. Skriv ner dem och förvara dem någonstans privat.',
   'recovery.reveal': 'Visa frasen',
+  'recovery.remindTitle': 'Skriv ner din återställningsfras',
+  'recovery.remindBody':
+    'Ditt konto är dessa 24 ord och inget annat. Om den här webbläsaren förlorar sina data innan du har skrivit ner dem är kontot och dess krypterade historik borta för gott.',
+  'recovery.remindLater': 'Inte nu',
   'recovery.restoreIntro': 'Ange frasen på 24 ord från din andra enhet för att läsa det här kontots krypterade historik här. Din nuvarande nyckel byts ut först när frasen visat sig stämma.',
   'recovery.errInvalid': 'Det är inte en giltig återställningsfras på 24 ord. Kontrollera stavfel eller ord som saknas.',
   'recovery.errMismatch': 'Den frasen tillhör ett annat konto, så den skulle inte dekryptera något här. Inget ändrades.',
@@ -20708,6 +20948,8 @@ const da: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Krypteret, men under en langlivet nøgle: læsbar senere af enhver, der får fat i den nøgle.",
   'chat.searchPlaceholder': 'Søg i denne samtale',
   'chat.noMatch': 'Ingen matchende beskeder.',
+  'chat.searchSkipped':
+    '{count} beskeder med fremadrettet fortrolighed blev ikke søgt — denne browser kan ikke læse dem. Søg i denne chat på din telefon for at inkludere dem.',
   'chat.forwardSecretElsewhere': '🔒 Forward-secret besked. Denne browser kan ikke læse den — åbn chatten på din telefon.',
   'chat.seen': 'Set',
   'chat.typing': 'skriver…',
@@ -21065,6 +21307,10 @@ const da: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ord ord ord …',
   'recovery.warn': 'Disse 24 ord er den eneste måde at læse dine krypterede beskeder igen på, hvis du rydder denne browsers data. De uploades aldrig — mister du dem, er den historik væk for altid. Skriv dem ned og opbevar dem et privat sted.',
   'recovery.reveal': 'Vis sætningen',
+  'recovery.remindTitle': 'Skriv din gendannelsessætning ned',
+  'recovery.remindBody':
+    'Din konto er disse 24 ord og intet andet. Hvis denne browser mister sine data, før du har skrevet dem ned, er kontoen og dens krypterede historik væk for altid.',
+  'recovery.remindLater': 'Ikke nu',
   'recovery.restoreIntro': 'Indtast sætningen på 24 ord fra din anden enhed for at læse denne kontos krypterede historik her. Din nuværende nøgle udskiftes først, når sætningen er bekræftet.',
   'recovery.errInvalid': 'Det er ikke en gyldig gendannelsessætning på 24 ord. Tjek for stavefejl eller manglende ord.',
   'recovery.errMismatch': 'Den sætning tilhører en anden konto, så den ville ikke dekryptere noget her. Intet blev ændret.',
@@ -21198,6 +21444,8 @@ const no: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Kryptert, men under en langlivet nøkkel: lesbar senere av alle som får tak i den nøkkelen.",
   'chat.searchPlaceholder': 'Søk i denne samtalen',
   'chat.noMatch': 'Ingen meldinger samsvarer.',
+  'chat.searchSkipped':
+    '{count} meldinger med framoverrettet hemmelighold ble ikke søkt — denne nettleseren kan ikke lese dem. Søk i denne chatten på telefonen for å inkludere dem.',
   'chat.forwardSecretElsewhere': '🔒 Forward-secret melding. Denne nettleseren kan ikke lese den — åpne chatten på telefonen din.',
   'chat.seen': 'Sett',
   'chat.typing': 'skriver…',
@@ -21555,6 +21803,10 @@ const no: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ord ord ord …',
   'recovery.warn': 'Disse 24 ordene er den eneste måten å lese de krypterte meldingene dine igjen på hvis du sletter dataene til denne nettleseren. De lastes aldri opp — mister du dem, er den historikken borte for godt. Skriv dem ned og oppbevar dem et privat sted.',
   'recovery.reveal': 'Vis frasen',
+  'recovery.remindTitle': 'Skriv ned gjenopprettingsfrasen din',
+  'recovery.remindBody':
+    'Kontoen din er disse 24 ordene og ingenting annet. Hvis denne nettleseren mister dataene sine før du har skrevet dem ned, er kontoen og den krypterte historikken borte for godt.',
+  'recovery.remindLater': 'Ikke nå',
   'recovery.restoreIntro': 'Skriv inn frasen på 24 ord fra den andre enheten din for å lese denne kontoens krypterte historikk her. Den nåværende nøkkelen din byttes først ut når frasen er bekreftet.',
   'recovery.errInvalid': 'Det er ikke en gyldig gjenopprettingsfrase på 24 ord. Se etter skrivefeil eller ord som mangler.',
   'recovery.errMismatch': 'Den frasen tilhører en annen konto, så den ville ikke dekryptere noe her. Ingenting ble endret.',
@@ -21688,6 +21940,8 @@ const cs: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Šifrováno, ale pod dlouhodobě platným klíčem: kdokoli, kdo tento klíč získá, ho může později přečíst.",
   'chat.searchPlaceholder': 'Hledat v této konverzaci',
   'chat.noMatch': 'Žádné odpovídající zprávy.',
+  'chat.searchSkipped':
+    '{count} zpráv s dopřednou bezpečností nebylo prohledáno — tento prohlížeč je nedokáže přečíst. Prohledej tento chat v telefonu, aby byly zahrnuty.',
   'chat.forwardSecretElsewhere': '🔒 Zpráva s dopřednou bezpečností. Tento prohlížeč ji nepřečte — otevřete chat v telefonu.',
   'chat.seen': 'Zobrazeno',
   'chat.typing': 'píše…',
@@ -22045,6 +22299,10 @@ const cs: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'slovo slovo slovo …',
   'recovery.warn': 'Těchto 24 slov je jediný způsob, jak si znovu přečíst své zašifrované zprávy, pokud smažete data tohoto prohlížeče. Nikdy se nenahrávají — pokud je ztratíte, je ta historie navždy pryč. Zapište si je a uschovejte je na soukromém místě.',
   'recovery.reveal': 'Odkrýt frázi',
+  'recovery.remindTitle': 'Zapiš si svou obnovovací frázi',
+  'recovery.remindBody':
+    'Tvůj účet je těchto 24 slov a nic jiného. Pokud tento prohlížeč přijde o svá data, než si je zapíšeš, účet i jeho zašifrovaná historie jsou nadobro ztracené.',
+  'recovery.remindLater': 'Teď ne',
   'recovery.restoreIntro': 'Zadejte 24slovnou frázi ze svého druhého zařízení, abyste si zde přečetli zašifrovanou historii tohoto účtu. Váš současný klíč se nahradí, až když fráze projde kontrolou.',
   'recovery.errInvalid': 'To není platná 24slovná obnovovací fráze. Zkontrolujte překlepy nebo chybějící slova.',
   'recovery.errMismatch': 'Tato fráze patří jinému účtu, takže by tu nic nedešifrovala. Nic se nezměnilo.',
@@ -22178,6 +22436,8 @@ const ro: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Criptat, dar sub o cheie de lungă durată: lizibil ulterior de oricine obține acea cheie.",
   'chat.searchPlaceholder': 'Caută în această conversație',
   'chat.noMatch': 'Niciun mesaj potrivit.',
+  'chat.searchSkipped':
+    '{count} mesaje cu secretizare înainte nu au fost căutate — acest browser nu le poate citi. Caută în această conversație pe telefon pentru a le include.',
   'chat.forwardSecretElsewhere': '🔒 Mesaj cu forward secrecy. Acest browser nu îl poate citi — deschide conversația pe telefon.',
   'chat.seen': 'Văzut',
   'chat.typing': 'scrie…',
@@ -22535,6 +22795,10 @@ const ro: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'cuvânt cuvânt cuvânt …',
   'recovery.warn': 'Aceste 24 de cuvinte sunt singura cale de a-ți citi din nou mesajele criptate dacă ștergi datele acestui browser. Nu sunt încărcate niciodată — dacă le pierzi, istoricul acela dispare definitiv. Notează-le și păstrează-le într-un loc privat.',
   'recovery.reveal': 'Dezvăluie fraza',
+  'recovery.remindTitle': 'Notează-ți fraza de recuperare',
+  'recovery.remindBody':
+    'Contul tău este aceste 24 de cuvinte și nimic altceva. Dacă acest browser își pierde datele înainte să le notezi, contul și istoricul lui criptat dispar definitiv.',
+  'recovery.remindLater': 'Nu acum',
   'recovery.restoreIntro': 'Introdu fraza de 24 de cuvinte de pe celălalt dispozitiv pentru a citi aici istoricul criptat al acestui cont. Cheia ta actuală este înlocuită abia după ce fraza este verificată.',
   'recovery.errInvalid': 'Aceasta nu este o frază de recuperare validă de 24 de cuvinte. Verifică greșelile de scriere sau cuvintele lipsă.',
   'recovery.errMismatch': 'Acea frază aparține altui cont, deci nu ar decripta nimic aici. Nu s-a schimbat nimic.',
@@ -22668,6 +22932,8 @@ const hu: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Titkosítva, de egy hosszú élettartamú kulcs alatt: később olvasható bárki által, aki megszerzi azt a kulcsot.",
   'chat.searchPlaceholder': 'Keresés ebben a beszélgetésben',
   'chat.noMatch': 'Nincs találat az üzenetek közt.',
+  'chat.searchSkipped':
+    '{count} előre titkosított üzenet nem lett átkeresve – ez a böngésző nem tudja elolvasni őket. Kereszd ezt a beszélgetést a telefonodon, hogy beleszámítsanak.',
   'chat.forwardSecretElsewhere': '🔒 Forward secrecy védett üzenet. Ez a böngésző nem tudja elolvasni — nyisd meg a beszélgetést a telefonodon.',
   'chat.seen': 'Látta',
   'chat.typing': 'gépel…',
@@ -23025,6 +23291,10 @@ const hu: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'szó szó szó …',
   'recovery.warn': 'Ez a 24 szó az egyetlen módja, hogy újra elolvasd a titkosított üzeneteidet, ha törlöd ennek a böngészőnek az adatait. Soha nem töltjük fel őket — ha elveszíted őket, az az előzmény végleg odavan. Írd le őket, és tartsd valahol biztonságos helyen.',
   'recovery.reveal': 'Mondat felfedése',
+  'recovery.remindTitle': 'Írd le a helyreállítási kifejezésed',
+  'recovery.remindBody':
+    'A fiókod ez a 24 szó és semmi más. Ha ez a böngésző elveszíti az adatait, mielőtt leírtad volna őket, a fiók és a titkosított előzményei véglegesen elvesznek.',
+  'recovery.remindLater': 'Most nem',
   'recovery.restoreIntro': 'Add meg a másik eszközödről származó 24 szavas mondatot, hogy itt is olvashasd ennek a fióknak a titkosított előzményeit. A jelenlegi kulcsodat csak akkor cseréljük le, ha a mondat helyesnek bizonyul.',
   'recovery.errInvalid': 'Ez nem érvényes 24 szavas helyreállítási mondat. Ellenőrizd az elgépeléseket vagy a hiányzó szavakat.',
   'recovery.errMismatch': 'Az a mondat egy másik fiókhoz tartozik, így itt semmit sem fejtene vissza. Semmi nem változott.',
@@ -23158,6 +23428,8 @@ const kk: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Шифрланған, бірақ ұзақ мерзімді кілттің астында: сол кілтті алған кез келген адам кейінірек оқи алады.",
   'chat.searchPlaceholder': 'Осы әңгімеден іздеу',
   'chat.noMatch': 'Сәйкес хабарлама жоқ.',
+  'chat.searchSkipped':
+    'Алға құпиялылығы бар {count} хабарлама ізделмеді — бұл браузер оларды оқи алмайды. Оларды қосу үшін бұл чатты телефоныңызда іздеңіз.',
   'chat.forwardSecretElsewhere': '🔒 Алға құпиялылығы бар хабарлама. Бұл браузер оны оқи алмайды — әңгімені телефоныңызда ашыңыз.',
   'chat.seen': 'Көрілді',
   'chat.typing': 'жазып жатыр…',
@@ -23515,6 +23787,10 @@ const kk: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'сөз сөз сөз …',
   'recovery.warn': 'Бұл 24 сөз — осы браузердің деректерін тазаласаңыз, шифрланған хабарламаларыңызды қайта оқудың жалғыз жолы. Олар ешқашан жүктелмейді — жоғалтсаңыз, ол тарих біржола жойылады. Оларды жазып алып, құпия жерде сақтаңыз.',
   'recovery.reveal': 'Фразаны ашу',
+  'recovery.remindTitle': 'Қалпына келтіру тіркесіңізді жазып алыңыз',
+  'recovery.remindBody':
+    'Есептік жазбаңыз — осы 24 сөз, басқа ештеңе емес. Оларды жазып алмай тұрып бұл браузер деректерін жоғалтса, есептік жазба және оның шифрланған тарихы мәңгіге жоғалады.',
+  'recovery.remindLater': 'Кейінірек',
   'recovery.restoreIntro': 'Осы тіркелгінің шифрланған тарихын мұнда оқу үшін екінші құрылғыңыздағы 24 сөзден тұратын фразаны енгізіңіз. Ағымдағы кілтіңіз фраза тексеруден өткеннен кейін ғана ауыстырылады.',
   'recovery.errInvalid': 'Бұл жарамды 24 сөзден тұратын қалпына келтіру фразасы емес. Қате терілген не түсіп қалған сөздерді тексеріңіз.',
   'recovery.errMismatch': 'Бұл фраза басқа тіркелгіге тиесілі, сондықтан мұнда ештеңені шешпес еді. Ештеңе өзгертілген жоқ.',
@@ -23648,6 +23924,8 @@ const uz: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Shifrlangan, ammo uzoq muddatli kalit ostida: keyinchalik shu kalitni olgan har qanday kishi tomonidan o'qilishi mumkin.",
   'chat.searchPlaceholder': 'Ushbu suhbatda qidirish',
   'chat.noMatch': 'Mos xabar topilmadi.',
+  'chat.searchSkipped':
+    'Oldinga maxfiylikka ega {count} xabar qidirilmadi — bu brauzer ularni o‘qiy olmaydi. Ularni qo‘shish uchun bu suhbatni telefoningizda qidiring.',
   'chat.forwardSecretElsewhere': '🔒 Forward secrecy himoyasidagi xabar. Bu brauzer uni o\'qiy olmaydi — suhbatni telefoningizda oching.',
   'chat.seen': 'Ko\'rildi',
   'chat.typing': 'yozmoqda…',
@@ -24005,6 +24283,10 @@ const uz: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'so\'z so\'z so\'z …',
   'recovery.warn': 'Ushbu 24 ta so\'z — brauzer ma\'lumotlarini tozalasangiz, shifrlangan xabarlaringizni qayta o\'qishning yagona yo\'li. Ular hech qachon yuklanmaydi — yo\'qotsangiz, o\'sha tarix butunlay yo\'qoladi. Ularni yozib oling va shaxsiy joyda saqlang.',
   'recovery.reveal': 'Iborani ko\'rsatish',
+  'recovery.remindTitle': 'Tiklash iborangizni yozib qo‘ying',
+  'recovery.remindBody':
+    'Hisobingiz shu 24 so‘zdan iborat, boshqa hech narsa emas. Ularni yozib olmasdan bu brauzer ma’lumotlarini yo‘qotsa, hisob va uning shifrlangan tarixi butunlay yo‘qoladi.',
+  'recovery.remindLater': 'Hozir emas',
   'recovery.restoreIntro': 'Ushbu hisobning shifrlangan tarixini shu yerda o\'qish uchun boshqa qurilmangizdagi 24 so\'zli iborani kiriting. Joriy kalitingiz faqat ibora tekshiruvdan o\'tgach almashtiriladi.',
   'recovery.errInvalid': 'Bu yaroqli 24 so\'zli tiklash iborasi emas. Imlo xatolari yoki tushib qolgan so\'zlarni tekshiring.',
   'recovery.errMismatch': 'Bu ibora boshqa hisobga tegishli, shuning uchun bu yerda hech narsani shifrdan chiqarmaydi. Hech narsa o\'zgartirilmadi.',
@@ -24138,6 +24420,8 @@ const ka: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "დაშიფრულია, მაგრამ გრძელვადიანი გასაღების ქვეშ: მოგვიანებით წასაკითხი ნებისმიერისთვის, ვინც ამ გასაღებს მოიპოვებს.",
   'chat.searchPlaceholder': 'ძიება ამ საუბარში',
   'chat.noMatch': 'შესაბამისი შეტყობინება არ მოიძებნა.',
+  'chat.searchSkipped':
+    '{count} წინსვლის საიდუმლოების შეტყობინება არ მოიძებნა — ამ ბრაუზერს მათი წაკითხვა არ შეუძლია. მათ ჩასართავად მოძებნეთ ეს ჩატი თქვენს ტელეფონში.',
   'chat.forwardSecretElsewhere': '🔒 წინსვლის საიდუმლოებით დაცული შეტყობინება. ამ ბრაუზერს მისი წაკითხვა არ შეუძლია — გახსენით ჩატი თქვენს ტელეფონზე.',
   'chat.seen': 'ნანახია',
   'chat.typing': 'წერს…',
@@ -24495,6 +24779,10 @@ const ka: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'სიტყვა სიტყვა სიტყვა …',
   'recovery.warn': 'ეს 24 სიტყვა ერთადერთი გზაა, რომ კვლავ წაიკითხოთ თქვენი დაშიფრული შეტყობინებები, თუ ამ ბრაუზერის მონაცემებს გაასუფთავებთ. ისინი არასოდეს იტვირთება — თუ დაკარგავთ, ის ისტორია სამუდამოდ იკარგება. ჩაიწერეთ ისინი და შეინახეთ პირად ადგილას.',
   'recovery.reveal': 'ფრაზის ჩვენება',
+  'recovery.remindTitle': 'ჩაიწერეთ თქვენი აღდგენის ფრაზა',
+  'recovery.remindBody':
+    'თქვენი ანგარიში სწორედ ეს 24 სიტყვაა და სხვა არაფერი. თუ ამ ბრაუზერმა მონაცემები დაკარგა მათ ჩაწერამდე, ანგარიში და მისი დაშიფრული ისტორია სამუდამოდ ქრება.',
+  'recovery.remindLater': 'ახლა არა',
   'recovery.restoreIntro': 'შეიყვანეთ 24-სიტყვიანი ფრაზა თქვენი მეორე მოწყობილობიდან, რომ აქ წაიკითხოთ ამ ანგარიშის დაშიფრული ისტორია. თქვენი მიმდინარე გასაღები მხოლოდ მას შემდეგ იცვლება, რაც ფრაზა შემოწმდება.',
   'recovery.errInvalid': 'ეს არ არის ვალიდური 24-სიტყვიანი აღდგენის ფრაზა. შეამოწმეთ შეცდომები ან გამოტოვებული სიტყვები.',
   'recovery.errMismatch': 'ეს ფრაზა სხვა ანგარიშს ეკუთვნის, ამიტომ აქ ვერაფერს გაშიფრავდა. არაფერი შეცვლილა.',
@@ -24628,6 +24916,8 @@ const hy: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Գաղտնագրված է, բայց երկարատև բանալու ներքո. ընթեռնելի ավելի ուշ ցանկացած ոք, ով ստանում է այդ բանալին։",
   'chat.searchPlaceholder': 'Որոնել այս զրույցում',
   'chat.noMatch': 'Համապատասխան հաղորդագրություն չկա։',
+  'chat.searchSkipped':
+    'Առաջընթաց գաղտնիությամբ {count} հաղորդագրություն չի որոնվել — այս զննարկիչը չի կարող կարդալ դրանք։ Դրանք ներառելու համար որոնեք այս զրույցը ձեր հեռախոսում։',
   'chat.forwardSecretElsewhere': '🔒 Առաջընթաց գաղտնիությամբ հաղորդագրություն։ Այս դիտարկիչը չի կարող այն կարդալ — բացեք զրույցը ձեր հեռախոսում։',
   'chat.seen': 'Տեսնված է',
   'chat.typing': 'գրում է…',
@@ -24985,6 +25275,10 @@ const hy: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'բառ բառ բառ …',
   'recovery.warn': 'Այս 24 բառը միակ միջոցն են կրկին կարդալու ձեր գաղտնագրված հաղորդագրությունները, եթե մաքրեք այս դիտարկիչի տվյալները։ Դրանք երբեք չեն վերբեռնվում — եթե կորցնեք դրանք, այդ պատմությունն ընդմիշտ կվերանա։ Գրեք դրանք և պահեք մասնավոր տեղում։',
   'recovery.reveal': 'Բացահայտել արտահայտությունը',
+  'recovery.remindTitle': 'Գրեք ձեր վերականգնման արտահայտությունը',
+  'recovery.remindBody':
+    'Ձեր հաշիվը հենց այս 24 բառն է և ոչ ավելին։ Եթե այս զննարկիչը կորցնի իր տվյալները նախքան դրանք գրի առնեք, հաշիվը և նրա գաղտնագրված պատմությունը կկորչեն ընդմիշտ։',
+  'recovery.remindLater': 'Հիմա ոչ',
   'recovery.restoreIntro': 'Մուտքագրեք ձեր մյուս սարքի 24 բառից բաղկացած արտահայտությունը՝ այստեղ այս հաշվի գաղտնագրված պատմությունը կարդալու համար։ Ձեր ընթացիկ բանալին փոխարինվում է միայն այն բանից հետո, երբ արտահայտությունը ստուգվի։',
   'recovery.errInvalid': 'Դա վավեր 24 բառանոց վերականգնման արտահայտություն չէ։ Ստուգեք ուղղագրական սխալները կամ բացակայող բառերը։',
   'recovery.errMismatch': 'Այդ արտահայտությունը պատկանում է այլ հաշվի, ուստի այստեղ ոչինչ չէր վերծանի։ Ոչինչ չի փոխվել։',
@@ -25118,6 +25412,8 @@ const bo: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "གསང་སྦས་ཡོད་ཀྱང་ཡུན་རིང་ལྡེ་མིག་གིས། ཕྱིས་སུ་ལྡེ་མིག་དེ་ཐོབ་པའི་སུ་ཞིག་གིས་ཀློག་ཐུབ།",
   'chat.searchPlaceholder': 'ཁ་བརྡ་འདིར་འཚོལ།',
   'chat.noMatch': 'མཐུན་པའི་འཕྲིན་ཡིག་མེད།',
+  'chat.searchSkipped':
+    'མདུན་སྐྱོབ་གསང་བའི་འཕྲིན་ཡིག་ {count} འཚོལ་མ་ཐུབ། དྲ་ལྡེབ་འཚོལ་བྱེད་འདིས་ཀློག་མི་ཐུབ། དེ་དག་ཚུད་པར་ཁྱེད་ཀྱི་ཁ་པར་ནང་གླེང་མོལ་འདི་འཚོལ།',
   'chat.forwardSecretElsewhere': '🔒 མདུན་ཕྱོགས་གསང་བའི་འཕྲིན་ཡིག ཁ་པར་འདིས་ཀློག་མི་ཐུབ — ཁྱེད་ཀྱི་ཁ་པར་ཐོག་ཁ་བརྡ་ཕྱེ།',
   'chat.seen': 'མཐོང་ཟིན།',
   'chat.typing': 'ཡིག་འབྲི་བཞིན་འདུག…',
@@ -25475,6 +25771,10 @@ const bo: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ཚིག ཚིག ཚིག …',
   'recovery.warn': 'མེའུ་ཆུང་འདིའི་གནས་ཚུལ་ཁྱེད་ཀྱིས་བསུབ་ན་ཁྱེད་ཀྱི་གསང་སྦས་འཕྲིན་ཡིག་ཡང་བསྐྱར་ཀློག་ཐུབ་པའི་ཐབས་ལམ་གཅིག་པུ་ཚིག་ ༢༤ འདི་དག་ཡིན། ནམ་ཡང་ཡར་མི་སྤོས། བརླག་ན་ལོ་རྒྱུས་དེ་ནང་གྱུར་ཏེ་ཡལ། བྲིས་ཐོག་ས་གནས་སྒེར་གྱི་ཞིག་ཏུ་ཉར།',
   'recovery.reveal': 'ཚིག་སྡེབ་སྟོན།',
+  'recovery.remindTitle': 'ཁྱེད་ཀྱི་སོར་ཆུད་ཚིག་ཚན་བྲིས་ཞོག',
+  'recovery.remindBody':
+    'ཁྱེད་ཀྱི་རྩིས་ཐོ་ནི་ཚིག་ ༢༤ འདི་དག་རང་ཡིན་ལ། གཞན་གང་ཡང་མེད། ཁྱེད་ཀྱིས་དེ་དག་མ་བྲིས་གོང་དྲ་ལྡེབ་འཚོལ་བྱེད་འདིའི་གནས་ཚུལ་བརླག་ན། རྩིས་ཐོ་དང་དེའི་གསང་སྦྱོར་ལོ་རྒྱུས་རྟག་པར་བརླག་འགྲོ།',
+  'recovery.remindLater': 'ད་ལྟ་མིན',
   'recovery.restoreIntro': 'ཞིབ་ཡིག་འདིའི་གསང་སྦས་ལོ་རྒྱུས་འདིར་ཀློག་ཆེད་ཁྱེད་ཀྱི་ཆས་གྲལ་གཞན་ནས་ཚིག་ ༢༤ ཡི་ཚིག་སྡེབ་ནང་བཙུགས། ཚིག་སྡེབ་ཞིབ་བཤེར་བྱས་རྗེས་ཁོ་ན་ཁྱེད་ཀྱི་ད་ལྟའི་ལྡེ་མིག་ཚབ་བརྗེས།',
   'recovery.errInvalid': 'འདི་ནུས་ལྡན་ཚིག་ ༢༤ ཡི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་མིན། ཡིག་འབྲུའི་ནོར་བའམ་ཚིག་ཤོར་བ་ཞིབ་བཤེར་གྱིས།',
   'recovery.errMismatch': 'ཚིག་སྡེབ་འདི་ཞིབ་ཡིག་གཞན་དང་འབྲེལ་བ་ཡིན་པས་འདིར་ཅི་ཡང་གསང་སྒྲོལ་མི་ཐུབ། ཅི་ཡང་བརྗེས་མེད།',
@@ -25608,6 +25908,8 @@ const ti: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "ተመስጢሩ፡ ግን ብነዊሕ ዝጸንሕ መፍትሕ፦ ደሓር ነቲ መፍትሕ ብዘምጽኦ ዝኾነ ሰብ ክንበብ ይኽእል።",
   'chat.searchPlaceholder': 'ኣብዚ ዝርርብ ድለ',
   'chat.noMatch': 'ዝሰማማዕ መልእኽቲ የለን።',
+  'chat.searchSkipped':
+    '{count} ናይ ንቕድሚት ምስጢር መልእኽትታት ኣይተናደዩን — እዚ መርበብ ኣንባቢ ኪንበቦም ኣይክእልን። ንምጽንባሮም ብተሌፎንኩም እዚ ዕላል ድለዩ።',
   'chat.forwardSecretElsewhere': '🔒 ናይ ቅድሚት ምስጢራውነት መልእኽቲ። እዚ ኣሳሳዪ ክፈትሖ ኣይክእልን — ኣብ ተሌፎንካ ዝርርብ ክፈት።',
   'chat.seen': 'ተራእዩ',
   'chat.typing': 'ይጽሕፍ ኣሎ…',
@@ -25965,6 +26267,10 @@ const ti: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'ቃል ቃል ቃል …',
   'recovery.warn': 'ሓበሬታ እዚ ኣሳሳዪ እንተጸረኻ ናይ ዝተመስጠሩ መልእኽትታትካ ደጊምካ ንኸተንብብ ዝኽእለካ ኣገባብ እዞም 24 ቃላት ጥራይ እዮም። ፈጺሞም ኣይስቀሉን — እንተጥፊኦም፡ እቲ ታሪኽ ንሓዋሩ ይጠፍእ። ጽሓፎም ኣብ ውሑስ ቦታ ድማ ዓቅቦም።',
   'recovery.reveal': 'ሓረግ ኣርኢ',
+  'recovery.remindTitle': 'ናይ ምምላስ ሓረግካ ጽሓፎ',
+  'recovery.remindBody':
+    'መለያኻ እዘን 24 ቃላት እየን፣ ካልእ ዝኾነ ኣይኮነን። ቅድሚ ምጽሓፍካ እዚ መርበብ ኣንባቢ ዳታኡ እንተጠፍአ፣ መለያኻን እቲ ተሰዊሩ ዘሎ ታሪኹን ንሓዋሩ ይጠፍእ።',
+  'recovery.remindLater': 'ሕጂ ኣይኮነን',
   'recovery.restoreIntro': 'ኣብዚ ናይ ሕሳብካ ዝተመስጠረ ታሪኽ ንምንባብ ካብ ካልእ መሳርሒኻ ናይ 24 ቃላት ሓረግ ኣእትዉ። ናይ ሕጂ መፍትሕካ ሓረግ ምስ ተረጋገጸ ጥራይ ይትካእ።',
   'recovery.errInvalid': 'እዚ ቅኑዕ ናይ 24 ቃላት ናይ ምምላስ ሓረግ ኣይኰነን። ናይ ጽሕፈት ጌጋ ወይ ዝጎደሉ ቃላት ተመልከት።',
   'recovery.errMismatch': 'እዚ ሓረግ ናይ ካልእ ሕሳብ እዩ፡ ስለዚ ኣብዚ ዝኾነ ነገር ኣይምፈትሐን። ዝኾነ ነገር ኣይተቐየረን።',
@@ -26098,6 +26404,8 @@ const mn: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Шифрлэгдсэн ч удаан хугацааны түлхүүрийн дор — тэр түлхүүрийг олж авсан хэн бүхэн дараа нь унших боломжтой.",
   'chat.searchPlaceholder': 'Энэ харилцаанаас хайх',
   'chat.noMatch': 'Тохирох зурвас алга.',
+  'chat.searchSkipped':
+    'Урагш нууцлалтай {count} мессежийг хайгаагүй — энэ хөтөч тэдгээрийг уншиж чадахгүй. Тэдгээрийг оруулахын тулд утсан дээрээ энэ чатыг хайна уу.',
   'chat.forwardSecretElsewhere': '🔒 Урагшилсан нууцлалтай зурвас. Энэ хөтөч үүнийг унших боломжгүй — чатыг утсан дээрээ нээнэ үү.',
   'chat.seen': 'Харсан',
   'chat.typing': 'бичиж байна…',
@@ -26455,6 +26763,10 @@ const mn: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'үг үг үг …',
   'recovery.warn': 'Хэрэв та энэ хөтчийн мэдээллийг цэвэрлэвэл шифрлэгдсэн зурвасаа дахин унших цорын ганц арга нь энэ 24 үг юм. Тэдгээр хэзээ ч байршуулагддаггүй — хэрэв алдвал тэр түүх бүрмөсөн алга болно. Тэдгээрийг бичиж аваад хувийн газар хадгалаарай.',
   'recovery.reveal': 'Хэллэгийг харуулах',
+  'recovery.remindTitle': 'Сэргээх хэллэгээ бичиж ав',
+  'recovery.remindBody':
+    'Таны бүртгэл бол яг эдгээр 24 үг, өөр юу ч биш. Та тэмдэглэж авахаас өмнө энэ хөтөч өгөгдлөө алдвал бүртгэл ба түүний шифрлэгдсэн түүх бүрмөсөн үрэгдэнэ.',
+  'recovery.remindLater': 'Одоо биш',
   'recovery.restoreIntro': 'Энэ дансны шифрлэгдсэн түүхийг энд унших бол өөр төхөөрөмжийнхөө 24 үгтэй хэллэгийг оруулна уу. Хэллэг зөв гэдэг нь баталгаажсаны дараа л таны одоогийн түлхүүр солигдоно.',
   'recovery.errInvalid': 'Энэ нь хүчинтэй 24 үгтэй сэргээх хэллэг биш байна. Бичгийн алдаа, дутуу үг байгаа эсэхийг шалгана уу.',
   'recovery.errMismatch': 'Тэр хэллэг өөр данстай тул энд юуг ч тайлж чадахгүй. Юу ч өөрчлөгдөөгүй.',
@@ -26588,6 +26900,8 @@ const be: Partial<Record<Key, string>> = {
   'chat.protectionStaticA11y': "Зашыфравана, але доўгачасовым ключом: пазней яго зможа прачытаць любы, хто атрымае гэты ключ.",
   'chat.searchPlaceholder': 'Пошук у гэтай размове',
   'chat.noMatch': 'Няма супадзенняў сярод паведамленняў.',
+  'chat.searchSkipped':
+    '{count} паведамленняў з прамой сакрэтнасцю не шукаліся — гэты браўзер не можа іх прачытаць. Пашукайце ў гэтым чаце на тэлефоне, каб іх улічыць.',
   'chat.forwardSecretElsewhere': '🔒 Паведамленне з прамой сакрэтнасцю. Гэты браўзер не можа яго прачытаць — адкрыйце чат на вашым тэлефоне.',
   'chat.seen': 'Прагледжана',
   'chat.typing': 'друкуе…',
@@ -26945,6 +27259,10 @@ const be: Partial<Record<Key, string>> = {
   'recovery.phrasePlaceholder': 'слова слова слова …',
   'recovery.warn': 'Гэтыя 24 словы — адзіны спосаб зноў прачытаць вашы зашыфраваныя паведамленні, калі вы ачысціце даныя гэтага браўзера. Яны ніколі не запампоўваюцца — калі вы іх страціце, тая гісторыя знікне назаўжды. Запішыце іх і захоўвайце ў прыватным месцы.',
   'recovery.reveal': 'Паказаць фразу',
+  'recovery.remindTitle': 'Запішыце сваю фразу аднаўлення',
+  'recovery.remindBody':
+    'Ваш акаўнт — гэта 24 словы і нічога больш. Калі гэты браўзер згубіць свае даныя, перш чым вы іх запішаце, акаўнт і яго зашыфраваная гісторыя знікнуць назаўсёды.',
+  'recovery.remindLater': 'Не зараз',
   'recovery.restoreIntro': 'Увядзіце фразу з 24 слоў з вашай іншай прылады, каб прачытаць тут зашыфраваную гісторыю гэтага акаунта. Ваш бягучы ключ будзе заменены толькі пасля таго, як фраза пройдзе праверку.',
   'recovery.errInvalid': 'Гэта не сапраўдная фраза аднаўлення з 24 слоў. Праверце апіскі або прапушчаныя словы.',
   'recovery.errMismatch': 'Гэтая фраза належыць іншаму акаунту, таму яна нічога тут не расшыфравала б. Нічога не змянілася.',

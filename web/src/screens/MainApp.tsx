@@ -19,6 +19,8 @@ import QuickSwitcher from '../components/QuickSwitcher';
 import HomeScreen from './HomeScreen';
 import CallProvider from '../call/CallProvider';
 import TourOverlay from '../components/TourOverlay';
+import RecoveryPhraseModal from '../components/RecoveryPhraseModal';
+import {hasRevealedRecoveryPhrase} from '../services/e2eeKeys';
 
 // Moments and Profile load on demand — they're not the default tab, so their
 // code (and the Moments/Friends Firestore paths) stay out of the initial chunk.
@@ -77,6 +79,46 @@ export default function MainApp({user}: {user: User}) {
     markTourSeen();
     setTourOpen(false);
   };
+
+  /**
+   * Reminds an account that has never been shown its recovery phrase.
+   *
+   * The phrase *is* the account (services/anonymousIdentity.ts) and exists
+   * nowhere but this browser's local storage, which a browser will clear on
+   * its own under storage pressure. Until this, nothing here ever mentioned
+   * that: the phrase was reachable from Profile if you went looking, and
+   * `hasRevealedRecoveryPhrase` — the flag recording whether you ever had —
+   * was written on every sign-in and read by nothing. Mobile prompts;
+   * RecoveryPhraseModal's `reveal()` even says it marks the flag "so the app
+   * stops nagging", about a nag that did not exist.
+   *
+   * A banner, not an auto-opened modal. The modal's own docstring rules that
+   * out — "revealing a secret has to be something the user chose to do" — and
+   * it is right: 24 words that are the whole account should never appear
+   * unbidden on a screen someone might be sharing. So this says why it
+   * matters and the user opens it.
+   *
+   * Dismissal lasts the page session only. It returns on the next visit until
+   * the phrase has actually been revealed, which is the same persistence
+   * mobile's prompt has and the right side to err on for the one piece of
+   * data whose loss is unrecoverable.
+   */
+  const [phraseReminder, setPhraseReminder] = useState(false);
+  const [phraseModalOpen, setPhraseModalOpen] = useState(false);
+  const checkPhraseReminder = useCallback(() => {
+    let cancelled = false;
+    Promise.resolve(hasRevealedRecoveryPhrase(user.uid))
+      .then(revealed => {
+        if (!cancelled) setPhraseReminder(!revealed);
+      })
+      // A storage read that throws is not a reason to nag: it cannot tell us
+      // the phrase was never revealed, only that we cannot find out.
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [user.uid]);
+  useEffect(() => checkPhraseReminder(), [checkPhraseReminder]);
 
   // ---- Keyboard shortcuts ---------------------------------------------------
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -170,8 +212,57 @@ export default function MainApp({user}: {user: User}) {
     };
   }, [user.uid]);
 
+  /*
+   * A column, because both shells render `content` into a row-direction flex
+   * container: a banner dropped in beside the tab would sit next to it rather
+   * than above it. The inner wrapper keeps the tab itself filling what is
+   * left, which is what HomeScreen's own two-pane layout assumes.
+   */
   const content = (
-    <Suspense fallback={<div style={styles.tabLoading}><span className="spinner" /></div>}>
+    <div style={styles.contentColumn}>
+      {/* Above the tab content, and not a toast: a toast is gone in four
+          seconds, and this is the one warning whose cost for being missed is
+          the whole account. */}
+      {phraseReminder && (
+        <div style={styles.phraseBanner} role="status">
+          <div style={styles.phraseBannerText}>
+            <strong style={styles.phraseBannerTitle}>{t('recovery.remindTitle')}</strong>
+            <span>{t('recovery.remindBody')}</span>
+          </div>
+          <div style={styles.phraseBannerActions}>
+            <button
+              type="button"
+              className="btn-primary"
+              style={styles.phraseBannerPrimary}
+              onClick={() => setPhraseModalOpen(true)}>
+              {t('recovery.showMine')}
+            </button>
+            <button
+              type="button"
+              style={styles.phraseBannerDismiss}
+              onClick={() => setPhraseReminder(false)}>
+              {t('recovery.remindLater')}
+            </button>
+          </div>
+        </div>
+      )}
+      {phraseModalOpen && (
+        <RecoveryPhraseModal
+          uid={user.uid}
+          onClose={() => {
+            setPhraseModalOpen(false);
+            // Re-ask rather than assume: the modal marks the flag only if the
+            // user actually revealed the phrase, so closing it unread must
+            // leave the reminder standing.
+            checkPhraseReminder();
+          }}
+        />
+      )}
+      {/* HomeScreen's own shell is `height: 100%`, so it needs a box that is
+          already the space left over rather than the full column — otherwise
+          the banner's height pushes the two-pane layout off the bottom. */}
+      <div style={styles.contentFill}>
+      <Suspense fallback={<div style={styles.tabLoading}><span className="spinner" /></div>}>
       {tab === 'chats' && (
         <HomeScreen
           user={user}
@@ -192,7 +283,9 @@ export default function MainApp({user}: {user: User}) {
         />
       )}
       {tab === 'profile' && <ProfileScreen user={user} />}
-    </Suspense>
+      </Suspense>
+      </div>
+    </div>
   );
 
   return (
@@ -258,6 +351,38 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
   },
   tabLoading: {flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'},
+  contentColumn: {flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column'},
+  contentFill: {flex: 1, minWidth: 0, minHeight: 0, display: 'flex'},
+  phraseBanner: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 12,
+    padding: '12px 16px',
+    borderBottom: `1px solid ${colors.border}`,
+    // A danger rail rather than a danger fill. The message is about losing
+    // the account, so it should not read as a feature notice — but a full
+    // red panel above every screen until dismissed is shouting, and both
+    // themes have to stay legible, which the surface tokens already handle.
+    //
+    // `borderInlineStart`, not `borderLeft`: Arabic, Persian, Hebrew and Urdu
+    // all ship, and a rail pinned to the physical left lands on the wrong
+    // edge in every one of them.
+    borderInlineStart: `3px solid ${colors.danger}`,
+    background: colors.surfaceStrong,
+    color: colors.text,
+  },
+  phraseBannerText: {display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minWidth: 220},
+  phraseBannerTitle: {fontSize: 13, fontWeight: 600},
+  phraseBannerActions: {display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0},
+  phraseBannerPrimary: {padding: '7px 14px', fontSize: 13},
+  phraseBannerDismiss: {
+    padding: '7px 10px',
+    fontSize: 13,
+    background: 'none',
+    border: 'none',
+    color: colors.textSecondary,
+  },
   mobileShell: {height: '100%', display: 'flex', flexDirection: 'column'},
   mobileContent: {flex: 1, minHeight: 0, display: 'flex'},
   mainContent: {flex: 1, minWidth: 0, display: 'flex'},
@@ -267,7 +392,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.surface,
     backdropFilter: 'blur(14px)',
     WebkitBackdropFilter: 'blur(14px)',
-    borderRight: `1px solid ${colors.border}`,
+    borderInlineEnd: `1px solid ${colors.border}`,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

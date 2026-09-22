@@ -1056,6 +1056,28 @@ export default function ChatPane({
     ? messages.filter(m => (m.text || '').toLowerCase().includes(search!.trim().toLowerCase()))
     : messages;
 
+  /**
+   * How many loaded messages this search could not look inside.
+   *
+   * The filter above reads `m.text`, which for everything this browser can
+   * open holds the plaintext — the decrypt pass patches it back into
+   * `messages`, so search is not blind to encrypted content in general. A
+   * forward-secret message is different: nothing here can open one
+   * (MULTIDEVICE.md), its text is the padlock placeholder, and so it is
+   * skipped. Without saying so, search answers "2 results" for a chat that
+   * has five, and a short answer is indistinguishable from a complete one.
+   *
+   * Counted from the envelope rather than by comparing against the
+   * placeholder string, which is translated and would stop matching in every
+   * language but one.
+   */
+  const unsearchableCount = searching
+    ? messages.filter(m => {
+        const protection = messageProtection(m);
+        return protection === 'ratchet' || protection === 'sender-key';
+      }).length
+    : 0;
+
   // First unread message id (for the "new messages" divider), hidden while searching.
   const firstUnreadId =
     !searching && unreadAtOpen > 0 && messages.length >= unreadAtOpen
@@ -2117,6 +2139,20 @@ export default function ChatPane({
         </div>
       )}
 
+      {/*
+        Under the bar rather than in place of the results, because it qualifies
+        an answer that is otherwise complete-looking: the matches shown are
+        real, there are simply messages the search could not look inside. A
+        live region so a screen reader hears the caveat and not just the count
+        of results it can reach.
+      */}
+      {unsearchableCount > 0 && (
+        <div style={styles.searchCaveat} role="status">
+          <Icon name="lock" size={13} />
+          <span>{t('chat.searchSkipped', {count: unsearchableCount})}</span>
+        </div>
+      )}
+
       {expiryOpen && (
         <div style={styles.expiryBar}>
           <span style={styles.expiryTitle}>
@@ -2146,14 +2182,14 @@ export default function ChatPane({
 
       {peerDeleted && (
         <div style={styles.deletedBanner} role="status">
-          <Icon name="blocked" size={14} style={{marginRight: 6, flexShrink: 0}} />
+          <Icon name="blocked" size={14} style={{marginInlineEnd: 6, flexShrink: 0}} />
           <span>{t('chat.recipientDeleted')}</span>
         </div>
       )}
 
       {peerKeyChanged && !peerDeleted && (
         <button style={styles.keyChangedBanner} onClick={() => setVerifyOpen(true)}>
-          <Icon name="alertTriangle" size={14} style={{marginRight: 6, flexShrink: 0}} />
+          <Icon name="alertTriangle" size={14} style={{marginInlineEnd: 6, flexShrink: 0}} />
           <span>{t('chat.keyChanged')}</span>
         </button>
       )}
@@ -2525,7 +2561,7 @@ export default function ChatPane({
 
                     {!contentHidden && translations[m._id] && (
                       <div style={styles.translation}>
-                        <Icon name="globe" size={13} style={{marginRight: 5, verticalAlign: '-2px'}} />
+                        <Icon name="globe" size={13} style={{marginInlineEnd: 5, verticalAlign: '-2px'}} />
                         {translations[m._id]}
                       </div>
                     )}
@@ -3201,11 +3237,11 @@ const styles: Record<string, React.CSSProperties> = {
     color: colors.primary,
     display: 'flex',
     alignItems: 'center',
-    marginRight: 6,
-    marginLeft: -6,
+    marginInlineEnd: 6,
+    marginInlineStart: -6,
     padding: 4,
   },
-  tag: {marginLeft: 8, display: 'inline-flex', alignItems: 'center', color: colors.textSecondary},
+  tag: {marginInlineStart: 8, display: 'inline-flex', alignItems: 'center', color: colors.textSecondary},
   headerActions: {display: 'flex', alignItems: 'center', gap: 8},
   menuBtn: {
     width: 36,
@@ -3475,7 +3511,7 @@ const styles: Record<string, React.CSSProperties> = {
     whiteSpace: 'nowrap',
   },
   msgText: {whiteSpace: 'pre-wrap'},
-  inlineMeta: {marginLeft: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
+  inlineMeta: {marginInlineStart: 8, fontSize: 11, color: colors.textTertiary, whiteSpace: 'nowrap'},
   transcription: {
     margin: '4px 0',
     padding: '7px 11px',
@@ -3496,8 +3532,15 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '2px 0 5px',
     padding: '5px 10px',
     border: 'none',
-    borderLeft: `3px solid ${colors.primary}`,
-    borderRadius: '4px 8px 8px 4px',
+    borderInlineStart: `3px solid ${colors.primary}`,
+    // Logical corners, so the tight pair stays on the same edge as the rail
+    // above it in Arabic, Persian, Hebrew and Urdu. `4px 8px 8px 4px` pinned
+    // them to the physical left, which in RTL put the tight corners opposite
+    // the rail and made the quote look like it had been drawn twice.
+    borderStartStartRadius: 4,
+    borderStartEndRadius: 8,
+    borderEndEndRadius: 8,
+    borderEndStartRadius: 4,
     background: colors.surfaceStrong,
     cursor: 'pointer',
   },
@@ -3631,9 +3674,20 @@ const styles: Record<string, React.CSSProperties> = {
   searchBar: {display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderBottom: `1px solid ${colors.border}`, background: colors.surface},
   searchInput: {flex: 1, padding: '8px 12px', borderRadius: 2, border: `1px solid ${colors.border}`, background: colors.inputBg, fontSize: 14, color: colors.text},
   searchClose: {background: 'none', border: 'none', color: colors.textSecondary, display: 'flex', alignItems: 'center'},
+  searchCaveat: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 8,
+    padding: '8px 16px',
+    borderBottom: `1px solid ${colors.border}`,
+    background: colors.surface,
+    fontSize: 12,
+    lineHeight: 1.45,
+    color: colors.textSecondary,
+  },
   uploadBar: {position: 'relative', height: 26, background: colors.surface, borderTop: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center'},
   uploadFill: {position: 'absolute', left: 0, top: 0, bottom: 0, background: colors.primaryLight},
-  uploadLabel: {position: 'relative', fontSize: 12, color: colors.textSecondary, paddingLeft: 16},
+  uploadLabel: {position: 'relative', fontSize: 12, color: colors.textSecondary, paddingInlineStart: 16},
   composerIcon: {
     width: 40,
     height: 40,
@@ -3714,7 +3768,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
   },
   ephemClose: {
-    marginLeft: 'auto',
+    marginInlineStart: 'auto',
     width: 28,
     height: 28,
     borderRadius: 999,
@@ -3746,7 +3800,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
   },
   expiryChipOn: {background: colors.primary, color: colors.textOnPrimary, borderColor: colors.primary},
-  menuCheck: {marginLeft: 'auto', color: colors.primary, fontWeight: 700, fontSize: 12},
+  menuCheck: {marginInlineStart: 'auto', color: colors.primary, fontWeight: 700, fontSize: 12},
   reactions: {display: 'flex', gap: 4, marginTop: 4},
   reactionChip: {
     padding: '2px 8px',
