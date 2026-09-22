@@ -13,22 +13,30 @@ import {connectFunctionsEmulator, getFunctions} from 'firebase/functions';
 /**
  * Firebase config for the WEB SDK.
  *
- * These values mirror the mobile app's src/firebaseConfig.ts (same Firebase
- * project, so the web client shares the same users/chats/messages data). The
- * `appId` here is the mobile app's ID as a starting point — for a proper web
- * deployment you should register a **Web app** in the Firebase Console
- * (Project settings → Your apps → Add app → Web) and drop its config in via
- * the VITE_FIREBASE_* env vars (see web/.env.example). Auth + Firestore work
- * with the api key + auth domain + project id regardless. (This client never
- * initialises Analytics — nothing here does; see src/services/errorLog.ts.)
+ * Same Firebase project as the mobile app's src/firebaseConfig.ts, so the two
+ * clients share the same users/chats/messages data — but its own registered
+ * **Web** app, with its own app id and api key. It used to borrow an *iOS*
+ * app id, which was fine for Auth and Firestore and wrong for two things that
+ * key off the app's identity: App Check (a reCAPTCHA provider is only valid
+ * for a web app) and anything server-side that reads which app attested, since
+ * an App Check token's subject is the app id. A browser identifying itself as
+ * an iPhone is not a distinction the server can recover later.
+ *
+ * `measurementId` from the console snippet is deliberately absent, along with
+ * getAnalytics: this client does not initialise Analytics and nothing here
+ * does. See src/services/errorLog.ts.
+ *
+ * The api key is not a secret — it ships in every bundle, and the mobile one
+ * has been in this repo from the start. It identifies the project; access is
+ * decided by Auth and the Firestore rules.
  */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? 'AIzaSyAnDnGSww6_zdLEszsVM9tlpxZTDftBxi0',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? 'AIzaSyCo21f9WKy48VRNmvpCGuCg8qQz3sjxgKg',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? 'chatterbox-e5d10.firebaseapp.com',
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? 'chatterbox-e5d10',
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? 'chatterbox-e5d10.firebasestorage.app',
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? '916000207469',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? '1:916000207469:ios:5b98744019cfb032dd0564',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? '1:916000207469:web:83d14c0dff56433fdd0564',
 };
 
 const app = initializeApp(firebaseConfig);
