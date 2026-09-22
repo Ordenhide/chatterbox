@@ -28,13 +28,16 @@ const SESSION_KEY = 'cb_web_session';
  * names the *previous* device, so a brand-new sign-in concludes it has been
  * displaced and immediately signs itself back out.
  *
- * That race is not new, but it used to be unwinnable in practice: claiming
- * was a single fast setDoc. Routing the claim through the claimSession Cloud
- * Function stretched it to seconds (seconds this project actually pays right
- * now — the function's billing account is closed, so every call runs out the
- * clock and falls back), which turned a theoretical race into one that loses
- * every time. The mobile client has always guarded this explicitly; see
- * claimInProgressRef in src/contexts/AuthContext.tsx.
+ * That race is not new, but routing the claim through the claimSession Cloud
+ * Function widened it: a network round trip instead of a single fast setDoc.
+ *
+ * This used to add that the function's billing account was closed, so every
+ * call ran out the clock and fell back — which made the race one that lost
+ * every time. That is no longer true: the function is deployed and answers
+ * immediately. The guard stays because the race does: Firebase resolves
+ * sign-in before the claim that follows it, however fast the claim is. The
+ * mobile client has always guarded this explicitly; see claimInProgressRef in
+ * src/contexts/AuthContext.tsx.
  */
 let claimInFlight: Promise<string> | null = null;
 

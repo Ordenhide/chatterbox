@@ -240,15 +240,21 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
       } catch (error) {
         // Deliberately non-fatal, including for permission-denied.
-        // firestore.rules *is* written to deny this read once a token's
-        // auth_time falls behind the account's latest sessionClaimedAt — which
-        // would make permission-denied a genuine displacement signal — but
-        // those rules are not deployed yet. Until they are, a permission error
-        // here can only mean something unexpected (e.g. a token that has not
-        // propagated yet), and signing the user out over it costs a working
-        // session for no security benefit. Revisit alongside the rules
-        // deployment; ensureActiveSession below already handles the denial
-        // path for the case that actually matters today.
+        //
+        // firestore.rules denies this read once a token's auth_time falls
+        // behind the account's latest sessionClaimedAt, and — corrected from
+        // what this comment used to say — those rules *are* deployed:
+        // hasCurrentSession has been live since the rules deploy that followed
+        // the commit adding it. So permission-denied here is no longer only
+        // "something unexpected". It is ambiguous: a genuine displacement, or
+        // a token that has not propagated yet.
+        //
+        // Still non-fatal, because the two are indistinguishable from here and
+        // the costs are asymmetric — signing out on a propagation blip ends a
+        // working session, while missing one displacement signal costs nothing
+        // the listener and ensureActiveSession do not already cover. Acting on
+        // it would need a way to tell the two apart, which is a real open
+        // question and not a to-do someone can just tick off.
         reportError(error, 'session_check');
       }
     };

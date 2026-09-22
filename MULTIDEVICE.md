@@ -121,6 +121,41 @@ Mobile has the same underlying gap at `ChatListScreen.tsx:132`, where a sealed
 last message renders as an empty string — uninformative, but not a claim that
 the chat is empty.
 
+## Why the two cannot even be signed in at once
+
+Separate from the ratchet, and worth knowing before anyone tries: the account
+allows **one** session, full stop. `users/{uid}.activeSessionId` names it and
+every client signs itself out when it changes, so signing into the browser
+displaces the phone and vice versa. The two do not coexist; they take turns.
+
+Allowing "one mobile plus one web" sounds like a client change — split the
+field into per-platform slots, have each client watch its own. It is not. The
+enforcement that matters is in `firestore.rules`:
+
+```
+hasCurrentSession: request.auth.token.auth_time >= sessionClaimedAt - 120s
+```
+
+One timestamp for the whole account, consulted by `isSignedIn()` and therefore
+by almost every read and write. A web sign-in bumps it, so the phone's token —
+which authenticated earlier — loses server-side access no matter what the
+clients do about `activeSessionId`. And the rule cannot be made
+platform-aware: a token carries no platform, and custom claims are
+account-wide and leak to other devices on their next silent refresh, which is
+the reason the rule uses `auth_time` in the first place (its own comment sets
+this out).
+
+Splitting the timestamp per platform and taking the *earlier* of the two is
+the only shape that fits the rule, and it costs something real: a displaced
+mobile device would keep server-side access indefinitely whenever the web
+claim predates its own sign-in, where today the exposure is bounded by a
+token's ~1hr life. That trade was considered and declined — the backstop
+exists for the case where a client's listener never fires, which is exactly
+the case a bound matters for.
+
+So concurrent sign-in is not a missing feature with an obvious fix. It is a
+consequence of the same single-device assumption as everything above.
+
 ## If this is ever revisited
 
 Nothing above expires. The two blockers are properties of the design rather
