@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Bagong mensahe",
-    "sentYouAMessage": "Nagpadala sa iyo ng mensahe"
+    "sentYouAMessage": "Nagpadala sa iyo ng mensahe",
+    "reminderTitle": "Paalala sa mensahe"
   }
 }

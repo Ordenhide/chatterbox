@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Nowa wiadomość",
-    "sentYouAMessage": "Wysłał Ci wiadomość"
+    "sentYouAMessage": "Wysłał Ci wiadomość",
+    "reminderTitle": "Przypomnienie o wiadomości"
   }
 }

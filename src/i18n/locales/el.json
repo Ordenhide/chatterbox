@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Νέο μήνυμα",
-    "sentYouAMessage": "Σας έστειλε ένα μήνυμα"
+    "sentYouAMessage": "Σας έστειλε ένα μήνυμα",
+    "reminderTitle": "Υπενθύμιση μηνύματος"
   }
 }

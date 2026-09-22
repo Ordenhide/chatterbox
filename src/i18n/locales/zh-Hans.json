@@ -868,6 +868,7 @@
   },
   "push": {
     "newMessage": "新消息",
-    "sentYouAMessage": "收到了一条消息"
+    "sentYouAMessage": "收到了一条消息",
+    "reminderTitle": "消息提醒"
   }
 }

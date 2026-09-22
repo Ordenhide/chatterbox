@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Ny melding",
-    "sentYouAMessage": "Sendte deg en melding"
+    "sentYouAMessage": "Sendte deg en melding",
+    "reminderTitle": "Meldingspåminnelse"
   }
 }

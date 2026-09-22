@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "አዲስ መልእክት",
-    "sentYouAMessage": "መልእክት ልኮልዎታል"
+    "sentYouAMessage": "መልእክት ልኮልዎታል",
+    "reminderTitle": "የመልዕክት አስታዋሽ"
   }
 }

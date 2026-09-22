@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "ਨਵਾਂ ਸੁਨੇਹਾ",
-    "sentYouAMessage": "ਤੁਹਾਨੂੰ ਇੱਕ ਸੁਨੇਹਾ ਭੇਜਿਆ"
+    "sentYouAMessage": "ਤੁਹਾਨੂੰ ਇੱਕ ਸੁਨੇਹਾ ਭੇਜਿਆ",
+    "reminderTitle": "ਸੁਨੇਹਾ ਯਾਦ-ਪੱਤਰ"
   }
 }

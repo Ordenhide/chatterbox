@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Új üzenet",
-    "sentYouAMessage": "Üzenetet küldött neked"
+    "sentYouAMessage": "Üzenetet küldött neked",
+    "reminderTitle": "Üzenet-emlékeztető"
   }
 }

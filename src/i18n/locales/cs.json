@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Nová zpráva",
-    "sentYouAMessage": "Poslal vám zprávu"
+    "sentYouAMessage": "Poslal vám zprávu",
+    "reminderTitle": "Připomínka zprávy"
   }
 }

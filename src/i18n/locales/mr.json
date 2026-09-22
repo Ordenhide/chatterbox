@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "नवीन संदेश",
-    "sentYouAMessage": "तुम्हाला एक संदेश पाठवला"
+    "sentYouAMessage": "तुम्हाला एक संदेश पाठवला",
+    "reminderTitle": "संदेश स्मरणपत्र"
   }
 }

@@ -868,6 +868,7 @@
   },
   "push": {
     "newMessage": "Новое сообщение",
-    "sentYouAMessage": "Отправил вам сообщение"
+    "sentYouAMessage": "Отправил вам сообщение",
+    "reminderTitle": "Напоминание о сообщении"
   }
 }

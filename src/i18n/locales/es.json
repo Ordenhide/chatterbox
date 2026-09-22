@@ -868,6 +868,7 @@
   },
   "push": {
     "newMessage": "Mensaje nuevo",
-    "sentYouAMessage": "Te envió un mensaje"
+    "sentYouAMessage": "Te envió un mensaje",
+    "reminderTitle": "Recordatorio de mensaje"
   }
 }

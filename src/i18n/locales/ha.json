@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Sabon saƙo",
-    "sentYouAMessage": "Ya aiko muku da saƙo"
+    "sentYouAMessage": "Ya aiko muku da saƙo",
+    "reminderTitle": "Tunatarwar saƙo"
   }
 }

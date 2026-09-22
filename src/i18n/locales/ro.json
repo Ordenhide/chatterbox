@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Mesaj nou",
-    "sentYouAMessage": "Ți-a trimis un mesaj"
+    "sentYouAMessage": "Ți-a trimis un mesaj",
+    "reminderTitle": "Memento mesaj"
   }
 }

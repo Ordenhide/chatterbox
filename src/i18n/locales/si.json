@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "නව පණිවිඩය",
-    "sentYouAMessage": "ඔබට පණිවිඩයක් යවා ඇත"
+    "sentYouAMessage": "ඔබට පණිවිඩයක් යවා ඇත",
+    "reminderTitle": "පණිවිඩ සිහිකැඳවීම"
   }
 }

@@ -57,7 +57,12 @@ export interface Reminder {
   userId: string;
   chatId: string;
   messageId: string | number;
-  messagePreview: string;
+  /**
+   * There was a `messagePreview: string` here, read by processReminders as the
+   * body of the push it sent. It is gone: the reminder names the message and
+   * the device opens it, so no copy of a message's text is stored on the
+   * server for a notification to quote. See src/services/firebase/push.ts.
+   */
   remindAt: number;
   createdAt: number;
   sent?: boolean;

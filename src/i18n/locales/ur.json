@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "نیا پیغام",
-    "sentYouAMessage": "آپ کو ایک پیغام بھیجا"
+    "sentYouAMessage": "آپ کو ایک پیغام بھیجا",
+    "reminderTitle": "پیغام کی یاد دہانی"
   }
 }

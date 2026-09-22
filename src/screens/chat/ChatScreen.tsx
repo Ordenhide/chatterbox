@@ -2578,16 +2578,18 @@ export default function ChatScreen() {
         userId: user.uid,
         chatId: chatId || '',
         messageId: message._id,
-        // A sealed message contributes no preview. `message.text` here is the
-        // *decrypted* body (the decrypt pass filled it in for display), and
-        // this doc is written to Firestore and read back by processReminders,
-        // which sends it as a push notification body — so copying it here
-        // would put the plaintext of an end-to-end encrypted message on the
-        // server and across FCM/APNs in clear. The server already falls back
-        // to a generic line when this is empty.
-        messagePreview: isSealed((message as any).encrypted)
-          ? ''
-          : (message.text || '[media]').substring(0, 100),
+        // No preview. There was a `messagePreview` here, blanked for a sealed
+        // message because processReminders sent it as a push notification body
+        // and copying decrypted text into a Firestore document would have put
+        // the plaintext of an end-to-end encrypted message on the server.
+        //
+        // The blanking was right and the field was still wrong: the send path
+        // falls back to plaintext when a recipient has no published key, so
+        // for those messages the preview was real text — on the server, over
+        // FCM, on a lock screen — against a privacy policy that says
+        // notifications carry no message text. The reminder now names the
+        // message and the phone reads it locally
+        // (src/services/firebase/push.ts), so there is nothing to blank.
         remindAt: Date.now() + minutes * 60 * 1000,
         createdAt: Date.now(),
       };

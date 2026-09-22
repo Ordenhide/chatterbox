@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "ሓድሽ መልእኽቲ",
-    "sentYouAMessage": "መልእኽቲ ሰዲዱልካ"
+    "sentYouAMessage": "መልእኽቲ ሰዲዱልካ",
+    "reminderTitle": "መዘኻኸሪ መልእኽቲ"
   }
 }

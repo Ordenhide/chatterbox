@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Nieuw bericht",
-    "sentYouAMessage": "Heeft je een bericht gestuurd"
+    "sentYouAMessage": "Heeft je een bericht gestuurd",
+    "reminderTitle": "Berichtherinnering"
   }
 }

@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "ຂໍ້ຄວາມໃໝ່",
-    "sentYouAMessage": "ໄດ້ສົ່ງຂໍ້ຄວາມໃຫ້ທ່ານ"
+    "sentYouAMessage": "ໄດ້ສົ່ງຂໍ້ຄວາມໃຫ້ທ່ານ",
+    "reminderTitle": "ການແຈ້ງເຕືອນຂໍ້ຄວາມ"
   }
 }

@@ -1,6 +1,7 @@
 import {useEffect, useRef} from 'react';
 import {listenReminders, markReminderSent} from '../services/reminders';
 import {showLocalNotification} from '../services/push';
+import {useT} from '../i18n';
 import type {Reminder} from '../types';
 
 // Delivers due message reminders while the app is open: watches the user's
@@ -11,6 +12,12 @@ import type {Reminder} from '../types';
 export function useReminders(uid: string | null): void {
   const pending = useRef<Reminder[]>([]);
   const fired = useRef<Set<string>>(new Set());
+  // In a ref, not a dependency: the sweep runs on a 20-second interval, and
+  // listing `t` would tear down and rebuild the listener and the timer on
+  // every language change. Same pattern as useChatNotifications.
+  const {t} = useT();
+  const tRef = useRef(t);
+  tRef.current = t;
 
   useEffect(() => {
     if (!uid) return;
@@ -23,11 +30,20 @@ export function useReminders(uid: string | null): void {
       pending.current.forEach(r => {
         if (r.remindAt > now || fired.current.has(r.id)) return;
         fired.current.add(r.id);
-        // messagePreview is deliberately empty for reminders set on sealed
-        // messages (see ChatPane's setReminder) — the title carries the whole
-        // notification in that case rather than showing a blank body.
-        const preview = r.messagePreview || 'Message reminder';
-        showLocalNotification(preview, r.messagePreview || '', r.chatId);
+        // Names the reminder rather than quoting the message.
+        //
+        // This used to read `r.messagePreview`, a copy of the message text
+        // kept on the server so the reminder push could quote it. That field
+        // is gone from both clients — a plaintext message's preview was real
+        // text on the server and on a lock screen, against a privacy policy
+        // that says notifications carry no message text. Clicking through
+        // opens the chat, which is where the message can be read.
+        //
+        // Translated, too. The fallback here was the literal string 'Message
+        // reminder', so a reminder firing in this tab was English whatever
+        // language the app was in. `reminder.default` is the same sentence,
+        // already carried by every dictionary.
+        showLocalNotification(tRef.current('reminder.default'), '', r.chatId);
         markReminderSent(uid, r.id).catch(() => fired.current.delete(r.id));
       });
     };

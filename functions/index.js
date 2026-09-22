@@ -404,17 +404,35 @@ exports.processReminders = functions.pubsub
           const fcmToken = pushData?.fcmToken || pushData?.fcmTokens?.[0];
           if (fcmToken) {
             try {
+              // Data-only, for the same two reasons notifyNewMessage is.
+              //
+              // A top-level `notification` is displayed by the OS with
+              // whatever is in it, which made this the one push in the app
+              // that carried message text: the body was
+              // `reminder.messagePreview`, a copy of the message stored on the
+              // server so this function could read it. Both clients blanked it
+              // for a *sealed* message, deliberately — but the send path falls
+              // back to plaintext when a recipient has no published key, and
+              // for those the preview was up to 100 characters of real text,
+              // through FCM, onto a lock screen. Section 7 of the privacy
+              // policy says notifications carry no message text, without
+              // qualification.
+              //
+              // It also made the notification English-only in a
+              // fifty-three-language app, because a server that composes the
+              // text has to know the reader's language and this one does not.
+              //
+              // So the phone composes it: the background handler has the
+              // message, the local body store, the reader's language and the
+              // lock-screen check. See src/services/firebase/push.ts.
               await admin.messaging().send({
                 token: fcmToken,
-                notification: {
-                  title: 'Message Reminder',
-                  body: reminder.messagePreview || 'You have a reminder',
-                },
                 data: {
                   type: 'reminder',
                   chatId: reminder.chatId || '',
                   messageId: String(reminder.messageId || ''),
                 },
+                android: {priority: 'high'},
               });
             } catch (e) {
               functions.logger.warn('Failed to send reminder notification', e);
@@ -734,6 +752,30 @@ exports.notifyNewMessage = functions.firestore
             android: {
               priority: 'high',
             },
+            // The one user-facing English string left in this file, and it is
+            // deliberate rather than overlooked.
+            //
+            // A server that writes notification prose has to know the reader's
+            // language, and this one does not — nothing stores it, and storing
+            // it would hand the server a locale for every account to fix a
+            // string. The Android path avoids the question entirely by sending
+            // no prose at all and composing the notification on the phone,
+            // which is where the language already is; processReminders was
+            // moved to the same shape for the same reason.
+            //
+            // iOS cannot do that yet: composing on-device needs a Notification
+            // Service Extension, which is not built (see ios/README-push.md —
+            // iOS push is registered but not enabled, so this payload does not
+            // render today). The APNs alternative is `loc-key`, which makes
+            // the *device* localise from a native Localizable.strings; there
+            // are none in this project, and a missing key renders the key
+            // itself on the lock screen, which is worse than a sentence in the
+            // wrong language.
+            //
+            // So: whoever enables iOS push owns this. Either ship the service
+            // extension and make this data-only like Android, or add the
+            // .strings files in the same change and switch to loc-key. Do not
+            // add loc-key without the strings.
             apns: {
               payload: {
                 aps: {

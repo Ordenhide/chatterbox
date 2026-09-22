@@ -868,6 +868,7 @@
   },
   "push": {
     "newMessage": "New message",
-    "sentYouAMessage": "Sent you a message"
+    "sentYouAMessage": "Sent you a message",
+    "reminderTitle": "Message reminder"
   }
 }

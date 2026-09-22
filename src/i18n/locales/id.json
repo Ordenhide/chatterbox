@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Pesan baru",
-    "sentYouAMessage": "Mengirimi Anda pesan"
+    "sentYouAMessage": "Mengirimi Anda pesan",
+    "reminderTitle": "Pengingat pesan"
   }
 }

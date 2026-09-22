@@ -70,6 +70,23 @@ async function fallbackTitle(): Promise<string> {
 }
 
 /**
+ * The title on a reminder you set for yourself.
+ *
+ * Resolved here rather than sent by the server, which is the whole point of
+ * processReminders going data-only: the title used to be the literal string
+ * 'Message Reminder' in functions/index.js, so every reminder in a
+ * fifty-three-language app arrived in English.
+ */
+async function reminderTitle(): Promise<string> {
+  try {
+    await i18nReady;
+    return i18n.t('push.reminderTitle');
+  } catch {
+    return 'Message reminder';
+  }
+}
+
+/**
  * Notification content lives on-device only: the server sends this as a
  * data-only message (chatId/messageId/senderName, no text -- see
  * functions/index.js notifyNewMessage) precisely so it has no plaintext to
@@ -119,13 +136,32 @@ async function showMessageNotification(
 export function registerBackgroundMessageHandler(): void {
   setBackgroundMessageHandler(getMessaging(), async remoteMessage => {
     const {type, chatId, messageId, senderName} = remoteMessage.data ?? {};
-    if (type !== 'chat_message' || typeof chatId !== 'string' || typeof messageId !== 'string') {
-      return;
-    }
+    if (typeof chatId !== 'string' || typeof messageId !== 'string') return;
+
+    /**
+     * Both payloads the server sends are data-only and name a message rather
+     * than carrying it, so both are shown the same way — open the message on
+     * this device, and redact it if the screen is locked. Only the title
+     * differs: a chat message is titled by its sender, a reminder by the fact
+     * that it is one.
+     *
+     * The reminder branch is new because processReminders used to send a
+     * top-level `notification` instead, which the OS displays as given. That
+     * made it the one push in the app carrying message text — from a copy of
+     * the message the server had been asked to store — and the one push that
+     * could not be translated. Routing it through here costs a decrypt the
+     * chat path already pays and removes both.
+     */
+    if (type !== 'chat_message' && type !== 'reminder') return;
+
     // Resolved after the shape check, so a payload this handler ignores does
     // not pay for i18n at all.
     const title =
-      typeof senderName === 'string' && senderName ? senderName : await fallbackTitle();
+      type === 'reminder'
+        ? await reminderTitle()
+        : typeof senderName === 'string' && senderName
+          ? senderName
+          : await fallbackTitle();
     if (isNotificationContentHidden()) {
       await showMessageNotification(title, await redactedBody(), {id: messageId});
       return;

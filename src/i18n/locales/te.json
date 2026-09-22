@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "కొత్త సందేశం",
-    "sentYouAMessage": "మీకు ఒక సందేశం పంపారు"
+    "sentYouAMessage": "మీకు ఒక సందేశం పంపారు",
+    "reminderTitle": "సందేశ రిమైండర్"
   }
 }

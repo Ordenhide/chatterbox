@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "សារថ្មី",
-    "sentYouAMessage": "បានផ្ញើសារមកអ្នក"
+    "sentYouAMessage": "បានផ្ញើសារមកអ្នក",
+    "reminderTitle": "ការរំលឹកសារ"
   }
 }

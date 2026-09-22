@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Жаңа хабарлама",
-    "sentYouAMessage": "Сізге хабарлама жіберді"
+    "sentYouAMessage": "Сізге хабарлама жіберді",
+    "reminderTitle": "Хабарлама туралы еске салғыш"
   }
 }

@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Шинэ мессеж",
-    "sentYouAMessage": "Танд мессеж илгээлээ"
+    "sentYouAMessage": "Танд мессеж илгээлээ",
+    "reminderTitle": "Мессежийн сануулга"
   }
 }

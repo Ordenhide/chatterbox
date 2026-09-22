@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Ujumbe mpya",
-    "sentYouAMessage": "Amekutumia ujumbe"
+    "sentYouAMessage": "Amekutumia ujumbe",
+    "reminderTitle": "Kikumbusho cha ujumbe"
   }
 }

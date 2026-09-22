@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "ข้อความใหม่",
-    "sentYouAMessage": "ส่งข้อความถึงคุณ"
+    "sentYouAMessage": "ส่งข้อความถึงคุณ",
+    "reminderTitle": "การเตือนข้อความ"
   }
 }

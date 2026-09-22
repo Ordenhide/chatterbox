@@ -852,6 +852,7 @@
   },
   "push": {
     "newMessage": "Yangi xabar",
-    "sentYouAMessage": "Sizga xabar yubordi"
+    "sentYouAMessage": "Sizga xabar yubordi",
+    "reminderTitle": "Xabar eslatmasi"
   }
 }
