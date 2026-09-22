@@ -3,12 +3,20 @@
  *
  * Ports the mobile app's src/services/e2eeKeys.ts to the browser. The Firestore
  * schema is identical and shared: `users/{uid}/publicKeys/e2ee` holds one
- * X25519 public key per *account*, not per device, so signing in on web is
- * exactly "a new device" under the same single-keypair-per-account model
- * mobile already documents (see the module doc in e2ee.ts, limitation #3).
- * That means switching between phone and browser will surface a `changed`
- * warning to your contacts, same as a mobile reinstall would — this is a known,
- * accepted limitation of the prototype, not new breakage.
+ * X25519 public key per *account*, not per device.
+ *
+ * That sounds like it should make the browser "a new device" that displaces
+ * the phone, and the doc here used to say so — that switching between them
+ * would surface a `changed` warning to every contact. It does not, because
+ * the key is not incidental to the account: both clients derive it from the
+ * recovery phrase at sign-in (adoptSeedAsDeviceKey, called from auth.ts here
+ * and from AuthContext on mobile), so the phone and the browser publish the
+ * same key and neither strands the other.
+ *
+ * What the browser genuinely cannot do is read forward-secret messages — it
+ * has no ratchet. That is a gap in what it can *read*, not a claim on the
+ * account, which is why publishPublicKey leaves the phone's ratchet bundle
+ * alone. See MULTIDEVICE.md.
  *
  * Storage differs from mobile in one deliberate way: everything here is keyed
  * by the *local* account id (`myUserId`), not just the peer id. Unlike the
@@ -18,11 +26,11 @@
  * account A's cached trust history for a shared contact from earlier in the
  * same browser, masking a genuine key substitution that happened in between.
  */
-import {collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc} from 'firebase/firestore';
+import {doc, getDoc, serverTimestamp, setDoc} from 'firebase/firestore';
 import {x25519} from '@noble/curves/ed25519.js';
 import {db} from '../firebase';
 import {bytesToBase64, base64ToBytes, bytesToHex, hexToBytes} from './crypto';
-import {generateKeypair, type Keypair} from './e2ee';
+import {type Keypair} from './e2ee';
 import {isValidMnemonic, mnemonicToSecretKey, secretKeyToMnemonic} from './e2eeMnemonic';
 
 const SECRET_KEY_PREFIX = 'e2ee_secret_key_v1';
@@ -65,8 +73,11 @@ function writeLocal(key: string, value: string): void {
   try {
     localStorage.setItem(key, value);
   } catch {
-    // Storage blocked (private mode / disabled / quota) — the keypair simply
-    // won't survive a reload; getOrCreateDeviceKeypair will mint a new one.
+    // Storage blocked (private mode / disabled / quota). The key survives in
+    // the in-memory cache for the life of the tab and not past a reload, at
+    // which point sending fails closed and asks for the phrase again — it used
+    // to say "getOrCreateDeviceKeypair will mint a new one", which is how a
+    // blocked localStorage came to replace the account's key with a random one.
   }
 }
 
@@ -95,8 +106,28 @@ function markActiveKey(userId: string): void {
 }
 
 /**
- * Returns this browser's keypair for `userId`, generating and publishing one
- * on first call. Cached in-memory per account for the life of the tab.
+ * Returns this browser's keypair for `userId`, or throws.
+ *
+ * It used to mint a random one here and publish it. That was right when a
+ * device key was incidental to the account, and is wrong now: every account
+ * reaches this client through a recovery phrase (createAccount and
+ * signInWithPhrase in services/auth.ts, both via adoptSeedAsDeviceKey), so the
+ * key is *derived* — and a random one is a key the phrase cannot reproduce.
+ * Publishing it replaced the account's real key with one only this tab held,
+ * so peers encrypted to it, the phone could not read any of that, and the
+ * phone's next sign-in republished the derived key and orphaned it in the
+ * other direction.
+ *
+ * Reachable because localStorage can fail while the Firebase session
+ * survives — private mode, blocked site data, a full quota — which is exactly
+ * when writeLocal's own comment used to promise that "getOrCreateDeviceKeypair
+ * will mint a new one".
+ *
+ * So it fails closed. Every caller is a *send* path and already handles this
+ * error by surfacing it and keeping the message (ChatPane restores the
+ * composer), which is the correct outcome: the send is delayed rather than
+ * encrypted to a key that strands it. Signing in again is the repair, and it
+ * works because the same phrase always reaches the same key.
  */
 export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair> {
   const hit = cached.get(userId);
@@ -114,12 +145,9 @@ export async function getOrCreateDeviceKeypair(userId: string): Promise<Keypair>
     return keypair;
   }
 
-  const keypair = generateKeypair();
-  writeLocal(`${SECRET_KEY_PREFIX}:${userId}`, bytesToHex(keypair.secretKey));
-  cached.set(userId, keypair);
-  markActiveKey(userId);
-  await publishPublicKey(userId, keypair.publicKey);
-  return keypair;
+  throw new EncryptionUnavailableError(
+    'this browser is not holding the account key; sign in with your phrase again',
+  );
 }
 
 /**
@@ -204,55 +232,55 @@ function keypairFromSecret(secretKey: Uint8Array): Keypair {
   return {secretKey, publicKey: x25519.getPublicKey(secretKey)};
 }
 
+/** Sealed attachment bytes. The same string the mobile client publishes. */
+export const MEDIA_CAPABILITY = 'media-v1';
+
+/**
+ * What this client can actually honour, published so senders know.
+ *
+ * `media-v1` is claimed because it is true: resolveSealedMedia decrypts sealed
+ * attachment bytes (services/mediaVault.ts) and every upload from here seals
+ * them (services/storage.ts). This used to publish `[]`, on the reasoning that
+ * an unhonoured capability claim is worse than none — which was right about
+ * the principle and wrong about the fact, and the cost was not a broken image:
+ * `peersSupportEncryptedMedia` on the phone reads this list, so clearing it
+ * stopped every sender encrypting attachment bytes to this account at all.
+ * Photos then went to Cloud Storage in the clear, for an account whose owner
+ * had done nothing but open a browser tab.
+ */
+const CAPABILITIES = [MEDIA_CAPABILITY];
+
 export async function publishPublicKey(userId: string, publicKey: Uint8Array): Promise<void> {
   try {
     await setDoc(
       doc(db, 'users', userId, 'publicKeys', 'e2ee'),
       {
         publicKey: bytesToBase64(publicKey),
-        // Cleared, not omitted. `merge: true` leaves absent fields alone, so
-        // omitting this would let a capability published by the user's phone
-        // survive on the document after the web client became the account's
-        // active device — and senders would keep encrypting attachment bytes
-        // this client cannot decrypt, producing a broken image with no error
-        // on either side. Same reasoning as retractRatchetBundle below: an
-        // unhonoured capability claim is worse than none.
-        caps: [],
+        caps: CAPABILITIES,
         updatedAt: serverTimestamp(),
       },
       {merge: true},
     );
-    await retractRatchetBundle(userId);
+    /*
+     * The ratchet bundle is deliberately left alone.
+     *
+     * This used to retract it — delete the identity and every one-time prekey
+     * the phone published — on the reasoning that a bundle this client cannot
+     * open is a false claim about the account. The premise does not hold: both
+     * clients derive their key from the recovery phrase (adoptSeedAsDeviceKey,
+     * called from sign-in on both), so the browser is not replacing the phone
+     * and has no standing to retract what the phone published.
+     *
+     * The cost of the old behaviour was total and silent: opening a browser
+     * tab took the whole account off forward secrecy, every peer fell back to
+     * the long-lived key, and the phone only took it back at its next sign-in.
+     * Leaving the bundle standing means the browser cannot read forward-secret
+     * messages — which is already true, already labelled in the thread, and
+     * written down in MULTIDEVICE.md.
+     */
   } catch (error) {
     console.warn('e2ee publish public key failed:', error);
     throw error;
-  }
-}
-
-/**
- * Removes any forward-secrecy prekey bundle published by another device.
- *
- * A published bundle is a claim that this *account* can be reached over the
- * ratchet, and senders act on it in preference to the static path. This client
- * does not implement the ratchet, so once it becomes the account's active
- * device that claim is false — and leaving it standing would make every
- * incoming message unreadable here while looking perfectly fine to the sender.
- *
- * The situation is narrow (a user moves from the mobile app to the web client)
- * but the failure is total and silent, which is what makes it worth the write.
- * It is the same single-device assumption the rest of enrollment already makes:
- * publishing an identity means "this device is the one to reach me on".
- *
- * Best-effort — a failure here leaves messaging working over whichever path
- * the sender picks, so it must not block enrolling.
- */
-async function retractRatchetBundle(userId: string): Promise<void> {
-  try {
-    await deleteDoc(doc(db, 'users', userId, 'publicKeys', 'ratchet'));
-    const stale = await getDocs(collection(db, 'users', userId, 'oneTimePreKeys'));
-    await Promise.all(stale.docs.map(d => deleteDoc(d.ref).catch(() => undefined)));
-  } catch (error) {
-    console.warn('e2ee retract ratchet bundle failed:', error);
   }
 }
 

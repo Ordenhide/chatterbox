@@ -26,7 +26,10 @@ const memoryStorage = (() => {
 vi.stubGlobal('localStorage', memoryStorage);
 
 /** Stand-in for Firestore, keyed by the doc path "users/{uid}/publicKeys/e2ee". */
-const firestoreDocs = new Map<string, {publicKey?: string; caps?: string[]}>();
+// Holds whatever document the code under test writes or reads, which is not
+// only the e2ee key doc — publishPublicKey's neighbours in publicKeys/ are
+// part of what it must leave alone.
+const firestoreDocs = new Map<string, Record<string, unknown>>();
 
 /** Makes the next getDoc reject, standing in for a network/permission failure. */
 let firestoreUnreachable = false;
@@ -41,12 +44,34 @@ vi.mock('firebase/firestore', () => ({
   setDoc: async (ref: {path: string}, data: {publicKey: string}) => {
     firestoreDocs.set(ref.path, {...firestoreDocs.get(ref.path), ...data});
   },
+  /**
+   * Deletes, rather than being absent.
+   *
+   * Absence is how a real deletion hid here for as long as it did: the code
+   * that retracted the account's forward-secrecy bundle swallowed its own
+   * failures, and with no deleteDoc in this mock it threw on every test run
+   * and deleted nothing. The behaviour existed only in production, and no
+   * test asserting "the bundle survives" could have failed. Implemented so
+   * that one can.
+   */
+  deleteDoc: async (ref: {path: string}) => {
+    firestoreDocs.delete(ref.path);
+  },
+  collection: (_db: unknown, ...segments: string[]) => ({path: segments.join('/')}),
+  getDocs: async (ref: {path: string}) => {
+    const prefix = `${ref.path}/`;
+    const docs = [...firestoreDocs.keys()]
+      .filter(path => path.startsWith(prefix))
+      .map(path => ({ref: {path}, data: () => firestoreDocs.get(path)}));
+    return {docs, empty: docs.length === 0};
+  },
   serverTimestamp: () => 'TS',
 }));
 vi.mock('../firebase', () => ({db: {}}));
 
 import {
   _resetKeypairCache,
+  adoptSeedAsDeviceKey,
   enrollmentReadiness,
   getDeviceKeypairIfEnrolled,
   fetchPeerPublicKeyChecked,
@@ -68,6 +93,22 @@ function publishPeerKey(publicKey: Uint8Array) {
   firestoreDocs.set(`users/${PEER}/publicKeys/e2ee`, {publicKey: bytesToBase64(publicKey)});
 }
 
+/**
+ * Establishes the account key the way a real sign-in does.
+ *
+ * These tests used to reach for getOrCreateDeviceKeypair as setup, which
+ * worked only because it minted a random key — the behaviour that turned a
+ * blocked localStorage into a replaced account key. Going through the
+ * phrase-derived path instead means the setup matches how a key actually
+ * arrives here: createAccount and signInWithPhrase both call this.
+ */
+async function signIn(uid: string, distinguishingByte = 1) {
+  await adoptSeedAsDeviceKey(uid, new Uint8Array(32).fill(distinguishingByte));
+  const keypair = await getDeviceKeypairIfEnrolled(uid);
+  if (!keypair) throw new Error('signIn helper left no key');
+  return keypair;
+}
+
 beforeEach(() => {
   firestoreDocs.clear();
   memoryStorage.clear();
@@ -76,14 +117,30 @@ beforeEach(() => {
 });
 
 describe('getOrCreateDeviceKeypair', () => {
-  it('publishes the public key on first call', async () => {
-    const {publicKey} = await getOrCreateDeviceKeypair(ME);
-    const stored = firestoreDocs.get(`users/${ME}/publicKeys/e2ee`);
-    expect(stored?.publicKey).toBe(bytesToBase64(publicKey));
+  /**
+   * The behaviour this function used to have, and the reason it does not any
+   * more. Every account reaches this client through a recovery phrase, so the
+   * key is derived and a random one is a key the phrase cannot reproduce.
+   * Minting and publishing it replaced the account's real key with one only
+   * this tab held: peers encrypted to it, the phone could not read any of
+   * that, and the phone's next sign-in orphaned it in the other direction.
+   *
+   * Reachable whenever localStorage fails while the Firebase session survives
+   * — private mode, blocked site data, a full quota.
+   */
+  it('refuses to mint a key, and publishes nothing, when this browser holds none', async () => {
+    await expect(getOrCreateDeviceKeypair(ME)).rejects.toThrow();
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toBeUndefined();
+  });
+
+  it('reports the refusal as the error every send path already handles', async () => {
+    await expect(getOrCreateDeviceKeypair(ME)).rejects.toMatchObject({
+      code: 'e2ee-unavailable',
+    });
   });
 
   it('returns the same keypair on a second call (persisted, not regenerated)', async () => {
-    const first = await getOrCreateDeviceKeypair(ME);
+    const first = await signIn(ME);
     _resetKeypairCache(); // drop the in-memory cache — simulates a page reload
     const second = await getOrCreateDeviceKeypair(ME);
     expect(bytesToBase64(second.secretKey)).toBe(bytesToBase64(first.secretKey));
@@ -93,8 +150,8 @@ describe('getOrCreateDeviceKeypair', () => {
     // drafts.ts already namespaces localStorage by uid for exactly this
     // reason (see its own comment) — a shared browser signing into a second
     // Chatterbox account must not inherit the first account's secret key.
-    const mine = await getOrCreateDeviceKeypair(ME);
-    const theirs = await getOrCreateDeviceKeypair(OTHER_ME);
+    const mine = await signIn(ME, 1);
+    const theirs = await signIn(OTHER_ME, 2);
     expect(bytesToBase64(theirs.secretKey)).not.toBe(bytesToBase64(mine.secretKey));
 
     _resetKeypairCache();
@@ -196,34 +253,71 @@ describe('publishPublicKey / fetchPeerPublicKeyChecked', () => {
     expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey).toBe(bytesToBase64(publicKey));
   });
 
-  it('clears a capability the account published from another device', async () => {
-    // The mobile app advertises `media-v1` to say it can decrypt attachment
-    // *bytes*. This client cannot, so leaving that claim standing after it
-    // becomes the account's active device would have senders encrypting
-    // photos it renders as broken images — silently, on both ends. The write
-    // merges, so the field has to be overwritten rather than left out.
+  /**
+   * This used to publish `caps: []`, on the reasoning that this client cannot
+   * decrypt attachment bytes — which was simply not true: resolveSealedMedia
+   * decrypts them and every upload from here seals them. The cost of the false
+   * claim was not a broken image. `peersSupportEncryptedMedia` on the phone
+   * reads this list, so clearing it stopped every sender encrypting attachment
+   * bytes to this account at all, and photos went to Cloud Storage in the
+   * clear for an account whose owner had opened a browser tab.
+   */
+  it('advertises the media capability it actually honours', async () => {
+    const {publicKey} = generateKeypair();
+    await publishPublicKey(ME, publicKey);
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.caps).toEqual(['media-v1']);
+  });
+
+  it('does not clear a capability the account already published', async () => {
     firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
       publicKey: 'from-the-phone',
       caps: ['media-v1'],
     });
-
     const {publicKey} = generateKeypair();
     await publishPublicKey(ME, publicKey);
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.caps).toEqual(['media-v1']);
+  });
 
-    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.caps).toEqual([]);
+  /**
+   * Publishing used to retract the phone's forward-secrecy bundle — delete the
+   * ratchet identity and every one-time prekey — so opening a browser tab took
+   * the whole account off forward secrecy until the phone next signed in.
+   *
+   * The premise was that the browser had become the account's active device.
+   * It never does: both clients derive their key from the recovery phrase, so
+   * the browser publishes the same key and has no standing to retract what the
+   * phone published.
+   *
+   * Note what made this invisible for so long: the old code swallowed its own
+   * failures, and this mock implements no deleteDoc — so the retraction never
+   * ran in a test and only ever happened in production.
+   */
+  it('leaves the ratchet bundle the phone published alone', async () => {
+    firestoreDocs.set(`users/${ME}/publicKeys/ratchet`, {identityKey: 'from-the-phone'});
+    const {publicKey} = generateKeypair();
+    await publishPublicKey(ME, publicKey);
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/ratchet`)).toEqual({
+      identityKey: 'from-the-phone',
+    });
   });
 });
 
 describe('getRecoveryPhrase', () => {
   it('encodes this browser\'s actual key, so the phrase can restore it', async () => {
-    const {secretKey} = await getOrCreateDeviceKeypair(ME);
+    const {secretKey} = await signIn(ME);
     expect(await getRecoveryPhrase(ME)).toBe(secretKeyToMnemonic(secretKey));
   });
 
-  it('enrolls the account if it has no key yet, rather than failing', async () => {
-    const phrase = await getRecoveryPhrase(ME);
-    expect(phrase.split(' ')).toHaveLength(24);
-    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toBeDefined();
+  /**
+   * This used to enrol the account and hand back a phrase, on the reasoning
+   * that returning something beats failing. It does not: the phrase would
+   * encode a key this browser had just invented, so the user would be shown
+   * 24 words that do not open their account and told to write them down.
+   * Their real phrase would meanwhile have been displaced by the publish.
+   */
+  it('refuses rather than inventing a phrase for a key the account never had', async () => {
+    await expect(getRecoveryPhrase(ME)).rejects.toThrow();
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toBeUndefined();
   });
 });
 
@@ -255,7 +349,7 @@ describe('enrollmentReadiness', () => {
   });
 
   it('is safe once this browser holds the key, even after a reload', async () => {
-    await getOrCreateDeviceKeypair(ME);
+    await signIn(ME);
     expect(await enrollmentReadiness(ME)).toBe('safe');
     _resetKeypairCache();
     expect(await enrollmentReadiness(ME)).toBe('safe');
@@ -270,7 +364,7 @@ describe('enrollmentReadiness', () => {
 
 describe('restoreDeviceKeypairFromPhrase', () => {
   it('restores the original key in a fresh browser profile', async () => {
-    const original = await getOrCreateDeviceKeypair(ME);
+    const original = await signIn(ME);
     const phrase = secretKeyToMnemonic(original.secretKey);
 
     // Wipe local state only — the published key stays, as it would in reality.
@@ -278,7 +372,7 @@ describe('restoreDeviceKeypairFromPhrase', () => {
     _resetKeypairCache();
 
     expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({success: true});
-    const restored = await getOrCreateDeviceKeypair(ME);
+    const restored = await signIn(ME);
     expect(bytesToBase64(restored.secretKey)).toBe(bytesToBase64(original.secretKey));
   });
 
@@ -308,9 +402,9 @@ describe('restoreDeviceKeypairFromPhrase', () => {
   });
 
   it('leaves local state untouched when the phrase is rejected', async () => {
-    const original = await getOrCreateDeviceKeypair(ME);
+    const original = await signIn(ME);
     await restoreDeviceKeypairFromPhrase(ME, 'garbage phrase');
-    const after = await getOrCreateDeviceKeypair(ME);
+    const after = await signIn(ME);
     expect(bytesToBase64(after.secretKey)).toBe(bytesToBase64(original.secretKey));
   });
 
@@ -324,7 +418,7 @@ describe('restoreDeviceKeypairFromPhrase', () => {
     // is exactly the case markActiveKey does *not* cover: the active account
     // never changes, so only the explicit bump in restore keeps stale decrypt
     // failures from sticking.
-    await getOrCreateDeviceKeypair(ME);
+    await signIn(ME);
     const real = generateKeypair();
     firestoreDocs.set(`users/${ME}/publicKeys/e2ee`, {
       publicKey: bytesToBase64(real.publicKey),
@@ -344,7 +438,7 @@ describe('restoreDeviceKeypairFromPhrase', () => {
   // conversation was therefore enough to publish a new key over the account's
   // real one. getDeviceKeypairIfEnrolled is what those paths use now.
   it('reading with getDeviceKeypairIfEnrolled leaves the published key alone', async () => {
-    const original = await getOrCreateDeviceKeypair(ME);
+    const original = await signIn(ME);
     const phrase = secretKeyToMnemonic(original.secretKey);
     const publishedBefore = firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)?.publicKey;
 
@@ -360,7 +454,7 @@ describe('restoreDeviceKeypairFromPhrase', () => {
   });
 
   it('getDeviceKeypairIfEnrolled returns the key this browser already holds', async () => {
-    const original = await getOrCreateDeviceKeypair(ME);
+    const original = await signIn(ME);
     _resetKeypairCache();
     expect((await getDeviceKeypairIfEnrolled(ME))?.secretKey).toEqual(original.secretKey);
   });
@@ -371,7 +465,7 @@ describe('restoreDeviceKeypairFromPhrase', () => {
   // real one, and the recovery phrase the user carefully wrote down is now
   // permanently useless. The guard must run *before* any getOrCreateDeviceKeypair.
   it('reports superseded when the account has replaced the key this browser holds', async () => {
-    await getOrCreateDeviceKeypair(ME);
+    await signIn(ME);
     expect(await enrollmentReadiness(ME)).toBe('safe');
 
     // Another device restores a different phrase and republishes.
@@ -383,27 +477,35 @@ describe('restoreDeviceKeypairFromPhrase', () => {
     expect(await enrollmentReadiness(ME)).toBe('superseded');
   });
 
-  it('a phrase stops working if the browser auto-enrolls before restoring', async () => {
-    const original = await getOrCreateDeviceKeypair(ME);
+  /**
+   * This used to record the opposite: that clearing site data and then sending
+   * cost the user their phrase forever, because the browser would auto-enrol a
+   * random key over the published one and the real phrase then read as a
+   * mismatch. The test existed to document a hazard the code could not avoid.
+   *
+   * It can now — getOrCreateDeviceKeypair refuses instead of minting — so the
+   * property worth pinning is the inverse: the phrase survives site data being
+   * cleared, and nothing this browser does while empty-handed can displace it.
+   */
+  it('keeps the phrase working after site data is cleared, because it cannot enrol over it', async () => {
+    const original = await signIn(ME);
     const phrase = secretKeyToMnemonic(original.secretKey);
+    const published = firestoreDocs.get(`users/${ME}/publicKeys/e2ee`);
 
     memoryStorage.clear(); // user cleared site data; published key still stands
     _resetKeypairCache();
 
-    // enrollmentReadiness would say needs-restore here and stop the app enrolling.
     expect(await enrollmentReadiness(ME)).toBe('needs-restore');
 
-    // Ignoring it and enrolling anyway overwrites the published key...
-    await getOrCreateDeviceKeypair(ME);
-    // ...and now the real recovery phrase is rejected, forever.
-    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({
-      success: false,
-      reason: 'key-mismatch',
-    });
+    // A send in this state fails rather than enrolling, so the published key
+    // is still the one the phrase encodes.
+    await expect(getOrCreateDeviceKeypair(ME)).rejects.toThrow();
+    expect(firestoreDocs.get(`users/${ME}/publicKeys/e2ee`)).toEqual(published);
+    expect(await restoreDeviceKeypairFromPhrase(ME, phrase)).toEqual({success: true});
   });
 
   it('does not bump the key generation when a restore is rejected', async () => {
-    await getOrCreateDeviceKeypair(ME);
+    await signIn(ME);
     const before = getKeyGeneration();
     await restoreDeviceKeypairFromPhrase(ME, 'garbage phrase');
     expect(getKeyGeneration()).toBe(before);
