@@ -317,18 +317,7 @@ export async function sendMessage(
   // send clears the plain field it seals (see ChatPane's
   // encryptOutgoingMessage), so without this branch the preview would go
   // blank instead of falling through to '[Photo]' / etc.
-  const isEncrypted = !!(
-    media.encrypted ||
-    media.encryptedImage ||
-    media.encryptedAudio ||
-    media.encryptedFileUri
-  );
-  const preview = media.burnAfterReading
-    ? '🔥'
-    : isEncrypted
-    ? '🔒 Encrypted message'
-    : media.text ||
-      (media.image ? '[Photo]' : media.audio ? '[Voice message]' : media.file ? '[File]' : '');
+  const preview = lastMessagePreview(media);
 
   await runTransaction(db, async tx => {
     const chatRef = doc(db, 'chats', chatId);
@@ -344,7 +333,7 @@ export async function sendMessage(
       {
         // `sealed` is what readers render from; `text` keeps the marker only
         // for clients built before the flag existed. See ChatRoom.lastMessage.
-        lastMessage: {text: preview, sealed: isEncrypted, createdAt: serverTimestamp()},
+        lastMessage: {...preview, createdAt: serverTimestamp()},
         updatedAt: serverTimestamp(),
         unreadCountBy,
       },
@@ -472,13 +461,39 @@ export async function deleteMessage(chatId: string, messageId: string, uid: stri
   await deleteMessages(chatId, [messageId], uid);
 }
 
-// Same preview rules as sendMessage (never leak burn text).
-function messagePreview(m: ChatMessage): string {
-  if (m.burnAfterReading) return '🔥';
-  return (
-    m.text ||
-    (m.image ? '[Photo]' : m.audio ? '[Voice message]' : m.file ? '[File]' : '')
-  );
+/**
+ * The chat-list preview for a message, and whether it is sealed.
+ *
+ * One helper for every writer of `lastMessage`, because they had drifted.
+ * sendMessage set `sealed`; recomputeChatLastMessage and the missed-call
+ * notice did not — and `setDoc(..., {merge: true})` merges a map field by
+ * field, so the previous `sealed` survived and went on describing a message
+ * that was no longer the last one. That is a padlock label over a plaintext
+ * preview, which is the UI making a false claim about encryption, or a blank
+ * preview over a sealed one.
+ *
+ * Mirrors lastMessagePreview in the mobile client's services/firebaseChat.ts.
+ * Both clients read this same field, so the two have to agree.
+ */
+export function lastMessagePreview(m: {
+  text?: string | null;
+  image?: string | null;
+  audio?: string | null;
+  file?: {uri: string} | null;
+  burnAfterReading?: unknown;
+  encrypted?: unknown;
+  encryptedImage?: unknown;
+  encryptedAudio?: unknown;
+  encryptedFileUri?: unknown;
+}): {sealed: boolean; text: string} {
+  const sealed = !!(m.encrypted || m.encryptedImage || m.encryptedAudio || m.encryptedFileUri);
+  if (m.burnAfterReading) return {sealed, text: '🔥'};
+  if (sealed) return {sealed, text: '🔒 Encrypted message'};
+  return {
+    sealed,
+    text:
+      m.text || (m.image ? '[Photo]' : m.audio ? '[Voice message]' : m.file ? '[File]' : ''),
+  };
 }
 
 /**
@@ -492,13 +507,19 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
   );
   const chatRef = doc(db, 'chats', chatId);
   if (snap.empty) {
-    await setDoc(chatRef, {lastMessage: {text: '', createdAt: null}}, {merge: true});
+    // `sealed: false` explicitly: without it, a chat emptied of messages kept
+    // whatever the previous preview claimed and showed a padlock over nothing.
+    await setDoc(
+      chatRef,
+      {lastMessage: {sealed: false, text: '', createdAt: null}},
+      {merge: true},
+    );
     return;
   }
   const m = snap.docs[0].data() as ChatMessage;
   await setDoc(
     chatRef,
-    {lastMessage: {text: messagePreview(m), createdAt: m.createdAt ?? serverTimestamp()}},
+    {lastMessage: {...lastMessagePreview(m), createdAt: m.createdAt ?? serverTimestamp()}},
     {merge: true},
   );
 }
@@ -557,7 +578,7 @@ export async function logMissedCall(
     tx.set(
       chatRef,
       {
-        lastMessage: {text, createdAt: serverTimestamp()},
+        lastMessage: {sealed: false, text, createdAt: serverTimestamp()},
         updatedAt: serverTimestamp(),
         unreadCountBy,
       },

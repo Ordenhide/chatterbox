@@ -424,29 +424,11 @@ export async function sendMessage(chatId: string, message: Message) {
         unreadCountBy[uid] = (unreadCountBy[uid] || 0) + 1;
       }
     });
-    // An E2EE-sealed message (see encryptOutgoingMessage in ChatScreen.tsx) has
-    // already had text/image/video/audio/file.uri cleared by this point — only
-    // the encryptedX sibling is set. Without this check, the chat list would
-    // show a blank preview for the most recent message in an encrypted
-    // conversation, on both mobile and web (both read this same field).
-    const isEncrypted = !!(
-      message.encrypted ||
-      message.encryptedImage ||
-      message.encryptedVideo ||
-      message.encryptedAudio ||
-      message.encryptedFileUri
-    );
     tx.set(
       chatRef,
       {
         lastMessage: {
-          // `sealed` is what readers should render from; the literal below is
-          // kept only so a client built before that flag existed still shows
-          // something rather than a blank preview. Drop it once those are
-          // gone. See Message.sealed.
-          sealed: isEncrypted,
-          text:
-            message.text || (isEncrypted ? '🔒 Encrypted message' : ''),
+          ...lastMessagePreview(message),
           createdAt: serverTimestamp(),
           image: message.image || null,
           video: message.video || null,
@@ -495,6 +477,37 @@ export async function deleteMessages(
   purgeExpiredTrash(chatId, uid).catch(() => undefined);
 }
 
+/**
+ * The chat-list preview for a message, and whether it is sealed.
+ *
+ * One helper because there are two writers and they had drifted. An E2EE
+ * message (see encryptOutgoingMessage in ChatScreen.tsx) has had
+ * text/image/video/audio/file.uri cleared by the time it is sent — only the
+ * encryptedX sibling is set — so a preview taken from `text` alone is blank
+ * for the newest message in every encrypted conversation.
+ *
+ * `sealed` is what readers render from; the literal is kept only so a client
+ * built before that flag existed shows something rather than nothing. Drop it
+ * once those are gone. See Message.sealed.
+ *
+ * Returned together, and spread into both writes, because the bug was that
+ * they came apart: the send path set `sealed` and recomputeChatLastMessage
+ * did not. `setDoc(..., {merge: true})` merges a map field by field, so the
+ * old `sealed` survived a recompute and went on describing a message that had
+ * been deleted — a padlock label on a plaintext preview, which is the UI
+ * making a false claim about encryption, or a blank preview on a sealed one.
+ */
+export function lastMessagePreview(message: Message): {sealed: boolean; text: string} {
+  const sealed = !!(
+    message.encrypted ||
+    message.encryptedImage ||
+    message.encryptedVideo ||
+    message.encryptedAudio ||
+    message.encryptedFileUri
+  );
+  return {sealed, text: message.text || (sealed ? '🔒 Encrypted message' : '')};
+}
+
 /** Rebuilds the chat's lastMessage preview from the newest remaining message. */
 export async function recomputeChatLastMessage(chatId: string): Promise<void> {
   const messagesRef = collection(doc(chatsRef(), chatId), 'messages');
@@ -503,7 +516,19 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
   if (snap.empty) {
     await setDoc(
       chatRef,
-      {lastMessage: {text: '', createdAt: null, image: null, video: null, audio: null, file: null}},
+      {
+        // `sealed: false` explicitly. Leaving it out left a chat emptied of
+        // messages advertising a padlock over an empty preview.
+        lastMessage: {
+          sealed: false,
+          text: '',
+          createdAt: null,
+          image: null,
+          video: null,
+          audio: null,
+          file: null,
+        },
+      },
       {merge: true},
     );
     return;
@@ -513,7 +538,7 @@ export async function recomputeChatLastMessage(chatId: string): Promise<void> {
     chatRef,
     {
       lastMessage: {
-        text: m.text || '',
+        ...lastMessagePreview(m),
         createdAt: m.createdAt ?? serverTimestamp(),
         image: m.image || null,
         video: m.video || null,
@@ -910,6 +935,28 @@ export async function setTyping(chatId: string, userId: string, isTyping: boolea
   }
 }
 
+/**
+ * Stamps an upload with who made it.
+ *
+ * storage.rules reads `uploaderUid` back to decide who may delete or overwrite
+ * a chat attachment. Until this existed, `write` on chats/{chatId}/** covered
+ * create, overwrite and delete for every participant — so any member of a
+ * group could destroy anyone's attachment, while firestore.rules had
+ * deliberately narrowed message deletion to the author for exactly that
+ * reason.
+ *
+ * Returns an empty metadata object when there is no signed-in user rather than
+ * refusing: the rules allow an unstamped upload (every object from an older
+ * build has none, and this app ships as an APK rather than through a store
+ * that can force an update), and an upload with no user is going to be denied
+ * by the session check anyway. Claiming someone else's uid is what the rules
+ * refuse; declining to claim is not.
+ */
+function uploaderMetadata(): {customMetadata?: Record<string, string>} {
+  const uid = getAuth().currentUser?.uid;
+  return uid ? {customMetadata: {uploaderUid: uid}} : {};
+}
+
 export async function uploadFile(
   chatId: string,
   uri: string,
@@ -917,7 +964,7 @@ export async function uploadFile(
   onProgress?: (percent: number) => void,
 ): Promise<string> {
   const storageRef = ref(storage, `chats/${chatId}/${path}`);
-  return uploadFileFromUri(storageRef, uri, onProgress);
+  return uploadFileFromUri(storageRef, uri, onProgress, uploaderMetadata());
 }
 
 /**
@@ -958,6 +1005,7 @@ export async function uploadFileResumable(
     path: uri,
     mime: options.mime,
     idToken,
+    customMetadata: uploaderMetadata().customMetadata,
     sessionUrl: options.sessionUrl,
     onSession: options.onSession,
     onProgress: options.onProgress,

@@ -80,7 +80,13 @@ jest.mock('../e2eeKeys', () => ({
   getOrCreateDeviceKeypair: (...args: unknown[]) => mockGetOrCreateDeviceKeypair(...args),
 }));
 
-import {deleteMessages, getUsersByIds, setTyping, upsertUserProfile} from '../firebaseChat';
+import {
+  deleteMessages,
+  getUsersByIds,
+  lastMessagePreview,
+  setTyping,
+  upsertUserProfile,
+} from '../firebaseChat';
 import {getDocs, setDoc} from '../firebase/firestore';
 
 const KEYPAIR = {secretKey: new Uint8Array([1, 2, 3]), publicKey: new Uint8Array([4, 5, 6])};
@@ -313,3 +319,43 @@ describe('upsertUserProfile', () => {
  * ran first, so its refusal aborted the import before the chats and messages a
  * restore actually exists for — it silently restored nothing.
  */
+
+/**
+ * The chat-list preview, and the flag the padlock is drawn from.
+ *
+ * `sealed` was set by sendMessage and by no other writer of `lastMessage`.
+ * Firestore's `{merge: true}` merges a map field by field, so it survived
+ * every recompute and went on describing a message that had been deleted —
+ * a padlock over a plaintext preview, or a blank preview over a sealed one.
+ * lastMessageSealed.test.ts checks that no writer forgets it; these check
+ * that the shared helper answers correctly.
+ */
+describe('lastMessagePreview', () => {
+  it('marks a sealed text message and does not quote it', () => {
+    expect(lastMessagePreview({encrypted: {alg: 'x', body: 'ct'}} as any)).toEqual({
+      sealed: true,
+      text: '🔒 Encrypted message',
+    });
+  });
+
+  it('marks a message whose only sealed part is an attachment', () => {
+    // The case the flag exists for: no `encrypted`, so a check on that field
+    // alone would call a sealed photo plaintext and render a blank preview.
+    for (const field of [
+      'encryptedImage',
+      'encryptedVideo',
+      'encryptedAudio',
+      'encryptedFileUri',
+    ]) {
+      expect(lastMessagePreview({[field]: {alg: 'x'}} as any).sealed).toBe(true);
+    }
+  });
+
+  it('leaves a plaintext message unmarked and shows its text', () => {
+    expect(lastMessagePreview({text: 'hello'} as any)).toEqual({sealed: false, text: 'hello'});
+  });
+
+  it('is unmarked and empty for a message with nothing in it', () => {
+    expect(lastMessagePreview({} as any)).toEqual({sealed: false, text: ''});
+  });
+});
