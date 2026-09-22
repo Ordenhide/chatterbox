@@ -21,12 +21,29 @@
  * that was already correct.
  */
 import {readFileSync} from 'fs';
-import {join} from 'path';
+import {join, relative, sep} from 'path';
+
+const ROOT = join(__dirname, '..', '..', '..');
 
 const SOURCES = [
   join(__dirname, '..', 'firebaseChat.ts'),
-  join(__dirname, '..', '..', '..', 'web', 'src', 'services', 'chat.ts'),
+  join(ROOT, 'web', 'src', 'services', 'chat.ts'),
 ];
+
+/**
+ * A repo-relative label for the error messages, and for the pin below.
+ *
+ * Derived from the checkout root rather than by splitting the absolute path
+ * on the project's directory name. That is what this did, and it read as
+ * correct on a developer machine — `.../Projects/chatterbox/src/...` splits
+ * on `/chatterbox/` into exactly the wanted suffix. GitHub checks the repo
+ * out at `/home/runner/work/chatterbox/chatterbox/`, where the name appears
+ * twice, so the split returned the literal string `chatterbox` for every
+ * source and the pin below failed on a green codebase.
+ */
+function repoRelative(path: string, root: string = ROOT): string {
+  return relative(root, path).split(sep).join('/');
+}
 
 /**
  * Each `lastMessage: { ... }` object literal in a file, as source text.
@@ -72,7 +89,7 @@ function codeOnly(text: string): string {
 
 const literals = SOURCES.flatMap(path => {
   const text = codeOnly(readFileSync(path, 'utf8'));
-  return lastMessageLiterals(text).map(l => ({...l, file: path.split('/chatterbox/')[1] ?? path}));
+  return lastMessageLiterals(text).map(l => ({...l, file: repoRelative(path)}));
 });
 
 describe('the chat-list preview never claims the wrong protection', () => {
@@ -83,6 +100,22 @@ describe('the chat-list preview never claims the wrong protection', () => {
     expect(literals.length).toBeGreaterThanOrEqual(5);
     expect(literals.some(l => l.file.startsWith('src/'))).toBe(true);
     expect(literals.some(l => l.file.startsWith('web/src/'))).toBe(true);
+  });
+
+  it('labels a source by its place in the repo, wherever the repo is checked out', () => {
+    // The root is injected here precisely because the bug this guards could
+    // not be reproduced on the machine that wrote it: a developer checkout at
+    // `.../Projects/chatterbox/` made the old text-splitting derivation look
+    // right, and only GitHub's `work/chatterbox/chatterbox/` — the project
+    // name twice — exposed it. Asserting against that shape directly means
+    // the pin fails here rather than in CI next time.
+    const ci = '/home/runner/work/chatterbox/chatterbox';
+    expect(repoRelative(`${ci}/src/services/firebaseChat.ts`, ci)).toBe(
+      'src/services/firebaseChat.ts',
+    );
+    expect(repoRelative(`${ci}/web/src/services/chat.ts`, ci)).toBe(
+      'web/src/services/chat.ts',
+    );
   });
 
   it('matches braces rather than stopping at the first one', () => {
