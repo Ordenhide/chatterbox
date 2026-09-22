@@ -145,6 +145,7 @@
     "title": "Chats",
     "searchPlaceholder": "Søg i chats",
     "empty": "Ingen chats endnu.",
+    "encryptedPreview": "Krypteret besked",
     "offlineEmpty": "Offline — viser cachede chats.",
     "actionsTitle": "Chathandlinger",
     "pin": "Fastgør",

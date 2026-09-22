@@ -154,6 +154,7 @@
     "title": "Chats",
     "searchPlaceholder": "Search chats",
     "empty": "No chats yet.",
+    "encryptedPreview": "Encrypted message",
     "offlineEmpty": "Offline — showing cached chats.",
     "actionsTitle": "Chat Actions",
     "pin": "Pin",

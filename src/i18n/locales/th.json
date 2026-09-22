@@ -145,6 +145,7 @@
     "title": "แชท",
     "searchPlaceholder": "ค้นหาแชท",
     "empty": "ยังไม่มีแชท",
+    "encryptedPreview": "ข้อความที่เข้ารหัส",
     "offlineEmpty": "ออฟไลน์ — กำลังแสดงแชทที่บันทึกไว้",
     "actionsTitle": "การดำเนินการแชท",
     "pin": "ปักหมุด",

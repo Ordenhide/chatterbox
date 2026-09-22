@@ -152,9 +152,10 @@ export async function sendTextMessage(
     const {secretKey} = await getOrCreateDeviceKeypair(myUserId);
     const envelope = sealForRecipients(message.text, secretKey, recipients, chatId);
 
-    // `text` is blanked so no plaintext copy reaches Firestore. sendMessage
-    // derives lastMessage.text from it, so the chat-list preview becomes empty
-    // rather than leaking the body — a placeholder belongs in the UI layer.
+    // `text` is blanked so no plaintext copy reaches Firestore. The chat-list
+    // preview is derived from it, so blanking it is also what keeps the body
+    // out of `lastMessage`; sendMessage substitutes a `sealed` marker there,
+    // which each client renders in its own language (see Message.sealed).
     await sendMessage(chatId, {...message, text: '', encrypted: envelope});
     await rememberSentBody(myUserId, chatId, String(message._id ?? ''), message.text);
     return {encrypted: true, protection: 'static'};

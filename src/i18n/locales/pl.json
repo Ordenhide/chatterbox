@@ -145,6 +145,7 @@
     "title": "Czaty",
     "searchPlaceholder": "Szukaj czatów",
     "empty": "Nie masz jeszcze żadnych czatów.",
+    "encryptedPreview": "Zaszyfrowana wiadomość",
     "offlineEmpty": "Offline — wyświetlanie zapisanych czatów.",
     "actionsTitle": "Działania czatu",
     "pin": "Przypnij",

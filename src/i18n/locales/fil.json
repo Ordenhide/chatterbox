@@ -145,6 +145,7 @@
     "title": "Mga Chat",
     "searchPlaceholder": "Maghanap ng mga chat",
     "empty": "Wala pang chat.",
+    "encryptedPreview": "Naka-encrypt na mensahe",
     "offlineEmpty": "Offline — ipinapakita ang mga naka-cache na chat.",
     "actionsTitle": "Mga Aksyon sa Chat",
     "pin": "I-pin",

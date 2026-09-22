@@ -145,6 +145,7 @@
     "title": "Konverzace",
     "searchPlaceholder": "Hledat konverzace",
     "empty": "Zatím žádné konverzace.",
+    "encryptedPreview": "Zašifrovaná zpráva",
     "offlineEmpty": "Offline — zobrazují se konverzace uložené v mezipaměti.",
     "actionsTitle": "Akce konverzace",
     "pin": "Připnout",

@@ -104,6 +104,7 @@
     "title": "Chats",
     "searchPlaceholder": "Chats suchen",
     "empty": "Noch keine Chats.",
+    "encryptedPreview": "Verschlüsselte Nachricht",
     "offlineEmpty": "Offline — zeige gecachte Chats.",
     "actionsTitle": "Chat-Aktionen",
     "pin": "Anheften",

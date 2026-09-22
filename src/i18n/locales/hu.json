@@ -145,6 +145,7 @@
     "title": "Beszélgetések",
     "searchPlaceholder": "Beszélgetések keresése",
     "empty": "Még nincsenek beszélgetések.",
+    "encryptedPreview": "Titkosított üzenet",
     "offlineEmpty": "Offline — gyorsítótárazott beszélgetések megjelenítése.",
     "actionsTitle": "Beszélgetési műveletek",
     "pin": "Kitűzés",

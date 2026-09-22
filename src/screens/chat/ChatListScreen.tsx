@@ -52,6 +52,8 @@ type ChatListItemProps = {
   draftLabel: string;
   typingLabel: string;
   pinnedLabel: string;
+  /** Stands in for a preview the sender could not write in this reader's language. */
+  sealedLabel: string;
   lastMessage?: ChatRoom['lastMessage'];
   timeLabel?: string;
   avatarText?: string;
@@ -78,6 +80,7 @@ const ChatListItem = memo(
     draft,
     isTyping,
     draftLabel,
+    sealedLabel,
     typingLabel,
     pinnedLabel,
     lastMessage,
@@ -129,16 +132,24 @@ const ChatListItem = memo(
             </Text>
           ) : lastMessage ? (
             <Text style={[styles.lastMessage, {color: textSecondary}]} numberOfLines={1}>
-              {lastMessage.text ||
-                (lastMessage.image
-                  ? '[Photo]'
-                  : lastMessage.video
-                  ? '[Video]'
-                  : lastMessage.audio
-                  ? '[Voice]'
-                  : lastMessage.file
-                  ? '[File]'
-                  : '')}
+              {/*
+                `sealed` first, and ahead of `text`: the sender wrote that
+                text, in the sender's build's language, for a chat list that
+                renders in the reader's. Everything below stays as the
+                fallback for a preview written before the flag existed.
+              */}
+              {lastMessage.sealed
+                ? sealedLabel
+                : lastMessage.text ||
+                  (lastMessage.image
+                    ? '[Photo]'
+                    : lastMessage.video
+                    ? '[Video]'
+                    : lastMessage.audio
+                    ? '[Voice]'
+                    : lastMessage.file
+                    ? '[File]'
+                    : '')}
             </Text>
           ) : null}
         </View>
@@ -628,6 +639,7 @@ export default function ChatListScreen() {
             draft={item.draft}
             isTyping={item.isTyping}
             draftLabel={t('chatList.draftPrefix', {text: item.draft})}
+            sealedLabel={t('chatList.encryptedPreview')}
             typingLabel={t('chatList.typing')}
             pinnedLabel={t('chatList.pinnedLabel')}
             lastMessage={item.lastMessage}

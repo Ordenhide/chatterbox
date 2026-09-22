@@ -171,3 +171,75 @@ describe('a message body encoded on one client decodes on the other', () => {
     expect(back.media?.image).toEqual(KEY);
   });
 });
+
+/**
+ * Both clients label a message's protection, and the label is the *only* thing
+ * telling a user that this one is readable later by anyone who obtains a
+ * long-lived key. Two clients disagreeing about the same envelope would be
+ * worse than neither labelling it: the phone and the browser would show the
+ * same conversation with different guarantees and one of them would be wrong.
+ *
+ * The browser's classifier is checked against the phone's own predicates
+ * rather than against a second copy of the expectations, so drift in either
+ * shows up here. Mobile's messageProtection itself cannot be imported — it
+ * lives in e2eeMessages.ts, which reaches Firestore — but the predicates it is
+ * built from are all in the pure module.
+ */
+describe('both clients classify a message the same way', () => {
+  const ratchet = {
+    alg: 'chatterbox-ratchet-envelope-v1',
+    from: 'sender',
+    message: {alg: 'chatterbox-double-ratchet-v1', header: {dh: 'x', pn: 0, n: 0}, body: 'ct'},
+  };
+  const group = {
+    alg: 'chatterbox-group-envelope-v1',
+    from: 'sender',
+    message: {header: {}, body: 'ct'},
+  };
+
+  function staticEnvelope() {
+    const sender = mobile.generateKeypair();
+    const reader = mobile.generateKeypair();
+    return mobile.sealForRecipients(
+      'hello',
+      sender.secretKey,
+      [{uid: 'reader', publicKey: reader.publicKey}],
+      CHAT,
+    );
+  }
+
+  it('agrees on the forward-secret shapes, which must never be labelled', () => {
+    expect(web.messageProtection({encrypted: ratchet})).toBe('ratchet');
+    expect(mobile.isRatchetSealed(ratchet)).toBe(true);
+
+    // The one that was missing: without isGroupSealed the browser would call a
+    // forward-secret group message 'none' — an unqualified claim that it had no
+    // protection at all.
+    expect(web.messageProtection({encrypted: group})).toBe('sender-key');
+    expect(mobile.isGroupSealed(group)).toBe(true);
+    expect(web.isGroupSealed(group)).toBe(true);
+  });
+
+  it('agrees that a fan-out envelope is static, not forward-secret', () => {
+    const envelope = staticEnvelope();
+    expect(web.messageProtection({encrypted: envelope})).toBe('static');
+    expect(mobile.isSealedEnvelope(envelope)).toBe(true);
+    expect(mobile.isRatchetSealed(envelope)).toBe(false);
+    expect(mobile.isGroupSealed(envelope)).toBe(false);
+  });
+
+  it('agrees that a pre-group single payload is static', () => {
+    const sender = mobile.generateKeypair();
+    const reader = mobile.generateKeypair();
+    const payload = mobile.encryptMessage('hello', sender.secretKey, reader.publicKey, CHAT);
+    expect(web.messageProtection({encrypted: payload})).toBe('static');
+    expect(mobile.isEncryptedPayload(payload)).toBe(true);
+  });
+
+  it('calls an unsealed message none, which is what gets the loudest label', () => {
+    expect(web.messageProtection({})).toBe('none');
+    expect(web.messageProtection({encrypted: undefined})).toBe('none');
+    expect(web.messageProtection({encrypted: {alg: 'something-else'}})).toBe('none');
+    expect(mobile.isSealed(undefined)).toBe(false);
+  });
+});

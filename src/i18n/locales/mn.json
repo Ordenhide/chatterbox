@@ -145,6 +145,7 @@
     "title": "Чатууд",
     "searchPlaceholder": "Чат хайх",
     "empty": "Чат алга байна.",
+    "encryptedPreview": "Шифрлэгдсэн мессеж",
     "offlineEmpty": "Офлайн — кэшлэгдсэн чатуудыг харуулж байна.",
     "actionsTitle": "Чатны үйлдлүүд",
     "pin": "Бэхлэх",

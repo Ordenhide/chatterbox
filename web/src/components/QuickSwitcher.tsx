@@ -68,7 +68,11 @@ export default function QuickSwitcher({
       ? pool.filter(
           c =>
             resolveChatMeta(c, myUid, userCache, introduced).title.toLowerCase().includes(q) ||
-            (c.lastMessage?.text || '').toLowerCase().includes(q),
+            // Same exclusion as HomeScreen's search: a sealed preview's text
+            // is a marker, not content.
+            (c.lastMessage?.sealed
+              ? false
+              : (c.lastMessage?.text || '').toLowerCase().includes(q)),
         )
       : pool;
     return matches.slice(0, MAX_RESULTS);
@@ -142,7 +146,13 @@ export default function QuickSwitcher({
                   </div>
                   <div style={{flex: 1, minWidth: 0}}>
                     <div style={styles.rowTitle}>{chatTitle}</div>
-                    <div style={styles.rowPreview}>{chat.lastMessage?.text || t('chat.empty')}</div>
+                    {/* Same three cases as HomeScreen's preview, for the same reasons. */}
+                    <div style={styles.rowPreview}>
+                      {chat.lastMessage?.sealed
+                        ? t('chat.encryptedPreview')
+                        : chat.lastMessage?.text ||
+                          (chat.lastMessage?.createdAt ? '' : t('chat.empty'))}
+                    </div>
                   </div>
                 </button>
               );

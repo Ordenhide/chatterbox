@@ -145,6 +145,7 @@
     "title": "Conversații",
     "searchPlaceholder": "Căutați conversații",
     "empty": "Nicio conversație încă.",
+    "encryptedPreview": "Mesaj criptat",
     "offlineEmpty": "Offline — se afișează conversațiile din cache.",
     "actionsTitle": "Acțiuni conversație",
     "pin": "Fixați",

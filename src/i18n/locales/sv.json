@@ -145,6 +145,7 @@
     "title": "Chattar",
     "searchPlaceholder": "Sök chattar",
     "empty": "Inga chattar än.",
+    "encryptedPreview": "Krypterat meddelande",
     "offlineEmpty": "Offline — visar cachade chattar.",
     "actionsTitle": "Chattåtgärder",
     "pin": "Fäst",

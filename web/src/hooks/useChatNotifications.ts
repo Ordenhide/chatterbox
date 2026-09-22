@@ -77,7 +77,12 @@ export function useChatNotifications(uid: string, activeChatId: string | null): 
             !isChatHidden(c, uid)
           ) {
             const name = c.nameBy?.[uid] || c.name;
-            const body = c.lastMessage?.text || tRef.current('chat.newMessages');
+            // Not lastMessage.text for a sealed message: that field holds a
+            // fixed English marker written by the sender's client, and this
+            // string goes into an OS notification in the reader's language.
+            const body = c.lastMessage?.sealed
+              ? tRef.current('chat.encryptedPreview')
+              : c.lastMessage?.text || tRef.current('chat.newMessages');
             toastRef.current.show(name ? `${name}: ${body}` : body, 'info');
             playPing();
             // OS-level notification too (fires only when the tab isn't focused).

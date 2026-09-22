@@ -145,6 +145,7 @@
     "title": "Samtaler",
     "searchPlaceholder": "Søk i samtaler",
     "empty": "Ingen samtaler ennå.",
+    "encryptedPreview": "Kryptert melding",
     "offlineEmpty": "Frakoblet — viser bufrede samtaler.",
     "actionsTitle": "Samtalehandlinger",
     "pin": "Fest",

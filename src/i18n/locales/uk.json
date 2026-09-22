@@ -145,6 +145,7 @@
     "title": "Чати",
     "searchPlaceholder": "Пошук чатів",
     "empty": "У вас ще немає чатів.",
+    "encryptedPreview": "Зашифроване повідомлення",
     "offlineEmpty": "Офлайн — показано збережені чати.",
     "actionsTitle": "Дії з чатом",
     "pin": "Закріпити",

@@ -61,7 +61,13 @@ export default function HomeScreen({
     const q = search.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
-      c => chatMeta(c).title.toLowerCase().includes(q) || (c.lastMessage?.text || '').toLowerCase().includes(q),
+      // A sealed preview's text is a marker, not content, so it is excluded:
+      // searching for the marker's own words would otherwise match every
+      // encrypted conversation. What it cannot do is find the bodies — see
+      // MULTIDEVICE.md on what this client can and cannot read.
+      c =>
+        chatMeta(c).title.toLowerCase().includes(q) ||
+        (c.lastMessage?.sealed ? false : (c.lastMessage?.text || '').toLowerCase().includes(q)),
     );
   }, [visibleChats, hiddenChats, viewingHidden, user.uid, search, chatMeta]);
 
@@ -202,7 +208,21 @@ export default function HomeScreen({
                     </div>
                     <div style={styles.chatBottomRow}>
                       <span style={{...styles.chatPreview, fontWeight: unread ? 600 : 400, color: unread ? colors.text : colors.textSecondary}}>
-                        {chat.lastMessage?.text || t('chat.empty')}
+                        {/*
+                          Three cases, and the middle one is why this is not a
+                          single `||`. `sealed` wins over `text` because the
+                          sender wrote that text in the sender's language. A
+                          message with no preview this client can render — a
+                          plaintext attachment, whose image/video/audio/file
+                          fields mobile writes and this client does not read —
+                          leaves the line blank; saying "no messages yet"
+                          about a conversation that has them is worse than
+                          saying nothing.
+                        */}
+                        {chat.lastMessage?.sealed
+                          ? t('chat.encryptedPreview')
+                          : chat.lastMessage?.text ||
+                            (chat.lastMessage?.createdAt ? '' : t('chat.empty'))}
                       </span>
                       {unread > 0 && <span className="cb-badge" style={styles.badge}>{unread}</span>}
                     </div>

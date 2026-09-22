@@ -104,6 +104,7 @@
     "title": "Chats",
     "searchPlaceholder": "Rechercher des chats",
     "empty": "Aucun chat pour le moment.",
+    "encryptedPreview": "Message chiffré",
     "offlineEmpty": "Hors ligne — affichage des chats en cache.",
     "actionsTitle": "Actions du chat",
     "pin": "Épingler",

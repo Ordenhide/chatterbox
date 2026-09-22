@@ -104,6 +104,7 @@
     "title": "聊天",
     "searchPlaceholder": "搜索聊天",
     "empty": "暂无聊天",
+    "encryptedPreview": "加密消息",
     "offlineEmpty": "离线中——显示缓存聊天",
     "actionsTitle": "聊天操作",
     "pin": "置顶",

@@ -303,6 +303,54 @@ export function isRatchetSealed(value: unknown): boolean {
   );
 }
 
+export const GROUP_ENVELOPE_ALG = 'chatterbox-group-envelope-v1';
+
+/**
+ * True for a group message sealed with sender keys — forward-secret, and, like
+ * the pairwise ratchet, not something this client can open.
+ *
+ * Recognised rather than opened, for one reason: {@link messageProtection}
+ * would otherwise classify a forward-secret group message as having no
+ * protection at all, which is the worst answer the function that exists to be
+ * honest about protection could give.
+ */
+export function isGroupSealed(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false;
+  const e = value as {alg?: unknown; from?: unknown; message?: unknown};
+  return (
+    e.alg === GROUP_ENVELOPE_ALG &&
+    typeof e.from === 'string' &&
+    !!e.message &&
+    typeof e.message === 'object'
+  );
+}
+
+/** What actually protected a message, read from its envelope's shape. */
+export type MessageProtection = 'ratchet' | 'sender-key' | 'static' | 'none';
+
+/**
+ * Classifies a message by the protection it actually carries.
+ *
+ * Derived from the envelope rather than from a flag the sender wrote, so it
+ * cannot be overstated by a client that claims more than it did. Mirrors
+ * `messageProtection` in the mobile client's services/e2eeMessages.ts —
+ * deliberately the same four answers, so the two clients cannot describe the
+ * same message differently.
+ *
+ * This client seals with the static path only (it has no ratchet), so
+ * everything *it* sends is 'static'. That is exactly why the caller shows the
+ * distinction: a message under a long-lived key is readable later by anyone
+ * who obtains that key, and the person sending it is entitled to know.
+ */
+export function messageProtection(message: {encrypted?: unknown}): MessageProtection {
+  if (isRatchetSealed(message.encrypted)) return 'ratchet';
+  if (isGroupSealed(message.encrypted)) return 'sender-key';
+  if (isSealedEnvelope(message.encrypted) || isEncryptedPayload(message.encrypted)) {
+    return 'static';
+  }
+  return 'none';
+}
+
 export function isSealed(value: unknown): value is EncryptedPayload | SealedEnvelope {
   // Includes the forward-secret shape, which openSealed cannot open. Callers
   // use isSealed to answer "is `text` empty because the body lives elsewhere?"

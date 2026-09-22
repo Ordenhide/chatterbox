@@ -28,6 +28,15 @@ export interface ChatRoom {
   lastMessage?: {
     text?: string;
     createdAt?: Timestamp;
+    /**
+     * The preview stands for a message that is encrypted, so `text` carries a
+     * fixed marker rather than the body.
+     *
+     * Render from this rather than from `text`: the preview is written by the
+     * sender, in the sender's language, into a chat list drawn in the
+     * reader's. See Message.sealed on the mobile side, which writes it too.
+     */
+    sealed?: boolean;
   };
   unreadCountBy?: Record<string, number>;
   pinnedBy?: string[];

@@ -341,7 +341,9 @@ export async function sendMessage(
     tx.set(
       chatRef,
       {
-        lastMessage: {text: preview, createdAt: serverTimestamp()},
+        // `sealed` is what readers render from; `text` keeps the marker only
+        // for clients built before the flag existed. See ChatRoom.lastMessage.
+        lastMessage: {text: preview, sealed: isEncrypted, createdAt: serverTimestamp()},
         updatedAt: serverTimestamp(),
         unreadCountBy,
       },

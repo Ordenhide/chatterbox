@@ -244,7 +244,29 @@ export interface ChatRoom {
   id: string;
   name: string;
   nameBy?: Record<string, string | null>;
-  lastMessage?: Message;
+  /**
+   * The chat-list preview, which is its own small thing rather than a Message.
+   *
+   * It used to be typed as `Message`, which claimed the document carried
+   * forty fields when sendMessage writes six — and left no honest home for
+   * `sealed`, which belongs to the preview and not to a message.
+   *
+   * `sealed` says the preview stands for an encrypted message, so `text`
+   * holds a fixed marker rather than a body. Render from the flag: the
+   * preview is written by the *sender*, and the marker used to be a literal
+   * "🔒 Encrypted message" in English, reaching a chat list drawn in
+   * whichever of 53 languages the reader picked. A flag can be localised
+   * where it is displayed; a sentence cannot. Mirrored in web/src/types.ts.
+   */
+  lastMessage?: {
+    text?: string;
+    sealed?: boolean;
+    createdAt?: Date | any;
+    image?: string;
+    video?: string;
+    audio?: string;
+    file?: Message['file'];
+  };
   participants: string[];
   createdAt: Date | any;
   updatedAt?: Date | any;

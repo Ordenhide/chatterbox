@@ -441,6 +441,11 @@ export async function sendMessage(chatId: string, message: Message) {
       chatRef,
       {
         lastMessage: {
+          // `sealed` is what readers should render from; the literal below is
+          // kept only so a client built before that flag existed still shows
+          // something rather than a blank preview. Drop it once those are
+          // gone. See Message.sealed.
+          sealed: isEncrypted,
           text:
             message.text || (isEncrypted ? '🔒 Encrypted message' : ''),
           createdAt: serverTimestamp(),

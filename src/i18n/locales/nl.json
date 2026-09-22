@@ -145,6 +145,7 @@
     "title": "Chats",
     "searchPlaceholder": "Chats zoeken",
     "empty": "Nog geen chats.",
+    "encryptedPreview": "Versleuteld bericht",
     "offlineEmpty": "Offline — cache van chats wordt getoond.",
     "actionsTitle": "Chatacties",
     "pin": "Vastzetten",

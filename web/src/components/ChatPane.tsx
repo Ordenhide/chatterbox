@@ -38,7 +38,14 @@ import {
 } from '../services/storage';
 import {listenPresence, ONLINE_WINDOW_MS} from '../services/presence';
 import {hasLostPeer, isProfileDeleted, isRecipientUnreachable} from '../services/recipient';
-import {isRatchetSealed, isSealed, openSealed, sealForRecipients, type EnvelopeRecipient} from '../services/e2ee';
+import {
+  isRatchetSealed,
+  isSealed,
+  messageProtection,
+  openSealed,
+  sealForRecipients,
+  type EnvelopeRecipient,
+} from '../services/e2ee';
 import {decodeBody, encodeBody, type MediaSlot} from '../services/messageBody';
 import type {MediaKeyInfo} from '../services/mediaCrypto';
 import {resolveSealedMedia} from '../services/mediaVault';
@@ -2480,6 +2487,42 @@ export default function ChatPane({
                       <span>{formatTime(m.createdAt)}</span>
                     </div>
 
+                    {/* What actually protected this message, when it is not
+                        the good case. Silent for ratchet and sender-key: the
+                        normal state does not need saying, and a mark on every
+                        message is a mark nobody reads.
+
+                        It matters most on this client, which has no ratchet
+                        and therefore seals everything it sends under the
+                        long-lived key — readable later by anyone who obtains
+                        that key. The phone shows this and the browser did not,
+                        so the weaker of the two clients was the quiet one.
+                        Same four answers as the phone, from the same
+                        envelope-shape check, so neither can describe a message
+                        differently. */}
+                    {(() => {
+                      const level = messageProtection(m as {encrypted?: unknown});
+                      if (level === 'ratchet' || level === 'sender-key') return null;
+                      const clear = level === 'none';
+                      return (
+                        <div
+                          style={{
+                            ...styles.protection,
+                            // `danger`, because this theme has no separate
+                            // warning colour — and "the server can read this"
+                            // is not a lesser state than an error anyway.
+                            color: clear ? colors.danger : bubbleDim,
+                          }}
+                          title={clear ? t('chat.protectionNoneA11y') : t('chat.protectionStaticA11y')}
+                          aria-label={
+                            clear ? t('chat.protectionNoneA11y') : t('chat.protectionStaticA11y')
+                          }>
+                          <Icon name={clear ? 'alertTriangle' : 'lock'} size={10} />
+                          {clear ? t('chat.protectionNone') : t('chat.protectionStatic')}
+                        </div>
+                      );
+                    })()}
+
                     {!contentHidden && translations[m._id] && (
                       <div style={styles.translation}>
                         <Icon name="globe" size={13} style={{marginRight: 5, verticalAlign: '-2px'}} />
@@ -3417,6 +3460,18 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 10.5,
     lineHeight: 1,
     marginTop: 4,
+    whiteSpace: 'nowrap',
+  },
+  /** Sits under bubbleFoot, quieter than the timestamp beside it. */
+  protection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 3,
+    alignSelf: 'flex-end',
+    fontSize: 9,
+    lineHeight: 1,
+    marginTop: 3,
+    letterSpacing: 0.4,
     whiteSpace: 'nowrap',
   },
   msgText: {whiteSpace: 'pre-wrap'},
