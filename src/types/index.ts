@@ -286,6 +286,13 @@ export interface ChatRoom {
   unreadCountBy?: Record<string, number>;
   incognito?: boolean;
   messageExpiry?: number;
+  /**
+   * When the current disappearing-messages policy was enabled (epoch ms).
+   * The timer applies only to messages sent at or after this, so enabling a
+   * policy never deletes existing history — see services/messageExpiry.ts and
+   * processExpiredMessages in functions/index.js, which both depend on it.
+   */
+  messageExpirySince?: number;
   lockedBy?: Record<string, boolean>;
 }
 

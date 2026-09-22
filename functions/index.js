@@ -11,6 +11,7 @@ const {validateTranslateInput, extractTranslation} = require('./translate');
 const {buildPrompt, extractAnswer} = require('./aiChat');
 const {profileName} = require('./profileName');
 const {extractIceServers} = require('./turnCredentials');
+const {expirySweepWindow} = require('./expiryWindow');
 
 admin.initializeApp();
 
@@ -756,6 +757,26 @@ exports.notifyNewMessage = functions.firestore
   });
 
 // ─── Disappearing Messages ──────────────────────────────────────────────────
+/**
+ * Deletes messages that outlived their chat's expiry window.
+ *
+ * `messageExpirySince` is the activation time, and it is load-bearing: the
+ * policy applies only to messages sent after it. Without it this function
+ * deleted on `createdAt < now - expiry` alone, so switching "delete after 1
+ * hour" on at 3pm destroyed the entire conversation before 2pm — every chat's
+ * whole history, within five minutes, irrecoverably. Both clients' UI presents
+ * the setting as forward-looking and the web client's own sweep had always
+ * honoured the field; this was the half that did not, which made the promise
+ * false wherever it mattered.
+ *
+ * A chat with a policy but no activation time is skipped rather than swept.
+ * Backlog and new messages are indistinguishable without it, and the
+ * conservative direction is the only tolerable one: not deleting is a visible
+ * gap someone can report, and deleting is unrecoverable. The clients write the
+ * field whenever a policy is enabled (src/services/messageExpiry.ts,
+ * web/src/services/chat.ts), so the skip only ever covers chats configured by
+ * a build that predates that.
+ */
 exports.processExpiredMessages = functions.pubsub
   .schedule('every 5 minutes')
   .onRun(async () => {
@@ -768,11 +789,13 @@ exports.processExpiredMessages = functions.pubsub
       let deleted = 0;
       for (const chatDoc of chatsSnap.docs) {
         try {
-          const chat = chatDoc.data();
-          const expiryMs = chat.messageExpiry * 3600000;
-          const cutoff = new Date(now - expiryMs);
+          const window = expirySweepWindow(chatDoc.data(), now);
+          if (!window) continue;
           const expiredSnap = await chatDoc.ref.collection('messages')
-            .where('createdAt', '<', cutoff)
+            // The lower bound is the guard, not an optimisation: it is what
+            // keeps the pre-activation history out of the delete batch.
+            .where('createdAt', '>=', new Date(window.sinceMs))
+            .where('createdAt', '<', new Date(window.cutoffMs))
             .limit(200)
             .get();
           if (expiredSnap.empty) continue;

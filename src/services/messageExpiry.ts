@@ -19,11 +19,29 @@ import {doc, getFirestore, setDoc} from './firebase/firestore';
 
 const db = getFirestore();
 
+/**
+ * Sets the chat's disappearing-messages policy in hours (0 = off).
+ *
+ * Enabling one also stamps `messageExpirySince`, which is what confines the
+ * timer to messages sent from here on. This used to write `messageExpiry`
+ * alone, and processExpiredMessages (functions/index.js) swept on age alone to
+ * match — so choosing "1 hour" deleted every message older than an hour,
+ * which is to say the conversation. The screen offering the choice has never
+ * said anything of the kind.
+ *
+ * Milliseconds rather than a serverTimestamp, because the field is read by
+ * the scheduled function and by the web client's own sweep, and both compare
+ * it against a number. Twin of web/src/services/chat.ts's setChatExpiryPolicy.
+ */
 export async function setChatExpiryPolicy(
   chatId: string,
   hours: number,
 ): Promise<void> {
-  await setDoc(doc(db, 'chats', chatId), {messageExpiry: hours}, {merge: true});
+  const patch: {messageExpiry: number; messageExpirySince?: number} = {
+    messageExpiry: hours,
+  };
+  if (hours > 0) patch.messageExpirySince = Date.now();
+  await setDoc(doc(db, 'chats', chatId), patch, {merge: true});
 }
 
 export function getExpiryOptions(): Array<{label: string; hours: number}> {
