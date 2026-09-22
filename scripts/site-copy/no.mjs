@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Personvernkontroller',
     title: 'Hva du kan låse ned',
     items: [
-      {title: 'Applås', body: `Biometri eller PIN-kode, med en automatisk låseforsinkelse du velger.`},
+      {title: 'Applås', body: `Biometri eller PIN. Låses igjen hver gang du forlater appen.`},
       {title: 'Vis én gang', body: `Bilder og videoer som lukkes for godt etter at de er åpnet.`},
       {
         title: 'Forsvinnende meldinger',

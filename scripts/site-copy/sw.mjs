@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Vidhibiti vya faragha',
     title: 'Kile unaweza kufunga',
     items: [
-      {title: 'Kufunga programu', body: `Biometriki au PIN, na muda wa kufunga kiotomatiki unaouchagua.`},
+      {title: 'Kufunga programu', body: `Alama za kibayometriki au PIN. Hujifunga tena kila unapotoka kwenye programu.`},
       {title: 'Tazama mara moja', body: `Picha na video zinazofungwa kabisa baada ya kufunguliwa.`},
       {
         title: 'Ujumbe unaotoweka',

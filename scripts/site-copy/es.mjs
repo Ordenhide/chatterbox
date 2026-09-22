@@ -116,7 +116,7 @@ export default {
     eyebrow: 'Controles de privacidad',
     title: 'Lo que puedes cerrar bajo llave',
     items: [
-      {title: 'Bloqueo de la app', body: `Biometría o PIN, con el retardo de bloqueo que elijas.`},
+      {title: 'Bloqueo de la app', body: `Biometría o PIN. Se vuelve a bloquear cada vez que sales de la app.`},
       {title: 'Ver una vez', body: `Fotos y vídeos que se cierran para siempre al abrirse.`},
       {
         title: 'Mensajes temporales',

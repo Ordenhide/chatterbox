@@ -117,7 +117,7 @@ export default {
     items: [
       {
         title: `Uygulama kilidi`,
-        body: `Biyometri veya PIN; otomatik kilitlenme gecikmesini siz seçersiniz.`,
+        body: `Biyometri ya da PIN. Uygulamadan her çıkışında yeniden kilitlenir.`,
       },
       {
         title: `Tek görüntüleme`,

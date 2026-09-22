@@ -117,7 +117,7 @@ export default {
     items: [
       {
         title: `Bloqueio da aplicação`,
-        body: `Biometria ou PIN, com o atraso de bloqueio automático que escolheres.`,
+        body: `Biometria ou PIN. Volta a bloquear sempre que sai da app.`,
       },
       {
         title: `Ver uma vez`,

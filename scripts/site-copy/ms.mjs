@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Kawalan privasi',
     title: 'Apa yang boleh anda kunci',
     items: [
-      {title: 'Kunci apl', body: `Biometrik atau PIN, dengan lengah kunci automatik yang anda pilih.`},
+      {title: 'Kunci apl', body: `Biometrik atau PIN. Ia berkunci semula setiap kali anda meninggalkan apl.`},
       {title: 'Lihat sekali', body: `Foto dan video yang tertutup selamanya selepas dibuka.`},
       {
         title: 'Mesej hilang',

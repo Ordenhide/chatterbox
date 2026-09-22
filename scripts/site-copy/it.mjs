@@ -117,7 +117,7 @@ export default {
     items: [
       {
         title: `Blocco dell'app`,
-        body: `Biometria o PIN, con il ritardo di blocco automatico che scegli tu.`,
+        body: `Biometria o PIN. Si riblocca ogni volta che esci dall'app.`,
       },
       {
         title: `Visualizzazione singola`,

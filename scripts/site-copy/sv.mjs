@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Integritetskontroller',
     title: 'Vad du kan låsa ner',
     items: [
-      {title: 'Applås', body: `Biometri eller pinkod, med en automatisk låsfördröjning du väljer.`},
+      {title: 'Applås', body: `Biometri eller PIN. Låses igen varje gång du lämnar appen.`},
       {title: 'Visa en gång', body: `Foton och videor som stängs för gott efter att de öppnats.`},
       {
         title: 'Försvinnande meddelanden',

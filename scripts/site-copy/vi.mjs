@@ -117,7 +117,7 @@ export default {
     items: [
       {
         title: `Khoá ứng dụng`,
-        body: `Sinh trắc học hoặc mã PIN, với thời gian tự khoá do bạn chọn.`,
+        body: `Sinh trắc học hoặc mã PIN. Ứng dụng khoá lại mỗi lần bạn rời đi.`,
       },
       {
         title: `Xem một lần`,

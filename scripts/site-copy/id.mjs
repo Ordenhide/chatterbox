@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Kontrol privasi',
     title: 'Apa yang bisa Anda kunci',
     items: [
-      {title: 'Kunci aplikasi', body: `Biometrik atau PIN, dengan penundaan kunci otomatis yang Anda pilih.`},
+      {title: 'Kunci aplikasi', body: `Biometrik atau PIN. Terkunci lagi setiap kali Anda meninggalkan aplikasi.`},
       {title: 'Lihat sekali', body: `Foto dan video yang tertutup untuk selamanya setelah dibuka.`},
       {
         title: 'Pesan yang menghilang',

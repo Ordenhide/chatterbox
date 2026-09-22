@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Controale de confidențialitate',
     title: 'Ce poți restricționa',
     items: [
-      {title: 'Blocarea aplicației', body: `Biometrie sau cod PIN, cu o întârziere de blocare automată pe care o alegi tu.`},
+      {title: 'Blocarea aplicației', body: `Biometrie sau PIN. Se blochează din nou de fiecare dată când ieși din aplicație.`},
       {title: 'Vizualizare unică', body: `Fotografii și videoclipuri care se închid definitiv după ce au fost deschise.`},
       {
         title: 'Mesaje care dispar',

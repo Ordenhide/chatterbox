@@ -117,7 +117,7 @@ export default {
     items: [
       {
         title: `Verrouillage de l'app`,
-        body: `Biométrie ou code, avec le délai de verrouillage automatique de votre choix.`,
+        body: `Biométrie ou code. L'app se reverrouille chaque fois que vous la quittez.`,
       },
       {
         title: `Vue unique`,

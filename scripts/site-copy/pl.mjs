@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Kontrola prywatności',
     title: 'Co możesz zabezpieczyć',
     items: [
-      {title: 'Blokada aplikacji', body: `Biometria lub PIN, z opóźnieniem automatycznej blokady, które sam wybierasz.`},
+      {title: 'Blokada aplikacji', body: `Biometria lub PIN. Blokuje się ponownie za każdym razem, gdy opuszczasz aplikację.`},
       {title: 'Jednorazowe wyświetlenie', body: `Zdjęcia i filmy, które zamykają się na stałe po otwarciu.`},
       {
         title: 'Znikające wiadomości',

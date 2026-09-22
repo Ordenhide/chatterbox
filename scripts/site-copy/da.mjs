@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Privatlivsindstillinger',
     title: 'Hvad du kan lukke ned',
     items: [
-      {title: 'Applås', body: `Biometri eller PIN-kode, med en automatisk låseforsinkelse du selv vælger.`},
+      {title: 'Applås', body: `Biometri eller PIN. Låser igen hver gang du forlader appen.`},
       {title: 'Vis én gang', body: `Fotos og videoer, der lukker for altid, efter de er åbnet.`},
       {
         title: 'Forsvindende beskeder',

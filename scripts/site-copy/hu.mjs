@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Adatvédelmi beállítások',
     title: 'Mit zárhatsz le',
     items: [
-      {title: 'Alkalmazászár', body: `Biometria vagy PIN-kód, általad választott automatikus zárolási késleltetéssel.`},
+      {title: 'Alkalmazászár', body: `Biometria vagy PIN. Minden alkalommal újra zár, amikor kilépsz az appból.`},
       {title: 'Egyszeri megtekintés', body: `Fotók és videók, amelyek megnyitás után véglegesen bezárulnak.`},
       {
         title: 'Eltűnő üzenetek',

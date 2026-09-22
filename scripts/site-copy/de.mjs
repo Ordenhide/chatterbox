@@ -118,7 +118,7 @@ export default {
     items: [
       {
         title: 'App-Sperre',
-        body: `Biometrie oder PIN, mit einer Sperrverzögerung deiner Wahl.`,
+        body: `Biometrie oder PIN. Sperrt sich jedes Mal wieder, wenn du die App verlässt.`,
       },
       {
         title: 'Einmal ansehen',

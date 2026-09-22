@@ -148,6 +148,14 @@ zero consumers; a switch for one of those would move, persist, and change
 nothing. A test enforces this for the privacy toggles — every switch must have
 its reader *called* somewhere (an import alone does not count).
 
+**And do not describe one on the website either.** The site copy said the app
+lock came "with an auto-lock delay you choose", in fifty-three languages, for
+as long as `getAutoLockDelay` and `setAutoLockDelay` had no consumers and the
+app relocked on backgrounding. Corrected 2026-09-22 to say what it does — it
+relocks every time you leave the app, which is the stronger promise anyway.
+The lesson is the ordering: the unbuilt setting and the sentence selling it
+are the same defect, and the sentence is the half a user can see.
+
 The inverse is just as bad and is easier to miss: **a gate whose condition can
 never be true reads like a control and is not one.** Stealth mode had a setter
 nobody called, so its two gates in `firebaseChat.ts` were permanently false

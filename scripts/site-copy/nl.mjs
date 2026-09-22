@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Privacyinstellingen',
     title: 'Wat je kunt dichtzetten',
     items: [
-      {title: 'App-vergrendeling', body: `Biometrie of pincode, met een automatische vergrendeltijd die je zelf kiest.`},
+      {title: 'App-vergrendeling', body: `Biometrie of pincode. Vergrendelt zichzelf elke keer als je de app verlaat.`},
       {title: 'Eén keer bekijken', body: `Foto's en video's die definitief sluiten nadat ze zijn geopend.`},
       {
         title: 'Verdwijnende berichten',

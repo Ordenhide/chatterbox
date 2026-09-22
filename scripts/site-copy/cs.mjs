@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Ovládání soukromí',
     title: 'Co si můžete zamknout',
     items: [
-      {title: 'Zámek aplikace', body: `Biometrika nebo PIN, s prodlevou automatického zamknutí, kterou si zvolíte.`},
+      {title: 'Zámek aplikace', body: `Biometrie nebo PIN. Zamkne se znovu při každém opuštění aplikace.`},
       {title: 'Jedno zobrazení', body: `Fotky a videa, které se po otevření natrvalo zavřou.`},
       {
         title: 'Mizící zprávy',

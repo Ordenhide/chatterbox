@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Sarrafa sirri',
     title: 'Abin da za ka iya kullewa',
     items: [
-      {title: 'Kulle manhaja', body: `Biometrics ko PIN, tare da jinkirin kulle kai tsaye da kai kake zaɓa.`},
+      {title: 'Kulle manhaja', body: `Biometric ko PIN. Yana sake kullewa kowane lokaci da ka bar manhajar.`},
       {title: 'Dubawa sau ɗaya', body: `Hotuna da bidiyo da ke rufewa har abada bayan an buɗe su.`},
       {
         title: 'Saƙonni masu ɓacewa',

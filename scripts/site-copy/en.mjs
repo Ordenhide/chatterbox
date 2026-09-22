@@ -124,7 +124,7 @@ export default {
     eyebrow: 'Privacy controls',
     title: 'What you can lock down',
     items: [
-      {title: 'App lock', body: `Biometric or PIN, with an auto-lock delay you choose.`},
+      {title: 'App lock', body: `Biometric or PIN. It relocks every time you leave the app.`},
       {title: 'View once', body: `Photos and videos that close for good after they are opened.`},
       {
         title: 'Disappearing messages',

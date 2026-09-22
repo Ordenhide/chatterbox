@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Maxfiylik boshqaruvlari',
     title: 'Nimani qulflab qo\'yishingiz mumkin',
     items: [
-      {title: 'Ilova qulfi', body: `Biometriya yoki PIN kod, o'zingiz tanlagan avtomatik qulflanish kechikishi bilan.`},
+      {title: 'Ilova qulfi', body: `Biometrika yoki PIN. Ilovadan har chiqqaningizda qaytadan qulflanadi.`},
       {title: 'Bir marta ko\'rish', body: `Ochilgandan keyin butunlay yopiladigan rasm va videolar.`},
       {
         title: 'Yo\'qoluvchi xabarlar',

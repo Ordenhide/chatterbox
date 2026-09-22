@@ -120,7 +120,7 @@ export default {
     eyebrow: 'Mga kontrol sa privacy',
     title: 'Ano ang puwede mong isara',
     items: [
-      {title: 'App lock', body: `Biometrics o PIN, na may auto-lock delay na pinipili mo.`},
+      {title: 'App lock', body: `Biometric o PIN. Muling nagla-lock sa tuwing lumalabas ka sa app.`},
       {title: 'View once', body: `Mga larawan at video na tuluyang nagsasara pagkatapos mabuksan.`},
       {
         title: 'Mga naglalahong mensahe',
