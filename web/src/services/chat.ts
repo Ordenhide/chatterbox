@@ -19,7 +19,8 @@ import {
   where,
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
-import {db} from '../firebase';
+import {httpsCallable} from 'firebase/functions';
+import {db, functions} from '../firebase';
 import {isUnsyncedEmpty, onListenerError} from './listenerErrors';
 import {deleteQueryInChunks} from './firestoreBatch';
 import {MAX_GROUP_MEMBERS} from './e2ee';
@@ -217,19 +218,19 @@ export async function fetchOlderMessages(
   return {messages, oldest, maybeMore: snap.docs.length === MESSAGE_PAGE_SIZE};
 }
 
-/**
- * Sends a text message using the exact same document shape and chat-metadata
- * update (lastMessage + unreadCountBy transaction) as the mobile app's
- * sendMessage, so mobile and web interoperate.
+/*
+ * There used to be a `sendTextMessage(chatId, text, me)` here, a one-line
+ * wrapper around sendMessage that sent `{text}` in the clear. Nothing called
+ * it, and it was removed rather than left because of what it was called:
+ * mobile's sendTextMessage (src/services/e2eeMessages.ts) is the *encrypted*
+ * send path. The same name meaning opposite things on the two clients is a
+ * trap for whoever adds the next feature here — reach for the obvious export
+ * and the message goes to Firestore as plaintext, with nothing failing.
+ *
+ * The composer seals first and then calls sendMessage below, which holds no
+ * key material and only persists what it is handed. That is the only send
+ * path, and it should stay the only one.
  */
-export async function sendTextMessage(
-  chatId: string,
-  text: string,
-  me: {uid: string; name: string},
-): Promise<string> {
-  return sendMessage(chatId, {text}, me);
-}
-
 
 export interface OutgoingMedia {
   text?: string;
@@ -647,13 +648,47 @@ export async function burnMessage(chatId: string, messageId: string, uid: string
   await Promise.all(mediaUrls.map(url => deleteStorageObjectByUrl(url).catch(() => false)));
 }
 
-/** Marks a view-once media message as viewed by `uid` and expired. */
-export async function markViewOnceViewed(chatId: string, messageId: string, uid: string): Promise<void> {
-  await setDoc(
-    doc(db, 'chats', chatId, 'messages', messageId),
-    {viewOnceViewedBy: arrayUnion(uid), viewOnceExpired: true, viewOnceOpenedAt: serverTimestamp()},
-    {merge: true},
-  );
+/**
+ * Records that this user opened a view-once message.
+ *
+ * Goes through the `markViewOnceViewed` Cloud Function, the same path the
+ * mobile client uses (src/services/viewOnce.ts). This used to be a direct
+ * write of `viewOnceViewedBy` + `viewOnceExpired` + `viewOnceOpenedAt`, which
+ * firestore.rules permits (isViewOnceMark) and which got two things wrong that
+ * matter for a privacy control:
+ *
+ *   - It never nulled `image`/`video`/`audio` and never deleted the Storage
+ *     object, because a client cannot be trusted to burn media on its own
+ *     behalf and the rules therefore do not let it. Only the function, running
+ *     with the Admin SDK, can — and it does, once every recipient has viewed.
+ *     So the browser marked the message expired while the media stayed
+ *     downloadable at its URL: the feature looked like it worked and burned
+ *     nothing.
+ *   - It set `viewOnceExpired` immediately, on the *first* view. In a group
+ *     that showed "expired" to members who had not opened it yet, spending
+ *     everyone's single view on one person's.
+ *
+ * Takes no uid: the server reads it from the auth token, which is the half a
+ * client cannot forge.
+ *
+ * Never throws. A failure here must not stop the user seeing the media they
+ * just tapped — the consequence of a lost call is a message that stays
+ * viewable, which is worse than nothing but better than an image that refuses
+ * to open because bookkeeping failed.
+ */
+export async function markViewOnceViewed(chatId: string, messageId: string): Promise<void> {
+  try {
+    const fn = httpsCallable<{chatId: string; messageId: string}, {ok: boolean; allViewed?: boolean}>(
+      functions,
+      'markViewOnceViewed',
+    );
+    await fn({chatId, messageId});
+  } catch (error) {
+    // 'already-exists' is a re-render racing the first call, not a problem.
+    if (!(error as {code?: string})?.code?.includes('already-exists')) {
+      console.warn('view once mark failed:', error);
+    }
+  }
 }
 
 // ---- Disappearing-messages policy -----------------------------------------
@@ -671,6 +706,12 @@ export const EXPIRY_OPTIONS: {hours: number}[] = [
  * policy also stamps `messageExpirySince` = now, so the timer applies only to
  * messages sent from this point on — turning it on never retroactively deletes
  * existing history (and cancelling it right away deletes nothing).
+ *
+ * That promise is now kept by everything that deletes, which it was not when
+ * this comment was first written: the scheduled `processExpiredMessages` swept
+ * on age alone and ignored this field entirely, so the sentence above was true
+ * of sweepExpiredMessages below and false of the server, which is the half
+ * that does the deleting on mobile. See functions/expiryWindow.js.
  */
 export async function setChatExpiryPolicy(chatId: string, hours: number): Promise<void> {
   const patch: {messageExpiry: number; messageExpirySince?: number} = {messageExpiry: hours};

@@ -834,7 +834,7 @@ export default function ChatPane({
   const openViewOnce = (m: ChatMessage) => {
     if (!m.image) return;
     lightbox.open(m.image);
-    if (m.user?._id !== me.uid) markViewOnceViewed(chatId, m._id, me.uid).catch(() => undefined);
+    if (m.user?._id !== me.uid) markViewOnceViewed(chatId, m._id).catch(() => undefined);
   };
 
   // ---- Disappearing messages: sweep on policy + interval --------------------

@@ -1129,7 +1129,6 @@ describe('chats/{chatId}/messages/{messageId}', () => {
       await assertSucceeds(
         updateDoc(doc(asUser('bob'), 'chats/c1/messages/vo1'), {
           viewOnceViewedBy: ['bob'],
-          viewOnceExpired: true,
           viewOnceOpenedAt: 1,
         }),
       );
@@ -1671,8 +1670,40 @@ describe('view-once marking', () => {
     await assertSucceeds(
       updateDoc(doc(asUser('bob'), 'chats/c1/messages/m1'), {
         viewOnceViewedBy: ['bob'],
-        viewOnceExpired: false,
+        viewOnceOpenedAt: Timestamp.now(),
       }),
+    );
+  });
+
+  /**
+   * The flag that says "the media is gone" belongs to the Cloud Function,
+   * because only the Admin SDK can make it true — nulling image/video/audio is
+   * not a write the rules above permit a client at all. A client that could
+   * set it would be announcing a burn it had not performed, and the media
+   * would stay downloadable at its URL.
+   *
+   * In a group it is worse than a false claim: both clients read
+   * `viewOnceExpired` as expired-for-everyone, so the first member to open the
+   * photo would spend every other member's single view.
+   *
+   * This is the hole the web client was walking through until it started
+   * calling the function (web/src/services/chat.ts). The rule allowed the
+   * write, so it succeeded, and view-once burned nothing.
+   */
+  it('denies a viewer setting viewOnceExpired, even alongside their own view', async () => {
+    await seedViewOnce([]);
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'chats/c1/messages/m1'), {
+        viewOnceViewedBy: ['bob'],
+        viewOnceExpired: true,
+      }),
+    );
+  });
+
+  it('denies clearing viewOnceExpired to get a burned message back', async () => {
+    await seedViewOnce(['bob', 'mallory']);
+    await assertFails(
+      updateDoc(doc(asUser('bob'), 'chats/c1/messages/m1'), {viewOnceExpired: false}),
     );
   });
 
@@ -1717,18 +1748,21 @@ describe('view-once marking', () => {
   });
 
   /**
-   * The web client marks a view with `arrayUnion(uid)` rather than by writing
-   * the whole array (services/chat.ts). The rule compares
-   * `request.resource.data.viewOnceViewedBy` as a set, which only works because
-   * Firestore applies array transforms *before* rules evaluate — so the rule
-   * sees the resulting array, not a sentinel.
+   * A view can be marked with `arrayUnion(uid)` rather than by writing the
+   * whole array. The rule compares `request.resource.data.viewOnceViewedBy` as
+   * a set, which only works because Firestore applies array transforms
+   * *before* rules evaluate — so the rule sees the resulting array, not a
+   * sentinel.
    *
-   * That is not obvious from reading either side, and these rules have never
-   * been deployed, so nothing has ever exercised the combination against a real
-   * emulator. If it were the other way round, view-once would break on web the
-   * moment the rules ship.
+   * That is not obvious from reading either side, which is why it is checked
+   * against a real emulator rather than reasoned about. No client takes this
+   * shape today: both go through the markViewOnceViewed Cloud Function, which
+   * writes with the Admin SDK and is not subject to these rules at all. The
+   * carve-out stays because it is the rule that lets a *client* record its own
+   * view without the function, and it should keep behaving correctly whether
+   * the array is written whole or unioned onto.
    */
-  describe("the web client's arrayUnion write", () => {
+  describe('an arrayUnion write', () => {
     it('is accepted, transform and all', async () => {
       await seedViewOnce([]);
       await assertSucceeds(
@@ -1736,7 +1770,6 @@ describe('view-once marking', () => {
           doc(asUser('mallory'), 'chats/c1/messages/m1'),
           {
             viewOnceViewedBy: arrayUnion('mallory'),
-            viewOnceExpired: true,
             viewOnceOpenedAt: Timestamp.now(),
           },
           {merge: true},
@@ -1749,7 +1782,7 @@ describe('view-once marking', () => {
       await assertFails(
         setDoc(
           doc(asUser('mallory'), 'chats/c1/messages/m1'),
-          {viewOnceViewedBy: arrayUnion('bob'), viewOnceExpired: true},
+          {viewOnceViewedBy: arrayUnion('bob'), viewOnceOpenedAt: Timestamp.now()},
           {merge: true},
         ),
       );

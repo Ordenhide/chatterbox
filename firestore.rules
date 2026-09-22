@@ -579,26 +579,30 @@ service cloud.firestore {
          * Recording that you opened a view-once message.
          *
          * The list may only grow by exactly you. Without that, any participant
-         * could write whatever they liked into these three fields: add someone
-         * else's uid so that person never gets their one view, or mark the
-         * message expired before anyone had opened it. Neither reveals
-         * anything, but both quietly destroy a message for its intended
-         * audience, and the rule that allowed it existed only to let a viewer
-         * record their own view.
+         * could write whatever they liked into these fields: add someone else's
+         * uid so that person never gets their one view, or mark the message
+         * expired before anyone had opened it. Neither reveals anything, but
+         * both quietly destroy a message for its intended audience, and the
+         * rule that allowed it existed only to let a viewer record their own
+         * view.
          *
          * Set equality rather than "contains me" on purpose: it also stops
          * names being *removed*, which would hand back a second view.
          *
-         * The Cloud Function (markViewOnceViewed) writes with the Admin SDK
-         * and is not subject to this. It is the path that can null the media
-         * out once every recipient has viewed, which a client cannot be
-         * trusted to do for itself.
+         * `viewOnceExpired` is deliberately NOT in the list. It is the field
+         * that tells every reader the media is gone, and only the Cloud
+         * Function is in a position to make that true — it runs with the Admin
+         * SDK, so it is what can null image/video/audio out once every
+         * recipient has viewed. A client that could set the flag without
+         * nulling the media would be claiming a burn it did not perform, and
+         * in a group it would also spend the remaining members' single view on
+         * its own. Both clients now call the function
+         * (src/services/viewOnce.ts, web/src/services/chat.ts) and neither
+         * writes this field; the Admin SDK is not subject to these rules.
          */
         function isViewOnceMark() {
           return resource.data.get('viewOnce', false) == true &&
-            changedKeys().hasOnly([
-              'viewOnceViewedBy', 'viewOnceExpired', 'viewOnceOpenedAt',
-            ]) &&
+            changedKeys().hasOnly(['viewOnceViewedBy', 'viewOnceOpenedAt']) &&
             request.resource.data.get('viewOnceViewedBy', []).toSet() ==
               resource.data.get('viewOnceViewedBy', []).toSet()
                 .union([request.auth.uid].toSet());
