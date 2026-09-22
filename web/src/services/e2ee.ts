@@ -37,14 +37,23 @@
  *      exchanged a message. Closing that gap needs the out-of-band verification
  *      ceremony (computeSafetyNumber below already provides the number; nothing
  *      forces a user to actually compare it).
- *   3. ONE KEYPAIR PER ACCOUNT, NOT PER DEVICE. Signing in on a new device —
- *      including web, which is just another device under this model — generates
- *      a new keypair and overwrites the one published for this account,
- *      stranding anything encrypted to the old key and surfacing a `changed`
- *      warning to every contact who had already trusted it. Real multi-device
- *      support needs a per-device key list (fan-out encryption) or a secure
- *      device-linking ceremony (QR-code key transfer, à la WhatsApp Web); both
- *      are out of scope for this prototype.
+ *   3. ONE KEYPAIR PER ACCOUNT, NOT PER DEVICE — but it is *derived*, not
+ *      minted. This entry used to say that signing in on a new device
+ *      generates a new keypair, overwrites the published one, and strands
+ *      everything sealed to the old key. That stopped being true when the
+ *      recovery phrase became the account: both clients install the key
+ *      derived from the phrase at sign-in (adoptSeedAsDeviceKey in
+ *      e2eeKeys.ts), so every device reaches the *same* static key and the
+ *      publish is idempotent. No stranding, and no `changed` warning to
+ *      contacts.
+ *
+ *      What is still single-device is the ratchet: its identity is generated
+ *      locally, is not derived from the phrase, and is one document per
+ *      account — so a second device does take it over, and this browser
+ *      cannot read forward-secret messages at all. That is the real gap, and
+ *      it is written up in full in MULTIDEVICE.md rather than summarised
+ *      wrongly here. Real multi-device needs a per-device key list with
+ *      fan-out, or a device-linking ceremony; both are out of scope.
  *   4. NO BACKFILL. Existing plaintext messages stay plaintext.
  *   5. METADATA IS STILL VISIBLE. Who talks to whom, when, and how often is
  *      all readable server-side, as are the `lastMessage` chat previews and

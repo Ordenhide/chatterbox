@@ -70,8 +70,21 @@
  *      (firestore.rules, identityFieldsHonest), which closes that particular
  *      route in; it does not make first contact verified, and nothing here
  *      does.
- *   3. SINGLE DEVICE PER USER. A second device generates a new keypair and
- *      overwrites the published one, breaking decryption on the first.
+ *   3. SINGLE DEVICE PER USER — but not the way this used to say. The entry
+ *      read "a second device generates a new keypair and overwrites the
+ *      published one, breaking decryption on the first", which stopped being
+ *      true when the recovery phrase became the account: sign-in installs the
+ *      key *derived* from the phrase (adoptSeedAsDeviceKey in e2eeKeys.ts), so
+ *      every device holding the phrase reaches the same static key and the
+ *      publish is idempotent. getOrCreateDeviceKeypair can still mint, but
+ *      only for a signed-in account that has no local key and never adopted
+ *      one — not the second-device case.
+ *
+ *      What remains single-device is the ratchet. Its identity is generated
+ *      locally, is not derived from the phrase, and lives in one document per
+ *      account, so a second device takes it over and the displaced one cannot
+ *      read forward-secret messages. MULTIDEVICE.md has the whole shape of
+ *      it, including why sharing a ratchet identity would not help.
  *   4. NO BACKFILL. Existing plaintext messages stay plaintext.
  *   5. METADATA IS STILL VISIBLE. Who talks to whom, when, and how often is
  *      all readable server-side. For an attachment the *bytes* are encrypted

@@ -99,13 +99,14 @@ export function getSessionId(): string {
  * function is unreachable, so a function outage degrades to the old
  * behavior rather than blocking sign-in.
  *
- * The explicit timeout below is load-bearing, not cosmetic: the SDK default
- * is 70s, and this project's Cloud Functions currently sit on a closed
- * billing account (2nd-gen functions run on Cloud Run, which needs active
- * billing to actually *execute*, not just to deploy — confirmed via the
- * Cloud Billing API, not assumed). A broken function that fails fast is
- * harmless — the catch below covers it — but one that hangs for up to 70s
- * makes sign-in itself feel broken long before the fallback ever runs.
+ * The explicit timeout below is load-bearing, not cosmetic: the SDK default is
+ * 70s. A broken function that fails fast is harmless — the catch below covers
+ * it — but one that hangs for that long makes sign-in itself feel broken long
+ * before the fallback ever runs. This used to add that the project's billing
+ * account was closed, so every call hung and the fallback was the only path
+ * that ever ran; that is fixed, and the timeout is now what it says it is: a
+ * bound on how long sign-in can wait, for a call that normally answers in
+ * well under a second.
  */
 const CLAIM_FUNCTION_TIMEOUT_MS = 8000;
 
@@ -204,14 +205,16 @@ export async function verifyOrAdoptSession(uid: string): Promise<boolean> {
   } catch (err) {
     // Anything that stops us reading the authoritative value — offline, a
     // transient network failure, or a permission error — is NOT treated as
-    // proof of displacement. It is tempting to special-case
-    // permission-denied (firestore.rules is *written* to deny this read for
-    // a stale session), but those rules are not deployed yet, so today a
-    // permission error can only mean something unexpected — e.g. the auth
-    // token not having propagated to Firestore yet on a fresh sign-in.
-    // Failing closed on it bounces users out of a working app for no
-    // security benefit. The live listener below still catches a genuine
-    // takeover, and this should be revisited when the rules actually ship.
+    // proof of displacement.
+    //
+    // It is tempting to special-case permission-denied, since firestore.rules
+    // is written to deny this read for a stale session (hasCurrentSession) and
+    // the rules are deployed. It still is not proof: the same error arrives
+    // when a fresh sign-in's token has not propagated to Firestore yet, and
+    // the rule's own 120-second allowance means a genuinely displaced device
+    // is often *not* denied. Failing closed here would bounce users out of a
+    // working app in the common case to catch the rare one slightly earlier.
+    // The live listener below still catches a genuine takeover.
     return true;
   }
 
@@ -251,11 +254,9 @@ export function listenForSessionTakeover(uid: string, onTakeover: () => void): (
       // Listener errors are not treated as proof of a takeover — signing out
       // here would boot users on a flaky connection, and a permission error
       // on a fresh sign-in can simply mean the auth token has not propagated
-      // to Firestore yet. firestore.rules *is* written to deny this read for
-      // a stale session, which would make permission-denied meaningful — but
-      // those rules are not deployed, so acting on it today only risks
-      // signing out working sessions for no benefit. Revisit together with
-      // the rules deployment.
+      // to Firestore yet. Same reasoning as verifyOrAdoptSession's catch
+      // above: the deployed rules do deny this read for a stale session, and
+      // that still does not make permission-denied a reliable signal.
     },
   );
 }
