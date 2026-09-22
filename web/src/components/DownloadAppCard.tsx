@@ -54,7 +54,7 @@ export default function DownloadAppCard() {
       {/* Primary CTA for the detected platform (desktop non-Mac shows none). */}
       {detected && (
         <button style={styles.primary} onClick={() => activate(detected)}>
-          <Icon name={detected === 'macos' ? 'plus' : 'download'} size={16} style={{marginRight: 8, verticalAlign: '-3px'}} />
+          <Icon name={detected === 'macos' ? 'plus' : 'download'} size={16} style={{marginInlineEnd: 8, verticalAlign: '-3px'}} />
           {label(detected)}
         </button>
       )}
@@ -63,7 +63,7 @@ export default function DownloadAppCard() {
       <div style={styles.row}>
         {ordered.filter(p => p !== detected).map(p => (
           <button key={p} style={styles.chip} onClick={() => activate(p)}>
-            <Icon name={p === 'macos' ? 'plus' : 'download'} size={14} style={{marginRight: 6, verticalAlign: '-2px'}} />
+            <Icon name={p === 'macos' ? 'plus' : 'download'} size={14} style={{marginInlineEnd: 6, verticalAlign: '-2px'}} />
             {p === 'macos' ? t('download.macApp') : PLATFORM_NAME[p]}
           </button>
         ))}

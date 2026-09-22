@@ -200,7 +200,7 @@ export default function HomeScreen({
                     <div style={styles.chatTopRow}>
                       <span style={styles.chatName}>
                         {pinned && (
-                          <Icon name="pin" size={12} style={{marginRight: 4, verticalAlign: '-1px', color: colors.textTertiary}} />
+                          <Icon name="pin" size={12} style={{marginInlineEnd: 4, verticalAlign: '-1px', color: colors.textTertiary}} />
                         )}
                         {title}
                       </span>
@@ -391,11 +391,11 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.surface,
     backdropFilter: 'blur(14px)',
     WebkitBackdropFilter: 'blur(14px)',
-    borderRight: `1px solid ${colors.border}`,
+    borderInlineEnd: `1px solid ${colors.border}`,
     display: 'flex',
     flexDirection: 'column',
   },
-  sidebarMobile: {width: '100%', flex: 1, borderRight: 'none'},
+  sidebarMobile: {width: '100%', flex: 1, borderInlineEnd: 'none'},
   sidebarHeader: {
     padding: '20px 18px 10px',
     display: 'flex',

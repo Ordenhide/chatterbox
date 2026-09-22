@@ -274,6 +274,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.surface,
     fontSize: 11,
     textAlign: 'center',
-    marginRight: 3,
+    marginInlineEnd: 3,
   },
 };

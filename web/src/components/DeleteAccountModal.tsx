@@ -163,7 +163,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'transparent',
   },
   warnTitle: {fontWeight: 700, fontSize: 13.5, color: colors.danger, marginBottom: 6},
-  list: {margin: '0 0 8px', paddingLeft: 18, fontSize: 13.5, color: colors.text, lineHeight: 1.6},
+  list: {margin: '0 0 8px', paddingInlineStart: 18, fontSize: 13.5, color: colors.text, lineHeight: 1.6},
   keepsNote: {fontSize: 12.5, color: colors.textSecondary, lineHeight: 1.5},
   label: {fontSize: 12.5, fontWeight: 700, color: colors.textSecondary, marginTop: 4},
   input: {

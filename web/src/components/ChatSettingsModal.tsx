@@ -171,7 +171,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  body: {display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', paddingRight: 2},
+  body: {display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', paddingInlineEnd: 2},
   section: {display: 'flex', flexDirection: 'column', gap: 8},
   label: {fontSize: 12, fontWeight: 700, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.4},
   nameRow: {display: 'flex', gap: 8},

@@ -146,7 +146,7 @@ export default function ProfileScreen({user}: {user: User}) {
           </section>
 
           <button className="btn btn-soft" style={styles.savedBtn} onClick={() => setShowSaved(true)}>
-            <Icon name="bookmark" size={16} style={{verticalAlign: '-3px', marginRight: 8}} />
+            <Icon name="bookmark" size={16} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
             {t('profile.saved')}
           </button>
         </>
@@ -164,13 +164,13 @@ export default function ProfileScreen({user}: {user: User}) {
               <button
                 onClick={() => setTheme('dark')}
                 style={{...styles.visChip, ...(theme === 'dark' ? styles.chipOn : styles.chipOff)}}>
-                <Icon name="moon" size={15} style={{verticalAlign: '-3px', marginRight: 6}} />
+                <Icon name="moon" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 6}} />
                 {t('profile.dark')}
               </button>
               <button
                 onClick={() => setTheme('light')}
                 style={{...styles.visChip, ...(theme === 'light' ? styles.chipOn : styles.chipOff)}}>
-                <Icon name="sun" size={15} style={{verticalAlign: '-3px', marginRight: 6}} />
+                <Icon name="sun" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 6}} />
                 {t('profile.light')}
               </button>
             </div>
@@ -204,7 +204,7 @@ export default function ProfileScreen({user}: {user: User}) {
             <div style={styles.cardDesc}>{t('profile.notificationsDesc')}</div>
             {pushPerm === 'granted' ? (
               <div style={styles.pushOn}>
-                <Icon name="bell" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+                <Icon name="bell" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
                 {t('profile.notificationsOn')}
               </div>
             ) : (
@@ -217,7 +217,7 @@ export default function ProfileScreen({user}: {user: User}) {
                   <span className="spinner" />
                 ) : (
                   <>
-                    <Icon name="bell" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+                    <Icon name="bell" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
                     {t('profile.enableNotifications')}
                   </>
                 )}
@@ -348,7 +348,7 @@ export default function ProfileScreen({user}: {user: User}) {
               className="btn btn-soft"
               style={styles.pwSubmit}
               onClick={() => setShowRecovery(true)}>
-              <Icon name="key" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+              <Icon name="key" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
               {t('recovery.showOrRestore')}
             </button>
           </section>
@@ -367,7 +367,7 @@ export default function ProfileScreen({user}: {user: User}) {
                 <span className="spinner" />
               ) : (
                 <>
-                  <Icon name="download" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+                  <Icon name="download" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
                   {t('account.exportData')}
                 </>
               )}
@@ -382,7 +382,7 @@ export default function ProfileScreen({user}: {user: User}) {
             <div style={styles.cardTitle}>{t('account.deleteAccount')}</div>
             <div style={styles.cardDesc}>{t('account.deleteDesc')}</div>
             <button style={styles.deleteBtn} onClick={() => setShowDelete(true)}>
-              <Icon name="trash" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+              <Icon name="trash" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
               {t('account.deleteAccount')}
             </button>
           </section>
@@ -398,7 +398,7 @@ export default function ProfileScreen({user}: {user: User}) {
             <div style={styles.cardTitle}>{t('profile.tutorial')}</div>
             <div style={styles.cardDesc}>{t('profile.tutorialDesc')}</div>
             <button className="btn btn-soft" style={styles.pushBtn} onClick={() => startTour()}>
-              <Icon name="sparkles" size={15} style={{verticalAlign: '-3px', marginRight: 8}} />
+              <Icon name="sparkles" size={15} style={{verticalAlign: '-3px', marginInlineEnd: 8}} />
               {t('profile.replayTutorial')}
             </button>
           </section>
@@ -474,7 +474,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     padding: '28px 18px',
-    borderRight: `1px solid ${colors.border}`,
+    borderInlineEnd: `1px solid ${colors.border}`,
     overflowY: 'auto',
   },
   railHeader: {

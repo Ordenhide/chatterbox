@@ -99,7 +99,7 @@ const styles: Record<string, React.CSSProperties> = {
   lead: {margin: '0 0 14px', fontSize: 14, color: colors.text, lineHeight: 1.55},
   list: {
     margin: '0 0 14px',
-    paddingLeft: 18,
+    paddingInlineStart: 18,
     fontSize: 13.5,
     color: colors.textSecondary,
     lineHeight: 1.75,
