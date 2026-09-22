@@ -9,6 +9,7 @@ import {doc, serverTimestamp, setDoc} from 'firebase/firestore';
 import {auth, db} from '../firebase';
 import {credentialsFromSeed, seedFromPhrase} from './anonymousIdentity';
 import {adoptSeedAsDeviceKey, markRecoveryPhraseRevealed} from './e2eeKeys';
+import {clearMediaCache} from './mediaVault';
 import {claimSession} from './session';
 
 /**
@@ -98,8 +99,33 @@ export async function signInWithPhrase(phrase: string) {
   return completePhraseSignIn(cred, seed);
 }
 
-export function signOut() {
-  return fbSignOut(auth);
+/**
+ * Signs out, and drops what was decrypted for the account on the way.
+ *
+ * The media cache holds plaintext attachment bytes as blob: URLs, which stay
+ * valid — and reachable from anything still holding one — for the lifetime of
+ * the document. Signing out of this app does not reload the page: App.tsx
+ * swaps the tree for the login screen and the document survives, so without
+ * this the previous account's decrypted photos were still resolvable in the
+ * tab the next person signs in on.
+ *
+ * clearMediaCache's own docstring said "Called on sign-out" and nothing
+ * called it. Mobile does the equivalent in AuthContext's two sign-out paths,
+ * plus clearBodies for its persisted message store, which this client has no
+ * counterpart to — nothing here survives the tab.
+ *
+ * Every sign-out goes through this function, including the involuntary one
+ * when another device claims the account (App.tsx), because that is the case
+ * where leaving readable plaintext behind would be worst.
+ */
+export async function signOut() {
+  try {
+    await fbSignOut(auth);
+  } finally {
+    // In a finally: a failed sign-out is not a reason to keep the plaintext,
+    // and revoking object URLs cannot itself fail in a way worth surfacing.
+    clearMediaCache();
+  }
 }
 
 /**

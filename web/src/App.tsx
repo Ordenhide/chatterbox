@@ -1,9 +1,13 @@
 import {Suspense, lazy, useEffect, useState} from 'react';
-import {onAuthStateChanged, signOut, type User} from 'firebase/auth';
+import {onAuthStateChanged, type User} from 'firebase/auth';
 import {auth} from './firebase';
+// Not firebase/auth's signOut: the service one also drops the decrypted media
+// cache, and a displaced session is the last place to skip that.
+import {signOut} from './services/auth';
 import {colors} from './theme';
 import {useT} from './i18n';
 import {listenForSessionTakeover, verifyOrAdoptSession} from './services/session';
+import {republishKeyIfAccountHasNone} from './services/e2eeKeys';
 import {useBackdropParallax} from './hooks/useBackdropParallax';
 import BrandMark from './components/BrandMark';
 import CipherTexture from './components/CipherTexture';
@@ -56,7 +60,7 @@ export default function App() {
 
     const signOutDisplaced = () => {
       setDisplaced(true);
-      signOut(auth).catch(() => undefined);
+      signOut().catch(() => undefined);
     };
 
     verifyOrAdoptSession(user.uid)
@@ -67,6 +71,17 @@ export default function App() {
           signOutDisplaced();
           return;
         }
+        // Publishes this browser's existing key if the account is advertising
+        // none, so peers can encrypt to this user. It never mints and never
+        // overwrites another device's key — see e2eeKeys.ts. Fire-and-forget:
+        // nothing below waits on it.
+        //
+        // After the ownership check, deliberately, and for the same reason
+        // mobile publishes inside its own established gate: a displaced
+        // session is still inside the session rule's 120-second allowance, so
+        // its writes are not always denied, and a device on its way out has no
+        // business writing what this account advertises.
+        republishKeyIfAccountHasNone(user.uid);
         setSessionReady(true);
       })
       .catch(() => {
