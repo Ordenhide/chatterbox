@@ -156,17 +156,30 @@ that makes `react-native/no-inline-styles` throw. It has been observed both
 exiting 0 on that crash and simply not finishing inside five minutes. Either
 way it tells you nothing.
 
-`npx eslint src` completes in seconds and is the one to use. Compare the total
-against the same command at HEAD before treating an error as yours: `src`
-carries a long-standing baseline of shadowing and exhaustive-deps errors, and
-what matters is whether your change moved the number.
+`npx eslint src` completes in seconds and is the one to use. Group the output
+by `ruleId` rather than reading a total: `src` carries a long-standing backlog
+of shadowing and exhaustive-deps errors, and what matters is which rule moved.
+Do **not** use `git stash` to separate your errors from the backlog — that is
+how three junk stashes got created here.
 
-**CI enforces that comparison now.** `ci.yml` counts the errors from
-`npx eslint src App.tsx` and fails if the total exceeds a baseline recorded in
-the workflow — a ratchet, not a gate: the number may fall freely and prints a
-notice telling you to lower the baseline, and it may not rise. It ran
-`npm run lint` under `continue-on-error` until 2026-09-14, which is a step
-that cannot fail running a command that cannot succeed.
+**CI enforces this per rule, not in total.** `ci.yml` groups the errors from
+`npx eslint src App.tsx` by rule and compares each against its own baseline:
+`@typescript-eslint/no-unused-vars` is pinned at **0** and is a hard gate,
+while `no-shadow` and `react-hooks/exhaustive-deps` are ratchets that may fall
+freely and may not rise. A rule with no baseline at all fails the step, so a
+newly-enabled rule cannot arrive silently.
+
+It was one total until 2026-09-22, which let a new error of one kind hide
+behind a fixed error of another — and it never tightened, because it only ever
+*printed* "lower the baseline" and nobody did. The split happened because that
+rule turned out to be load-bearing: `no-unused-vars` is what found an 8MB
+image cap that was declared and never enforced, and a message multi-select
+mode whose delete handler had no caller and no cancel button, so a user could
+enter it and not get out. Neither was visible to any other check here — a
+local function with no callers is not a dead *export* and breaks no test.
+
+Before that it ran `npm run lint` under `continue-on-error` until 2026-09-14,
+which is a step that cannot fail running a command that cannot succeed.
 
 **The mobile typecheck is blocking now too.** It sat behind
 `continue-on-error` with a comment citing ~58 pre-existing type errors. There

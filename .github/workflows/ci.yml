@@ -31,22 +31,66 @@ jobs:
       # nothing either way. CI ran it anyway, under continue-on-error, which is
       # a step that cannot fail running a command that cannot succeed.
       #
-      # A ratchet instead of a gate, because `src` carries a real backlog of
-      # shadowing and exhaustive-deps errors that predates any single change.
-      # The count may go down freely; it may not go up. That is the property
-      # that was actually wanted, and it is checkable.
-      - name: Lint (no regression against the recorded baseline)
+      # Per rule, not one total.
+      #
+      # This was a single baseline over every rule at once, and that let a new
+      # error of one kind hide behind a fixed error of another — the exact
+      # regression the ratchet exists to stop. It also never tightened: the
+      # step printed "lower BASELINE to lock it in" on every run for as long as
+      # the count sat under it, and nobody did.
+      #
+      # So each rule carries its own number, and no-unused-vars carries zero.
+      # That rule earns a hard gate: it is what found an 8MB image cap that was
+      # declared and never enforced, and a message multi-select mode whose
+      # delete handler had no caller and no cancel button — a mode a user could
+      # enter and not get out of. Both had been shipped, and both were
+      # invisible to every other check here, because a local function with no
+      # callers is not a dead *export* and breaks no test.
+      #
+      # no-shadow and exhaustive-deps stay ratcheted. They are a real backlog
+      # that predates any single change, and exhaustive-deps in particular
+      # cannot be cleared mechanically: several are deliberate, with the
+      # reasoning written above them, and "fixing" the rest by adding
+      # dependencies is how a render loop ships.
+      - name: Lint (per-rule baselines, no regression)
         run: |
-          BASELINE=62
-          COUNT=$(npx eslint src App.tsx -f json 2>/dev/null             | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).reduce((n,f)=>n+f.errorCount,0)))')
-          echo "eslint errors: $COUNT (baseline $BASELINE)"
-          if [ "$COUNT" -gt "$BASELINE" ]; then
-            echo "::error::eslint errors rose from $BASELINE to $COUNT. Fix the new ones,"                  "or lower the baseline in this workflow if you cleared some."
-            exit 1
-          fi
-          if [ "$COUNT" -lt "$BASELINE" ]; then
-            echo "::notice::eslint errors fell to $COUNT — lower BASELINE in ci.yml to lock it in."
-          fi
+          npx eslint src App.tsx -f json 2>/dev/null > /tmp/eslint.json || true
+          node -e '
+            const BASELINE = {
+              "@typescript-eslint/no-unused-vars": 0,
+              "@typescript-eslint/no-shadow": 24,
+              "react-hooks/exhaustive-deps": 15,
+            };
+            const files = JSON.parse(require("fs").readFileSync("/tmp/eslint.json", "utf8"));
+            const counts = {};
+            let total = 0;
+            for (const f of files) {
+              for (const m of f.messages) {
+                if (m.severity !== 2) continue;
+                counts[m.ruleId] = (counts[m.ruleId] || 0) + 1;
+                total++;
+              }
+            }
+            let failed = false;
+            for (const rule of new Set([...Object.keys(BASELINE), ...Object.keys(counts)])) {
+              const got = counts[rule] || 0;
+              const max = BASELINE[rule];
+              if (max === undefined) {
+                console.log(`::error::${rule}: ${got} error(s), and this rule has no baseline. ` +
+                  "Fix them, or add the rule to BASELINE in ci.yml with the reason in the comment above.");
+                failed = true;
+              } else if (got > max) {
+                console.log(`::error::${rule}: ${got} error(s), baseline ${max}. Fix the new ones.`);
+                failed = true;
+              } else if (got < max) {
+                console.log(`::notice::${rule}: down to ${got} from ${max} — lower it in ci.yml to lock it in.`);
+              } else {
+                console.log(`${rule}: ${got} (at baseline)`);
+              }
+            }
+            console.log(`eslint errors: ${total}`);
+            if (failed) process.exit(1);
+          '
 
       # Blocking now. The comment this replaces said there were ~58 pre-existing
       # type errors and left the step non-blocking until the backlog cleared.

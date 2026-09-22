@@ -10,6 +10,33 @@ module.exports = {
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
         'no-undef': 'off',
+        /**
+         * `_`-prefixed means "deliberately discarded", everywhere — not only
+         * in argument lists.
+         *
+         * The default only exempts unused *arguments*, so the two idioms this
+         * codebase uses for dropping a value were both reported as mistakes:
+         * `const {[key]: _, ...rest} = prev` to omit one entry from an object,
+         * and `const {key: _key, ...props} = props` to strip React's `key`
+         * before spreading the rest onto a child (passing it through logs a
+         * warning). Both are correct and neither has a rewrite that is
+         * clearer, so the convention is recognised rather than worked around.
+         *
+         * Names without the underscore are still errors, which is the half
+         * that catches real dead code — an unenforced 8MB image cap and a
+         * multi-select mode with no delete button were both found this way.
+         */
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            args: 'after-used',
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            destructuredArrayIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_',
+            ignoreRestSiblings: true,
+          },
+        ],
         // React Native Firebase wraps the *native* Firebase SDKs, which exist
         // for iOS and Android and nowhere else — there is no HarmonyOS build of
         // them. Every import goes through src/services/firebase/ so that a port

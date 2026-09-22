@@ -293,7 +293,17 @@ export interface ChatRoom {
    * processExpiredMessages in functions/index.js, which both depend on it.
    */
   messageExpirySince?: number;
-  lockedBy?: Record<string, boolean>;
+  /*
+   * `lockedBy?: Record<string, boolean>` was here. Per-chat PIN locks were
+   * removed from this client, and the field outlived them: nothing on either
+   * client read or wrote it, and no rule or function mentioned it. A type
+   * member is the quietest place for a removed feature to survive, because it
+   * costs nothing and reads as a schema someone should respect — the next
+   * person adding chat settings finds a documented field and fills it in.
+   *
+   * The browser still has per-chat locks, in localStorage only
+   * (web/src/services/appLock.ts), so nothing there depended on this either.
+   */
 }
 
 export type CallType = 'voice' | 'video';

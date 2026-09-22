@@ -38,7 +38,7 @@ import ImageResizer from 'react-native-image-resizer';
 import Video from 'react-native-video';
 import {useAuth} from '../../contexts/AuthContext';
 import {useRoute, useNavigation, useFocusEffect} from '@react-navigation/native';
-import {Message as ChatMessage, CallType, User} from '../../types';
+import {Message as ChatMessage, CallType} from '../../types';
 import {getColors} from '../../theme/colors';
 import GlassScreen from '../../components/GlassScreen';
 import DocumentPicker from 'react-native-document-picker';
@@ -102,7 +102,6 @@ import {
   updateMessage,
   uploadFile,
   uploadFileResumable,
-  updateCall,
   cleanupStaleCalls,
 } from '../../services/firebaseChat';
 import {openIntroductions} from '../../services/introductions';
@@ -341,7 +340,6 @@ export default function ChatScreen() {
   // otherUserId, which is only the *first* other member and still drives the
   // 1:1-shaped header, safety number and recipient checks.
   const [otherUserIds, setOtherUserIds] = useState<string[]>([]);
-  const [otherUser, setOtherUser] = useState<User | null>(null);
   // Set when e2eeKeys detects the peer's public key changed after this device
   // had already trusted one for them — could be a substitution attack, could
   // be a reinstall. Surfaced as a banner rather than acted on automatically,
@@ -1893,7 +1891,12 @@ export default function ChatScreen() {
               t('members.title', {count: chat.participants.length})
             : customName || introduced[chatId] || otherUser?.displayName || 'Chat';
           setOtherUserName(name);
-          setOtherUser(otherUser);
+          // `setOtherUser(otherUser)` was here, into a `User | null` state
+          // nothing ever rendered. The profile fetched above is still used —
+          // `otherUser?.displayName` feeds the title just above — so the fetch
+          // stays and only the write-only state is gone. A `useState` that is
+          // set and never read costs a render of this 7,000-line component
+          // every time a chat opens, for a value no one can see.
           setCustomName(customName);
           setOtherUserId(otherId);
           // Reciprocal: someone who does not send read receipts does not see
@@ -3094,6 +3097,16 @@ export default function ChatScreen() {
       Alert.alert(t('chat.videoTooLargeTitle'), t('chat.videoTooLargeBody'));
       return;
     }
+    // Images were exempt. MAX_IMAGE_BYTES was declared beside the other two
+    // limits and never read by anything — a cap that existed only as a
+    // number — so a photo of any size went straight to the encrypt-and-upload
+    // path, where the whole object is read into memory to be sealed
+    // (services/mediaCrypto.ts). Videos and files have always been checked
+    // here; this is the third of three, not a new restriction.
+    if (!isVideo && asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert(t('chat.imageTooLargeTitle'), t('chat.imageTooLargeBody'));
+      return;
+    }
     let fileName = asset.fileName || `media_${Date.now()}`;
     let uploadUri = asset.uri;
 
@@ -3813,13 +3826,14 @@ export default function ChatScreen() {
       const text = current.text || '';
       const msgId = String(current._id);
       const isOutgoing = props?.position === 'right';
-      // Follows the fill the bubble actually gets (see wrapperStyle below):
-      // the chat accent normally, colors.primary while selected — which is
-      // what textOnPrimary was designed against.
-      const isSelected = msgSelectMode && msgSelected.has(msgId);
-      // Outgoing bubbles are filled with colors.text and textOnPrimary is the
-      // palette's answer for that fill, so both branches land on the same ink;
-      // the conditional is kept because the *fill* still differs when selected.
+      // Only the message's own direction decides the ink here. There used to
+      // be an `isSelected` computed alongside, with a comment explaining that
+      // the text colour "follows the fill the bubble actually gets… while
+      // selected" — but nothing in this function ever read it, so the comment
+      // described an intention rather than the code. Selection changes the
+      // bubble's fill in wrapperStyle below, and colors.textOnPrimary is the
+      // palette's answer for both that fill and an outgoing one, so the ink is
+      // correct either way and there is nothing for this to branch on.
       const baseColor = isOutgoing ? colors.textOnPrimary : colors.text;
       const mentionColor = isOutgoing ? colors.warning : colors.primary;
 
@@ -4773,6 +4787,48 @@ export default function ChatScreen() {
           ) : null}
         </View>
       ) : null}
+      {/*
+        Multi-select had no exit and no action.
+        Long-press → "Select" put the screen into msgSelectMode, bubbles
+        rendered a selected state, toggling worked — and then nothing. The one
+        thing a selection is for, handleDeleteSelectedMsgs, had no caller
+        anywhere, and neither did exitMsgSelect except from inside it. So the
+        mode was a trap: no delete, no cancel, and no way back except leaving
+        the chat.
+
+        In the render tree rather than in headerRight because the handlers are
+        declared several thousand lines below the setOptions effect, and
+        listing them in its dependency array would read them before their
+        initialisers had run.
+      */}
+      {msgSelectMode ? (
+        <View
+          style={[
+            styles.selectBar,
+            {backgroundColor: colors.surface, borderBottomColor: colors.border},
+          ]}>
+          <Text style={[styles.selectBarCount, {color: colors.text}]}>
+            {t('chat.selectedCount', {count: msgSelected.size})}
+          </Text>
+          <TouchableOpacity style={styles.headerButton} onPress={exitMsgSelect}>
+            <Text style={[styles.headerButtonText, {color: colors.primary}]}>
+              {t('common.cancel')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            disabled={msgSelected.size === 0}
+            onPress={handleDeleteSelectedMsgs}>
+            <Text
+              style={[
+                styles.headerButtonText,
+                {color: msgSelected.size === 0 ? colors.textSecondary : colors.danger},
+              ]}>
+              {t('common.delete')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       {sharingLocation ? (
         <View style={[styles.locationBanner, {backgroundColor: colors.primary}]}>
           <View style={styles.locationBannerRow}>
@@ -5580,6 +5636,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  selectBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  selectBarCount: {flex: 1, fontSize: 15, fontWeight: '600'},
   offlineBanner: {
     flexDirection: 'row',
     justifyContent: 'center',
