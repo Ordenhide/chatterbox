@@ -1,9 +1,9 @@
 {
   "name": "Chatterbox",
   "short_name": "Chatterbox",
-  "description": "Chat, share moments, and call your friends.",
-  "start_url": "/",
-  "scope": "/",
+  "description": "End-to-end encrypted messaging and calls.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",

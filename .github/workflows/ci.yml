@@ -149,6 +149,15 @@ jobs:
       - name: Test
         run: npm test
 
+      # `build:site`, not `build`: it is the command the release workflow runs
+      # to produce website/app, and it differs by --base=/app/ and an outDir
+      # outside the project root. Nothing exercised either until a `v*` tag
+      # ran it for the first time, during a deploy — the most expensive place
+      # to discover the production build is broken. Cheap here, and it also
+      # type-checks via `tsc -b`, which `typecheck`'s --noEmit does not.
+      - name: Build the site bundle (what the release deploys)
+        run: npm run build:site
+
   functions:
     runs-on: ubuntu-latest
     defaults:

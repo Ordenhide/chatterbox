@@ -97,6 +97,27 @@ jobs:
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
 
+      # website/app/ is the built web client. It is gitignored (.gitignore:117)
+      # and produced by web/'s `build:site`, so a CI checkout does not contain
+      # it — `git archive HEAD website` lists everything but `app/`.
+      #
+      # A Hosting deploy replaces the site's whole file set rather than
+      # merging into it, and website/index.html links to `/app/`. Without this
+      # step the deploy below publishes a site whose own "open the web app"
+      # link 404s. The step was missing from the moment the Hosting deploy was
+      # added (2026-09-20, for APK self-distribution) and could not be noticed,
+      # because that deploy only runs on a `v*` tag and none has been pushed
+      # since.
+      #
+      # `npm ci` here and not at the top: this is the only step that needs
+      # web/node_modules, and the APK build must not wait on it.
+      - name: Build the web client into website/app
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: web
+        run: |
+          npm ci
+          npm run build:site
+
       - name: Deploy the website (Firebase Hosting)
         if: startsWith(github.ref, 'refs/tags/v')
         run: npx firebase-tools@^15 deploy --only hosting --project chatterbox-e5d10 --non-interactive

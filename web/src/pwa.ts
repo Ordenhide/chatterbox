@@ -7,7 +7,11 @@ export function registerServiceWorker(): void {
   if (!('serviceWorker' in navigator)) return;
   if (!import.meta.env.PROD) return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => {
+    // BASE_URL, not '/': the site build serves this app from /app/ (vite
+    // --base), where '/sw.js' is the marketing site's root and 404s, so the
+    // worker silently never registered in the only build that ships. Vite
+    // guarantees BASE_URL ends in a slash.
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(err => {
       console.warn('Service worker registration failed:', err);
     });
   });

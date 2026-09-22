@@ -3,6 +3,17 @@ import {db} from '../firebase';
 
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
+/**
+ * The app's icon, resolved against wherever the app is served from.
+ *
+ * A leading slash is the marketing site's root on chatterbox.app, where this
+ * app lives under /app/ — so every notification asked the browser for an icon
+ * that 404s. Unlike the service-worker paths nearby this one is on a live
+ * path: showLocalNotification below is what useReminders and
+ * useChatNotifications call today.
+ */
+const ICON_URL = `${import.meta.env.BASE_URL}icon.svg`;
+
 export type PushState =
   | 'unsupported' // browser can't show notifications at all
   | 'default' // not yet asked
@@ -39,9 +50,25 @@ export async function enablePush(uid: string): Promise<PushState> {
       const {getToken, getMessaging, isSupported, onMessage} = await import('firebase/messaging');
       if (await isSupported()) {
         const {app} = await import('../firebase');
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-          scope: '/firebase-cloud-messaging-push-scope',
-        });
+        // Both paths are relative to BASE_URL rather than the origin root.
+        // The site build serves this app from /app/, so the script lives at
+        // /app/firebase-messaging-sw.js and an absolute '/…' would 404 on the
+        // marketing site.
+        //
+        // This is latent rather than an outage today: VAPID_KEY above is
+        // unset, so the guard on it is statically false and this whole block
+        // is dead-code-eliminated — the built bundle contains no reference to
+        // the worker at all. It would have broken on the day someone set the
+        // key, which is the worst moment to find out.
+        //
+        // The scope has to move with it: a worker under /app/ cannot claim a
+        // scope above its own directory without a Service-Worker-Allowed
+        // header, which Hosting does not send here.
+        const base = import.meta.env.BASE_URL;
+        const registration = await navigator.serviceWorker.register(
+          `${base}firebase-messaging-sw.js`,
+          {scope: `${base}firebase-cloud-messaging-push-scope`},
+        );
         const messaging = getMessaging(app);
         const token = await getToken(messaging, {
           vapidKey: VAPID_KEY,
@@ -63,7 +90,7 @@ export async function enablePush(uid: string): Promise<PushState> {
         onMessage(messaging, payload => {
           const n = payload.notification;
           if (n && Notification.permission === 'granted') {
-            new Notification(n.title || 'Chatterbox', {body: n.body, icon: '/icon.svg'});
+            new Notification(n.title || 'Chatterbox', {body: n.body, icon: ICON_URL});
           }
         });
       }
@@ -86,7 +113,7 @@ export function showLocalNotification(title: string, body: string, chatId: strin
     if (document.visibilityState === 'visible' && document.hasFocus()) return;
     const n = new Notification(title || 'Chatterbox', {
       body,
-      icon: '/icon.svg',
+      icon: ICON_URL,
       tag: `chat-${chatId}`,
     });
     n.onclick = () => {

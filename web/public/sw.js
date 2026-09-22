@@ -8,7 +8,22 @@
  *  - Firestore/Auth/Storage requests are never cached (let the SDK handle them).
  */
 const CACHE = 'chatterbox-v1';
-const SHELL = '/index.html';
+
+/* Where this worker is served from, derived at runtime rather than assumed.
+ *
+ * The app runs at `/` under `vite dev` and at `/app/` on chatterbox.app
+ * (`build:site` passes --base=/app/). Vite rewrites asset URLs inside
+ * index.html for that, but a file in `public/` is copied verbatim — there is
+ * no build step that could substitute a base in here. Every path below was
+ * absolute from the root, so in the deployed layout the shell resolved to the
+ * marketing site's index.html, the icons 404'd, and a notification click
+ * opened the landing page instead of the app.
+ *
+ * `new URL('./', self.location)` is the worker's own directory: `/` for
+ * /sw.js, `/app/` for /app/sw.js. It always ends in a slash.
+ */
+const BASE = new URL('./', self.location).pathname;
+const SHELL = `${BASE}index.html`;
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.add(SHELL)).catch(() => {}));
@@ -27,7 +42,7 @@ self.addEventListener('activate', event => {
 function isCacheableAsset(url) {
   if (url.origin !== self.location.origin) return false;
   // Don't cache the SW itself or dev/HMR endpoints.
-  if (url.pathname === '/sw.js') return false;
+  if (url.pathname === `${BASE}sw.js`) return false;
   return /\.(js|css|woff2?|png|jpg|jpeg|svg|webp|ico|webmanifest)$/i.test(url.pathname);
 }
 
@@ -79,16 +94,16 @@ self.addEventListener('push', event => {
   const title = data.title || 'Chatterbox';
   const options = {
     body: data.body || 'You have a new message',
-    icon: '/icon.svg',
-    badge: '/icon.svg',
-    data: data.link || '/',
+    icon: `${BASE}icon.svg`,
+    badge: `${BASE}icon.svg`,
+    data: data.link || BASE,
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const link = event.notification.data || '/';
+  const link = event.notification.data || BASE;
   event.waitUntil(
     self.clients.matchAll({type: 'window', includeUncontrolled: true}).then(list => {
       for (const client of list) {
