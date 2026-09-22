@@ -32,8 +32,15 @@ export async function uploadFileFromUri(
   storageRef: StorageRef,
   uri: string,
   onProgress?: (percent: number) => void,
+  /**
+   * Object metadata. Only `customMetadata` is used today, for the
+   * `uploaderUid` stamp storage.rules reads to decide who may delete or
+   * overwrite an attachment. Forwarded rather than interpreted: a HarmonyOS
+   * implementation passes the same object to uploadBytesResumable.
+   */
+  metadata?: {customMetadata?: Record<string, string>},
 ): Promise<string> {
-  const task = putFile(storageRef, uri);
+  const task = putFile(storageRef, uri, metadata);
   if (onProgress) {
     task.on('state_changed', snapshot => {
       const total = snapshot.totalBytes || 0;

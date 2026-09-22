@@ -1,4 +1,5 @@
 import {getApp} from 'firebase/app';
+import {auth} from '../firebase';
 import {getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject} from 'firebase/storage';
 import {encryptMedia, type ByteSink, type ByteSource, type MediaKeyInfo} from './mediaCrypto';
 
@@ -142,13 +143,29 @@ export async function downscaleImage(file: File, maxDim = 1600, quality = 0.82):
   }
 }
 
+/**
+ * Stamps an upload with who made it.
+ *
+ * storage.rules reads `uploaderUid` back to decide who may delete or overwrite
+ * a chat attachment; without it, any participant could destroy anyone's.
+ * Mirrors uploaderMetadata in the mobile client's services/firebaseChat.ts —
+ * the rules read one field and both clients have to write it.
+ *
+ * No uid means no stamp rather than no upload: the rules permit an unstamped
+ * object, because every object from an older build is one.
+ */
+function uploaderMetadata(): {customMetadata?: Record<string, string>} {
+  const uid = auth.currentUser?.uid;
+  return uid ? {customMetadata: {uploaderUid: uid}} : {};
+}
+
 function uploadWithProgress(
   path: string,
   blob: Blob,
   onProgress?: (pct: number) => void,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const task = uploadBytesResumable(ref(storage, path), blob);
+    const task = uploadBytesResumable(ref(storage, path), blob, uploaderMetadata());
     task.on(
       'state_changed',
       s => onProgress?.(s.totalBytes ? Math.round((s.bytesTransferred / s.totalBytes) * 100) : 0),

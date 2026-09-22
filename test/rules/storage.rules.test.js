@@ -242,6 +242,106 @@ describe('chats/{chatId}/{allPaths=**}', () => {
   });
 });
 
+/**
+ * An attachment belongs to whoever sent it.
+ *
+ * firestore.rules narrowed message deletion to the author on purpose, writing
+ * out the reason: one member of a 32-person chat could otherwise destroy
+ * anyone's message, and irrecoverably, since only the deleter can restore from
+ * trash. The bytes behind those messages had no equivalent rule — `write`
+ * covered create, overwrite and delete for every participant, and `read`
+ * covers `list`, so the object names were discoverable rather than guessable.
+ *
+ * The clients stamp `uploaderUid` as custom metadata and the rules read it
+ * back. An object without the stamp behaves as it did before, because every
+ * object uploaded before this existed has none and so does every upload from a
+ * build already on someone's phone — this app ships as an APK rather than
+ * through a store that can force an update, and refusing those uploads would
+ * be worse than the griefing it prevents.
+ */
+describe('chat attachments belong to their uploader', () => {
+  const at = () => Math.floor(NOW_MS / 1000);
+
+  async function twoParticipants() {
+    await seedUser('alice', {sessionClaimedAtMs: NOW_MS});
+    await seedUser('mallory', {sessionClaimedAtMs: NOW_MS});
+    await seedChat('c1', ['alice', 'mallory']);
+  }
+
+  /** Uploaded by `uid`, stamped the way a current client stamps it. */
+  function upload(uid, path) {
+    return uploadBytes(ref(asUser(uid, at()), path), BYTES, {
+      customMetadata: {uploaderUid: uid},
+    });
+  }
+
+  it('lets a participant upload with their own stamp, and read it back', async () => {
+    // Pinned first: every denial below is meaningless if stamped uploads are
+    // refused outright, which is exactly how the $(database) bug hid.
+    await twoParticipants();
+    await assertSucceeds(upload('alice', 'chats/c1/photo.jpg'));
+    await assertSucceeds(getBytes(ref(asUser('mallory', at()), 'chats/c1/photo.jpg')));
+  });
+
+  it('refuses an upload stamped with somebody else’s uid', async () => {
+    await twoParticipants();
+    await assertFails(
+      uploadBytes(ref(asUser('mallory', at()), 'chats/c1/photo.jpg'), BYTES, {
+        customMetadata: {uploaderUid: 'alice'},
+      }),
+    );
+  });
+
+  it('lets the uploader delete their own object', async () => {
+    await twoParticipants();
+    await upload('alice', 'chats/c1/photo.jpg');
+    await assertSucceeds(deleteObject(ref(asUser('alice', at()), 'chats/c1/photo.jpg')));
+  });
+
+  it('denies another participant deleting it', async () => {
+    await twoParticipants();
+    await upload('alice', 'chats/c1/photo.jpg');
+    await assertFails(deleteObject(ref(asUser('mallory', at()), 'chats/c1/photo.jpg')));
+  });
+
+  it('denies another participant overwriting it', async () => {
+    // The route around a delete-only rule: replace the bytes with anything,
+    // and the recipient's decryption fails on a message they can still see.
+    await twoParticipants();
+    await upload('alice', 'chats/c1/photo.jpg');
+    await assertFails(upload('mallory', 'chats/c1/photo.jpg'));
+  });
+
+  it('denies overwriting it to strip the stamp first', async () => {
+    // Without gating `update` on the existing object, this would clear the
+    // metadata and leave the object in the unstamped class, deletable by
+    // anyone — the rule would then protect nothing it did not already.
+    await twoParticipants();
+    await upload('alice', 'chats/c1/photo.jpg');
+    await assertFails(uploadBytes(ref(asUser('mallory', at()), 'chats/c1/photo.jpg'), BYTES));
+  });
+
+  it('still lets any participant delete an unstamped object', async () => {
+    // The transitional allowance, asserted rather than assumed: burn-after-
+    // reading and account deletion both delete objects uploaded by older
+    // builds, and breaking that would strand media on the server forever.
+    await twoParticipants();
+    await seed(context => uploadBytes(ref(context.storage(), 'chats/c1/legacy.jpg'), BYTES));
+    await assertSucceeds(deleteObject(ref(asUser('mallory', at()), 'chats/c1/legacy.jpg')));
+  });
+
+  it('still lets an older client upload without a stamp', async () => {
+    await twoParticipants();
+    await assertSucceeds(uploadBytes(ref(asUser('alice', at()), 'chats/c1/nostamp.jpg'), BYTES));
+  });
+
+  it('denies a non-participant regardless of what it stamps', async () => {
+    await seedUser('stranger', {sessionClaimedAtMs: NOW_MS});
+    await seedChat('c1', ['alice', 'mallory']);
+    await assertFails(upload('stranger', 'chats/c1/photo.jpg'));
+  });
+});
+
 describe('session currency (hasCurrentSessionForUid)', () => {
   // These exercise the session check, not any particular path — they just need
   // somewhere writable to aim at. That used to be the moment-media path, which

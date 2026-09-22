@@ -176,6 +176,17 @@ export async function beginSession(options: {
   totalBytes: number;
   mime: string;
   idToken: string;
+  /**
+   * Custom metadata for the object, sent in the session-opening request's
+   * metadata body rather than alongside the bytes — the resumable protocol
+   * takes the object's metadata once, when the session is created.
+   *
+   * `uploaderUid` is what storage.rules reads to decide who may delete or
+   * overwrite an attachment (see uploaderIsMe there). Optional so the
+   * protocol layer stays a protocol layer: it does not know what the app
+   * stamps, only how to send it.
+   */
+  customMetadata?: Record<string, string>;
 }): Promise<string> {
   const response = await ReactNativeBlobUtil.fetch(
     'POST',
@@ -188,7 +199,12 @@ export async function beginSession(options: {
       'X-Goog-Upload-Header-Content-Type': options.mime,
       'Content-Type': 'application/json; charset=utf-8',
     },
-    JSON.stringify({name: options.objectPath, fullPath: options.objectPath, contentType: options.mime}),
+    JSON.stringify({
+      name: options.objectPath,
+      fullPath: options.objectPath,
+      contentType: options.mime,
+      ...(options.customMetadata ? {metadata: options.customMetadata} : null),
+    }),
   );
   const headers = assertOk(response, 'opening a session');
   uploadStatus(headers);
@@ -278,6 +294,7 @@ export async function uploadResumable(options: {
   path: string;
   mime: string;
   idToken: string;
+  customMetadata?: Record<string, string>;
   sessionUrl?: string;
   onSession?: (url: string) => void | Promise<void>;
   onProgress?: (percent: number) => void;
@@ -302,6 +319,7 @@ export async function uploadResumable(options: {
       totalBytes,
       mime: options.mime,
       idToken: options.idToken,
+      customMetadata: options.customMetadata,
     });
     await options.onSession?.(sessionUrl);
     state = {offset: 0, final: false};

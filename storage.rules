@@ -141,12 +141,72 @@ service firebase.storage {
       allow write: if false;
     }
 
+    /**
+     * Who uploaded an object, when the upload said so.
+     *
+     * Storage has no equivalent of a document's author field, so the clients
+     * stamp `uploaderUid` as custom metadata and this is what reads it back.
+     *
+     * Absent is allowed, and that is the whole design constraint rather than
+     * an oversight. Every object uploaded before this existed has no such
+     * metadata, and so does every upload from a build already installed on
+     * someone's phone — this app is distributed as an APK from chatterbox.app,
+     * not through a store that can force an update. Requiring the stamp would
+     * have stopped those clients attaching anything at all, which is a worse
+     * outcome than the griefing it prevents. The protection therefore arrives
+     * as clients update, and an object without a stamp behaves as it did
+     * before.
+     */
+    function uploaderIsMe() {
+      return resource == null ||
+        resource.metadata == null ||
+        !('uploaderUid' in resource.metadata) ||
+        resource.metadata.uploaderUid == request.auth.uid;
+    }
+
+    /** An upload may decline to say who made it; it may not name someone else. */
+    function uploaderClaimHonest() {
+      return request.resource == null ||
+        request.resource.metadata == null ||
+        !('uploaderUid' in request.resource.metadata) ||
+        request.resource.metadata.uploaderUid == request.auth.uid;
+    }
+
     match /chats/{chatId}/{allPaths=**} {
       allow read: if hasActiveSession() && isChatParticipant(chatId);
-      // Higher than moments because this path also carries video and
-      // arbitrary documents.
-      allow write: if hasActiveSession() && isChatParticipant(chatId) &&
-        uploadAllowed(200 * 1024 * 1024);
+
+      /**
+       * Create and destroy are separated because they were not, and the
+       * asymmetry with Firestore was stark: the message rule there was
+       * deliberately narrowed to "only the author may delete their own
+       * message", with the reasoning written out — one member of a 32-person
+       * chat could otherwise destroy anyone's message, irrecoverably for its
+       * author. The bytes behind those messages had no such rule. `read`
+       * covers `list`, so the object names were discoverable too, and any
+       * participant could delete or overwrite another's attachment.
+       *
+       * Overwriting is `update` and is gated on the *existing* object's
+       * stamp, so it cannot be used to strip the metadata and then delete.
+       *
+       * Higher size ceiling than moments because this path also carries video
+       * and arbitrary documents.
+       */
+      /*
+       * `uploaderIsMe()` is on `create` as well as `update`, and that is not
+       * belt-and-braces: writing new bytes over an existing object is a
+       * *create* in Storage rules, not an update — `update` covers a metadata
+       * change. Measured against the emulator rather than assumed, after the
+       * first version of this rule put the check only on `update` and the
+       * overwrite test said it had succeeded.
+       *
+       * On a genuine new upload `resource` is null and the check passes, so
+       * the ordinary path is unaffected.
+       */
+      allow create: if hasActiveSession() && isChatParticipant(chatId) &&
+        uploadAllowed(200 * 1024 * 1024) && uploaderClaimHonest() && uploaderIsMe();
+      allow update: if hasActiveSession() && isChatParticipant(chatId) &&
+        uploadAllowed(200 * 1024 * 1024) && uploaderClaimHonest() && uploaderIsMe();
+      allow delete: if hasActiveSession() && isChatParticipant(chatId) && uploaderIsMe();
     }
   }
 }
