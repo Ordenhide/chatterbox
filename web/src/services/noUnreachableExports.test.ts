@@ -7,17 +7,21 @@
  * out to be complete and unreachable while the privacy policy promised, in
  * fifteen languages, "Lock the app with a PIN or biometrics."
  *
- * This client has its own copy of that exact bug: setAppLockPIN, verifyAppPIN,
- * disableAppLock and isAppLockEnabled are implemented here and no screen
- * reaches any of them. It is on the allowlist below rather than fixed, because
- * whether the browser should offer an app lock at all is a product call — but
- * it is now a written-down decision instead of something nobody knew.
+ * This client had its own copy of that exact bug: setAppLockPIN, verifyAppPIN,
+ * disableAppLock and isAppLockEnabled were implemented here, with scrypt, and
+ * no screen reached any of them. They are gone — unlike mobile, this client
+ * ships no privacy policy claiming the feature, so there was nothing to keep
+ * honest and nothing to build against (appLock.ts records the reasoning).
  *
- * The two other findings in the same pass were reachability failures of a
- * different kind: republishKeyIfAccountHasNone, which mobile calls at sign-in
- * to repair an account advertising no key, was never wired up here (now it
- * is, in App.tsx), and a plaintext sendTextMessage sat in chat.ts sharing its
- * name with mobile's *encrypted* send path.
+ * Three other findings in the same pass were reachability failures of a
+ * different kind, and all three are now wired rather than allowlisted:
+ * republishKeyIfAccountHasNone, which mobile calls at sign-in to repair an
+ * account advertising no key; clearMediaCache, whose own docstring said
+ * "Called on sign-out" while nothing called it; and
+ * hasRevealedRecoveryPhrase, which this client wrote on every sign-in and
+ * read nowhere, so nobody was ever told to write down the 24 words that are
+ * their whole account. A plaintext sendTextMessage also sat in chat.ts
+ * sharing its name with mobile's *encrypted* send path, and was deleted.
  *
  * ## The allowlist is the useful half
  *
@@ -80,28 +84,10 @@ const ALLOWED: Record<string, string> = {
   deleteReminder:
     'A reminder can be set but not deleted from the UI, on either client. Same entry ' +
     'sits in the mobile guard.',
-  hasRevealedRecoveryPhrase:
-    'Mobile reads this to nag a user who has not written their phrase down yet. This ' +
-    'client records the reveal (markRecoveryPhraseRevealed, called from auth.ts) and ' +
-    'has no banner to read it back — a written-and-never-read flag, deliberately, ' +
-    'until the browser gets that prompt.',
   isExpired:
     'ephemeral.ts helper for disappearing moments. The moments feature has no web ' +
     'surface at all, so this and MOMENT_EXPIRY_HOURS are what a web moments view ' +
     'would need, kept beside the burn-duration helpers that are in use.',
-
-  // ---- The app lock: complete, and reachable from nothing ------------------
-  // Four functions and a working scrypt implementation with no UI. Mobile
-  // ships this screen; the browser does not, and an app lock in a tab is a
-  // weaker promise than one on a phone — the tab can be reopened, and site
-  // data can be cleared. Left as a decision rather than deleted.
-  setAppLockPIN:
-    'appLock is implemented and has no UI on web. Whether a browser tab should ' +
-    'offer an app lock at all is a product call; mobile ships the screen and this ' +
-    'client does not.',
-  verifyAppPIN: 'Reader for the same unbuilt app lock. Removed only together with its writer.',
-  disableAppLock: 'Teardown for the same unbuilt app lock.',
-  isAppLockEnabled: 'Predicate for the same unbuilt app lock.',
 
   // ---- Storage helpers with no current caller -----------------------------
   uploadChatImage:

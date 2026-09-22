@@ -1,7 +1,8 @@
 import {bytesToHex, deriveKeyFromPassphrase, hexToBytes, secureRandomBytes} from './crypto';
 
 /**
- * PIN locks for individual chats, and for the app as a whole.
+ * PIN locks for individual chats. Not for the app as a whole — see the note at
+ * the foot of this file for why the browser does not offer that.
  *
  * The PIN goes through the same memory-hard scrypt used for encrypted backups
  * (crypto.ts). Mobile now does the same.
@@ -26,7 +27,6 @@ import {bytesToHex, deriveKeyFromPassphrase, hexToBytes, secureRandomBytes} from
  * gates the UI, not the data. Treat it as a privacy screen, not a safe.
  */
 
-const APP_LOCK_KEY = 'app_lock_pin_v1';
 const CHAT_LOCK_PREFIX = 'chat_lock_v1';
 
 /** Stored as "v1:<saltHex>:<hashHex>". The version prefix exists so a future
@@ -119,20 +119,25 @@ export function verifyChatPIN(chatId: string, input: string): boolean {
   return verifyAgainstStored(input, read(chatKey(chatId)));
 }
 
-// ---- Whole-app lock ---------------------------------------------------------
+// ---- Whole-app lock: deliberately not offered here --------------------------
 
-export function isAppLockEnabled(): boolean {
-  return read(APP_LOCK_KEY) !== null;
-}
-
-export function setAppLockPIN(pin: string): void {
-  write(APP_LOCK_KEY, encodePin(pin));
-}
-
-export function disableAppLock(): void {
-  remove(APP_LOCK_KEY);
-}
-
-export function verifyAppPIN(input: string): boolean {
-  return verifyAgainstStored(input, read(APP_LOCK_KEY));
-}
+/*
+ * isAppLockEnabled, setAppLockPIN, disableAppLock and verifyAppPIN used to live
+ * here. All four worked, and no screen reached any of them — the browser has
+ * never had a lock screen. They are gone rather than wired up, and the reason
+ * is worth writing down because the mobile client made the opposite call.
+ *
+ * On the phone, the same finding was a bug: the privacy policy promised "Lock
+ * the app with a PIN or biometrics" in fifteen languages, so the choice was
+ * wire it up or stop claiming it. This client ships no privacy policy and the
+ * marketing site makes no such claim, so there was nothing to keep honest —
+ * only four exports inviting the next person to half-build a security control.
+ *
+ * And it would have been the weaker half of one. An app lock is a promise about
+ * physical access to a device; a browser tab reopens from history, site data
+ * can be cleared from outside the app, and nothing here can gate the OS. Per-
+ * chat locks stay because they are reachable, used, and honest about being a
+ * privacy screen rather than a safe (see the header). If a whole-app lock is
+ * ever wanted here, it comes with a lock screen in the same change; the code is
+ * four functions and it is in the history.
+ */

@@ -17,16 +17,7 @@ const memoryStorage = (() => {
 })();
 vi.stubGlobal('localStorage', memoryStorage);
 
-import {
-  disableAppLock,
-  isAppLockEnabled,
-  isChatLocked,
-  removeChatLock,
-  setAppLockPIN,
-  setChatLockPIN,
-  verifyAppPIN,
-  verifyChatPIN,
-} from './appLock';
+import {isChatLocked, removeChatLock, setChatLockPIN, verifyChatPIN} from './appLock';
 
 beforeEach(() => memoryStorage.clear());
 
@@ -93,22 +84,32 @@ describe('chat locks', () => {
   });
 });
 
-describe('app lock', () => {
-  it('enables, verifies and disables', () => {
-    expect(isAppLockEnabled()).toBe(false);
-    setAppLockPIN('0000');
-    expect(isAppLockEnabled()).toBe(true);
-    expect(verifyAppPIN('0000')).toBe(true);
-    expect(verifyAppPIN('0001')).toBe(false);
-    disableAppLock();
-    expect(isAppLockEnabled()).toBe(false);
-    expect(verifyAppPIN('0000')).toBe(false);
+/**
+ * There was an `app lock` suite here covering setAppLockPIN / verifyAppPIN /
+ * isAppLockEnabled / disableAppLock. Those four exports are gone: they were
+ * complete, nothing on this client reached them, and appLock.ts now records why
+ * the browser does not offer a whole-app lock rather than leaving the pieces
+ * lying around for someone to half-wire.
+ *
+ * The suite is not replaced by a "stays deleted" check. The reachability guard
+ * (noUnreachableExports.test.ts) is what would catch them coming back without a
+ * screen, which is the failure worth guarding — not their absence.
+ */
+describe('a chat lock is scoped to its chat', () => {
+  it('does not accept another chat’s PIN', () => {
+    setChatLockPIN('c1', '1111');
+    setChatLockPIN('c2', '2222');
+    expect(verifyChatPIN('c1', '2222')).toBe(false);
+    expect(verifyChatPIN('c2', '1111')).toBe(false);
+    expect(verifyChatPIN('c1', '1111')).toBe(true);
+    expect(verifyChatPIN('c2', '2222')).toBe(true);
   });
 
-  it('is independent of chat locks', () => {
-    setAppLockPIN('1111');
-    setChatLockPIN('c1', '2222');
-    expect(verifyAppPIN('2222')).toBe(false);
-    expect(verifyChatPIN('c1', '1111')).toBe(false);
+  it('leaves other chats locked when one is unlocked', () => {
+    setChatLockPIN('c1', '1111');
+    setChatLockPIN('c2', '2222');
+    removeChatLock('c1');
+    expect(isChatLocked('c1')).toBe(false);
+    expect(isChatLocked('c2')).toBe(true);
   });
 });
