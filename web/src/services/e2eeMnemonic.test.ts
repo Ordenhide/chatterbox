@@ -34,10 +34,34 @@ describe('isValidMnemonic', () => {
     expect(isValidMnemonic(secretKeyToMnemonic(generateKeypair().secretKey))).toBe(true);
   });
 
+  /**
+   * A fixed phrase, not a freshly generated one.
+   *
+   * This used to swap the first two words of a random mnemonic and expect the
+   * checksum to reject it, which is true only most of the time. A 24-word
+   * phrase carries 256 entropy bits and 8 checksum bits; swapping two words
+   * changes only entropy, so the new entropy's correct checksum coincides with
+   * the unchanged 8 bits about once in 256 — and when the two words happen to
+   * be the same word, the swap changes nothing at all.
+   *
+   * Measured over 200,000 phrases: 0.427% still validated. That is a red CI
+   * run roughly every 234 pushes, for no defect, which is the kind of failure
+   * that teaches people to re-run the build instead of reading it. The vector
+   * below is checked to be a swap that genuinely breaks the checksum.
+   */
+  const VALID =
+    'abandon amount liar amount expire adjust cage candy arch gather drum bullet ' +
+    'absurd math era live bid rhythm alien crouch range attend journey unaware';
+  const SWAPPED =
+    'amount abandon liar amount expire adjust cage candy arch gather drum bullet ' +
+    'absurd math era live bid rhythm alien crouch range attend journey unaware';
+
+  it('accepts the fixed vector, so the rejection below means something', () => {
+    expect(isValidMnemonic(VALID)).toBe(true);
+  });
+
   it('rejects a phrase with a bad checksum (swapped words)', () => {
-    const words = secretKeyToMnemonic(generateKeypair().secretKey).split(' ');
-    [words[0], words[1]] = [words[1], words[0]];
-    expect(isValidMnemonic(words.join(' '))).toBe(false);
+    expect(isValidMnemonic(SWAPPED)).toBe(false);
   });
 
   it('rejects unrelated text', () => {
