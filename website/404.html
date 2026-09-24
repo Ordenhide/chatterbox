@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+  Hand-written, like styles.css — not generated, so build-site-html.mjs --check
+  does not own it.
+
+  It exists for its presence as much as its content. Without a top-level
+  404.html, Cloudflare Pages assumes the site is a single-page app and answers
+  every unmatched path with /index.html and a 200. Observed on the first preview
+  deploy (2026-09-24): /no-such-page rendered the landing page, and a missing
+  /downloads/version.json came back as 200 text/html — the same shape as the
+  registrar's parking page, which src/services/updateCheck.ts can only report
+  as "couldn't check".
+
+  There is deliberately no _redirects fallback for /app/* beside this. The web
+  client routes through the hash (web/src/hooks/useHashRoute.ts) and invite
+  links use the chatterbox:// scheme, so no client ever produces a path under
+  /app/ that is not a real file. Firebase had such a rewrite, harmlessly,
+  because Firebase applies rewrites only when no file matches. Pages applies
+  _redirects first: ported as `/app/* /app/ 200`, it answered the app's own
+  2.1 MB JavaScript bundle with the 2.9 KB HTML shell, and the web client would
+  have loaded blank.
+
+  Every URL here is absolute because this page is served *at the address that
+  was not found*: under /a/b/c a relative `styles.css` would resolve to
+  /a/b/styles.css and the page would render unstyled.
+-->
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Not found · Chatterbox</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="brand">
+        <img class="brand-mark" src="/assets/icon.svg" alt="" width="28" height="28" />
+        Chatterbox
+      </a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">404</span>
+        <h1>There is no page at this address.</h1>
+        <p class="lead">Check the link you followed, or start again from the front page.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/">Go to the front page</a>
+          <a class="btn btn-secondary" href="/app/">Open the web app</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

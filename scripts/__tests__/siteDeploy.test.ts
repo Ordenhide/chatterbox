@@ -65,7 +65,7 @@ describe('the release deploys a web client that works where it is served', () =>
     // every assertion below searching an empty list and passing.
     expect(steps.length).toBeGreaterThanOrEqual(8);
     expect(steps.some(s => s.includes('assembleRelease'))).toBe(true);
-    expect(steps.some(s => s.includes('pages deploy website'))).toBe(true);
+    expect(steps.some(s => s.includes('pages deploy .'))).toBe(true);
     expect(steps.some(s => s.includes('r2 object put'))).toBe(true);
 
     // The split above is deliberately strict about indentation, so count the
@@ -80,7 +80,7 @@ describe('the release deploys a web client that works where it is served', () =>
 
   it('builds the web client before deploying the site', () => {
     const build = steps.findIndex(s => s.includes('npm run build:site'));
-    const deploy = steps.findIndex(s => s.includes('pages deploy website'));
+    const deploy = steps.findIndex(s => s.includes('pages deploy .'));
     expect(build).toBeGreaterThanOrEqual(0);
     expect(deploy).toBeGreaterThanOrEqual(0);
     expect(build).toBeLessThan(deploy);
@@ -92,9 +92,22 @@ describe('the release deploys a web client that works where it is served', () =>
     // does not exist, and if the upload fails there is no window — the site is
     // simply wrong until the next tag.
     const upload = steps.findIndex(s => s.includes('r2 object put'));
-    const deploy = steps.findIndex(s => s.includes('pages deploy website'));
+    const deploy = steps.findIndex(s => s.includes('pages deploy .'));
     expect(upload).toBeGreaterThanOrEqual(0);
     expect(upload).toBeLessThan(deploy);
+  });
+
+  it('deploys the site from inside website/, away from the Firebase functions', () => {
+    // Pages bundles a `functions/` directory in the working directory as edge
+    // functions, and the repository root has one — the Firebase Cloud
+    // Functions. Deployed from the root, wrangler tried to compile them and
+    // failed with 50 errors on the first preview deploy (2026-09-24). No flag
+    // moves it; the working directory is the only lever.
+    const deploy = steps.find(s => s.includes('pages deploy .'))!;
+    expect(deploy).toMatch(/working-directory:\s*website\b/);
+    const fs = require('fs');
+    expect(fs.existsSync(join(ROOT, 'functions'))).toBe(true); // the reason
+    expect(fs.existsSync(join(ROOT, 'website', 'functions'))).toBe(false);
   });
 
   it('writes the APK to the real bucket, not a simulated one', () => {
@@ -122,7 +135,7 @@ describe('the release deploys a web client that works where it is served', () =>
     // workflow_dispatch exists to prove the signed APK still builds without
     // touching the live website. A build step that ran unconditionally would
     // not break that, but one that published would.
-    for (const needle of ['npm run build:site', 'r2 object put', 'pages deploy website']) {
+    for (const needle of ['npm run build:site', 'r2 object put', 'pages deploy .']) {
       const step = steps.find(s => s.includes(needle));
       expect([needle, step?.includes('refs/tags/v')]).toEqual([needle, true]);
     }
@@ -352,17 +365,47 @@ describe('the site headers survived the move to Cloudflare', () => {
     expect(setters('Content-Security-Policy-Report-Only').length).toBeGreaterThanOrEqual(2);
   });
 
-  it('falls back to the app shell for deep links, as a rewrite not a redirect', () => {
-    // Firebase did this with rewrites: /app/** → /app/index.html. 200 is the
-    // Pages equivalent; a 301/302 would change the URL the app reads back out
-    // of location, losing the route the user actually asked for.
-    const redirects = read('website', '_redirects');
-    const rule = redirects
-      .split('\n')
-      .find(l => !/^#/.test(l) && l.includes('/app/index.html'));
-    expect(rule).toBeDefined();
-    expect(rule!.trim().split(/\s+/)).toEqual(['/app/*', '/app/index.html', '200']);
-    // And nothing catches the marketing pages: a typo under / must 404.
-    expect(redirects).not.toMatch(/^\/\*\s/m);
+  it('has no rewrite that can answer the app\'s own files with its shell', () => {
+    // Firebase had `rewrites: /app/** → /app/index.html`, harmlessly, because
+    // Firebase applies a rewrite only when no file matches. Pages applies
+    // _redirects *before* static assets. Ported as `/app/* /app/ 200`, it
+    // answered the 2.1 MB JavaScript bundle with the 2.9 KB HTML shell on the
+    // first preview deploy (2026-09-24) — the web client would have loaded
+    // blank. Cloudflare's docs say real files win; on this project they did not.
+    const fs = require('fs');
+    const file = join(ROOT, 'website', '_redirects');
+    const rules = fs.existsSync(file)
+      ? (fs.readFileSync(file, 'utf8') as string)
+          .split('\n')
+          .filter(l => l.trim() && !/^\s*#/.test(l))
+      : [];
+    const shadowing = rules.filter(l => /^\s*\/(app|\*)/.test(l));
+    expect(shadowing).toEqual([]);
+  });
+
+  it('needs no fallback, because neither client puts a route in the path', () => {
+    // The reason the rule above can simply be absent. If either of these ever
+    // changes — a path router on the web, an https invite link — deep links
+    // under /app/ become real and need a fallback that does not shadow assets.
+    const hashRoute = read('web', 'src', 'hooks', 'useHashRoute.ts');
+    const built = [...hashRoute.matchAll(/return `([^`]*)`/g)].map(m => m[1]);
+    expect(built.length).toBeGreaterThanOrEqual(2);
+    for (const b of built) expect([b, b.startsWith('#/')]).toEqual([b, true]);
+    expect(hashRoute).not.toMatch(/pushState\(/);
+    for (const f of [['src', 'services', 'invites.ts'], ['web', 'src', 'services', 'invites.ts']]) {
+      expect(read(...f)).toContain("INVITE_SCHEME = 'chatterbox://invite'");
+    }
+  });
+
+  it('keeps Pages out of single-page-app mode with a top-level 404 page', () => {
+    // Without website/404.html, Pages answers every unmatched path with
+    // /index.html and a 200: typos rendered the landing page, and a missing
+    // /downloads/version.json came back as 200 text/html — the same shape as
+    // the registrar's parking page.
+    const page = read('website', '404.html');
+    // Served *at the address that was not found*, so a relative asset URL
+    // would resolve under /a/b/ and the page would render unstyled.
+    expect(page).toContain('href="/styles.css"');
+    expect(page).not.toMatch(/(href|src)="(?!\/|#|https?:)[^"]+"/);
   });
 });

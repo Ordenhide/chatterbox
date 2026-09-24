@@ -163,13 +163,21 @@ jobs:
             --content-type=application/vnd.android.package-archive \
             --remote
 
+      # Run from inside website/, never from the repository root. Pages treats
+      # a `functions/` directory in the working directory as Pages Functions
+      # and bundles it for the edge, and the root of this repository has one:
+      # the *Firebase* Cloud Functions. Deployed from the root, wrangler tried
+      # to compile them — node_modules and all — and failed with 50 errors,
+      # observed on the first preview deploy (2026-09-24). There is no flag to
+      # point it elsewhere; the working directory is the only lever.
       - name: Deploy the site (Cloudflare Pages)
         if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: website
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          npx wrangler@4 pages deploy website \
+          npx wrangler@4 pages deploy . \
             --project-name="${CF_PAGES_PROJECT}" \
             --branch=main \
             --commit-dirty=true

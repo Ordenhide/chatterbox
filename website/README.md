@@ -56,8 +56,12 @@ Cloudflare Pages serves this folder (`wrangler.toml` →
 
 ```
 cd web && npm run build:site        # → website/app/
-npx wrangler pages deploy website --project-name=chatterbox
+cd ../website && npx wrangler pages deploy . --project-name=chatterbox
 ```
+
+From inside this folder, never from the repository root: Pages bundles a
+`functions/` directory in the working directory as edge functions, and the
+root has one — the Firebase Cloud Functions.
 
 One project serves both: the marketing pages at `/` and the web client at
 `/app/`, which is why `build:site` passes `--base=/app/` and why the `/app/`
@@ -68,10 +72,13 @@ behaviour Firebase's `cleanUrls` gave. Links in the generated pages keep the
 `.html` so the folder also works on a plain static host, or opened straight off
 disk.
 
-`_headers` and `_redirects` are Cloudflare's, hand-written, and carry what
+`_headers` and `404.html` are hand-written. `_headers` carries what
 `firebase.json` used to: the security headers, the enforced CSP on the
-marketing pages, the Report-Only one on the app, and the SPA fallback for
-`/app/*`. Read the comment at the top of `_headers` before adding a rule —
+marketing pages and the Report-Only one on the app. There is deliberately no
+`_redirects`: Firebase's `/app/**` rewrite, ported, served the app's own
+JavaScript bundle as HTML, and the web client routes through the hash so it
+never needed one — see the comment in `404.html`, whose presence is what stops
+Pages answering unknown paths with the landing page. Read the comment at the top of `_headers` before adding a rule —
 Cloudflare joins a repeated header with a comma instead of overriding it, and
 getting that wrong denies the web client its microphone and camera.
 

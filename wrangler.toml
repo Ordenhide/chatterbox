@@ -14,7 +14,18 @@
 #
 # Deploy (CI does this on a `v*` tag; see .github/workflows/release-apk.yml):
 #   cd web && npm run build:site     # → website/app/
-#   npx wrangler pages deploy website --project-name=chatterbox
+#   cd ../website && npx wrangler pages deploy . --project-name=chatterbox
+#
+# **From inside website/, never from the repository root.** Pages treats a
+# `functions/` directory in the working directory as Pages Functions and
+# bundles it for the edge — and the root of this repository has one, holding
+# the Firebase Cloud Functions. Run from here, wrangler tries to compile them,
+# node_modules and all, and fails. There is no flag to point it elsewhere.
+#
+# The project already existed when this file was written: created 2026-07-25
+# by the web-client-only config this replaced, not Git-connected, served at
+# chatterbox-eyz.pages.dev (plain chatterbox.pages.dev belongs to someone
+# else).
 #
 # The APK is deliberately NOT here. A Pages asset is capped at 25 MiB and the
 # APK is ~122 MB, so it goes to R2, whose egress is free. `website/downloads/`

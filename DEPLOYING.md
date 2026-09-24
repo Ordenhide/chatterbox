@@ -96,7 +96,8 @@ publishes a site whose download button resolves nowhere.
 
 | Thing | Value | Why |
 |---|---|---|
-| Pages project | `chatterbox` | `CF_PAGES_PROJECT` in the workflow; `name` in `wrangler.toml` |
+| Pages project | `chatterbox` — **exists**, at `chatterbox-eyz.pages.dev`, not Git-connected | `CF_PAGES_PROJECT` in the workflow; `name` in `wrangler.toml` |
+| R2 enabled on the account | Dashboard → R2 | creating the bucket failed with `code: 10042, Please enable R2 through the Cloudflare Dashboard`; R2 wants a payment method on file even inside the free tier |
 | R2 bucket | `chatterbox-downloads` | `R2_BUCKET` in the workflow |
 | Bucket custom domain | `dl.chatterbox.app` | `APK_PUBLIC_URL` in the workflow **and** `APK_URL` in `scripts/build-site-html.mjs` — a test asserts the two agree |
 | API token | Pages:Edit + R2:Edit on this account | `CLOUDFLARE_API_TOKEN` |
@@ -115,25 +116,57 @@ egress is free, which also removes what this used to cost on Firebase Hosting:
 10 GB/month free, then $0.15/GB, and at 122 MB a download that is about 82
 downloads a month before the meter starts.
 
-### First-deploy checks
+### What the first preview deploy found
 
-None of this has run yet, so read the run rather than trusting it:
+A preview (branch `cf-migration-check`) was deployed to the existing project on
+2026-09-24, before any tag, to run the checks this section used to list as
+"never observed". Three of them failed, and every one would have failed the
+release:
 
-- **`/app/` loads the app, not its own HTML.** `_redirects` has
-  `/app/* /app/index.html 200`, and real files are documented to win over that
-  pattern — but that has never been observed here. If `/app/assets/*.js` comes
-  back as the shell, that is the reason.
-- **`/index.zh-Hans` resolves.** All 53 pages link each other without `.html`,
-  which relied on Firebase's `cleanUrls`. Pages strips `.html` by default, so
-  this should hold; a 404 on every language switcher is the failure.
-- **The web client can reach the microphone.** `_headers` splits
-  `Permissions-Policy` per path group on purpose: Cloudflare joins a repeated
-  header with a comma instead of overriding it, and the first occurrence of a
-  directive wins. A catch-all `microphone=()` would silently deny calls and
-  voice messages with nothing in the app able to say why.
+- **Deploying from the repository root compiles the Firebase functions.**
+  Pages bundles a `functions/` directory in the working directory as edge
+  functions, and the root has one. wrangler failed with 50 errors trying to
+  build them. The workflow now deploys from inside `website/`
+  (`working-directory: website`, `pages deploy .`). There is no flag for this.
+- **The SPA rewrite served the app's own JavaScript as HTML.** Ported from
+  Firebase as `/app/* /app/ 200`, it answered the 2.1 MB bundle with the 2.9 KB
+  shell — the web client would have loaded blank. Cloudflare's docs say real
+  files win over such a rule; here they did not, because Pages applies
+  `_redirects` before assets where Firebase applied rewrites only when no file
+  matched. The rule is gone, not fixed: the web client routes through the hash
+  and invite links use `chatterbox://`, so nothing ever produces a path under
+  `/app/` that is not a file. (Its first form, targeting `/app/index.html`,
+  never took effect at all — Pages 308s `…/index.html` and a 200 rewrite does
+  not follow redirects.)
+- **Without a top-level `404.html`, every unknown path returned the landing
+  page with a 200.** Pages treats such a site as a single-page app. A typo
+  rendered the front page, and a missing `/downloads/version.json` came back as
+  200 `text/html` — the parking page's shape. `website/404.html` turns that
+  off; its URLs are absolute because it is served at the address that was not
+  found.
+
+What held: `/app/` serves the shell, `/index.zh-Hans` and `/privacy.ja`
+resolve without `.html` (and `.html` 308s to them), and `_headers` and
+`_redirects` were both picked up.
+
+### Still to check
+
+- **The headers on a deployment without `_redirects`.** The corrected preview
+  could not be redeployed from this session; run it and read the headers:
+
+  ```sh
+  cd website && npx wrangler pages deploy . --project-name=chatterbox --branch=cf-migration-check
+  curl -sI https://cf-migration-check.chatterbox-eyz.pages.dev/app/ | grep -i permissions-policy
+  ```
+
+  `/app/` must show `microphone=(self), camera=(self)` exactly once. Cloudflare
+  joins a repeated header with a comma and Permissions-Policy takes the first
+  occurrence of a directive, so a second, catch-all `microphone=()` would deny
+  calls and voice messages with nothing in the app able to say why.
 - **`dl.chatterbox.app/chatterbox-latest.apk` downloads, with
-  `Content-Type: application/vnd.android.package-archive`.** Served as anything
-  else, Android's installer will not open it.
+  `Content-Type: application/vnd.android.package-archive`.** Needs R2 enabled,
+  the bucket, and its custom domain — which needs `chatterbox.app` on
+  Cloudflare DNS first.
 
 ## How authentication actually works
 
