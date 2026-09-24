@@ -51,17 +51,33 @@ rather than the text button that is there now.
 
 ## Deploying
 
-Firebase Hosting serves this folder (`firebase.json` → `hosting.public`):
+Cloudflare Pages serves this folder (`wrangler.toml` →
+`pages_build_output_dir`). It moved off Firebase Hosting on 2026-09-24.
 
 ```
-firebase deploy --only hosting
+cd web && npm run build:site        # → website/app/
+npx wrangler pages deploy website --project-name=chatterbox
 ```
 
-`cleanUrls` is on, so `/index.ja.html` redirects to `/index.ja`. Links in the
-generated pages keep the `.html` so the folder also works on a plain static
-host, or opened straight off disk.
+One project serves both: the marketing pages at `/` and the web client at
+`/app/`, which is why `build:site` passes `--base=/app/` and why the `/app/`
+links in the generated pages need no rewriting.
 
-The APK, once there is a signed one, goes at `downloads/chatterbox-latest.apk`
-— the path `APK_URL` expects. `.github/workflows/release-apk.yml` builds one on
-a `v*` tag and attaches it to a GitHub Release; the repository is private, so
-that release page is not a link this site can offer to a reader.
+Pages strips `.html`, so `/index.ja.html` redirects to `/index.ja` — the same
+behaviour Firebase's `cleanUrls` gave. Links in the generated pages keep the
+`.html` so the folder also works on a plain static host, or opened straight off
+disk.
+
+`_headers` and `_redirects` are Cloudflare's, hand-written, and carry what
+`firebase.json` used to: the security headers, the enforced CSP on the
+marketing pages, the Report-Only one on the app, and the SPA fallback for
+`/app/*`. Read the comment at the top of `_headers` before adding a rule —
+Cloudflare joins a repeated header with a comma instead of overriding it, and
+getting that wrong denies the web client its microphone and camera.
+
+**The APK is not in this folder.** A Pages asset is capped at 25 MiB and the
+APK is ~122 MB, so `.github/workflows/release-apk.yml` uploads it to R2 on a
+`v*` tag and `APK_URL` is an absolute URL to it. `downloads/` holds only
+`version.json`, which `src/services/updateCheck.ts` polls. The same tag also
+attaches the APK to a GitHub Release, which is where its SHA-256 is published
+— a verification channel on a different host from the download itself.

@@ -39,12 +39,29 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * guidelines want their own badge artwork rather than a text button; drop it
  * in website/assets/ and swap `playButton` below.
  *
- * APK_URL: 'downloads/chatterbox-latest.apk' once a signed build is published
- * there. Set by hand rather than by looking for the file, so that CI, a fresh
- * clone and the deploying machine all generate the same pages.
+ * APK_URL: where the signed build is actually served from. It used to be the
+ * relative 'downloads/chatterbox-latest.apk', which was correct while the site
+ * was on Firebase Hosting and the release copied the APK into website/. On
+ * Cloudflare Pages it cannot be: a Pages asset is capped at 25 MiB and the APK
+ * is ~122 MB, so a deploy carrying it fails outright. The APK lives in R2,
+ * whose egress is free, and this is an absolute URL to it.
+ *
+ * It must equal APK_PUBLIC_URL in .github/workflows/release-apk.yml, which is
+ * what the same run writes into version.json and what uploads the object.
+ * siteDeploy.test.ts asserts they agree, because a disagreement means the
+ * download button and the update manifest point at different places and only
+ * one of them is real.
+ *
+ * Set by hand rather than by looking for the file, so that CI, a fresh clone
+ * and the deploying machine all generate the same pages.
+ *
+ * The prerequisite is manual and outside this repository: the bucket and its
+ * custom domain have to exist before a tag is pushed, or the same run that
+ * publishes this page uploads the object to a bucket whose domain resolves
+ * nowhere. See DEPLOYING.md.
  */
 export const PLAY_URL = null;
-export const APK_URL = 'downloads/chatterbox-latest.apk';
+export const APK_URL = 'https://dl.chatterbox.app/chatterbox-latest.apk';
 
 const escape = s =>
   String(s)

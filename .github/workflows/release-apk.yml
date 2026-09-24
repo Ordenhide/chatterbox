@@ -9,6 +9,15 @@ on:
 permissions:
   contents: write
 
+# One place for the three names that have to agree with what exists in the
+# Cloudflare account. APK_PUBLIC_URL is the site-facing twin of APK_URL in
+# scripts/build-site-html.mjs — if they disagree, version.json points somewhere
+# the download button does not.
+env:
+  CF_PAGES_PROJECT: chatterbox
+  R2_BUCKET: chatterbox-downloads
+  APK_PUBLIC_URL: https://dl.chatterbox.app/chatterbox-latest.apk
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
@@ -59,11 +68,18 @@ jobs:
       #
       # versionName/versionCode come straight out of build.gradle rather than
       # the git tag, so this can never drift from what Gradle actually built.
-      # chatterbox-latest.apk is a stable filename (not versioned) so the
+      # chatterbox-latest.apk is a stable object key (not versioned) so the
       # site's download link never has to change between releases — see
       # APK_URL's comment in scripts/build-site-html.mjs. version.json is
       # what src/services/updateCheck.ts polls to tell an installed app a
-      # newer build exists.
+      # newer build exists, and it is small, so unlike the APK it can live in
+      # the Pages deploy.
+      #
+      # The APK itself is NOT copied into website/. A Cloudflare Pages asset is
+      # capped at 25 MiB and this file is ~122 MB, so a deploy carrying it
+      # fails outright. It goes to R2 below, whose egress is free — which also
+      # removes the $0.15/GB every download used to cost on Firebase Hosting
+      # past the first 10 GB in a month, about 82 downloads.
       - name: Compute checksum and write the update manifest
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -73,41 +89,46 @@ jobs:
           RELEASED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           mkdir -p website/downloads
-          cp android/app/build/outputs/apk/release/app-release.apk website/downloads/chatterbox-latest.apk
           cat > website/downloads/version.json <<EOF
-          {"versionCode": $VERSION_CODE, "versionName": "$VERSION_NAME", "sha256": "$SHA256", "releasedAt": "$RELEASED_AT", "url": "downloads/chatterbox-latest.apk"}
+          {"versionCode": $VERSION_CODE, "versionName": "$VERSION_NAME", "sha256": "$SHA256", "releasedAt": "$RELEASED_AT", "url": "$APK_PUBLIC_URL"}
           EOF
 
           echo "APK_SHA256=$SHA256" >> "$GITHUB_ENV"
 
-      # Same secret and pattern as deploy-functions.yml / deploy-rules.yml.
+      # Cloudflare replaced Firebase Hosting for the site on 2026-09-24. This
+      # job no longer touches Google Cloud at all; FIREBASE_SERVICE_ACCOUNT is
+      # still what deploy-functions.yml and deploy-rules.yml use.
+      #
+      # Checked before anything is published, and both at once, so a missing
+      # pair is one failure naming both rather than two runs.
       - name: Check required secrets
         if: startsWith(github.ref, 'refs/tags/v')
         env:
-          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -z "$SERVICE_ACCOUNT" ]; then
-            echo "::error::FIREBASE_SERVICE_ACCOUNT is not set. See DEPLOYING.md."
+          missing=""
+          [ -z "$CF_TOKEN" ] && missing="$missing CLOUDFLARE_API_TOKEN"
+          [ -z "$CF_ACCOUNT" ] && missing="$missing CLOUDFLARE_ACCOUNT_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::missing secret(s):$missing. See DEPLOYING.md."
             exit 1
           fi
-
-      - name: Authenticate to Google Cloud
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
 
       # website/app/ is the built web client. It is gitignored (.gitignore:117)
       # and produced by web/'s `build:site`, so a CI checkout does not contain
       # it — `git archive HEAD website` lists everything but `app/`.
       #
-      # A Hosting deploy replaces the site's whole file set rather than
-      # merging into it, and website/index.html links to `/app/`. Without this
-      # step the deploy below publishes a site whose own "open the web app"
-      # link 404s. The step was missing from the moment the Hosting deploy was
-      # added (2026-09-20, for APK self-distribution) and could not be noticed,
+      # A Pages deploy replaces the site's whole file set rather than merging
+      # into it, and website/index.html links to `/app/`. Without this step the
+      # deploy below publishes a site whose own "open the web app" link 404s.
+      # The step was missing from the moment the site deploy was added
+      # (2026-09-20, for APK self-distribution) and could not be noticed,
       # because that deploy only runs on a `v*` tag and none has been pushed
       # since.
+      #
+      # `--base=/app/` is what makes one project serve both: the marketing
+      # pages at / and the app at /app/. See wrangler.toml.
       #
       # `npm ci` here and not at the top: this is the only step that needs
       # web/node_modules, and the APK build must not wait on it.
@@ -118,9 +139,40 @@ jobs:
           npm ci
           npm run build:site
 
-      - name: Deploy the website (Firebase Hosting)
+      # Before the Pages deploy, not after: the moment the site goes live it
+      # advertises this object, so the object has to exist first.
+      #
+      # `--remote` is explicit because Cloudflare's own reference documents
+      # `--local` and `--remote` without stating which is the default. Guessing
+      # wrong here does not fail the run — it writes to a local simulated
+      # bucket inside the runner, the runner is destroyed, and the release ships
+      # a download link to nothing.
+      #
+      # The Content-Type matters: served as anything else, Android's package
+      # installer will not open the file, and the browser offers to save it as
+      # a blob instead. Firebase set this from firebase.json's `**/*.apk` rule,
+      # which is gone with the rest of that config, so it is set on the object.
+      - name: Upload the APK to R2
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npx firebase-tools@^15 deploy --only hosting --project chatterbox-e5d10 --non-interactive
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler@4 r2 object put "${R2_BUCKET}/chatterbox-latest.apk" \
+            --file=android/app/build/outputs/apk/release/app-release.apk \
+            --content-type=application/vnd.android.package-archive \
+            --remote
+
+      - name: Deploy the site (Cloudflare Pages)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler@4 pages deploy website \
+            --project-name="${CF_PAGES_PROJECT}" \
+            --branch=main \
+            --commit-dirty=true
 
       - name: Remove decoded keystore
         if: always()

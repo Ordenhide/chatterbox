@@ -203,10 +203,14 @@ into cacheable vendor chunks.
    prompts before removing anything — so if you've created other indexes manually
    (e.g. for the mobile app), run `firebase firestore:indexes > firestore.indexes.json`
    first to capture the live set, then merge.
-2. **Security headers** — `public/_headers` ships safe security headers plus a
-   **Report-Only** CSP for Cloudflare Pages (copied to `dist/` on build). Verify
-   no CSP violations in the console, then flip it to enforcing. On Firebase
-   Hosting, move these into `firebase.json → hosting.headers` instead.
+2. **Security headers** — they are not in this folder. They were in
+   `public/_headers`, which Firebase Hosting does not read, so they shipped
+   nowhere for months while looking like a control; they went into
+   `firebase.json`, and now live in `website/_headers` since the site moved to
+   Cloudflare Pages on 2026-09-24. One project serves the marketing pages and
+   this app, so one file decides both. The app's CSP there is still
+   **Report-Only**: verify no violations in the console against a real
+   deployment, then flip it to enforcing.
 
 > The PWA service worker only registers in production builds (not in `dev`, so
 > HMR isn't cached). Test it via `npm run build && npm run preview`.

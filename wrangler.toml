@@ -1,0 +1,28 @@
+# Cloudflare Pages config for chatterbox.app — the marketing site *and* the
+# web client, as one project.
+#
+# It points at `website/`, not `web/dist`, and that is the whole design. The
+# built web client lands in `website/app/` (web's `build:site`, which passes
+# `--base=/app/`), so one Pages project serves the marketing pages at `/` and
+# the app at `/app/` — exactly the layout Firebase Hosting served, which means
+# the `/app/` links in all 53 generated pages and the `--base=/app/` build keep
+# working unchanged.
+#
+# The previous file lived in web/ and deployed `web/dist` on its own, putting
+# the app at the root of its own project. That is a different URL scheme, and
+# the site links to `/app/`.
+#
+# Deploy (CI does this on a `v*` tag; see .github/workflows/release-apk.yml):
+#   cd web && npm run build:site     # → website/app/
+#   npx wrangler pages deploy website --project-name=chatterbox
+#
+# The APK is deliberately NOT here. A Pages asset is capped at 25 MiB and the
+# APK is ~122 MB, so it goes to R2, whose egress is free. `website/downloads/`
+# carries only version.json, which src/services/updateCheck.ts polls.
+#
+# VITE_* values are inlined by Vite at build time, so they are build-time
+# variables, not wrangler [vars] — those are runtime bindings for Pages
+# Functions, which this static site does not use.
+name = "chatterbox"
+compatibility_date = "2026-09-24"
+pages_build_output_dir = "website"

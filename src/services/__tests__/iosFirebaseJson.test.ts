@@ -8,17 +8,28 @@
  *
  * The whole file is interpolated into a single-quoted Ruby string, so one
  * apostrophe anywhere in it ends the literal and the build stops with
- * "error: Failed to parse firebase.json". The root file holds the Hosting
- * headers, whose Content-Security-Policy values are full of apostrophes —
- * `default-src 'none'`, `script-src 'self'` — because CSP requires them.
+ * "error: Failed to parse firebase.json". The root file used to hold the
+ * Hosting headers, whose Content-Security-Policy values are full of
+ * apostrophes — `default-src 'none'`, `script-src 'self'` — because CSP
+ * requires them. The real break lasted a week, from the commit that added
+ * those headers through a full pre-release audit, because nothing built iOS
+ * at all.
  *
- * So ios/firebase.json exists to be found first. This checks that it still is,
- * and that it stays free of the one character that breaks the script.
+ * **That hazard is gone as of 2026-09-24**, when the site moved to Cloudflare
+ * and the Hosting block left the root file with it. The apostrophes went with
+ * the CSP, and the case below that asserted the root file "genuinely could not
+ * be read" started failing — which is what its own comment said it was for.
+ *
+ * ios/firebase.json stays, because the apostrophe hazard was never its only
+ * job: it declares `react-native` settings the root file does not have, and
+ * those settings are the reason it exists now. The hazard is latent rather
+ * than absent, so the guard below became the inverse — it fails if the root
+ * file regains an apostrophe, which is the moment this file goes back to being
+ * the only thing standing between iOS and a build that cannot parse its
+ * config.
  *
  * Worth having as a unit test rather than only as an iOS CI job: it costs
  * nothing and runs on every push, while an xcodebuild needs a macOS runner.
- * The real break lasted a week — from the commit that added the headers
- * through a full pre-release audit — because nothing built iOS at all.
  */
 import {existsSync, readFileSync} from 'fs';
 import {join} from 'path';
@@ -47,14 +58,30 @@ describe('the firebase.json the iOS build will read', () => {
     expect(survivesSingleQuoteInterpolation(readFileSync(IOS_JSON, 'utf8'))).toBe(true);
   });
 
-  it('shadows a root file that genuinely could not be read', () => {
-    // The other half of the reason this exists. If the root file ever became
-    // apostrophe-free, the shadow would be unnecessary — and this failing is
-    // how you would find out, rather than carrying the file forever.
+  it('declares settings the root file does not, which is why it still exists', () => {
+    // Its standing reason, now that the apostrophe hazard has gone. Deleting
+    // this file would let the search reach the root one, which carries no
+    // `react-native` block at all — so FCM auto-init and App Check token
+    // refresh would silently fall back to the SDK defaults on iOS.
+    const mine = JSON.parse(readFileSync(IOS_JSON, 'utf8'))['react-native'];
+    expect(Object.keys(mine ?? {}).length).toBeGreaterThan(0);
+    expect(JSON.parse(readFileSync(ROOT_JSON, 'utf8'))['react-native']).toBeUndefined();
+  });
+
+  it('is what the root file would need if an apostrophe ever came back', () => {
+    // The hazard is latent, not absent. While the root file is apostrophe-free
+    // the search reaching it would merely be harmless; the moment a CSP, a
+    // contraction in a comment, or any quoted value lands there, this file is
+    // the only thing keeping the iOS build parsing its config — so that
+    // change has to arrive with its own decision, not silently.
+    //
+    // Asserted as a state rather than a rule, so it reads as "this is how it
+    // is today" and fails loudly on the day it stops being true.
     const root = readFileSync(ROOT_JSON, 'utf8');
-    expect(survivesSingleQuoteInterpolation(root)).toBe(false);
-    // And say why, so the failure above is self-explaining.
-    expect(root).toContain("default-src 'none'");
+    expect(survivesSingleQuoteInterpolation(root)).toBe(true);
+    expect(root).not.toContain('hosting');
+    // And the shadow is still first in the search, whatever the root holds.
+    expect(existsSync(IOS_JSON)).toBe(true);
   });
 
   it('declares only settings whose SDK is actually linked', () => {

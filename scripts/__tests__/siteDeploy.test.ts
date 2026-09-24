@@ -2,10 +2,10 @@
  * The web client survives a release.
  *
  * `website/app/` is the built web client. It is gitignored and produced by
- * web/'s `build:site`, so a CI checkout does not contain it. A Firebase
- * Hosting deploy replaces the site's whole file set rather than merging into
- * it, and `website/index.html` links to `/app/` — so a release that deploys
- * Hosting without building the web client first publishes a site whose own
+ * web/'s `build:site`, so a CI checkout does not contain it. A Cloudflare
+ * Pages deploy replaces the site's whole file set rather than merging into it,
+ * and `website/index.html` links to `/app/` — so a release that deploys the
+ * site without building the web client first publishes a site whose own
  * "open the web app" link is a 404.
  *
  * That was the state of release-apk.yml from the day the Hosting deploy was
@@ -32,6 +32,22 @@ import {join} from 'path';
 const ROOT = join(__dirname, '..', '..');
 const read = (...parts: string[]) => readFileSync(join(ROOT, ...parts), 'utf8');
 
+/**
+ * YAML comments removed, so an assertion about what a workflow *does* is not
+ * satisfied — or broken — by prose about it. The same trick, and the same
+ * reason, as codeOnly in src/screens/chat/__tests__/timestampToggle.test.ts:
+ * the "no Firebase Hosting left" case below failed on a comment that names
+ * FIREBASE_SERVICE_ACCOUNT to say which workflows still use it.
+ *
+ * Only whole-line comments are stripped. A `#` inside a quoted value is not a
+ * comment, and no step here has a trailing one.
+ */
+const withoutComments = (yaml: string): string =>
+  yaml
+    .split('\n')
+    .filter(line => !/^\s*#/.test(line))
+    .join('\n');
+
 describe('the release deploys a web client that works where it is served', () => {
   const workflow = read('.github', 'workflows', 'release-apk.yml');
 
@@ -49,7 +65,8 @@ describe('the release deploys a web client that works where it is served', () =>
     // every assertion below searching an empty list and passing.
     expect(steps.length).toBeGreaterThanOrEqual(8);
     expect(steps.some(s => s.includes('assembleRelease'))).toBe(true);
-    expect(steps.some(s => s.includes('deploy --only hosting'))).toBe(true);
+    expect(steps.some(s => s.includes('pages deploy website'))).toBe(true);
+    expect(steps.some(s => s.includes('r2 object put'))).toBe(true);
 
     // The split above is deliberately strict about indentation, so count the
     // steps a second time with a lenient pattern and require the two to
@@ -61,22 +78,86 @@ describe('the release deploys a web client that works where it is served', () =>
     expect(steps.length).toBe(lenient.length + 1);
   });
 
-  it('builds the web client before deploying Hosting', () => {
+  it('builds the web client before deploying the site', () => {
     const build = steps.findIndex(s => s.includes('npm run build:site'));
-    const deploy = steps.findIndex(s => s.includes('deploy --only hosting'));
+    const deploy = steps.findIndex(s => s.includes('pages deploy website'));
     expect(build).toBeGreaterThanOrEqual(0);
     expect(deploy).toBeGreaterThanOrEqual(0);
     expect(build).toBeLessThan(deploy);
   });
 
-  it('keeps the web build on the same tag gate as the deploy', () => {
+  it('uploads the APK before the site that advertises it goes live', () => {
+    // The download button is published by the Pages deploy. If the object
+    // lands after it, there is a window in which the site offers a file that
+    // does not exist, and if the upload fails there is no window — the site is
+    // simply wrong until the next tag.
+    const upload = steps.findIndex(s => s.includes('r2 object put'));
+    const deploy = steps.findIndex(s => s.includes('pages deploy website'));
+    expect(upload).toBeGreaterThanOrEqual(0);
+    expect(upload).toBeLessThan(deploy);
+  });
+
+  it('writes the APK to the real bucket, not a simulated one', () => {
+    // Cloudflare's reference documents --local and --remote without saying
+    // which is the default. Without --remote this may write inside the runner,
+    // which is then destroyed: the run stays green and the release ships a
+    // download link to nothing.
+    const upload = steps.find(s => s.includes('r2 object put'));
+    expect(upload).toContain('--remote');
+    // Served as anything else, Android's installer will not open the file.
+    expect(upload).toContain('application/vnd.android.package-archive');
+  });
+
+  it('keeps the APK out of the Pages deploy, which caps an asset at 25 MiB', () => {
+    // The release used to `cp` the APK into website/downloads/. On Pages that
+    // is not a slow deploy, it is a failed one — and the failure would arrive
+    // on the first tag, with the signed APK already built.
+    expect(workflow).not.toMatch(/cp .*app-release\.apk website/);
+    const checksum = steps.find(s => s.includes('version.json'));
+    expect(checksum).toBeDefined();
+    expect(checksum).not.toContain('website/downloads/chatterbox-latest.apk');
+  });
+
+  it('keeps the web build and the APK upload on the same tag gate as the deploy', () => {
     // workflow_dispatch exists to prove the signed APK still builds without
     // touching the live website. A build step that ran unconditionally would
-    // not break that, but one that deployed would.
-    const build = steps.find(s => s.includes('npm run build:site'));
-    const deploy = steps.find(s => s.includes('deploy --only hosting'));
-    expect(build).toContain("refs/tags/v");
-    expect(deploy).toContain("refs/tags/v");
+    // not break that, but one that published would.
+    for (const needle of ['npm run build:site', 'r2 object put', 'pages deploy website']) {
+      const step = steps.find(s => s.includes(needle));
+      expect([needle, step?.includes('refs/tags/v')]).toEqual([needle, true]);
+    }
+  });
+
+  it('points the download button and the update manifest at the same place', () => {
+    // Two constants in two files, and nothing else compares them: APK_URL
+    // generates the button on 53 pages, APK_PUBLIC_URL is written into
+    // version.json by the same run that uploads the object.
+    const generator = read('scripts', 'build-site-html.mjs');
+    const apkUrl = generator.match(/export const APK_URL = '([^']*)';/);
+    const publicUrl = workflow.match(/APK_PUBLIC_URL: (\S+)/);
+    expect(apkUrl).not.toBeNull();
+    expect(publicUrl).not.toBeNull();
+    expect(apkUrl![1]).toBe(publicUrl![1]);
+    // And it has to be absolute: a relative path would resolve against the
+    // Pages origin, where the file deliberately is not.
+    expect(apkUrl![1]).toMatch(/^https:\/\//);
+  });
+
+  it('has no Firebase Hosting left to deploy to', () => {
+    // The site moved to Cloudflare on 2026-09-24. A leftover hosting block in
+    // firebase.json is not inert: it is a second, stale definition of the
+    // security headers, and the last time this project had headers in a file
+    // its host did not read, they shipped nowhere for months while looking
+    // exactly like a control.
+    const code = withoutComments(workflow);
+    expect(code).not.toContain('deploy --only hosting');
+    expect(code).not.toContain('FIREBASE_SERVICE_ACCOUNT');
+    expect(code).not.toContain('google-github-actions/auth');
+    // The stripper has to have done something, or the three above pass for
+    // the wrong reason on a file whose comments were never the problem.
+    expect(code.length).toBeLessThan(workflow.length);
+    expect(workflow).toContain('FIREBASE_SERVICE_ACCOUNT');
+    expect(Object.keys(JSON.parse(read('firebase.json')))).not.toContain('hosting');
   });
 
   it('exercises that same build in CI, so a release is not its first run', () => {
@@ -144,5 +225,144 @@ describe('the web client does not assume it is served from the origin root', () 
     const html = read('web', 'index.html');
     expect(manifest).not.toMatch(/moments/i);
     expect(html).not.toMatch(/content="[^"]*moments/i);
+  });
+});
+
+/**
+ * The headers the site actually serves, now that Cloudflare decides them.
+ *
+ * These have lived in three files. They began in `web/public/_headers` — this
+ * syntax — while the site was on Firebase Hosting, which does not read it, so
+ * they shipped nowhere for months while reading in review exactly like a
+ * control. They were ported into `firebase.json`, and are ported back here
+ * because the site moved to Pages on 2026-09-24.
+ *
+ * The move is not a copy, and that is what these cases are for. Firebase
+ * merged two matching rules by *overriding* a repeated header; Cloudflare
+ * joins them with a comma. Permissions-Policy takes the first occurrence of a
+ * repeated directive, so a catch-all `microphone=()` beside the app's
+ * `microphone=(self)` does not widen to the app — it denies the microphone and
+ * camera to the whole web client. No calls, no voice messages, and no error
+ * the app could show, because the browser refuses before any of its code runs.
+ */
+describe('the site headers survived the move to Cloudflare', () => {
+  const HEADERS = read('website', '_headers');
+
+  /** `/pattern` at column 0, its headers indented under it. */
+  const rules: Array<{pattern: string; headers: Record<string, string>}> = [];
+  for (const line of HEADERS.split('\n')) {
+    if (/^#/.test(line) || !line.trim()) continue;
+    if (/^\//.test(line)) {
+      rules.push({pattern: line.trim(), headers: {}});
+      continue;
+    }
+    const m = line.match(/^\s+([A-Za-z-]+):\s*(.+)$/);
+    if (m && rules.length) rules[rules.length - 1].headers[m[1]] = m[2];
+  }
+
+  const setters = (header: string) => rules.filter(r => header in r.headers);
+
+  it('parses the rules it is about to check', () => {
+    // Without this, a syntax change that the parser stops recognising leaves
+    // every case below asserting over an empty list — and most of them assert
+    // that something is *not* there.
+    expect(rules.length).toBeGreaterThanOrEqual(7);
+    expect(rules.map(r => r.pattern)).toEqual(
+      expect.arrayContaining(['/*', '/', '/index*', '/privacy*', '/app', '/app/*', '/app/assets/*']),
+    );
+    expect(rules.every(r => Object.keys(r.headers).length > 0)).toBe(true);
+  });
+
+  it('carries every header the Firebase config used to set', () => {
+    // Recorded rather than read from firebase.json, whose hosting block is
+    // deleted in the same commit. A port that quietly dropped one of these
+    // would otherwise look like a clean move.
+    const ported = [
+      'X-Content-Type-Options',
+      'X-Frame-Options',
+      'Referrer-Policy',
+      'Permissions-Policy',
+      'Content-Security-Policy',
+      'Content-Security-Policy-Report-Only',
+      'Cache-Control',
+    ];
+    for (const header of ported) {
+      expect([header, setters(header).length > 0]).toEqual([header, true]);
+    }
+  });
+
+  it('never sets a header on the catch-all that another rule also sets', () => {
+    // This is the whole invariant. Cloudflare joins duplicates with a comma
+    // instead of overriding, so anything on `/*` can never be narrowed or
+    // widened further down — it can only be appended to.
+    const catchAll = rules.filter(r => r.pattern === '/*');
+    expect(catchAll).toHaveLength(1);
+    for (const header of Object.keys(catchAll[0].headers)) {
+      const others = setters(header).filter(r => r.pattern !== '/*');
+      expect([header, others.map(r => r.pattern)]).toEqual([header, []]);
+    }
+  });
+
+  it('lets the web client use the microphone and camera', () => {
+    // The app needs both for calls and voice messages. Asserted on every rule
+    // that can match a path under /app, so a new one denying them fails here
+    // rather than in a call that will not connect.
+    const appRules = rules.filter(r => r.pattern.startsWith('/app'));
+    const withPolicy = appRules.filter(r => 'Permissions-Policy' in r.headers);
+    expect(withPolicy.length).toBeGreaterThanOrEqual(2);
+    for (const r of withPolicy) {
+      expect([r.pattern, r.headers['Permissions-Policy']]).toEqual([
+        r.pattern,
+        expect.stringContaining('microphone=(self)'),
+      ]);
+      expect(r.headers['Permissions-Policy']).toContain('camera=(self)');
+      // Live location is sent from the mobile app; nothing on the web asks.
+      expect(r.headers['Permissions-Policy']).toContain('geolocation=()');
+    }
+  });
+
+  it('denies the microphone and camera on the marketing pages', () => {
+    // The inverse, and the reason the catch-all cannot carry this header: the
+    // generated pages load nothing and ask for nothing.
+    for (const pattern of ['/', '/index*', '/privacy*']) {
+      const r = rules.find(x => x.pattern === pattern)!;
+      expect([pattern, r.headers['Permissions-Policy']]).toEqual([
+        pattern,
+        expect.stringContaining('microphone=()'),
+      ]);
+      expect(r.headers['Permissions-Policy']).toContain('camera=()');
+    }
+  });
+
+  it('enforces the marketing CSP and only reports the app one', () => {
+    // The app's policy has never been exercised against the running client,
+    // and an enforced policy wrong in one directive takes the whole thing
+    // down rather than degrading. The marketing pages are generated and load
+    // nothing, so theirs can be enforced.
+    for (const pattern of ['/', '/index*', '/privacy*']) {
+      const r = rules.find(x => x.pattern === pattern)!;
+      expect([pattern, r.headers['Content-Security-Policy']]).toEqual([
+        pattern,
+        expect.stringContaining("default-src 'none'"),
+      ]);
+    }
+    for (const r of rules.filter(x => x.pattern.startsWith('/app'))) {
+      expect([r.pattern, 'Content-Security-Policy' in r.headers]).toEqual([r.pattern, false]);
+    }
+    expect(setters('Content-Security-Policy-Report-Only').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('falls back to the app shell for deep links, as a rewrite not a redirect', () => {
+    // Firebase did this with rewrites: /app/** → /app/index.html. 200 is the
+    // Pages equivalent; a 301/302 would change the URL the app reads back out
+    // of location, losing the route the user actually asked for.
+    const redirects = read('website', '_redirects');
+    const rule = redirects
+      .split('\n')
+      .find(l => !/^#/.test(l) && l.includes('/app/index.html'));
+    expect(rule).toBeDefined();
+    expect(rule!.trim().split(/\s+/)).toEqual(['/app/*', '/app/index.html', '200']);
+    // And nothing catches the marketing pages: a typo under / must 404.
+    expect(redirects).not.toMatch(/^\/\*\s/m);
   });
 });

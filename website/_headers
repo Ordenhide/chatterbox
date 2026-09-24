@@ -1,0 +1,69 @@
+# Security headers for chatterbox.app, in Cloudflare Pages syntax.
+#
+# These have now lived in three places, and the reason is worth keeping: they
+# started in web/public/_headers, which is this syntax, while the site was on
+# Firebase Hosting — which does not read this file, so they shipped nowhere
+# while looking in review exactly like a control. They were ported into
+# firebase.json's `headers`, verified against the hosting emulator, and are
+# ported back here now that the site is on Pages. firebase.json's hosting
+# block is gone in the same commit, so there is again exactly one file that
+# decides this.
+#
+# ## Why there is no `/*` rule for Permissions-Policy
+#
+# Firebase merged overlapping rules by *overriding* the header, so a `**` rule
+# denying the camera and an `/app/**` rule allowing it left the app with the
+# permissive value. Cloudflare does not override — "requests matching multiple
+# rules inherit all applicable headers. Duplicate headers are joined with
+# commas" — and Permissions-Policy resolves a repeated directive by taking the
+# *first* occurrence. A `/*` rule with `microphone=()` would therefore win over
+# `/app/*`'s `microphone=(self)` and the browser would refuse the microphone
+# and camera for the whole web client: no calls, no voice messages, and nothing
+# in the app able to explain why.
+#
+# So the three headers that are identical everywhere go on `/*`, and
+# Permissions-Policy is written once per path group with no overlap between
+# them. Any header added below has to be checked the same way: if two rules can
+# match one request, they must not both set it.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# The marketing pages. Pages strips `.html`, so these are the served paths:
+# `/` for English, `/index.zh-Hans` and `/privacy.zh-Hans` for the rest.
+#
+# default-src 'none' is enforced and can be, because these pages are generated
+# and load nothing but their own stylesheet, icon and inline SVG.
+/
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+
+/index*
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+
+/privacy*
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+
+# The web client. microphone and camera are (self) because calls and voice
+# messages need them; geolocation stays denied — live location is sent from the
+# mobile app, and the web client has no feature that asks.
+#
+# The CSP here stays Report-Only. It has never been exercised against the
+# running app, and an enforced policy that is wrong in one directive takes the
+# whole client down rather than degrading. It becomes Content-Security-Policy
+# once the reports from a real deployment come back clean.
+/app
+  Permissions-Policy: geolocation=(), microphone=(self), camera=(self), payment=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https://firebasestorage.googleapis.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://firestore.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://firebasestorage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.cloudfunctions.net; frame-src https://www.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'
+
+/app/*
+  Permissions-Policy: geolocation=(), microphone=(self), camera=(self), payment=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https://firebasestorage.googleapis.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://firestore.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://firebasestorage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.cloudfunctions.net; frame-src https://www.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'
+
+# Vite fingerprints these, so they can be cached forever.
+/app/assets/*
+  Cache-Control: public, max-age=31536000, immutable
