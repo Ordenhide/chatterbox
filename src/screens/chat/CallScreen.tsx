@@ -67,6 +67,25 @@ export default function CallScreen() {
    */
   const [localVideoTrack, setLocalVideoTrack] = useState<any>(null);
 
+  /**
+   * And the remote video track, for exactly the same reason one level out.
+   *
+   * This was `useMemo(() => remoteStream.getVideoTracks().length > 0,
+   * [remoteStream])`, which cannot work: react-native-webrtc creates one
+   * MediaStream per remote stream id and *pushes later tracks into that same
+   * object* (RTCPeerConnection.ts, the sRD track-event loop) without
+   * dispatching `addtrack`. So the second `setRemoteStream(sameObject)` hits
+   * React's Object.is bail-out, the memo's dependency never changes, and the
+   * answer computed on the first track stood for the whole call.
+   *
+   * The visible bug was the other side's camera coming on mid-call — via
+   * toggleVideo, or by answering with it off and turning it on — and never
+   * appearing here: a permanent "Audio only" against a peer that was sending
+   * video. `event.track` is a fresh object per track, so keying off it is
+   * what makes the second event a state change at all.
+   */
+  const [remoteVideoTrack, setRemoteVideoTrack] = useState<any>(null);
+
   const localAudioTrack = useMemo(() => {
     if (!localStream) return null;
     return localStream.getAudioTracks()?.[0] || null;
@@ -77,11 +96,7 @@ export default function CallScreen() {
   // the camera was doing when the call started and never updated again.
   const hasLocalVideo = !!localVideoTrack && isVideoEnabled;
 
-  const hasRemoteVideo = useMemo(() => {
-    if (!remoteStream) return false;
-    const tracks = remoteStream.getVideoTracks?.() || [];
-    return tracks.length > 0;
-  }, [remoteStream]);
+  const hasRemoteVideo = !!remoteVideoTrack;
 
   useEffect(() => {
     let candidateUnsub: (() => void) | null = null;
@@ -132,9 +147,37 @@ export default function CallScreen() {
           track.enabled = false;
         });
       }
+      // getUserMedia resolving does not mean it gave us what we asked for.
+      // Both layers of react-native-webrtc degrade a video-only failure
+      // silently, on purpose:
+      //
+      //   src/getUserMedia.ts   if (!audioPerm && !videoPerm) reject(...)
+      //                         videoPerm || delete constraints.video
+      //   GetUserMediaImpl.java if (audioTrack == null && videoTrack == null)
+      //
+      // Both conditions are `&&`, so a denied camera permission — or a
+      // capturer that cannot be created — resolves with an audio-only stream
+      // and no error anywhere.
+      //
+      // Nothing here noticed. isVideoEnabled was seeded from the route params,
+      // so the button went on reading "Video Off" as though the camera were
+      // live, the self-view was absent with nothing to explain it, and the
+      // peer showed "Audio only" for the whole call. It hit whoever *started*
+      // the call, because the answer screen's camera preview has already asked
+      // for the permission by the time the callee reaches this line.
+      //
+      // So the flag comes from whether a track exists rather than from what
+      // was requested. That also makes the button an honest retry: it reads
+      // "Video On", and toggleVideo asks for the camera again and reports a
+      // second failure to the user instead of swallowing it.
+      const videoTrack = stream.getVideoTracks()?.[0] || null;
+      if (callType === 'video' && !videoTrack) {
+        reportError(new Error('video call started with no camera track'), 'call_video_track_missing');
+        setIsVideoEnabled(false);
+      }
       localStreamRef.current = stream;
       setLocalStream(stream);
-      setLocalVideoTrack(stream.getVideoTracks()?.[0] || null);
+      setLocalVideoTrack(videoTrack);
       InCallManager.start({media: callType === 'video' ? 'video' : 'audio'});
       if (typeof (InCallManager as any).setAudioSessionMode === 'function') {
         (InCallManager as any).setAudioSessionMode(callType === 'video' ? 'videoChat' : 'voiceChat');
@@ -167,11 +210,6 @@ export default function CallScreen() {
         if (callType === 'video') {
           (pc as any).addTransceiver('video', {direction: 'sendrecv'});
         }
-      }
-
-      // Older iOS WebRTC builds rely on addStream/onaddstream.
-      if ((pc as any).addStream) {
-        (pc as any).addStream(stream);
       }
 
       stream.getTracks().forEach(track => {
@@ -263,6 +301,12 @@ export default function CallScreen() {
       };
 
       (pc as any).ontrack = (event: any) => {
+        // Before the stream, because the stream object may be one React
+        // already holds — see remoteVideoTrack. This is the only signal that
+        // a *later* track arrived at all.
+        if (event.track?.kind === 'video') {
+          setRemoteVideoTrack(event.track);
+        }
         const [remote] = event.streams || [];
         if (remote) {
           remoteStreamRef.current = remote;
@@ -274,14 +318,6 @@ export default function CallScreen() {
         stream.addTrack(event.track);
         remoteStreamRef.current = stream;
         setRemoteStream(stream);
-      };
-
-      // Fallback for older WebRTC event model.
-      (pc as any).onaddstream = (event: any) => {
-        if (event?.stream) {
-          remoteStreamRef.current = event.stream;
-          setRemoteStream(event.stream);
-        }
       };
 
       const makeOffer = async (reason: string) => {
