@@ -89,6 +89,19 @@ things on a `v*` tag, in this order, and the order is load-bearing:
 because the site is what advertises the download. `siteDeploy.test.ts` asserts
 the order, so it cannot be reversed by a reorganised workflow.
 
+### The domain
+
+The project's domain is **`chatterbox.fans`**, registered on 2026-09-24 with
+its DNS on Cloudflare (`johnny` / `deborah.ns.cloudflare.com`).
+
+`chatterbox[.]app` is **not ours** and never was — it is listed for sale on
+GoDaddy/Afternic. It was written into the code for weeks as if it were, which
+would have pointed the in-app update check, the "open the website" button and
+the privacy contact at a domain anyone can buy. `scripts/__tests__/siteDomain.test.ts`
+fails on any reference to it, and on any `chatterbox.<tld>` host or address
+other than `chatterbox.fans` (the reserved `anon.chatterbox.invalid` login
+handle excepted).
+
 ### What has to exist in the account first
 
 This is the part no workflow can create, and a tag pushed before it is done
@@ -99,7 +112,9 @@ publishes a site whose download button resolves nowhere.
 | Pages project | `chatterbox` — **exists**, at `chatterbox-eyz.pages.dev`, not Git-connected | `CF_PAGES_PROJECT` in the workflow; `name` in `wrangler.toml` |
 | R2 enabled on the account | Dashboard → R2 | creating the bucket failed with `code: 10042, Please enable R2 through the Cloudflare Dashboard`; R2 wants a payment method on file even inside the free tier |
 | R2 bucket | `chatterbox-downloads` | `R2_BUCKET` in the workflow |
-| Bucket custom domain | `dl.chatterbox.app` | `APK_PUBLIC_URL` in the workflow **and** `APK_URL` in `scripts/build-site-html.mjs` — a test asserts the two agree |
+| Bucket custom domain | `dl.chatterbox.fans` | `APK_PUBLIC_URL` in the workflow **and** `APK_URL` in `scripts/build-site-html.mjs` — a test asserts the two agree |
+| Pages custom domain | `chatterbox.fans` | Workers & Pages → `chatterbox` → Custom domains |
+| Email Routing | `privacy@chatterbox.fans` → a mailbox you read | the privacy policy gives this address as the contact, and Wikimedia's User-Agent policy requires the one sent to Wikipedia to work |
 | API token | Pages:Edit + R2:Edit on this account | `CLOUDFLARE_API_TOKEN` |
 | Account id | — | `CLOUDFLARE_ACCOUNT_ID` |
 
@@ -163,10 +178,9 @@ resolve without `.html` (and `.html` 308s to them), and `_headers` and
   joins a repeated header with a comma and Permissions-Policy takes the first
   occurrence of a directive, so a second, catch-all `microphone=()` would deny
   calls and voice messages with nothing in the app able to say why.
-- **`dl.chatterbox.app/chatterbox-latest.apk` downloads, with
+- **`dl.chatterbox.fans/chatterbox-latest.apk` downloads, with
   `Content-Type: application/vnd.android.package-archive`.** Needs R2 enabled,
-  the bucket, and its custom domain — which needs `chatterbox.app` on
-  Cloudflare DNS first.
+  the bucket, and its custom domain.
 
 ## How authentication actually works
 

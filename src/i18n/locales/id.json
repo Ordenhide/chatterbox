@@ -288,7 +288,7 @@
       "downloadDataDesc": "Dapatkan salinan profil dan percakapan Anda sebagai file teks biasa yang dapat Anda simpan atau periksa — berbeda dari Ekspor Cadangan di bawah, yang membuat file terenkripsi untuk memindahkan akun Anda ke perangkat baru.",
       "downloadDataButton": "Unduh",
       "checkUpdatesTitle": "Periksa pembaruan",
-      "checkUpdatesDesc": "Chatterbox tidak ada di Google Play, jadi tidak ada yang memperbaruinya di latar belakang. Periksa chatterbox.app untuk versi yang lebih baru.",
+      "checkUpdatesDesc": "Chatterbox tidak ada di Google Play, jadi tidak ada yang memperbaruinya di latar belakang. Periksa chatterbox.fans untuk versi yang lebih baru.",
       "checkUpdatesButton": "Periksa sekarang"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Anda sudah menggunakan versi terbaru",
       "checkUpdatesUpToDateBody": "Ini adalah versi terbaru Chatterbox.",
       "checkUpdatesAvailableTitle": "Pembaruan tersedia",
-      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Buka chatterbox.app",
+      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Buka chatterbox.fans",
       "checkUpdatesFailedTitle": "Tidak dapat memeriksa pembaruan",
       "checkUpdatesFailedBody": "Periksa koneksi Anda dan coba lagi.",
       "voiceRecordFailed": "Gagal memulai perekaman.",

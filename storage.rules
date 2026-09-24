@@ -150,7 +150,7 @@ service firebase.storage {
      * Absent is allowed, and that is the whole design constraint rather than
      * an oversight. Every object uploaded before this existed has no such
      * metadata, and so does every upload from a build already installed on
-     * someone's phone — this app is distributed as an APK from chatterbox.app,
+     * someone's phone — this app is distributed as an APK from chatterbox.fans,
      * not through a store that can force an update. Requiring the stamp would
      * have stopped those clients attaching anything at all, which is a worse
      * outcome than the griefing it prevents. The protection therefore arrives

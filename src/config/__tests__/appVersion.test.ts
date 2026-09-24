@@ -1,7 +1,7 @@
 /**
  * `ANDROID_VERSION_CODE` is a hand-kept copy of `versionCode` in
  * `android/app/build.gradle`, read by `updateCheck.ts` to decide whether the
- * running app is behind what chatterbox.app is currently serving. Nothing
+ * running app is behind what chatterbox.fans is currently serving. Nothing
  * enforces that a release bump lands in both places — this is that
  * enforcement. Without it, a real Play/site release could ship a higher
  * `versionCode` that this constant never learns about, and the update

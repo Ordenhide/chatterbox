@@ -288,7 +288,7 @@
       "downloadDataDesc": "Uzyskaj kopię swojego profilu i rozmów jako zwykły plik tekstowy, który możesz zachować lub sprawdzić — różni się od Eksportu kopii zapasowej poniżej, który tworzy zaszyfrowany plik do przenoszenia konta na nowe urządzenie.",
       "downloadDataButton": "Pobierz",
       "checkUpdatesTitle": "Sprawdź aktualizacje",
-      "checkUpdatesDesc": "Chatterbox nie jest dostępny w Google Play, więc nic nie aktualizuje go w tle. Sprawdź na chatterbox.app, czy jest nowsza wersja.",
+      "checkUpdatesDesc": "Chatterbox nie jest dostępny w Google Play, więc nic nie aktualizuje go w tle. Sprawdź na chatterbox.fans, czy jest nowsza wersja.",
       "checkUpdatesButton": "Sprawdź teraz"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Masz najnowszą wersję",
       "checkUpdatesUpToDateBody": "To jest najnowsza wersja Chatterboxa.",
       "checkUpdatesAvailableTitle": "Dostępna aktualizacja",
-      "checkUpdatesAvailableBody": "Wersja {{version}} jest dostępna na chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Otwórz chatterbox.app",
+      "checkUpdatesAvailableBody": "Wersja {{version}} jest dostępna na chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Otwórz chatterbox.fans",
       "checkUpdatesFailedTitle": "Nie udało się sprawdzić aktualizacji",
       "checkUpdatesFailedBody": "Sprawdź połączenie i spróbuj ponownie.",
       "voiceRecordFailed": "Nie udało się rozpocząć nagrywania.",

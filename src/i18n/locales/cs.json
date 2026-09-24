@@ -288,7 +288,7 @@
       "downloadDataDesc": "Získejte kopii svého profilu a konverzací jako soubor s prostým textem, který si můžete ponechat nebo prohlédnout — na rozdíl od exportní zálohy níže, která vytváří šifrovaný soubor pro přesun vašeho účtu na nové zařízení.",
       "downloadDataButton": "Stáhnout",
       "checkUpdatesTitle": "Zkontrolovat aktualizace",
-      "checkUpdatesDesc": "Chatterbox není na Google Play, takže nic ho neaktualizuje na pozadí. Zkontrolujte chatterbox.app, zda není k dispozici novější verze.",
+      "checkUpdatesDesc": "Chatterbox není na Google Play, takže nic ho neaktualizuje na pozadí. Zkontrolujte chatterbox.fans, zda není k dispozici novější verze.",
       "checkUpdatesButton": "Zkontrolovat nyní"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Máte nejnovější verzi",
       "checkUpdatesUpToDateBody": "Toto je nejnovější verze Chatterboxu.",
       "checkUpdatesAvailableTitle": "Je k dispozici aktualizace",
-      "checkUpdatesAvailableBody": "Verze {{version}} je k dispozici na chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Otevřít chatterbox.app",
+      "checkUpdatesAvailableBody": "Verze {{version}} je k dispozici na chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Otevřít chatterbox.fans",
       "checkUpdatesFailedTitle": "Aktualizace se nepodařilo zkontrolovat",
       "checkUpdatesFailedBody": "Zkontrolujte připojení a zkuste to znovu.",
       "voiceRecordFailed": "Zahájení nahrávání se nezdařilo.",

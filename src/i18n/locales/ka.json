@@ -288,7 +288,7 @@
       "downloadDataDesc": "მიიღეთ თქვენი პროფილისა და მიმოწერების ასლი უბრალო ტექსტური ფაილის სახით, რომელიც შეგიძლიათ შეინახოთ ან შეამოწმოთ — განსხვავებით ქვემოთ მოცემული ექსპორტის სარეზერვო ასლისგან, რომელიც ქმნის დაშიფრულ ფაილს თქვენი ანგარიშის ახალ მოწყობილობაზე გადასატანად.",
       "downloadDataButton": "ჩამოტვირთვა",
       "checkUpdatesTitle": "განახლებების შემოწმება",
-      "checkUpdatesDesc": "Chatterbox არ არის Google Play-ზე, ამიტომ ის ფონურ რეჟიმში არ განახლდება. ახალი ვერსიისთვის შეამოწმეთ chatterbox.app.",
+      "checkUpdatesDesc": "Chatterbox არ არის Google Play-ზე, ამიტომ ის ფონურ რეჟიმში არ განახლდება. ახალი ვერსიისთვის შეამოწმეთ chatterbox.fans.",
       "checkUpdatesButton": "შემოწმება ახლავე"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "თქვენ გაქვთ უახლესი ვერსია",
       "checkUpdatesUpToDateBody": "ეს არის Chatterbox-ის უახლესი ვერსია.",
       "checkUpdatesAvailableTitle": "ხელმისაწვდომია განახლება",
-      "checkUpdatesAvailableBody": "ვერსია {{version}} ხელმისაწვდომია chatterbox.app-ზე.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app-ის გახსნა",
+      "checkUpdatesAvailableBody": "ვერსია {{version}} ხელმისაწვდომია chatterbox.fans-ზე.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans-ის გახსნა",
       "checkUpdatesFailedTitle": "განახლებების შემოწმება ვერ მოხერხდა",
       "checkUpdatesFailedBody": "შეამოწმეთ თქვენი კავშირი და სცადეთ ხელახლა.",
       "voiceRecordFailed": "ჩაწერის დაწყება ვერ მოხერხდა.",

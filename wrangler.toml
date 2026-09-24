@@ -1,4 +1,4 @@
-# Cloudflare Pages config for chatterbox.app — the marketing site *and* the
+# Cloudflare Pages config for chatterbox.fans — the marketing site *and* the
 # web client, as one project.
 #
 # It points at `website/`, not `web/dist`, and that is the whole design. The

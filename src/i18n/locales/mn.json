@@ -288,7 +288,7 @@
       "downloadDataDesc": "Профайл болон харилцааныхаа хуулбарыг энгийн текст файл хэлбэрээр авч, хадгалах эсвэл шалгах боломжтой — доорх Экспорт нөөцлөлтөөс ялгаатай нь энэ нь таны дансыг шинэ төхөөрөмж рүү шилжүүлэхэд зориулсан шифрлэгдсэн файл биш юм.",
       "downloadDataButton": "Татах",
       "checkUpdatesTitle": "Шинэчлэлт шалгах",
-      "checkUpdatesDesc": "Chatterbox Google Play дээр байхгүй тул үүнийг арын дэвсгэрт шинэчлэх зүйл байхгүй. Илүү шинэ хувилбарын хувьд chatterbox.app-г шалгана уу.",
+      "checkUpdatesDesc": "Chatterbox Google Play дээр байхгүй тул үүнийг арын дэвсгэрт шинэчлэх зүйл байхгүй. Илүү шинэ хувилбарын хувьд chatterbox.fans-г шалгана уу.",
       "checkUpdatesButton": "Одоо шалгах"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Та хамгийн сүүлийн хувилбартай байна",
       "checkUpdatesUpToDateBody": "Энэ бол Chatterbox-ийн хамгийн сүүлийн хувилбар юм.",
       "checkUpdatesAvailableTitle": "Шинэчлэлт бэлэн байна",
-      "checkUpdatesAvailableBody": "Хувилбар {{version}} нь chatterbox.app дээр бэлэн байна.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app нээх",
+      "checkUpdatesAvailableBody": "Хувилбар {{version}} нь chatterbox.fans дээр бэлэн байна.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans нээх",
       "checkUpdatesFailedTitle": "Шинэчлэлтийг шалгаж чадсангүй",
       "checkUpdatesFailedBody": "Холболтоо шалгаад дахин оролдоно уу.",
       "voiceRecordFailed": "Бичлэг эхлүүлж чадсангүй.",

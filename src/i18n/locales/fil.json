@@ -288,7 +288,7 @@
       "downloadDataDesc": "Kumuha ng kopya ng iyong profile at mga usapan bilang plain-text file na maaari mong itago o suriin — iba ito sa Export Backup sa ibaba, na gumagawa ng encrypted file para ilipat ang iyong account sa bagong device.",
       "downloadDataButton": "I-download",
       "checkUpdatesTitle": "Tingnan kung may update",
-      "checkUpdatesDesc": "Wala ang Chatterbox sa Google Play, kaya walang nag-a-update nito sa background. Tingnan ang chatterbox.app para sa mas bagong bersyon.",
+      "checkUpdatesDesc": "Wala ang Chatterbox sa Google Play, kaya walang nag-a-update nito sa background. Tingnan ang chatterbox.fans para sa mas bagong bersyon.",
       "checkUpdatesButton": "Tingnan ngayon"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Updated ka na",
       "checkUpdatesUpToDateBody": "Ito ang pinakabagong bersyon ng Chatterbox.",
       "checkUpdatesAvailableTitle": "May available na update",
-      "checkUpdatesAvailableBody": "Available ang bersyon {{version}} sa chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Buksan ang chatterbox.app",
+      "checkUpdatesAvailableBody": "Available ang bersyon {{version}} sa chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Buksan ang chatterbox.fans",
       "checkUpdatesFailedTitle": "Hindi natingnan kung may update",
       "checkUpdatesFailedBody": "Tingnan ang iyong koneksyon at subukan muli.",
       "voiceRecordFailed": "Nabigong simulan ang pag-record.",

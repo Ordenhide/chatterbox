@@ -288,7 +288,7 @@
       "downloadDataDesc": "Få en kopia av din profil och konversationer som en klartextfil du kan behålla eller granska — skiljer sig från exportsäkerhetskopian nedan, som skapar en krypterad fil för att flytta ditt konto till en ny enhet.",
       "downloadDataButton": "Ladda ner",
       "checkUpdatesTitle": "Sök efter uppdateringar",
-      "checkUpdatesDesc": "Chatterbox finns inte på Google Play, så ingenting uppdaterar den i bakgrunden. Kolla chatterbox.app för en nyare version.",
+      "checkUpdatesDesc": "Chatterbox finns inte på Google Play, så ingenting uppdaterar den i bakgrunden. Kolla chatterbox.fans för en nyare version.",
       "checkUpdatesButton": "Sök nu"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Du har den senaste versionen",
       "checkUpdatesUpToDateBody": "Det här är den senaste versionen av Chatterbox.",
       "checkUpdatesAvailableTitle": "Uppdatering tillgänglig",
-      "checkUpdatesAvailableBody": "Version {{version}} finns tillgänglig på chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Öppna chatterbox.app",
+      "checkUpdatesAvailableBody": "Version {{version}} finns tillgänglig på chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Öppna chatterbox.fans",
       "checkUpdatesFailedTitle": "Det gick inte att söka efter uppdateringar",
       "checkUpdatesFailedBody": "Kontrollera din anslutning och försök igen.",
       "voiceRecordFailed": "Det gick inte att starta inspelningen.",

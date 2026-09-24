@@ -288,7 +288,7 @@
       "downloadDataDesc": "Få en kopi av profilen og samtalene dine som en ren tekstfil du kan beholde eller inspisere — annerledes enn eksportbackupen nedenfor, som lager en kryptert fil for å flytte kontoen din til en ny enhet.",
       "downloadDataButton": "Last ned",
       "checkUpdatesTitle": "Se etter oppdateringer",
-      "checkUpdatesDesc": "Chatterbox er ikke på Google Play, så ingenting oppdaterer den i bakgrunnen. Sjekk chatterbox.app for en nyere versjon.",
+      "checkUpdatesDesc": "Chatterbox er ikke på Google Play, så ingenting oppdaterer den i bakgrunnen. Sjekk chatterbox.fans for en nyere versjon.",
       "checkUpdatesButton": "Sjekk nå"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Du har den nyeste versjonen",
       "checkUpdatesUpToDateBody": "Dette er den nyeste versjonen av Chatterbox.",
       "checkUpdatesAvailableTitle": "Oppdatering tilgjengelig",
-      "checkUpdatesAvailableBody": "Versjon {{version}} er tilgjengelig på chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Åpne chatterbox.app",
+      "checkUpdatesAvailableBody": "Versjon {{version}} er tilgjengelig på chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Åpne chatterbox.fans",
       "checkUpdatesFailedTitle": "Kunne ikke se etter oppdateringer",
       "checkUpdatesFailedBody": "Sjekk tilkoblingen din og prøv igjen.",
       "voiceRecordFailed": "Kunne ikke starte opptak.",

@@ -6,7 +6,7 @@ const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 /**
  * The app's icon, resolved against wherever the app is served from.
  *
- * A leading slash is the marketing site's root on chatterbox.app, where this
+ * A leading slash is the marketing site's root on chatterbox.fans, where this
  * app lives under /app/ — so every notification asked the browser for an icon
  * that 404s. Unlike the service-worker paths nearby this one is on a live
  * path: showLocalNotification below is what useReminders and

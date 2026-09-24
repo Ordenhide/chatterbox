@@ -288,7 +288,7 @@
       "downloadDataDesc": "உங்கள் சுயவிவரம் மற்றும் உரையாடல்களின் நகலை நீங்கள் வைத்திருக்கக்கூடிய அல்லது ஆய்வு செய்யக்கூடிய ஒரு எளிய உரை கோப்பாகப் பெறுங்கள் — கீழே உள்ள ஏற்றுமதி காப்புப்பிரதியிலிருந்து வேறுபட்டது, இது உங்கள் கணக்கை புதிய சாதனத்திற்கு மாற்ற மறைகுறியாக்கப்பட்ட கோப்பை உருவாக்குகிறது.",
       "downloadDataButton": "பதிவிறக்கு",
       "checkUpdatesTitle": "புதுப்பிப்புகளை சரிபார்க்கவும்",
-      "checkUpdatesDesc": "Chatterbox Google Play-இல் இல்லை, எனவே பின்னணியில் எதுவும் இதைப் புதுப்பிக்காது. புதிய பதிப்புக்காக chatterbox.app-ஐ சரிபார்க்கவும்.",
+      "checkUpdatesDesc": "Chatterbox Google Play-இல் இல்லை, எனவே பின்னணியில் எதுவும் இதைப் புதுப்பிக்காது. புதிய பதிப்புக்காக chatterbox.fans-ஐ சரிபார்க்கவும்.",
       "checkUpdatesButton": "இப்போது சரிபார்"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "உங்களிடம் சமீபத்திய பதிப்பு உள்ளது",
       "checkUpdatesUpToDateBody": "இது Chatterbox-இன் சமீபத்திய பதிப்பு.",
       "checkUpdatesAvailableTitle": "புதுப்பிப்பு உள்ளது",
-      "checkUpdatesAvailableBody": "பதிப்பு {{version}} chatterbox.app-இல் கிடைக்கிறது.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app-ஐ திற",
+      "checkUpdatesAvailableBody": "பதிப்பு {{version}} chatterbox.fans-இல் கிடைக்கிறது.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans-ஐ திற",
       "checkUpdatesFailedTitle": "புதுப்பிப்புகளை சரிபார்க்க முடியவில்லை",
       "checkUpdatesFailedBody": "உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
       "voiceRecordFailed": "பதிவைத் தொடங்க முடியவில்லை.",

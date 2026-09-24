@@ -288,7 +288,7 @@
       "downloadDataDesc": "Szerezz be egy másolatot a profilodról és beszélgetéseidről egyszerű szöveges fájlként, amelyet megtarthatsz vagy megvizsgálhatsz — eltérően az alábbi exportálási biztonsági mentéstől, amely egy titkosított fájlt hoz létre a fiókod új eszközre helyezéséhez.",
       "downloadDataButton": "Letöltés",
       "checkUpdatesTitle": "Frissítések keresése",
-      "checkUpdatesDesc": "A Chatterbox nem érhető el a Google Play-en, így semmi sem frissíti a háttérben. Nézd meg a chatterbox.app oldalon, van-e újabb verzió.",
+      "checkUpdatesDesc": "A Chatterbox nem érhető el a Google Play-en, így semmi sem frissíti a háttérben. Nézd meg a chatterbox.fans oldalon, van-e újabb verzió.",
       "checkUpdatesButton": "Ellenőrzés most"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "A legfrissebb verziót használod",
       "checkUpdatesUpToDateBody": "Ez a Chatterbox legújabb verziója.",
       "checkUpdatesAvailableTitle": "Elérhető egy frissítés",
-      "checkUpdatesAvailableBody": "A(z) {{version}} verzió elérhető a chatterbox.app oldalon.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app megnyitása",
+      "checkUpdatesAvailableBody": "A(z) {{version}} verzió elérhető a chatterbox.fans oldalon.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans megnyitása",
       "checkUpdatesFailedTitle": "Nem sikerült ellenőrizni a frissítéseket",
       "checkUpdatesFailedBody": "Ellenőrizd a kapcsolatot, és próbáld újra.",
       "voiceRecordFailed": "A rögzítés indítása sikertelen.",

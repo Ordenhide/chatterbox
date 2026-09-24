@@ -16,7 +16,7 @@ permissions:
 env:
   CF_PAGES_PROJECT: chatterbox
   R2_BUCKET: chatterbox-downloads
-  APK_PUBLIC_URL: https://dl.chatterbox.app/chatterbox-latest.apk
+  APK_PUBLIC_URL: https://dl.chatterbox.fans/chatterbox-latest.apk
 
 jobs:
   build-and-release:
@@ -209,9 +209,9 @@ jobs:
           files: android/app/build/outputs/apk/release/app-release.apk
           generate_release_notes: true
           # A verification channel independent of the site itself: if
-          # chatterbox.app were ever compromised, this SHA-256 lives on
+          # chatterbox.fans were ever compromised, this SHA-256 lives on
           # GitHub instead and can be checked against either copy.
           body: |
             SHA-256: `${{ env.APK_SHA256 }}`
 
-            Also published to https://chatterbox.app/#download — the same file.
+            Also published to https://chatterbox.fans/#download — the same file.

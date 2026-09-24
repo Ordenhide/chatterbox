@@ -288,7 +288,7 @@
       "downloadDataDesc": "Obțineți o copie a profilului și conversațiilor dvs. sub forma unui fișier text simplu pe care îl puteți păstra sau inspecta — diferit de backupul de export de mai jos, care creează un fișier criptat pentru mutarea contului dvs. pe un dispozitiv nou.",
       "downloadDataButton": "Descărcare",
       "checkUpdatesTitle": "Verificați actualizările",
-      "checkUpdatesDesc": "Chatterbox nu este pe Google Play, așa că nimic nu îl actualizează în fundal. Verificați chatterbox.app pentru o versiune mai nouă.",
+      "checkUpdatesDesc": "Chatterbox nu este pe Google Play, așa că nimic nu îl actualizează în fundal. Verificați chatterbox.fans pentru o versiune mai nouă.",
       "checkUpdatesButton": "Verificați acum"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Aveți cea mai recentă versiune",
       "checkUpdatesUpToDateBody": "Aceasta este cea mai recentă versiune Chatterbox.",
       "checkUpdatesAvailableTitle": "Actualizare disponibilă",
-      "checkUpdatesAvailableBody": "Versiunea {{version}} este disponibilă pe chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Deschideți chatterbox.app",
+      "checkUpdatesAvailableBody": "Versiunea {{version}} este disponibilă pe chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Deschideți chatterbox.fans",
       "checkUpdatesFailedTitle": "Actualizările nu au putut fi verificate",
       "checkUpdatesFailedBody": "Verificați conexiunea și încercați din nou.",
       "voiceRecordFailed": "Începerea înregistrării a eșuat.",

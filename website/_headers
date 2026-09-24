@@ -1,4 +1,4 @@
-# Security headers for chatterbox.app, in Cloudflare Pages syntax.
+# Security headers for chatterbox.fans, in Cloudflare Pages syntax.
 #
 # These have now lived in three places, and the reason is worth keeping: they
 # started in web/public/_headers, which is this syntax, while the site was on

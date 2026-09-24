@@ -371,7 +371,7 @@ export default function ProfileScreen() {
             {
               text: t('profile.alerts.checkUpdatesAvailableOpenButton'),
               onPress: () => {
-                Linking.openURL('https://chatterbox.app/#download').catch(() => {});
+                Linking.openURL('https://chatterbox.fans/#download').catch(() => {});
               },
             },
           ],

@@ -288,7 +288,7 @@
       "downloadDataDesc": "Profilingiz va suhbatlaringizning nusxasini saqlashingiz yoki ko'rib chiqishingiz mumkin bo'lgan oddiy matn fayli sifatida oling — bu quyidagi eksport zaxira nusxasidan farqli o'laroq, u hisobingizni yangi qurilmaga ko'chirish uchun shifrlangan fayl yaratadi.",
       "downloadDataButton": "Yuklab olish",
       "checkUpdatesTitle": "Yangilanishlarni tekshirish",
-      "checkUpdatesDesc": "Chatterbox Google Play'da yo'q, shuning uchun uni orqa fonda hech narsa yangilamaydi. Yangiroq versiya uchun chatterbox.app'ni tekshiring.",
+      "checkUpdatesDesc": "Chatterbox Google Play'da yo'q, shuning uchun uni orqa fonda hech narsa yangilamaydi. Yangiroq versiya uchun chatterbox.fans'ni tekshiring.",
       "checkUpdatesButton": "Hozir tekshirish"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Sizda eng so'nggi versiya bor",
       "checkUpdatesUpToDateBody": "Bu Chatterbox'ning eng so'nggi versiyasi.",
       "checkUpdatesAvailableTitle": "Yangilanish mavjud",
-      "checkUpdatesAvailableBody": "{{version}} versiyasi chatterbox.app'da mavjud.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app'ni ochish",
+      "checkUpdatesAvailableBody": "{{version}} versiyasi chatterbox.fans'da mavjud.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans'ni ochish",
       "checkUpdatesFailedTitle": "Yangilanishlarni tekshirib bo'lmadi",
       "checkUpdatesFailedBody": "Ulanishingizni tekshiring va qayta urinib ko'ring.",
       "voiceRecordFailed": "Yozib olishni boshlash amalga oshmadi.",

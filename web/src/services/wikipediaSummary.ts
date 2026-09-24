@@ -59,7 +59,7 @@ const TIMEOUT_MS = 8000;
  * an empty box where the picture should be.
  */
 export const WIKIPEDIA_USER_AGENT =
-  'Chatterbox/1.1 (https://chatterbox.app; privacy@chatterbox.app)';
+  'Chatterbox/1.1 (https://chatterbox.fans; privacy@chatterbox.fans)';
 
 type Json = {status: number; data: any};
 

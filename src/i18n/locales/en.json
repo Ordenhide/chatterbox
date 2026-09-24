@@ -304,7 +304,7 @@
       "downloadDataDesc": "Get a copy of your profile and conversations as a plain-text file you can keep or inspect — different from Export Backup below, which creates an encrypted file for moving your account to a new device.",
       "downloadDataButton": "Download",
       "checkUpdatesTitle": "Check for updates",
-      "checkUpdatesDesc": "Chatterbox isn't on Google Play, so nothing updates it in the background. Check chatterbox.app for a newer version.",
+      "checkUpdatesDesc": "Chatterbox isn't on Google Play, so nothing updates it in the background. Check chatterbox.fans for a newer version.",
       "checkUpdatesButton": "Check now"
     },
     "modals": {
@@ -336,8 +336,8 @@
       "checkUpdatesUpToDateTitle": "You're up to date",
       "checkUpdatesUpToDateBody": "This is the latest version of Chatterbox.",
       "checkUpdatesAvailableTitle": "Update available",
-      "checkUpdatesAvailableBody": "Version {{version}} is available on chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Open chatterbox.app",
+      "checkUpdatesAvailableBody": "Version {{version}} is available on chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Open chatterbox.fans",
       "checkUpdatesFailedTitle": "Couldn't check for updates",
       "checkUpdatesFailedBody": "Check your connection and try again.",
       "voiceRecordFailed": "Failed to start recording.",

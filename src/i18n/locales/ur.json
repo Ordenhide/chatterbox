@@ -288,7 +288,7 @@
       "downloadDataDesc": "اپنی پروفائل اور گفتگوؤں کی ایک کاپی ایک سادہ متنی فائل کے طور پر حاصل کریں جسے آپ رکھ یا جانچ سکتے ہیں — یہ نیچے دیے گئے ‘ایکسپورٹ بیک اپ’ سے مختلف ہے، جو آپ کے اکاؤنٹ کو نئی ڈیوائس پر منتقل کرنے کے لیے ایک خفیہ کردہ فائل بناتا ہے۔",
       "downloadDataButton": "ڈاؤن لوڈ کریں",
       "checkUpdatesTitle": "اپ ڈیٹس کی جانچ کریں",
-      "checkUpdatesDesc": "Chatterbox گوگل پلے پر موجود نہیں ہے، اس لیے کچھ بھی اسے پس منظر میں اپ ڈیٹ نہیں کرتا۔ نئے ورژن کے لیے chatterbox.app چیک کریں۔",
+      "checkUpdatesDesc": "Chatterbox گوگل پلے پر موجود نہیں ہے، اس لیے کچھ بھی اسے پس منظر میں اپ ڈیٹ نہیں کرتا۔ نئے ورژن کے لیے chatterbox.fans چیک کریں۔",
       "checkUpdatesButton": "ابھی چیک کریں"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "آپ کے پاس تازہ ترین ورژن ہے",
       "checkUpdatesUpToDateBody": "یہ Chatterbox کا تازہ ترین ورژن ہے۔",
       "checkUpdatesAvailableTitle": "اپ ڈیٹ دستیاب ہے",
-      "checkUpdatesAvailableBody": "ورژن {{version}} chatterbox.app پر دستیاب ہے۔",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app کھولیں",
+      "checkUpdatesAvailableBody": "ورژن {{version}} chatterbox.fans پر دستیاب ہے۔",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans کھولیں",
       "checkUpdatesFailedTitle": "اپ ڈیٹس چیک نہیں کی جا سکیں",
       "checkUpdatesFailedBody": "اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
       "voiceRecordFailed": "ریکارڈنگ شروع کرنا ناکام ہوا۔",

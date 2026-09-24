@@ -288,7 +288,7 @@
       "downloadDataDesc": "نسخه‌ای از پروفایل و گفتگوهایتان را به‌صورت یک فایل متنی ساده که می‌توانید نگه دارید یا بررسی کنید دریافت کنید — این با «خروجی پشتیبان» زیر فرق دارد، که یک فایل رمزنگاری‌شده برای انتقال حساب شما به دستگاه جدید می‌سازد.",
       "downloadDataButton": "دانلود",
       "checkUpdatesTitle": "بررسی به‌روزرسانی‌ها",
-      "checkUpdatesDesc": "Chatterbox در Google Play موجود نیست، بنابراین چیزی آن را در پس‌زمینه به‌روزرسانی نمی‌کند. برای نسخهٔ جدیدتر chatterbox.app را بررسی کنید.",
+      "checkUpdatesDesc": "Chatterbox در Google Play موجود نیست، بنابراین چیزی آن را در پس‌زمینه به‌روزرسانی نمی‌کند. برای نسخهٔ جدیدتر chatterbox.fans را بررسی کنید.",
       "checkUpdatesButton": "اکنون بررسی کن"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "شما به‌روز هستید",
       "checkUpdatesUpToDateBody": "این آخرین نسخهٔ Chatterbox است.",
       "checkUpdatesAvailableTitle": "به‌روزرسانی موجود است",
-      "checkUpdatesAvailableBody": "نسخهٔ {{version}} در chatterbox.app موجود است.",
-      "checkUpdatesAvailableOpenButton": "باز کردن chatterbox.app",
+      "checkUpdatesAvailableBody": "نسخهٔ {{version}} در chatterbox.fans موجود است.",
+      "checkUpdatesAvailableOpenButton": "باز کردن chatterbox.fans",
       "checkUpdatesFailedTitle": "بررسی به‌روزرسانی‌ها ممکن نشد",
       "checkUpdatesFailedBody": "اتصال خود را بررسی کرده و دوباره تلاش کنید.",
       "voiceRecordFailed": "شروع ضبط ناموفق بود.",

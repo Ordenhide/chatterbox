@@ -288,7 +288,7 @@
       "downloadDataDesc": "ඔබට තබාගත හැකි හෝ පරීක්ෂා කළ හැකි සරල-පෙළ ගොනුවක් ලෙස ඔබේ පැතිකඩ සහ සංවාදවල පිටපතක් ලබාගන්න — පහත අපනයන උපස්ථයට වඩා වෙනස්, එය ඔබේ ගිණුම නව උපාංගයකට ගෙනයාමට සංකේතාංකිත ගොනුවක් සාදයි.",
       "downloadDataButton": "බාගන්න",
       "checkUpdatesTitle": "යාවත්කාලීන පරීක්ෂා කරන්න",
-      "checkUpdatesDesc": "Chatterbox Google Play හි නොමැති බැවින්, පසුබිමින් එය යාවත්කාලීන කරන්නක් නැත. නව අනුවාදයක් සඳහා chatterbox.app පරීක්ෂා කරන්න.",
+      "checkUpdatesDesc": "Chatterbox Google Play හි නොමැති බැවින්, පසුබිමින් එය යාවත්කාලීන කරන්නක් නැත. නව අනුවාදයක් සඳහා chatterbox.fans පරීක්ෂා කරන්න.",
       "checkUpdatesButton": "දැන් පරීක්ෂා කරන්න"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "ඔබට නවතම අනුවාදය ඇත",
       "checkUpdatesUpToDateBody": "මෙය Chatterbox හි නවතම අනුවාදයයි.",
       "checkUpdatesAvailableTitle": "යාවත්කාලීනයක් තිබේ",
-      "checkUpdatesAvailableBody": "අනුවාදය {{version}} chatterbox.app හි ලබාගත හැක.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app විවෘත කරන්න",
+      "checkUpdatesAvailableBody": "අනුවාදය {{version}} chatterbox.fans හි ලබාගත හැක.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans විවෘත කරන්න",
       "checkUpdatesFailedTitle": "යාවත්කාලීන පරීක්ෂා කළ නොහැකි විය",
       "checkUpdatesFailedBody": "ඔබේ සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.",
       "voiceRecordFailed": "පටිගත කිරීම ආරම්භ කිරීම අසාර්ථක විය.",

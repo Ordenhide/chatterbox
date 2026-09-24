@@ -288,7 +288,7 @@
       "downloadDataDesc": "ຮັບສຳເນົາໂປຣໄຟລ໌ ແລະ ການສົນທະນາຂອງທ່ານເປັນໄຟລ໌ຂໍ້ຄວາມທຳມະດາທີ່ທ່ານສາມາດເກັບ ຫຼືກວດເບິ່ງໄດ້ — ແຕກຕ່າງຈາກສົ່ງອອກແບັກອັບຂ້າງລຸ່ມ, ເຊິ່ງສ້າງໄຟລ໌ເຂົ້າລະຫັດສຳລັບການຍ້າຍບັນຊີຂອງທ່ານໄປອຸປະກອນໃໝ່.",
       "downloadDataButton": "ດາວໂຫຼດ",
       "checkUpdatesTitle": "ກວດສອບການອັບເດດ",
-      "checkUpdatesDesc": "Chatterbox ບໍ່ໄດ້ຢູ່ໃນ Google Play, ສະນັ້ນຈຶ່ງບໍ່ມີການອັບເດດອັດຕະໂນມັດໃນພື້ນຫຼັງ. ກະລຸນາກວດສອບ chatterbox.app ສຳລັບເວີຊັນໃໝ່.",
+      "checkUpdatesDesc": "Chatterbox ບໍ່ໄດ້ຢູ່ໃນ Google Play, ສະນັ້ນຈຶ່ງບໍ່ມີການອັບເດດອັດຕະໂນມັດໃນພື້ນຫຼັງ. ກະລຸນາກວດສອບ chatterbox.fans ສຳລັບເວີຊັນໃໝ່.",
       "checkUpdatesButton": "ກວດສອບດຽວນີ້"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "ທ່ານມີເວີຊັນລ່າສຸດແລ້ວ",
       "checkUpdatesUpToDateBody": "ນີ້ແມ່ນເວີຊັນລ່າສຸດຂອງ Chatterbox.",
       "checkUpdatesAvailableTitle": "ມີການອັບເດດ",
-      "checkUpdatesAvailableBody": "ເວີຊັນ {{version}} ມີຢູ່ທີ່ chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "ເປີດ chatterbox.app",
+      "checkUpdatesAvailableBody": "ເວີຊັນ {{version}} ມີຢູ່ທີ່ chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "ເປີດ chatterbox.fans",
       "checkUpdatesFailedTitle": "ບໍ່ສາມາດກວດສອບການອັບເດດໄດ້",
       "checkUpdatesFailedBody": "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ຂອງທ່ານ ແລະລອງໃໝ່ອີກຄັ້ງ.",
       "voiceRecordFailed": "ເລີ່ມການບັນທຶກບໍ່ສຳເລັດ.",

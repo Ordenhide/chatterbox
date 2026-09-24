@@ -288,7 +288,7 @@
       "downloadDataDesc": "మీరు ఉంచుకోగలిగే లేదా పరిశీలించగలిగే సాదా-టెక్స్ట్ ఫైల్‌గా మీ ప్రొఫైల్ మరియు సంభాషణల కాపీని పొందండి — దిగువ ఎగుమతి బ్యాకప్ నుండి భిన్నంగా, ఇది మీ ఖాతాను కొత్త పరికరానికి తరలించడానికి ఎన్‌క్రిప్టెడ్ ఫైల్‌ను సృష్టిస్తుంది.",
       "downloadDataButton": "డౌన్‌లోడ్ చేయి",
       "checkUpdatesTitle": "నవీకరణల కోసం తనిఖీ చేయండి",
-      "checkUpdatesDesc": "Chatterbox Google Playలో లేదు, కాబట్టి బ్యాక్‌గ్రౌండ్‌లో దీన్ని ఏదీ నవీకరించదు. కొత్త వెర్షన్ కోసం chatterbox.appను తనిఖీ చేయండి.",
+      "checkUpdatesDesc": "Chatterbox Google Playలో లేదు, కాబట్టి బ్యాక్‌గ్రౌండ్‌లో దీన్ని ఏదీ నవీకరించదు. కొత్త వెర్షన్ కోసం chatterbox.fansను తనిఖీ చేయండి.",
       "checkUpdatesButton": "ఇప్పుడు తనిఖీ చేయండి"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "మీకు తాజా వెర్షన్ ఉంది",
       "checkUpdatesUpToDateBody": "ఇది Chatterbox యొక్క తాజా వెర్షన్.",
       "checkUpdatesAvailableTitle": "నవీకరణ అందుబాటులో ఉంది",
-      "checkUpdatesAvailableBody": "వెర్షన్ {{version}} chatterbox.appలో అందుబాటులో ఉంది.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.appను తెరవండి",
+      "checkUpdatesAvailableBody": "వెర్షన్ {{version}} chatterbox.fansలో అందుబాటులో ఉంది.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fansను తెరవండి",
       "checkUpdatesFailedTitle": "నవీకరణలను తనిఖీ చేయలేకపోయాము",
       "checkUpdatesFailedBody": "మీ కనెక్షన్‌ని తనిఖీ చేసి మళ్ళీ ప్రయత్నించండి.",
       "voiceRecordFailed": "రికార్డింగ్ ప్రారంభించడంలో విఫలమైంది.",

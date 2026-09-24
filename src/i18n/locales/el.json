@@ -288,7 +288,7 @@
       "downloadDataDesc": "Λάβετε αντίγραφο του προφίλ και των συνομιλιών σας ως αρχείο απλού κειμένου που μπορείτε να κρατήσετε ή να επιθεωρήσετε — διαφορετικό από το αντίγραφο ασφαλείας εξαγωγής παρακάτω, το οποίο δημιουργεί ένα κρυπτογραφημένο αρχείο για τη μεταφορά του λογαριασμού σας σε νέα συσκευή.",
       "downloadDataButton": "Λήψη",
       "checkUpdatesTitle": "Έλεγχος για ενημερώσεις",
-      "checkUpdatesDesc": "Το Chatterbox δεν διατίθεται στο Google Play, οπότε τίποτα δεν το ενημερώνει στο παρασκήνιο. Ελέγξτε το chatterbox.app για νεότερη έκδοση.",
+      "checkUpdatesDesc": "Το Chatterbox δεν διατίθεται στο Google Play, οπότε τίποτα δεν το ενημερώνει στο παρασκήνιο. Ελέγξτε το chatterbox.fans για νεότερη έκδοση.",
       "checkUpdatesButton": "Έλεγχος τώρα"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Είστε ενημερωμένοι",
       "checkUpdatesUpToDateBody": "Αυτή είναι η τελευταία έκδοση του Chatterbox.",
       "checkUpdatesAvailableTitle": "Διαθέσιμη ενημέρωση",
-      "checkUpdatesAvailableBody": "Η έκδοση {{version}} είναι διαθέσιμη στο chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Άνοιγμα chatterbox.app",
+      "checkUpdatesAvailableBody": "Η έκδοση {{version}} είναι διαθέσιμη στο chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Άνοιγμα chatterbox.fans",
       "checkUpdatesFailedTitle": "Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις",
       "checkUpdatesFailedBody": "Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.",
       "voiceRecordFailed": "Η έναρξη ηχογράφησης απέτυχε.",

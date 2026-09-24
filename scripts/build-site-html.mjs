@@ -61,7 +61,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * nowhere. See DEPLOYING.md.
  */
 export const PLAY_URL = null;
-export const APK_URL = 'https://dl.chatterbox.app/chatterbox-latest.apk';
+export const APK_URL = 'https://dl.chatterbox.fans/chatterbox-latest.apk';
 
 const escape = s =>
   String(s)

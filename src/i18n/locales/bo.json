@@ -288,7 +288,7 @@
       "downloadDataDesc": "ཁྱེད་ཀྱིས་ཉར་ཐུབ་པའམ་ཞིབ་བཤེར་བྱེད་ཐུབ་པའི་ཡིག་ཆའི་ཡིག་རིགས་ཏོག་ཙམ་ཐོག་ཁྱེད་ཀྱི་ངོ་སྤྲོད་དང་ཁ་བརྡའི་འདྲ་ཞིག་ལེན། འོག་ཏུ་ཡོད་པའི་ཉར་ཚགས་ཕྱིར་འདོན་དང་མི་འདྲ། དེས་ཆས་གྲལ་གསར་པར་ཞིབ་ཡིག་སྤོ་བའི་ཆེད་གསང་སྦས་ཡིག་ཆ་ཞིག་བཟོ་གྱི་རེད།",
       "downloadDataButton": "ཕབ་ལེན།",
       "checkUpdatesTitle": "གསར་སྒྱུར་ཞིབ་བཤེར།",
-      "checkUpdatesDesc": "Chatterbox ནི་ Google Play ནང་མེད་པས། རྒྱབ་ལྗོངས་ནས་གསར་སྒྱུར་བྱེད་མཁན་གང་ཡང་མེད། པར་གཞི་གསར་པ་ཞིག་ཡིན་མིན་ཤེས་ཆེད་ chatterbox.app ལ་ཞིབ་བཤེར་གནང་རོགས།",
+      "checkUpdatesDesc": "Chatterbox ནི་ Google Play ནང་མེད་པས། རྒྱབ་ལྗོངས་ནས་གསར་སྒྱུར་བྱེད་མཁན་གང་ཡང་མེད། པར་གཞི་གསར་པ་ཞིག་ཡིན་མིན་ཤེས་ཆེད་ chatterbox.fans ལ་ཞིབ་བཤེར་གནང་རོགས།",
       "checkUpdatesButton": "ད་ལྟ་ཞིབ་བཤེར།"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "ཁྱེད་ཀྱི་པར་གཞི་གསར་ཤོས་ཡིན།",
       "checkUpdatesUpToDateBody": "འདི་ནི་ Chatterbox ཀྱི་པར་གཞི་གསར་ཤོས་ཡིན།",
       "checkUpdatesAvailableTitle": "གསར་སྒྱུར་ཡོད།",
-      "checkUpdatesAvailableBody": "པར་གཞི་ {{version}} ནི་ chatterbox.app ནང་ཡོད།",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app ཁ་ཕྱེ།",
+      "checkUpdatesAvailableBody": "པར་གཞི་ {{version}} ནི་ chatterbox.fans ནང་ཡོད།",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans ཁ་ཕྱེ།",
       "checkUpdatesFailedTitle": "གསར་སྒྱུར་ཞིབ་བཤེར་མ་ཐུབ།",
       "checkUpdatesFailedBody": "ཁྱེད་ཀྱི་མཐུད་ལམ་ལ་ཞིབ་བཤེར་བྱས་ནས་བསྐྱར་དུ་ཚོད་ལྟ་གནང་རོགས།",
       "voiceRecordFailed": "བཟོ་འགོ་འཛུགས་མ་ཐུབ།",

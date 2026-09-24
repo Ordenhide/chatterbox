@@ -288,7 +288,7 @@
       "downloadDataDesc": "Ստացեք ձեր պրոֆիլի և զրույցների պատճենը որպես պարզ տեքստային ֆայլ, որը կարող եք պահել կամ ուսումնասիրել — ի տարբերություն ստորև ներկայացված արտահանման պահուստավորման, որը ստեղծում է գաղտնագրված ֆայլ՝ ձեր հաշիվը նոր սարքին տեղափոխելու համար։",
       "downloadDataButton": "Ներբեռնել",
       "checkUpdatesTitle": "Ստուգել թարմացումները",
-      "checkUpdatesDesc": "Chatterbox-ը Google Play-ում չէ, ուստի ոչինչ ֆոնային ռեժիմում այն չի թարմացնում: Ստուգեք chatterbox.app կայքում՝ նոր տարբերակի համար։",
+      "checkUpdatesDesc": "Chatterbox-ը Google Play-ում չէ, ուստի ոչինչ ֆոնային ռեժիմում այն չի թարմացնում: Ստուգեք chatterbox.fans կայքում՝ նոր տարբերակի համար։",
       "checkUpdatesButton": "Ստուգել հիմա"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Դուք թարմացված եք",
       "checkUpdatesUpToDateBody": "Սա Chatterbox-ի վերջին տարբերակն է։",
       "checkUpdatesAvailableTitle": "Առկա է թարմացում",
-      "checkUpdatesAvailableBody": "{{version}} տարբերակը հասանելի է chatterbox.app կայքում։",
-      "checkUpdatesAvailableOpenButton": "Բացել chatterbox.app-ը",
+      "checkUpdatesAvailableBody": "{{version}} տարբերակը հասանելի է chatterbox.fans կայքում։",
+      "checkUpdatesAvailableOpenButton": "Բացել chatterbox.fans-ը",
       "checkUpdatesFailedTitle": "Չհաջողվեց ստուգել թարմացումները",
       "checkUpdatesFailedBody": "Ստուգեք ձեր կապակցումը և փորձեք կրկին։",
       "voiceRecordFailed": "Ձայնագրումը սկսելը ձախողվեց։",

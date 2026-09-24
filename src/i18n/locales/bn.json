@@ -288,7 +288,7 @@
       "downloadDataDesc": "আপনার প্রোফাইল ও কথোপকথনের একটি কপি সাধারণ টেক্সট ফাইল হিসেবে পান, যা রাখতে বা পরীক্ষা করতে পারবেন — নিচের 'এক্সপোর্ট ব্যাকআপ' থেকে এটি আলাদা, যা নতুন ডিভাইসে অ্যাকাউন্ট স্থানান্তরের জন্য একটি এনক্রিপ্টেড ফাইল তৈরি করে।",
       "downloadDataButton": "ডাউনলোড করুন",
       "checkUpdatesTitle": "আপডেট পরীক্ষা করুন",
-      "checkUpdatesDesc": "Chatterbox Google Play-তে নেই, তাই ব্যাকগ্রাউন্ডে এটি আপডেট হয় না। নতুন সংস্করণের জন্য chatterbox.app দেখুন।",
+      "checkUpdatesDesc": "Chatterbox Google Play-তে নেই, তাই ব্যাকগ্রাউন্ডে এটি আপডেট হয় না। নতুন সংস্করণের জন্য chatterbox.fans দেখুন।",
       "checkUpdatesButton": "এখনই পরীক্ষা করুন"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "আপনি হালনাগাদ আছেন",
       "checkUpdatesUpToDateBody": "এটি Chatterbox-এর সর্বশেষ সংস্করণ।",
       "checkUpdatesAvailableTitle": "আপডেট উপলব্ধ",
-      "checkUpdatesAvailableBody": "সংস্করণ {{version}} chatterbox.app-এ উপলব্ধ।",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app খুলুন",
+      "checkUpdatesAvailableBody": "সংস্করণ {{version}} chatterbox.fans-এ উপলব্ধ।",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans খুলুন",
       "checkUpdatesFailedTitle": "আপডেট পরীক্ষা করা যায়নি",
       "checkUpdatesFailedBody": "আপনার সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।",
       "voiceRecordFailed": "রেকর্ডিং শুরু করা ব্যর্থ হয়েছে।",

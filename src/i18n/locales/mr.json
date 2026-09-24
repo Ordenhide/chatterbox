@@ -288,7 +288,7 @@
       "downloadDataDesc": "आपल्या प्रोफाइल आणि संभाषणांची प्रत साध्या-मजकूर फाइल म्हणून मिळवा जी आपण ठेवू किंवा तपासू शकता — खाली दिलेल्या निर्यात बॅकअपपेक्षा वेगळे, जे आपले खाते नवीन डिव्हाइसवर हलवण्यासाठी एन्क्रिप्टेड फाइल तयार करते.",
       "downloadDataButton": "डाउनलोड करा",
       "checkUpdatesTitle": "अद्यतनांसाठी तपासा",
-      "checkUpdatesDesc": "Chatterbox Google Play वर नाही, त्यामुळे पार्श्वभूमीत काहीही अपडेट होत नाही. नवीन आवृत्तीसाठी chatterbox.app तपासा.",
+      "checkUpdatesDesc": "Chatterbox Google Play वर नाही, त्यामुळे पार्श्वभूमीत काहीही अपडेट होत नाही. नवीन आवृत्तीसाठी chatterbox.fans तपासा.",
       "checkUpdatesButton": "आता तपासा"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "आपल्याकडे नवीनतम आवृत्ती आहे",
       "checkUpdatesUpToDateBody": "ही Chatterbox ची नवीनतम आवृत्ती आहे.",
       "checkUpdatesAvailableTitle": "अद्यतन उपलब्ध आहे",
-      "checkUpdatesAvailableBody": "आवृत्ती {{version}} chatterbox.app वर उपलब्ध आहे.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app उघडा",
+      "checkUpdatesAvailableBody": "आवृत्ती {{version}} chatterbox.fans वर उपलब्ध आहे.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans उघडा",
       "checkUpdatesFailedTitle": "अद्यतन तपासता आले नाही",
       "checkUpdatesFailedBody": "आपले कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.",
       "voiceRecordFailed": "रेकॉर्डिंग सुरू करण्यात अयशस्वी.",

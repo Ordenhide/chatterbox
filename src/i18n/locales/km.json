@@ -288,7 +288,7 @@
       "downloadDataDesc": "ទទួលបានច្បាប់ចម្លងនៃប្រវត្តិរូប និងការសន្ទនារបស់អ្នកជាឯកសារអត្ថបទធម្មតាដែលអ្នកអាចរក្សាទុក ឬពិនិត្យបាន — ខុសពី Export Backup ខាងក្រោម ដែលបង្កើតឯកសារបានអ៊ិនគ្រីបសម្រាប់ផ្លាស់ប្តូរគណនីរបស់អ្នកទៅឧបករណ៍ថ្មី។",
       "downloadDataButton": "ទាញយក",
       "checkUpdatesTitle": "ពិនិត្យរកកំណែថ្មី",
-      "checkUpdatesDesc": "Chatterbox មិនមាននៅលើ Google Play ទេ ដូច្នេះគ្មានអ្វីធ្វើបច្ចុប្បន្នភាពវានៅផ្ទៃខាងក្រោយទេ។ សូមពិនិត្យ chatterbox.app សម្រាប់កំណែថ្មីជាង។",
+      "checkUpdatesDesc": "Chatterbox មិនមាននៅលើ Google Play ទេ ដូច្នេះគ្មានអ្វីធ្វើបច្ចុប្បន្នភាពវានៅផ្ទៃខាងក្រោយទេ។ សូមពិនិត្យ chatterbox.fans សម្រាប់កំណែថ្មីជាង។",
       "checkUpdatesButton": "ពិនិត្យឥឡូវនេះ"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "អ្នកមានកំណែថ្មីបំផុតហើយ",
       "checkUpdatesUpToDateBody": "នេះជាកំណែចុងក្រោយបំផុតរបស់ Chatterbox។",
       "checkUpdatesAvailableTitle": "មានកំណែថ្មី",
-      "checkUpdatesAvailableBody": "កំណែ {{version}} អាចរកបាននៅលើ chatterbox.app។",
-      "checkUpdatesAvailableOpenButton": "បើក chatterbox.app",
+      "checkUpdatesAvailableBody": "កំណែ {{version}} អាចរកបាននៅលើ chatterbox.fans។",
+      "checkUpdatesAvailableOpenButton": "បើក chatterbox.fans",
       "checkUpdatesFailedTitle": "មិនអាចពិនិត្យរកកំណែថ្មីបានទេ",
       "checkUpdatesFailedBody": "សូមពិនិត្យការតភ្ជាប់របស់អ្នក ហើយព្យាយាមម្តងទៀត។",
       "voiceRecordFailed": "បរាជ័យក្នុងការចាប់ផ្តើមថត។",

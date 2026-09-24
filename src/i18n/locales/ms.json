@@ -288,7 +288,7 @@
       "downloadDataDesc": "Dapatkan salinan profil dan perbualan anda sebagai fail teks biasa yang anda boleh simpan atau semak — berbeza daripada Eksport Sandaran di bawah, yang mencipta fail disulitkan untuk memindahkan akaun anda ke peranti baharu.",
       "downloadDataButton": "Muat Turun",
       "checkUpdatesTitle": "Semak kemas kini",
-      "checkUpdatesDesc": "Chatterbox tiada di Google Play, jadi tiada apa yang mengemas kininya di latar belakang. Semak chatterbox.app untuk versi yang lebih baharu.",
+      "checkUpdatesDesc": "Chatterbox tiada di Google Play, jadi tiada apa yang mengemas kininya di latar belakang. Semak chatterbox.fans untuk versi yang lebih baharu.",
       "checkUpdatesButton": "Semak sekarang"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Anda menggunakan versi terkini",
       "checkUpdatesUpToDateBody": "Ini ialah versi terkini Chatterbox.",
       "checkUpdatesAvailableTitle": "Kemas kini tersedia",
-      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Buka chatterbox.app",
+      "checkUpdatesAvailableBody": "Versi {{version}} tersedia di chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Buka chatterbox.fans",
       "checkUpdatesFailedTitle": "Tidak dapat menyemak kemas kini",
       "checkUpdatesFailedBody": "Semak sambungan anda dan cuba lagi.",
       "voiceRecordFailed": "Gagal memulakan rakaman.",

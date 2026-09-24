@@ -1,7 +1,7 @@
 /* Firebase Cloud Messaging service worker (background web push).
  *
  * Loaded by the browser from this worker's own directory when the user
- * enables notifications — `/` under `vite dev`, `/app/` on chatterbox.app.
+ * enables notifications — `/` under `vite dev`, `/app/` on chatterbox.fans.
  * Uses the Firebase *compat* builds via importScripts because service workers
  * can't use ES module imports. The config below is the public web config
  * (safe to expose) and must match src/firebase.ts.

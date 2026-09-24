@@ -1,5 +1,5 @@
 /**
- * Whether a newer Android build is sitting on chatterbox.app, checked because
+ * Whether a newer Android build is sitting on chatterbox.fans, checked because
  * the reader tapped a button and not otherwise.
  *
  * Google Play updates an installed app in the background; a store that isn't
@@ -11,7 +11,7 @@
  * not a standing background channel they agreed to once and then forgot.
  *
  * Nothing is downloaded here. A tap that finds an update points the reader at
- * chatterbox.app, where the download and its checksum live; this only reads
+ * chatterbox.fans, where the download and its checksum live; this only reads
  * one small JSON file to compare one number.
  */
 import {ANDROID_VERSION_CODE} from '../config/appVersion';
@@ -19,7 +19,7 @@ import {ANDROID_VERSION_CODE} from '../config/appVersion';
 /** Long enough for a slow network, short enough that a spinner isn't the last thing seen. */
 const TIMEOUT_MS = 8000;
 
-const MANIFEST_URL = 'https://chatterbox.app/downloads/version.json';
+const MANIFEST_URL = 'https://chatterbox.fans/downloads/version.json';
 
 export type UpdateCheckResult =
   | {status: 'up-to-date'}

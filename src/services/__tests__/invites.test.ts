@@ -258,7 +258,7 @@ describe('the link itself', () => {
       null,
       undefined,
       '',
-      'https://chatterbox.app/invite#' + token,
+      'https://chatterbox.fans/invite#' + token,
       `chatterbox://chat#${token}`,
       `${INVITE_SCHEME}?${token}`,
       `${INVITE_SCHEME}#${token.toUpperCase()}`,

@@ -288,7 +288,7 @@
       "downloadDataDesc": "ማቆየት ወይም መመልከት የሚችሉት ንፁህ-ጽሑፍ ፋይል ሆኖ የመገለጫዎን እና የውይይቶችዎን ቅጂ ያግኙ — ከዚህ በታች ካለው የመላክ ምትኬ የተለየ፣ ይህም መለያዎን ወደ አዲስ መሣሪያ ለማዛወር የተመሰጠረ ፋይል ይፈጥራል።",
       "downloadDataButton": "አውርድ",
       "checkUpdatesTitle": "ዝማኔዎችን ይፈትሹ",
-      "checkUpdatesDesc": "Chatterbox በGoogle Play ላይ የለም፣ ስለዚህ በጀርባ የሚያዘምነው ነገር የለም። አዲስ ስሪት ለማግኘት chatterbox.app ይመልከቱ።",
+      "checkUpdatesDesc": "Chatterbox በGoogle Play ላይ የለም፣ ስለዚህ በጀርባ የሚያዘምነው ነገር የለም። አዲስ ስሪት ለማግኘት chatterbox.fans ይመልከቱ።",
       "checkUpdatesButton": "አሁን ይፈትሹ"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "የቅርብ ጊዜ ስሪት ነው",
       "checkUpdatesUpToDateBody": "ይህ የChatterbox የቅርብ ጊዜ ስሪት ነው።",
       "checkUpdatesAvailableTitle": "ዝማኔ ይገኛል",
-      "checkUpdatesAvailableBody": "ስሪት {{version}} በ chatterbox.app ላይ ይገኛል።",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app ይክፈቱ",
+      "checkUpdatesAvailableBody": "ስሪት {{version}} በ chatterbox.fans ላይ ይገኛል።",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans ይክፈቱ",
       "checkUpdatesFailedTitle": "ዝማኔ ማረጋገጥ አልተቻለም",
       "checkUpdatesFailedBody": "ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
       "voiceRecordFailed": "ቀረጻ መጀመር አልተሳካም።",

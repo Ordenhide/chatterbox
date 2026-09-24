@@ -11,7 +11,7 @@ const CACHE = 'chatterbox-v1';
 
 /* Where this worker is served from, derived at runtime rather than assumed.
  *
- * The app runs at `/` under `vite dev` and at `/app/` on chatterbox.app
+ * The app runs at `/` under `vite dev` and at `/app/` on chatterbox.fans
  * (`build:site` passes --base=/app/). Vite rewrites asset URLs inside
  * index.html for that, but a file in `public/` is copied verbatim — there is
  * no build step that could substitute a base in here. Every path below was

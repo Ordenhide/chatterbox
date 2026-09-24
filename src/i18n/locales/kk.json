@@ -288,7 +288,7 @@
       "downloadDataDesc": "Сақтауға немесе тексеруге болатын қарапайым мәтін файлы ретінде профиліңіз бен әңгімелеріңіздің көшірмесін алыңыз — төмендегі экспорт сақтық көшірмесінен өзгеше, ол есептік жазбаңызды жаңа құрылғыға көшіру үшін шифрланған файл жасайды.",
       "downloadDataButton": "Жүктеп алу",
       "checkUpdatesTitle": "Жаңартуларды тексеру",
-      "checkUpdatesDesc": "Chatterbox Google Play-де жоқ, сондықтан оны фондық режимде ешнәрсе жаңартпайды. Жаңа нұсқа үшін chatterbox.app сайтын тексеріңіз.",
+      "checkUpdatesDesc": "Chatterbox Google Play-де жоқ, сондықтан оны фондық режимде ешнәрсе жаңартпайды. Жаңа нұсқа үшін chatterbox.fans сайтын тексеріңіз.",
       "checkUpdatesButton": "Қазір тексеру"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Сізде соңғы нұсқа бар",
       "checkUpdatesUpToDateBody": "Бұл Chatterbox-тың соңғы нұсқасы.",
       "checkUpdatesAvailableTitle": "Жаңарту қолжетімді",
-      "checkUpdatesAvailableBody": "{{version}} нұсқасы chatterbox.app сайтында қолжетімді.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app ашу",
+      "checkUpdatesAvailableBody": "{{version}} нұсқасы chatterbox.fans сайтында қолжетімді.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans ашу",
       "checkUpdatesFailedTitle": "Жаңартуларды тексеру мүмкін болмады",
       "checkUpdatesFailedBody": "Байланысыңызды тексеріп, қайталап көріңіз.",
       "voiceRecordFailed": "Жазуды бастау сәтсіз аяқталды.",

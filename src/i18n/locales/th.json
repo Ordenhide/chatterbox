@@ -288,7 +288,7 @@
       "downloadDataDesc": "รับสำเนาโปรไฟล์และการสนทนาของคุณเป็นไฟล์ข้อความธรรมดาที่คุณสามารถเก็บหรือตรวจสอบได้ — แตกต่างจาก 'ส่งออกข้อมูลสำรอง' ด้านล่าง ซึ่งสร้างไฟล์ที่เข้ารหัสสำหรับย้ายบัญชีของคุณไปยังอุปกรณ์ใหม่",
       "downloadDataButton": "ดาวน์โหลด",
       "checkUpdatesTitle": "ตรวจสอบการอัปเดต",
-      "checkUpdatesDesc": "Chatterbox ไม่มีอยู่บน Google Play ดังนั้นจึงไม่มีการอัปเดตแบบอัตโนมัติในเบื้องหลัง โปรดตรวจสอบ chatterbox.app เพื่อดูเวอร์ชันใหม่กว่า",
+      "checkUpdatesDesc": "Chatterbox ไม่มีอยู่บน Google Play ดังนั้นจึงไม่มีการอัปเดตแบบอัตโนมัติในเบื้องหลัง โปรดตรวจสอบ chatterbox.fans เพื่อดูเวอร์ชันใหม่กว่า",
       "checkUpdatesButton": "ตรวจสอบตอนนี้"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "คุณใช้เวอร์ชันล่าสุดแล้ว",
       "checkUpdatesUpToDateBody": "นี่คือเวอร์ชันล่าสุดของ Chatterbox",
       "checkUpdatesAvailableTitle": "มีการอัปเดต",
-      "checkUpdatesAvailableBody": "เวอร์ชัน {{version}} พร้อมใช้งานที่ chatterbox.app",
-      "checkUpdatesAvailableOpenButton": "เปิด chatterbox.app",
+      "checkUpdatesAvailableBody": "เวอร์ชัน {{version}} พร้อมใช้งานที่ chatterbox.fans",
+      "checkUpdatesAvailableOpenButton": "เปิด chatterbox.fans",
       "checkUpdatesFailedTitle": "ไม่สามารถตรวจสอบการอัปเดตได้",
       "checkUpdatesFailedBody": "โปรดตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
       "voiceRecordFailed": "เริ่มการบันทึกล้มเหลว",

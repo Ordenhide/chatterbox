@@ -288,7 +288,7 @@
       "downloadDataDesc": "Отримайте копію вашого профілю та розмов у вигляді звичайного текстового файлу, який можна зберегти або переглянути — це відрізняється від «Експорту резервної копії» нижче, який створює зашифрований файл для перенесення вашого облікового запису на новий пристрій.",
       "downloadDataButton": "Завантажити",
       "checkUpdatesTitle": "Перевірити оновлення",
-      "checkUpdatesDesc": "Chatterbox відсутній у Google Play, тому ніщо не оновлює його у фоновому режимі. Перевірте chatterbox.app на наявність новішої версії.",
+      "checkUpdatesDesc": "Chatterbox відсутній у Google Play, тому ніщо не оновлює його у фоновому режимі. Перевірте chatterbox.fans на наявність новішої версії.",
       "checkUpdatesButton": "Перевірити зараз"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "У вас найновіша версія",
       "checkUpdatesUpToDateBody": "Це найновіша версія Chatterbox.",
       "checkUpdatesAvailableTitle": "Доступне оновлення",
-      "checkUpdatesAvailableBody": "Версія {{version}} доступна на chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "Відкрити chatterbox.app",
+      "checkUpdatesAvailableBody": "Версія {{version}} доступна на chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "Відкрити chatterbox.fans",
       "checkUpdatesFailedTitle": "Не вдалося перевірити оновлення",
       "checkUpdatesFailedBody": "Перевірте з'єднання та спробуйте ще раз.",
       "voiceRecordFailed": "Не вдалося почати запис.",

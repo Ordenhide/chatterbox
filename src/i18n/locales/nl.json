@@ -288,7 +288,7 @@
       "downloadDataDesc": "Krijg een kopie van je profiel en gesprekken als een platte-tekstbestand dat je kunt bewaren of inspecteren — anders dan de exportback-up hieronder, die een versleuteld bestand maakt om je account naar een nieuw apparaat te verplaatsen.",
       "downloadDataButton": "Downloaden",
       "checkUpdatesTitle": "Controleren op updates",
-      "checkUpdatesDesc": "Chatterbox staat niet in de Google Play Store, dus niets werkt de app op de achtergrond bij. Kijk op chatterbox.app voor een nieuwere versie.",
+      "checkUpdatesDesc": "Chatterbox staat niet in de Google Play Store, dus niets werkt de app op de achtergrond bij. Kijk op chatterbox.fans voor een nieuwere versie.",
       "checkUpdatesButton": "Nu controleren"
     },
     "modals": {
@@ -320,8 +320,8 @@
       "checkUpdatesUpToDateTitle": "Je hebt de nieuwste versie",
       "checkUpdatesUpToDateBody": "Dit is de nieuwste versie van Chatterbox.",
       "checkUpdatesAvailableTitle": "Update beschikbaar",
-      "checkUpdatesAvailableBody": "Versie {{version}} is beschikbaar op chatterbox.app.",
-      "checkUpdatesAvailableOpenButton": "chatterbox.app openen",
+      "checkUpdatesAvailableBody": "Versie {{version}} is beschikbaar op chatterbox.fans.",
+      "checkUpdatesAvailableOpenButton": "chatterbox.fans openen",
       "checkUpdatesFailedTitle": "Kan niet controleren op updates",
       "checkUpdatesFailedBody": "Controleer je verbinding en probeer het opnieuw.",
       "voiceRecordFailed": "Opname starten mislukt.",
