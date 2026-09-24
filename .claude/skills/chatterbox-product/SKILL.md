@@ -5,30 +5,32 @@ description: Who Chatterbox is for, what the account model is, what was delibera
 
 # What this app is for
 
-**People who want a private messenger without a phone number, and without
-losing everything when they lose their phone.** Not "people who want a chat
+**People who care a great deal about privacy.** Not "people who want a chat
 app" — that market is Signal and WhatsApp, and their moat is the network, not
 the feature list. Every decision below follows from that one sentence.
 
-This replaced "people who care most about privacy" on 2026-09-24, after an
-honest comparison with the neighbours (as of that date):
+### Against the neighbours (checked 2026-09-24 — re-check before quoting)
 
 | | needs | server sees who talks to whom | forward secrecy | lose your phone | web |
 |---|---|---|---|---|---|
-| Signal | a phone number | mostly not (sealed sender) | yes | phone number | no |
+| Signal | a phone number; numberless sign-up in Android beta since 2026-09-16 ($2.99, Google Play) | mostly not (sealed sender) | yes | Secure Backups restore history from a recovery key | no |
 | SimpleX | nothing | no | yes | gone, unless you exported a backup | no |
 | Session | nothing | no (onion routing) | no — removed 2021, planned for V2 | recovery phrase | no |
-| Chatterbox | nothing | **yes** | yes | 24 words | yes |
+| Chatterbox | nothing | **yes** | yes | 24 words restore the account and conversation list | yes |
 
-On metadata this app loses to all three, and says so in public. What it offers
-is the combination nobody else has: no phone number, forward secrecy, an
-account that survives losing the phone, and a web client. Every one of those
-usability properties rests on the central server knowing who is in which
-conversation — the same fact that makes the metadata weak. That is the trade,
-stated openly; it is not a secret to manage.
+On metadata this app loses to all three, and says so in public. What it has
+left is usability — free, no Google Play, a web client, recovery from 24 words
+— and every one of those rests on the central server knowing who is in which
+conversation, the same fact that makes the metadata weak.
 
-This audience still does not evaluate a messenger by its feature table. They
-ask three things, in this order:
+**Which privacy-minded people it is for is open.** Privacy maximalists reject
+exactly that trade. "People who won't give Signal a phone number" was chosen
+and overtaken the same day, by Signal's numberless beta and its Secure Backups.
+So the launch post asks r/privacy to review the threat model rather than
+recommending the app, and the audience is to be decided from what comes back.
+
+That audience does not evaluate a messenger by its feature table. They ask
+three things, in this order:
 
 1. **What can the server see?**
 2. **Can I verify what you claim?**
@@ -163,9 +165,8 @@ What the server holds in plaintext:
 - every connection's IP, to Google, since this runs on Firebase
 
 That is the gap, and it is not a feature gap. Metadata is often worth more
-than contents. Signal answers it with sealed
-sender and private contact discovery; SimpleX answers it by having no user
-identifiers at all.
+than contents. Signal answers it with sealed sender and private contact
+discovery; SimpleX answers it by having no user identifiers at all.
 
 ### What was closed
 
@@ -197,15 +198,15 @@ function that touches `users/{uid}`, the rules are not the check.
 making either unreadable means restructuring the data model or leaving
 Firebase. Nothing here should be built in a way that makes that harder.
 
-But closing it must not quietly cost what this app is chosen for: recovery from
-the 24 words, the web client, reliable delivery. Those are why someone picks
-this over SimpleX. A change that trades one for the other is a product decision
-for the owner, not a refactor.
+But closing it must not quietly cost the usability the app has left: recovery
+from the 24 words, the web client, reliable delivery. They are the only things
+it has over SimpleX. A change that trades one for the other is a product
+decision for the owner, not a refactor.
 
 ## Practical consequences
 
 **A new feature has to survive this question:** would someone who chose this
-app for private messaging without a phone number be worse off without it? If the answer is "no, but it is
+app for its privacy be worse off without it? If the answer is "no, but it is
 nice", it is a no.
 
 **Prefer subtraction.** The app is closer to shippable for being smaller, and
