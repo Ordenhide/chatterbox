@@ -188,6 +188,22 @@ ${col.items.map(li => `            <li>${t(li)}</li>`).join('\n')}
     : '';
   // Which Android sentence is true depends on which routes exist: the store,
   // the file on this site, or neither of them yet.
+  //
+  // The intro paragraph further down is on the same footing and was not: it
+  // picked `intro` whenever APK_URL was set, and `intro`'s middle clause is a
+  // claim about PLAY_URL — "On Android, Google Play keeps it updated". With an
+  // APK published and no listing, which is the state this project has been in
+  // since the APK route existed, the page said Play keeps the app updated two
+  // sentences above `playPendingNote` saying the listing is not live. In all
+  // fifty-two languages, on the page whose whole argument is that it describes
+  // the app accurately.
+  //
+  // It now shares secondNote's condition, so `intro` is only used when both
+  // routes exist and every other combination gets `introWebOnly` ("The Android
+  // build is on its way to Google Play"), which is true of all of them. The one
+  // combination with no true sentence is a live listing and no APK; it would
+  // need a fourth variant in every language, and nothing reaches it, because
+  // APK_URL was set long before the listing was filed.
   const androidNote = PLAY_URL
     ? copy.download.playNote
     : APK_URL
@@ -300,7 +316,7 @@ ${ledger(copy.limits.visible, 'ledger-no')}
     <section class="section" id="download">
       <div class="download-card">
         <h2>${t(copy.download.title)}</h2>
-        <p>${t(APK_URL ? copy.download.intro : copy.download.introWebOnly)}</p>
+        <p>${t(PLAY_URL && APK_URL ? copy.download.intro : copy.download.introWebOnly)}</p>
         <div class="download-actions">
 ${playButton}
           <a class="btn btn-secondary" href="/app/">
