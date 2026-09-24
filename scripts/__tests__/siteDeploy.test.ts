@@ -409,3 +409,33 @@ describe('the site headers survived the move to Cloudflare', () => {
     expect(page).not.toMatch(/(href|src)="(?!\/|#|https?:)[^"]+"/);
   });
 });
+
+describe('the worker the first deploy left at the root', () => {
+  // That deploy served the web client at `/` and registered /sw.js with scope
+  // `/`. Its successor serves the landing page there, so a browser's periodic
+  // recheck of /sw.js would find a 404 — which fails the update and leaves
+  // the old worker running forever. website/sw.js is what it finds instead.
+  const worker = read('website', 'sw.js');
+  const code = worker.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+
+  it('unregisters itself once it has cleaned up', () => {
+    expect(code).toMatch(/self\.registration\.unregister\(\)/);
+    expect(code).toMatch(/skipWaiting\(\)/);
+  });
+
+  it('intercepts nothing while it is alive', () => {
+    // A fetch handler here would put a worker between every visitor and the
+    // landing page, which is the thing this file exists to remove.
+    expect(code).not.toMatch(/addEventListener\(\s*['"]fetch['"]/);
+    expect(code).not.toMatch(/respondWith/);
+  });
+
+  it('leaves the web client\'s cache entries alone', () => {
+    // Same cache name as web/public/sw.js, which is deployed at /app/sw.js.
+    // Deleting the whole cache would throw away the client's current shell.
+    expect(read('web', 'public', 'sw.js')).toContain("const CACHE = 'chatterbox-v1'");
+    expect(code).toContain("caches.open('chatterbox-v1')");
+    expect(code).toMatch(/startsWith\('\/app\/'\)/);
+    expect(code).not.toMatch(/caches\.delete\(/);
+  });
+});
