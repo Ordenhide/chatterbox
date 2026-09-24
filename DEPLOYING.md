@@ -164,23 +164,33 @@ What held: `/app/` serves the shell, `/index.zh-Hans` and `/privacy.ja`
 resolve without `.html` (and `.html` 308s to them), and `_headers` and
 `_redirects` were both picked up.
 
-### Still to check
+### Verified on the corrected preview
 
-- **The headers on a deployment without `_redirects`.** The corrected preview
-  could not be redeployed from this session; run it and read the headers:
+Redeployed (`65655867.chatterbox-eyz.pages.dev`, 2026-09-24) after the three
+fixes, with the web client rebuilt:
 
-  ```sh
-  cd website && npx wrangler pages deploy . --project-name=chatterbox --branch=cf-migration-check
-  curl -sI https://cf-migration-check.chatterbox-eyz.pages.dev/app/ | grep -i permissions-policy
-  ```
+- `/`, `/index.zh-Hans`, `/privacy.ja` serve their pages; `/app/` serves the
+  shell; the 2.1 MB bundle comes back byte-identical to the build.
+- `/no-such-page`, `/a/b/c`, `/downloads/version.json` and `/app/chats/abc`
+  all return the 404 page with a 404.
+- `/app/` carries `Permissions-Policy: geolocation=(), microphone=(self),
+  camera=(self), payment=()` with each directive exactly once — the
+  comma-joining trap did not fire — plus the Report-Only CSP and no enforced
+  one. The marketing pages carry the enforced CSP and deny both. The bundle
+  gets `Cache-Control: public, max-age=31536000, immutable`, once.
 
-  `/app/` must show `microphone=(self), camera=(self)` exactly once. Cloudflare
-  joins a repeated header with a comma and Permissions-Policy takes the first
-  occurrence of a directive, so a second, catch-all `microphone=()` would deny
-  calls and voice messages with nothing in the app able to say why.
-- **`dl.chatterbox.fans/chatterbox-latest.apk` downloads, with
-  `Content-Type: application/vnd.android.package-archive`.** Needs R2 enabled,
-  the bucket, and its custom domain.
+`dl.chatterbox.fans` answers with R2's own "Object not found … Is this your
+bucket?", so the custom domain is bound to the bucket.
+
+### Still to check, on the first tag
+
+- **The R2 upload from CI.** The token's Pages permission is proven — the
+  preview was first deployed with it — but its R2 permission has never been
+  used. If the step fails, the APK is still kept as a build artifact
+  (`if: always()`); fix the token and re-run.
+- **`dl.chatterbox.fans/chatterbox-latest.apk` downloads with
+  `Content-Type: application/vnd.android.package-archive`**, and its SHA-256
+  matches the one in the Release notes.
 
 ## How authentication actually works
 
