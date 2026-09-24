@@ -5,12 +5,30 @@ description: Who Chatterbox is for, what the account model is, what was delibera
 
 # What this app is for
 
-**People who care a great deal about privacy.** Not "people who want a chat
+**People who want a private messenger without a phone number, and without
+losing everything when they lose their phone.** Not "people who want a chat
 app" — that market is Signal and WhatsApp, and their moat is the network, not
 the feature list. Every decision below follows from that one sentence.
 
-That audience does not evaluate a messenger by its feature table. They ask
-three things, in this order:
+This replaced "people who care most about privacy" on 2026-09-24, after an
+honest comparison with the neighbours (as of that date):
+
+| | needs | server sees who talks to whom | forward secrecy | lose your phone | web |
+|---|---|---|---|---|---|
+| Signal | a phone number | mostly not (sealed sender) | yes | phone number | no |
+| SimpleX | nothing | no | yes | gone, unless you exported a backup | no |
+| Session | nothing | no (onion routing) | no — removed 2021, planned for V2 | recovery phrase | no |
+| Chatterbox | nothing | **yes** | yes | 24 words | yes |
+
+On metadata this app loses to all three, and says so in public. What it offers
+is the combination nobody else has: no phone number, forward secrecy, an
+account that survives losing the phone, and a web client. Every one of those
+usability properties rests on the central server knowing who is in which
+conversation — the same fact that makes the metadata weak. That is the trade,
+stated openly; it is not a secret to manage.
+
+This audience still does not evaluate a messenger by its feature table. They
+ask three things, in this order:
 
 1. **What can the server see?**
 2. **Can I verify what you claim?**
@@ -144,8 +162,8 @@ What the server holds in plaintext:
   an untouched account writes neither
 - every connection's IP, to Google, since this runs on Firebase
 
-For this audience that is the decisive gap, and it is not a feature gap.
-Metadata is often worth more than contents. Signal answers it with sealed
+That is the gap, and it is not a feature gap. Metadata is often worth more
+than contents. Signal answers it with sealed
 sender and private contact discovery; SimpleX answers it by having no user
 identifiers at all.
 
@@ -179,10 +197,15 @@ function that touches `users/{uid}`, the rules are not the check.
 making either unreadable means restructuring the data model or leaving
 Firebase. Nothing here should be built in a way that makes that harder.
 
+But closing it must not quietly cost what this app is chosen for: recovery from
+the 24 words, the web client, reliable delivery. Those are why someone picks
+this over SimpleX. A change that trades one for the other is a product decision
+for the owner, not a refactor.
+
 ## Practical consequences
 
 **A new feature has to survive this question:** would someone who chose this
-app for its privacy be worse off without it? If the answer is "no, but it is
+app for private messaging without a phone number be worse off without it? If the answer is "no, but it is
 nice", it is a no.
 
 **Prefer subtraction.** The app is closer to shippable for being smaller, and
