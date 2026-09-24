@@ -11,5 +11,5 @@
  * `versionCode` back out of `build.gradle` and fails if it no longer matches
  * `ANDROID_VERSION_CODE` below.
  */
-export const ANDROID_VERSION_CODE = 3;
-export const APP_VERSION_NAME = '1.2';
+export const ANDROID_VERSION_CODE = 4;
+export const APP_VERSION_NAME = '1.2.1';

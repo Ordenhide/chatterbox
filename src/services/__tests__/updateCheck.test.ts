@@ -4,6 +4,7 @@
  * thing this feature exists to tell someone truthfully.
  */
 import {checkForUpdate} from '../updateCheck';
+import {ANDROID_VERSION_CODE} from '../../config/appVersion';
 
 type Reply = {status: number; body?: unknown} | 'network-error';
 
@@ -28,7 +29,7 @@ afterEach(() => {
 
 describe('checkForUpdate', () => {
   it('reports up-to-date when the manifest version is not ahead', async () => {
-    reply = {status: 200, body: {versionCode: 3, versionName: '1.2'}};
+    reply = {status: 200, body: {versionCode: ANDROID_VERSION_CODE, versionName: 'current'}};
     expect(await checkForUpdate()).toEqual({status: 'up-to-date'});
   });
 
@@ -38,8 +39,8 @@ describe('checkForUpdate', () => {
   });
 
   it('reports the new version name when the manifest is ahead', async () => {
-    reply = {status: 200, body: {versionCode: 4, versionName: '1.3'}};
-    expect(await checkForUpdate()).toEqual({status: 'update-available', versionName: '1.3'});
+    reply = {status: 200, body: {versionCode: ANDROID_VERSION_CODE + 1, versionName: 'next'}};
+    expect(await checkForUpdate()).toEqual({status: 'update-available', versionName: 'next'});
   });
 
   it('is an error, not up-to-date, on a network failure', async () => {

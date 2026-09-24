@@ -67,8 +67,8 @@ android {
         applicationId "com.chatterbox.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.2.1"
     }
     // There is deliberately no debug-keystore fallback here any more. The
     // release variant gets a signing config only when real credentials exist;

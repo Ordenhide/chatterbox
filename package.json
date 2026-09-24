@@ -1,6 +1,6 @@
 {
   "name": "chatterbox",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An end-to-end encrypted messenger with no phone number, no email address and no user directory",
   "license": "AGPL-3.0-only",
   "main": "index.js",
