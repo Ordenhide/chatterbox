@@ -23,6 +23,7 @@ import {
   markRecoveryPhraseRevealed,
   republishKeyIfAccountHasNone,
 } from '../services/e2eeKeys';
+import {clearRecoveryPhrase} from '../services/keyBackup';
 import {credentialsFromSeed, seedFromPhrase} from '../services/anonymousIdentity';
 import {ensureRatchetKeysPublished} from '../services/ratchetKeys';
 import {clearBodies} from '../services/messageBodyStore';
@@ -365,6 +366,12 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       // phrase cannot match — permanently, and silently. No ordering fixes
       // that, so the minting is gone rather than sequenced.
       republishKeyIfAccountHasNone(user.uid);
+
+      // Versions up to 1.2.0 copied the recovery phrase into Block Store or
+      // iCloud Keychain on every sign-in. An account that stays signed in
+      // never signs in again, so this runs on every launch rather than at
+      // sign-in — see keyBackup.ts.
+      clearRecoveryPhrase(user.uid);
 
       /**
        * Publishes this device's ratchet bundle, which is what turns forward

@@ -77,21 +77,10 @@ jest.mock('../errorLog', () => ({
   reportHandled: () => undefined,
 }));
 
-// The platform key backup (iCloud Keychain / Block Store) reaches native code
-// this suite has no business booting. Mocked as a store that holds nothing, so
-// these tests keep describing local key storage — and so the enrolment
-// assertions below are about what enrolment writes, not about whether a
-// backup happened to be available.
-const mockBackupStore = new Map<string, string>();
+// keyBackup only deletes what versions up to 1.2.0 left in the platform
+// backup; it reaches native code this suite has no business booting.
 jest.mock('../keyBackup', () => ({
-  saveRecoveryPhrase: jest.fn(async (uid: string, phrase: string) => {
-    mockBackupStore.set(uid, phrase);
-    return true;
-  }),
-  loadRecoveryPhrase: jest.fn(async (uid: string) => mockBackupStore.get(uid) ?? null),
-  clearRecoveryPhrase: jest.fn(async (uid: string) => {
-    mockBackupStore.delete(uid);
-  }),
+  clearRecoveryPhrase: jest.fn(async () => undefined),
 }));
 
 import {bytesToBase64, bytesToHex} from '../crypto';
@@ -110,7 +99,6 @@ import {
   hasRevealedRecoveryPhrase,
   markRecoveryPhraseRevealed,
   republishKeyIfAccountHasNone,
-  restoreDeviceKeypairFromBackup,
   restoreDeviceKeypairFromPhrase,
 } from '../e2eeKeys';
 
@@ -123,7 +111,6 @@ function publishPeerKey(publicKey: Uint8Array) {
 }
 
 beforeEach(() => {
-  mockBackupStore.clear();
   mockFirestoreDocs.clear();
   mockMmkvStore.clear();
   mockOutage.read = false;
@@ -678,55 +665,6 @@ describe('getDeviceKeypairIfEnrolled', () => {
   });
 });
 
-describe('restoreDeviceKeypairFromBackup', () => {
-  const {saveRecoveryPhrase} = require('../keyBackup');
-
-  it('is false when the platform is holding nothing for this account', async () => {
-    expect(await restoreDeviceKeypairFromBackup(ME)).toBe(false);
-  });
-
-  it('is false without a user, rather than asking the platform for ""', async () => {
-    expect(await restoreDeviceKeypairFromBackup('')).toBe(false);
-  });
-
-  it('restores the key when the backup matches what is published', async () => {
-    const kp = generateKeypair();
-    mockFirestoreDocs.set(publicKeyPathFor(ME), {publicKey: bytesToBase64(kp.publicKey)});
-    await saveRecoveryPhrase(ME, secretKeyToMnemonic(kp.secretKey));
-
-    expect(await restoreDeviceKeypairFromBackup(ME)).toBe(true);
-    const enrolled = await getDeviceKeypairIfEnrolled(ME);
-    expect(enrolled && bytesToHex(enrolled.secretKey)).toBe(bytesToHex(kp.secretKey));
-  });
-
-  /**
-   * The property that keeps automatic restore from doing damage.
-   *
-   * A backed-up phrase that does not match the published key means another
-   * device has since replaced this identity. Republishing the old one would
-   * strand everything encrypted to the new one — silently, at launch, with
-   * nobody having asked. So this path must *not* pass allowKeyMismatch, and
-   * must hand the case back to the caller, which asks a human.
-   */
-  it('refuses a backup the published key has moved on from', async () => {
-    const older = generateKeypair();
-    const newer = generateKeypair();
-    mockFirestoreDocs.set(publicKeyPathFor(ME), {publicKey: bytesToBase64(newer.publicKey)});
-    await saveRecoveryPhrase(ME, secretKeyToMnemonic(older.secretKey));
-
-    expect(await restoreDeviceKeypairFromBackup(ME)).toBe(false);
-    // And it left the newer key in place rather than republishing over it.
-    expect(mockFirestoreDocs.get(publicKeyPathFor(ME))?.publicKey).toBe(
-      bytesToBase64(newer.publicKey),
-    );
-  });
-
-  it('is false for a backup that is not a valid phrase at all', async () => {
-    await saveRecoveryPhrase(ME, 'not a real recovery phrase');
-    expect(await restoreDeviceKeypairFromBackup(ME)).toBe(false);
-  });
-});
-
 describe('restoreDeviceKeypairFromPhrase with allowKeyMismatch', () => {
   it('still rejects a superseded phrase by default', async () => {
     const older = generateKeypair();
@@ -862,11 +800,6 @@ describe('adoptSeedAsDeviceKey', () => {
     const before = getKeyGeneration();
     await adoptSeedAsDeviceKey(ME, SEED);
     expect(getKeyGeneration()).toBeGreaterThan(before);
-  });
-
-  it('backs the phrase up to the platform store', async () => {
-    await adoptSeedAsDeviceKey(ME, SEED);
-    expect(mockBackupStore.get(ME)).toBe(secretKeyToMnemonic(SEED));
   });
 
   it('throws when the public key cannot be published', async () => {

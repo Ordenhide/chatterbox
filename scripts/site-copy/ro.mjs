@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Cheia ta, fraza ta de recuperare',
-        body: `Cheia privată care decriptează mesajele tale este chiar fraza ta de recuperare, iar noi nu o primim niciodată. Pe lângă fraza pe care o notezi, aplicația salvează o copie în backupul propriu al telefonului — Google Block Store sau iCloud Keychain — ca un telefon nou să o poată restaura. Ajunge în cloud doar criptată end-to-end; detaliile sunt în politica de confidențialitate. Nu o putem recupera pentru tine.`,
+        body: `Cheia privată care decriptează mesajele tale nu părăsește niciodată dispozitivul tău. Poți să o notezi ca frază de recuperare; noi nu o deținem și nu o putem recupera pentru tine.`,
       },
       {
         title: '53 de limbi',

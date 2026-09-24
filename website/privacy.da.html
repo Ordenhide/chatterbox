@@ -124,8 +124,8 @@
       <h2>5. Hvor det gemmes</h2>
       <p>På Google Firebase — Firestore, Storage og Authentication — under sikkerhedsregler, der afgør, hvem der må læse og skrive hvert dokument.</p>
       <p>På din enhed er cachede beskeder, indstillinger og din app-lås-PIN krypteret med en per-enhed-nøgle, der opbevares i platformens nøglelager (iOS Keychain, Android Keystore) frem for i almindelig applagring.</p>
-      <p>Den private nøgle, der dekrypterer dine beskeder, er din gendannelsessætning. Vi modtager den aldrig og kan ikke gendanne den for dig. Den forlader din enhed på to måder: som den sætning, du skriver ned, og som en kopi, appen gemmer i telefonens egen sikkerhedskopi, hver gang du opretter dig eller logger ind, så en ny telefon kan gendanne den uden indtastning — Google Block Store på Android, iCloud Keychain på iOS. Der er ingen indstilling, der slår det fra.</p>
-      <p>På Android synkroniseres kopien kun til din Google-konto, hvis telefonen har skærmlås; ifølge Google er den så end-to-end-krypteret, så Google ikke kan læse den. Uden skærmlås bliver den på telefonen og bruges kun til en direkte overførsel til en ny telefon. iCloud Keychain er end-to-end-krypteret. Den, der kan åbne den sikkerhedskopi — altså har din Google- eller Apple-konto sammen med din skærmlås eller adgangskode — kan gendanne din konto. Mister du både sætningen og den sikkerhedskopi, er kontoen væk, og beskeder sendt til den kan ikke læses igen — af nogen, os inkluderet.</p>
+      <p>Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed, undtagen som den gendannelsessætning, du vælger at skrive ned. Vi opbevarer den ikke og kan ikke gendanne den for dig. Mister du den, kan beskeder sendt til den enhed ikke læses igen — af nogen, os inkluderet.</p>
+      <p>Version 1.2.0 og tidligere gemte også en kopi af sætningen i Google Block Store, Androids egen sikkerhedskopi, hver gang du loggede ind. Hvis telefonen havde skærmlås, blev kopien synkroniseret til din Google-konto, end-to-end-krypteret. Fra version 1.2.1 gør appen det ikke længere, og den sletter kopien, hver gang den starter.</p>
     </section>
 
     <section>

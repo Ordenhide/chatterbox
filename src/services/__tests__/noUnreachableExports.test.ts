@@ -47,7 +47,6 @@ const ALLOWED: Record<string, string> = {
   deleteSession: 'ratchetSessionStore; sessions are cleared wholesale on sign-out, not one at a time.',
   forgetGroupState: 'Group sender-key state, cleared with the rest on sign-out.',
   getStoredSessionId: 'session.ts reader; the live path holds the id it claimed.',
-  backupAvailability: 'keyBackup capability probe, kept for the restore screen it will need.',
   checkRecipient: 'recipient.ts probe; the send path uses assertRecipientReachable.',
   discardMaterializedAudio: 'inlineAudio cleanup, exercised by its tests.',
   cacheImage: 'imageCache writer; prefetchMessageImages is the entry the app uses.',

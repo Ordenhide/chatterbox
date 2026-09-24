@@ -102,7 +102,7 @@ export default {
       },
       {
         title: `Anahtarın senin, kurtarma ifaden senin`,
-        body: `Mesajlarını çözen özel anahtar kurtarma ifadenin ta kendisidir ve onu hiçbir zaman almayız. Yazdığın ifadenin yanı sıra uygulama, yeni bir telefonun onu geri yükleyebilmesi için telefonunun kendi yedeğine bir kopya kaydeder — Google Block Store ya da iCloud Keychain. Buluta yalnızca uçtan uca şifreli olarak ulaşır; ayrıntılar gizlilik politikasında. Senin için geri getiremeyiz.`,
+        body: `Mesajlarını çözen özel anahtar cihazından hiç çıkmaz. Onu bir kurtarma ifadesi olarak yazabilirsin; bizde durmaz ve senin için geri getiremeyiz.`,
       },
       {
         title: `53 dil`,

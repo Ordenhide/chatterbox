@@ -124,8 +124,8 @@
       <h2>5. Where it is stored</h2>
       <p>On Google Firebase — Firestore, Storage and Authentication — under security rules that decide who may read and write each document.</p>
       <p>On your device, cached messages, settings and your app-lock PIN are encrypted with a per-device key held in the platform keystore (iOS Keychain, Android Keystore) rather than in ordinary app storage.</p>
-      <p>The private key that decrypts your messages is your recovery phrase. We never receive it and cannot recover it for you. It leaves your device in two ways: as the phrase you write down, and as a copy the app saves to your phone's own backup each time you sign up or sign in, so that a new phone can restore it without typing — Google Block Store on Android, iCloud Keychain on iOS. There is no setting that turns this off.</p>
-      <p>On Android the copy is synced to your Google account only if your phone has a screen lock; Google states that it is then end-to-end encrypted, so Google cannot read it. Without a screen lock it stays on the phone and is used only for a direct transfer to a new phone. iCloud Keychain is end-to-end encrypted. Whoever can open that backup — your Google or Apple account together with your screen lock or passcode — can restore your account. If you lose both the phrase and that backup, the account is gone, and the messages sent to it cannot be read again — by anyone, including us.</p>
+      <p>The private key that decrypts your messages never leaves your device, except as the recovery phrase you choose to write down. We do not hold it and cannot recover it for you. Lose it, and the messages sent to that device cannot be read again — by anyone, including us.</p>
+      <p>Versions 1.2.0 and earlier also saved a copy of the phrase to Google Block Store, Android's own backup, each time you signed in. If your phone had a screen lock, that copy was synced to your Google account, end-to-end encrypted. From version 1.2.1 the app no longer does this, and deletes that copy each time it starts.</p>
     </section>
 
     <section>

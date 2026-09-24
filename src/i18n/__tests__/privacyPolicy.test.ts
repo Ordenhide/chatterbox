@@ -402,17 +402,17 @@ describe('section 4 names what was removed, in every language', () => {
 });
 
 /**
- * keyBackup.ts copies the recovery phrase — the whole account — into the
- * platform backup on every sign-in, with no setting to stop it. Section 5 once
- * said the key never left the device; this keeps the disclosure from being
- * dropped by a translation or a rewrite.
+ * Versions up to 1.2.0 copied the recovery phrase — the whole account — into
+ * Google Block Store on every sign-in, while section 5 said the key never left
+ * the device. The copying is gone (platformBackupIsWriteFree.test.ts); users
+ * who ran those versions still need to be told it happened.
  */
-describe('section 5 discloses the platform backup of the phrase, in every language', () => {
-  it.each(codes)('%s names both backup services', code => {
+describe('section 5 discloses what older versions put in the platform backup, in every language', () => {
+  it.each(codes)('%s names Google Block Store', code => {
     const five = PRIVACY_POLICY[code].find(s => s.title.startsWith('5.'));
     expect(five).toBeDefined();
     expect(five!.body).toContain('Google Block Store');
-    expect(five!.body).toContain('iCloud Keychain');
+    expect(five!.body).toContain('1.2.1');
   });
 });
 

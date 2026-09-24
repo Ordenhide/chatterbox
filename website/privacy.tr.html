@@ -124,8 +124,8 @@
       <h2>5. Nerede saklanıyor</h2>
       <p>Google Firebase'de — Firestore, Storage ve Authentication — her belgeyi kimin okuyup yazabileceğine karar veren güvenlik kurallarıyla.</p>
       <p>Cihazında, önbellekteki mesajlar, ayarlar ve uygulama kilidi PIN'in, sıradan uygulama deposunda değil, platformun anahtar deposunda (iOS Keychain, Android Keystore) tutulan cihaza özel bir anahtarla şifrelenir.</p>
-      <p>Mesajlarını çözen özel anahtar, kurtarma ifadenin ta kendisidir. Onu hiçbir zaman almayız ve senin için geri getiremeyiz. Cihazından iki yolla çıkar: yazdığın ifade olarak ve kayıt olduğun ya da oturum açtığın her seferde uygulamanın telefonunun kendi yedeğine kaydettiği bir kopya olarak; böylece yeni bir telefon onu yazmana gerek kalmadan geri yükleyebilir — Android'de Google Block Store, iOS'ta iCloud Keychain. Bunu kapatan bir ayar yoktur.</p>
-      <p>Android'de kopya, Google hesabınla yalnızca telefonunda ekran kilidi varsa eşitlenir; Google'a göre bu durumda uçtan uca şifrelidir, yani Google onu okuyamaz. Ekran kilidi yoksa telefonda kalır ve yalnızca yeni bir telefona doğrudan aktarım için kullanılır. iCloud Keychain uçtan uca şifrelidir. Bu yedeği açabilen herkes (yani Google ya da Apple hesabına ve ekran kilidine ya da parolana sahip olan) hesabını geri yükleyebilir. Hem ifadeyi hem de bu yedeği kaybedersen hesap gider ve ona gönderilen mesajlar bir daha okunamaz — biz dâhil hiç kimse tarafından.</p>
+      <p>Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazmayı seçtiğin kurtarma ifadesidir. O anahtar bizde değildir ve senin için geri getiremeyiz. Kaybedersen, o cihaza gönderilen mesajlar bir daha okunamaz — biz dâhil hiç kimse tarafından.</p>
+      <p>1.2.0 ve önceki sürümler, her oturum açtığında ifadenin bir kopyasını Android'in kendi yedeği olan Google Block Store'a da kaydediyordu. Telefonunda ekran kilidi varsa bu kopya, uçtan uca şifreli olarak Google hesabınla eşitleniyordu. 1.2.1 sürümünden itibaren uygulama bunu artık yapmaz ve her açılışta bu kopyayı siler.</p>
     </section>
 
     <section>

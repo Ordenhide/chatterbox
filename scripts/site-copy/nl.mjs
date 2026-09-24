@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Jouw sleutel, jouw herstelzin',
-        body: `De privésleutel die je berichten ontsleutelt is je herstelzin zelf, en wij ontvangen hem nooit. Naast de zin die je opschrijft, bewaart de app een kopie in de eigen back-up van je telefoon — Google Block Store of iCloud Keychain — zodat een nieuwe telefoon hem kan herstellen. Hij komt alleen end-to-end versleuteld in de cloud; de details staan in het privacybeleid. Wij kunnen hem niet voor je herstellen.`,
+        body: `De privésleutel die je berichten ontsleutelt verlaat je apparaat nooit. Je kunt hem opschrijven als herstelzin; wij bewaren hem niet en kunnen hem niet voor je herstellen.`,
       },
       {
         title: '53 talen',

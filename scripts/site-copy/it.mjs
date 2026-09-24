@@ -102,7 +102,7 @@ export default {
       },
       {
         title: `La tua chiave, la tua frase di recupero`,
-        body: `La chiave privata che decifra i tuoi messaggi è la tua frase di recupero, e non la riceviamo mai. Oltre alla frase che annoti, l'app ne salva una copia nel backup del tuo telefono — Google Block Store o iCloud Keychain — così un nuovo telefono può ripristinarla. Arriva nel cloud solo cifrata end-to-end; i dettagli sono nell'informativa sulla privacy. Non possiamo recuperarla per te.`,
+        body: `La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo. Puoi annotarla come frase di recupero; noi non la conserviamo e non possiamo recuperarla per te.`,
       },
       {
         title: `53 lingue`,

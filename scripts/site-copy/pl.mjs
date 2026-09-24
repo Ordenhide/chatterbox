@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Twój klucz, Twoja fraza odzyskiwania',
-        body: `Klucz prywatny, który odszyfrowuje Twoje wiadomości, to Twoja fraza odzyskiwania, i nigdy jej nie otrzymujemy. Oprócz frazy, którą zapisujesz, aplikacja zapisuje kopię w kopii zapasowej samego telefonu — Google Block Store lub iCloud Keychain — aby nowy telefon mógł ją przywrócić. Do chmury trafia wyłącznie zaszyfrowana end-to-end; szczegóły są w polityce prywatności. Nie możemy jej dla Ciebie odzyskać.`,
+        body: `Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojego urządzenia. Możesz go zapisać jako frazę odzyskiwania; my go nie przechowujemy i nie możemy go dla Ciebie odzyskać.`,
       },
       {
         title: '53 języki',

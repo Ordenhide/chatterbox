@@ -34,8 +34,9 @@ import {reportError} from './errorLog';
 const SERVICE_PREFIX = 'com.chatterbox.e2ee.secretKey';
 
 /**
- * keyBackup.ts's namespace: the recovery phrase, deliberately synced to iCloud
- * Keychain. Nothing in this file may write or delete under it — see
+ * keyBackup.ts's namespace, where versions up to 1.2.0 synced the recovery
+ * phrase to iCloud Keychain; keyBackup now only deletes it. Nothing in this
+ * file may write or delete under it — see
  * clearSyncedStrays, whose whole job is deleting *synced* entries.
  */
 export const RECOVERY_SERVICE_PREFIX = 'com.chatterbox.e2ee.recovery';

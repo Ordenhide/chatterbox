@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Din nøkkel, din gjenopprettingsfrase',
-        body: `Den private nøkkelen som dekrypterer meldingene dine, er gjenopprettingsfrasen din, og vi mottar den aldri. I tillegg til frasen du skriver ned, lagrer appen en kopi i telefonens egen sikkerhetskopi — Google Block Store eller iCloud Keychain — slik at en ny telefon kan gjenopprette den. Den når skyen bare ende-til-ende-kryptert; detaljene står i personvernerklæringen. Vi kan ikke gjenopprette den for deg.`,
+        body: `Den private nøkkelen som dekrypterer meldingene dine forlater aldri enheten din. Du kan skrive den ned som en gjenopprettingsfrase; vi holder den ikke og kan ikke gjenopprette den for deg.`,
       },
       {
         title: '53 språk',

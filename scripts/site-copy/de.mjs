@@ -103,7 +103,7 @@ export default {
       },
       {
         title: 'Dein Schlüssel, deine Wiederherstellungsphrase',
-        body: `Der private Schlüssel, der deine Nachrichten entschlüsselt, ist deine Wiederherstellungsphrase, und wir erhalten ihn nie. Neben der Phrase, die du aufschreibst, speichert die App eine Kopie im eigenen Backup deines Telefons — Google Block Store oder iCloud Keychain —, damit ein neues Telefon ihn wiederherstellen kann. In die Cloud gelangt er nur Ende-zu-Ende-verschlüsselt; Einzelheiten stehen in der Datenschutzerklärung. Wir können ihn dir nicht zurückholen.`,
+        body: `Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie. Du kannst ihn als Wiederherstellungsphrase aufschreiben; wir halten ihn nicht und können ihn dir nicht zurückholen.`,
       },
       {
         title: '53 Sprachen',

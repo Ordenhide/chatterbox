@@ -37,7 +37,7 @@ import {reportError} from '../../services/errorLog';
 import {avatarNeutral, getInitials} from '../../utils/avatar';
 import {isTypingIndicatorEnabled} from '../../services/privacyGuard';
 import {isChatHidden, partitionChats, unreadTotal} from '../../services/hiddenChats';
-import {enrollmentReadiness, hasRevealedRecoveryPhrase, restoreDeviceKeypairFromBackup, type EnrollmentReadiness} from '../../services/e2eeKeys';
+import {enrollmentReadiness, hasRevealedRecoveryPhrase, type EnrollmentReadiness} from '../../services/e2eeKeys';
 import RecoveryPhraseRevealModal from '../../components/RecoveryPhraseRevealModal';
 
 type ChatListItemProps = {
@@ -206,18 +206,6 @@ export default function ChatListScreen() {
         setKeyState(readiness);
         if (readiness === 'unknown') return;
         if (readiness === 'needs-restore') {
-          // The platform may already be holding this account's key — iCloud
-          // Keychain, or Block Store on Android — in which case the new device
-          // can enrol itself and the user never sees this prompt. It answers
-          // false for every case that is not a verified match, including
-          // having no backup at all, so the prompt below is still the answer
-          // to everything it cannot do.
-          if (await restoreDeviceKeypairFromBackup(user.uid)) {
-            if (!active) return;
-            setKeyState('safe');
-            return;
-          }
-          if (!active) return;
           Alert.alert(t('keys.restoreTitle'), t('keys.restoreBody'), [
             {text: t('keys.notNow'), style: 'cancel'},
             {text: t('keys.restore'), onPress: () => navigation.navigate('RecoveryPhrase')},

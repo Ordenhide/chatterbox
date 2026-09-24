@@ -102,7 +102,7 @@ export default {
       },
       {
         title: `Votre clé, votre phrase de récupération`,
-        body: `La clé privée qui déchiffre vos messages est votre phrase de récupération, et nous ne la recevons jamais. En plus de la phrase que vous notez, l'app en enregistre une copie dans la sauvegarde propre à votre téléphone — Google Block Store ou iCloud Keychain — pour qu'un nouveau téléphone puisse la restaurer. Elle n'atteint le cloud que chiffrée de bout en bout ; la politique de confidentialité donne les détails. Nous ne pouvons pas la retrouver pour vous.`,
+        body: `La clé privée qui déchiffre vos messages ne quitte jamais votre appareil. Vous pouvez la noter sous forme de phrase de récupération ; nous ne la détenons pas et ne pouvons pas la retrouver pour vous.`,
       },
       {
         title: `53 langues`,
