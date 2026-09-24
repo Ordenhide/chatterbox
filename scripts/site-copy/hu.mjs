@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'A te kulcsod, a te helyreállítási mondatod',
-        body: `A magánkulcs, amely visszafejti az üzeneteidet, soha nem hagyja el a készülékedet. Leírhatod helyreállítási mondatként; mi nem tároljuk, és nem tudjuk helyreállítani neked.`,
+        body: `A magánkulcs, amely visszafejti az üzeneteidet, maga a helyreállítási mondatod, és mi soha nem kapjuk meg. A leírt mondaton kívül az alkalmazás egy másolatot ment a telefon saját biztonsági mentésébe — Google Block Store vagy iCloud Keychain —, hogy egy új telefon visszaállíthassa. A felhőbe csak végpontok között titkosítva jut el; a részletek az adatvédelmi szabályzatban vannak. Nem tudjuk helyreállítani neked.`,
       },
       {
         title: '53 nyelv',

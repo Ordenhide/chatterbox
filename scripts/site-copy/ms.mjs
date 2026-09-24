@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Kunci anda, frasa pemulihan anda',
-        body: `Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti anda. Anda boleh menulisnya sebagai frasa pemulihan; kami tidak menyimpannya dan tidak boleh memulihkannya untuk anda.`,
+        body: `Kunci peribadi yang menyahsulit mesej anda ialah frasa pemulihan anda sendiri, dan kami tidak pernah menerimanya. Selain frasa yang anda tulis, aplikasi menyimpan salinannya dalam sandaran telefon anda sendiri — Google Block Store atau iCloud Keychain — supaya telefon baharu boleh memulihkannya. Ia hanya sampai ke awan dalam keadaan disulitkan hujung ke hujung; butirannya ada dalam dasar privasi. Kami tidak boleh memulihkannya untuk anda.`,
       },
       {
         title: '53 bahasa',

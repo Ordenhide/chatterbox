@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Sizning kalitingiz, sizning tiklash iborangiz',
-        body: `Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit qurilmangizdan hech qachon chiqmaydi. Uni tiklash iborasi sifatida yozib olishingiz mumkin; biz uni saqlamaymiz va siz uchun tiklay olmaymiz.`,
+        body: `Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit — sizning tiklash iborangizning o'zi, va biz uni hech qachon olmaymiz. Siz yozib olgan iboradan tashqari, ilova yangi telefon uni tiklay olishi uchun telefoningizning o'z zaxira nusxasiga nusxa saqlaydi — Google Block Store yoki iCloud Keychain. U bulutga faqat uchdan-uchgacha shifrlangan holda yetib boradi; tafsilotlar maxfiylik siyosatida. Biz uni siz uchun tiklay olmaymiz.`,
       },
       {
         title: '53 til',

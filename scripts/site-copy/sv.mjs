@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Din nyckel, din återställningsfras',
-        body: `Den privata nyckeln som dekrypterar dina meddelanden lämnar aldrig din enhet. Du kan skriva ner den som en återställningsfras; vi håller den inte och kan inte återställa den åt dig.`,
+        body: `Den privata nyckeln som dekrypterar dina meddelanden är din återställningsfras, och vi tar aldrig emot den. Utöver frasen du skriver ner sparar appen en kopia i telefonens egen säkerhetskopia — Google Block Store eller iCloud Keychain — så att en ny telefon kan återställa den. Den når molnet bara end-to-end-krypterad; detaljerna finns i integritetspolicyn. Vi kan inte återställa den åt dig.`,
       },
       {
         title: '53 språk',

@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.ms">← Kembali ke Chatterbox</a>
     <h1>Dasar Privasi</h1>
-    <p class="meta">Terakhir dikemas kini: 2026-09-07</p>
+    <p class="meta">Terakhir dikemas kini: 2026-09-24</p>
 
     <section>
       <h2>0. Secara ringkas</h2>
@@ -124,7 +124,8 @@
       <h2>5. Di mana ia disimpan</h2>
       <p>Pada Google Firebase — Firestore, Storage dan Authentication — di bawah peraturan keselamatan yang menentukan siapa boleh membaca dan menulis setiap dokumen.</p>
       <p>Pada peranti anda, mesej yang dicache, tetapan dan PIN kunci apl anda disulitkan dengan kunci setiap peranti yang disimpan dalam keystore platform (iOS Keychain, Android Keystore) berbanding storan apl biasa.</p>
-      <p>Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti anda, kecuali sebagai frasa pemulihan yang anda pilih untuk ditulis. Kami tidak menyimpannya dan tidak boleh memulihkannya untuk anda. Kehilangannya bermakna mesej yang dihantar ke peranti itu tidak boleh dibaca semula — oleh sesiapa, termasuk kami.</p>
+      <p>Kunci peribadi yang menyahsulit mesej anda ialah frasa pemulihan anda sendiri. Kami tidak pernah menerimanya dan tidak boleh memulihkannya untuk anda. Ia meninggalkan peranti anda melalui dua cara: sebagai frasa yang anda tulis, dan sebagai salinan yang disimpan oleh aplikasi dalam sandaran telefon anda sendiri setiap kali anda mendaftar atau log masuk, supaya telefon baharu boleh memulihkannya tanpa menaip — Google Block Store pada Android, iCloud Keychain pada iOS. Tiada tetapan untuk mematikannya.</p>
+      <p>Pada Android, salinan itu disegerakkan ke akaun Google anda hanya jika telefon anda mempunyai kunci skrin; menurut Google, ia kemudian disulitkan hujung ke hujung, jadi Google tidak dapat membacanya. Tanpa kunci skrin, ia kekal di dalam telefon dan hanya digunakan untuk pemindahan terus ke telefon baharu. iCloud Keychain disulitkan hujung ke hujung. Sesiapa yang dapat membuka sandaran itu — iaitu yang memegang akaun Google atau Apple anda bersama kunci skrin atau kod laluan anda — boleh memulihkan akaun anda. Jika anda kehilangan kedua-dua frasa dan sandaran itu, akaun itu hilang, dan mesej yang dihantar kepadanya tidak boleh dibaca semula — oleh sesiapa, termasuk kami.</p>
     </section>
 
     <section>

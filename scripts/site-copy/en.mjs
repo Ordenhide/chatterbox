@@ -111,7 +111,7 @@ export default {
       },
       {
         title: 'Your key, your recovery phrase',
-        body: `The private key that decrypts your messages never leaves your device. You can write it down as a recovery phrase; we do not hold it and cannot recover it for you.`,
+        body: `The private key that decrypts your messages is your recovery phrase, and we never receive it. Besides the phrase you write down, the app saves a copy to your phone's own backup — Google Block Store or iCloud Keychain — so a new phone can restore it. It reaches the cloud only end-to-end encrypted; the privacy policy has the details. We cannot recover it for you.`,
       },
       {
         title: '53 languages',

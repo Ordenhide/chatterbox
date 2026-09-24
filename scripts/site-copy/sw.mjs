@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Ufunguo wako, kifungu chako cha kurejesha',
-        body: `Ufunguo wa faragha unaofungua ujumbe wako haondoki kamwe kwenye kifaa chako. Unaweza kukiandika kama kifungu cha kurejesha; sisi hatukishikilii na hatuwezi kukirejesha kwa ajili yako.`,
+        body: `Ufunguo wa faragha unaofungua ujumbe wako ndio kifungu chako cha kurejesha, na sisi hatuupokei kamwe. Mbali na kifungu unachoandika, programu huhifadhi nakala kwenye hifadhi rudufu ya simu yako yenyewe — Google Block Store au iCloud Keychain — ili simu mpya iweze kuurejesha. Hufika kwenye wingu ikiwa imesimbwa kutoka mwanzo hadi mwisho pekee; maelezo yamo kwenye sera ya faragha. Hatuwezi kuurejesha kwa ajili yako.`,
       },
       {
         title: 'Lugha 53',

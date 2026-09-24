@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.ro">← Înapoi la Chatterbox</a>
     <h1>Politica de confidențialitate</h1>
-    <p class="meta">Ultima actualizare: 2026-09-07</p>
+    <p class="meta">Ultima actualizare: 2026-09-24</p>
 
     <section>
       <h2>0. Pe scurt</h2>
@@ -124,7 +124,8 @@
       <h2>5. Unde este stocat</h2>
       <p>Pe Google Firebase — Firestore, Storage și Authentication — sub reguli de securitate care decid cine poate citi și scrie fiecare document.</p>
       <p>Pe dispozitivul tău, mesajele stocate în cache, setările și codul PIN de blocare a aplicației sunt criptate cu o cheie specifică dispozitivului, păstrată în keystore-ul platformei (iOS Keychain, Android Keystore) în loc de stocarea obișnuită a aplicației.</p>
-      <p>Cheia privată care decriptează mesajele tale nu părăsește niciodată dispozitivul tău, cu excepția frazei de recuperare pe care alegi să o notezi. Noi nu o deținem și nu o putem recupera pentru tine. Dacă o pierzi, mesajele trimise către acel dispozitiv nu mai pot fi citite — de nimeni, inclusiv de noi.</p>
+      <p>Cheia privată care decriptează mesajele tale este chiar fraza ta de recuperare. Nu o primim niciodată și nu o putem recupera pentru tine. Ea părăsește dispozitivul tău în două feluri: ca fraza pe care o notezi și ca o copie pe care aplicația o salvează în backupul propriu al telefonului la fiecare înregistrare sau autentificare, astfel încât un telefon nou să o poată restaura fără s-o tastezi — Google Block Store pe Android, iCloud Keychain pe iOS. Nu există nicio setare care să oprească asta.</p>
+      <p>Pe Android, copia se sincronizează cu contul tău Google doar dacă telefonul are blocare a ecranului; potrivit Google, atunci este criptată end-to-end, deci Google nu o poate citi. Fără blocare a ecranului rămâne pe telefon și este folosită doar pentru un transfer direct pe un telefon nou. iCloud Keychain este criptat end-to-end. Oricine poate deschide acel backup — adică are contul tău Google sau Apple împreună cu blocarea ecranului sau codul tău — îți poate restaura contul. Dacă pierzi atât fraza, cât și acel backup, contul dispare, iar mesajele trimise către el nu mai pot fi citite — de nimeni, inclusiv de noi.</p>
     </section>
 
     <section>

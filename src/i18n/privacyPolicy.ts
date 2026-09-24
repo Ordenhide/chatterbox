@@ -32,7 +32,7 @@
  */
 import type {OfferedLanguage} from './languages';
 
-export const POLICY_LAST_UPDATED = '2026-09-07';
+export const POLICY_LAST_UPDATED = '2026-09-24';
 export const POLICY_CONTACT_EMAIL = 'privacy@chatterbox.fans';
 
 export type PolicySection = {
@@ -102,7 +102,9 @@ That is the whole list. There is no analytics and no crash reporting. The app us
 
 On your device, cached messages, settings and your app-lock PIN are encrypted with a per-device key held in the platform keystore (iOS Keychain, Android Keystore) rather than in ordinary app storage.
 
-The private key that decrypts your messages never leaves your device, except as the recovery phrase you choose to write down. We do not hold it and cannot recover it for you. Lose it, and the messages sent to that device cannot be read again — by anyone, including us.`,
+The private key that decrypts your messages is your recovery phrase. We never receive it and cannot recover it for you. It leaves your device in two ways: as the phrase you write down, and as a copy the app saves to your phone's own backup each time you sign up or sign in, so that a new phone can restore it without typing — Google Block Store on Android, iCloud Keychain on iOS. There is no setting that turns this off.
+
+On Android the copy is synced to your Google account only if your phone has a screen lock; Google states that it is then end-to-end encrypted, so Google cannot read it. Without a screen lock it stays on the phone and is used only for a direct transfer to a new phone. iCloud Keychain is end-to-end encrypted. Whoever can open that backup — your Google or Apple account together with your screen lock or passcode — can restore your account. If you lose both the phrase and that backup, the account is gone, and the messages sent to it cannot be read again — by anyone, including us.`,
     },
     {
       title: '6. Who else receives data',
@@ -232,7 +234,9 @@ If you install the update, it replaces the app in place using the same signing k
 
 在你的设备上，缓存的消息、设置和应用锁 PIN 用一把「每台设备一把」的密钥加密，这把密钥保存在系统密钥库里（iOS 的 Keychain、Android 的 Keystore），不是放在普通的应用存储里。
 
-解密你消息的私钥永远不会离开你的设备，除非以助记词的形式、由你自己选择抄下来。我们不持有它，也无法替你恢复。一旦丢失，发给那台设备的消息就再也读不出来了——任何人都读不出来，包括我们。`,
+解密你消息的私钥就是你的助记词。我们从不接收它，也无法替你恢复。它会以两种方式离开你的设备：一是你自己抄下来的助记词；二是每次注册或登录时，应用把一份副本存入手机系统自带的备份，好让新手机无需手动输入就能恢复——Android 上是 Google Block Store，iOS 上是 iCloud Keychain。没有任何设置可以关闭这一行为。
+
+在 Android 上，只有当手机设置了锁屏时，这份副本才会同步到你的 Google 账号；据 Google 说明，此时它是端到端加密的，Google 无法读取。没有锁屏时，它只留在手机上，仅用于换机时手机之间的直接传输。iCloud Keychain 是端到端加密的。能打开这份备份的人——即掌握你的 Google 或 Apple 账号以及锁屏密码或设备密码的人——就能恢复你的账号。如果助记词和这份备份都丢了，账号就没了，发给它的消息就再也读不出来了——任何人都读不出来，包括我们。`,
     },
     {
       title: '6. 还有谁会拿到数据',
@@ -361,7 +365,9 @@ Das ist die ganze Liste. Es gibt keine Analyse und keine Absturzberichte. Die Ap
 
 Auf deinem Gerät werden zwischengespeicherte Nachrichten, Einstellungen und deine App-Sperr-PIN mit einem gerätespezifischen Schlüssel verschlüsselt, der im Schlüsselspeicher der Plattform liegt (iOS Keychain, Android Keystore) und nicht im gewöhnlichen App-Speicher.
 
-Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie — außer als die Wiederherstellungsphrase, die du dir selbst notierst. Wir haben ihn nicht und können ihn nicht für dich wiederherstellen. Geht er verloren, sind die an dieses Gerät gesendeten Nachrichten nie wieder lesbar — von niemandem, uns eingeschlossen.`,
+Der private Schlüssel, der deine Nachrichten entschlüsselt, ist deine Wiederherstellungsphrase. Wir erhalten ihn nie und können ihn nicht für dich wiederherstellen. Er verlässt dein Gerät auf zwei Wegen: als die Phrase, die du dir notierst, und als Kopie, die die App bei jeder Registrierung und Anmeldung im eigenen Backup deines Telefons speichert, damit ein neues Telefon ihn ohne Eintippen wiederherstellen kann — Google Block Store unter Android, iCloud Keychain unter iOS. Es gibt keine Einstellung, die das abschaltet.
+
+Unter Android wird die Kopie nur dann mit deinem Google-Konto synchronisiert, wenn dein Telefon eine Displaysperre hat; laut Google ist sie dann Ende-zu-Ende-verschlüsselt, sodass Google sie nicht lesen kann. Ohne Displaysperre bleibt sie auf dem Telefon und dient nur der direkten Übertragung auf ein neues Telefon. iCloud Keychain ist Ende-zu-Ende-verschlüsselt. Wer dieses Backup öffnen kann — mit deinem Google- oder Apple-Konto zusammen mit deiner Displaysperre oder deinem Gerätecode —, kann dein Konto wiederherstellen. Verlierst du sowohl die Phrase als auch dieses Backup, ist das Konto weg, und die an es gesendeten Nachrichten sind nie wieder lesbar — von niemandem, uns eingeschlossen.`,
     },
     {
       title: '6. Wer sonst Daten erhält',
@@ -490,7 +496,9 @@ Esa es la lista completa. No hay analítica ni informes de fallos. La aplicació
 
 En tu dispositivo, los mensajes en caché, los ajustes y tu PIN de bloqueo se cifran con una clave propia del dispositivo guardada en el almacén de claves del sistema (Keychain en iOS, Keystore en Android), no en el almacenamiento normal de la app.
 
-La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo como la frase de recuperación que decidas anotar. No la tenemos y no podemos recuperarla por ti. Si la pierdes, los mensajes enviados a ese dispositivo no se podrán volver a leer, por nadie, nosotros incluidos.`,
+La clave privada que descifra tus mensajes es tu frase de recuperación. Nunca la recibimos y no podemos recuperarla por ti. Sale de tu dispositivo de dos maneras: como la frase que tú anotas, y como una copia que la app guarda en la copia de seguridad propia de tu teléfono cada vez que te registras o inicias sesión, para que un teléfono nuevo pueda restaurarla sin teclearla: Google Block Store en Android, iCloud Keychain en iOS. No hay ningún ajuste que lo desactive.
+
+En Android, la copia se sincroniza con tu cuenta de Google solo si tu teléfono tiene bloqueo de pantalla; Google afirma que entonces está cifrada de extremo a extremo, de modo que Google no puede leerla. Sin bloqueo de pantalla se queda en el teléfono y solo se usa para una transferencia directa a un teléfono nuevo. iCloud Keychain está cifrado de extremo a extremo. Quien pueda abrir esa copia de seguridad —tu cuenta de Google o de Apple junto con tu bloqueo de pantalla o tu código— puede restaurar tu cuenta. Si pierdes tanto la frase como esa copia, la cuenta desaparece, y los mensajes enviados a ella no se podrán volver a leer, por nadie, nosotros incluidos.`,
     },
     {
       title: '6. Quién más recibe datos',
@@ -619,7 +627,9 @@ C’est toute la liste. Il n’y a ni analytique ni rapports de plantage. L’ap
 
 Sur votre appareil, les messages en cache, les réglages et votre code de verrouillage sont chiffrés avec une clé propre à l'appareil, conservée dans le trousseau de la plateforme (Keychain sur iOS, Keystore sur Android) plutôt que dans le stockage ordinaire de l'application.
 
-La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sauf sous la forme de la phrase de récupération que vous choisissez de noter. Nous ne la détenons pas et ne pouvons pas la récupérer pour vous. Si vous la perdez, les messages envoyés à cet appareil ne seront plus jamais lisibles — par personne, nous compris.`,
+La clé privée qui déchiffre vos messages est votre phrase de récupération. Nous ne la recevons jamais et ne pouvons pas la récupérer pour vous. Elle quitte votre appareil de deux façons : sous la forme de la phrase que vous notez, et sous la forme d'une copie que l'app enregistre dans la sauvegarde propre à votre téléphone à chaque inscription ou connexion, afin qu'un nouveau téléphone puisse la restaurer sans la saisir — Google Block Store sur Android, iCloud Keychain sur iOS. Aucun réglage ne permet de désactiver cela.
+
+Sur Android, la copie n'est synchronisée avec votre compte Google que si votre téléphone a un verrouillage d'écran ; Google indique qu'elle est alors chiffrée de bout en bout, de sorte que Google ne peut pas la lire. Sans verrouillage d'écran, elle reste sur le téléphone et ne sert qu'à un transfert direct vers un nouveau téléphone. iCloud Keychain est chiffré de bout en bout. Quiconque peut ouvrir cette sauvegarde — votre compte Google ou Apple avec votre verrouillage d'écran ou votre code — peut restaurer votre compte. Si vous perdez à la fois la phrase et cette sauvegarde, le compte est perdu, et les messages qui lui ont été envoyés ne seront plus jamais lisibles — par personne, nous compris.`,
     },
     {
       title: '6. Qui d\'autre reçoit des données',
@@ -748,7 +758,9 @@ Questa è tutta la lista. Non c'è analisi d'uso né segnalazione di crash. L'ap
 
 Sul tuo dispositivo, i messaggi in cache, le impostazioni e il PIN di blocco sono cifrati con una chiave specifica del dispositivo custodita nel portachiavi della piattaforma (Keychain su iOS, Keystore su Android) e non nella normale memoria dell'app.
 
-La chiave privata che decifra i tuoi messaggi non lascia mai il tuo dispositivo, se non come la frase di recupero che decidi di annotare. Non la possediamo e non possiamo recuperarla per te. Se la perdi, i messaggi inviati a quel dispositivo non saranno più leggibili — da nessuno, noi compresi.`,
+La chiave privata che decifra i tuoi messaggi è la tua frase di recupero. Non la riceviamo mai e non possiamo recuperarla per te. Lascia il tuo dispositivo in due modi: come la frase che annoti, e come una copia che l'app salva nel backup del tuo telefono a ogni registrazione o accesso, così che un nuovo telefono possa ripristinarla senza doverla digitare — Google Block Store su Android, iCloud Keychain su iOS. Non c'è alcuna impostazione che lo disattivi.
+
+Su Android la copia viene sincronizzata con il tuo account Google solo se il telefono ha un blocco schermo; Google afferma che in quel caso è cifrata end-to-end, quindi Google non può leggerla. Senza blocco schermo resta sul telefono e serve solo per un trasferimento diretto a un nuovo telefono. iCloud Keychain è cifrato end-to-end. Chi riesce ad aprire quel backup — con il tuo account Google o Apple insieme al blocco schermo o al codice — può ripristinare il tuo account. Se perdi sia la frase sia quel backup, l'account è perso, e i messaggi inviati a esso non saranno più leggibili — da nessuno, noi compresi.`,
     },
     {
       title: '6. Chi altro riceve dati',
@@ -877,7 +889,9 @@ Chegas a alguém enviando-lhe uma ligação de convite fora da app, por aquilo q
 
 No teu dispositivo, as mensagens em cache, as definições e o PIN de bloqueio são cifrados com uma chave própria do dispositivo guardada no cofre de chaves do sistema (Keychain no iOS, Keystore no Android) e não no armazenamento normal da app.
 
-A chave privada que decifra as tuas mensagens nunca sai do teu dispositivo, exceto na forma da frase de recuperação que decidires anotar. Não a temos e não a podemos recuperar por ti. Se a perderes, as mensagens enviadas para esse dispositivo não voltam a ser legíveis — por ninguém, incluindo nós.`,
+A chave privada que decifra as tuas mensagens é a tua frase de recuperação. Nunca a recebemos e não a podemos recuperar por ti. Ela sai do teu dispositivo de duas formas: como a frase que anotas, e como uma cópia que a app guarda na cópia de segurança do teu telemóvel sempre que te registas ou inicias sessão, para que um telemóvel novo a possa restaurar sem a escreveres — Google Block Store no Android, iCloud Keychain no iOS. Não há nenhuma definição que desative isto.
+
+No Android, a cópia só é sincronizada com a tua conta Google se o telemóvel tiver bloqueio de ecrã; a Google afirma que nesse caso está encriptada ponto a ponto, pelo que a Google não a consegue ler. Sem bloqueio de ecrã, fica no telemóvel e só é usada para uma transferência direta para um telemóvel novo. O iCloud Keychain é encriptado ponto a ponto. Quem conseguir abrir essa cópia de segurança — com a tua conta Google ou Apple juntamente com o teu bloqueio de ecrã ou código — pode restaurar a tua conta. Se perderes a frase e essa cópia de segurança, a conta desaparece, e as mensagens enviadas para ela não voltam a ser legíveis — por ninguém, incluindo nós.`,
     },
     {
       title: '6. Quem mais recebe dados',
@@ -1006,7 +1020,9 @@ Se instalares a atualização, esta substitui a app no mesmo lugar usando a mesm
 
 На вашем устройстве закэшированные сообщения, настройки и PIN-код блокировки шифруются ключом, привязанным к устройству и хранящимся в системном хранилище ключей (Keychain в iOS, Keystore в Android), а не в обычном хранилище приложения.
 
-Закрытый ключ, который расшифровывает ваши сообщения, никогда не покидает устройство — кроме как в виде фразы восстановления, которую вы решите записать. У нас его нет, и восстановить его за вас мы не можем. Потеряете — сообщения, отправленные на это устройство, больше никто не прочитает, включая нас.`,
+Закрытый ключ, который расшифровывает ваши сообщения, — это ваша фраза восстановления. Мы никогда её не получаем и не можем восстановить за вас. Она покидает устройство двумя путями: в виде фразы, которую вы записываете, и в виде копии, которую приложение при каждой регистрации и входе сохраняет в системную резервную копию телефона, чтобы новый телефон мог восстановить её без ввода, — Google Block Store на Android, iCloud Keychain на iOS. Отключить это в настройках нельзя.
+
+На Android копия синхронизируется с вашим аккаунтом Google, только если на телефоне установлена блокировка экрана; по заявлению Google, тогда она защищена сквозным шифрованием, и Google не может её прочитать. Без блокировки экрана она остаётся на телефоне и используется только для прямого переноса на новый телефон. iCloud Keychain защищён сквозным шифрованием. Тот, кто может открыть эту резервную копию — с вашим аккаунтом Google или Apple вместе с блокировкой экрана или код-паролем, — может восстановить ваш аккаунт. Если вы потеряете и фразу, и эту копию, аккаунт пропадёт, а отправленные на него сообщения больше никто не прочитает, включая нас.`,
     },
     {
       title: '6. Кто ещё получает данные',
@@ -1135,7 +1151,9 @@ Listenin tamamı bu. Ne kullanım analizi var ne de çökme raporu. Uygulama esk
 
 Cihazında, önbellekteki mesajlar, ayarlar ve uygulama kilidi PIN'in, sıradan uygulama deposunda değil, platformun anahtar deposunda (iOS Keychain, Android Keystore) tutulan cihaza özel bir anahtarla şifrelenir.
 
-Mesajlarını çözen özel anahtar cihazından hiç çıkmaz; tek istisna, yazmayı seçtiğin kurtarma ifadesidir. O anahtar bizde değildir ve senin için geri getiremeyiz. Kaybedersen, o cihaza gönderilen mesajlar bir daha okunamaz — biz dâhil hiç kimse tarafından.`,
+Mesajlarını çözen özel anahtar, kurtarma ifadenin ta kendisidir. Onu hiçbir zaman almayız ve senin için geri getiremeyiz. Cihazından iki yolla çıkar: yazdığın ifade olarak ve kayıt olduğun ya da oturum açtığın her seferde uygulamanın telefonunun kendi yedeğine kaydettiği bir kopya olarak; böylece yeni bir telefon onu yazmana gerek kalmadan geri yükleyebilir — Android'de Google Block Store, iOS'ta iCloud Keychain. Bunu kapatan bir ayar yoktur.
+
+Android'de kopya, Google hesabınla yalnızca telefonunda ekran kilidi varsa eşitlenir; Google'a göre bu durumda uçtan uca şifrelidir, yani Google onu okuyamaz. Ekran kilidi yoksa telefonda kalır ve yalnızca yeni bir telefona doğrudan aktarım için kullanılır. iCloud Keychain uçtan uca şifrelidir. Bu yedeği açabilen herkes (yani Google ya da Apple hesabına ve ekran kilidine ya da parolana sahip olan) hesabını geri yükleyebilir. Hem ifadeyi hem de bu yedeği kaybedersen hesap gider ve ona gönderilen mesajlar bir daha okunamaz — biz dâhil hiç kimse tarafından.`,
     },
     {
       title: '6. Veriyi başka kim alıyor',
@@ -1264,7 +1282,9 @@ Danh sách chỉ có vậy. Không có phân tích sử dụng và không có b�
 
 Trên thiết bị của bạn, tin nhắn trong bộ nhớ đệm, các thiết lập và mã PIN khoá ứng dụng được mã hoá bằng một khoá riêng của thiết bị, giữ trong kho khoá của hệ điều hành (Keychain trên iOS, Keystore trên Android) chứ không phải trong bộ nhớ thông thường của ứng dụng.
 
-Khoá riêng dùng để giải mã tin nhắn của bạn không bao giờ rời khỏi thiết bị, trừ khi ở dạng cụm từ khôi phục mà bạn tự chọn ghi lại. Chúng tôi không giữ nó và không thể khôi phục thay bạn. Mất nó thì những tin nhắn đã gửi tới thiết bị đó sẽ không bao giờ đọc được nữa — không ai đọc được, kể cả chúng tôi.`,
+Khoá riêng dùng để giải mã tin nhắn của bạn chính là cụm từ khôi phục của bạn. Chúng tôi không bao giờ nhận được nó và không thể khôi phục thay bạn. Nó rời khỏi thiết bị theo hai cách: dưới dạng cụm từ mà bạn ghi lại, và dưới dạng một bản sao mà ứng dụng lưu vào bản sao lưu của chính điện thoại mỗi khi bạn đăng ký hoặc đăng nhập, để điện thoại mới có thể khôi phục mà không cần gõ lại — Google Block Store trên Android, iCloud Keychain trên iOS. Không có cài đặt nào để tắt việc này.
+
+Trên Android, bản sao chỉ được đồng bộ lên tài khoản Google của bạn nếu điện thoại có khoá màn hình; theo Google, khi đó nó được mã hoá đầu cuối nên Google không đọc được. Không có khoá màn hình thì nó chỉ nằm trên điện thoại và chỉ dùng để chuyển trực tiếp sang điện thoại mới. iCloud Keychain được mã hoá đầu cuối. Ai mở được bản sao lưu đó — tức là có tài khoản Google hoặc Apple của bạn cùng với khoá màn hình hoặc mật mã — đều có thể khôi phục tài khoản của bạn. Nếu bạn mất cả cụm từ lẫn bản sao lưu đó, tài khoản sẽ mất, và những tin nhắn đã gửi tới nó sẽ không bao giờ đọc được nữa — không ai đọc được, kể cả chúng tôi.`,
     },
     {
       title: '6. Còn ai nhận được dữ liệu',
@@ -1393,7 +1413,9 @@ Nếu bạn cài đặt bản cập nhật, nó sẽ thay thế ứng dụng t�
 
 あなたの端末では、キャッシュされたメッセージ・設定・アプリロックの PIN が、端末ごとの鍵で暗号化されます。その鍵は通常のアプリ領域ではなく、プラットフォームの鍵保管庫（iOS の Keychain、Android の Keystore）にあります。
 
-メッセージを復号する秘密鍵が端末を離れることはありません。例外は、あなた自身が書き留めることを選んだリカバリーフレーズだけです。私たちはそれを保持しておらず、代わりに復元することもできません。失えば、その端末宛てに送られたメッセージは二度と読めません。私たちを含め、誰にも読めません。`,
+メッセージを復号する秘密鍵は、あなたのリカバリーフレーズそのものです。私たちがそれを受け取ることはなく、代わりに復元することもできません。それが端末を離れる経路は二つあります。あなたが書き留めるフレーズとして、そして新しい端末で入力せずに復元できるよう、登録やサインインのたびにアプリがスマートフォン自身のバックアップに保存するコピーとしてです（Android では Google Block Store、iOS では iCloud Keychain）。これをオフにする設定はありません。
+
+Android では、スマートフォンに画面ロックが設定されている場合に限り、コピーがあなたの Google アカウントに同期されます。Google によれば、その場合はエンドツーエンドで暗号化され、Google は読めません。画面ロックがない場合はスマートフォン内にとどまり、新しい端末への直接転送にのみ使われます。iCloud Keychain はエンドツーエンドで暗号化されています。そのバックアップを開ける人、つまりあなたの Google または Apple アカウントと画面ロックまたはパスコードを持つ人は、あなたのアカウントを復元できます。フレーズとそのバックアップの両方を失えばアカウントは失われ、そこに送られたメッセージは二度と読めません。私たちを含め、誰にも読めません。`,
     },
     {
       title: '6. ほかに情報を受け取る先',
@@ -1522,7 +1544,9 @@ Cloudflare Realtimeにもオン・オフの切り替えはありません。ほ�
 
 당신의 기기에서는 캐시된 메시지, 설정, 앱 잠금 PIN이 기기별 키로 암호화됩니다. 그 키는 일반 앱 저장소가 아니라 플랫폼 키 저장소(iOS Keychain, Android Keystore)에 있습니다.
 
-메시지를 복호화하는 개인 키는 기기를 떠나지 않습니다. 예외는 당신이 적어 두기로 한 복구 문구뿐입니다. 우리는 그것을 갖고 있지 않고 대신 복구해 줄 수도 없습니다. 잃어버리면 그 기기로 보낸 메시지는 다시는 읽을 수 없습니다 — 우리를 포함해 누구도 읽을 수 없습니다.`,
+메시지를 복호화하는 개인 키는 바로 당신의 복구 문구입니다. 우리는 그것을 절대 받지 않으며 대신 복구해 줄 수도 없습니다. 그것은 두 가지 방식으로 기기를 떠납니다. 하나는 당신이 적어 두는 문구이고, 다른 하나는 새 휴대폰에서 입력 없이 복원할 수 있도록 가입하거나 로그인할 때마다 앱이 휴대폰 자체의 백업에 저장하는 사본입니다 — Android에서는 Google Block Store, iOS에서는 iCloud Keychain. 이를 끄는 설정은 없습니다.
+
+Android에서는 휴대폰에 화면 잠금이 설정된 경우에만 사본이 당신의 Google 계정에 동기화되며, Google에 따르면 이때 종단 간 암호화되어 Google은 읽을 수 없습니다. 화면 잠금이 없으면 사본은 휴대폰에만 남고 새 휴대폰으로 직접 옮길 때만 쓰입니다. iCloud Keychain은 종단 간 암호화됩니다. 그 백업을 열 수 있는 사람, 즉 당신의 Google 또는 Apple 계정과 화면 잠금이나 암호를 가진 사람은 당신의 계정을 복원할 수 있습니다. 문구와 그 백업을 모두 잃으면 계정은 사라지고, 그 계정으로 보낸 메시지는 다시는 읽을 수 없습니다 — 우리를 포함해 누구도 읽을 수 없습니다.`,
     },
     {
       title: '6. 그 밖에 데이터를 받는 곳',
@@ -1651,7 +1675,9 @@ Cloudflare Realtime에도 스위치가 없습니다. 대부분의 통화는 이�
 
 在你的裝置上，快取的訊息、設定和應用程式鎖 PIN 用一把「每台裝置一把」的金鑰加密，這把金鑰保存在系統金鑰庫裡（iOS 的 Keychain、Android 的 Keystore），不是放在普通的應用程式儲存空間裡。
 
-解密你訊息的私鑰永遠不會離開你的裝置，除非以助記詞的形式、由你自己選擇抄下來。我們不持有它，也無法替你復原。一旦遺失，傳給那台裝置的訊息就再也讀不出來了——任何人都讀不出來，包括我們。`,
+解密你訊息的私鑰就是你的助記詞。我們從不接收它，也無法替你復原。它會以兩種方式離開你的裝置：一是你自己抄下來的助記詞；二是每次註冊或登入時，應用程式把一份副本存入手機系統內建的備份，讓新手機不必手動輸入就能復原——Android 上是 Google Block Store，iOS 上是 iCloud Keychain。沒有任何設定可以關閉這項行為。
+
+在 Android 上，只有當手機設定了螢幕鎖定時，這份副本才會同步到你的 Google 帳號；據 Google 說明，此時它是端對端加密的，Google 無法讀取。沒有螢幕鎖定時，它只留在手機上，僅用於換機時手機之間的直接傳輸。iCloud Keychain 是端對端加密的。能打開這份備份的人——也就是掌握你的 Google 或 Apple 帳號以及螢幕鎖定密碼或裝置密碼的人——就能復原你的帳號。如果助記詞和這份備份都遺失了，帳號就沒了，傳給它的訊息就再也讀不出來了——任何人都讀不出來，包括我們。`,
     },
     {
       title: '6. 還有誰會拿到資料',
@@ -1780,7 +1806,9 @@ Cloudflare Realtime 同樣沒有開關。大多數通話不需要它：兩台能
 
 على جهازك، تُعمّى الرسائل المخزّنة مؤقتًا والإعدادات ورمز قفل التطبيق بمفتاح خاص بالجهاز محفوظ في مخزن مفاتيح النظام (Keychain في iOS، وKeystore في Android) لا في تخزين التطبيق العادي.
 
-المفتاح الخاص الذي يفكّ تعمية رسائلك لا يغادر جهازك أبدًا، إلا في صورة عبارة الاسترجاع التي تختار تدوينها. نحن لا نملكه ولا نستطيع استرجاعه نيابةً عنك. إن فقدته، فلن تُقرأ الرسائل المُرسلة إلى ذلك الجهاز مرة أخرى — لا من أحد، بمن فينا نحن.`,
+المفتاح الخاص الذي يفكّ تعمية رسائلك هو نفسه عبارة الاسترجاع الخاصة بك. نحن لا نتلقّاه أبدًا ولا نستطيع استرجاعه نيابةً عنك. وهو يغادر جهازك بطريقتين: في صورة العبارة التي تدوّنها، وفي صورة نسخة يحفظها التطبيق في النسخ الاحتياطي الخاص بهاتفك في كل مرة تسجّل فيها أو تسجّل الدخول، كي يتمكن هاتف جديد من استعادته دون كتابته — Google Block Store على Android، وiCloud Keychain على iOS. لا يوجد إعداد يوقف ذلك.
+
+على Android لا تُزامَن النسخة مع حسابك في Google إلا إذا كان لهاتفك قفل شاشة، وتقول Google إنها تكون عندئذٍ معمّاة من طرف إلى طرف، فلا تستطيع Google قراءتها؛ ومن دون قفل شاشة تبقى على الهاتف ولا تُستخدم إلا للنقل المباشر إلى هاتف جديد. وiCloud Keychain معمّى من طرف إلى طرف. ومن يستطيع فتح تلك النسخة الاحتياطية — أي من يملك حسابك في Google أو Apple مع قفل الشاشة أو رمز المرور — يستطيع استعادة حسابك. وإن فقدت العبارة وتلك النسخة معًا، ضاع الحساب، ولن تُقرأ الرسائل المُرسلة إليه مرة أخرى — لا من أحد، بمن فينا نحن.`,
     },
     {
       title: '6. من غيرنا يتلقّى بيانات',
@@ -1909,7 +1937,9 @@ Cloudflare Realtime 同樣沒有開關。大多數通話不需要它：兩台能
 
 आपके डिवाइस पर, कैश किए संदेश, सेटिंग्स और ऐप-लॉक PIN एक डिवाइस-विशिष्ट कुंजी से एन्क्रिप्ट होते हैं, जो सामान्य ऐप स्टोरेज में नहीं बल्कि प्लेटफ़ॉर्म के कुंजी भंडार (iOS Keychain, Android Keystore) में रहती है।
 
-जो निजी कुंजी आपके संदेश डिक्रिप्ट करती है वह आपका डिवाइस कभी नहीं छोड़ती, सिवाय उस रिकवरी वाक्यांश के रूप में जिसे आप ख़ुद लिख लेने का फ़ैसला करते हैं। वह हमारे पास नहीं है और हम उसे आपके लिए वापस नहीं ला सकते। खो गई, तो उस डिवाइस को भेजे गए संदेश फिर कभी नहीं पढ़े जा सकेंगे — किसी के द्वारा भी नहीं, हमारे द्वारा भी नहीं।`,
+जो निजी कुंजी आपके संदेश डिक्रिप्ट करती है, वही आपका रिकवरी वाक्यांश है। वह हमें कभी नहीं मिलती और हम उसे आपके लिए वापस नहीं ला सकते। वह आपका डिवाइस दो तरीक़ों से छोड़ती है: उस वाक्यांश के रूप में जिसे आप लिख लेते हैं, और एक प्रति के रूप में जिसे ऐप हर बार साइन अप या साइन इन करने पर आपके फ़ोन के अपने बैकअप में सहेजता है, ताकि नया फ़ोन उसे बिना टाइप किए बहाल कर सके — Android पर Google Block Store, iOS पर iCloud Keychain। इसे बंद करने की कोई सेटिंग नहीं है।
+
+Android पर यह प्रति आपके Google खाते में तभी सिंक होती है जब आपके फ़ोन में स्क्रीन लॉक हो; Google के अनुसार तब वह एंड-टू-एंड एन्क्रिप्टेड होती है, इसलिए Google उसे पढ़ नहीं सकता। स्क्रीन लॉक न होने पर वह फ़ोन पर ही रहती है और सिर्फ़ नए फ़ोन में सीधे ट्रांसफ़र के लिए इस्तेमाल होती है। iCloud Keychain एंड-टू-एंड एन्क्रिप्टेड है। जो भी उस बैकअप को खोल सकता है — यानी जिसके पास आपका Google या Apple खाता और आपका स्क्रीन लॉक या पासकोड हो — वह आपका खाता बहाल कर सकता है। अगर वाक्यांश और वह बैकअप दोनों खो जाएँ, तो खाता चला जाता है, और उसे भेजे गए संदेश फिर कभी नहीं पढ़े जा सकेंगे — किसी के द्वारा भी नहीं, हमारे द्वारा भी नहीं।`,
     },
     {
       title: '6. डेटा और किसे मिलता है',
@@ -2039,7 +2069,9 @@ Cloudflare Realtime का भी कोई स्विच नहीं है�
 
 روی دستگاه شما، پیام‌های ذخیره‌شده، تنظیمات و پین قفل برنامه با کلیدی مخصوص همان دستگاه رمزنگاری می‌شوند که در گاوصندوق کلید پلتفرم (کیچین iOS، کیستور اندروید) نگهداری می‌شود، نه در حافظهٔ معمولی برنامه.
 
-کلید خصوصی‌ای که پیام‌های شما را رمزگشایی می‌کند هرگز دستگاه شما را ترک نمی‌کند، مگر به‌شکل عبارت بازیابی‌ای که خودتان تصمیم می‌گیرید یادداشتش کنید. ما آن را نگه نمی‌داریم و نمی‌توانیم برایتان بازیابی‌اش کنیم. اگر آن را گم کنید، پیام‌های فرستاده‌شده به آن دستگاه دیگر خوانده نمی‌شوند — توسط هیچ‌کس، حتی ما.`,
+کلید خصوصی‌ای که پیام‌های شما را رمزگشایی می‌کند همان عبارت بازیابی شماست. ما هرگز آن را دریافت نمی‌کنیم و نمی‌توانیم برایتان بازیابی‌اش کنیم. این کلید از دو راه دستگاه شما را ترک می‌کند: به‌شکل عبارتی که یادداشت می‌کنید، و به‌شکل نسخه‌ای که برنامه هر بار که ثبت‌نام یا وارد می‌شوید در پشتیبان خود گوشی‌تان ذخیره می‌کند تا گوشی تازه بتواند بی‌آن‌که تایپش کنید بازیابی‌اش کند — Google Block Store در Android و iCloud Keychain در iOS. هیچ تنظیمی برای خاموش کردن این کار وجود ندارد.
+
+در Android این نسخه فقط وقتی با حساب Google شما همگام می‌شود که گوشی قفل صفحه داشته باشد؛ به گفتهٔ Google در این حالت رمزگذاری سرتاسری دارد و Google نمی‌تواند آن را بخواند. بدون قفل صفحه، روی گوشی می‌ماند و فقط برای انتقال مستقیم به گوشی تازه به کار می‌رود. iCloud Keychain رمزگذاری سرتاسری دارد. هر کس بتواند آن پشتیبان را باز کند — یعنی حساب Google یا Apple شما را همراه با قفل صفحه یا رمز دستگاه داشته باشد — می‌تواند حساب شما را بازیابی کند. اگر هم عبارت و هم آن پشتیبان را گم کنید، حساب از دست می‌رود و پیام‌های فرستاده‌شده به آن دیگر خوانده نمی‌شوند — توسط هیچ‌کس، حتی ما.`,
     },
     {
       title: '6. چه کس دیگری داده را دریافت می‌کند',
@@ -2169,7 +2201,9 @@ Cloudflare Realtime هم کلیدی ندارد. بیشتر تماس‌ها به 
 
 במכשיר שלכם, הודעות במטמון, הגדרות וקוד ה-PIN של נעילת האפליקציה מוצפנים במפתח ייחודי למכשיר הנשמר במחסן המפתחות של הפלטפורמה (Keychain באייפון, Keystore באנדרואיד) ולא באחסון אפליקציה רגיל.
 
-המפתח הפרטי המפענח את ההודעות שלכם לעולם לא עוזב את המכשיר שלכם, מלבד כביטוי השחזור שאתם בוחרים לרשום. אנחנו לא מחזיקים אותו ולא יכולים לשחזר אותו עבורכם. אם תאבדו אותו, ההודעות שנשלחו לאותו מכשיר לא ניתנות עוד לקריאה — על ידי אף אחד, כולל אנחנו.`,
+המפתח הפרטי המפענח את ההודעות שלכם הוא ביטוי השחזור שלכם. אנחנו אף פעם לא מקבלים אותו ולא יכולים לשחזר אותו עבורכם. הוא עוזב את המכשיר בשתי דרכים: כביטוי שאתם רושמים, וכעותק שהאפליקציה שומרת בגיבוי של הטלפון עצמו בכל הרשמה או התחברות, כדי שטלפון חדש יוכל לשחזר אותו בלי הקלדה — Google Block Store ב-Android, ו-iCloud Keychain ב-iOS. אין הגדרה שמכבה את זה.
+
+ב-Android העותק מסונכרן לחשבון Google שלכם רק אם בטלפון מוגדרת נעילת מסך; לפי Google הוא מוצפן אז מקצה לקצה, כך ש-Google לא יכולה לקרוא אותו. בלי נעילת מסך הוא נשאר בטלפון ומשמש רק להעברה ישירה לטלפון חדש. iCloud Keychain מוצפן מקצה לקצה. מי שיכול לפתוח את הגיבוי הזה — כלומר מי שמחזיק בחשבון Google או Apple שלכם יחד עם נעילת המסך או קוד הגישה — יכול לשחזר את החשבון שלכם. אם תאבדו גם את הביטוי וגם את הגיבוי הזה, החשבון אבוד, וההודעות שנשלחו אליו לא ניתנות עוד לקריאה — על ידי אף אחד, כולל אנחנו.`,
     },
     {
       title: '6. מי עוד מקבל נתונים',
@@ -2299,7 +2333,9 @@ Cloudflare Realtime هم کلیدی ندارد. بیشتر تماس‌ها به 
 
 آپ کی ڈیوائس پر، کیش شدہ پیغامات، ترتیبات اور ایپ لاک پن کو ایک فی ڈیوائس کنجی سے خفیہ کیا جاتا ہے جو پلیٹ فارم کی کی اسٹور (iOS Keychain، Android Keystore) میں رکھی جاتی ہے، نہ کہ عام ایپ اسٹوریج میں۔
 
-نجی کنجی جو آپ کے پیغامات کو ڈی کرپٹ کرتی ہے کبھی آپ کی ڈیوائس نہیں چھوڑتی، سوائے ریکوری فقرے کی صورت میں جسے آپ خود لکھنے کا انتخاب کرتے ہیں۔ ہم اسے نہیں رکھتے اور آپ کے لیے اسے بحال نہیں کر سکتے۔ اگر آپ اسے کھو دیں، تو اس ڈیوائس کو بھیجے گئے پیغامات دوبارہ نہیں پڑھے جا سکتے — کسی کے ذریعے بھی نہیں، ہمارے سمیت۔`,
+نجی کنجی جو آپ کے پیغامات کو ڈی کرپٹ کرتی ہے وہی آپ کا ریکوری فقرہ ہے۔ ہم اسے کبھی وصول نہیں کرتے اور آپ کے لیے اسے بحال نہیں کر سکتے۔ یہ آپ کی ڈیوائس کو دو طریقوں سے چھوڑتی ہے: اس فقرے کی صورت میں جو آپ لکھ لیتے ہیں، اور ایک نقل کی صورت میں جو ایپ ہر بار سائن اپ یا سائن اِن پر آپ کے فون کے اپنے بیک اپ میں محفوظ کرتی ہے، تاکہ نیا فون اسے ٹائپ کیے بغیر بحال کر سکے — Android پر Google Block Store، iOS پر iCloud Keychain۔ اسے بند کرنے کی کوئی سیٹنگ نہیں ہے۔
+
+Android پر یہ نقل آپ کے Google اکاؤنٹ سے صرف تب سنک ہوتی ہے جب فون میں اسکرین لاک ہو؛ Google کے مطابق تب یہ اینڈ ٹو اینڈ انکرپٹڈ ہوتی ہے، اس لیے Google اسے نہیں پڑھ سکتا۔ اسکرین لاک کے بغیر یہ فون پر ہی رہتی ہے اور صرف نئے فون پر براہِ راست منتقلی کے لیے استعمال ہوتی ہے۔ iCloud Keychain اینڈ ٹو اینڈ انکرپٹڈ ہے۔ جو بھی اس بیک اپ کو کھول سکے — یعنی جس کے پاس آپ کا Google یا Apple اکاؤنٹ اور آپ کا اسکرین لاک یا پاس کوڈ ہو — وہ آپ کا اکاؤنٹ بحال کر سکتا ہے۔ اگر فقرہ اور وہ بیک اپ دونوں کھو جائیں تو اکاؤنٹ ختم ہو جاتا ہے، اور اسے بھیجے گئے پیغامات دوبارہ نہیں پڑھے جا سکتے — کسی کے ذریعے بھی نہیں، ہمارے سمیت۔`,
     },
     {
       title: '6. اور کون ڈیٹا حاصل کرتا ہے',
@@ -2429,7 +2465,9 @@ To cała lista. Nie ma analityki ani raportowania awarii. Ta aplikacja wysyłał
 
 Na Twoim urządzeniu wiadomości w pamięci podręcznej, ustawienia i PIN blokady aplikacji są szyfrowane kluczem unikalnym dla urządzenia, przechowywanym w magazynie kluczy platformy (Keychain w iOS, Keystore w Androidzie), a nie w zwykłej pamięci aplikacji.
 
-Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojego urządzenia, z wyjątkiem frazy odzyskiwania, którą decydujesz się zapisać. My go nie przechowujemy i nie możemy go dla Ciebie odzyskać. Jeśli go zgubisz, wiadomości wysłane do tego urządzenia nie będą już mogły zostać odczytane — przez nikogo, łącznie z nami.`,
+Klucz prywatny, który odszyfrowuje Twoje wiadomości, to Twoja fraza odzyskiwania. Nigdy jej nie otrzymujemy i nie możemy jej dla Ciebie odzyskać. Opuszcza Twoje urządzenie na dwa sposoby: jako fraza, którą zapisujesz, oraz jako kopia, którą aplikacja przy każdej rejestracji i logowaniu zapisuje w kopii zapasowej samego telefonu, aby nowy telefon mógł ją przywrócić bez wpisywania — Google Block Store na Androidzie, iCloud Keychain na iOS. Nie ma ustawienia, które to wyłącza.
+
+Na Androidzie kopia jest synchronizowana z Twoim kontem Google tylko wtedy, gdy telefon ma blokadę ekranu; według Google jest wtedy szyfrowana end-to-end, więc Google nie może jej odczytać. Bez blokady ekranu zostaje na telefonie i służy tylko do bezpośredniego przeniesienia na nowy telefon. iCloud Keychain jest szyfrowany end-to-end. Każdy, kto może otworzyć tę kopię zapasową — czyli ma Twoje konto Google lub Apple razem z blokadą ekranu lub kodem — może przywrócić Twoje konto. Jeśli zgubisz zarówno frazę, jak i tę kopię, konto przepada, a wiadomości wysłane na nie nie będą już mogły zostać odczytane — przez nikogo, łącznie z nami.`,
     },
     {
       title: '6. Kto jeszcze otrzymuje dane',
@@ -2559,7 +2597,9 @@ Jeśli zainstalujesz aktualizację, zastąpi ona aplikację w tym samym miejscu,
 
 На вашому пристрої кешовані повідомлення, налаштування та PIN-код блокування застосунку зашифровані ключем, унікальним для пристрою, який зберігається в сховищі ключів платформи (Keychain на iOS, Keystore на Android), а не у звичайному сховищі застосунку.
 
-Приватний ключ, який розшифровує ваші повідомлення, ніколи не залишає ваш пристрій, окрім як у вигляді фрази відновлення, яку ви вирішуєте записати. Ми його не зберігаємо і не можемо відновити для вас. Якщо ви його втратите, повідомлення, надіслані на той пристрій, більше не можна буде прочитати — нікому, включно з нами.`,
+Приватний ключ, який розшифровує ваші повідомлення, — це ваша фраза відновлення. Ми ніколи її не отримуємо і не можемо відновити для вас. Вона залишає ваш пристрій двома шляхами: як фраза, яку ви записуєте, і як копія, яку застосунок під час кожної реєстрації та входу зберігає в системну резервну копію телефона, щоб новий телефон міг відновити її без введення, — Google Block Store на Android, iCloud Keychain на iOS. Налаштування, яке б це вимикало, немає.
+
+На Android копія синхронізується з вашим обліковим записом Google лише тоді, коли на телефоні встановлено блокування екрана; за словами Google, тоді вона має наскрізне шифрування, і Google не може її прочитати. Без блокування екрана вона лишається на телефоні й використовується лише для прямого перенесення на новий телефон. iCloud Keychain має наскрізне шифрування. Будь-хто, хто може відкрити цю резервну копію — тобто має ваш обліковий запис Google або Apple разом із блокуванням екрана чи код-паролем, — може відновити ваш обліковий запис. Якщо ви втратите і фразу, і цю копію, обліковий запис зникне, а надіслані на нього повідомлення більше не можна буде прочитати — нікому, включно з нами.`,
     },
     {
       title: '6. Хто ще отримує дані',
@@ -2689,7 +2729,9 @@ Itulah seluruh daftarnya. Tidak ada analitik dan tidak ada pelaporan crash. Apli
 
 Di perangkat Anda, pesan yang di-cache, pengaturan, dan PIN kunci aplikasi dienkripsi dengan kunci khusus per perangkat yang disimpan di penyimpanan kunci platform (Keychain di iOS, Keystore di Android) daripada di penyimpanan aplikasi biasa.
 
-Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat Anda, kecuali sebagai frasa pemulihan yang Anda pilih untuk dituliskan. Kami tidak menyimpannya dan tidak dapat memulihkannya untuk Anda. Jika hilang, pesan yang dikirim ke perangkat itu tidak dapat dibaca lagi — oleh siapa pun, termasuk kami.`,
+Kunci privat yang mendekripsi pesan Anda adalah frasa pemulihan Anda. Kami tidak pernah menerimanya dan tidak dapat memulihkannya untuk Anda. Kunci itu meninggalkan perangkat Anda dengan dua cara: sebagai frasa yang Anda tuliskan, dan sebagai salinan yang disimpan aplikasi ke cadangan bawaan ponsel Anda setiap kali Anda mendaftar atau masuk, agar ponsel baru dapat memulihkannya tanpa mengetik — Google Block Store di Android, iCloud Keychain di iOS. Tidak ada pengaturan untuk mematikannya.
+
+Di Android, salinan itu disinkronkan ke akun Google Anda hanya jika ponsel Anda memiliki kunci layar; menurut Google, salinan itu kemudian terenkripsi end-to-end sehingga Google tidak dapat membacanya. Tanpa kunci layar, salinan itu tetap di ponsel dan hanya dipakai untuk transfer langsung ke ponsel baru. iCloud Keychain terenkripsi end-to-end. Siapa pun yang dapat membuka cadangan itu — yaitu yang memegang akun Google atau Apple Anda beserta kunci layar atau kode sandi Anda — dapat memulihkan akun Anda. Jika Anda kehilangan frasa dan cadangan itu sekaligus, akun hilang, dan pesan yang dikirim ke akun itu tidak dapat dibaca lagi — oleh siapa pun, termasuk kami.`,
     },
     {
       title: '6. Siapa lagi yang menerima data',
@@ -2819,7 +2861,9 @@ Jika Anda menginstal pembaruan, itu akan mengganti aplikasi di tempatnya menggun
 
 আপনার ডিভাইসে, ক্যাশে করা বার্তা, সেটিংস এবং অ্যাপ-লক পিন সাধারণ অ্যাপ স্টোরেজের বদলে প্ল্যাটফর্মের কি-স্টোরে (iOS Keychain, Android Keystore) রাখা একটি প্রতি-ডিভাইস চাবি দিয়ে এনক্রিপ্ট করা হয়।
 
-আপনার বার্তা ডিক্রিপ্ট করার প্রাইভেট চাবিটি কখনো আপনার ডিভাইস ছেড়ে যায় না, শুধু আপনি লিখে রাখতে বেছে নেওয়া পুনরুদ্ধার বাক্যাংশ হিসেবে ছাড়া। আমরা এটি ধরে রাখি না এবং আপনার জন্য এটি পুনরুদ্ধার করতে পারি না। এটি হারালে, সেই ডিভাইসে পাঠানো বার্তাগুলো আর পড়া যাবে না — কারো দ্বারাই না, আমাদের সহ।`,
+যে প্রাইভেট চাবি আপনার বার্তা ডিক্রিপ্ট করে, সেটিই আপনার পুনরুদ্ধার বাক্যাংশ। আমরা কখনো এটি পাই না এবং আপনার জন্য এটি পুনরুদ্ধার করতে পারি না। এটি দুইভাবে আপনার ডিভাইস ছেড়ে যায়: আপনি যে বাক্যাংশ লিখে রাখেন সেই রূপে, এবং একটি কপি হিসেবে, যা প্রতিবার সাইন আপ বা সাইন ইন করার সময় অ্যাপটি আপনার ফোনের নিজস্ব ব্যাকআপে সংরক্ষণ করে, যাতে নতুন ফোন টাইপ না করেই এটি পুনরুদ্ধার করতে পারে — Android-এ Google Block Store, iOS-এ iCloud Keychain। এটি বন্ধ করার কোনো সেটিং নেই।
+
+Android-এ কপিটি আপনার Google অ্যাকাউন্টে সিঙ্ক হয় কেবল তখনই, যখন আপনার ফোনে স্ক্রিন লক থাকে; Google-এর ভাষ্যমতে তখন এটি এন্ড-টু-এন্ড এনক্রিপ্টেড থাকে, তাই Google এটি পড়তে পারে না। স্ক্রিন লক না থাকলে এটি ফোনেই থাকে এবং কেবল নতুন ফোনে সরাসরি স্থানান্তরের জন্য ব্যবহৃত হয়। iCloud Keychain এন্ড-টু-এন্ড এনক্রিপ্টেড। যে কেউ সেই ব্যাকআপ খুলতে পারে — অর্থাৎ যার কাছে আপনার Google বা Apple অ্যাকাউন্ট এবং আপনার স্ক্রিন লক বা পাসকোড আছে — সে আপনার অ্যাকাউন্ট পুনরুদ্ধার করতে পারে। বাক্যাংশ এবং সেই ব্যাকআপ দুটোই হারালে অ্যাকাউন্টটি চলে যায়, এবং এতে পাঠানো বার্তাগুলো আর পড়া যাবে না — কারো দ্বারাই না, আমাদের সহ।`,
     },
     {
       title: '6. আর কে তথ্য পায়',
@@ -2949,7 +2993,9 @@ Cloudflare Realtime-এরও কোনো সুইচ নেই। বেশ�
 
 บนอุปกรณ์ของคุณ ข้อความที่แคชไว้ การตั้งค่า และ PIN ล็อกแอปถูกเข้ารหัสด้วยกุญแจเฉพาะต่ออุปกรณ์ที่เก็บไว้ในที่เก็บกุญแจของแพลตฟอร์ม (Keychain บน iOS, Keystore บน Android) แทนที่จะเป็นพื้นที่จัดเก็บแอปทั่วไป
 
-กุญแจส่วนตัวที่ถอดรหัสข้อความของคุณจะไม่ออกจากอุปกรณ์ของคุณเลย ยกเว้นในรูปแบบวลีกู้คืนที่คุณเลือกที่จะจดไว้ เราไม่ได้เก็บมันไว้และไม่สามารถกู้คืนให้คุณได้ หากทำหาย ข้อความที่ส่งไปยังอุปกรณ์นั้นจะไม่สามารถอ่านได้อีก — โดยใครก็ตาม รวมถึงเราด้วย`,
+กุญแจส่วนตัวที่ถอดรหัสข้อความของคุณก็คือวลีกู้คืนของคุณ เราไม่เคยได้รับมันและไม่สามารถกู้คืนให้คุณได้ มันออกจากอุปกรณ์ของคุณได้สองทาง: ในรูปวลีที่คุณจดไว้ และในรูปสำเนาที่แอปบันทึกลงในข้อมูลสำรองของโทรศัพท์เองทุกครั้งที่คุณสมัครหรือลงชื่อเข้าใช้ เพื่อให้โทรศัพท์เครื่องใหม่กู้คืนได้โดยไม่ต้องพิมพ์ — Google Block Store บน Android และ iCloud Keychain บน iOS ไม่มีการตั้งค่าใดที่ปิดการทำงานนี้ได้
+
+บน Android สำเนานี้จะซิงค์ไปยังบัญชี Google ของคุณก็ต่อเมื่อโทรศัพท์มีการล็อกหน้าจอเท่านั้น ซึ่ง Google ระบุว่าในกรณีนั้นสำเนาจะถูกเข้ารหัสตั้งแต่ต้นทางถึงปลายทาง Google จึงอ่านไม่ได้ หากไม่มีการล็อกหน้าจอ สำเนาจะอยู่ในโทรศัพท์เท่านั้นและใช้เพียงเพื่อโอนตรงไปยังโทรศัพท์เครื่องใหม่ iCloud Keychain เข้ารหัสตั้งแต่ต้นทางถึงปลายทาง ใครก็ตามที่เปิดข้อมูลสำรองนั้นได้ — คือผู้ที่มีบัญชี Google หรือ Apple ของคุณพร้อมกับรหัสล็อกหน้าจอหรือรหัสผ่านเครื่อง — สามารถกู้คืนบัญชีของคุณได้ หากคุณทำทั้งวลีและข้อมูลสำรองนั้นหาย บัญชีก็จะหายไป และข้อความที่ส่งถึงบัญชีนั้นจะไม่สามารถอ่านได้อีก — โดยใครก็ตาม รวมถึงเราด้วย`,
     },
     {
       title: '6. ใครอีกบ้างที่ได้รับข้อมูล',
@@ -3079,7 +3125,9 @@ Iyon ang buong listahan. Walang analytics at walang crash reporting. Dati ay nag
 
 Sa iyong device, ang mga na-cache na mensahe, setting, at iyong app-lock PIN ay naka-encrypt gamit ang isang per-device key na itinatago sa platform keystore (iOS Keychain, Android Keystore) sa halip na sa karaniwang imbakan ng app.
 
-Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay hindi kailanman umaalis sa iyong device, maliban bilang recovery phrase na piniling isulat mo. Hindi namin ito hawak at hindi namin ito maaaring bawiin para sa iyo. Kung mawala ito, ang mga mensaheng ipinadala sa device na iyon ay hindi na mababasang muli — ninuman, kabilang kami.`,
+Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay ang iyong recovery phrase mismo. Hindi namin ito kailanman natatanggap at hindi namin ito maaaring bawiin para sa iyo. Umaalis ito sa iyong device sa dalawang paraan: bilang phrase na isinusulat mo, at bilang kopya na sine-save ng app sa sariling backup ng iyong telepono tuwing magsa-sign up o magsa-sign in ka, para maibalik ito ng bagong telepono nang hindi na tina-type — Google Block Store sa Android, iCloud Keychain sa iOS. Walang setting na makapagpapatay nito.
+
+Sa Android, sini-sync lang ang kopya sa iyong Google account kung may screen lock ang iyong telepono; ayon sa Google, end-to-end encrypted ito sa ganoong kaso kaya hindi ito mababasa ng Google. Kung walang screen lock, nananatili ito sa telepono at ginagamit lang para sa direktang paglipat sa bagong telepono. End-to-end encrypted ang iCloud Keychain. Sinumang makapagbubukas ng backup na iyon — ibig sabihin, may hawak ng iyong Google o Apple account kasama ang iyong screen lock o passcode — ay maaaring magbalik ng iyong account. Kung mawala mo pareho ang phrase at ang backup na iyon, wala na ang account, at ang mga mensaheng ipinadala rito ay hindi na mababasang muli — ninuman, kabilang kami.`,
     },
     {
       title: '6. Sino pa ang tumatanggap ng data',
@@ -3209,7 +3257,9 @@ Itulah keseluruhan senarai. Tiada analitik dan tiada laporan ranap. Apl dahulu m
 
 Pada peranti anda, mesej yang dicache, tetapan dan PIN kunci apl anda disulitkan dengan kunci setiap peranti yang disimpan dalam keystore platform (iOS Keychain, Android Keystore) berbanding storan apl biasa.
 
-Kunci peribadi yang menyahsulit mesej anda tidak pernah meninggalkan peranti anda, kecuali sebagai frasa pemulihan yang anda pilih untuk ditulis. Kami tidak menyimpannya dan tidak boleh memulihkannya untuk anda. Kehilangannya bermakna mesej yang dihantar ke peranti itu tidak boleh dibaca semula — oleh sesiapa, termasuk kami.`,
+Kunci peribadi yang menyahsulit mesej anda ialah frasa pemulihan anda sendiri. Kami tidak pernah menerimanya dan tidak boleh memulihkannya untuk anda. Ia meninggalkan peranti anda melalui dua cara: sebagai frasa yang anda tulis, dan sebagai salinan yang disimpan oleh aplikasi dalam sandaran telefon anda sendiri setiap kali anda mendaftar atau log masuk, supaya telefon baharu boleh memulihkannya tanpa menaip — Google Block Store pada Android, iCloud Keychain pada iOS. Tiada tetapan untuk mematikannya.
+
+Pada Android, salinan itu disegerakkan ke akaun Google anda hanya jika telefon anda mempunyai kunci skrin; menurut Google, ia kemudian disulitkan hujung ke hujung, jadi Google tidak dapat membacanya. Tanpa kunci skrin, ia kekal di dalam telefon dan hanya digunakan untuk pemindahan terus ke telefon baharu. iCloud Keychain disulitkan hujung ke hujung. Sesiapa yang dapat membuka sandaran itu — iaitu yang memegang akaun Google atau Apple anda bersama kunci skrin atau kod laluan anda — boleh memulihkan akaun anda. Jika anda kehilangan kedua-dua frasa dan sandaran itu, akaun itu hilang, dan mesej yang dihantar kepadanya tidak boleh dibaca semula — oleh sesiapa, termasuk kami.`,
     },
     {
       title: '6. Siapa lagi yang menerima data',
@@ -3339,7 +3389,9 @@ Typing indicators နှင့် read receipts များသည် သင်�
 
 သင့်စက်ပေါ်တွင်၊ cache လုပ်ထားသော စာများ၊ settings နှင့် သင့် app-lock PIN ကို ပုံမှန် app storage အစား platform keystore (iOS Keychain, Android Keystore) တွင် သိမ်းဆည်းထားသော per-device key ဖြင့် ကုဒ်ဝှက်ထားသည်။
 
-သင့်စာများကို decrypt ပြုလုပ်သည့် private key သည် သင်ရေးမှတ်ရန်ရွေးချယ်သော recovery phrase မှလွဲ၍ သင့်စက်မှ တစ်ခါမျှ ထွက်မသွားပါ။ ကျွန်ုပ်တို့ ၎င်းကိုမကိုင်ဆောင်ပါ၊ သင့်အတွက်ပြန်လည်ရယူပေးလည်း မရနိုင်ပါ။ ၎င်းကိုဆုံးရှုံးပါက ထိုစက်သို့ပို့ထားသောစာများကို ကျွန်ုပ်တို့အပါအဝင် မည်သူမျှ ထပ်မံဖတ်ရှုနိုင်တော့မည်မဟုတ်ပါ။`,
+သင့်စာများကို decrypt ပြုလုပ်သည့် private key သည် သင့် recovery phrase ပင်ဖြစ်သည်။ ကျွန်ုပ်တို့ ၎င်းကို ဘယ်တော့မှ မလက်ခံရရှိပါ၊ သင့်အတွက် ပြန်လည်ရယူပေးလည်း မရနိုင်ပါ။ ၎င်းသည် သင့်စက်မှ နည်းလမ်းနှစ်မျိုးဖြင့် ထွက်သွားသည်- သင်ရေးမှတ်ထားသော phrase အဖြစ်နှင့်၊ ဖုန်းအသစ်က စာရိုက်စရာမလိုဘဲ ပြန်ယူနိုင်စေရန် သင် sign up သို့မဟုတ် sign in ဝင်တိုင်း app က သင့်ဖုန်း၏ ကိုယ်ပိုင် backup ထဲသို့ သိမ်းဆည်းသော မိတ္တူအဖြစ် ဖြစ်သည် — Android တွင် Google Block Store၊ iOS တွင် iCloud Keychain။ ၎င်းကို ပိတ်နိုင်သည့် setting မရှိပါ။
+
+Android တွင် သင့်ဖုန်း၌ screen lock ရှိမှသာ မိတ္တူကို သင့် Google အကောင့်သို့ sync လုပ်ပါသည်။ Google ၏ ဖော်ပြချက်အရ ထိုအခါ ၎င်းသည် end-to-end encrypted ဖြစ်သောကြောင့် Google ဖတ်၍မရပါ။ screen lock မရှိပါက ဖုန်းပေါ်တွင်သာ ရှိနေပြီး ဖုန်းအသစ်သို့ တိုက်ရိုက်လွှဲပြောင်းရန်အတွက်သာ အသုံးပြုသည်။ iCloud Keychain သည် end-to-end encrypted ဖြစ်သည်။ ထို backup ကို ဖွင့်နိုင်သူ — ဆိုလိုသည်မှာ သင့် Google သို့မဟုတ် Apple အကောင့်နှင့်အတူ screen lock သို့မဟုတ် passcode ကို ကိုင်ဆောင်ထားသူ — သည် သင့်အကောင့်ကို ပြန်ယူနိုင်သည်။ phrase နှင့် ထို backup နှစ်ခုလုံး ဆုံးရှုံးပါက အကောင့်ပျောက်သွားပြီး ၎င်းထံ ပို့ထားသောစာများကို ကျွန်ုပ်တို့အပါအဝင် မည်သူမျှ ထပ်မံဖတ်ရှုနိုင်တော့မည်မဟုတ်ပါ။`,
     },
     {
       title: '6. အခြားမည်သူများက ဒေတာရရှိသနည်း',
@@ -3469,7 +3521,9 @@ Notifications များတွင် message စာသား မပါဝင�
 
 នៅលើឧបករណ៍របស់អ្នក សារដែលបានផ្ទុកសម្រាប់ការចូលប្រើលឿន ការកំណត់ និង PIN ចាក់សោកម្មវិធីរបស់អ្នកត្រូវបានអ៊ិនគ្រីបជាមួយកូនសោក្នុងឧបករណ៍នីមួយៗដែលរក្សាទុកនៅក្នុងឃ្លាំងគ្រាប់ចុចវេទិកា (iOS Keychain, Android Keystore) ជំនួសឱ្យផ្ទុកកម្មវិធីធម្មតា។
 
-កូនសោឯកជនដែលឌិគ្រីបសាររបស់អ្នកមិនចេញពីឧបករណ៍របស់អ្នកឡើយ លើកលែងតែជាឃ្លាសង្គ្រោះដែលអ្នកជ្រើសរើសសរសេរចុះ។ យើងមិនកាន់កាប់វា ហើយមិនអាចយកវាមកវិញឱ្យអ្នកបានទេ។ បើបាត់វា សារដែលបានផ្ញើទៅឧបករណ៍នោះមិនអាចអានឡើងវិញបានទេ — ដោយនរណាម្នាក់ រួមទាំងយើងផងដែរ។`,
+កូនសោឯកជនដែលឌិគ្រីបសាររបស់អ្នក គឺជាឃ្លាសង្គ្រោះរបស់អ្នកផ្ទាល់។ យើងមិនដែលទទួលបានវាទេ ហើយមិនអាចយកវាមកវិញឱ្យអ្នកបានទេ។ វាចេញពីឧបករណ៍របស់អ្នកតាមពីរផ្លូវ៖ ជាឃ្លាដែលអ្នកសរសេរចុះ និងជាច្បាប់ចម្លងដែលកម្មវិធីរក្សាទុកក្នុងការបម្រុងទុករបស់ទូរស័ព្ទអ្នកផ្ទាល់ រាល់ពេលអ្នកចុះឈ្មោះ ឬចូលគណនី ដើម្បីឱ្យទូរស័ព្ទថ្មីអាចស្ដារវាបានដោយមិនចាំបាច់វាយបញ្ចូល — Google Block Store នៅលើ Android និង iCloud Keychain នៅលើ iOS។ គ្មានការកំណត់ណាមួយដែលអាចបិទការងារនេះបានទេ។
+
+នៅលើ Android ច្បាប់ចម្លងនេះត្រូវបានធ្វើសមកាលកម្មទៅគណនី Google របស់អ្នក លុះត្រាតែទូរស័ព្ទមានការចាក់សោអេក្រង់ ហើយតាមការបញ្ជាក់របស់ Google វាត្រូវបានអ៊ិនគ្រីបពីចុងដល់ចុងនៅពេលនោះ ដូច្នេះ Google មិនអាចអានវាបានទេ។ បើគ្មានការចាក់សោអេក្រង់ វានៅតែលើទូរស័ព្ទ ហើយប្រើតែសម្រាប់ផ្ទេរដោយផ្ទាល់ទៅទូរស័ព្ទថ្មីប៉ុណ្ណោះ។ iCloud Keychain ត្រូវបានអ៊ិនគ្រីបពីចុងដល់ចុង។ អ្នកណាដែលអាចបើកការបម្រុងទុកនោះបាន — គឺអ្នកដែលមានគណនី Google ឬ Apple របស់អ្នក រួមជាមួយការចាក់សោអេក្រង់ ឬលេខសម្ងាត់ — អាចស្ដារគណនីរបស់អ្នកបាន។ បើអ្នកបាត់ទាំងឃ្លា និងការបម្រុងទុកនោះ គណនីនឹងបាត់បង់ ហើយសារដែលបានផ្ញើទៅវាមិនអាចអានឡើងវិញបានទេ — ដោយនរណាម្នាក់ រួមទាំងយើងផងដែរ។`,
     },
     {
       title: '6. អ្នកណាផ្សេងទៀតទទួលបានទិន្នន័យ',
@@ -3599,7 +3653,9 @@ Cloudflare Realtime ក៏មិនមានកុងតាក់ដែរ។ �
 
 ຢູ່ອຸປະກອນຂອງທ່ານ, ຂໍ້ຄວາມທີ່ບັນທຶກໄວ້ຊົ່ວຄາວ, ການຕັ້ງຄ່າ ແລະ PIN ລັອກແອັບຂອງທ່ານຖືກເຂົ້າລະຫັດດ້ວຍກະແຈສະເພາະອຸປະກອນທີ່ເກັບໄວ້ໃນບ່ອນເກັບກະແຈຂອງແພລດຟອມ (iOS Keychain, Android Keystore) ແທນທີ່ຈະເປັນບ່ອນເກັບຂໍ້ມູນແອັບທຳມະດາ.
 
-ກະແຈສ່ວນຕົວທີ່ຖອດລະຫັດຂໍ້ຄວາມຂອງທ່ານບໍ່ເຄີຍອອກຈາກອຸປະກອນຂອງທ່ານເລີຍ, ຍົກເວັ້ນເປັນວະລີກູ້ຄືນທີ່ທ່ານເລືອກທີ່ຈະຂຽນລົງໄວ້. ພວກເຮົາບໍ່ຖືມັນໄວ້ ແລະ ບໍ່ສາມາດກູ້ຄືນມັນໃຫ້ທ່ານໄດ້. ຖ້າເສຍມັນໄປ, ຂໍ້ຄວາມທີ່ສົ່ງໄປຫາອຸປະກອນນັ້ນຈະບໍ່ສາມາດອ່ານໄດ້ອີກ — ໂດຍໃຜກໍ່ຕາມ, ລວມທັງພວກເຮົາ.`,
+ກະແຈສ່ວນຕົວທີ່ຖອດລະຫັດຂໍ້ຄວາມຂອງທ່ານກໍຄືວະລີກູ້ຄືນຂອງທ່ານເອງ. ພວກເຮົາບໍ່ເຄີຍໄດ້ຮັບມັນ ແລະ ບໍ່ສາມາດກູ້ຄືນມັນໃຫ້ທ່ານໄດ້. ມັນອອກຈາກອຸປະກອນຂອງທ່ານໄດ້ສອງທາງ: ເປັນວະລີທີ່ທ່ານຂຽນລົງໄວ້, ແລະ ເປັນສຳເນົາທີ່ແອັບບັນທຶກໄວ້ໃນການສຳຮອງຂໍ້ມູນຂອງໂທລະສັບເອງທຸກຄັ້ງທີ່ທ່ານລົງທະບຽນ ຫຼື ເຂົ້າສູ່ລະບົບ ເພື່ອໃຫ້ໂທລະສັບໃໝ່ກູ້ຄືນໄດ້ໂດຍບໍ່ຕ້ອງພິມ — Google Block Store ໃນ Android, iCloud Keychain ໃນ iOS. ບໍ່ມີການຕັ້ງຄ່າໃດທີ່ປິດສິ່ງນີ້ໄດ້.
+
+ໃນ Android, ສຳເນົາຈະຊິງໄປຫາບັນຊີ Google ຂອງທ່ານກໍຕໍ່ເມື່ອໂທລະສັບມີການລັອກໜ້າຈໍເທົ່ານັ້ນ; ຕາມທີ່ Google ລະບຸ, ເມື່ອນັ້ນມັນຖືກເຂົ້າລະຫັດແຕ່ຕົ້ນທາງຫາປາຍທາງ ດັ່ງນັ້ນ Google ຈຶ່ງອ່ານບໍ່ໄດ້. ຖ້າບໍ່ມີການລັອກໜ້າຈໍ, ມັນຈະຢູ່ໃນໂທລະສັບ ແລະ ໃຊ້ພຽງເພື່ອໂອນກົງໄປຫາໂທລະສັບໃໝ່ເທົ່ານັ້ນ. iCloud Keychain ຖືກເຂົ້າລະຫັດແຕ່ຕົ້ນທາງຫາປາຍທາງ. ໃຜກໍຕາມທີ່ເປີດການສຳຮອງນັ້ນໄດ້ — ຄືຜູ້ທີ່ມີບັນຊີ Google ຫຼື Apple ຂອງທ່ານພ້ອມກັບລັອກໜ້າຈໍ ຫຼື ລະຫັດຜ່ານ — ສາມາດກູ້ຄືນບັນຊີຂອງທ່ານໄດ້. ຖ້າທ່ານເສຍທັງວະລີ ແລະ ການສຳຮອງນັ້ນ, ບັນຊີກໍຈະຫາຍໄປ, ແລະ ຂໍ້ຄວາມທີ່ສົ່ງຫາມັນຈະບໍ່ສາມາດອ່ານໄດ້ອີກ — ໂດຍໃຜກໍ່ຕາມ, ລວມທັງພວກເຮົາ.`,
     },
     {
       title: '6. ໃຜອີກແດ່ທີ່ໄດ້ຮັບຂໍ້ມູນ',
@@ -3729,7 +3785,9 @@ Cloudflare Realtime ກໍ່ບໍ່ມີສະວິດເຊັ່ນກັ
 
 உங்கள் சாதனத்தில், கேச் செய்யப்பட்ட செய்திகள், அமைப்புகள் மற்றும் உங்கள் ஆப்-லாக் பின் சாதாரண ஆப் சேமிப்பிற்கு பதிலாக பிளாட்ஃபார்ம் கீஸ்டோரில் (iOS Keychain, Android Keystore) வைக்கப்பட்டுள்ள ஒரு சாதன-வாரியான திறவுகோலுடன் குறியாக்கம் செய்யப்பட்டுள்ளது.
 
-உங்கள் செய்திகளை மறைகுறியாக்கம் நீக்கும் தனிப்பட்ட திறவுகோல் உங்கள் சாதனத்தை விட்டு ஒருபோதும் வெளியேறாது, நீங்கள் எழுத தேர்ந்தெடுக்கும் மீட்பு சொற்றொடராக தவிர. நாங்கள் அதை வைத்திருக்கவில்லை, உங்களுக்காக அதை மீட்டெடுக்கவும் முடியாது. அதை இழந்தால், அந்த சாதனத்திற்கு அனுப்பப்பட்ட செய்திகளை மீண்டும் படிக்க முடியாது — யாராலும், எங்களை உட்பட.`,
+உங்கள் செய்திகளை மறைகுறியாக்கம் நீக்கும் தனிப்பட்ட திறவுகோல்தான் உங்கள் மீட்பு சொற்றொடர். நாங்கள் அதை ஒருபோதும் பெறுவதில்லை, உங்களுக்காக அதை மீட்டெடுக்கவும் முடியாது. அது உங்கள் சாதனத்தை இரண்டு வழிகளில் விட்டு வெளியேறுகிறது: நீங்கள் எழுதி வைக்கும் சொற்றொடராக, மேலும் புதிய தொலைபேசி தட்டச்சு செய்யாமலேயே அதை மீட்டெடுக்க, நீங்கள் பதிவுசெய்யும் அல்லது உள்நுழையும் ஒவ்வொரு முறையும் செயலி உங்கள் தொலைபேசியின் சொந்த காப்புப்பிரதியில் சேமிக்கும் நகலாக — Android-இல் Google Block Store, iOS-இல் iCloud Keychain. இதை அணைக்கும் அமைப்பு எதுவும் இல்லை.
+
+Android-இல், உங்கள் தொலைபேசியில் திரைப் பூட்டு இருந்தால் மட்டுமே நகல் உங்கள் Google கணக்குடன் ஒத்திசைக்கப்படும்; அப்போது அது முழுமையாக மறைகுறியாக்கப்பட்டிருக்கும் என்று Google கூறுகிறது, எனவே Google அதைப் படிக்க முடியாது. திரைப் பூட்டு இல்லையென்றால் அது தொலைபேசியிலேயே இருக்கும், புதிய தொலைபேசிக்கு நேரடியாக மாற்றுவதற்கு மட்டுமே பயன்படும். iCloud Keychain முழுமையாக மறைகுறியாக்கப்பட்டது. அந்தக் காப்புப்பிரதியைத் திறக்கக்கூடிய எவரும் — அதாவது உங்கள் Google அல்லது Apple கணக்கும் உங்கள் திரைப் பூட்டு அல்லது கடவுக்குறியீடும் உள்ளவர் — உங்கள் கணக்கை மீட்டெடுக்கலாம். சொற்றொடரையும் அந்தக் காப்புப்பிரதியையும் இரண்டையும் இழந்தால், கணக்கு போய்விடும், அதற்கு அனுப்பப்பட்ட செய்திகளை மீண்டும் படிக்க முடியாது — யாராலும், எங்களை உட்பட.`,
     },
     {
       title: '6. வேறு யார் தரவைப் பெறுகிறார்கள்',
@@ -3859,7 +3917,9 @@ Cloudflare Realtime-க்கும் சுவிட்ச் இல்லை.
 
 మీ పరికరంలో, కాష్ చేయబడిన సందేశాలు, సెట్టింగ్‌లు మరియు మీ యాప్-లాక్ PIN సాధారణ యాప్ నిల్వకు బదులుగా ప్లాట్‌ఫారమ్ కీస్టోర్‌లో (iOS Keychain, Android Keystore) ఉంచబడిన పర్-డివైస్ కీతో గుప్తీకరించబడతాయి.
 
-మీ సందేశాలను డిక్రిప్ట్ చేసే ప్రైవేట్ కీ మీరు వ్రాయాలని ఎంచుకున్న పునరుద్ధరణ పదబంధం తప్ప మీ పరికరాన్ని ఎప్పుడూ వదిలిపెట్టదు. మేము దానిని కలిగి ఉండము మరియు మీ కోసం దానిని తిరిగి పొందలేము. దాన్ని కోల్పోతే, ఆ పరికరానికి పంపిన సందేశాలను మళ్లీ చదవలేరు — మమ్మల్ని కలుపుకొని ఎవరూ కూడా.`,
+మీ సందేశాలను డిక్రిప్ట్ చేసే ప్రైవేట్ కీ మీ పునరుద్ధరణ పదబంధమే. మేము దాన్ని ఎప్పుడూ స్వీకరించము, మీ కోసం దాన్ని తిరిగి పొందలేము. అది మీ పరికరాన్ని రెండు విధాలుగా వదిలిపెడుతుంది: మీరు రాసుకునే పదబంధంగా, మరియు కొత్త ఫోన్ టైప్ చేయకుండానే దాన్ని పునరుద్ధరించగలిగేలా మీరు సైన్ అప్ లేదా సైన్ ఇన్ చేసిన ప్రతిసారీ యాప్ మీ ఫోన్ సొంత బ్యాకప్‌లో సేవ్ చేసే కాపీగా — Androidలో Google Block Store, iOSలో iCloud Keychain. దీన్ని ఆపివేసే సెట్టింగ్ ఏదీ లేదు.
+
+Androidలో, మీ ఫోన్‌కు స్క్రీన్ లాక్ ఉంటేనే కాపీ మీ Google ఖాతాకు సింక్ అవుతుంది; అప్పుడు అది ఎండ్-టు-ఎండ్ ఎన్‌క్రిప్ట్ అయి ఉంటుందని Google చెబుతోంది, కాబట్టి Google దాన్ని చదవలేదు. స్క్రీన్ లాక్ లేకపోతే అది ఫోన్‌లోనే ఉంటుంది, కొత్త ఫోన్‌కు నేరుగా బదిలీ చేయడానికి మాత్రమే ఉపయోగపడుతుంది. iCloud Keychain ఎండ్-టు-ఎండ్ ఎన్‌క్రిప్ట్ చేయబడింది. ఆ బ్యాకప్‌ను తెరవగలిగే ఎవరైనా — అంటే మీ Google లేదా Apple ఖాతాతో పాటు మీ స్క్రీన్ లాక్ లేదా పాస్‌కోడ్ ఉన్నవారు — మీ ఖాతాను పునరుద్ధరించగలరు. పదబంధాన్ని, ఆ బ్యాకప్‌ను రెండింటినీ కోల్పోతే ఖాతా పోతుంది, దానికి పంపిన సందేశాలను మళ్లీ చదవలేరు — మమ్మల్ని కలుపుకొని ఎవరూ కూడా.`,
     },
     {
       title: '6. మరెవరు డేటాను స్వీకరిస్తారు',
@@ -3989,7 +4049,9 @@ Cloudflare Realtime‌కు కూడా స్విచ్ లేదు. చ�
 
 तुमच्या डिव्हाइसवर, कॅश केलेले संदेश, सेटिंग्ज, आणि तुमचा अॅप-लॉक पिन सामान्य अॅप स्टोरेजऐवजी प्लॅटफॉर्म कीस्टोअरमध्ये (iOS Keychain, Android Keystore) ठेवलेल्या प्रति-डिव्हाइस कीने एन्क्रिप्ट केलेले आहेत.
 
-तुमचे संदेश डिक्रिप्ट करणारी खाजगी की तुम्ही लिहून ठेवण्याचे निवडलेल्या पुनर्प्राप्ती वाक्यांशाशिवाय तुमचे डिव्हाइस कधीही सोडत नाही. आम्ही ती ठेवत नाही आणि तुमच्यासाठी ती पुनर्प्राप्त करू शकत नाही. ती हरवल्यास, त्या डिव्हाइसला पाठवलेले संदेश पुन्हा वाचता येणार नाहीत — आम्हासह कोणीही.`,
+तुमचे संदेश डिक्रिप्ट करणारी खाजगी की म्हणजेच तुमचा पुनर्प्राप्ती वाक्यांश. आम्हाला ती कधीही मिळत नाही आणि तुमच्यासाठी ती पुनर्प्राप्त करू शकत नाही. ती तुमचे डिव्हाइस दोन प्रकारे सोडते: तुम्ही लिहून ठेवलेल्या वाक्यांशाच्या रूपात, आणि नवा फोन टाइप न करता ती पुनर्संचयित करू शकावा म्हणून, तुम्ही प्रत्येक वेळी साइन अप किंवा साइन इन करता तेव्हा अ‍ॅप तुमच्या फोनच्या स्वतःच्या बॅकअपमध्ये जतन करतो त्या प्रतीच्या रूपात — Android वर Google Block Store, iOS वर iCloud Keychain. हे बंद करण्याचे कोणतेही सेटिंग नाही.
+
+Android वर, तुमच्या फोनला स्क्रीन लॉक असेल तरच ही प्रत तुमच्या Google खात्याशी सिंक होते; Google च्या म्हणण्यानुसार तेव्हा ती एंड-टू-एंड एन्क्रिप्टेड असते, त्यामुळे Google ती वाचू शकत नाही. स्क्रीन लॉक नसल्यास ती फोनवरच राहते आणि फक्त नव्या फोनवर थेट हस्तांतरणासाठी वापरली जाते. iCloud Keychain एंड-टू-एंड एन्क्रिप्टेड आहे. तो बॅकअप उघडू शकणारा कोणीही — म्हणजे ज्याच्याकडे तुमचे Google किंवा Apple खाते आणि तुमचा स्क्रीन लॉक किंवा पासकोड आहे — तुमचे खाते पुनर्संचयित करू शकतो. वाक्यांश आणि तो बॅकअप दोन्ही हरवल्यास खाते गेले, आणि त्याला पाठवलेले संदेश पुन्हा वाचता येणार नाहीत — आम्हासह कोणीही.`,
     },
     {
       title: '6. इतर कोण डेटा प्राप्त करतो',
@@ -4119,7 +4181,9 @@ Cloudflare Realtime लाही स्विच नाही. बहुते�
 
 ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਉੱਤੇ, ਕੈਸ਼ ਕੀਤੇ ਸੁਨੇਹੇ, ਸੈਟਿੰਗਾਂ, ਅਤੇ ਤੁਹਾਡਾ ਐਪ-ਲਾਕ PIN ਸਧਾਰਨ ਐਪ ਸਟੋਰੇਜ ਦੀ ਬਜਾਏ ਪਲੇਟਫਾਰਮ ਕੀਸਟੋਰ (iOS Keychain, Android Keystore) ਵਿੱਚ ਰੱਖੀ ਗਈ ਪ੍ਰਤੀ-ਡਿਵਾਈਸ ਕੁੰਜੀ ਨਾਲ ਇਨਕ੍ਰਿਪਟ ਕੀਤੇ ਗਏ ਹਨ।
 
-ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਜੋ ਤੁਹਾਡੇ ਸੁਨੇਹਿਆਂ ਨੂੰ ਡੀਕ੍ਰਿਪਟ ਕਰਦੀ ਹੈ ਕਦੇ ਵੀ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਨੂੰ ਨਹੀਂ ਛੱਡਦੀ, ਸਿਵਾਏ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਵਜੋਂ ਜੋ ਤੁਸੀਂ ਲਿਖਣਾ ਚੁਣਦੇ ਹੋ। ਅਸੀਂ ਇਸਨੂੰ ਨਹੀਂ ਰੱਖਦੇ ਅਤੇ ਤੁਹਾਡੇ ਲਈ ਇਸਨੂੰ ਮੁੜ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦੇ। ਇਸਨੂੰ ਗੁਆਉਣ ਉੱਤੇ, ਉਸ ਡਿਵਾਈਸ ਨੂੰ ਭੇਜੇ ਸੁਨੇਹੇ ਦੁਬਾਰਾ ਨਹੀਂ ਪੜ੍ਹੇ ਜਾ ਸਕਦੇ — ਕਿਸੇ ਦੁਆਰਾ ਵੀ, ਸਾਡੇ ਸਮੇਤ।`,
+ਤੁਹਾਡੇ ਸੁਨੇਹਿਆਂ ਨੂੰ ਡੀਕ੍ਰਿਪਟ ਕਰਨ ਵਾਲੀ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀ ਹੀ ਤੁਹਾਡਾ ਰਿਕਵਰੀ ਵਾਕੰਸ਼ ਹੈ। ਸਾਨੂੰ ਇਹ ਕਦੇ ਨਹੀਂ ਮਿਲਦੀ ਅਤੇ ਅਸੀਂ ਤੁਹਾਡੇ ਲਈ ਇਸਨੂੰ ਮੁੜ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦੇ। ਇਹ ਦੋ ਤਰੀਕਿਆਂ ਨਾਲ ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਛੱਡਦੀ ਹੈ: ਉਸ ਵਾਕੰਸ਼ ਵਜੋਂ ਜੋ ਤੁਸੀਂ ਲਿਖ ਲੈਂਦੇ ਹੋ, ਅਤੇ ਇੱਕ ਕਾਪੀ ਵਜੋਂ ਜੋ ਐਪ ਹਰ ਵਾਰ ਸਾਈਨ ਅੱਪ ਜਾਂ ਸਾਈਨ ਇਨ ਕਰਨ ਉੱਤੇ ਤੁਹਾਡੇ ਫ਼ੋਨ ਦੇ ਆਪਣੇ ਬੈਕਅੱਪ ਵਿੱਚ ਸੰਭਾਲਦੀ ਹੈ, ਤਾਂ ਜੋ ਨਵਾਂ ਫ਼ੋਨ ਇਸਨੂੰ ਟਾਈਪ ਕੀਤੇ ਬਿਨਾਂ ਬਹਾਲ ਕਰ ਸਕੇ — Android ਉੱਤੇ Google Block Store, iOS ਉੱਤੇ iCloud Keychain। ਇਸਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਕੋਈ ਸੈਟਿੰਗ ਨਹੀਂ ਹੈ।
+
+Android ਉੱਤੇ ਇਹ ਕਾਪੀ ਤੁਹਾਡੇ Google ਖਾਤੇ ਨਾਲ ਸਿਰਫ਼ ਤਾਂ ਹੀ ਸਿੰਕ ਹੁੰਦੀ ਹੈ ਜੇ ਤੁਹਾਡੇ ਫ਼ੋਨ ਵਿੱਚ ਸਕ੍ਰੀਨ ਲੌਕ ਹੋਵੇ; Google ਮੁਤਾਬਕ ਤਦ ਇਹ ਐਂਡ-ਟੂ-ਐਂਡ ਇਨਕ੍ਰਿਪਟਡ ਹੁੰਦੀ ਹੈ, ਇਸ ਲਈ Google ਇਸਨੂੰ ਨਹੀਂ ਪੜ੍ਹ ਸਕਦਾ। ਸਕ੍ਰੀਨ ਲੌਕ ਤੋਂ ਬਿਨਾਂ ਇਹ ਫ਼ੋਨ ਉੱਤੇ ਹੀ ਰਹਿੰਦੀ ਹੈ ਅਤੇ ਸਿਰਫ਼ ਨਵੇਂ ਫ਼ੋਨ ਵਿੱਚ ਸਿੱਧੇ ਤਬਾਦਲੇ ਲਈ ਵਰਤੀ ਜਾਂਦੀ ਹੈ। iCloud Keychain ਐਂਡ-ਟੂ-ਐਂਡ ਇਨਕ੍ਰਿਪਟਡ ਹੈ। ਜੋ ਵੀ ਉਸ ਬੈਕਅੱਪ ਨੂੰ ਖੋਲ੍ਹ ਸਕੇ — ਯਾਨੀ ਜਿਸ ਕੋਲ ਤੁਹਾਡਾ Google ਜਾਂ Apple ਖਾਤਾ ਅਤੇ ਤੁਹਾਡਾ ਸਕ੍ਰੀਨ ਲੌਕ ਜਾਂ ਪਾਸਕੋਡ ਹੋਵੇ — ਉਹ ਤੁਹਾਡਾ ਖਾਤਾ ਬਹਾਲ ਕਰ ਸਕਦਾ ਹੈ। ਜੇ ਵਾਕੰਸ਼ ਅਤੇ ਉਹ ਬੈਕਅੱਪ ਦੋਵੇਂ ਗੁਆਚ ਜਾਣ, ਤਾਂ ਖਾਤਾ ਖ਼ਤਮ ਹੋ ਜਾਂਦਾ ਹੈ, ਅਤੇ ਉਸਨੂੰ ਭੇਜੇ ਸੁਨੇਹੇ ਦੁਬਾਰਾ ਨਹੀਂ ਪੜ੍ਹੇ ਜਾ ਸਕਦੇ — ਕਿਸੇ ਦੁਆਰਾ ਵੀ, ਸਾਡੇ ਸਮੇਤ।`,
     },
     {
       title: '6. ਹੋਰ ਕੌਣ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹੈ',
@@ -4249,7 +4313,9 @@ Cloudflare Realtime ਦਾ ਵੀ ਕੋਈ ਸਵਿੱਚ ਨਹੀਂ ਹੈ�
 
 तपाईंको यन्त्रमा, क्यास गरिएका सन्देशहरू, सेटिङहरू, र तपाईंको एप-लक PIN सामान्य एप भण्डारणको सट्टा प्लेटफर्म किस्टोर (iOS Keychain, Android Keystore) मा राखिएको प्रति-यन्त्र कुञ्जीले इन्क्रिप्ट गरिएका छन्।
 
-तपाईंको सन्देशहरू डिक्रिप्ट गर्ने निजी कुञ्जी तपाईंले लेख्न रोज्नुभएको पुनःप्राप्ति वाक्यांशको रूपमा बाहेक तपाईंको यन्त्रबाट कहिल्यै बाहिर जाँदैन। हामी यसलाई राख्दैनौं र तपाईंको लागि यसलाई फिर्ता ल्याउन सक्दैनौं। यो हराएमा, त्यो यन्त्रमा पठाइएका सन्देशहरू फेरि पढ्न सकिँदैन — हामीलगायत कसैले पनि।`,
+तपाईंका सन्देशहरू डिक्रिप्ट गर्ने निजी कुञ्जी नै तपाईंको पुनःप्राप्ति वाक्यांश हो। हामी यसलाई कहिल्यै प्राप्त गर्दैनौं र तपाईंको लागि यसलाई फिर्ता ल्याउन सक्दैनौं। यो दुई तरिकाले तपाईंको यन्त्रबाट बाहिर जान्छ: तपाईंले लेखेर राख्ने वाक्यांशको रूपमा, र नयाँ फोनले टाइप नगरी नै यसलाई पुनर्स्थापना गर्न सकोस् भनेर तपाईंले साइन अप वा साइन इन गर्दा हरेक पटक एपले तपाईंको फोनको आफ्नै ब्याकअपमा सुरक्षित गर्ने प्रतिलिपिको रूपमा — Android मा Google Block Store, iOS मा iCloud Keychain। यसलाई बन्द गर्ने कुनै सेटिङ छैन।
+
+Android मा, तपाईंको फोनमा स्क्रिन लक भएमा मात्र यो प्रतिलिपि तपाईंको Google खातासँग सिंक हुन्छ; Google का अनुसार त्यसबेला यो एन्ड-टु-एन्ड इन्क्रिप्टेड हुन्छ, त्यसैले Google ले यसलाई पढ्न सक्दैन। स्क्रिन लक नभएमा यो फोनमै रहन्छ र नयाँ फोनमा सिधा स्थानान्तरणका लागि मात्र प्रयोग हुन्छ। iCloud Keychain एन्ड-टु-एन्ड इन्क्रिप्टेड छ। त्यो ब्याकअप खोल्न सक्ने जो कोही — अर्थात् जोसँग तपाईंको Google वा Apple खाता र तपाईंको स्क्रिन लक वा पासकोड छ — उसले तपाईंको खाता पुनर्स्थापना गर्न सक्छ। वाक्यांश र त्यो ब्याकअप दुवै हराएमा खाता जान्छ, र त्यसमा पठाइएका सन्देशहरू फेरि पढ्न सकिँदैन — हामीलगायत कसैले पनि।`,
     },
     {
       title: '6. अरू कसले डेटा प्राप्त गर्छ',
@@ -4379,7 +4445,9 @@ Cloudflare Realtime को पनि कुनै स्विच छैन। �
 
 ඔබේ උපාංගයේ, කෑෂ් කළ පණිවිඩ, සැකසුම් සහ ඔබේ යෙදුම් අගුළු PIN සාමාන්‍ය යෙදුම් ගබඩාවට වඩා වේදිකා යතුරු ගබඩාවක (iOS Keychain, Android Keystore) තබා ඇති උපාංග-විශේෂිත යතුරකින් සංකේතාංකනය කර ඇත.
 
-ඔබේ පණිවිඩ විකේතනය කරන පුද්ගලික යතුර ඔබ ලියා තැබීමට තෝරාගන්නා නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩය හැර ඔබේ උපාංගය කිසි විටෙකත් හැර නොයයි. අප එය තබා නොගනිමු, ඔබ වෙනුවෙන් එය නැවත ලබා ගත නොහැක. එය නැති වුවහොත්, එම උපාංගයට යවන ලද පණිවිඩ නැවත කියවිය නොහැක — අප ඇතුළුව කිසිවෙකුට වත්.`,
+ඔබේ පණිවිඩ විකේතනය කරන පුද්ගලික යතුර ඔබේ නැවත ලබාගැනීමේ වාක්‍ය ඛණ්ඩයම වේ. අපට එය කිසි විටෙකත් ලැබෙන්නේ නැත, ඔබ වෙනුවෙන් එය නැවත ලබා ගත ද නොහැක. එය ක්‍රම දෙකකින් ඔබේ උපාංගය හැර යයි: ඔබ ලියා තබාගන්නා වාක්‍ය ඛණ්ඩය ලෙස, සහ නව දුරකථනයකට ටයිප් නොකර එය ප්‍රතිසාධනය කළ හැකි වන පරිදි, ඔබ ලියාපදිංචි වන හෝ පුරනය වන සෑම වරකම යෙදුම ඔබේ දුරකථනයේම උපස්ථයට සුරකින පිටපතක් ලෙස — Android හි Google Block Store, iOS හි iCloud Keychain. මෙය අක්‍රිය කරන සැකසුමක් නොමැත.
+
+Android හි, ඔබේ දුරකථනයට තිර අගුලක් ඇත්නම් පමණක් පිටපත ඔබේ Google ගිණුමට සමමුහුර්ත වේ; Google පවසන පරිදි එවිට එය අන්තයේ සිට අන්තය දක්වා සංකේතනය කර ඇති බැවින් Google හට එය කියවිය නොහැක. තිර අගුලක් නොමැති නම් එය දුරකථනයේම රැඳී, නව දුරකථනයකට සෘජු මාරු කිරීම සඳහා පමණක් භාවිත වේ. iCloud Keychain අන්තයේ සිට අන්තය දක්වා සංකේතනය කර ඇත. එම උපස්ථය විවෘත කළ හැකි ඕනෑම අයෙකුට — එනම් ඔබේ Google හෝ Apple ගිණුම සමඟ ඔබේ තිර අගුල හෝ මුරකේතය ඇති අයෙකුට — ඔබේ ගිණුම ප්‍රතිසාධනය කළ හැක. වාක්‍ය ඛණ්ඩය සහ එම උපස්ථය යන දෙකම නැති වුවහොත් ගිණුම නැති වේ, එයට යවන ලද පණිවිඩ නැවත කියවිය නොහැක — අප ඇතුළුව කිසිවෙකුට වත්.`,
     },
     {
       title: '6. වෙනත් කවුරුන් දත්ත ලබන්නේද',
@@ -4509,7 +4577,9 @@ Hiyo ndiyo orodha nzima. Hakuna uchambuzi na hakuna kuripoti hitilafu. Programu 
 
 Kwenye kifaa chako, ujumbe uliohifadhiwa kwa muda, mipangilio, na PIN yako ya kufunga programu vimesimbwa kwa ufunguo wa kila kifaa uliowekwa katika hifadhi ya funguo za jukwaa (iOS Keychain, Android Keystore) badala ya hifadhi ya kawaida ya programu.
 
-Ufunguo wa faragha unaofungua ujumbe wako haondoki kamwe kwenye kifaa chako, isipokuwa kama kifungu cha kurejesha unachochagua kuandika. Hatukishikilii na hatuwezi kukirejesha kwa ajili yako. Ukipotea, ujumbe uliotumwa kwa kifaa hicho hauwezi kusomwa tena — na yeyote, ikiwa ni pamoja na sisi.`,
+Ufunguo wa faragha unaofungua ujumbe wako ndio kifungu chako cha kurejesha. Hatuupokei kamwe na hatuwezi kuurejesha kwa ajili yako. Huondoka kwenye kifaa chako kwa njia mbili: kama kifungu unachoandika, na kama nakala ambayo programu huihifadhi kwenye hifadhi rudufu ya simu yako yenyewe kila unapojisajili au kuingia, ili simu mpya iweze kuurejesha bila kuuandika — Google Block Store kwenye Android, iCloud Keychain kwenye iOS. Hakuna mpangilio unaozima hili.
+
+Kwenye Android, nakala husawazishwa na akaunti yako ya Google tu ikiwa simu yako ina kufuli ya skrini; kwa mujibu wa Google, wakati huo imesimbwa kutoka mwanzo hadi mwisho, kwa hiyo Google haiwezi kuisoma. Bila kufuli ya skrini hubaki kwenye simu na hutumika tu kuhamisha moja kwa moja kwenda simu mpya. iCloud Keychain imesimbwa kutoka mwanzo hadi mwisho. Yeyote anayeweza kufungua hifadhi rudufu hiyo — yaani mwenye akaunti yako ya Google au Apple pamoja na kufuli yako ya skrini au nambari ya siri — anaweza kurejesha akaunti yako. Ukipoteza kifungu na hifadhi rudufu hiyo vyote viwili, akaunti imepotea, na ujumbe uliotumwa kwayo hauwezi kusomwa tena — na yeyote, ikiwa ni pamoja na sisi.`,
     },
     {
       title: '6. Nani mwingine anapokea data',
@@ -4639,7 +4709,9 @@ Wannan ita ce jerin gaba ɗaya. Babu bincike da babu rahoton fadowa. Manhajar da
 
 A na'urarka, saƙonnin da aka ɓoye, saitunan, da PIN ɗin kulle manhajar an sanya musu lambar sirri da mabudin kowace na'ura da aka ajiye a keystore na dandali (iOS Keychain, Android Keystore) maimakon ajiyar manhaja ta yau da kullun.
 
-Mabudin sirri da ke buɗe saƙonninka ba ya taɓa barin na'urarka, sai dai a matsayin jimlar dawowa da ka zaɓi rubutawa. Ba mu riƙe shi ba kuma ba za mu iya dawo maka da shi ba. Idan ka rasa shi, saƙonnin da aka aika zuwa wannan na'ura ba za a iya sake karantawa ba — ta kowa, har da mu.`,
+Mabudin sirri da ke buɗe saƙonninka shi ne jimlar dawowarka. Ba mu taɓa karɓar sa ba kuma ba za mu iya dawo maka da shi ba. Yana barin na'urarka ta hanyoyi biyu: a matsayin jimlar da ka rubuta, da kuma a matsayin kwafi da manhajar ke adanawa a cikin ajiyar wayarka ta kanta duk lokacin da ka yi rajista ko ka shiga, domin sabuwar waya ta iya dawo da shi ba tare da ka rubuta ba — Google Block Store a Android, iCloud Keychain a iOS. Babu wani saiti da ke kashe wannan.
+
+A Android, ana daidaita kwafin da asusunka na Google ne kawai idan wayarka tana da makullin allo; a cewar Google, a lokacin an ɓoye shi daga farko zuwa ƙarshe, don haka Google ba za ta iya karanta shi ba. Idan babu makullin allo, yana zama a cikin wayar kuma ana amfani da shi ne kawai don canja shi kai tsaye zuwa sabuwar waya. iCloud Keychain an ɓoye shi daga farko zuwa ƙarshe. Duk wanda zai iya buɗe wannan ajiyar — wato wanda ke da asusunka na Google ko Apple tare da makullin allonka ko lambar sirrinka — zai iya dawo da asusunka. Idan ka rasa jimlar da wannan ajiyar gaba ɗaya, asusun ya tafi, kuma saƙonnin da aka aika masa ba za a iya sake karantawa ba — ta kowa, har da mu.`,
     },
     {
       title: '6. Su waye kuma ke karɓar bayanai',
@@ -4769,7 +4841,9 @@ Idan ka shigar da sabuntawar, zai maye gurbin app a wurinsa ta amfani da maɓall
 
 በመሣሪያዎ ላይ፣ የተሸጎጡ መልዕክቶች፣ ቅንብሮች፣ እና የመተግበሪያ ቁልፍ PIN ከመደበኛው የመተግበሪያ ማከማቻ ይልቅ በመድረክ ቁልፍ ማከማቻ (iOS Keychain, Android Keystore) ውስጥ በተያዘ በእያንዳንዱ መሣሪያ ቁልፍ ተመስጥረዋል።
 
-መልዕክቶችዎን የሚፈታው የግል ቁልፍ ለመጻፍ በሚመርጡት መልሶ ማግኛ ሐረግ ካልሆነ በስተቀር መሣሪያዎን በጭራሽ አይለቅም። እኛ አንይዘውም ለእርስዎም ልንመልሰው አንችልም። ካጡት፣ ወደዚያ መሣሪያ የተላኩ መልዕክቶች እንደገና ሊነበቡ አይችሉም — በማንም፣ እኛን ጨምሮ።`,
+መልዕክቶችዎን የሚፈታው የግል ቁልፍ ራሱ የመልሶ ማግኛ ሐረግዎ ነው። እኛ በጭራሽ አንቀበለውም ለእርስዎም ልንመልሰው አንችልም። መሣሪያዎን በሁለት መንገዶች ይለቃል፦ እርስዎ በሚጽፉት ሐረግ መልክ፣ እና አዲስ ስልክ ሳይተይቡ መልሶ እንዲያገኘው መተግበሪያው በተመዘገቡ ወይም በገቡ ቁጥር በስልክዎ የራሱ ምትኬ ውስጥ በሚያስቀምጠው ቅጂ መልክ — በ Android ላይ Google Block Store፣ በ iOS ላይ iCloud Keychain። ይህን የሚያጠፋ ቅንብር የለም።
+
+በ Android ላይ ቅጂው ከ Google መለያዎ ጋር የሚመሳሰለው ስልክዎ የማያ ገጽ መቆለፊያ ካለው ብቻ ነው፤ Google እንደሚለው ያኔ ከጫፍ እስከ ጫፍ የተመሰጠረ ስለሆነ Google ሊያነበው አይችልም። የማያ ገጽ መቆለፊያ ከሌለ ስልኩ ላይ ብቻ ይቆያል፣ ወደ አዲስ ስልክ በቀጥታ ለማስተላለፍ ብቻ ያገለግላል። iCloud Keychain ከጫፍ እስከ ጫፍ የተመሰጠረ ነው። ያንን ምትኬ መክፈት የሚችል ማንኛውም ሰው — ማለትም የ Google ወይም የ Apple መለያዎን ከማያ ገጽ መቆለፊያዎ ወይም ከይለፍ ኮድዎ ጋር የያዘ — መለያዎን መልሶ ማግኘት ይችላል። ሐረጉንም ያንን ምትኬም ሁለቱንም ካጡ መለያው ይጠፋል፣ ወደ እሱ የተላኩ መልዕክቶችም እንደገና ሊነበቡ አይችሉም — በማንም፣ እኛን ጨምሮ።`,
     },
     {
       title: '6. ሌላ ማን ውሂብ ይቀበላል',
@@ -4899,7 +4973,9 @@ Dat is de hele lijst. Er is geen analytics en geen crashrapportage. De app stuur
 
 Op je apparaat worden gecachete berichten, instellingen en je app-vergrendelings-pincode versleuteld met een per-apparaat-sleutel die wordt bewaard in de platformsleutelopslag (iOS Keychain, Android Keystore) in plaats van in gewone app-opslag.
 
-De privésleutel die je berichten ontsleutelt, verlaat je apparaat nooit, behalve als de herstelzin die je ervoor kiest om op te schrijven. Wij bewaren die niet en kunnen die niet voor je herstellen. Verlies je die, dan kunnen de berichten die naar dat apparaat zijn gestuurd nooit meer worden gelezen — door niemand, ons inbegrepen.`,
+De privésleutel die je berichten ontsleutelt, is je herstelzin zelf. Wij ontvangen die nooit en kunnen die niet voor je herstellen. Hij verlaat je apparaat op twee manieren: als de zin die je opschrijft, en als een kopie die de app bij elke registratie en aanmelding in de eigen back-up van je telefoon bewaart, zodat een nieuwe telefoon hem zonder typen kan herstellen — Google Block Store op Android, iCloud Keychain op iOS. Er is geen instelling die dit uitzet.
+
+Op Android wordt de kopie alleen met je Google-account gesynchroniseerd als je telefoon een schermvergrendeling heeft; volgens Google is die dan end-to-end versleuteld, zodat Google hem niet kan lezen. Zonder schermvergrendeling blijft hij op de telefoon en wordt hij alleen gebruikt voor een directe overdracht naar een nieuwe telefoon. iCloud Keychain is end-to-end versleuteld. Wie die back-up kan openen — dus wie je Google- of Apple-account heeft, samen met je schermvergrendeling of toegangscode — kan je account herstellen. Verlies je zowel de zin als die back-up, dan is het account weg, en kunnen de berichten die ernaar zijn gestuurd nooit meer worden gelezen — door niemand, ons inbegrepen.`,
     },
     {
       title: '6. Wie nog meer gegevens ontvangt',
@@ -5029,7 +5105,9 @@ Als je de update installeert, vervangt die de app ter plekke met dezelfde ondert
 
 Στη συσκευή σας, τα προσωρινά αποθηκευμένα μηνύματα, οι ρυθμίσεις και το PIN κλειδώματος εφαρμογής σας είναι κρυπτογραφημένα με ένα κλειδί ανά συσκευή που διατηρείται στο keystore της πλατφόρμας (iOS Keychain, Android Keystore) αντί για τον συνηθισμένο αποθηκευτικό χώρο εφαρμογών.
 
-Το ιδιωτικό κλειδί που αποκρυπτογραφεί τα μηνύματά σας δεν φεύγει ποτέ από τη συσκευή σας, εκτός ως η φράση ανάκτησης που επιλέγετε να σημειώσετε. Δεν το κρατάμε και δεν μπορούμε να το ανακτήσουμε για εσάς. Αν το χάσετε, τα μηνύματα που στάλθηκαν σε αυτή τη συσκευή δεν μπορούν να διαβαστούν ξανά — από κανέναν, συμπεριλαμβανομένων και εμάς.`,
+Το ιδιωτικό κλειδί που αποκρυπτογραφεί τα μηνύματά σας είναι η ίδια η φράση ανάκτησής σας. Δεν το λαμβάνουμε ποτέ και δεν μπορούμε να το ανακτήσουμε για εσάς. Φεύγει από τη συσκευή σας με δύο τρόπους: ως η φράση που σημειώνετε, και ως αντίγραφο που η εφαρμογή αποθηκεύει στο αντίγραφο ασφαλείας του ίδιου του τηλεφώνου σας σε κάθε εγγραφή ή σύνδεση, ώστε ένα νέο τηλέφωνο να μπορεί να το επαναφέρει χωρίς πληκτρολόγηση — Google Block Store στο Android, iCloud Keychain στο iOS. Δεν υπάρχει ρύθμιση που να το απενεργοποιεί.
+
+Στο Android το αντίγραφο συγχρονίζεται με τον λογαριασμό σας Google μόνο αν το τηλέφωνο έχει κλείδωμα οθόνης· σύμφωνα με την Google, τότε είναι κρυπτογραφημένο από άκρο σε άκρο, οπότε η Google δεν μπορεί να το διαβάσει. Χωρίς κλείδωμα οθόνης μένει στο τηλέφωνο και χρησιμοποιείται μόνο για απευθείας μεταφορά σε νέο τηλέφωνο. Το iCloud Keychain είναι κρυπτογραφημένο από άκρο σε άκρο. Όποιος μπορεί να ανοίξει αυτό το αντίγραφο ασφαλείας — δηλαδή έχει τον λογαριασμό σας Google ή Apple μαζί με το κλείδωμα οθόνης ή τον κωδικό σας — μπορεί να επαναφέρει τον λογαριασμό σας. Αν χάσετε και τη φράση και αυτό το αντίγραφο ασφαλείας, ο λογαριασμός χάνεται, και τα μηνύματα που στάλθηκαν σε αυτόν δεν μπορούν να διαβαστούν ξανά — από κανέναν, συμπεριλαμβανομένων και εμάς.`,
     },
     {
       title: '6. Ποιος άλλος λαμβάνει δεδομένα',
@@ -5159,7 +5237,9 @@ Det är hela listan. Det finns ingen analys och ingen kraschrapportering. Appen 
 
 På din enhet är cachade meddelanden, inställningar och din app-låskod krypterade med en nyckel per enhet som hålls i plattformens nyckelringen (iOS Keychain, Android Keystore) snarare än i vanlig applagring.
 
-Den privata nyckeln som dekrypterar dina meddelanden lämnar aldrig din enhet, förutom som återställningsfrasen du väljer att skriva ner. Vi håller den inte och kan inte återställa den åt dig. Förlorar du den kan meddelanden som skickats till den enheten inte läsas igen — av någon, inklusive oss.`,
+Den privata nyckeln som dekrypterar dina meddelanden är din återställningsfras. Vi tar aldrig emot den och kan inte återställa den åt dig. Den lämnar din enhet på två sätt: som frasen du skriver ner, och som en kopia som appen sparar i telefonens egen säkerhetskopia varje gång du registrerar dig eller loggar in, så att en ny telefon kan återställa den utan att du skriver in den — Google Block Store på Android, iCloud Keychain på iOS. Det finns ingen inställning som stänger av det.
+
+På Android synkas kopian till ditt Google-konto bara om telefonen har ett skärmlås; enligt Google är den då end-to-end-krypterad, så Google kan inte läsa den. Utan skärmlås stannar den på telefonen och används bara för en direkt överföring till en ny telefon. iCloud Keychain är end-to-end-krypterad. Den som kan öppna den säkerhetskopian — alltså den som har ditt Google- eller Apple-konto tillsammans med ditt skärmlås eller din lösenkod — kan återställa ditt konto. Förlorar du både frasen och den säkerhetskopian är kontot borta, och meddelanden som skickats till det kan inte läsas igen — av någon, inklusive oss.`,
     },
     {
       title: '6. Vem mer tar emot data',
@@ -5289,7 +5369,9 @@ Det er hele listen. Der er ingen analyse og ingen crashrapportering. Appen sendt
 
 På din enhed er cachede beskeder, indstillinger og din app-lås-PIN krypteret med en per-enhed-nøgle, der opbevares i platformens nøglelager (iOS Keychain, Android Keystore) frem for i almindelig applagring.
 
-Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed, undtagen som den gendannelsessætning, du vælger at skrive ned. Vi opbevarer den ikke og kan ikke gendanne den for dig. Mister du den, kan beskeder sendt til den enhed ikke læses igen — af nogen, os inkluderet.`,
+Den private nøgle, der dekrypterer dine beskeder, er din gendannelsessætning. Vi modtager den aldrig og kan ikke gendanne den for dig. Den forlader din enhed på to måder: som den sætning, du skriver ned, og som en kopi, appen gemmer i telefonens egen sikkerhedskopi, hver gang du opretter dig eller logger ind, så en ny telefon kan gendanne den uden indtastning — Google Block Store på Android, iCloud Keychain på iOS. Der er ingen indstilling, der slår det fra.
+
+På Android synkroniseres kopien kun til din Google-konto, hvis telefonen har skærmlås; ifølge Google er den så end-to-end-krypteret, så Google ikke kan læse den. Uden skærmlås bliver den på telefonen og bruges kun til en direkte overførsel til en ny telefon. iCloud Keychain er end-to-end-krypteret. Den, der kan åbne den sikkerhedskopi — altså har din Google- eller Apple-konto sammen med din skærmlås eller adgangskode — kan gendanne din konto. Mister du både sætningen og den sikkerhedskopi, er kontoen væk, og beskeder sendt til den kan ikke læses igen — af nogen, os inkluderet.`,
     },
     {
       title: '6. Hvem ellers modtager data',
@@ -5419,7 +5501,9 @@ Det er hele listen. Det finnes ingen analyse og ingen krasjrapportering. Appen p
 
 På enheten din er bufrede meldinger, innstillinger og app-lås-PIN-koden din kryptert med en per-enhet-nøkkel som holdes i plattformens nøkkellager (iOS Keychain, Android Keystore) i stedet for i vanlig applagring.
 
-Den private nøkkelen som dekrypterer meldingene dine, forlater aldri enheten din, bortsett fra som gjenopprettingsfrasen du velger å skrive ned. Vi holder den ikke og kan ikke gjenopprette den for deg. Mister du den, kan meldinger sendt til den enheten ikke leses igjen — av noen, oss inkludert.`,
+Den private nøkkelen som dekrypterer meldingene dine, er gjenopprettingsfrasen din. Vi mottar den aldri og kan ikke gjenopprette den for deg. Den forlater enheten din på to måter: som frasen du skriver ned, og som en kopi appen lagrer i telefonens egen sikkerhetskopi hver gang du registrerer deg eller logger inn, slik at en ny telefon kan gjenopprette den uten at du taster den inn — Google Block Store på Android, iCloud Keychain på iOS. Det finnes ingen innstilling som slår dette av.
+
+På Android synkroniseres kopien til Google-kontoen din bare hvis telefonen har skjermlås; ifølge Google er den da ende-til-ende-kryptert, så Google ikke kan lese den. Uten skjermlås blir den på telefonen og brukes bare til en direkte overføring til en ny telefon. iCloud Keychain er ende-til-ende-kryptert. Den som kan åpne den sikkerhetskopien — altså har Google- eller Apple-kontoen din sammen med skjermlåsen eller koden din — kan gjenopprette kontoen din. Mister du både frasen og den sikkerhetskopien, er kontoen borte, og meldinger sendt til den kan ikke leses igjen — av noen, oss inkludert.`,
     },
     {
       title: '6. Hvem andre mottar data',
@@ -5549,7 +5633,9 @@ To je celý seznam. Neexistuje žádná analytika ani hlášení chyb. Aplikace 
 
 Na vašem zařízení jsou zprávy uložené v mezipaměti, nastavení a váš PIN zámku aplikace šifrovány klíčem pro jednotlivé zařízení, uchovávaným v úložišti klíčů platformy (iOS Keychain, Android Keystore) namísto v běžném úložišti aplikace.
 
-Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zařízení, kromě jako obnovovací fráze, kterou se rozhodnete si zapsat. My ho nedržíme a nemůžeme ho pro vás obnovit. Ztratíte-li ho, zprávy odeslané na toto zařízení již nelze znovu přečíst — nikým, včetně nás.`,
+Soukromý klíč, který dešifruje vaše zprávy, je vaše obnovovací fráze. Nikdy ho nedostáváme a nemůžeme ho pro vás obnovit. Vaše zařízení opouští dvěma způsoby: jako fráze, kterou si zapíšete, a jako kopie, kterou aplikace při každé registraci a přihlášení uloží do vlastní zálohy telefonu, aby ho nový telefon mohl obnovit bez psaní — Google Block Store v Androidu, iCloud Keychain v iOS. Žádné nastavení, které by to vypnulo, neexistuje.
+
+V Androidu se kopie synchronizuje s vaším účtem Google jen tehdy, když má telefon zámek obrazovky; podle Googlu je pak šifrovaná end-to-end, takže ji Google nemůže přečíst. Bez zámku obrazovky zůstává v telefonu a slouží jen k přímému přenosu do nového telefonu. iCloud Keychain je šifrovaný end-to-end. Kdokoli, kdo dokáže tuto zálohu otevřít — tedy má váš účet Google nebo Apple spolu se zámkem obrazovky nebo kódem —, může obnovit váš účet. Ztratíte-li frázi i tuto zálohu, účet je pryč a zprávy, které na něj byly odeslány, již nelze znovu přečíst — nikým, včetně nás.`,
     },
     {
       title: '6. Kdo další dostává data',
@@ -5678,7 +5764,9 @@ Aceasta este lista completă. Nu există analiză (analytics) și nicio raportar
 
 Pe dispozitivul tău, mesajele stocate în cache, setările și codul PIN de blocare a aplicației sunt criptate cu o cheie specifică dispozitivului, păstrată în keystore-ul platformei (iOS Keychain, Android Keystore) în loc de stocarea obișnuită a aplicației.
 
-Cheia privată care decriptează mesajele tale nu părăsește niciodată dispozitivul tău, cu excepția frazei de recuperare pe care alegi să o notezi. Noi nu o deținem și nu o putem recupera pentru tine. Dacă o pierzi, mesajele trimise către acel dispozitiv nu mai pot fi citite — de nimeni, inclusiv de noi.`,
+Cheia privată care decriptează mesajele tale este chiar fraza ta de recuperare. Nu o primim niciodată și nu o putem recupera pentru tine. Ea părăsește dispozitivul tău în două feluri: ca fraza pe care o notezi și ca o copie pe care aplicația o salvează în backupul propriu al telefonului la fiecare înregistrare sau autentificare, astfel încât un telefon nou să o poată restaura fără s-o tastezi — Google Block Store pe Android, iCloud Keychain pe iOS. Nu există nicio setare care să oprească asta.
+
+Pe Android, copia se sincronizează cu contul tău Google doar dacă telefonul are blocare a ecranului; potrivit Google, atunci este criptată end-to-end, deci Google nu o poate citi. Fără blocare a ecranului rămâne pe telefon și este folosită doar pentru un transfer direct pe un telefon nou. iCloud Keychain este criptat end-to-end. Oricine poate deschide acel backup — adică are contul tău Google sau Apple împreună cu blocarea ecranului sau codul tău — îți poate restaura contul. Dacă pierzi atât fraza, cât și acel backup, contul dispare, iar mesajele trimise către el nu mai pot fi citite — de nimeni, inclusiv de noi.`,
     },
     {
       title: '6. Cine altcineva primește date',
@@ -5807,7 +5895,9 @@ Ez a teljes lista. Nincs elemzés (analytics) és nincs hibajelentés. Az alkalm
 
 A készülékeden a gyorsítótárazott üzenetek, a beállítások és az alkalmazászár PIN-kódod egy eszközönkénti kulccsal vannak titkosítva, amelyet a platform kulcstárolójában (iOS Keychain, Android Keystore) tartunk, nem a szokásos alkalmazástárolóban.
 
-A magánkulcs, amely dekódolja üzeneteidet, soha nem hagyja el a készülékedet, kivéve a helyreállítási mondat formájában, amelyet leírhatsz. Mi nem tartjuk meg, és nem tudjuk helyreállítani neked. Ha elveszíted, az arra a készülékre küldött üzenetek többé nem olvashatók el — senki által, minket is beleértve.`,
+A magánkulcs, amely dekódolja üzeneteidet, maga a helyreállítási mondatod. Soha nem kapjuk meg, és nem tudjuk helyreállítani neked. Kétféleképpen hagyja el a készülékedet: a leírt mondatod formájában, és egy másolatként, amelyet az alkalmazás minden regisztrációkor és bejelentkezéskor a telefon saját biztonsági mentésébe ment, hogy egy új telefon gépelés nélkül visszaállíthassa — Androidon a Google Block Store, iOS-en az iCloud Keychain. Nincs olyan beállítás, amely ezt kikapcsolja.
+
+Androidon a másolat csak akkor szinkronizálódik a Google-fiókodba, ha a telefonon van képernyőzár; a Google szerint ekkor végpontok között titkosított, így a Google nem tudja elolvasni. Képernyőzár nélkül a telefonon marad, és csak egy új telefonra való közvetlen átvitelre szolgál. Az iCloud Keychain végpontok között titkosított. Aki meg tudja nyitni ezt a mentést — vagyis akinél ott van a Google- vagy Apple-fiókod a képernyőzáraddal vagy jelkódoddal együtt —, vissza tudja állítani a fiókodat. Ha a mondatot és ezt a mentést is elveszíted, a fiók elvész, és a neki küldött üzenetek többé nem olvashatók el — senki által, minket is beleértve.`,
     },
     {
       title: '6. Ki más kap adatot',
@@ -5936,7 +6026,9 @@ Ha telepíted a frissítést, az ugyanazzal az aláírási kulccsal cseréli le 
 
 Құрылғыңызда кэштелген хабарламалар, параметрлер және қолданба құлпыңыздың PIN коды әдеттегі қолданба сақтауының орнына платформаның кілт қоймасында (iOS Keychain, Android Keystore) сақталатын құрылғыға тән кілтпен шифрланған.
 
-Хабарламаларыңызды шешетін жеке кілт сіз жазып алуды таңдаған қалпына келтіру фразасынан басқа ешқашан құрылғыңыздан шықпайды. Біз оны ұстамаймыз және сіз үшін қалпына келтіре алмаймыз. Егер оны жоғалтсаңыз, сол құрылғыға жіберілген хабарламаларды ешкім, соның ішінде біз де, қайта оқи алмайды.`,
+Хабарламаларыңызды шешетін жеке кілт — бұл сіздің қалпына келтіру фразаңыздың өзі. Біз оны ешқашан алмаймыз және сіз үшін қалпына келтіре алмаймыз. Ол құрылғыңыздан екі жолмен шығады: сіз жазып алатын фраза ретінде және жаңа телефон оны терместен қалпына келтіре алуы үшін қолданба әр тіркелген немесе кірген сайын телефонның өз сақтық көшірмесіне сақтайтын көшірме ретінде — Android-те Google Block Store, iOS-те iCloud Keychain. Мұны өшіретін баптау жоқ.
+
+Android-те көшірме Google аккаунтыңызбен тек телефонда экран құлпы болғанда ғана синхрондалады; Google-дың айтуынша, сол кезде ол ұштан-ұшқа шифрланған, сондықтан Google оны оқи алмайды. Экран құлпы болмаса, ол телефонда қалады және тек жаңа телефонға тікелей тасымалдау үшін қолданылады. iCloud Keychain ұштан-ұшқа шифрланған. Сол сақтық көшірмені аша алатын кез келген адам — яғни Google немесе Apple аккаунтыңыз бен экран құлпыңыз не құпия кодыңыз бар адам — аккаунтыңызды қалпына келтіре алады. Фразаны да, сол сақтық көшірмені де жоғалтсаңыз, аккаунт жоғалады, ал оған жіберілген хабарламаларды ешкім, соның ішінде біз де, қайта оқи алмайды.`,
     },
     {
       title: '6. Тағы кім деректер алады',
@@ -6065,7 +6157,9 @@ Bu to'liq ro'yxat. Analitika ham, xatoliklar haqida hisobot ham yo'q. Ilova ilga
 
 Qurilmangizda keshlangan xabarlar, sozlamalar va ilova qulfingizning PIN kodi odatiy ilova xotirasi o'rniga platforma kalit ombori (iOS Keychain, Android Keystore) da saqlanadigan qurilmaga xos kalit bilan shifrlangan.
 
-Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit siz yozib qo'yishni tanlagan tiklash iborasidan boshqa hech qachon qurilmangizdan chiqmaydi. Biz uni saqlamaymiz va siz uchun tiklay olmaymiz. Agar uni yo'qotsangiz, o'sha qurilmaga yuborilgan xabarlarni hech kim, shu jumladan biz ham, qayta o'qiy olmaydi.`,
+Xabarlaringizni shifrdan chiqaradigan shaxsiy kalit — bu sizning tiklash iborangizning o'zi. Biz uni hech qachon olmaymiz va siz uchun tiklay olmaymiz. U qurilmangizdan ikki yo'l bilan chiqadi: siz yozib qo'yadigan ibora sifatida va yangi telefon uni yozmasdan tiklay olishi uchun ilova har safar ro'yxatdan o'tganingizda yoki kirganingizda telefoningizning o'z zaxira nusxasiga saqlaydigan nusxa sifatida — Android'da Google Block Store, iOS'da iCloud Keychain. Buni o'chiradigan sozlama yo'q.
+
+Android'da nusxa Google hisobingiz bilan faqat telefoningizda ekran qulfi bo'lsagina sinxronlanadi; Google'ning aytishicha, u holda u uchdan-uchgacha shifrlangan bo'ladi, shuning uchun Google uni o'qiy olmaydi. Ekran qulfi bo'lmasa, u telefonda qoladi va faqat yangi telefonga to'g'ridan-to'g'ri ko'chirish uchun ishlatiladi. iCloud Keychain uchdan-uchgacha shifrlangan. O'sha zaxira nusxani ocha oladigan har kim — ya'ni Google yoki Apple hisobingiz va ekran qulfingiz yoki parolingizga ega bo'lgan kishi — hisobingizni tiklay oladi. Agar iborani ham, o'sha zaxira nusxani ham yo'qotsangiz, hisob yo'qoladi va unga yuborilgan xabarlarni hech kim, shu jumladan biz ham, qayta o'qiy olmaydi.`,
     },
     {
       title: '6. Yana kim ma\'lumot oladi',
@@ -6194,7 +6288,9 @@ Agar yangilanishni o'rnatsangiz, u xuddi shu imzolash kalitidan foydalanib ilova
 
 თქვენს მოწყობილობაზე, ქეშირებული შეტყობინებები, პარამეტრები და თქვენი აპლიკაციის დაბლოკვის PIN კოდი დაშიფრულია მოწყობილობის ცალკეული გასაღებით, რომელიც ინახება პლატფორმის გასაღების საცავში (iOS Keychain, Android Keystore) ჩვეულებრივი აპლიკაციის საცავის ნაცვლად.
 
-პირადი გასაღები, რომელიც შიფრავს თქვენს შეტყობინებებს, არასდროს ტოვებს თქვენს მოწყობილობას, გარდა აღდგენის ფრაზისა, რომლის ჩაწერასაც აირჩევთ. ჩვენ არ ვინახავთ მას და ვერ აღვადგენთ თქვენთვის. თუ დაკარგავთ მას, იმ მოწყობილობაზე გაგზავნილი შეტყობინებები ვეღარ წაიკითხება — არავის მიერ, ჩვენს ჩათვლით.`,
+პირადი გასაღები, რომელიც თქვენს შეტყობინებებს გაშიფრავს, თავად თქვენი აღდგენის ფრაზაა. ჩვენ მას არასდროს ვიღებთ და ვერ აღვადგენთ თქვენთვის. ის თქვენს მოწყობილობას ორი გზით ტოვებს: როგორც ფრაზა, რომელსაც ჩაიწერთ, და როგორც ასლი, რომელსაც აპი ყოველი რეგისტრაციისა თუ შესვლისას ინახავს თქვენი ტელეფონის საკუთარ სარეზერვო ასლში, რათა ახალმა ტელეფონმა შეძლოს მისი აღდგენა აკრეფის გარეშე — Android-ზე Google Block Store, iOS-ზე iCloud Keychain. ამის გამორთვის პარამეტრი არ არსებობს.
+
+Android-ზე ასლი თქვენს Google ანგარიშთან მხოლოდ მაშინ სინქრონიზდება, როცა ტელეფონს ეკრანის დაბლოკვა აქვს; Google-ის თქმით, ამ დროს ის ბოლომდე დაშიფრულია, ამიტომ Google ვერ წაიკითხავს. ეკრანის დაბლოკვის გარეშე ის ტელეფონზე რჩება და მხოლოდ ახალ ტელეფონზე პირდაპირი გადატანისთვის გამოიყენება. iCloud Keychain ბოლომდე დაშიფრულია. ნებისმიერს, ვისაც შეუძლია ამ სარეზერვო ასლის გახსნა — ანუ ვისაც აქვს თქვენი Google ან Apple ანგარიში თქვენს ეკრანის დაბლოკვასთან ან პაროლთან ერთად — შეუძლია თქვენი ანგარიშის აღდგენა. თუ ფრაზასაც და ამ სარეზერვო ასლსაც დაკარგავთ, ანგარიში დაიკარგება, ხოლო მასზე გაგზავნილი შეტყობინებები ვეღარ წაიკითხება — არავის მიერ, ჩვენს ჩათვლით.`,
     },
     {
       title: '6. ვინ სხვა იღებს მონაცემებს',
@@ -6323,7 +6419,9 @@ Cloudflare Realtime-საც არ აქვს გადამრთველ
 
 Ձեր սարքում, քեշավորված հաղորդագրությունները, կարգավորումները և ձեր հավելվածի կողպման PIN կոդը գաղտնագրված են սարքին հատուկ բանալիով, պահված հարթակի բանալիների պահեստում (iOS Keychain, Android Keystore) սովորական հավելվածի պահեստի փոխարեն։
 
-Գաղտնի բանալին, որը վերծանում է ձեր հաղորդագրությունները, երբեք չի լքում ձեր սարքը, բացառությամբ որպես վերականգնման արտահայտություն, որը դուք ընտրում եք գրանցել։ Մենք չենք պահում այն և չենք կարող այն վերականգնել ձեզ համար։ Եթե կորցնեք այն, այդ սարքին ուղարկված հաղորդագրությունները այլևս չեն կարող կարդացվել — ոչ ոքի կողմից, ներառյալ մեզ։`,
+Գաղտնի բանալին, որը վերծանում է ձեր հաղորդագրությունները, հենց ձեր վերականգնման արտահայտությունն է։ Մենք այն երբեք չենք ստանում և չենք կարող այն վերականգնել ձեզ համար։ Այն ձեր սարքը լքում է երկու ճանապարհով՝ որպես արտահայտություն, որը դուք գրանցում եք, և որպես պատճեն, որը հավելվածը ամեն գրանցման կամ մուտքի ժամանակ պահում է ձեր հեռախոսի սեփական պահուստային պատճենում, որպեսզի նոր հեռախոսը կարողանա այն վերականգնել առանց մուտքագրելու — Android-ում՝ Google Block Store, iOS-ում՝ iCloud Keychain։ Սա անջատող կարգավորում չկա։
+
+Android-ում պատճենը համաժամացվում է ձեր Google հաշվի հետ միայն այն դեպքում, երբ հեռախոսն ունի էկրանի կողպում։ Google-ի պնդմամբ՝ այդ դեպքում այն ծայրից ծայր գաղտնագրված է, և Google-ը չի կարող այն կարդալ։ Առանց էկրանի կողպման այն մնում է հեռախոսում և օգտագործվում է միայն նոր հեռախոսին ուղղակի փոխանցման համար։ iCloud Keychain-ը ծայրից ծայր գաղտնագրված է։ Յուրաքանչյուր ոք, ով կարող է բացել այդ պահուստային պատճենը — այսինքն՝ ունի ձեր Google կամ Apple հաշիվը ձեր էկրանի կողպման կամ գաղտնակոդի հետ միասին — կարող է վերականգնել ձեր հաշիվը։ Եթե կորցնեք և՛ արտահայտությունը, և՛ այդ պատճենը, հաշիվը կկորչի, իսկ դրան ուղարկված հաղորդագրություններն այլևս չեն կարող կարդացվել — ոչ ոքի կողմից, ներառյալ մեզ։`,
     },
     {
       title: '6. Ով ուրիշ է ստանում տվյալներ',
@@ -6452,7 +6550,9 @@ Cloudflare Realtime-ն էլ անջատիչ չունի։ Զանգերի մեծ մ
 
 На вашай прыладзе кэшаваныя паведамленні, налады і PIN-код блакіроўкі праграмы зашыфраваны ключом, унікальным для гэтай прылады, захаваным у сховішчы ключоў платформы (iOS Keychain, Android Keystore), а не ў звычайным сховішчы праграмы.
 
-Прыватны ключ, які расшыфроўвае вашы паведамленні, ніколі не пакідае вашу прыладу, за выключэннем як фраза аднаўлення, якую вы вырашаеце запісаць. Мы не захоўваем яго і не можам аднавіць яго для вас. Страціце яго — і паведамленні, дасланыя на тую прыладу, больш нельга прачытаць — нікому, уключаючы нас.`,
+Прыватны ключ, які расшыфроўвае вашы паведамленні, — гэта ваша фраза аднаўлення. Мы ніколі яе не атрымліваем і не можам аднавіць яе для вас. Яна пакідае вашу прыладу двума шляхамі: як фраза, якую вы запісваеце, і як копія, якую праграма пры кожнай рэгістрацыі і ўваходзе захоўвае ў сістэмную рэзервовую копію тэлефона, каб новы тэлефон мог аднавіць яе без уводу, — Google Block Store на Android, iCloud Keychain на iOS. Налады, якая б гэта выключала, няма.
+
+На Android копія сінхранізуецца з вашым уліковым запісам Google толькі тады, калі на тэлефоне ўсталявана блакіроўка экрана; па словах Google, тады яна мае скразное шыфраванне, і Google не можа яе прачытаць. Без блакіроўкі экрана яна застаецца на тэлефоне і выкарыстоўваецца толькі для прамога пераносу на новы тэлефон. iCloud Keychain мае скразное шыфраванне. Любы, хто можа адкрыць гэтую рэзервовую копію — гэта значыць мае ваш уліковы запіс Google або Apple разам з блакіроўкай экрана ці код-паролем, — можа аднавіць ваш уліковы запіс. Калі вы страціце і фразу, і гэтую копію, уліковы запіс знікне, а дасланыя на яго паведамленні больш нельга прачытаць — нікому, уключаючы нас.`,
     },
     {
       title: '6. Хто яшчэ атрымлівае даныя',
@@ -6581,7 +6681,9 @@ Cloudflare Realtime-ն էլ անջատիչ չունի։ Զանգերի մեծ մ
 
 ኣብ መሳርሒኻ፡ ዝተዓቀቡ መልእኽትታት፡ ቅንብራትን ናይ መተግበሪ መቕለቢ PIN ኮድካን ብናይ መሳርሒ-ፍሉይ መፍትሕ ኣብ ናይ መድረኽ ናይ መፍትሕ መዕቆቢ (iOS Keychain, Android Keystore) ተመስጢሮም ኣለዉ፡ ኣብ ልሙድ ናይ መተግበሪ መዕቆቢ ኣይኰነን።
 
-ናይ ምስጢር መፍትሕ ንመልእኽትታትካ ዝፈትሕ ካብ መሳርሒኻ ፈጺሙ ኣይወጽእን፡ ብዘይ ንክትጽሕፎ እትመርጾ ናይ ምምላስ ሓረግ። ንሕና ኣይንሕዞን ንዓኻ ኽንመልሶ ኣይንኽእልን። እንተጥፊኡካ፡ ናብ ብእቲ መሳርሒ ዝተላእኩ መልእኽትታት ደጊሞም ክንበቡ ኣይክእሉን — ብማንም፡ ንሕና ሓዊስና።`,
+ንመልእኽትታትካ ዝፈትሕ ናይ ምስጢር መፍትሕ ባዕሉ ናይ ምምላስ ሓረግካ እዩ። ንሕና ፈጺምና ኣይንቕበሎን፡ ንዓኻ ክንመልሶ'ውን ኣይንኽእልን። ብኽልተ መገዲ ካብ መሳርሒኻ ይወጽእ፦ ከም እትጽሕፎ ሓረግ፡ ከምኡ'ውን ሓድሽ ስልኪ ከይጸሓፍካዮ ክመልሶ ምእንቲ፡ ኣብ ዝተመዝገብካሉ ወይ ዝኣተኻሉ ግዜ ኩሉ እቲ ኣፕ ኣብ ናይ ስልክኻ ባክኣፕ ዘቐምጦ ቅዳሕ — ኣብ Android Google Block Store፡ ኣብ iOS iCloud Keychain። ነዚ ዘጥፍእ ቅጥዒ የለን።
+
+ኣብ Android፡ እቲ ቅዳሕ ምስ ናይ Google ሕሳብካ ዝሰማማዕ ስልክኻ መዓጸዊ ስክሪን እንተሃልይዎ ጥራይ እዩ፤ ከም ዝበሎ Google፡ ሽዑ ካብ ጫፍ ክሳብ ጫፍ ዝተመስጠረ ስለ ዝኾነ Google ከንብቦ ኣይክእልን። መዓጸዊ ስክሪን እንተዘይብሉ ኣብ ስልኪ ይተርፍ፡ ናብ ሓድሽ ስልኪ ብቐጥታ ንምስግጋር ጥራይ ይጥቀመሉ። iCloud Keychain ካብ ጫፍ ክሳብ ጫፍ ዝተመስጠረ እዩ። ነቲ ባክኣፕ ክኸፍቶ ዝኽእል ዝኾነ ሰብ — ማለት ናይ Google ወይ Apple ሕሳብካ ምስ መዓጸዊ ስክሪንካ ወይ ምስጢራዊ ቁጽሪ ዘለዎ — ሕሳብካ ክመልሶ ይኽእል። ነቲ ሓረግን ነቲ ባክኣፕን ክልቲኦም እንተጥፊኦምኻ፡ እቲ ሕሳብ ይጠፍእ፡ ናብኡ ዝተላእኩ መልእኽትታት ደጊሞም ክንበቡ ኣይክእሉን — ብማንም፡ ንሕና ሓዊስና።`,
     },
     {
       title: '6. ካልእ መን ሓበሬታ ይቕበል',
@@ -6710,7 +6812,9 @@ Cloudflare Realtime እውን መቐየሪ የብሉን። መብዛሕትኦም
 
 ཁྱེད་ཀྱི་ཆས་གྲལ་ཐོག་ཉར་ཚགས་བྱས་པའི་འཕྲིན་ཡིག ་སྒྲིག་འགོད་དང་ཁྱེད་ཀྱི་ཆས་གྲལ་སྒོ་རྒྱག་ PIN་ཨང་ཡིག་ཆས་གྲལ་སོ་སོའི་ལྡེ་མིག་ཐོག་གནས་སྟངས་ལྡེ་མིག་མཛོད་ (iOS Keychain, Android Keystore) ནང་གསང་སྦས་ཡོད། ཐུན་མོང་མའི་ཆས་གྲལ་མཛོད་ནང་མིན།
 
-ཁྱེད་ཀྱི་འཕྲིན་ཡིག་གསང་སྒྲོལ་བྱེད་པའི་གསང་བའི་ལྡེ་མིག་ཁྱེད་ཀྱིས་བྲིས་ཐོག་ཉར་བར་གདམ་ག་བྱེད་པའི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་ལས་ཁྱེད་ཀྱི་ཆས་གྲལ་ནས་ནམ་ཡང་མི་འཐོན། ང་ཚོས་མི་འཛིན་ལ་ཁྱེད་ཆེད་སླར་གསོ་མི་ཐུབ། བརླག་ན། ཆས་གྲལ་དེར་བསྐུར་བའི་འཕྲིན་ཡིག་སླར་ཀློག་མི་ཐུབ། ང་ཚོ་ཡང་ཚུད་ཟིན་པའི་སུ་ལའང་མིན།`,
+ཁྱེད་ཀྱི་འཕྲིན་ཡིག་གསང་སྒྲོལ་བྱེད་པའི་གསང་བའི་ལྡེ་མིག་ནི་ཁྱེད་ཀྱི་ཡང་བསྐྱར་ཐབས་ཀྱི་ཚིག་སྡེབ་རང་ཡིན། ང་ཚོས་དེ་ནམ་ཡང་ལེན་གྱི་མེད་ལ་ཁྱེད་ཆེད་སླར་གསོ་ཡང་མི་ཐུབ། དེ་ནི་ཐབས་ལམ་གཉིས་ཀྱིས་ཁྱེད་ཀྱི་ཆས་གྲལ་ནས་ཕྱིར་འཐོན་གྱི་ཡོད། གཅིག་ནི་ཁྱེད་ཀྱིས་བྲིས་པའི་ཚིག་སྡེབ་ཡིན། གཉིས་པ་ནི་ཁ་པར་གསར་པས་ཡི་གེ་མ་བརྒྱབ་པར་སླར་གསོ་ཐུབ་ཆེད། ཁྱེད་ཀྱིས་ཐོ་འགོད་དམ་ནང་འཛུལ་བྱེད་ཐེངས་རེ་རེར་མཉེན་ཆས་ཀྱིས་ཁྱེད་ཀྱི་ཁ་པར་རང་གི་གྲབས་ཉར་ནང་དུ་ཉར་བའི་འདྲ་བཤུས་ཤིག་ཡིན། — Android ཐོག་ Google Block Store དང་། iOS ཐོག་ iCloud Keychain། འདི་འགོག་ཐུབ་པའི་སྒྲིག་འགོད་མེད།
+
+Android ཐོག་ཁྱེད་ཀྱི་ཁ་པར་ལ་བརྙན་ཡོལ་ཟྭ་ཡོད་ན་མ་གཏོགས་འདྲ་བཤུས་དེ་ཁྱེད་ཀྱི་ Google ཐོ་ཁོངས་དང་མཉམ་སྒྲིག་མི་བྱེད། Google གིས་བཤད་པ་ལྟར་སྐབས་དེར་དེ་མཐའ་ནས་མཐའ་བར་གསང་སྦྱོར་བྱས་ཡོད་པས་ Google གིས་ཀློག་མི་ཐུབ། བརྙན་ཡོལ་ཟྭ་མེད་ན་དེ་ཁ་པར་ནང་ཁོ་ནར་སྡོད་ཅིང་ཁ་པར་གསར་པར་ཐད་ཀར་སྤོ་བ་ཁོ་ནར་བེད་སྤྱོད་བྱེད། iCloud Keychain ནི་མཐའ་ནས་མཐའ་བར་གསང་སྦྱོར་བྱས་ཡོད། གྲབས་ཉར་དེ་ཁ་ཕྱེ་ཐུབ་མཁན་སུ་ཡིན་ཡང་ — ཁྱེད་ཀྱི་ Google ཡང་ན་ Apple ཐོ་ཁོངས་དང་བརྙན་ཡོལ་ཟྭའམ་གསང་ཨང་ཡོད་མཁན་ — ཁྱེད་ཀྱི་ཐོ་ཁོངས་སླར་གསོ་ཐུབ། ཚིག་སྡེབ་དང་གྲབས་ཉར་དེ་གཉིས་ཀ་བརླག་ན་ཐོ་ཁོངས་མེད་པར་འགྱུར་ཞིང་། དེར་བསྐུར་བའི་འཕྲིན་ཡིག་སླར་ཀློག་མི་ཐུབ། ང་ཚོ་ཡང་ཚུད་ཟིན་པའི་སུ་ལའང་མིན།`,
     },
     {
       title: '6. ཁྱེད་ཀྱི་གནས་ཚུལ་སུས་ཐོབ།',
@@ -6840,7 +6944,9 @@ Cloudflare Realtime ལའང་ལྡེ་མིག་མེད། ཁ་པ�
 
 Таны төхөөрөмж дээр кэшлэгдсэн зурвас, тохиргоо, аппын түгжээний PIN код нь энгийн аппын хадгалалт биш платформын түлхүүр сан (iOS Keychain, Android Keystore) дахь төхөөрөмж тус бүрийн түлхүүрээр шифрлэгддэг.
 
-Таны зурвасыг тайлдаг хувийн түлхүүр таны бичиж авахаар сонгосон сэргээх хэллэгээс бусад тохиолдолд таны төхөөрөмжөөс хэзээ ч гардаггүй. Бид үүнийг хадгалдаггүй бөгөөд танд зориулж сэргээх боломжгүй. Үүнийг алдвал тэр төхөөрөмж рүү илгээгдсэн зурвасыг дахин унших боломжгүй болно — бид ч гэсэн хэн ч чадахгүй.`,
+Таны зурвасыг тайлдаг хувийн түлхүүр бол таны сэргээх хэллэг өөрөө юм. Бид үүнийг хэзээ ч хүлээж авдаггүй бөгөөд танд зориулж сэргээх боломжгүй. Энэ нь таны төхөөрөмжөөс хоёр замаар гардаг: таны бичиж авсан хэллэгийн хэлбэрээр, мөн шинэ утас үүнийг бичихгүйгээр сэргээж чадахын тулд таныг бүртгүүлэх эсвэл нэвтрэх бүрт аппын таны утасны өөрийн нөөцөд хадгалдаг хуулбарын хэлбэрээр — Android дээр Google Block Store, iOS дээр iCloud Keychain. Үүнийг унтраах тохиргоо байхгүй.
+
+Android дээр хуулбар нь утсанд дэлгэцийн түгжээ байгаа үед л таны Google бүртгэлтэй синк хийгддэг; Google-ийн мэдэгдлээр тэр үед энэ нь төгсгөлөөс төгсгөл хүртэл шифрлэгдсэн байдаг тул Google үүнийг уншиж чадахгүй. Дэлгэцийн түгжээгүй бол утсан дээрээ үлдэж, зөвхөн шинэ утас руу шууд шилжүүлэхэд ашиглагдана. iCloud Keychain төгсгөлөөс төгсгөл хүртэл шифрлэгдсэн. Тэр нөөцийг нээж чадах хэн ч — өөрөөр хэлбэл таны Google эсвэл Apple бүртгэлийг дэлгэцийн түгжээ эсвэл нууц кодтой чинь хамт эзэмшдэг хүн — таны бүртгэлийг сэргээж чадна. Хэллэг болон тэр нөөцийг хоёуланг нь алдвал бүртгэл алга болж, түүн рүү илгээгдсэн зурвасыг дахин унших боломжгүй болно — бид ч гэсэн хэн ч чадахгүй.`,
     },
     {
       title: '6. Өөр хэн мэдээлэл хүлээн авдаг вэ',

@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.hu">← Vissza a Chatterboxhoz</a>
     <h1>Adatvédelmi irányelvek</h1>
-    <p class="meta">Utoljára frissítve: 2026-09-07</p>
+    <p class="meta">Utoljára frissítve: 2026-09-24</p>
 
     <section>
       <h2>0. Röviden</h2>
@@ -124,7 +124,8 @@
       <h2>5. Hol van tárolva</h2>
       <p>A Google Firebase-en — Firestore, Storage és Authentication —, olyan biztonsági szabályok alatt, amelyek eldöntik, ki olvashatja és írhatja az egyes dokumentumokat.</p>
       <p>A készülékeden a gyorsítótárazott üzenetek, a beállítások és az alkalmazászár PIN-kódod egy eszközönkénti kulccsal vannak titkosítva, amelyet a platform kulcstárolójában (iOS Keychain, Android Keystore) tartunk, nem a szokásos alkalmazástárolóban.</p>
-      <p>A magánkulcs, amely dekódolja üzeneteidet, soha nem hagyja el a készülékedet, kivéve a helyreállítási mondat formájában, amelyet leírhatsz. Mi nem tartjuk meg, és nem tudjuk helyreállítani neked. Ha elveszíted, az arra a készülékre küldött üzenetek többé nem olvashatók el — senki által, minket is beleértve.</p>
+      <p>A magánkulcs, amely dekódolja üzeneteidet, maga a helyreállítási mondatod. Soha nem kapjuk meg, és nem tudjuk helyreállítani neked. Kétféleképpen hagyja el a készülékedet: a leírt mondatod formájában, és egy másolatként, amelyet az alkalmazás minden regisztrációkor és bejelentkezéskor a telefon saját biztonsági mentésébe ment, hogy egy új telefon gépelés nélkül visszaállíthassa — Androidon a Google Block Store, iOS-en az iCloud Keychain. Nincs olyan beállítás, amely ezt kikapcsolja.</p>
+      <p>Androidon a másolat csak akkor szinkronizálódik a Google-fiókodba, ha a telefonon van képernyőzár; a Google szerint ekkor végpontok között titkosított, így a Google nem tudja elolvasni. Képernyőzár nélkül a telefonon marad, és csak egy új telefonra való közvetlen átvitelre szolgál. Az iCloud Keychain végpontok között titkosított. Aki meg tudja nyitni ezt a mentést — vagyis akinél ott van a Google- vagy Apple-fiókod a képernyőzáraddal vagy jelkódoddal együtt —, vissza tudja állítani a fiókodat. Ha a mondatot és ezt a mentést is elveszíted, a fiók elvész, és a neki küldött üzenetek többé nem olvashatók el — senki által, minket is beleértve.</p>
     </section>
 
     <section>

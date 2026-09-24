@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Kunci Anda, frasa pemulihan Anda',
-        body: `Kunci privat yang mendekripsi pesan Anda tidak pernah meninggalkan perangkat Anda. Anda dapat menuliskannya sebagai frasa pemulihan; kami tidak menyimpannya dan tidak dapat memulihkannya untuk Anda.`,
+        body: `Kunci privat yang mendekripsi pesan Anda adalah frasa pemulihan Anda, dan kami tidak pernah menerimanya. Selain frasa yang Anda tuliskan, aplikasi menyimpan salinannya ke cadangan bawaan ponsel Anda — Google Block Store atau iCloud Keychain — agar ponsel baru dapat memulihkannya. Salinan itu hanya sampai ke cloud dalam keadaan terenkripsi end-to-end; rinciannya ada di kebijakan privasi. Kami tidak dapat memulihkannya untuk Anda.`,
       },
       {
         title: '53 bahasa',

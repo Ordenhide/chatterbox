@@ -49,8 +49,12 @@ what is sent to third parties and when.
 - **No identifiers.** Sign-up generates 32 random bytes and shows them as 24
   words. The login credential and the encryption key are both derived from
   them. The app never asks for an email address, phone number or name.
-- **No recovery.** If you lose the words, you lose the account. Nobody can
-  reset it, including us.
+- **No recovery from us.** Nobody can reset the account, including us. The
+  app does save a copy of the words to your phone's own backup (Google Block
+  Store on Android; iCloud Keychain on iOS) so a new phone can restore it. On
+  Android that copy reaches your Google account only when the phone has a
+  screen lock, and is then end-to-end encrypted. There is no setting to turn
+  it off. Lose both the words and that backup, and the account is gone.
 - **No directory.** Nobody can search for you. You reach someone with an invite
   link, sent through whatever you already use. A link works once and expires
   after 24 hours.

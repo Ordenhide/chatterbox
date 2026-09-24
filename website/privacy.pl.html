@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.pl">← Powrót do Chatterbox</a>
     <h1>Polityka prywatności</h1>
-    <p class="meta">Ostatnia aktualizacja: 2026-09-07</p>
+    <p class="meta">Ostatnia aktualizacja: 2026-09-24</p>
 
     <section>
       <h2>0. W skrócie</h2>
@@ -124,7 +124,8 @@
       <h2>5. Gdzie jest przechowywane</h2>
       <p>W Google Firebase — Firestore, Storage i Authentication — zgodnie z regułami bezpieczeństwa, które decydują, kto może odczytywać i zapisywać każdy dokument.</p>
       <p>Na Twoim urządzeniu wiadomości w pamięci podręcznej, ustawienia i PIN blokady aplikacji są szyfrowane kluczem unikalnym dla urządzenia, przechowywanym w magazynie kluczy platformy (Keychain w iOS, Keystore w Androidzie), a nie w zwykłej pamięci aplikacji.</p>
-      <p>Klucz prywatny, który odszyfrowuje Twoje wiadomości, nigdy nie opuszcza Twojego urządzenia, z wyjątkiem frazy odzyskiwania, którą decydujesz się zapisać. My go nie przechowujemy i nie możemy go dla Ciebie odzyskać. Jeśli go zgubisz, wiadomości wysłane do tego urządzenia nie będą już mogły zostać odczytane — przez nikogo, łącznie z nami.</p>
+      <p>Klucz prywatny, który odszyfrowuje Twoje wiadomości, to Twoja fraza odzyskiwania. Nigdy jej nie otrzymujemy i nie możemy jej dla Ciebie odzyskać. Opuszcza Twoje urządzenie na dwa sposoby: jako fraza, którą zapisujesz, oraz jako kopia, którą aplikacja przy każdej rejestracji i logowaniu zapisuje w kopii zapasowej samego telefonu, aby nowy telefon mógł ją przywrócić bez wpisywania — Google Block Store na Androidzie, iCloud Keychain na iOS. Nie ma ustawienia, które to wyłącza.</p>
+      <p>Na Androidzie kopia jest synchronizowana z Twoim kontem Google tylko wtedy, gdy telefon ma blokadę ekranu; według Google jest wtedy szyfrowana end-to-end, więc Google nie może jej odczytać. Bez blokady ekranu zostaje na telefonie i służy tylko do bezpośredniego przeniesienia na nowy telefon. iCloud Keychain jest szyfrowany end-to-end. Każdy, kto może otworzyć tę kopię zapasową — czyli ma Twoje konto Google lub Apple razem z blokadą ekranu lub kodem — może przywrócić Twoje konto. Jeśli zgubisz zarówno frazę, jak i tę kopię, konto przepada, a wiadomości wysłane na nie nie będą już mogły zostać odczytane — przez nikogo, łącznie z nami.</p>
     </section>
 
     <section>

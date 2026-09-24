@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Mabudinka, jimlar dawowarka',
-        body: `Mabudin sirri da ke buɗe saƙonninka ba ya taɓa barin na'urarka. Za ka iya rubuta shi a matsayin jimlar dawowa; ba mu riƙe shi ba kuma ba za mu iya dawo maka da shi ba.`,
+        body: `Mabudin sirri da ke buɗe saƙonninka shi ne jimlar dawowarka, kuma ba mu taɓa karɓar sa ba. Ban da jimlar da ka rubuta, manhajar tana adana kwafi a cikin ajiyar wayarka ta kanta — Google Block Store ko iCloud Keychain — domin sabuwar waya ta iya dawo da shi. Yana isa gajimare ne kawai a ɓoye daga farko zuwa ƙarshe; cikakkun bayanai suna cikin manufar sirri. Ba za mu iya dawo maka da shi ba.`,
       },
       {
         title: 'Harsuna 53',

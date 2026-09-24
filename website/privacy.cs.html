@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.cs">← Zpět na Chatterbox</a>
     <h1>Zásady ochrany osobních údajů</h1>
-    <p class="meta">Naposledy aktualizováno: 2026-09-07</p>
+    <p class="meta">Naposledy aktualizováno: 2026-09-24</p>
 
     <section>
       <h2>0. Ve zkratce</h2>
@@ -124,7 +124,8 @@
       <h2>5. Kde je to uloženo</h2>
       <p>Na Google Firebase — Firestore, Storage a Authentication — pod bezpečnostními pravidly, která rozhodují, kdo může každý dokument číst a zapisovat.</p>
       <p>Na vašem zařízení jsou zprávy uložené v mezipaměti, nastavení a váš PIN zámku aplikace šifrovány klíčem pro jednotlivé zařízení, uchovávaným v úložišti klíčů platformy (iOS Keychain, Android Keystore) namísto v běžném úložišti aplikace.</p>
-      <p>Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zařízení, kromě jako obnovovací fráze, kterou se rozhodnete si zapsat. My ho nedržíme a nemůžeme ho pro vás obnovit. Ztratíte-li ho, zprávy odeslané na toto zařízení již nelze znovu přečíst — nikým, včetně nás.</p>
+      <p>Soukromý klíč, který dešifruje vaše zprávy, je vaše obnovovací fráze. Nikdy ho nedostáváme a nemůžeme ho pro vás obnovit. Vaše zařízení opouští dvěma způsoby: jako fráze, kterou si zapíšete, a jako kopie, kterou aplikace při každé registraci a přihlášení uloží do vlastní zálohy telefonu, aby ho nový telefon mohl obnovit bez psaní — Google Block Store v Androidu, iCloud Keychain v iOS. Žádné nastavení, které by to vypnulo, neexistuje.</p>
+      <p>V Androidu se kopie synchronizuje s vaším účtem Google jen tehdy, když má telefon zámek obrazovky; podle Googlu je pak šifrovaná end-to-end, takže ji Google nemůže přečíst. Bez zámku obrazovky zůstává v telefonu a slouží jen k přímému přenosu do nového telefonu. iCloud Keychain je šifrovaný end-to-end. Kdokoli, kdo dokáže tuto zálohu otevřít — tedy má váš účet Google nebo Apple spolu se zámkem obrazovky nebo kódem —, může obnovit váš účet. Ztratíte-li frázi i tuto zálohu, účet je pryč a zprávy, které na něj byly odeslány, již nelze znovu přečíst — nikým, včetně nás.</p>
     </section>
 
     <section>

@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.fil">← Bumalik sa Chatterbox</a>
     <h1>Patakaran sa Privacy</h1>
-    <p class="meta">Huling na-update: 2026-09-07</p>
+    <p class="meta">Huling na-update: 2026-09-24</p>
 
     <section>
       <h2>0. Sa madaling salita</h2>
@@ -124,7 +124,8 @@
       <h2>5. Saan ito iniimbak</h2>
       <p>Sa Google Firebase — Firestore, Storage, at Authentication — sa ilalim ng mga panuntunan sa seguridad na nagpapasya kung sino ang maaaring magbasa at magsulat ng bawat dokumento.</p>
       <p>Sa iyong device, ang mga na-cache na mensahe, setting, at iyong app-lock PIN ay naka-encrypt gamit ang isang per-device key na itinatago sa platform keystore (iOS Keychain, Android Keystore) sa halip na sa karaniwang imbakan ng app.</p>
-      <p>Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay hindi kailanman umaalis sa iyong device, maliban bilang recovery phrase na piniling isulat mo. Hindi namin ito hawak at hindi namin ito maaaring bawiin para sa iyo. Kung mawala ito, ang mga mensaheng ipinadala sa device na iyon ay hindi na mababasang muli — ninuman, kabilang kami.</p>
+      <p>Ang pribadong key na nagde-decrypt ng iyong mga mensahe ay ang iyong recovery phrase mismo. Hindi namin ito kailanman natatanggap at hindi namin ito maaaring bawiin para sa iyo. Umaalis ito sa iyong device sa dalawang paraan: bilang phrase na isinusulat mo, at bilang kopya na sine-save ng app sa sariling backup ng iyong telepono tuwing magsa-sign up o magsa-sign in ka, para maibalik ito ng bagong telepono nang hindi na tina-type — Google Block Store sa Android, iCloud Keychain sa iOS. Walang setting na makapagpapatay nito.</p>
+      <p>Sa Android, sini-sync lang ang kopya sa iyong Google account kung may screen lock ang iyong telepono; ayon sa Google, end-to-end encrypted ito sa ganoong kaso kaya hindi ito mababasa ng Google. Kung walang screen lock, nananatili ito sa telepono at ginagamit lang para sa direktang paglipat sa bagong telepono. End-to-end encrypted ang iCloud Keychain. Sinumang makapagbubukas ng backup na iyon — ibig sabihin, may hawak ng iyong Google o Apple account kasama ang iyong screen lock o passcode — ay maaaring magbalik ng iyong account. Kung mawala mo pareho ang phrase at ang backup na iyon, wala na ang account, at ang mga mensaheng ipinadala rito ay hindi na mababasang muli — ninuman, kabilang kami.</p>
     </section>
 
     <section>

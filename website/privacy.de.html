@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.de">← Zurück zu Chatterbox</a>
     <h1>Datenschutzerklärung</h1>
-    <p class="meta">Zuletzt aktualisiert: 2026-09-07</p>
+    <p class="meta">Zuletzt aktualisiert: 2026-09-24</p>
 
     <section>
       <h2>0. Kurz gesagt</h2>
@@ -124,7 +124,8 @@
       <h2>5. Wo es gespeichert wird</h2>
       <p>Auf Google Firebase — Firestore, Storage und Authentication — unter Sicherheitsregeln, die festlegen, wer welches Dokument lesen und schreiben darf.</p>
       <p>Auf deinem Gerät werden zwischengespeicherte Nachrichten, Einstellungen und deine App-Sperr-PIN mit einem gerätespezifischen Schlüssel verschlüsselt, der im Schlüsselspeicher der Plattform liegt (iOS Keychain, Android Keystore) und nicht im gewöhnlichen App-Speicher.</p>
-      <p>Der private Schlüssel, der deine Nachrichten entschlüsselt, verlässt dein Gerät nie — außer als die Wiederherstellungsphrase, die du dir selbst notierst. Wir haben ihn nicht und können ihn nicht für dich wiederherstellen. Geht er verloren, sind die an dieses Gerät gesendeten Nachrichten nie wieder lesbar — von niemandem, uns eingeschlossen.</p>
+      <p>Der private Schlüssel, der deine Nachrichten entschlüsselt, ist deine Wiederherstellungsphrase. Wir erhalten ihn nie und können ihn nicht für dich wiederherstellen. Er verlässt dein Gerät auf zwei Wegen: als die Phrase, die du dir notierst, und als Kopie, die die App bei jeder Registrierung und Anmeldung im eigenen Backup deines Telefons speichert, damit ein neues Telefon ihn ohne Eintippen wiederherstellen kann — Google Block Store unter Android, iCloud Keychain unter iOS. Es gibt keine Einstellung, die das abschaltet.</p>
+      <p>Unter Android wird die Kopie nur dann mit deinem Google-Konto synchronisiert, wenn dein Telefon eine Displaysperre hat; laut Google ist sie dann Ende-zu-Ende-verschlüsselt, sodass Google sie nicht lesen kann. Ohne Displaysperre bleibt sie auf dem Telefon und dient nur der direkten Übertragung auf ein neues Telefon. iCloud Keychain ist Ende-zu-Ende-verschlüsselt. Wer dieses Backup öffnen kann — mit deinem Google- oder Apple-Konto zusammen mit deiner Displaysperre oder deinem Gerätecode —, kann dein Konto wiederherstellen. Verlierst du sowohl die Phrase als auch dieses Backup, ist das Konto weg, und die an es gesendeten Nachrichten sind nie wieder lesbar — von niemandem, uns eingeschlossen.</p>
     </section>
 
     <section>

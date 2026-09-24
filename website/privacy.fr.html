@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.fr">← Retour à Chatterbox</a>
     <h1>Politique de confidentialité</h1>
-    <p class="meta">Dernière mise à jour: 2026-09-07</p>
+    <p class="meta">Dernière mise à jour: 2026-09-24</p>
 
     <section>
       <h2>0. En bref</h2>
@@ -124,7 +124,8 @@
       <h2>5. Où c'est stocké</h2>
       <p>Sur Google Firebase — Firestore, Storage et Authentication — sous des règles de sécurité qui décident qui peut lire et écrire chaque document.</p>
       <p>Sur votre appareil, les messages en cache, les réglages et votre code de verrouillage sont chiffrés avec une clé propre à l'appareil, conservée dans le trousseau de la plateforme (Keychain sur iOS, Keystore sur Android) plutôt que dans le stockage ordinaire de l'application.</p>
-      <p>La clé privée qui déchiffre vos messages ne quitte jamais votre appareil, sauf sous la forme de la phrase de récupération que vous choisissez de noter. Nous ne la détenons pas et ne pouvons pas la récupérer pour vous. Si vous la perdez, les messages envoyés à cet appareil ne seront plus jamais lisibles — par personne, nous compris.</p>
+      <p>La clé privée qui déchiffre vos messages est votre phrase de récupération. Nous ne la recevons jamais et ne pouvons pas la récupérer pour vous. Elle quitte votre appareil de deux façons : sous la forme de la phrase que vous notez, et sous la forme d'une copie que l'app enregistre dans la sauvegarde propre à votre téléphone à chaque inscription ou connexion, afin qu'un nouveau téléphone puisse la restaurer sans la saisir — Google Block Store sur Android, iCloud Keychain sur iOS. Aucun réglage ne permet de désactiver cela.</p>
+      <p>Sur Android, la copie n'est synchronisée avec votre compte Google que si votre téléphone a un verrouillage d'écran ; Google indique qu'elle est alors chiffrée de bout en bout, de sorte que Google ne peut pas la lire. Sans verrouillage d'écran, elle reste sur le téléphone et ne sert qu'à un transfert direct vers un nouveau téléphone. iCloud Keychain est chiffré de bout en bout. Quiconque peut ouvrir cette sauvegarde — votre compte Google ou Apple avec votre verrouillage d'écran ou votre code — peut restaurer votre compte. Si vous perdez à la fois la phrase et cette sauvegarde, le compte est perdu, et les messages qui lui ont été envoyés ne seront plus jamais lisibles — par personne, nous compris.</p>
     </section>
 
     <section>

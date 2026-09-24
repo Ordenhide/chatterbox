@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Din nøgle, din gendannelsessætning',
-        body: `Den private nøgle, der dekrypterer dine beskeder, forlader aldrig din enhed. Du kan skrive den ned som en gendannelsessætning; vi opbevarer den ikke og kan ikke gendanne den for dig.`,
+        body: `Den private nøgle, der dekrypterer dine beskeder, er din gendannelsessætning, og vi modtager den aldrig. Ud over den sætning, du skriver ned, gemmer appen en kopi i telefonens egen sikkerhedskopi — Google Block Store eller iCloud Keychain — så en ny telefon kan gendanne den. Den når kun skyen end-to-end-krypteret; detaljerne står i privatlivspolitikken. Vi kan ikke gendanne den for dig.`,
       },
       {
         title: '53 sprog',

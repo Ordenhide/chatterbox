@@ -401,6 +401,21 @@ describe('section 4 names what was removed, in every language', () => {
   });
 });
 
+/**
+ * keyBackup.ts copies the recovery phrase — the whole account — into the
+ * platform backup on every sign-in, with no setting to stop it. Section 5 once
+ * said the key never left the device; this keeps the disclosure from being
+ * dropped by a translation or a rewrite.
+ */
+describe('section 5 discloses the platform backup of the phrase, in every language', () => {
+  it.each(codes)('%s names both backup services', code => {
+    const five = PRIVACY_POLICY[code].find(s => s.title.startsWith('5.'));
+    expect(five).toBeDefined();
+    expect(five!.body).toContain('Google Block Store');
+    expect(five!.body).toContain('iCloud Keychain');
+  });
+});
+
 describe('the details that must not drift', () => {
   it.each(codes)('%s carries the contact address', code => {
     expect(PRIVACY_POLICY[code].map(s => s.body).join('\n')).toContain(POLICY_CONTACT_EMAIL);

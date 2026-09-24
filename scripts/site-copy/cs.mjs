@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Váš klíč, vaše obnovovací fráze',
-        body: `Soukromý klíč, který dešifruje vaše zprávy, nikdy neopustí vaše zařízení. Můžete si ho zapsat jako obnovovací frázi; my ho nedržíme a nemůžeme ho pro vás obnovit.`,
+        body: `Soukromý klíč, který dešifruje vaše zprávy, je vaše obnovovací fráze a my ho nikdy nedostáváme. Kromě fráze, kterou si zapíšete, uloží aplikace kopii do vlastní zálohy telefonu — Google Block Store nebo iCloud Keychain —, aby ho nový telefon mohl obnovit. Do cloudu se dostane jen šifrovaný end-to-end; podrobnosti jsou v zásadách ochrany soukromí. Nemůžeme ho pro vás obnovit.`,
       },
       {
         title: '53 jazyky',

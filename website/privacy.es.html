@@ -83,7 +83,7 @@
   <main class="doc">
     <a class="back-link" href="index.es">← Volver a Chatterbox</a>
     <h1>Política de privacidad</h1>
-    <p class="meta">Última actualización: 2026-09-07</p>
+    <p class="meta">Última actualización: 2026-09-24</p>
 
     <section>
       <h2>0. En resumen</h2>
@@ -124,7 +124,8 @@
       <h2>5. Dónde se guarda</h2>
       <p>En Google Firebase —Firestore, Storage y Authentication— bajo reglas de seguridad que deciden quién puede leer y escribir cada documento.</p>
       <p>En tu dispositivo, los mensajes en caché, los ajustes y tu PIN de bloqueo se cifran con una clave propia del dispositivo guardada en el almacén de claves del sistema (Keychain en iOS, Keystore en Android), no en el almacenamiento normal de la app.</p>
-      <p>La clave privada que descifra tus mensajes nunca sale de tu dispositivo, salvo como la frase de recuperación que decidas anotar. No la tenemos y no podemos recuperarla por ti. Si la pierdes, los mensajes enviados a ese dispositivo no se podrán volver a leer, por nadie, nosotros incluidos.</p>
+      <p>La clave privada que descifra tus mensajes es tu frase de recuperación. Nunca la recibimos y no podemos recuperarla por ti. Sale de tu dispositivo de dos maneras: como la frase que tú anotas, y como una copia que la app guarda en la copia de seguridad propia de tu teléfono cada vez que te registras o inicias sesión, para que un teléfono nuevo pueda restaurarla sin teclearla: Google Block Store en Android, iCloud Keychain en iOS. No hay ningún ajuste que lo desactive.</p>
+      <p>En Android, la copia se sincroniza con tu cuenta de Google solo si tu teléfono tiene bloqueo de pantalla; Google afirma que entonces está cifrada de extremo a extremo, de modo que Google no puede leerla. Sin bloqueo de pantalla se queda en el teléfono y solo se usa para una transferencia directa a un teléfono nuevo. iCloud Keychain está cifrado de extremo a extremo. Quien pueda abrir esa copia de seguridad —tu cuenta de Google o de Apple junto con tu bloqueo de pantalla o tu código— puede restaurar tu cuenta. Si pierdes tanto la frase como esa copia, la cuenta desaparece, y los mensajes enviados a ella no se podrán volver a leer, por nadie, nosotros incluidos.</p>
     </section>
 
     <section>

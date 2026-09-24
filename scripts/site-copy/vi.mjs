@@ -102,7 +102,7 @@ export default {
       },
       {
         title: `Khoá của bạn, cụm từ khôi phục của bạn`,
-        body: `Khoá riêng giải mã tin nhắn của bạn không bao giờ rời khỏi máy bạn. Bạn có thể chép nó ra thành cụm từ khôi phục; chúng tôi không giữ nó và không thể lấy lại giúp bạn.`,
+        body: `Khoá riêng giải mã tin nhắn của bạn chính là cụm từ khôi phục, và chúng tôi không bao giờ nhận được nó. Ngoài cụm từ bạn chép ra, ứng dụng còn lưu một bản sao vào bản sao lưu của chính điện thoại — Google Block Store hoặc iCloud Keychain — để máy mới có thể khôi phục. Nó chỉ lên đám mây ở dạng mã hoá đầu cuối; chi tiết có trong chính sách quyền riêng tư. Chúng tôi không thể lấy lại giúp bạn.`,
       },
       {
         title: `53 ngôn ngữ`,

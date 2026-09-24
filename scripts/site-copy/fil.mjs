@@ -107,7 +107,7 @@ export default {
       },
       {
         title: 'Ang key mo, ang recovery phrase mo',
-        body: `Ang pribadong key na nagde-decrypt ng mga mensahe mo ay hindi kailanman umaalis sa device mo. Puwede mo itong isulat bilang recovery phrase; hindi namin ito hawak at hindi namin ito maibabalik para sa iyo.`,
+        body: `Ang pribadong key na nagde-decrypt ng mga mensahe mo ay ang recovery phrase mo mismo, at hindi namin ito kailanman natatanggap. Bukod sa phrase na isinusulat mo, sine-save ng app ang isang kopya sa sariling backup ng telepono mo — Google Block Store o iCloud Keychain — para maibalik ito ng bagong telepono. Umaabot lang ito sa cloud nang end-to-end encrypted; nasa privacy policy ang mga detalye. Hindi namin ito maibabalik para sa iyo.`,
       },
       {
         title: '53 na wika',
